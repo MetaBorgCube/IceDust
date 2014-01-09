@@ -1,0 +1,37 @@
+module Common.pp.generated
+
+strategies
+  prettyprint-ID =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-ID
+
+
+strategies
+  prettyprint-Identifier =
+    ?Identifier(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-ID)> a]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Identifier
+
+
+strategies
+  prettyprint-Keyword =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-Keyword
+
+
+strategies
+  prettyprint-BasicType =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-BasicType
