@@ -1,0 +1,92 @@
+module(
+  unparameterized("Relationsgenerated")
+, []
+, [ exports(
+      conc-grammars(
+        context-free-syntax(
+          [ prod(
+              [lit("\"module\""), sort("ID"), iter-star(sort("Definition"))]
+            , sort("Start")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"Module\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [ lit("\"entity\"")
+              , sort("ID")
+              , lit("\"{\"")
+              , iter-star(sort("Property"))
+              , lit("\"}\"")
+              ]
+            , sort("Definition")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"Entity\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [sort("ID"), lit("\":\""), sort("Type")]
+            , sort("Property")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"Property\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [sort("ID")]
+            , sort("Type")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"Type\""))]))
+                 )]
+              )
+            )
+          ]
+        )
+      , context-free-syntax(
+          [ prod(
+              [sort("CONTENTCOMPLETE")]
+            , sort("Start")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"COMPLETION-Start\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [sort("CONTENTCOMPLETE")]
+            , sort("Definition")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"COMPLETION-Definition\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [sort("CONTENTCOMPLETE")]
+            , sort("Property")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"COMPLETION-Property\""))]))
+                 )]
+              )
+            )
+          , prod(
+              [sort("CONTENTCOMPLETE")]
+            , sort("Type")
+            , attrs(
+                [term(
+                   default(appl(unquoted("cons"), [fun(quoted("\"COMPLETION-Type\""))]))
+                 )]
+              )
+            )
+          ]
+        )
+      )
+    )
+  ]
+)

@@ -1,0 +1,9 @@
+module Relations.generated
+
+completions
+  completion template Start : "module ID " =
+    "module " <ID:ID> "\n\n" (cursor) (blank)  
+  completion template Definition : "entity ID { }" =
+    "entity " <ID:ID> " {\n\t" (cursor) "\n}" (blank)  
+  completion template Property : "ID : ID" =
+    <ID:ID> " : " <ID:Type> (blank)  

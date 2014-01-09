@@ -1,0 +1,21 @@
+module refactor
+
+imports
+  lib-refactoring/behavior-preservation.generated
+  check
+  lib/nbl-library.generated
+
+rules
+ 
+  rename-refactoring:
+    (newname, oldname{ref}, position, ast, path, project-path) -> 
+    (ast-changes, fatal-errors, errors, warnings)
+    where
+      ast-after := <rename-all(|newname, oldname{ref})> ast;
+      ast-changes := [(ast, ast-after)];
+      fatal-errors := [];
+      (errors, warnings) := 
+        <get-semantic-violations(constraint-error, constraint-warning, ?newname <+ ?oldname{})> ast-changes
+
+  rename-all(|newname, oldname):
+    ast -> <alltd(preserve-annos((oldname -> newname)))> ast

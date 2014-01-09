@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?eclipse version="3.0"?>
+
+<plugin>
+       <extension point="org.eclipse.imp.runtime.languageDescription">
+          <language extensions="rel" description="Relations" language="Relations" derivedFrom="DynamicRoot" validator="Relations.RelationsValidator" validatorClass="Relations.RelationsValidator"></language>
+       </extension>
+       <extension id="Relations.parser" name="Relations Parser" point="org.eclipse.imp.runtime.parser">
+          <parser class="Relations.RelationsParseController" language="Relations">
+          </parser>
+       </extension>    
+    </plugin>

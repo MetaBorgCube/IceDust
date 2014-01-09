@@ -1,0 +1,67 @@
+module Relations.pp.generated
+
+strategies
+  prettyprint-Start =
+    ?Module(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("module ")
+           , <pp-one-Z(prettyprint-ID)> a
+           ]
+         )
+       , H(
+           []
+         , [S("")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-H-list(prettyprint-Definition)> b]
+         )
+       ]
+
+  prettyprint-Definition =
+    ?Entity(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("entity ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(" {")
+           ]
+         )
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Property)> b]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
+         )
+       ]
+
+  prettyprint-Property =
+    ?Property(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-ID)> a
+           , S(" : ")
+           , <pp-one-Z(prettyprint-Type)> b
+           ]
+         )
+       ]
+
+  prettyprint-Type =
+    ?Type(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-ID)> a]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Start
+
+  prettyprint-example =
+    prettyprint-Definition
+
+  prettyprint-example =
+    prettyprint-Property
+
+  prettyprint-example =
+    prettyprint-Type

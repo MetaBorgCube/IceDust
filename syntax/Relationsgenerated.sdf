@@ -1,0 +1,13 @@
+module Relationsgenerated
+exports
+  context-free syntax
+    "module" ID Definition*       -> Start      {cons("Module")}
+    "entity" ID "{" Property* "}" -> Definition {cons("Entity")}
+    ID ":" Type                   -> Property   {cons("Property")}
+    ID                            -> Type       {cons("Type")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Start      {cons("COMPLETION-Start")}
+    CONTENTCOMPLETE -> Definition {cons("COMPLETION-Definition")}
+    CONTENTCOMPLETE -> Property   {cons("COMPLETION-Property")}
+    CONTENTCOMPLETE -> Type       {cons("COMPLETION-Type")}
