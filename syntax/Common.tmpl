@@ -1,0 +1,32 @@
+
+// IDs
+lexical syntax
+        ID = [a-zA-Z\_][0-9a-zA-Z\_]*
+        ID = Keyword {reject}        
+                
+lexical restrictions
+        ID -/- [a-zA-Z0-9\_]
+        
+templates
+        Identifier.Identifier = <<ID>>
+
+
+// Keywords
+lexical syntax
+        Keyword = BasicType
+        
+        Keyword =     "entity"         
+        Keyword =     "relationship"   
+
+
+lexical restrictions
+        Keyword -/- [a-zA-Z0-9\_]
+
+
+// Primitive types
+lexical syntax
+        BasicType = "String"
+        BasicType = "Int"
+        
+lexical restrictions
+        BasicType -/- [a-zA-Z0-9\_]

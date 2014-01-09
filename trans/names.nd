@@ -8,22 +8,34 @@ namespaces
 	
 	Module
 	Entity
-	Property
+	Attribute
+	// Relation
+	Member
 	
 rules
 
 	Module(x, _) : 
 		defines Module x
 		scopes Entity
-		
+
+
+	// entities and attributes
 	Entity(x, _) :
 		defines Entity x of type Type(x)
-		scopes Property
+		scopes Attribute
 		
-	Property(x, t) :
-		defines Property x of type t
+	Attribute(x, t) :
+		defines Attribute x of type t
 		
-	Type(x) :
+	
+ 	// relation with members
+	Relation(x, _) :
+		defines Entity x of type Type(x)
+		scopes Member
+		scopes Attribute
+		
+	Member(x, t) :
+		defines Member x of type Type(x)
+
+	EntityType(x) :
 		refers to Entity x
-		refers to Entity "String"
-		refers to Entity "Int"

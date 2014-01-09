@@ -4,7 +4,7 @@ imports
   lib/analysis-library.generated
   lib/analysis-library-internal.generated
   lib/index-library.generated
-  
+
 
 imports
   include/Relations
@@ -18,9 +18,10 @@ signature
     CurrentFile : ImportAnno
 
   constructors
-    Module   : Namespace
-    Entity   : Namespace
-    Property : Namespace
+    Module    : Namespace
+    Entity    : Namespace
+    Attribute : Namespace
+    Member    : Namespace
 
 
 rules
@@ -44,7 +45,7 @@ rules
 rules
 
   nam-get-scope-types :
-    Entity(x, _) -> [Property()]
+    Entity(x, _) -> [Attribute()]
 
   nam-get-definition-keys :
     Entity(x, _) -> [x]
@@ -72,45 +73,88 @@ rules
 rules
 
   nam-get-definition-keys :
-    Property(x, t) -> [x]
+    Attribute(x, t) -> [x]
 
   nam-get-definitions :
-    Property(x, t) -> [(Property(), [x])]
+    Attribute(x, t) -> [(Attribute(), [x])]
 
   nam-annotate-names(|paths__, path__):
-    Property(x, t) -> <Property(nam-annotate-def(|path__), id)>
+    Attribute(x, t) -> <Attribute(nam-annotate-def(|path__), id)>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Property(x, t) -> <store__> DefData(
+    Attribute(x, t) -> <store__> DefData(
+                                   [namespace__|path__]
+                                 , Type()
+                                 , t
+                                 )
+
+  type-of :
+    Attribute(x, t) -> t
+
+  nam-unique :
+    Attribute(x, t) -> <id>
+
+
+rules
+
+  nam-get-scope-types :
+    Relation(x, _) -> [Member(), Attribute()]
+
+  nam-get-definition-keys :
+    Relation(x, _) -> [x]
+
+  nam-get-definitions :
+    Relation(x, _) -> [(Entity(), [x])]
+
+  nam-annotate-names(|paths__, path__):
+    Relation(x, _) -> <Relation(nam-annotate-def(|path__), id)>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Relation(x, _) -> <store__> DefData(
                                   [namespace__|path__]
                                 , Type()
-                                , t
+                                , Type(x)
                                 )
 
   type-of :
-    Property(x, t) -> t
+    Relation(x, _) -> Type(x)
 
   nam-unique :
-    Property(x, t) -> <id>
+    Relation(x, _) -> <id>
+
+
+rules
+
+  nam-get-definition-keys :
+    Member(x, t) -> [x]
+
+  nam-get-definitions :
+    Member(x, t) -> [(Member(), [x])]
+
+  nam-annotate-names(|paths__, path__):
+    Member(x, t) -> <Member(nam-annotate-def(|path__), id)>
+
+  adjust-index-def-data(store__|namespace__, path__):
+    Member(x, t) -> <store__> DefData(
+                                [namespace__|path__]
+                              , Type()
+                              , Type(x)
+                              )
+
+  type-of :
+    Member(x, t) -> Type(x)
+
+  nam-unique :
+    Member(x, t) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    Type(x) -> [x, "String", "Int"]
+    EntityType(x) -> [x]
 
   nam-get-uses :
-    Type(x) -> [ (Entity(), [x])
-               , (Entity(), ["String"])
-               , (Entity(), ["Int"])
-               ]
+    EntityType(x) -> [(Entity(), [x])]
 
   nam-annotate-names(|paths__, path__):
-    Type(x) -> <Type(nam-annotate-use(|paths__, Entity()))>
-
-  adjust-index-lookup(target__|namespace__, path__, prefix__):
-    Type(x) -> <concat> [ [[Entity()|path__]]
-                        , [Def([Entity(), "String"])]
-                        , [Def([Entity(), "Int"])]
-                        ]
-    where <target__> x
+    EntityType(x) -> <EntityType(nam-annotate-use(|paths__, Entity()))>

@@ -1,0 +1,29 @@
+module Commongenerated
+exports
+  lexical syntax
+    [a-zA-Z\_] [0-9a-zA-Z\_]* -> ID 
+    Keyword                   -> ID {reject}
+
+  lexical restrictions
+    ID -/- [a-zA-Z0-9\_]
+
+  context-free syntax
+    ID -> Identifier {cons("Identifier")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Identifier {cons("COMPLETION-Identifier")}
+
+  lexical syntax
+    BasicType      -> Keyword 
+    "entity"       -> Keyword 
+    "relationship" -> Keyword 
+
+  lexical restrictions
+    Keyword -/- [a-zA-Z0-9\_]
+
+  lexical syntax
+    "String" -> BasicType 
+    "Int"    -> BasicType 
+
+  lexical restrictions
+    BasicType -/- [a-zA-Z0-9\_]

@@ -5,5 +5,13 @@ completions
     "module " <ID:ID> "\n\n" (cursor) (blank)  
   completion template Definition : "entity ID { }" =
     "entity " <ID:ID> " {\n\t" (cursor) "\n}" (blank)  
-  completion template Property : "ID : ID" =
-    <ID:ID> " : " <ID:Type> (blank)  
+  completion template Attribute : "ID : Int" =
+    <ID:ID> " : " <Int:PrimitiveType>  
+  completion template PrimitiveType : "String" =
+    "String"  
+  completion template PrimitiveType : "Int" =
+    "Int"  
+  completion template Definition : "relation ID { }" =
+    "relation " <ID:ID> " {\n\t" (cursor) "\n}" (blank)  
+  completion template Member : "ID : ID" =
+    <ID:ID> " : " <ID:EntityType>  

@@ -6,14 +6,26 @@ module <ID>
 <Definition*>
 >
 
+%% entities with attributes (only primitive types)
 Definition.Entity = <
 entity <ID> {
-	<Property*>
+	<Attribute*>
 }
 >
 
-Property.Property = <
-<ID> : <Type>
+Attribute.Attribute = <<ID> : <PrimitiveType>>
+PrimitiveType.PrimitiveType = <BasicType>
+
+%% relations with members and attributes
+Definition.Relation = <
+relation <ID> {
+	<MemberOrAttribute*>	
+}
 >
 
-Type.Type = <<ID>>
+MemberOrAttribute = <<Member>>
+MemberOrAttribute = <<Attribute>>
+
+Member.Member = <<ID> : <EntityType>>
+EntityType.EntityType = <<ID>>
+

@@ -4,20 +4,29 @@
 module example
 
 entity User {
-  name     : String
-  password : String
-  homepage : URL
+	name     : String
+	password : String
+	numPosts : Int
 }
 
-entity BlogPosting {
-  poster : User
-  body   : String
+entity BlogPost {
+	title : String
+	body  : String
 }
 
-entity URL {
-  location : String
+relation Posting {
+	poster   : User
+	coAuthor : User
+	postee   : BlogPost
+	numEdits : Int
+	editMsg  : String
 }
 
-entity Test {
-	x : Test
+entity Log {
+	
+}
+
+relation LogItem {
+	log : Log
+	change : Posting
 }

@@ -28,26 +28,85 @@ strategies
            , S(" {")
            ]
          )
-       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Property)> b]
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
        , H(
            [SOpt(HS(), "0")]
          , [S("}")]
          )
        ]
 
-  prettyprint-Property =
-    ?Property(a, b)
+  prettyprint-Attribute =
+    ?Attribute(a, b)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ <pp-one-Z(prettyprint-ID)> a
            , S(" : ")
-           , <pp-one-Z(prettyprint-Type)> b
+           , <pp-one-Z(prettyprint-PrimitiveType)> b
            ]
          )
        ]
 
-  prettyprint-Type =
-    ?Type(a)
+  prettyprint-PrimitiveType =
+    ?String()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("String")]
+         )
+       ]
+
+  prettyprint-PrimitiveType =
+    ?Int()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("Int")]
+         )
+       ]
+
+  prettyprint-Definition =
+    ?Relation(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("relation ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(" {")
+           ]
+         )
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-MemberOrAttribute)> b]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
+         )
+       ]
+
+  prettyprint-MemberOrAttribute =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Member)> a]
+         )
+       ]
+
+  prettyprint-MemberOrAttribute =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Attribute)> a]
+         )
+       ]
+
+  prettyprint-Member =
+    ?Member(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-ID)> a
+           , S(" : ")
+           , <pp-one-Z(prettyprint-EntityType)> b
+           ]
+         )
+       ]
+
+  prettyprint-EntityType =
+    ?EntityType(a)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [<pp-one-Z(prettyprint-ID)> a]
@@ -58,10 +117,27 @@ strategies
     prettyprint-Start
 
   prettyprint-example =
+    prettyprint-Attribute
+
+  prettyprint-example =
+    prettyprint-PrimitiveType
+
+  prettyprint-example =
     prettyprint-Definition
 
   prettyprint-example =
-    prettyprint-Property
+    prettyprint-MemberOrAttribute
 
   prettyprint-example =
-    prettyprint-Type
+    prettyprint-Member
+
+  prettyprint-example =
+    prettyprint-EntityType
+
+
+strategies
+  prettyprint-ID =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-ID

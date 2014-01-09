@@ -1,13 +1,25 @@
 module Relationsgenerated
 exports
   context-free syntax
-    "module" ID Definition*       -> Start      {cons("Module")}
-    "entity" ID "{" Property* "}" -> Definition {cons("Entity")}
-    ID ":" Type                   -> Property   {cons("Property")}
-    ID                            -> Type       {cons("Type")}
+    "module" ID Definition*                  -> Start             {cons("Module")}
+    "entity" ID "{" Attribute* "}"           -> Definition        {cons("Entity")}
+    ID ":" PrimitiveType                     -> Attribute         {cons("Attribute")}
+    "String"                                 -> PrimitiveType     {cons("String")}
+    "Int"                                    -> PrimitiveType     {cons("Int")}
+    "relation" ID "{" MemberOrAttribute* "}" -> Definition        {cons("Relation")}
+    Member                                   -> MemberOrAttribute 
+    Attribute                                -> MemberOrAttribute 
+    ID ":" EntityType                        -> Member            {cons("Member")}
+    ID                                       -> EntityType        {cons("EntityType")}
 
   context-free syntax
-    CONTENTCOMPLETE -> Start      {cons("COMPLETION-Start")}
-    CONTENTCOMPLETE -> Definition {cons("COMPLETION-Definition")}
-    CONTENTCOMPLETE -> Property   {cons("COMPLETION-Property")}
-    CONTENTCOMPLETE -> Type       {cons("COMPLETION-Type")}
+    CONTENTCOMPLETE -> Start             {cons("COMPLETION-Start")}
+    CONTENTCOMPLETE -> Attribute         {cons("COMPLETION-Attribute")}
+    CONTENTCOMPLETE -> PrimitiveType     {cons("COMPLETION-PrimitiveType")}
+    CONTENTCOMPLETE -> Definition        {cons("COMPLETION-Definition")}
+    CONTENTCOMPLETE -> MemberOrAttribute {cons("COMPLETION-MemberOrAttribute")}
+    CONTENTCOMPLETE -> Member            {cons("COMPLETION-Member")}
+    CONTENTCOMPLETE -> EntityType        {cons("COMPLETION-EntityType")}
+
+  lexical syntax
+    PrimitiveType -> ID {reject}
