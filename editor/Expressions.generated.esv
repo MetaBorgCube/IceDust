@@ -1,0 +1,9 @@
+module Expressions.generated
+
+completions
+  completion template Expression : "from ID " =
+    "from " <ID:ID> "\n" (cursor) (blank)  
+  completion template From : "from ID" =
+    "from " <ID:ID>  
+  completion template Join : "join ID.ID" =
+    "join " <ID:ID> "." <ID:ID>  

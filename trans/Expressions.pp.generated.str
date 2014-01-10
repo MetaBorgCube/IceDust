@@ -1,0 +1,45 @@
+module Expressions.pp.generated
+
+strategies
+  prettyprint-Expression =
+    ?query(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-From)> a]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-option(pp-one-Z(prettyprint-Join))> b]
+         )
+       ]
+
+  prettyprint-From =
+    ?From(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("from ")
+           , <pp-one-Z(prettyprint-ID)> a
+           ]
+         )
+       ]
+
+  prettyprint-Join =
+    ?Join(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("join ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(".")
+           , <pp-one-Z(prettyprint-ID)> b
+           ]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Expression
+
+  prettyprint-example =
+    prettyprint-From
+
+  prettyprint-example =
+    prettyprint-Join
