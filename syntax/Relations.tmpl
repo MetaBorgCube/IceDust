@@ -4,6 +4,8 @@ Start.Module = <
 module <ID>
 
 <Definition*>
+
+<Expression*>
 >
 
 %% entities with attributes (only primitive types)
@@ -14,7 +16,7 @@ entity <ID> {
 >
 
 Attribute.Attribute = <<ID> : <PrimitiveType>>
-PrimitiveType.PrimitiveType = <BasicType>
+PrimitiveType.PrimitiveType = <<BasicType>>
 
 %% relations with members and attributes
 Definition.Relation = <

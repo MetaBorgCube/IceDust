@@ -12,14 +12,14 @@ setup Common [[
 test Simple entity [[
   entity User {
     name  : String
-    other : User
+    age   : Int
   }
 ]] 0 errors
 
 test Resolve type fails [[
-  entity User {
+  relation User {
     name  : Strin
-    other : Use
+    other : In
   }
 ]] 2 errors
 
@@ -38,7 +38,7 @@ test Duplicate property fails [[
 test Resolve type [[
   entity [[User]] {}
   
-  entity Owner {
+  relation Owner {
     owns : [[User]]
   }
 ]] resolve #2 to #1

@@ -1,0 +1,11 @@
+module Expressionsgenerated
+exports
+  context-free syntax
+    From Join?       -> Expression {cons("query")}
+    "from" ID        -> From       {cons("From")}
+    "join" ID "." ID -> Join       {cons("Join")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Expression {cons("COMPLETION-Expression")}
+    CONTENTCOMPLETE -> From       {cons("COMPLETION-From")}
+    CONTENTCOMPLETE -> Join       {cons("COMPLETION-Join")}

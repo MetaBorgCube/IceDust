@@ -2,7 +2,7 @@ module Relations.pp.generated
 
 strategies
   prettyprint-Start =
-    ?Module(a, b)
+    ?Module(a, b, c)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ S("module ")
@@ -16,6 +16,14 @@ strategies
        , H(
            [SOpt(HS(), "0")]
          , [<pp-H-list(prettyprint-Definition)> b]
+         )
+       , H(
+           []
+         , [S("")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-H-list(prettyprint-Expression)> c]
          )
        ]
 
@@ -47,18 +55,10 @@ strategies
        ]
 
   prettyprint-PrimitiveType =
-    ?String()
+    ?PrimitiveType(a)
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [S("String")]
-         )
-       ]
-
-  prettyprint-PrimitiveType =
-    ?Int()
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("Int")]
+         , [<pp-one-Z(prettyprint-BasicType)> a]
          )
        ]
 
@@ -133,11 +133,3 @@ strategies
 
   prettyprint-example =
     prettyprint-EntityType
-
-
-strategies
-  prettyprint-ID =
-    ![S(<is-string>)]
-
-  prettyprint-example =
-    prettyprint-ID

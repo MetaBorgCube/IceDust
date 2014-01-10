@@ -30,3 +30,12 @@ relation LogItem {
 	log : Log
 	change : Posting
 }
+
+from Log join T.A
+
+from Log
+
+from Log
+
+from Log join T.A
+
