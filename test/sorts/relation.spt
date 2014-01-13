@@ -1,7 +1,7 @@
 /**
 * Entity and attributes tests
 */
-module test-example
+module test-relation
 
 language Relations
 
@@ -40,7 +40,7 @@ test Duplicate relation fails [[
 	}
 ]] 2 errors
 
-test Resolve entity type [[
+test Resolve relation member to entity [[
 	entity [[User]]{}
 	entity Book{}
 	relation Owns{
