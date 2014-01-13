@@ -1,0 +1,50 @@
+/**
+* Entity and attributes tests
+*/
+module test-example
+
+language Relations
+
+setup Common [[
+  module test
+]]
+
+test Simple relation [[
+	entity User{}
+	entity Book{}
+	relation Owns{
+		User *
+		Book 1
+	}
+]] 0 errors
+
+test Resolve entity type fails [[
+	entity User{}
+	entity Book{}
+	relation Owns{
+		User *
+		Paper 1
+	}
+]] 1 errors
+
+test Duplicate relation fails [[
+	entity User{}
+	entity Book{}
+	relation Owns{
+		User *
+		Book 1
+	}
+	relation Owns{
+		User *
+		Book 1
+	}
+]] 2 errors
+
+test Resolve entity type [[
+	entity [[User]]{}
+	entity Book{}
+	relation Owns{
+		[[User]] *
+		Book 1
+	}
+]] resolve #2 to #1

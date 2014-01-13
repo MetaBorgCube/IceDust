@@ -3,7 +3,7 @@
 */  
 module example
 
-entity User {
+entity BlogUser {
 	name     : String
 	password : String
 	numPosts : Int
@@ -16,7 +16,7 @@ entity BlogPost {
 }
 
 relation Posting {
-	User * poster
+	BlogUser * poster
 	BlogPost 1 post
 	
 	numEdits : Int
@@ -32,7 +32,7 @@ relation LogItem {
 	Posting *
 }
 
-from BlogPost join Posting where User.name = x
+from BlogPost join Posting where BlogUser.name = x
 
 from Log
 

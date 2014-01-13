@@ -1,0 +1,37 @@
+/**
+* Entity and attributes tests
+*/
+module test-entity
+
+language Relations
+
+setup Common [[
+  module test
+]]
+
+test Simple entity [[
+  entity User {
+    name  : String
+    age   : Int
+  }
+]] 0 errors
+
+// triggers syntax error, should trigger type error
+// test Resolve type fails [[
+//   relation User {
+//     name  : Strin
+//     other : In
+//   }
+// ]] 2 errors
+
+test Duplicate entity fails [[
+  entity User {}
+  entity User {}
+]] 2 errors
+
+test Duplicate attribute fails [[
+  entity User {
+  	name : String
+  	name : String
+  }
+]] 2 errors
