@@ -58,8 +58,40 @@ strategies
          )
        ]
 
-  prettyprint-example =
-    prettyprint-Expression
+  prettyprint-Expression =
+    ?New(a, b, c)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("new ")
+           , <pp-one-Z(prettyprint-EntityType)> a
+           , S("{ ")
+           , <pp-H-list(prettyprint-RelationInNew)> b
+           , S(" }{ ")
+           , <pp-H-list(prettyprint-AttributeInNew)> c
+           , S(" }")
+           ]
+         )
+       ]
+
+  prettyprint-RelationInNew =
+    ?RelationInNew(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-EntityType)> a
+           , S(" = x")
+           ]
+         )
+       ]
+
+  prettyprint-AttributeInNew =
+    ?AttributeInNew(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-AttributeName)> a
+           , S(" = x")
+           ]
+         )
+       ]
 
   prettyprint-example =
     prettyprint-From
@@ -72,3 +104,12 @@ strategies
 
   prettyprint-example =
     prettyprint-AttributeName
+
+  prettyprint-example =
+    prettyprint-Expression
+
+  prettyprint-example =
+    prettyprint-RelationInNew
+
+  prettyprint-example =
+    prettyprint-AttributeInNew

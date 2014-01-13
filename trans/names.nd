@@ -34,9 +34,7 @@ rules
 		scopes Member
 		scopes Attribute
 	
-	// if member would be rolename : Type	
-	// Member(x, t) :
-	// 	defines Member x of type Type(x)
+	// TODO: Define relationship Members
 
 	EntityType(e) :
 		refers to Entity e
@@ -44,3 +42,4 @@ rules
 	Where(EntityType(e), AttributeName(a)) :
 		refers to Attribute a in Entity e
 	
+	// TODO: Refer new attributes to attributes

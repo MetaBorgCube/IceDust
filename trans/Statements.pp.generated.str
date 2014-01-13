@@ -7,7 +7,7 @@ strategies
            [SOpt(HS(), "0")]
          , [S("{")]
          )
-       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Stm)> a]
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Statement)> a]
        , H(
            [SOpt(HS(), "0")]
          , [S("}")]

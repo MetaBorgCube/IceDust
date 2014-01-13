@@ -30,6 +30,9 @@ relation LogItem {
 }
 
 execute
+new BlogUser{}{name=x}
+new BlogPost{Posting=x}{title=x body=x}
+new BlogPost{Posting=x}{title=x body=x}
 from BlogPost join Posting where BlogUser.name = x
 from Log
 
