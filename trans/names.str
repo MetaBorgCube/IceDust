@@ -27,109 +27,128 @@ signature
 rules
 
   nam-get-scope-types :
-    Module(x, _) -> [Entity()]
+    Module(m, _) -> [Entity()]
 
   nam-get-definition-keys :
-    Module(x, _) -> [x]
+    Module(m, _) -> [m]
 
   nam-get-definitions :
-    Module(x, _) -> [(Module(), [x])]
+    Module(m, _) -> [(Module(), [m])]
 
   nam-annotate-names(|paths__, path__):
-    Module(x, _) -> <Module(nam-annotate-def(|path__), id)>
+    Module(m, _) -> <Module(nam-annotate-def(|path__), id)>
 
   nam-unique :
-    Module(x, _) -> <id>
+    Module(m, _) -> <id>
 
 
 rules
 
   nam-get-scope-types :
-    Entity(x, _) -> [Attribute()]
+    Entity(e, _) -> [Attribute()]
 
   nam-get-definition-keys :
-    Entity(x, _) -> [x]
+    Entity(e, _) -> [e]
 
   nam-get-definitions :
-    Entity(x, _) -> [(Entity(), [x])]
+    Entity(e, _) -> [(Entity(), [e])]
 
   nam-annotate-names(|paths__, path__):
-    Entity(x, _) -> <Entity(nam-annotate-def(|path__), id)>
+    Entity(e, _) -> <Entity(nam-annotate-def(|path__), id)>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Entity(x, _) -> <store__> DefData(
+    Entity(e, _) -> <store__> DefData(
                                 [namespace__|path__]
                               , Type()
-                              , Type(x)
+                              , Type(e)
                               )
 
   type-of :
-    Entity(x, _) -> Type(x)
+    Entity(e, _) -> Type(e)
 
   nam-unique :
-    Entity(x, _) -> <id>
+    Entity(e, _) -> <id>
 
 
 rules
 
   nam-get-definition-keys :
-    Attribute(x, t) -> [x]
+    Attribute(a, t) -> [a]
 
   nam-get-definitions :
-    Attribute(x, t) -> [(Attribute(), [x])]
+    Attribute(a, t) -> [(Attribute(), [a])]
 
   nam-annotate-names(|paths__, path__):
-    Attribute(x, t) -> <Attribute(nam-annotate-def(|path__), id)>
+    Attribute(a, t) -> <Attribute(nam-annotate-def(|path__), id)>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Attribute(x, t) -> <store__> DefData(
+    Attribute(a, t) -> <store__> DefData(
                                    [namespace__|path__]
                                  , Type()
                                  , t
                                  )
 
   type-of :
-    Attribute(x, t) -> t
+    Attribute(a, t) -> t
 
   nam-unique :
-    Attribute(x, t) -> <id>
+    Attribute(a, t) -> <id>
 
 
 rules
 
   nam-get-scope-types :
-    Relation(x, _) -> [Member(), Attribute()]
+    Relation(e, _) -> [Member(), Attribute()]
 
   nam-get-definition-keys :
-    Relation(x, _) -> [x]
+    Relation(e, _) -> [e]
 
   nam-get-definitions :
-    Relation(x, _) -> [(Entity(), [x])]
+    Relation(e, _) -> [(Entity(), [e])]
 
   nam-annotate-names(|paths__, path__):
-    Relation(x, _) -> <Relation(nam-annotate-def(|path__), id)>
+    Relation(e, _) -> <Relation(nam-annotate-def(|path__), id)>
 
   adjust-index-def-data(store__|namespace__, path__):
-    Relation(x, _) -> <store__> DefData(
+    Relation(e, _) -> <store__> DefData(
                                   [namespace__|path__]
                                 , Type()
-                                , Type(x)
+                                , Type(e)
                                 )
 
   type-of :
-    Relation(x, _) -> Type(x)
+    Relation(e, _) -> Type(e)
 
   nam-unique :
-    Relation(x, _) -> <id>
+    Relation(e, _) -> <id>
 
 
 rules
 
   nam-get-uses-keys :
-    EntityType(x) -> [x]
+    EntityType(e) -> [e]
 
   nam-get-uses :
-    EntityType(x) -> [(Entity(), [x])]
+    EntityType(e) -> [(Entity(), [e])]
 
   nam-annotate-names(|paths__, path__):
-    EntityType(x) -> <EntityType(nam-annotate-use(|paths__, Entity()))>
+    EntityType(e) -> <EntityType(nam-annotate-use(|paths__, Entity()))>
+
+
+rules
+
+  nam-get-uses-keys :
+    Where(EntityType(e), AttributeName(a)) -> [a]
+
+  nam-get-uses :
+    Where(EntityType(e), AttributeName(a)) -> [(Attribute(), [a])]
+
+  nam-annotate-names(|paths__, path__):
+    Where(EntityType(e), AttributeName(a)) -> <Where(
+                                                 EntityType(id)
+                                               , AttributeName(nam-annotate-use(|paths__, Attribute()))
+                                               )>
+
+  adjust-index-lookup(target__|namespace__, path__, prefix__):
+    Where(EntityType(e), AttributeName(a)) -> <index-lookup-children(|Attribute(), prefix__)> e
+    where <target__> a

@@ -8,4 +8,4 @@ completions
   completion template Join : "join EntityType" =
     "join " <EntityType:EntityType>  
   completion template Where : "where EntityType.ID = x" =
-    "where " <EntityType:EntityType> "." <ID:ID> " = x"  
+    "where " <EntityType:EntityType> "." <ID:AttributeName> " = x"  

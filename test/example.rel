@@ -12,6 +12,7 @@ entity User {
 entity BlogPost {
 	title : String
 	body  : String
+	name  : String
 }
 
 relation Posting {
@@ -31,7 +32,7 @@ relation LogItem {
 	Posting *
 }
 
-from BlogPost join Posting where User.id = x
+from BlogPost join Posting where User.name = x
 
 from Log
 

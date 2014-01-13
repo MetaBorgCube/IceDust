@@ -44,9 +44,17 @@ strategies
          , [ S("where ")
            , <pp-one-Z(prettyprint-EntityType)> a
            , S(".")
-           , <pp-one-Z(prettyprint-ID)> b
+           , <pp-one-Z(prettyprint-AttributeName)> b
            , S(" = x")
            ]
+         )
+       ]
+
+  prettyprint-AttributeName =
+    ?AttributeName(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-ID)> a]
          )
        ]
 
@@ -61,3 +69,6 @@ strategies
 
   prettyprint-example =
     prettyprint-Where
+
+  prettyprint-example =
+    prettyprint-AttributeName

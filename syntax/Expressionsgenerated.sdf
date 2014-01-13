@@ -1,13 +1,15 @@
 module Expressionsgenerated
 exports
   context-free syntax
-    From Join? Where?                 -> Expression {cons("Query")}
-    "from" EntityType                 -> From       {cons("From")}
-    "join" EntityType                 -> Join       {cons("Join")}
-    "where" EntityType "." ID "=" "x" -> Where      {cons("Where")}
+    From Join? Where?                            -> Expression    {cons("Query")}
+    "from" EntityType                            -> From          {cons("From")}
+    "join" EntityType                            -> Join          {cons("Join")}
+    "where" EntityType "." AttributeName "=" "x" -> Where         {cons("Where")}
+    ID                                           -> AttributeName {cons("AttributeName")}
 
   context-free syntax
-    CONTENTCOMPLETE -> Expression {cons("COMPLETION-Expression")}
-    CONTENTCOMPLETE -> From       {cons("COMPLETION-From")}
-    CONTENTCOMPLETE -> Join       {cons("COMPLETION-Join")}
-    CONTENTCOMPLETE -> Where      {cons("COMPLETION-Where")}
+    CONTENTCOMPLETE -> Expression    {cons("COMPLETION-Expression")}
+    CONTENTCOMPLETE -> From          {cons("COMPLETION-From")}
+    CONTENTCOMPLETE -> Join          {cons("COMPLETION-Join")}
+    CONTENTCOMPLETE -> Where         {cons("COMPLETION-Where")}
+    CONTENTCOMPLETE -> AttributeName {cons("COMPLETION-AttributeName")}

@@ -14,23 +14,23 @@ namespaces
 	
 rules
 
-	Module(x, _) : 
-		defines Module x
+	Module(m, _) : 
+		defines Module m
 		scopes Entity
 
 
 	// entities and attributes
-	Entity(x, _) :
-		defines Entity x of type Type(x)
+	Entity(e, _) :
+		defines Entity e of type Type(e)
 		scopes Attribute
 		
-	Attribute(x, t) :
-		defines Attribute x of type t
+	Attribute(a, t) :
+		defines Attribute a of type t
 		
 	
  	// relation with members
-	Relation(x, _) :
-		defines Entity x of type Type(x)
+	Relation(e, _) :
+		defines Entity e of type Type(e)
 		scopes Member
 		scopes Attribute
 	
@@ -38,7 +38,9 @@ rules
 	// Member(x, t) :
 	// 	defines Member x of type Type(x)
 
-	EntityType(x) :
-		refers to Entity x
-		
+	EntityType(e) :
+		refers to Entity e
+
+	Where(EntityType(e), AttributeName(a)) :
+		refers to Attribute a in Entity e
 	
