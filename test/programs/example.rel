@@ -3,18 +3,17 @@
 */  
 module example
 
+model
 entity BlogUser {
 	name     : String
 	password : String
 	numPosts : Int
 }
-
 entity BlogPost {
 	title : String
 	body  : String
 	name  : String
 }
-
 relation Posting {
 	BlogUser * poster
 	BlogPost 1 post
@@ -22,18 +21,16 @@ relation Posting {
 	numEdits : Int
 	editMsg  : String
 }
-
 entity Log {
 	
 }
-
 relation LogItem {
 	Log 1
 	Posting *
 }
 
+execute
 from BlogPost join Posting where BlogUser.name = x
-
 from Log
 
 

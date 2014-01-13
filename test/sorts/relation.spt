@@ -6,7 +6,8 @@ module test-relation
 language Relations
 
 setup Common [[
-  module test
+	module test
+	model
 ]]
 
 test Simple relation [[

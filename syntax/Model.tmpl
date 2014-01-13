@@ -1,15 +1,7 @@
 templates
 
-Start.Module = <
-module <ID>
-
-<Definition*>
-
-<Expression*>
->
-
-%% entities with attributes (only primitive types)
-Definition.Entity = <
+// entities with attributes (only primitive types)
+Model.Entity = <
 entity <ID> {
 	<Attribute*>
 }
@@ -18,8 +10,9 @@ entity <ID> {
 Attribute.Attribute = <<ID> : <PrimitiveType>>
 PrimitiveType.PrimitiveType = <<BasicType>>
 
-%% relations with members and attributes
-Definition.Relation = <
+
+// relations with members and attributes
+Model.Relation = <
 relation <ID> {
 	<MemberOrAttribute*>	
 }

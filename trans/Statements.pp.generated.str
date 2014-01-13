@@ -1,0 +1,37 @@
+module Statements.pp.generated
+
+strategies
+  prettyprint-Block =
+    ?Block(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("{")]
+         )
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Stm)> a]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
+         )
+       ]
+
+  prettyprint-Statement =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Block)> a]
+         )
+       ]
+
+  prettyprint-Statement =
+    ?Exp(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Expression)> a]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Block
+
+  prettyprint-example =
+    prettyprint-Statement

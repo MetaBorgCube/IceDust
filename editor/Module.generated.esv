@@ -1,0 +1,7 @@
+module Module.generated
+
+completions
+  completion template Start : "module ID " =
+    "module " <ID:ID> "\n\n" (cursor) "\n" (blank)  
+  completion template Executable : "execute " =
+    "execute\n" (cursor) (blank)  

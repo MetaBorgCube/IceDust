@@ -1,0 +1,162 @@
+module Model.pp.generated
+
+strategies
+  prettyprint-Model =
+    ?model(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("model")]
+         )
+       , H(
+           []
+         , [S("")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-H-list(prettyprint-Definition)> a]
+         )
+       ]
+
+  prettyprint-Definition =
+    ?Entity(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("entity ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(" {")
+           ]
+         )
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
+         )
+       ]
+
+  prettyprint-Attribute =
+    ?Attribute(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-ID)> a
+           , S(" : ")
+           , <pp-one-Z(prettyprint-PrimitiveType)> b
+           ]
+         )
+       ]
+
+  prettyprint-PrimitiveType =
+    ?PrimitiveType(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-BasicType)> a]
+         )
+       ]
+
+  prettyprint-Definition =
+    ?Relation(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("relation ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(" {")
+           ]
+         )
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-MemberOrAttribute)> b]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
+         )
+       ]
+
+  prettyprint-MemberOrAttribute =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Member)> a]
+         )
+       ]
+
+  prettyprint-MemberOrAttribute =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Attribute)> a]
+         )
+       ]
+
+  prettyprint-Member =
+    ?Member(a, b, c)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-EntityType)> a
+           , S(" ")
+           , <pp-one-Z(prettyprint-Multiplicity)> b
+           , S(" ")
+           , <pp-option(pp-one-Z(prettyprint-ID))> c
+           ]
+         )
+       ]
+
+  prettyprint-EntityType =
+    ?EntityType(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-ID)> a]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?One()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("1")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?ZeroOrOne()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("?")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?OneOrMore()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("+")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?ZeroOrMore()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("*")]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Model
+
+  prettyprint-example =
+    prettyprint-Attribute
+
+  prettyprint-example =
+    prettyprint-PrimitiveType
+
+  prettyprint-example =
+    prettyprint-Definition
+
+  prettyprint-example =
+    prettyprint-MemberOrAttribute
+
+  prettyprint-example =
+    prettyprint-Member
+
+  prettyprint-example =
+    prettyprint-EntityType
+
+  prettyprint-example =
+    prettyprint-Multiplicity

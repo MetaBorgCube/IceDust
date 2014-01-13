@@ -1,0 +1,5 @@
+module Statements.generated
+
+completions
+  completion template Block : "{ }" =
+    "{\n\t" (cursor) "\n}" (blank)  

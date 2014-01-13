@@ -1,11 +1,10 @@
-module Relationsgenerated
+module Modelgenerated
 exports
   context-free syntax
-    "module" ID Definition* Expression*      -> Start             {cons("Module")}
-    "entity" ID "{" Attribute* "}"           -> Definition        {cons("Entity")}
+    "entity" ID "{" Attribute* "}"           -> Model             {cons("Entity")}
     ID ":" PrimitiveType                     -> Attribute         {cons("Attribute")}
     BasicType                                -> PrimitiveType     {cons("PrimitiveType")}
-    "relation" ID "{" MemberOrAttribute* "}" -> Definition        {cons("Relation")}
+    "relation" ID "{" MemberOrAttribute* "}" -> Model             {cons("Relation")}
     Member                                   -> MemberOrAttribute 
     Attribute                                -> MemberOrAttribute 
     EntityType Multiplicity ID?              -> Member            {cons("Member")}
@@ -16,10 +15,9 @@ exports
     "*"                                      -> Multiplicity      {cons("ZeroOrMore")}
 
   context-free syntax
-    CONTENTCOMPLETE -> Start             {cons("COMPLETION-Start")}
     CONTENTCOMPLETE -> Attribute         {cons("COMPLETION-Attribute")}
     CONTENTCOMPLETE -> PrimitiveType     {cons("COMPLETION-PrimitiveType")}
-    CONTENTCOMPLETE -> Definition        {cons("COMPLETION-Definition")}
+    CONTENTCOMPLETE -> Model             {cons("COMPLETION-Model")}
     CONTENTCOMPLETE -> MemberOrAttribute {cons("COMPLETION-MemberOrAttribute")}
     CONTENTCOMPLETE -> Member            {cons("COMPLETION-Member")}
     CONTENTCOMPLETE -> EntityType        {cons("COMPLETION-EntityType")}

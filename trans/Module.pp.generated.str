@@ -1,0 +1,46 @@
+module Module.pp.generated
+
+strategies
+  prettyprint-Start =
+    ?Module(a, b, c)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("module ")
+           , <pp-one-Z(prettyprint-ID)> a
+           ]
+         )
+       , H(
+           []
+         , [S("")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-option(pp-one-Z(prettyprint-Model))> b]
+         )
+       , H(
+           []
+         , [S("")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-option(pp-one-Z(prettyprint-Executable))> c]
+         )
+       ]
+
+  prettyprint-Executable =
+    ?Executable(a)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("execute")]
+         )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-H-list(prettyprint-Statement)> a]
+         )
+       ]
+
+  prettyprint-example =
+    prettyprint-Start
+
+  prettyprint-example =
+    prettyprint-Executable

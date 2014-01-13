@@ -1,0 +1,11 @@
+module Modulesgenerated
+exports
+  context-free syntax
+    "module" ID ModelDef? Executable? -> Start      {cons("Module")}
+    "model" Model*                    -> ModelDef   {cons("ModelDef")}
+    "execute" Statement*              -> Executable {cons("Executable")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Start      {cons("COMPLETION-Start")}
+    CONTENTCOMPLETE -> ModelDef   {cons("COMPLETION-ModelDef")}
+    CONTENTCOMPLETE -> Executable {cons("COMPLETION-Executable")}
