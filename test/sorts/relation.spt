@@ -40,7 +40,7 @@ test Duplicate relation fails [[
 	}
 ]] 2 errors
 
-test Resolve relation member to entity [[
+test Name resolve relation member to entity [[
 	entity [[User]]{}
 	entity Book{}
 	relation Owns{
@@ -48,3 +48,25 @@ test Resolve relation member to entity [[
 		Book 1
 	}
 ]] resolve #2 to #1
+
+test Name resolve relation member to entity in graph [[
+	relation [[GraphNode]]{
+		[[GraphNode]] *
+	}
+]] resolve #2 to #1
+
+test Name resolve relation member to entity in tree [[
+	relation [[TreeNode]]{
+		TreeNode ? parent
+		[[TreeNode]] * children
+	}
+]] resolve #2 to #1
+
+// should give a duplication error, which is resolved by adding role names!
+// test Name resolve relation member to entity in binary tree [[
+// 	relation BinaryTreeNode{
+// 		BinaryTreeNode 1
+// 		BinaryTreeNode 1
+// 	}
+// ]] 0 errors
+
