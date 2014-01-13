@@ -15,9 +15,9 @@ entity BlogPost {
 }
 
 relation Posting {
-	poster   : User
-	coAuthor : User
-	postee   : BlogPost
+	User * poster
+	BlogPost 1 post
+	
 	numEdits : Int
 	editMsg  : String
 }
@@ -27,8 +27,9 @@ entity Log {
 }
 
 relation LogItem {
-	log : Log
-	change : Posting
+	Log 1
+	Posting *
+	Test ?
 }
 
 from Log join T.A

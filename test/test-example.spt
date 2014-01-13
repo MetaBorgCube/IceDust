@@ -39,6 +39,6 @@ test Resolve type [[
   entity [[User]] {}
   
   relation Owner {
-    owns : [[User]]
+    [[User]] *
   }
 ]] resolve #2 to #1

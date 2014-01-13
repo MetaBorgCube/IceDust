@@ -125,31 +125,6 @@ rules
 
 rules
 
-  nam-get-definition-keys :
-    Member(x, t) -> [x]
-
-  nam-get-definitions :
-    Member(x, t) -> [(Member(), [x])]
-
-  nam-annotate-names(|paths__, path__):
-    Member(x, t) -> <Member(nam-annotate-def(|path__), id)>
-
-  adjust-index-def-data(store__|namespace__, path__):
-    Member(x, t) -> <store__> DefData(
-                                [namespace__|path__]
-                              , Type()
-                              , Type(x)
-                              )
-
-  type-of :
-    Member(x, t) -> Type(x)
-
-  nam-unique :
-    Member(x, t) -> <id>
-
-
-rules
-
   nam-get-uses-keys :
     EntityType(x) -> [x]
 

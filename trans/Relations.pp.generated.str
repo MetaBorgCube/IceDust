@@ -95,12 +95,14 @@ strategies
        ]
 
   prettyprint-Member =
-    ?Member(a, b)
+    ?Member(a, b, c)
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [ <pp-one-Z(prettyprint-ID)> a
-           , S(" : ")
-           , <pp-one-Z(prettyprint-EntityType)> b
+         , [ <pp-one-Z(prettyprint-EntityType)> a
+           , S(" ")
+           , <pp-one-Z(prettyprint-Multiplicity)> b
+           , S(" ")
+           , <pp-option(pp-one-Z(prettyprint-ID))> c
            ]
          )
        ]
@@ -110,6 +112,38 @@ strategies
     ; ![ H(
            [SOpt(HS(), "0")]
          , [<pp-one-Z(prettyprint-ID)> a]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?One()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("1")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?ZeroOrOne()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("?")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?OneOrMore()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("+")]
+         )
+       ]
+
+  prettyprint-Multiplicity =
+    ?ZeroOrMore()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("*")]
          )
        ]
 
@@ -133,3 +167,6 @@ strategies
 
   prettyprint-example =
     prettyprint-EntityType
+
+  prettyprint-example =
+    prettyprint-Multiplicity

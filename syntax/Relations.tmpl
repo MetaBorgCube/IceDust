@@ -28,6 +28,10 @@ relation <ID> {
 MemberOrAttribute = <<Member>>
 MemberOrAttribute = <<Attribute>>
 
-Member.Member = <<ID> : <EntityType>>
+Member.Member = <<EntityType> <Multiplicity> <ID?>>
 EntityType.EntityType = <<ID>>
+Multiplicity.One	 		= <1>
+Multiplicity.ZeroOrOne		= <?>
+Multiplicity.OneOrMore		= <+>
+Multiplicity.ZeroOrMore		= <*>
 

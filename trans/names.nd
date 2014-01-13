@@ -33,9 +33,10 @@ rules
 		defines Entity x of type Type(x)
 		scopes Member
 		scopes Attribute
-		
-	Member(x, t) :
-		defines Member x of type Type(x)
+	
+	// if member would be rolename : Type	
+	// Member(x, t) :
+	// 	defines Member x of type Type(x)
 
 	EntityType(x) :
 		refers to Entity x
