@@ -1,9 +1,11 @@
 module Expressions.generated
 
 completions
-  completion template Expression : "from ID " =
-    "from " <ID:ID> "\n" (cursor) (blank)  
-  completion template From : "from ID" =
-    "from " <ID:ID>  
-  completion template Join : "join ID.ID" =
-    "join " <ID:ID> "." <ID:ID>  
+  completion template Expression : "from EntityType " =
+    "from " <EntityType:EntityType> "\n" (cursor) (blank)  
+  completion template From : "from EntityType" =
+    "from " <EntityType:EntityType>  
+  completion template Join : "join EntityType" =
+    "join " <EntityType:EntityType>  
+  completion template Where : "where EntityType.ID = x" =
+    "where " <EntityType:EntityType> "." <ID:ID> " = x"  

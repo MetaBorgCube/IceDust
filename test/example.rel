@@ -29,14 +29,11 @@ entity Log {
 relation LogItem {
 	Log 1
 	Posting *
-	Test ?
 }
 
-from Log join T.A
+from BlogPost join Posting where User.id = x
 
 from Log
 
-from Log
 
-from Log join T.A
 

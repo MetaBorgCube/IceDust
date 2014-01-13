@@ -2,7 +2,7 @@ module Expressions.pp.generated
 
 strategies
   prettyprint-Expression =
-    ?query(a, b)
+    ?Query(a, b, c)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [<pp-one-Z(prettyprint-From)> a]
@@ -11,6 +11,10 @@ strategies
            [SOpt(HS(), "0")]
          , [<pp-option(pp-one-Z(prettyprint-Join))> b]
          )
+       , H(
+           [SOpt(HS(), "0")]
+         , [<pp-option(pp-one-Z(prettyprint-Where))> c]
+         )
        ]
 
   prettyprint-From =
@@ -18,19 +22,30 @@ strategies
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ S("from ")
-           , <pp-one-Z(prettyprint-ID)> a
+           , <pp-one-Z(prettyprint-EntityType)> a
            ]
          )
        ]
 
   prettyprint-Join =
-    ?Join(a, b)
+    ?Join(a)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ S("join ")
-           , <pp-one-Z(prettyprint-ID)> a
+           , <pp-one-Z(prettyprint-EntityType)> a
+           ]
+         )
+       ]
+
+  prettyprint-Where =
+    ?Where(a, b)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ S("where ")
+           , <pp-one-Z(prettyprint-EntityType)> a
            , S(".")
            , <pp-one-Z(prettyprint-ID)> b
+           , S(" = x")
            ]
          )
        ]
@@ -43,3 +58,6 @@ strategies
 
   prettyprint-example =
     prettyprint-Join
+
+  prettyprint-example =
+    prettyprint-Where
