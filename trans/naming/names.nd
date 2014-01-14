@@ -10,7 +10,7 @@ namespaces
 	Entity
 	Attribute
 	// Relation
-	Member
+	Role
 	
 rules
 
@@ -31,10 +31,10 @@ rules
  	// relation with members
 	Relation(e, _) :
 		defines Entity e of type Type(e)
-		scopes Member
+		scopes Role
 		scopes Attribute
 	
-	// TODO: Define relationship Members
+	// TODO: Define relationship Roles
 
 	EntityType(e) :
 		refers to Entity e

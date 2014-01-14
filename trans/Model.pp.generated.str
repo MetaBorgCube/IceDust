@@ -2,22 +2,6 @@ module Model.pp.generated
 
 strategies
   prettyprint-Model =
-    ?model(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("model")]
-         )
-       , H(
-           []
-         , [S("")]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-H-list(prettyprint-Definition)> a]
-         )
-       ]
-
-  prettyprint-Definition =
     ?Entity(a, b)
     ; ![ H(
            [SOpt(HS(), "0")]
@@ -52,7 +36,7 @@ strategies
          )
        ]
 
-  prettyprint-Definition =
+  prettyprint-Model =
     ?Relation(a, b)
     ; ![ H(
            [SOpt(HS(), "0")]
@@ -61,22 +45,22 @@ strategies
            , S(" {")
            ]
          )
-       , <pp-indent(|"2")> [<pp-H-list(prettyprint-MemberOrAttribute)> b]
+       , <pp-indent(|"2")> [<pp-H-list(prettyprint-RoleOrAttribute)> b]
        , H(
            [SOpt(HS(), "0")]
          , [S("}")]
          )
        ]
 
-  prettyprint-MemberOrAttribute =
+  prettyprint-RoleOrAttribute =
     ?a
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-Member)> a]
+         , [<pp-one-Z(prettyprint-Role)> a]
          )
        ]
 
-  prettyprint-MemberOrAttribute =
+  prettyprint-RoleOrAttribute =
     ?a
     ; ![ H(
            [SOpt(HS(), "0")]
@@ -84,8 +68,8 @@ strategies
          )
        ]
 
-  prettyprint-Member =
-    ?Member(a, b, c)
+  prettyprint-Role =
+    ?Role(a, b, c)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ <pp-one-Z(prettyprint-EntityType)> a
@@ -138,22 +122,19 @@ strategies
        ]
 
   prettyprint-example =
-    prettyprint-Model
-
-  prettyprint-example =
     prettyprint-Attribute
 
   prettyprint-example =
     prettyprint-PrimitiveType
 
   prettyprint-example =
-    prettyprint-Definition
+    prettyprint-Model
 
   prettyprint-example =
-    prettyprint-MemberOrAttribute
+    prettyprint-RoleOrAttribute
 
   prettyprint-example =
-    prettyprint-Member
+    prettyprint-Role
 
   prettyprint-example =
     prettyprint-EntityType

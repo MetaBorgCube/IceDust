@@ -14,14 +14,14 @@ PrimitiveType.PrimitiveType = <<BasicType>>
 // relations with members and attributes
 Model.Relation = <
 relation <ID> {
-	<MemberOrAttribute*>	
+	<RoleOrAttribute*>	
 }
 >
 
-MemberOrAttribute = <<Member>>
-MemberOrAttribute = <<Attribute>>
+RoleOrAttribute = <<Role>>
+RoleOrAttribute = <<Attribute>>
 
-Member.Member = <<EntityType> <Multiplicity> <ID?>>
+Role.Role = <<EntityType> <Multiplicity> <ID?>>
 EntityType.EntityType = <<ID>>
 Multiplicity.One	 		= <1>
 Multiplicity.ZeroOrOne		= <?>
