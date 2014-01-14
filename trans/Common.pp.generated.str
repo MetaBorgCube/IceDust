@@ -12,10 +12,10 @@ strategies
   prettyprint-Identifier :
     Identifier(a) -> [ H(
                          [SOpt(HS(), "0")]
-                       , [a278]
+                       , [a347]
                        )
                      ]
-    where a278 := <pp-one-Z(prettyprint-ID)> a
+    where a347 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-example =
     prettyprint-Identifier

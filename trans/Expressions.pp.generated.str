@@ -4,91 +4,91 @@ strategies
   prettyprint-Expression :
     Query(a, b, c) -> [ H(
                           [SOpt(HS(), "0")]
-                        , [a279]
+                        , [a348]
                         )
                       , H(
                           [SOpt(HS(), "0")]
-                        , [b102]
+                        , [b126]
                         )
                       , H(
                           [SOpt(HS(), "0")]
-                        , [c48]
+                        , [c60]
                         )
                       ]
-    where a279 := <pp-one-Z(prettyprint-From)> a
-    where b102 := <pp-option(pp-one-Z(prettyprint-Join))> b
-    where c48 := <pp-option(pp-one-Z(prettyprint-Where))> c
+    where a348 := <pp-one-Z(prettyprint-From)> a
+    where b126 := <pp-option(pp-one-Z(prettyprint-Join))> b
+    where c60 := <pp-option(pp-one-Z(prettyprint-Where))> c
 
   prettyprint-From :
     From(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("from "), a280]
+                 , [S("from "), a349]
                  )
                ]
-    where a280 := <pp-one-Z(prettyprint-EntityType)> a
+    where a349 := <pp-one-Z(prettyprint-EntityType)> a
 
   prettyprint-Join :
     Join(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("join "), a281]
+                 , [S("join "), a350]
                  )
                ]
-    where a281 := <pp-one-Z(prettyprint-EntityType)> a
+    where a350 := <pp-one-Z(prettyprint-EntityType)> a
 
   prettyprint-Where :
     Where(a, b) -> [ H(
                        [SOpt(HS(), "0")]
                      , [ S("where ")
-                       , a282
+                       , a351
                        , S(".")
-                       , b103
+                       , b127
                        , S(" = x")
                        ]
                      )
                    ]
-    where a282 := <pp-one-Z(prettyprint-EntityType)> a
-    where b103 := <pp-one-Z(prettyprint-AttributeName)> b
+    where a351 := <pp-one-Z(prettyprint-EntityType)> a
+    where b127 := <pp-one-Z(prettyprint-AttributeName)> b
 
   prettyprint-AttributeName :
     AttributeName(a) -> [ H(
                             [SOpt(HS(), "0")]
-                          , [a283]
+                          , [a352]
                           )
                         ]
-    where a283 := <pp-one-Z(prettyprint-ID)> a
+    where a352 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-Expression :
     New(a, b, c) -> [ H(
                         [SOpt(HS(), "0")]
                       , [ S("new ")
-                        , a284
+                        , a353
                         , S("{ ")
-                        , b104
+                        , b128
                         , S(" }{ ")
-                        , c49
+                        , c61
                         , S(" }")
                         ]
                       )
                     ]
-    where a284 := <pp-one-Z(prettyprint-EntityType)> a
-    where b104 := <pp-H-list(prettyprint-RelationInNew)> b
-    where c49 := <pp-H-list(prettyprint-AttributeInNew)> c
+    where a353 := <pp-one-Z(prettyprint-EntityType)> a
+    where b128 := <pp-H-list(prettyprint-RelationInNew)> b
+    where c61 := <pp-H-list(prettyprint-AttributeInNew)> c
 
   prettyprint-RelationInNew :
     RelationInNew(a) -> [ H(
                             [SOpt(HS(), "0")]
-                          , [a285, S(" = x")]
+                          , [a354, S(" = x")]
                           )
                         ]
-    where a285 := <pp-one-Z(prettyprint-EntityType)> a
+    where a354 := <pp-one-Z(prettyprint-EntityType)> a
 
   prettyprint-AttributeInNew :
     AttributeInNew(a) -> [ H(
                              [SOpt(HS(), "0")]
-                           , [a286, S(" = x")]
+                           , [a355, S(" = x")]
                            )
                          ]
-    where a286 := <pp-one-Z(prettyprint-AttributeName)> a
+    where a355 := <pp-one-Z(prettyprint-AttributeName)> a
 
   prettyprint-example =
     prettyprint-From

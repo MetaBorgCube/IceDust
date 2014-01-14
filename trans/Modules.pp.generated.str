@@ -4,7 +4,7 @@ strategies
   prettyprint-Start :
     Module(a, b, c) -> [ H(
                            [SOpt(HS(), "0")]
-                         , [S("module "), a295]
+                         , [S("module "), a364]
                          )
                        , H(
                            []
@@ -12,7 +12,7 @@ strategies
                          )
                        , H(
                            [SOpt(HS(), "0")]
-                         , [b109]
+                         , [b133]
                          )
                        , H(
                            []
@@ -20,12 +20,12 @@ strategies
                          )
                        , H(
                            [SOpt(HS(), "0")]
-                         , [c51]
+                         , [c63]
                          )
                        ]
-    where a295 := <pp-one-Z(prettyprint-ID)> a
-    where b109 := <pp-option(pp-one-Z(prettyprint-ModelDef))> b
-    where c51 := <pp-option(pp-one-Z(prettyprint-Executable))> c
+    where a364 := <pp-one-Z(prettyprint-ID)> a
+    where b133 := <pp-option(pp-one-Z(prettyprint-ModelDef))> b
+    where c63 := <pp-option(pp-one-Z(prettyprint-Executable))> c
 
   prettyprint-ModelDef :
     ModelDef(a) -> [ H(
@@ -34,10 +34,10 @@ strategies
                      )
                    , H(
                        [SOpt(HS(), "0")]
-                     , [a296]
+                     , [a365]
                      )
                    ]
-    where a296 := <pp-H-list(prettyprint-Model)> a
+    where a365 := <pp-H-list(prettyprint-Model)> a
 
   prettyprint-Executable :
     Executable(a) -> [ H(
@@ -46,10 +46,10 @@ strategies
                        )
                      , H(
                          [SOpt(HS(), "0")]
-                       , [a297]
+                       , [a366]
                        )
                      ]
-    where a297 := <pp-H-list(prettyprint-Statement)> a
+    where a366 := <pp-H-list(prettyprint-Statement)> a
 
   prettyprint-example =
     prettyprint-Start

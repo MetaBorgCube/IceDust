@@ -6,29 +6,29 @@ strategies
                     [SOpt(HS(), "0")]
                   , [S("{")]
                   )
-                , a298
+                , a367
                 , H(
                     [SOpt(HS(), "0")]
                   , [S("}")]
                   )
                 ]
-    where a298 := <pp-indent(|"2")> [<pp-H-list(prettyprint-Statement)> a]
+    where a367 := <pp-indent(|"2")> [<pp-H-list(prettyprint-Statement)> a]
 
   prettyprint-Statement :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a299]
+           , [a368]
            )
          ]
-    where a299 := <pp-one-Z(prettyprint-Block)> a
+    where a368 := <pp-one-Z(prettyprint-Block)> a
 
   prettyprint-Statement :
     Exp(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [a300]
+                , [a369]
                 )
               ]
-    where a300 := <pp-one-Z(prettyprint-Expression)> a
+    where a369 := <pp-one-Z(prettyprint-Expression)> a
 
   prettyprint-example =
     prettyprint-Block
