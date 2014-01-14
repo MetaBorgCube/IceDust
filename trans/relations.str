@@ -11,10 +11,10 @@ imports
   lib/analysis-library-internal.generated
   lib/compilation-library.generated
   lib/nbl-library.generated
-  names
-  check
-  generate
-  refactor
+  naming/names
+  typing/constraints
+  generation/generate
+  refactoring/refactor
 
 rules // Analysis
   

@@ -1,8 +1,8 @@
-module refactor
+module refactoring/refactor
 
 imports
   lib-refactoring/behavior-preservation.generated
-  check
+  typing/constraints
   lib/nbl-library.generated
 
 rules

@@ -1,4 +1,4 @@
-module generate
+module generation/generate
 
 imports
   libstratego-lib
