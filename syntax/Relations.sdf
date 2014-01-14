@@ -1,6 +1,0 @@
-module Relations
-imports Common Modules
-
-exports
-  context-free start-symbols
-    Start
