@@ -1,0 +1,10 @@
+module runtime/types/interface
+
+imports
+  
+  runtime/types/collect
+  
+strategies // user-defined implementations
+	
+	create-type-task(|ctx) = fail
+	

@@ -2,17 +2,17 @@
 module Expressions.generated
 
 completions
-  completion template Expression : "from EntityType " =
-    "from " <EntityType:EntityType> "\n" (cursor) (blank)  
+  completion template Expression : "From " =
+    <From:From> "\n" (cursor) (blank)      
   completion template From : "from EntityType" =
     "from " <EntityType:EntityType>    
   completion template Join : "join EntityType" =
     "join " <EntityType:EntityType>    
-  completion template Where : "where EntityType.ID = x" =
-    "where " <EntityType:EntityType> "." <ID:AttributeName> " = x"  
+  completion template Where : "where EntityType.AttributeName = x" =
+    "where " <EntityType:EntityType> "." <AttributeName:AttributeName> " = x"  
   completion template Expression : "new EntityType{ }{ }" =
     "new " <EntityType:EntityType> "{ " <:RelationInNew> " }{ " <:AttributeInNew> " }"  
   completion template RelationInNew : "EntityType = x" =
     <EntityType:EntityType> " = x"  
-  completion template AttributeInNew : "ID = x" =
-    <ID:AttributeName> " = x"         
+  completion template AttributeInNew : "AttributeName = x" =
+    <AttributeName:AttributeName> " = x"  

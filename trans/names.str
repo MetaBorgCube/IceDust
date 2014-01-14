@@ -1,0 +1,277 @@
+module names
+
+imports
+  lib/runtime/nabl/-
+  lib/runtime/task/-
+  lib/runtime/properties/-
+  lib/runtime/types/-
+  lib/runtime/editor/-
+  include/Relations
+
+
+signature
+  constructors
+    NablNsModule    : Namespace
+    NablNsEntity    : Namespace
+    NablNsAttribute : Namespace
+    NablNsRole      : Namespace
+    NablNsVariable  : Namespace
+
+
+rules
+
+  nabl-get-scope =
+    ?Module(m, _)
+    ; ![NablNsEntity()]
+
+  nabl-get-name :
+    Module(m, _) -> m
+
+  nabl-name-apply(s) =
+    Module(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?Module(m, _)
+    ; origin-track-forced(
+        Module(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsModule()
+          , Unique()
+          , Current()
+          , [NablNsEntity()]
+          , []
+          )
+        , id
+        )
+        ; match(child-uris__|c-uri1__)
+        ; match(sibl-uris__|s-uri1__)
+        ; match(implicits__|[])
+      |
+      )
+
+  nabl-get-scope =
+    ?Entity(e, _)
+    ; ![NablNsAttribute()]
+
+  nabl-get-name :
+    Entity(e, _) -> e
+
+  nabl-name-apply(s) =
+    Entity(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?Entity(e, _)
+    ; origin-track-forced(
+        Entity(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsEntity()
+          , Unique()
+          , Current()
+          , [NablNsAttribute()]
+          , []
+          )
+        , id
+        )
+        ; match(child-uris__|c-uri1__)
+        ; match(sibl-uris__|s-uri1__)
+        ; match(implicits__|[])
+      |
+      )
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?Entity(e, _)
+    ; origin-track-forced(
+        Entity(
+          nabl-store-props(
+          | partition__
+          , [ Prop(
+                Type()
+              , Type(e)
+              , []
+              )
+            ]
+          )
+        , id
+        )
+      |
+      )
+
+  nabl-get-name :
+    Attribute(a, t) -> a
+
+  nabl-name-apply(s) =
+    Attribute(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?Attribute(a, t)
+    ; origin-track-forced(
+        Attribute(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsAttribute()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        )
+        ; match(child-uris__|c-uri1__)
+        ; match(sibl-uris__|s-uri1__)
+        ; match(implicits__|[])
+      |
+      )
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?Attribute(a, t)
+    ; origin-track-forced(
+        Attribute(
+          nabl-store-props(
+          | partition__
+          , [Prop(Type(), t, [])]
+          )
+        , id
+        )
+      |
+      )
+
+  nabl-get-scope =
+    ?Relation(e, _)
+    ; ![NablNsRole(), NablNsAttribute()]
+
+  nabl-get-name :
+    Relation(e, _) -> e
+
+  nabl-name-apply(s) =
+    Relation(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?Relation(e, _)
+    ; origin-track-forced(
+        Relation(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsEntity()
+          , Unique()
+          , Current()
+          , [NablNsRole(), NablNsAttribute()]
+          , []
+          )
+        , id
+        )
+        ; match(child-uris__|c-uri1__)
+        ; match(sibl-uris__|s-uri1__)
+        ; match(implicits__|[])
+      |
+      )
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?Relation(e, _)
+    ; origin-track-forced(
+        Relation(
+          nabl-store-props(
+          | partition__
+          , [ Prop(
+                Type()
+              , Type(e)
+              , []
+              )
+            ]
+          )
+        , id
+        )
+      |
+      )
+
+  nabl-get-name :
+    EntityType(e) -> e
+
+  nabl-name-apply(s) =
+    EntityType(s)
+
+  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+    ?EntityType(e)
+    ; origin-track-forced(
+        EntityType(
+          nabl-use(
+          | lang__
+          , partition__
+          , uniques__
+          , uris__
+          , [ UseCandidate(
+                NablNsEntity()
+              , []
+              , Current()
+              , True()
+              , []
+              )
+            ]
+          )
+        )
+      |
+      )
+
+  nabl-get-name :
+    Where(EntityType(e), AttributeName(a)) -> a
+
+  nabl-name-apply(s) =
+    Where(
+      EntityType(id)
+    , AttributeName(s)
+    )
+
+  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+    ?Where(EntityType(e), AttributeName(a))
+    ; origin-track-forced(
+        Where(
+          EntityType(id)
+        , AttributeName(
+            nabl-use(
+            | lang__
+            , partition__
+            , uniques__
+            , uris__
+            , [ UseCandidate(
+                  NablNsAttribute()
+                , []
+                , Context(
+                    NablNsEntity()
+                  , e
+                  , []
+                  , Current()
+                  )
+                , True()
+                , []
+                )
+              ]
+            )
+          )
+        )
+      |
+      )

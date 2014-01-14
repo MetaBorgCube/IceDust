@@ -1,0 +1,22 @@
+module Expressions
+imports Common Model
+
+exports
+  context-free syntax
+    From Join? Where?                                            -> Expression     {cons("Query")}
+    "from" EntityType                                            -> From           {cons("From")}
+    "join" EntityType                                            -> Join           {cons("Join")}
+    "where" EntityType "." AttributeName "=" "x"                 -> Where          {cons("Where")}
+    ID                                                           -> AttributeName  {cons("AttributeName")}
+    "new" EntityType "{" RelationInNew* "}{" AttributeInNew* "}" -> Expression     {cons("New")}
+    EntityType "=" "x"                                           -> RelationInNew  {cons("RelationInNew")}
+    AttributeName "=" "x"                                        -> AttributeInNew {cons("AttributeInNew")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> From           {cons("COMPLETION-From")}
+    CONTENTCOMPLETE -> Join           {cons("COMPLETION-Join")}
+    CONTENTCOMPLETE -> Where          {cons("COMPLETION-Where")}
+    CONTENTCOMPLETE -> AttributeName  {cons("COMPLETION-AttributeName")}
+    CONTENTCOMPLETE -> Expression     {cons("COMPLETION-Expression")}
+    CONTENTCOMPLETE -> RelationInNew  {cons("COMPLETION-RelationInNew")}
+    CONTENTCOMPLETE -> AttributeInNew {cons("COMPLETION-AttributeInNew")}

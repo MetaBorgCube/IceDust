@@ -1,9 +1,0 @@
-module Modulegenerated
-exports
-  context-free syntax
-    "module" ID Model? Executable? -> Start      {cons("Module")}
-    "execute" Statement*           -> Executable {cons("Executable")}
-
-  context-free syntax
-    CONTENTCOMPLETE -> Start      {cons("COMPLETION-Start")}
-    CONTENTCOMPLETE -> Executable {cons("COMPLETION-Executable")}

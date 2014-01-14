@@ -1,16 +1,29 @@
 module Relations.main
 
-imports Relations-Builders Relations-Refactorings Relations-Colorer Relations-Completions Relations-Folding Relations-Outliner Relations-References Relations-Syntax
+imports
+  Relations-Menus
+  Relations-Refactorings
+  Relations-Colorer
+  Relations-Completions
+  Relations-Folding
+  Relations-References
+  Relations-Syntax
 
 language General properties
-                  
-  name          : Relations
-  id            : Relations
-  extends       : Root
-                  
-  description   : "Spoofax/IMP-generated editor for the Relations language"
-  url           : http://strategoxt.org
-                  
-  extensions    : rel
-  table         : include/Relations.tbl
-  start symbols : Start
+  
+  name:    Relations
+  id:  Relations
+  extends: Root
+  
+  description: "Spoofax-generated editor for the Relations language"
+  url: http://strategoxt.org
+  
+  extensions: rel
+  table:  include/Relations.tbl
+  start symbols: Start
+  
+  provider: include/relations.ctree
+  provider: include/relations-java.jar
+  observer: editor-analyze (multifile)
+  
+  on save : editor-save

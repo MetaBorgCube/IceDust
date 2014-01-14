@@ -1,0 +1,25 @@
+module pp
+
+imports
+
+	libstratego-gpp
+	lib/runtime/tmpl/pp
+	Common.pp.generated
+	Relations.pp.generated
+
+rules
+	
+  // pp-Relations-string =
+  //   prettyprint-Start
+  //   ; !V([], <id>)
+  //   ; box2text-string(|120)
+  
+  pp-Relations-string = "Not implemented"
+      
+  pp-debug :
+    ast -> result
+    with
+       result := <pp-Relations-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-Relations-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+

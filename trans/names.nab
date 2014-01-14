@@ -1,0 +1,54 @@
+module names
+
+imports
+	
+	include/Relations
+	
+namespaces
+	
+	Module
+	Entity
+	Attribute
+	// Relation
+	Role
+	Variable
+	
+binding rules
+
+	Module(m, _) : 
+		defines Module m
+		scopes Entity
+
+
+	// entities and attributes
+	Entity(e, _) :
+		defines Entity e of type Type(e)
+		scopes Attribute
+		
+	Attribute(a, t) :
+		defines Attribute a of type t
+		
+	
+ 	// relation with roles
+	Relation(e, _) :
+		defines Entity e of type Type(e)
+		scopes Role
+		scopes Attribute
+	
+	// TODO: Define relationship Roles
+
+	EntityType(e) :
+		refers to Entity e
+
+	Where(EntityType(e), AttributeName(a)) :
+		refers to Attribute a in Entity e
+	
+	// New(t, _, i*):
+	// 	implicitly defines Variable Current() of type t in i*
+	// 
+	// AttributeInNew(AttributeName(a)):
+	// 	refers to Attribute a in Entity e
+	// 	where Current() refers to Variable v
+	// 	  and v has type EntityType(e)
+		
+	// TODO: Refer new attributes to attributes

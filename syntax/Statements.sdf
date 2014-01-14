@@ -1,0 +1,12 @@
+module Statements
+imports Expressions
+
+exports
+  context-free syntax
+    "{" Statement* "}" -> Block     {cons("Block")}
+    Block              -> Statement 
+    Expression         -> Statement {cons("Exp")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Block     {cons("COMPLETION-Block")}
+    CONTENTCOMPLETE -> Statement {cons("COMPLETION-Statement")}

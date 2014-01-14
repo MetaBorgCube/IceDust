@@ -1,0 +1,20 @@
+
+module Statements
+
+imports
+	Expressions
+
+templates
+
+
+// blocks
+Block.Block = <
+{
+	<Statement*>
+}
+>
+Statement = <<Block>>
+
+
+// expresions
+Statement.Exp = <<Expression>>

@@ -1,0 +1,26 @@
+module Model
+imports Common
+
+exports
+  context-free syntax
+    "entity" ID "{" Attribute* "}"         -> Model           {cons("Entity")}
+    ID ":" PrimitiveType                   -> Attribute       {cons("Attribute")}
+    BasicType                              -> PrimitiveType   {cons("PrimitiveType")}
+    "relation" ID "{" RoleOrAttribute* "}" -> Model           {cons("Relation")}
+    Role                                   -> RoleOrAttribute 
+    Attribute                              -> RoleOrAttribute 
+    EntityType Multiplicity ID?            -> Role            {cons("Role")}
+    ID                                     -> EntityType      {cons("EntityType")}
+    "1"                                    -> Multiplicity    {cons("One")}
+    "?"                                    -> Multiplicity    {cons("ZeroOrOne")}
+    "+"                                    -> Multiplicity    {cons("OneOrMore")}
+    "*"                                    -> Multiplicity    {cons("ZeroOrMore")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Attribute       {cons("COMPLETION-Attribute")}
+    CONTENTCOMPLETE -> PrimitiveType   {cons("COMPLETION-PrimitiveType")}
+    CONTENTCOMPLETE -> Model           {cons("COMPLETION-Model")}
+    CONTENTCOMPLETE -> RoleOrAttribute {cons("COMPLETION-RoleOrAttribute")}
+    CONTENTCOMPLETE -> Role            {cons("COMPLETION-Role")}
+    CONTENTCOMPLETE -> EntityType      {cons("COMPLETION-EntityType")}
+    CONTENTCOMPLETE -> Multiplicity    {cons("COMPLETION-Multiplicity")}

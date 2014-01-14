@@ -1,0 +1,26 @@
+module Expressions
+
+imports
+	Common
+	Model
+
+templates
+
+// Queries
+Expression.Query = <
+<From>
+<Join?>
+<Where?>
+>
+
+From.From = <from <EntityType>>
+Join.Join = <join <EntityType>>
+Where.Where = <where <EntityType>.<AttributeName> = x>
+
+AttributeName.AttributeName = <<ID>>
+
+
+// New entity instances
+Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>
+RelationInNew.RelationInNew = <<EntityType> = x>
+AttributeInNew.AttributeInNew = <<AttributeName> = x>

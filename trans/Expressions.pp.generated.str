@@ -1,97 +1,94 @@
 module Expressions.pp.generated
 
 strategies
-  prettyprint-Expression =
-    ?Query(a, b, c)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-From)> a]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-option(pp-one-Z(prettyprint-Join))> b]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-option(pp-one-Z(prettyprint-Where))> c]
-         )
-       ]
+  prettyprint-Expression :
+    Query(a, b, c) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [a229]
+                        )
+                      , H(
+                          [SOpt(HS(), "0")]
+                        , [b83]
+                        )
+                      , H(
+                          [SOpt(HS(), "0")]
+                        , [c40]
+                        )
+                      ]
+    where a229 := <pp-one-Z(prettyprint-From)> a
+    where b83 := <pp-option(pp-one-Z(prettyprint-Join))> b
+    where c40 := <pp-option(pp-one-Z(prettyprint-Where))> c
 
-  prettyprint-From =
-    ?From(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("from ")
-           , <pp-one-Z(prettyprint-EntityType)> a
-           ]
-         )
-       ]
+  prettyprint-From :
+    From(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("from "), a230]
+                 )
+               ]
+    where a230 := <pp-one-Z(prettyprint-EntityType)> a
 
-  prettyprint-Join =
-    ?Join(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("join ")
-           , <pp-one-Z(prettyprint-EntityType)> a
-           ]
-         )
-       ]
+  prettyprint-Join :
+    Join(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("join "), a231]
+                 )
+               ]
+    where a231 := <pp-one-Z(prettyprint-EntityType)> a
 
-  prettyprint-Where =
-    ?Where(a, b)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("where ")
-           , <pp-one-Z(prettyprint-EntityType)> a
-           , S(".")
-           , <pp-one-Z(prettyprint-AttributeName)> b
-           , S(" = x")
-           ]
-         )
-       ]
+  prettyprint-Where :
+    Where(a, b) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [ S("where ")
+                       , a232
+                       , S(".")
+                       , b84
+                       , S(" = x")
+                       ]
+                     )
+                   ]
+    where a232 := <pp-one-Z(prettyprint-EntityType)> a
+    where b84 := <pp-one-Z(prettyprint-AttributeName)> b
 
-  prettyprint-AttributeName =
-    ?AttributeName(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-ID)> a]
-         )
-       ]
+  prettyprint-AttributeName :
+    AttributeName(a) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [a233]
+                          )
+                        ]
+    where a233 := <pp-one-Z(prettyprint-ID)> a
 
-  prettyprint-Expression =
-    ?New(a, b, c)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("new ")
-           , <pp-one-Z(prettyprint-EntityType)> a
-           , S("{ ")
-           , <pp-H-list(prettyprint-RelationInNew)> b
-           , S(" }{ ")
-           , <pp-H-list(prettyprint-AttributeInNew)> c
-           , S(" }")
-           ]
-         )
-       ]
+  prettyprint-Expression :
+    New(a, b, c) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [ S("new ")
+                        , a234
+                        , S("{ ")
+                        , b85
+                        , S(" }{ ")
+                        , c41
+                        , S(" }")
+                        ]
+                      )
+                    ]
+    where a234 := <pp-one-Z(prettyprint-EntityType)> a
+    where b85 := <pp-H-list(prettyprint-RelationInNew)> b
+    where c41 := <pp-H-list(prettyprint-AttributeInNew)> c
 
-  prettyprint-RelationInNew =
-    ?RelationInNew(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ <pp-one-Z(prettyprint-EntityType)> a
-           , S(" = x")
-           ]
-         )
-       ]
+  prettyprint-RelationInNew :
+    RelationInNew(a) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [a235, S(" = x")]
+                          )
+                        ]
+    where a235 := <pp-one-Z(prettyprint-EntityType)> a
 
-  prettyprint-AttributeInNew =
-    ?AttributeInNew(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ <pp-one-Z(prettyprint-AttributeName)> a
-           , S(" = x")
-           ]
-         )
-       ]
+  prettyprint-AttributeInNew :
+    AttributeInNew(a) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [a236, S(" = x")]
+                           )
+                         ]
+    where a236 := <pp-one-Z(prettyprint-AttributeName)> a
 
   prettyprint-example =
     prettyprint-From

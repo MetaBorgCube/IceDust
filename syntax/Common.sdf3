@@ -1,0 +1,85 @@
+module Common
+
+
+// IDs
+lexical syntax
+        ID = [a-zA-Z\_][0-9a-zA-Z\_]*
+        ID = Keyword {reject}        
+                
+lexical restrictions
+        ID -/- [a-zA-Z0-9\_]
+        
+templates
+        Identifier.Identifier = <<ID>>
+
+
+// Keywords
+lexical syntax
+        Keyword = BasicType
+        
+        Keyword =     "entity"         
+        Keyword =     "relationship"   
+
+
+lexical restrictions
+        Keyword -/- [a-zA-Z0-9\_]
+
+
+// Primitive types
+lexical syntax
+        BasicType = "String"
+        BasicType = "Int"
+        
+lexical restrictions
+        BasicType -/- [a-zA-Z0-9\_]
+
+
+
+
+
+/**
+ * Default stuff
+ */
+lexical syntax
+
+	// [a-zA-Z][a-zA-Z0-9]* -> ID
+	"-"? [0-9]+          -> INT
+	
+	"\"" StringChar* "\"" -> STRING
+	~[\"\n]               -> StringChar
+	"\\\""                -> StringChar
+	BackSlashChar         -> StringChar
+	"\\"                  -> BackSlashChar
+	
+	[\ \t\n\r] -> LAYOUT
+	
+	[\*]                             -> CommentChar
+	"/*" (~[\*] | CommentChar)* "*/" -> LAYOUT
+	"//" ~[\n\r]* ([\n\r] | EOF)     -> LAYOUT
+	
+	-> EOF
+
+lexical restrictions
+
+	// Ensure greedy matching for lexicals
+	
+	CommentChar   -/- [\/]
+	INT           -/- [0-9]
+	// ID            -/- [a-zA-Z0-9\_]
+	
+	// EOF may not be followed by any char
+	
+	EOF           -/- ~[]
+	
+	// Backslash chars in strings may not be followed by " 
+	
+	BackSlashChar -/- [\"]
+
+context-free restrictions
+
+	// Ensure greedy matching for comments
+	
+	LAYOUT? -/- [\ \t\n\r]
+	LAYOUT? -/- [\/].[\/]
+	LAYOUT? -/- [\/].[\*]
+

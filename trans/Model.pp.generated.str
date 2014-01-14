@@ -1,125 +1,117 @@
 module Model.pp.generated
 
 strategies
-  prettyprint-Model =
-    ?Entity(a, b)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("entity ")
-           , <pp-one-Z(prettyprint-ID)> a
-           , S(" {")
-           ]
-         )
-       , <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
-       , H(
-           [SOpt(HS(), "0")]
-         , [S("}")]
-         )
-       ]
+  prettyprint-Model :
+    Entity(a, b) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("entity "), a237, S(" {")]
+                      )
+                    , b86
+                    , H(
+                        [SOpt(HS(), "0")]
+                      , [S("}")]
+                      )
+                    ]
+    where a237 := <pp-one-Z(prettyprint-ID)> a
+    where b86 := <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
 
-  prettyprint-Attribute =
-    ?Attribute(a, b)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ <pp-one-Z(prettyprint-ID)> a
-           , S(" : ")
-           , <pp-one-Z(prettyprint-PrimitiveType)> b
-           ]
-         )
-       ]
+  prettyprint-Attribute :
+    Attribute(a, b) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [a238, S(" : "), b87]
+                         )
+                       ]
+    where a238 := <pp-one-Z(prettyprint-ID)> a
+    where b87 := <pp-one-Z(prettyprint-PrimitiveType)> b
 
-  prettyprint-PrimitiveType =
-    ?PrimitiveType(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-BasicType)> a]
-         )
-       ]
+  prettyprint-PrimitiveType :
+    PrimitiveType(a) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [a239]
+                          )
+                        ]
+    where a239 := <pp-one-Z(prettyprint-BasicType)> a
 
-  prettyprint-Model =
-    ?Relation(a, b)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("relation ")
-           , <pp-one-Z(prettyprint-ID)> a
-           , S(" {")
-           ]
-         )
-       , <pp-indent(|"2")> [<pp-H-list(prettyprint-RoleOrAttribute)> b]
-       , H(
-           [SOpt(HS(), "0")]
-         , [S("}")]
-         )
-       ]
+  prettyprint-Model :
+    Relation(a, b) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("relation "), a240, S(" {")]
+                        )
+                      , b88
+                      , H(
+                          [SOpt(HS(), "0")]
+                        , [S("}")]
+                        )
+                      ]
+    where a240 := <pp-one-Z(prettyprint-ID)> a
+    where b88 := <pp-indent(|"2")> [<pp-H-list(prettyprint-RoleOrAttribute)> b]
 
-  prettyprint-RoleOrAttribute =
-    ?a
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-Role)> a]
-         )
-       ]
+  prettyprint-RoleOrAttribute :
+    a -> [ H(
+             [SOpt(HS(), "0")]
+           , [a241]
+           )
+         ]
+    where a241 := <pp-one-Z(prettyprint-Role)> a
 
-  prettyprint-RoleOrAttribute =
-    ?a
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-Attribute)> a]
-         )
-       ]
+  prettyprint-RoleOrAttribute :
+    a -> [ H(
+             [SOpt(HS(), "0")]
+           , [a242]
+           )
+         ]
+    where a242 := <pp-one-Z(prettyprint-Attribute)> a
 
-  prettyprint-Role =
-    ?Role(a, b, c)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ <pp-one-Z(prettyprint-EntityType)> a
-           , S(" ")
-           , <pp-one-Z(prettyprint-Multiplicity)> b
-           , S(" ")
-           , <pp-option(pp-one-Z(prettyprint-ID))> c
-           ]
-         )
-       ]
+  prettyprint-Role :
+    Role(a, b, c) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ a243
+                         , S(" ")
+                         , b89
+                         , S(" ")
+                         , c42
+                         ]
+                       )
+                     ]
+    where a243 := <pp-one-Z(prettyprint-EntityType)> a
+    where b89 := <pp-one-Z(prettyprint-Multiplicity)> b
+    where c42 := <pp-option(pp-one-Z(prettyprint-ID))> c
 
-  prettyprint-EntityType =
-    ?EntityType(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-ID)> a]
-         )
-       ]
+  prettyprint-EntityType :
+    EntityType(a) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [a244]
+                       )
+                     ]
+    where a244 := <pp-one-Z(prettyprint-ID)> a
 
-  prettyprint-Multiplicity =
-    ?One()
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("1")]
-         )
-       ]
+  prettyprint-Multiplicity :
+    One() -> [ H(
+                 [SOpt(HS(), "0")]
+               , [S("1")]
+               )
+             ]
 
-  prettyprint-Multiplicity =
-    ?ZeroOrOne()
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("?")]
-         )
-       ]
+  prettyprint-Multiplicity :
+    ZeroOrOne() -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("?")]
+                     )
+                   ]
 
-  prettyprint-Multiplicity =
-    ?OneOrMore()
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("+")]
-         )
-       ]
+  prettyprint-Multiplicity :
+    OneOrMore() -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("+")]
+                     )
+                   ]
 
-  prettyprint-Multiplicity =
-    ?ZeroOrMore()
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("*")]
-         )
-       ]
+  prettyprint-Multiplicity :
+    ZeroOrMore() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("*")]
+                      )
+                    ]
 
   prettyprint-example =
     prettyprint-Attribute

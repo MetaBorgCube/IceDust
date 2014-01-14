@@ -1,48 +1,53 @@
 module Common
-
-imports Commongenerated
-
 exports
+  lexical syntax
+    [a-zA-Z\_] [0-9a-zA-Z\_]* -> ID 
+    Keyword                   -> ID {reject}
+
+  lexical restrictions
+    ID -/- [a-zA-Z0-9\_]
+
+  context-free syntax
+    ID -> Identifier {cons("Identifier")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Identifier {cons("COMPLETION-Identifier")}
 
   lexical syntax
-  
-    %% [a-zA-Z][a-zA-Z0-9]* -> ID
-    "-"? [0-9]+          -> INT
-    
-    "\"" StringChar* "\"" -> STRING
-    ~[\"\n]               -> StringChar
-    "\\\""                -> StringChar
-    BackSlashChar         -> StringChar
-    "\\"                  -> BackSlashChar
-    
-    [\ \t\n\r] -> LAYOUT
-    
-    [\*]                             -> CommentChar
-    "/*" (~[\*] | CommentChar)* "*/" -> LAYOUT
-    "//" ~[\n\r]* ([\n\r] | EOF)     -> LAYOUT
-    
-    -> EOF
-  
-  lexical restrictions
-  
-    %% Ensure greedy matching for lexicals
-  
-    CommentChar   -/- [\/]
-    INT           -/- [0-9]
-    %% ID            -/- [a-zA-Z0-9\_]
-    
-    %% EOF may not be followed by any char
-    
-    EOF           -/- ~[]
+    BasicType      -> Keyword 
+    "entity"       -> Keyword 
+    "relationship" -> Keyword 
 
-    %% Backslash chars in strings may not be followed by " 
-    
+  lexical restrictions
+    Keyword -/- [a-zA-Z0-9\_]
+
+  lexical syntax
+    "String" -> BasicType 
+    "Int"    -> BasicType 
+
+  lexical restrictions
+    BasicType -/- [a-zA-Z0-9\_]
+
+  lexical syntax
+    "-"? [0-9]+                        -> INT           
+    "\"" StringChar* "\""              -> STRING        
+    ~[\"\n]                            -> StringChar    
+    "\\\""                             -> StringChar    
+    BackSlashChar                      -> StringChar    
+    "\\"                               -> BackSlashChar 
+    [\ \t\n\r]                         -> LAYOUT        
+    [\*]                               -> CommentChar   
+    "/*" ( ~[\*] | CommentChar )* "*/" -> LAYOUT        
+    "//" ~[\n\r]* [\n\r] | EOF         -> LAYOUT        
+                                       -> EOF           
+
+  lexical restrictions
+    CommentChar -/- [\/]
+    INT -/- [0-9]
+    EOF -/- ~[]
     BackSlashChar -/- [\"]
 
   context-free restrictions
-  
-    %% Ensure greedy matching for comments
-
     LAYOUT? -/- [\ \t\n\r]
-    LAYOUT? -/- [\/].[\/]
-    LAYOUT? -/- [\/].[\*]
+    LAYOUT? -/- [\/] . [\/]
+    LAYOUT? -/- [\/] . [\*]

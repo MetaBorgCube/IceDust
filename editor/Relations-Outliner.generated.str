@@ -1,0 +1,13 @@
+module editor/Relations-Outliner.generated
+
+imports
+  include/Relations
+  lib/runtime/editor/outline-library
+
+rules
+
+  outline = simple-label-outline(to-outline-label)
+  
+  to-outline-label = ?Entity(<id>, _)
+  to-outline-label = ?Relation(<id>, _)
+  to-outline-label = ?New(<id>, _, _)

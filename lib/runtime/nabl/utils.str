@@ -1,0 +1,61 @@
+module runtime/nabl/utils
+
+imports
+	
+	libstratego-lib
+	runtime/task/core
+	runtime/editor/annotations
+
+rules 
+	
+	match(m|val) = where (!val; m)
+	
+	vdebug(s) = where(verbose < debug(s) + id)
+	verbose   = fail
+
+	is-completion-name = ?"completion123"
+  fix-completion-name = is-completion-name; !""
+  
+  measure-time(s, log) =
+    where(before := <times>);
+    s;
+    where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; log)
+  
+  measure-time(s, log | name) = 
+    measure-time(s, record-time(|name); log)
+  
+  record-time(|name) = id
+  	
+ 	try-make-list = is-list <+ ?Dependency(_) <+ ![<id>]
+		
+	try-remove-list = is-list < Hd + id
+	
+	// @deprecated use runtime/editor/annotations get-annotation(s)
+	has-annotation(s) = get-annotation(s)
+	
+rules // multimap simulation
+	
+	hash-multimap-put(|key, value):
+		hashtable -> hashtable
+		where
+			values := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value|values])> hashtable 
+			
+	hash-multimap-putlist(|key, put-value*):
+		hashtable -> hashtable
+		where
+			value* := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value*, put-value*])> hashtable 
+			
+	hash-multimap-getorcreate(|key) =
+		hashtable-get(|key) <+ hashtable-put(|key, []); ![]
+	
+	hash-multimap-copy(|from):
+		to -> to
+		where
+			// wtf is this I don't even.. hashtable-fold needs term arguments instead of current term arguments.
+			<hashtable-fold(hash-multimap-copy-fold|to)> from
+			
+	hash-multimap-copy-fold(|key, value*):
+		to -> <hash-multimap-putlist(|key, value*)> to
+

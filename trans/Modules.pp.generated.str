@@ -1,55 +1,55 @@
 module Modules.pp.generated
 
 strategies
-  prettyprint-Start =
-    ?Module(a, b, c)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [ S("module ")
-           , <pp-one-Z(prettyprint-ID)> a
-           ]
-         )
-       , H(
-           []
-         , [S("")]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-option(pp-one-Z(prettyprint-ModelDef))> b]
-         )
-       , H(
-           []
-         , [S("")]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-option(pp-one-Z(prettyprint-Executable))> c]
-         )
-       ]
+  prettyprint-Start :
+    Module(a, b, c) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("module "), a245]
+                         )
+                       , H(
+                           []
+                         , [S("")]
+                         )
+                       , H(
+                           [SOpt(HS(), "0")]
+                         , [b90]
+                         )
+                       , H(
+                           []
+                         , [S("")]
+                         )
+                       , H(
+                           [SOpt(HS(), "0")]
+                         , [c43]
+                         )
+                       ]
+    where a245 := <pp-one-Z(prettyprint-ID)> a
+    where b90 := <pp-option(pp-one-Z(prettyprint-ModelDef))> b
+    where c43 := <pp-option(pp-one-Z(prettyprint-Executable))> c
 
-  prettyprint-ModelDef =
-    ?ModelDef(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("model")]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-H-list(prettyprint-Model)> a]
-         )
-       ]
+  prettyprint-ModelDef :
+    ModelDef(a) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("model")]
+                     )
+                   , H(
+                       [SOpt(HS(), "0")]
+                     , [a246]
+                     )
+                   ]
+    where a246 := <pp-H-list(prettyprint-Model)> a
 
-  prettyprint-Executable =
-    ?Executable(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [S("execute")]
-         )
-       , H(
-           [SOpt(HS(), "0")]
-         , [<pp-H-list(prettyprint-Statement)> a]
-         )
-       ]
+  prettyprint-Executable :
+    Executable(a) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("execute")]
+                       )
+                     , H(
+                         [SOpt(HS(), "0")]
+                       , [a247]
+                       )
+                     ]
+    where a247 := <pp-H-list(prettyprint-Statement)> a
 
   prettyprint-example =
     prettyprint-Start

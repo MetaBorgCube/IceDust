@@ -1,15 +1,6 @@
-%% Grammar for the Relations language
-%% By default, based on an example "entities" syntax
 module Relations
-
-imports Common
-imports Expressionsgenerated
-imports Modelgenerated
-imports Modulesgenerated
-imports Statementsgenerated
+imports Common Modules
 
 exports
-
   context-free start-symbols
-  
     Start

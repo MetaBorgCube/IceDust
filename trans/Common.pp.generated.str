@@ -9,13 +9,13 @@ strategies
 
 
 strategies
-  prettyprint-Identifier =
-    ?Identifier(a)
-    ; ![ H(
-           [SOpt(HS(), "0")]
-         , [<pp-one-Z(prettyprint-ID)> a]
-         )
-       ]
+  prettyprint-Identifier :
+    Identifier(a) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [a228]
+                       )
+                     ]
+    where a228 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-example =
     prettyprint-Identifier
@@ -35,3 +35,41 @@ strategies
 
   prettyprint-example =
     prettyprint-BasicType
+
+
+strategies
+  prettyprint-INT =
+    ![S(<is-string>)]
+
+  prettyprint-STRING =
+    ![S(<is-string>)]
+
+  prettyprint-StringChar =
+    ![S(<is-string>)]
+
+  prettyprint-BackSlashChar =
+    ![S(<is-string>)]
+
+  prettyprint-CommentChar =
+    ![S(<is-string>)]
+
+  prettyprint-EOF =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-INT
+
+  prettyprint-example =
+    prettyprint-STRING
+
+  prettyprint-example =
+    prettyprint-StringChar
+
+  prettyprint-example =
+    prettyprint-BackSlashChar
+
+  prettyprint-example =
+    prettyprint-CommentChar
+
+  prettyprint-example =
+    prettyprint-EOF
