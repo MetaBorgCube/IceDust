@@ -1,0 +1,8 @@
+module desugaring/desugar
+
+rules
+	
+	desugar-all = bottomup(try(desugar);try(flatten-list))
+	
+	// remove all Some() constructs
+	desugar: Some(a) -> a

@@ -17,7 +17,8 @@ builders
   observer : editor-analyze                        (multifile)                                                              
                                                                                                                             
   builder  : "Show abstract syntax"                = debug-generate-aterm (openeditor) (realtime) (meta) (source)           
-  builder  : "Show deffed syntax"                  = debug-generate-deffed (openeditor) (realtime) (meta) (source)          
+  // builder  : "Show deffed syntax"                  = debug-generate-deffed (openeditor) (realtime) (meta) (source)
+  builder  : "Show desugared AST"                  = debug-generate-desugared (openeditor) (realtime) (meta) (source)          
   builder  : "Show analyzed syntax"                = debug-generate-analyzed (openeditor) (realtime) (meta) (source)        
   builder  : "Show index entries for current file" = debug-index-show-current-file (openeditor) (realtime) (meta) (source)  
   builder  : "Show index entries for all files"    = debug-index-show-all-files (openeditor) (realtime) (meta) (source)     

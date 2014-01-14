@@ -11,6 +11,7 @@ imports
   lib/analysis-library-internal.generated
   lib/compilation-library.generated
   lib/nbl-library.generated
+  desugaring/desugar
   naming/names
   typing/constraints
   generation/generate
@@ -23,7 +24,7 @@ rules // Analysis
   analyze:
     (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
     with
-      ast'                    := <id> ast; // Optional AST desugaring
+      ast'                    := <desugar-all> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
 	      errors                := <collect-all(constraint-error, conc)> ast'';
@@ -101,13 +102,21 @@ rules // Debugging
       filename := <guarantee-extension(|"aterm")> path;
       result   := selected
       
-  // Prints the definition annotated abstract syntax ATerm of a selection.
-  debug-generate-deffed:
+  // Prints the abstract syntax ATerm of a selection.
+  debug-generate-desugared:
     (selected, position, ast, path, project-path) -> (filename, result)
     with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      filename := <guarantee-extension(|"aterm")> path;
-      result   := <analyze-defs> selected
+      ast'                    := <desugar-all> ast;
+      filename := <guarantee-extension(|"desugared.aterm")> path;
+      result   := ast'
+      
+  // // Prints the definition annotated abstract syntax ATerm of a selection.
+  // debug-generate-deffed:
+  //   (selected, position, ast, path, project-path) -> (filename, result)
+  //   with
+  //     index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+  //     filename := <guarantee-extension(|"aterm")> path;
+  //     result   := <analyze-defs> selected
       
   // Prints the analyzed annotated abstract syntax ATerm of a selection.
   debug-generate-analyzed:
