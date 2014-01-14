@@ -4,86 +4,86 @@ strategies
   prettyprint-Model :
     Entity(a, b) -> [ H(
                         [SOpt(HS(), "0")]
-                      , [S("entity "), a237, S(" {")]
+                      , [S("entity "), a287, S(" {")]
                       )
-                    , b86
+                    , b105
                     , H(
                         [SOpt(HS(), "0")]
                       , [S("}")]
                       )
                     ]
-    where a237 := <pp-one-Z(prettyprint-ID)> a
-    where b86 := <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
+    where a287 := <pp-one-Z(prettyprint-ID)> a
+    where b105 := <pp-indent(|"2")> [<pp-H-list(prettyprint-Attribute)> b]
 
   prettyprint-Attribute :
     Attribute(a, b) -> [ H(
                            [SOpt(HS(), "0")]
-                         , [a238, S(" : "), b87]
+                         , [a288, S(" : "), b106]
                          )
                        ]
-    where a238 := <pp-one-Z(prettyprint-ID)> a
-    where b87 := <pp-one-Z(prettyprint-PrimitiveType)> b
+    where a288 := <pp-one-Z(prettyprint-ID)> a
+    where b106 := <pp-one-Z(prettyprint-PrimitiveType)> b
 
   prettyprint-PrimitiveType :
     PrimitiveType(a) -> [ H(
                             [SOpt(HS(), "0")]
-                          , [a239]
+                          , [a289]
                           )
                         ]
-    where a239 := <pp-one-Z(prettyprint-BasicType)> a
+    where a289 := <pp-one-Z(prettyprint-BasicType)> a
 
   prettyprint-Model :
     Relation(a, b) -> [ H(
                           [SOpt(HS(), "0")]
-                        , [S("relation "), a240, S(" {")]
+                        , [S("relation "), a290, S(" {")]
                         )
-                      , b88
+                      , b107
                       , H(
                           [SOpt(HS(), "0")]
                         , [S("}")]
                         )
                       ]
-    where a240 := <pp-one-Z(prettyprint-ID)> a
-    where b88 := <pp-indent(|"2")> [<pp-H-list(prettyprint-RoleOrAttribute)> b]
+    where a290 := <pp-one-Z(prettyprint-ID)> a
+    where b107 := <pp-indent(|"2")> [<pp-H-list(prettyprint-RoleOrAttribute)> b]
 
   prettyprint-RoleOrAttribute :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a241]
+           , [a291]
            )
          ]
-    where a241 := <pp-one-Z(prettyprint-Role)> a
+    where a291 := <pp-one-Z(prettyprint-Role)> a
 
   prettyprint-RoleOrAttribute :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a242]
+           , [a292]
            )
          ]
-    where a242 := <pp-one-Z(prettyprint-Attribute)> a
+    where a292 := <pp-one-Z(prettyprint-Attribute)> a
 
   prettyprint-Role :
     Role(a, b, c) -> [ H(
                          [SOpt(HS(), "0")]
-                       , [ a243
+                       , [ a293
                          , S(" ")
-                         , b89
+                         , b108
                          , S(" ")
-                         , c42
+                         , c50
                          ]
                        )
                      ]
-    where a243 := <pp-one-Z(prettyprint-EntityType)> a
-    where b89 := <pp-one-Z(prettyprint-Multiplicity)> b
-    where c42 := <pp-option(pp-one-Z(prettyprint-ID))> c
+    where a293 := <pp-one-Z(prettyprint-EntityType)> a
+    where b108 := <pp-one-Z(prettyprint-Multiplicity)> b
+    where c50 := <pp-option(pp-one-Z(prettyprint-ID))> c
 
   prettyprint-EntityType :
     EntityType(a) -> [ H(
                          [SOpt(HS(), "0")]
-                       , [a244]
+                       , [a294]
                        )
                      ]
-    where a244 := <pp-one-Z(prettyprint-ID)> a
+    where a294 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-Multiplicity :
     One() -> [ H(

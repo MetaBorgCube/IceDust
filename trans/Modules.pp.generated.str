@@ -4,7 +4,7 @@ strategies
   prettyprint-Start :
     Module(a, b, c) -> [ H(
                            [SOpt(HS(), "0")]
-                         , [S("module "), a245]
+                         , [S("module "), a295]
                          )
                        , H(
                            []
@@ -12,7 +12,7 @@ strategies
                          )
                        , H(
                            [SOpt(HS(), "0")]
-                         , [b90]
+                         , [b109]
                          )
                        , H(
                            []
@@ -20,12 +20,12 @@ strategies
                          )
                        , H(
                            [SOpt(HS(), "0")]
-                         , [c43]
+                         , [c51]
                          )
                        ]
-    where a245 := <pp-one-Z(prettyprint-ID)> a
-    where b90 := <pp-option(pp-one-Z(prettyprint-ModelDef))> b
-    where c43 := <pp-option(pp-one-Z(prettyprint-Executable))> c
+    where a295 := <pp-one-Z(prettyprint-ID)> a
+    where b109 := <pp-option(pp-one-Z(prettyprint-ModelDef))> b
+    where c51 := <pp-option(pp-one-Z(prettyprint-Executable))> c
 
   prettyprint-ModelDef :
     ModelDef(a) -> [ H(
@@ -34,10 +34,10 @@ strategies
                      )
                    , H(
                        [SOpt(HS(), "0")]
-                     , [a246]
+                     , [a296]
                      )
                    ]
-    where a246 := <pp-H-list(prettyprint-Model)> a
+    where a296 := <pp-H-list(prettyprint-Model)> a
 
   prettyprint-Executable :
     Executable(a) -> [ H(
@@ -46,10 +46,10 @@ strategies
                        )
                      , H(
                          [SOpt(HS(), "0")]
-                       , [a247]
+                       , [a297]
                        )
                      ]
-    where a247 := <pp-H-list(prettyprint-Statement)> a
+    where a297 := <pp-H-list(prettyprint-Statement)> a
 
   prettyprint-example =
     prettyprint-Start
