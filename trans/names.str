@@ -50,11 +50,11 @@ rules
           )
         , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-get-scope =
     ?Entity(e, _)
@@ -86,29 +86,27 @@ rules
           )
         , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
     ?Entity(e, _)
-    ; origin-track-forced(
-        Entity(
-          nabl-store-props(
-          | partition__
-          , [ Prop(
-                Type()
-              , Type(e)
-              , []
-              )
-            ]
-          )
-        , id
+    ; Entity(
+        nabl-store-props(
+        | partition__
+        , [ Prop(
+              Type()
+            , Type(e)
+            , []
+            )
+          ]
         )
-      |
+      , id
       )
+    ; fail
 
   nabl-get-name :
     Attribute(a, t) -> a
@@ -136,24 +134,22 @@ rules
           )
         , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
     ?Attribute(a, t)
-    ; origin-track-forced(
-        Attribute(
-          nabl-store-props(
-          | partition__
-          , [Prop(Type(), t, [])]
-          )
-        , id
+    ; Attribute(
+        nabl-store-props(
+        | partition__
+        , [Prop(Type(), t, [])]
         )
-      |
+      , id
       )
+    ; fail
 
   nabl-get-scope =
     ?Relation(e, _)
@@ -185,29 +181,27 @@ rules
           )
         , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
     ?Relation(e, _)
-    ; origin-track-forced(
-        Relation(
-          nabl-store-props(
-          | partition__
-          , [ Prop(
-                Type()
-              , Type(e)
-              , []
-              )
-            ]
-          )
-        , id
+    ; Relation(
+        nabl-store-props(
+        | partition__
+        , [ Prop(
+              Type()
+            , Type(e)
+            , []
+            )
+          ]
         )
-      |
+      , id
       )
+    ; fail
 
   nabl-get-name :
     EntityType(e) -> e
@@ -250,27 +244,30 @@ rules
     ?Where(EntityType(e), AttributeName(a))
     ; origin-track-forced(
         Where(
-          EntityType(id)
-        , AttributeName(
-            nabl-use(
-            | lang__
-            , partition__
-            , uniques__
-            , uris__
-            , [ UseCandidate(
-                  NablNsAttribute()
-                , []
-                , Context(
-                    NablNsEntity()
-                  , e
+          origin-track-forced(EntityType(id)|)
+        , origin-track-forced(
+            AttributeName(
+              nabl-use(
+              | lang__
+              , partition__
+              , uniques__
+              , uris__
+              , [ UseCandidate(
+                    NablNsAttribute()
                   , []
-                  , Current()
+                  , Context(
+                      NablNsEntity()
+                    , e
+                    , []
+                    , Current()
+                    )
+                  , True()
+                  , []
                   )
-                , True()
-                , []
-                )
-              ]
+                ]
+              )
             )
+          |
           )
         )
       |
