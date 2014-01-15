@@ -232,42 +232,34 @@ rules
       )
 
   nabl-get-name :
-    Where(EntityType(e), AttributeName(a)) -> a
+    AttributeName(EntityType(e), a) -> a
 
   nabl-name-apply(s) =
-    Where(
-      EntityType(id)
-    , AttributeName(s)
-    )
+    AttributeName(EntityType(id), s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?Where(EntityType(e), AttributeName(a))
+    ?AttributeName(EntityType(e), a)
     ; origin-track-forced(
-        Where(
+        AttributeName(
           origin-track-forced(EntityType(id)|)
-        , origin-track-forced(
-            AttributeName(
-              nabl-use(
-              | lang__
-              , partition__
-              , uniques__
-              , uris__
-              , [ UseCandidate(
-                    NablNsAttribute()
-                  , []
-                  , Context(
-                      NablNsEntity()
-                    , e
-                    , []
-                    , Current()
-                    )
-                  , True()
-                  , []
-                  )
-                ]
+        , nabl-use(
+          | lang__
+          , partition__
+          , uniques__
+          , uris__
+          , [ UseCandidate(
+                NablNsAttribute()
+              , []
+              , Context(
+                  NablNsEntity()
+                , e
+                , []
+                , Current()
+                )
+              , True()
+              , []
               )
-            )
-          |
+            ]
           )
         )
       |

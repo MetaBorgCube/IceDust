@@ -8,8 +8,10 @@ completions
     "from " <EntityType:EntityType>    
   completion template Join : "join EntityType" =
     "join " <EntityType:EntityType>    
-  completion template Where : "where EntityType.AttributeName = x" =
-    "where " <EntityType:EntityType> "." <AttributeName:AttributeName> " = x"  
+  completion template Where : "where AttributeName = x" =
+    "where " <AttributeName:AttributeName> " = x"  
+  completion template AttributeName : "EntityType.ID" =
+    <EntityType:EntityType> "." <ID:ID>  
   completion template Expression : "new EntityType{ }{ }" =
     "new " <EntityType:EntityType> "{ " <:RelationInNew> " }{ " <:AttributeInNew> " }"  
   completion template RelationInNew : "EntityType = x" =
