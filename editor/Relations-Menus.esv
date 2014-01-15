@@ -12,7 +12,7 @@ menus
     action: "Format"               = editor-format (openeditor) (realtime)
     action: "Show abstract syntax" = debug-show-aterm (openeditor) (realtime) (meta) (source)
     action: "Show desugared syntax" = debug-show-desugared (openeditor) (realtime) (meta) (source)
-    action: "Show analyzed syntax" = debug-show-analyzed-selection (openeditor) (meta)
+    action: "Show analyzed syntax" = debug-show-analyzed (openeditor) (meta)
     
   menu: "Analysis"
     
