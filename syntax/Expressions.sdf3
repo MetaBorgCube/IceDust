@@ -14,7 +14,7 @@ Join.Join = <join <EntityType>>
 Where.Where = <where <AttributeName> = <Expression>>
 
 AttributeName.AttributeName = <<EntityType>.<ID>>
-//TODO: allow unqualified attribute names
+AttributeName.AttributeNameUnqualified = <<ID>>
 
 // New entity instances
 Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>

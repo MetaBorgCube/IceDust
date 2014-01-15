@@ -1,8 +1,28 @@
 module desugaring/desugar
 
+imports
+	include/Relations
+
 rules
+
+
+desugar-all = bottomup(try(desugar);try(flatten-list))
+
+
+/**
+ *	Default desugarings
+ */
+// remove all Some() constructs
+desugar: Some(a) -> a
 	
-	desugar-all = bottomup(try(desugar);try(flatten-list))
 	
-	// remove all Some() constructs
-	desugar: Some(a) -> a
+	
+/**
+ *	Qualify names
+ */	
+desugar = qualify
+
+qualify: New(entityType, relations, attributes) -> New(entityType, relations, attributes')
+	where attributes' := <all(try(qualify-attribute(|entityType)))> attributes
+
+qualify-attribute(|entityType): AttributeInNew(AttributeNameUnqualified(attribute),value) -> AttributeInNew(AttributeName(entityType, attribute),value)
