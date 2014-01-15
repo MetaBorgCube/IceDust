@@ -1,6 +1,3 @@
-/**
-* Example Relations program.
-*/  
 module example
 
 model
@@ -17,12 +14,10 @@ entity BlogPost {
 relation Posting {
 	BlogUser * poster
 	BlogPost 1 post
-	
 	numEdits : Int
 	editMsg  : String
 }
 entity Log {
-	
 }
 relation LogItem {
 	Log 1
@@ -30,11 +25,7 @@ relation LogItem {
 }
 
 execute
-new BlogUser{}{name=x}
-new BlogPost{Posting=x}{title=x body=x}
-new BlogPost{Posting=x}{title=x body=x}
-from BlogPost join Posting where BlogUser.name = x
-from Log
-
-
-
+new BlogUser{}{BlogUser.name="My name"}
+new BlogPost{Posting=x}{BlogPost.title="First post" BlogPost.body="Dummy text"}
+new BlogPost{Posting=x}{BlogPost.title="Second post" BlogPost.body="More dummy text"}
+from BlogPost join Posting where BlogUser.name = "My name"

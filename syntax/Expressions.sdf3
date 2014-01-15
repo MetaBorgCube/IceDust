@@ -11,7 +11,7 @@ Expression.Query = <<From> <Join?> <Where?>>
 
 From.From = <from <EntityType>>
 Join.Join = <join <EntityType>>
-Where.Where = <where <AttributeName> = x>
+Where.Where = <where <AttributeName> = <Expression>>
 
 AttributeName.AttributeName = <<EntityType>.<ID>>
 //TODO: allow unqualified attribute names
@@ -19,4 +19,8 @@ AttributeName.AttributeName = <<EntityType>.<ID>>
 // New entity instances
 Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>
 RelationInNew.RelationInNew = <<EntityType> = x>
-AttributeInNew.AttributeInNew = <<AttributeName> = x>
+AttributeInNew.AttributeInNew = <<AttributeName> = <Expression>>
+
+// Basic expressions
+Expression.String = <<STRING>>
+Expression.Integer = <<INT>>
