@@ -7,11 +7,7 @@ imports
 templates
 
 // Queries
-Expression.Query = <
-<From>
-<Join?>
-<Where?>
->
+Expression.Query = <<From> <Join?> <Where?>>
 
 From.From = <from <EntityType>>
 Join.Join = <join <EntityType>>

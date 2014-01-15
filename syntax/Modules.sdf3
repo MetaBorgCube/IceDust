@@ -18,10 +18,10 @@ module <ID>
 
 ModelDef.ModelDef =  <
 model
-<Model*>
+<Model*;separator="\n">
 >
 
 Executable.Executable = <
 execute
-<Statement*>
+<Statement*;separator="\n">
 >

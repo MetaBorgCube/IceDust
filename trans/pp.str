@@ -30,3 +30,4 @@ rules
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Relations-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
+pp-Relations-string = prettyprint-example

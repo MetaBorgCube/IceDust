@@ -3,7 +3,7 @@ module Expressions.generated
 
 completions
   completion template Expression : "From " =
-    <From:From> "\n" (cursor) (blank)      
+    <From:From> " " <:Join> " " <:Where>   
   completion template From : "from EntityType" =
     "from " <EntityType:EntityType>    
   completion template Join : "join EntityType" =

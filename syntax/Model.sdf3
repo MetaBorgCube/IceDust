@@ -8,7 +8,7 @@ templates
 // entities with attributes (only primitive types)
 Model.Entity = <
 entity <ID> {
-	<Attribute*>
+	<Attribute*;separator="\n">
 }
 >
 
@@ -19,7 +19,7 @@ PrimitiveType.PrimitiveType = <<BasicType>>
 // relations with members and attributes
 Model.Relation = <
 relation <ID> {
-	<RoleOrAttribute*>	
+	<RoleOrAttribute*;separator="\n">	
 }
 >
 
