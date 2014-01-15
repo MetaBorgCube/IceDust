@@ -5,17 +5,24 @@ imports
 	libstratego-gpp
 	lib/runtime/tmpl/pp
 	Common.pp.generated
+	Expressions.pp.generated
+	Model.pp.generated
+	Modules.pp.generated
 	Relations.pp.generated
+	Statements.pp.generated
+
+
+signature constructors
+	//FIXME: Common.pp.generated.str needs this constructor...
+	Identifier: Identifier -> Identifier
 
 rules
 	
-  // pp-Relations-string =
-  //   prettyprint-Start
-  //   ; !V([], <id>)
-  //   ; box2text-string(|120)
-  
-  pp-Relations-string = "Not implemented"
-      
+  pp-Relations-string =
+    prettyprint-Start
+    ; !V([], <id>)
+    ; box2text-string(|120)
+       
   pp-debug :
     ast -> result
     with

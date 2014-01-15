@@ -17,7 +17,7 @@ imports
 	names
 	check
 	generate
-	// pp
+	pp
 	desugar
 
 rules // Analysis
@@ -57,8 +57,8 @@ rules // Editor services
     with
     	ext      := <get-extension> path;
       filename := <guarantee-extension(|$[pp.[ext]])> path;
-      // result   := <pp-debug> selected
-      result := selected
+      result   := <pp-debug> selected
+      //result := selected
 
 rules // Debugging
 	
