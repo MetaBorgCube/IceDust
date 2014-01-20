@@ -16,6 +16,15 @@ Where.Where = <where <AttributeName> = <Expression>>
 AttributeName.AttributeName = <<EntityType>.<ID>>
 AttributeName.AttributeNameUnqualified = <<ID>>
 
+// Selectors
+Expression.Navigator = <x <Navigate*>>
+
+Navigate.Navigate = <<NavType> <EntityType>>
+NavType.NavOr = <\>>
+NavType.NavAnd = <\>\>>
+NavType.NavOrEx = <-\>>
+NavType.NavAndEx = <-\>\>>
+
 // New entity instances
 Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>
 RelationInNew.RelationInNew = <<EntityType> = x>

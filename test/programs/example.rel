@@ -25,7 +25,11 @@ relation LogItem {
 }
 
 execute
-new BlogUser{}{BlogUser.name="My name"}
-new BlogPost{Posting=x}{BlogPost.title="First post" BlogPost.body="Dummy text"}
-new BlogPost{Posting=x}{BlogPost.title="Second post" BlogPost.body="More dummy text"}
-from BlogPost join Posting where BlogUser.name = "My name"
+BlogUser x = new BlogUser{}{name="Your name"}
+BlogPost x = new BlogPost{Posting=x}{title="First post" body="Dummy text"}
+BlogPost x = new BlogPost{Posting=x}{title="Second post" body="More dummy text"}
+BlogPost* x = from BlogPost join Posting where BlogUser.name = "My name"
+
+BlogPost* x = x > Posting > BlogPost
+BlogPost* x = x >> Posting ->> BlogPost
+Log* x = x >> Posting ->> LogItem -> Log

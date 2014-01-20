@@ -3,6 +3,7 @@ module Statements
 
 imports
 	Expressions
+	Model
 
 templates
 
@@ -17,4 +18,5 @@ Statement = <<Block>>
 
 
 // expresions
-Statement.Exp = <<Expression>>
+Statement.Exp = <<Type> x = <Expression>>
+Type.Type = <<EntityType><Multiplicity?>>

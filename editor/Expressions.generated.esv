@@ -12,6 +12,18 @@ completions
     "where " <AttributeName:AttributeName> " = " <Expression:Expression>  
   completion template AttributeName : "EntityType.ID" =
     <EntityType:EntityType> "." <ID:ID>  
+  completion template Expression : "x " =
+    "x " <:Navigate>                          
+  completion template Navigate : "NavType EntityType" =
+    <NavType:NavType> " " <EntityType:EntityType>  
+  completion template NavType : ">" =
+    ">"                                           
+  completion template NavType : ">>" =
+    ">>"                                         
+  completion template NavType : "->" =
+    "->"                                         
+  completion template NavType : "->>" =
+    "->>"                                       
   completion template Expression : "new EntityType{ }{ }" =
     "new " <EntityType:EntityType> "{ " <:RelationInNew> " }{ " <:AttributeInNew> " }"  
   completion template RelationInNew : "EntityType = x" =
