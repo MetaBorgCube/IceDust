@@ -21,14 +21,14 @@ test Exam prerequisites model [[
 	model
 	entity Exam{}
 	entity Student{}
-	entity Prerequisite{}
+	entity Requirement{}
 	relation Enrollment{
 		Exam *
 		Student *
 	}
-	relation Requirement{
+	relation Prerequisite{
 		Exam *
-		Prerequisite *
+		Requirement *
 	}
 	relation Passed{
 		Student *
@@ -117,3 +117,5 @@ test Tree model [[
 		TreeNode 1 child
 	}
 ]] 0 errors
+
+//TODO: add derivation and constraint examples
