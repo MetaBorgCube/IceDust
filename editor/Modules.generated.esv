@@ -1,9 +1,0 @@
-module Modules.generated
-
-completions
-  completion template Start : "module ID " =
-    "module " <ID:ID> "\n\n" (cursor) "\n" (blank)  
-  completion template ModelDef : "model " =
-    "model\n" (cursor) (blank)  
-  completion template Executable : "execute " =
-    "execute\n" (cursor) (blank)  

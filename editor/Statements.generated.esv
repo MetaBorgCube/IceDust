@@ -1,9 +1,0 @@
-module Statements.generated
-
-completions
-  completion template Block : "{ }" =
-    "{\n\t" (cursor) "\n}" (blank)  
-  completion template Statement : "Type x = Expression" =
-    <Type:Type> " x = " <Expression:Expression>  
-  completion template Type : "EntityType" =
-    <EntityType:EntityType> <:Multiplicity>  
