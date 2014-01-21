@@ -1,0 +1,10 @@
+ module lib/java/pp
+
+imports
+  libstratego-gpp
+
+strategies
+  pp-java-string =
+    ast2abox(|[<import-term(lib/java/Java.generated.pp.af)>,
+               <import-term(lib/java/Java.pp.af)>]);
+    box2text-string(|100)

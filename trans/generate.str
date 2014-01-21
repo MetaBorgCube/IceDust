@@ -3,6 +3,8 @@ module generate
 imports
 
 	include/Relations
+	lib/java/java
+	lib/java/pp
 
 rules // Builder
 	
@@ -11,7 +13,8 @@ rules // Builder
 		(selected, position, ast, path, project-path) -> (filename, result)
 		with
 			filename := <guarantee-extension(|"java")> path;
-			result	 := <to-java> selected
+			java-ast := <to-java> selected;
+			result   := <pp-java-string> java-ast
 
 rules // Transformation to java strings.
 
@@ -22,38 +25,50 @@ rules // Transformation to java strings.
     () -> ""
 
   to-java:
-    Module(x, d*) ->
-    $[ package [x];
-       
-       [d'*]
-     ]
-    with
-      d'* := <to-java> d*
-  
-  to-java:
-    Entity(x, p*) ->
-    $[ class [x] {
-           [p'*]
-       }
-     ]
-    with
-      p'* := <to-java> p*
-
-  to-java:
-    Property(x, Type(t)) -> $[
-      private [t] [x];
-      
-      public [t] get_[x]() {
-          return [x];
-      }
-      
-      public void set_[x] ([t] [x]) {
-          this.[x] = [x];    
-      }
+    Module(x, model, execute) ->
+CompilationUnit(
+  Some(PackageDec([], PackageName([Id("test")])))
+, []
+, [ ClassDec(
+      ClassDecHead([], Id("test"), None(), None(), None())
+    , ClassBody(
+        [ 
+        MethodDec(
+            MethodDecHead(
+              [Public(), Static()]
+            , None()
+            , Void()
+            , Id("main")
+            , [ 
+              	Param(
+                  []
+                , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
+                , Id("args")
+                )
+              ]
+            , None()
+            )
+          , Block(
+              [ 
+              	ExprStm(
+                  Invoke(
+                    Method(
+                      MethodName(
+                        AmbName(AmbName(Id("System")), Id("out"))
+                      , Id("println")
+                      )
+                    )
+                  , [
+                    	"\"Hello world\""
+                    	// Lit(String([Chars("Hello world")]))
+                    ]
+                  )
+                )
+              ]
+            )
+          )
+        ]
+      )
+    )
   ]
-  
-  to-java:
-    Type(t) -> t
-
-  to-java:
-    t* -> <map(to-java)> t*
+)
