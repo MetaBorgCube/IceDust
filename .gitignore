@@ -31,3 +31,4 @@ lib-refactoring/*.generated.str
 */*/*/*.aterm
 */*/*/*/*.aterm
 syntax/*.sdf
+/include
