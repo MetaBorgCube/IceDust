@@ -2,19 +2,57 @@ module generate
 
 imports
 
+	lib/editor-common.generated
 	include/Relations
 	lib/java/java
-	lib/java/pp
+	// lib/java/pretty-print	//pretty print (doesnt compile)
+	lib/java/pp					//ugly print
 
 rules // Builder
 	
 	// Generates a Java program for selected AST.
+	// generate-java:
+	// 	(selected, position, ast, path, project-path) -> (filename, result)
+	// 	with
+	// 		filename := <guarantee-extension(|"java")> path;
+	// 		java-ast := <to-java> selected;
+	// 		result   := <pp-java-string> java-ast
+
 	generate-java:
-		(selected, position, ast, path, project-path) -> (filename, result)
+		(selected, position, ast, path, project-path) -> None()
 		with
-			filename := <guarantee-extension(|"java")> path;
+			<to-java>(selected, path)
+
+	to-java:
+	    (selected, path) -> None()
+	    with
+			fileName := <guarantee-extension(|"java")> path;
 			java-ast := <to-java> selected;
-			result   := <pp-java-string> java-ast
+			result   := <pp-java-string> java-ast;
+			<write-file> (fileName, result)
+
+// helper rules
+rules
+	// filewriter
+	write-file: (fileName, content) -> (fileName, content)
+		where
+			<dirname;ensure-dir> fileName
+		where
+			fileDescriptor := <fopen> (fileName, "w");
+			<fputs> (content, fileDescriptor);
+			<fclose> fileDescriptor;
+			<refresh-workspace-file> fileName
+			
+	ensure-dir: path -> path
+		where
+			<file-exists;filemode;isdir> path
+	ensure-dir: path -> path
+		where
+			<not(file-exists;filemode;isdir)> path;
+			<dirname;ensure-dir> path;
+			<mkdir> path
+
+
 
 rules // Transformation to java strings.
 
