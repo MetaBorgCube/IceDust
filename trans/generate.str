@@ -5,7 +5,6 @@ imports
 	lib/editor-common.generated
 	include/Relations
 	lib/java/java
-	// lib/java/pretty-print	//pretty print (doesnt compile)
 	lib/java/pp					//ugly print
 
 rules // Builder
@@ -19,9 +18,9 @@ rules // Builder
 	// 		result   := <pp-java-string> java-ast
 
 	generate-java:
-		(selected, position, ast, path, project-path) -> None()
+		(selected, position, ast, path, project-path) -> (fileName, result)
 		with
-			<to-java>(selected, path)
+			(fileName, result) := <to-java>(selected, path)
 			
 	compile-java:
 		(selected, position, ast, path, project-path) -> None()
