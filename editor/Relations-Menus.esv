@@ -37,4 +37,5 @@ menus
   menu: "Generation"
     
     action: "Generate Java"        = generate-java (openeditor) (realtime)
+    action: "Compile Java"        = compile-java (realtime)
 

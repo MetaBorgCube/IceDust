@@ -22,14 +22,28 @@ rules // Builder
 		(selected, position, ast, path, project-path) -> None()
 		with
 			<to-java>(selected, path)
+			
+	compile-java:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			(javaFileName, _) := <to-java>(selected, path);
+			<compile-java> javaFileName
 
 	to-java:
-	    (selected, path) -> None()
+	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
 			java-ast := <to-java> selected;
 			result   := <pp-java-string> java-ast;
 			<write-file> (fileName, result)
+			
+	compile-java:
+		javaFileName -> classFileName
+		with
+			<try(call)> ("javac", [javaFileName]);
+			classFileName := <guarantee-extension(|"class")> javaFileName;
+			<refresh-workspace-file> classFileName
+			
 
 // helper rules
 rules
@@ -63,12 +77,12 @@ rules // Transformation to java strings.
     () -> ""
 
   to-java:
-    Module(x, model, execute) ->
+    Module(moduleName, model, execute) ->
 CompilationUnit(
-  Some(PackageDec([], PackageName([Id("test")])))
+  Some(PackageDec([], PackageName([Id(moduleName)])))
 , []
 , [ ClassDec(
-      ClassDecHead([], Id("test"), None(), None(), None())
+      ClassDecHead([], Id(moduleName), None(), None(), None())
     , ClassBody(
         [ 
         MethodDec(
