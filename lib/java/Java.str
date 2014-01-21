@@ -25,9 +25,7 @@ signature
     Conc                    : ListPlusOfCharClass1 * ListStarOfCharClass1 -> ListPlusOfCharClass1
     Conc                    : ListPlusOfCharClass1 * ListPlusOfCharClass1 -> ListPlusOfCharClass1
     Cons                    : Int * ListStarOfCharClass1 -> ListPlusOfCharClass1
-    Files                   : List(File) -> Files
     CompilationUnit         : Option(PackageDec) * List(ImportDec) * List(TypeDec) -> CompilationUnit
-    File                    : CompilationUnit -> File
     Semicolon               : TypeDec
                             : InterfaceDec -> TypeDec
                             : ClassDec -> TypeDec
@@ -36,29 +34,22 @@ signature
     TypeImportOnDemandDec   : PackageName -> ImportDec
     TypeImportDec           : TypeName -> ImportDec
     PackageDec              : List(Anno) * PackageName -> PackageDec
+    ElemValArrayInit        : List(ElemVal) -> ElemVal
+                            : Anno -> ElemVal
+                            : Expr -> ElemVal
+    ElemValPair             : Id * ElemVal -> ElemValPair
+    MarkerAnno              : TypeName -> Anno
+    SingleElemAnno          : TypeName * ElemVal -> Anno
+    Anno                    : TypeName * List(ElemValPair) -> Anno
                             : ArrayAccess -> LHS
                             : FieldAccess -> LHS
                             : ExprName -> LHS
                             : Expr -> CondMid
-                            : RefType -> Type
-                            : PrimType -> Type
-    Double                  : FloatType
-    Float                   : FloatType
-    Char                    : IntType
-    Long                    : IntType
-    Int                     : IntType
-    Short                   : IntType
-    Byte                    : IntType
-                            : FloatType -> NumType
-                            : IntType -> NumType
-    Boolean                 : PrimType
-                            : NumType -> PrimType
     GenericMethod           : AmbName * TypeArgs * Id -> MethodSpec
     QSuperMethod            : TypeName * OptTypeArgs0 * Id -> MethodSpec
     SuperMethod             : OptTypeArgs0 * Id -> MethodSpec
     Method                  : Expr * OptTypeArgs0 * Id -> MethodSpec
     Method                  : MethodName -> MethodSpec
-    MethodArgs              : List(Expr) -> MethodArgs
                             : Expr -> ArraySubscript
     ArrayAccess             : Expr * ArraySubscript -> ArrayAccess
     QSuperField             : TypeName * Id -> FieldAccess
@@ -68,7 +59,7 @@ signature
     UnboundWld              : TypeName -> ArrayBaseType
                             : TypeName -> ArrayBaseType
                             : PrimType -> ArrayBaseType
-    NewArrayInit            : ArrayBaseType * List(Dim) * ArrayInit -> ArrayCreationExpr
+    NewArray                : ArrayBaseType * List(Dim) * ArrayInit -> ArrayCreationExpr
     NewArray                : ArrayBaseType * List(DimExpr) * List(Dim) -> ArrayCreationExpr
     Semicolon               : ClassMemberDec
                             : InterfaceDec -> ClassMemberDec
@@ -119,8 +110,8 @@ signature
     AnnoDec                 : AnnoDecHead * List(AnnoElemDec) -> AnnoDec
                             : Abstract -> AbstractMethodMod
                             : Public -> AbstractMethodMod
-    DeprAbstractMethodDec   : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * MethodParams * List(Dim) * Option(Throws) -> AbstractMethodDec
-    AbstractMethodDec       : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * MethodParams * Option(Throws) -> AbstractMethodDec
+    DeprAbstractMethodDec   : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * List(Dim) * Option(Throws) -> AbstractMethodDec
+    AbstractMethodDec       : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * Option(Throws) -> AbstractMethodDec
                             : Final -> ConstantMod
                             : Static -> ConstantMod
                             : Public -> ConstantMod
@@ -160,9 +151,8 @@ signature
     Param                   : List(Anno_VarMod0) * Type * VarDecId -> FormalParam
     Void                    : ResultType
                             : Type -> ResultType
-    DeprMethodDecHead       : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * MethodParams * List(Dim) * Option(Throws) -> MethodDecHead
-    MethodDecHead           : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * MethodParams * Option(Throws) -> MethodDecHead
-    MethodParams            : List(FormalParam) -> MethodParams
+    DeprMethodDecHead       : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * List(Dim) * Option(Throws) -> MethodDecHead
+    MethodDecHead           : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * Option(Throws) -> MethodDecHead
     MethodDec               : MethodDecHead * MethodBody -> MethodDec
                             : Stm -> BlockStm
     ClassDecStm             : ClassDec -> BlockStm
@@ -212,30 +202,6 @@ signature
     VarDec                  : VarDecId -> VarDec
     FieldDec                : List(Anno_FieldMod0) * Type * List(VarDec) -> FieldDec
     ArrayInit               : List(VarInit) -> ArrayInit
-    ElemValArrayInit        : List(ElemVal) -> ElemVal
-                            : Anno -> ElemVal
-                            : Expr -> ElemVal
-    ElemValPair             : Id * ElemVal -> ElemValPair
-    MarkerAnno              : InterfaceType -> Anno
-    SingleElemAnno          : InterfaceType * ElemVal -> Anno
-    Anno                    : InterfaceType * List(ElemValPair) -> Anno
-    ArrayType               : Type -> ArrayType
-    Member                  : TypeDecSpec * TypeArgs * Id -> TypeDecSpec
-                            : TypeName -> TypeDecSpec
-    InterfaceType           : TypeDecSpec * OptTypeArgs0 -> InterfaceType
-    ClassType               : TypeDecSpec * OptTypeArgs0 -> ClassType
-    ClassOrInterfaceType    : TypeDecSpec * OptTypeArgs0 -> ClassOrInterfaceType
-                            : ArrayType -> RefType
-                            : ClassOrInterfaceType -> RefType
-                            : Id -> TypeVarId
-    TypeParams              : List(TypeParam) -> TypeParams
-    TypeBound               : List(ClassOrInterfaceType) -> TypeBound
-    TypeParam               : TypeVarId * Option(TypeBound) -> TypeParam
-    WildcardLowerBound      : RefType -> WildcardBound
-    WildcardUpperBound      : RefType -> WildcardBound
-    Wildcard                : Option(WildcardBound) -> ActualTypeArg
-                            : Type -> ActualTypeArg
-    TypeArgs                : List(ActualTypeArg) -> TypeArgs
     VoidClass               : ClassLiteral
     Class                   : Type -> ClassLiteral
                             : ClassLiteral -> Literal
@@ -253,7 +219,7 @@ signature
     AssignLeftShift         : LHS * Expr -> Expr
     AssignMinus             : LHS * Expr -> Expr
     AssignPlus              : LHS * Expr -> Expr
-    AssignMod               : LHS * Expr -> Expr
+    AssignRemain            : LHS * Expr -> Expr
     AssignDiv               : LHS * Expr -> Expr
     AssignMul               : LHS * Expr -> Expr
     Assign                  : LHS * Expr -> Expr
@@ -274,7 +240,7 @@ signature
     LeftShift               : Expr * Expr -> Expr
     Minus                   : Expr * Expr -> Expr
     Plus                    : Expr * Expr -> Expr
-    Mod                     : Expr * Expr -> Expr
+    Remain                  : Expr * Expr -> Expr
     Div                     : Expr * Expr -> Expr
     Mul                     : Expr * Expr -> Expr
     InstanceOf              : Expr * RefType -> Expr
@@ -289,7 +255,7 @@ signature
     PostDecr                : Expr -> Expr
     PostIncr                : Expr -> Expr
                             : ExprName -> Expr
-    Invoke                  : MethodSpec * MethodArgs -> Expr
+    Invoke                  : MethodSpec * List(Expr) -> Expr
                             : ArrayAccess -> Expr
                             : FieldAccess -> Expr
                             : ArrayCreationExpr -> Expr
@@ -298,6 +264,25 @@ signature
     QThis                   : TypeName -> Expr
     This                    : Expr
     Lit                     : Literal -> Expr
+                            : RefType -> Type
+                            : PrimType -> Type
+    ArrayType               : Type -> ArrayType
+    Member                  : TypeDecSpec * TypeArgs * Id -> TypeDecSpec
+                            : TypeName -> TypeDecSpec
+    InterfaceType           : TypeDecSpec * OptTypeArgs0 -> InterfaceType
+    ClassType               : TypeDecSpec * OptTypeArgs0 -> ClassType
+    ClassOrInterfaceType    : TypeDecSpec * OptTypeArgs0 -> ClassOrInterfaceType
+                            : ArrayType -> RefType
+                            : ClassOrInterfaceType -> RefType
+                            : Id -> TypeVarId
+    TypeParams              : List(TypeParam) -> TypeParams
+    TypeBound               : List(ClassOrInterfaceType) -> TypeBound
+    TypeParam               : TypeVarId * Option(TypeBound) -> TypeParam
+    WildcardLowerBound      : RefType -> WildcardBound
+    WildcardUpperBound      : RefType -> WildcardBound
+    Wildcard                : Option(WildcardBound) -> ActualTypeArg
+                            : Type -> ActualTypeArg
+    TypeArgs                : List(ActualTypeArg) -> TypeArgs
     PackageOrTypeName       : PackageOrTypeName * Id -> PackageOrTypeName
     PackageOrTypeName       : Id -> PackageOrTypeName
     MethodName              : AmbName * Id -> MethodName
@@ -309,6 +294,17 @@ signature
     AmbName                 : AmbName * Id -> AmbName
     AmbName                 : Id -> AmbName
     PackageName             : List(Id) -> PackageName
+    Double                  : FloatType
+    Float                   : FloatType
+    Char                    : IntType
+    Long                    : IntType
+    Int                     : IntType
+    Short                   : IntType
+    Byte                    : IntType
+                            : FloatType -> NumType
+                            : IntType -> NumType
+    Boolean                 : PrimType
+                            : NumType -> PrimType
     Null                    : NullLiteral
                             : String -> StringChars
                             : EscapeSeq -> StringPart

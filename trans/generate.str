@@ -5,7 +5,8 @@ imports
 	lib/editor-common.generated
 	include/Relations
 	lib/java/java
-	lib/java/pp					//ugly print
+	// lib/java/pp					//ugly print
+	lib/java/pretty-print
 
 rules // Builder
 	
@@ -92,21 +93,18 @@ rules // Transformation to java strings.
   to-java:
     Module(moduleName, model, execute) ->
 CompilationUnit(
-  //Some(PackageDec([], PackageName([Id(moduleName)])))
   None()
 , []
 , [ ClassDec(
       ClassDecHead([], Id(moduleName), None(), None(), None())
     , ClassBody(
-        [ 
-        MethodDec(
+        [ MethodDec(
             MethodDecHead(
               [Public(), Static()]
             , None()
             , Void()
             , Id("main")
-            , [ 
-              	Param(
+            , [ Param(
                   []
                 , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
                 , Id("args")
@@ -115,8 +113,7 @@ CompilationUnit(
             , None()
             )
           , Block(
-              [ 
-              	ExprStm(
+              [ ExprStm(
                   Invoke(
                     Method(
                       MethodName(
@@ -124,10 +121,7 @@ CompilationUnit(
                       , Id("println")
                       )
                     )
-                  , [
-                    	"\"Hello world!\""
-                    	// Lit(String([Chars("Hello world")]))
-                    ]
+                  , [Lit(String([Chars("Hello world!")]))]
                   )
                 )
               ]
