@@ -28,6 +28,14 @@ rules // Builder
 		with
 			(javaFileName, _) := <to-java>(selected, path);
 			<compile-java> javaFileName
+			
+	execute-java:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			(javaFileName, _) := <to-java>(selected, path);
+			classFileName := <compile-java> javaFileName;
+			<execute-java> classFileName
+			
 
 	to-java:
 	    (selected, path) -> (fileName, result)
@@ -43,6 +51,12 @@ rules // Builder
 			<try(call)> ("javac", [javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
 			<refresh-workspace-file> classFileName
+
+	execute-java:
+		classFileName -> None()
+		with
+			className := <remove-extension> classFileName;
+			<try(call)> ("java", [className])
 			
 
 // helper rules
@@ -79,7 +93,8 @@ rules // Transformation to java strings.
   to-java:
     Module(moduleName, model, execute) ->
 CompilationUnit(
-  Some(PackageDec([], PackageName([Id(moduleName)])))
+  //Some(PackageDec([], PackageName([Id(moduleName)])))
+  None()
 , []
 , [ ClassDec(
       ClassDecHead([], Id(moduleName), None(), None(), None())
@@ -111,7 +126,7 @@ CompilationUnit(
                       )
                     )
                   , [
-                    	"\"Hello world\""
+                    	"\"Hello world!\""
                     	// Lit(String([Chars("Hello world")]))
                     ]
                   )
