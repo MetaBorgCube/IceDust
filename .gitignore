@@ -15,8 +15,7 @@ include/relations.ctree.dep
 include/relations.jar
 include/relations-java.jar
 editor/java/trans
-editor/Relations-*.generated.*
-editor/*.generated.esv
+editor/*.generated.*
 syntax/Relations*.generated.esv
 syntax/Relations.generated.pp
 trans/*.pp.generated.str
