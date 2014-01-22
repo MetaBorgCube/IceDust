@@ -3,7 +3,9 @@ module Modules
 imports
 	Common
 	Model
-	Statements
+	Data
+	Execute
+
 
 templates
 
@@ -13,6 +15,8 @@ module <ID>
 
 <ModelDef?>
 
+<DataDef?>
+
 <Executable?>
 >
 
@@ -21,7 +25,12 @@ model
 <Model*;separator="\n">
 >
 
+DataDef.DataDef =  <
+data
+<Data*;separator="\n">
+>
+
 Executable.Executable = <
 execute
-<Statement*;separator="\n">
+<Execute*;separator="\n">
 >

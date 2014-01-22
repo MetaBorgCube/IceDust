@@ -1,0 +1,16 @@
+module Execute
+
+imports
+	Common
+	Model
+	Data
+
+templates
+
+Execute.Navigator = <<EntityName> <Navigate*>>
+
+Navigate.Navigate = <<NavType> <EntityType>>
+NavType.NavOr = <\>>
+NavType.NavAnd = <\>\>>
+NavType.NavOrEx = <-\>>
+NavType.NavAndEx = <-\>\>>

@@ -1,35 +1,35 @@
 module Expressions
 
-imports
-	Common
-	Model
-
-templates
-
-// Queries
-Expression.Query = <<From> <Join?> <Where?>>
-
-From.From = <from <EntityType>>
-Join.Join = <join <EntityType>>
-Where.Where = <where <AttributeName> = <Expression>>
-
-AttributeName.AttributeName = <<EntityType>.<ID>>
-AttributeName.AttributeNameUnqualified = <<ID>>
-
-// Selectors
-Expression.Navigator = <x <Navigate*>>
-
-Navigate.Navigate = <<NavType> <EntityType>>
-NavType.NavOr = <\>>
-NavType.NavAnd = <\>\>>
-NavType.NavOrEx = <-\>>
-NavType.NavAndEx = <-\>\>>
-
-// New entity instances
-Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>
-RelationInNew.RelationInNew = <<EntityType> = x>
-AttributeInNew.AttributeInNew = <<AttributeName> = <Expression>>
-
-// Basic expressions
-Expression.String = <<STRING>>
-Expression.Integer = <<INT>>
+// imports
+// 	Common
+// 	Model
+// 
+// templates
+// 
+// // Queries
+// Expression.Query = <<From> <Join?> <Where?>>
+// 
+// From.From = <from <EntityType>>
+// Join.Join = <join <EntityType>>
+// Where.Where = <where <AttributeName> = <Expression>>
+// 
+// AttributeName.AttributeName = <<EntityType>.<ID>>
+// AttributeName.AttributeNameUnqualified = <<ID>>
+// 
+// // Selectors
+// Expression.Navigator = <x <Navigate*>>
+// 
+// Navigate.Navigate = <<NavType> <EntityType>>
+// NavType.NavOr = <\>>
+// NavType.NavAnd = <\>\>>
+// NavType.NavOrEx = <-\>>
+// NavType.NavAndEx = <-\>\>>
+// 
+// // New entity instances
+// Expression.New = <new <EntityType>{ <RelationInNew*> }{ <AttributeInNew*> }>
+// RelationInNew.RelationInNew = <<EntityType> = x>
+// AttributeInNew.AttributeInNew = <<AttributeName> = <Expression>>
+// 
+// // Basic expressions
+// Expression.String = <<STRING>>
+// Expression.Integer = <<INT>>

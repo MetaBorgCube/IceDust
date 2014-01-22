@@ -6,7 +6,7 @@ imports
 templates
 
 // entities with attributes (only primitive types)
-Model.Entity = <
+Model.EntityTypeDef = <
 entity <ID> {
 	<Attribute*;separator="\n">
 }
@@ -17,7 +17,7 @@ PrimitiveType.PrimitiveType = <<BasicType>>
 
 
 // relations with members and attributes
-Model.Relation = <
+Model.RelationTypeDef = <
 relation <ID> {
 	<RoleOrAttribute*;separator="\n">	
 }

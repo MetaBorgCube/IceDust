@@ -1,0 +1,24 @@
+module Data
+
+imports
+	Common
+	Model
+
+templates
+
+// entities (or relations)
+Data.EntityOrRelation = <<EntityType> <ID>{
+	<RoleValue*>
+	<AttributeValue*>
+}>
+AttributeValue.AttributeValue = <<AttributeName> = <Expression>>
+AttributeName.AttributeName = <<EntityType>.<ID>>
+AttributeName.AttributeNameUnqualified = <<ID>>
+RoleValue.RoleValue = <<RoleName> : <EntityName>>
+RoleName.RoleName = <<EntityType>.<ID>>
+RoleName.RoleNameUnqualified = <<ID>>
+EntityName.EntityName = <<ID>>
+
+// primitive data types
+Expression.String = <<STRING>>
+Expression.Integer = <<INT>>

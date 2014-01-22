@@ -8,7 +8,7 @@ imports
 rules
 	
 	constraint-warning:
-		Entity(x, _) -> (x, $[Entity names must start with a capital])
+		EntityTypeDef(x, _) -> (x, $[Entity type names must start with a capital])
 		where
 			not(<string-starts-with-capital> x)
 

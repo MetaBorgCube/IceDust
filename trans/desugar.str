@@ -14,7 +14,16 @@ desugar-all = bottomup(try(desugar);try(flatten-list))
  */
 // remove all Some() constructs
 desugar: Some(a) -> a
-	
+
+
+
+/**
+ *	Generate omitted names
+ */
+desugar = generate-role-name
+
+generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
+
 	
 	
 /**
@@ -22,7 +31,12 @@ desugar: Some(a) -> a
  */	
 desugar = qualify
 
-qualify: New(entityType, relations, attributes) -> New(entityType, relations, attributes')
-	where attributes' := <all(try(qualify-attribute(|entityType)))> attributes
+qualify: EntityOrRelation(entityType, entityName, roles, attributes) -> EntityOrRelation(entityType, entityName, roles', attributes')
+	where
+		roles' := <all(try(qualify-role(|entityType)))> roles;
+		attributes' := <all(try(qualify-attribute(|entityType)))> attributes
 
-qualify-attribute(|entityType): AttributeInNew(AttributeNameUnqualified(attribute),value) -> AttributeInNew(AttributeName(entityType, attribute),value)
+qualify-role(|entityType): RoleValue(RoleNameUnqualified(role), value) -> RoleValue(RoleName(entityType, role),value)
+qualify-attribute(|entityType): AttributeValue(AttributeNameUnqualified(attribute),value) -> AttributeValue(AttributeName(entityType, attribute),value)
+
+
