@@ -4,7 +4,7 @@ imports
 
 	lib/editor-common.generated
 	include/Relations
-	lib/java/java
+	lib/java/Java
 	lib/java/pretty-print
 
 rules // Builder

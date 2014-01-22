@@ -2,7 +2,7 @@ module lib/java/pp/main
 imports
   libstratego-lib
   libstratego-gpp
-  lib/Java/Java
+  lib/java/Java
   
   lib/java/pp/helpers
   lib/java/pp/statement
@@ -22,7 +22,7 @@ imports
   lib/java/pp/interface/annotation
   lib/java/pp/interface/annotation-type
   
-  lib/java/java-parenthesize
+  lib/java/Java-parenthesize
 
 strategies
 
