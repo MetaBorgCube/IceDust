@@ -5,11 +5,9 @@ imports
 	libstratego-gpp
 	lib/runtime/tmpl/pp
 	Common.pp.generated
-	Expressions.pp.generated
 	Model.pp.generated
 	Modules.pp.generated
 	Relations.pp.generated
-	Statements.pp.generated
 	Data.pp.generated
 	Execute.pp.generated
 

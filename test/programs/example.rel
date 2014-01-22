@@ -24,12 +24,32 @@ relation LogItem {
 	Posting *
 }
 
-execute
-BlogUser x = new BlogUser{}{name="Your name"}
-BlogPost x = new BlogPost{Posting=x}{title="First post" body="Dummy text"}
-BlogPost x = new BlogPost{Posting=x}{title="Second post" body="More dummy text"}
-BlogPost* x = from BlogPost join Posting where BlogUser.name = "My name"
+data
+BlogUser me{
+	name="My name"
+	password="notEncoded"
+	numPosts=1
+}
+BlogPost first{
+	title="First post"
+	body="Some text"
+	name="another name"
+}
+BlogPost second{
+	title="Second post"
+	body="Some more text"
+	name="yet another name"
+}
+Posting p1{
+	poster:me
+	post:first
+	numEdits=1
+}
+Posting p2{
+	poster:me
+	post:second
+}
 
-BlogPost* x = x > Posting > BlogPost
-BlogPost* x = x >> Posting ->> BlogPost
-Log* x = x >> Posting ->> LogItem -> Log
+execute
+me > Posting > BlogPost
+me ->> Posting -> LogItem >> Log
