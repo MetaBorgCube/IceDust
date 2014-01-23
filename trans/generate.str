@@ -85,6 +85,7 @@ rules // Transformation to java ast.
   to-java: Module(_,_,_,_) -> <fail>
   	where <debug> "Please desugar before generating"
 
+
 // Module
   to-java:
     ModuleDesugared(moduleName, model, data, execute) ->
@@ -117,19 +118,8 @@ CompilationUnit(
 	            )
 	          , Block(
 	           	<concat>[
-	              [ ExprStm(
-	                  Invoke(
-	                    Method(
-	                      MethodName(
-	                        AmbName(AmbName(Id("System")), Id("out"))
-	                      , Id("println")
-	                      )
-	                    )
-	                  , [Lit(String([Chars("Hello world!")]))]
-	                  )
-	                )
-	              ],
-	              dataJava
+	              dataJava,
+	              executeJava
 	              ]
 	            )
 	          )
@@ -137,7 +127,9 @@ CompilationUnit(
 	      )
 	    )
 	where
-		dataJava := <to-java>data
+		dataJava := <to-java>data;
+		executeJava := <to-java>execute
+
 
 // Model
   to-java: ModelDef(model) -> <map(try(to-java))>model
@@ -219,6 +211,24 @@ CompilationUnit(
 
   to-java: String(value) -> Lit(String([Chars(value)]))
   to-java: Integer(value) -> Lit(Deci("1"))
+
+
+// Execute
+  to-java: Executable(executes) -> <map(to-java)>executes
+  
+  to-java: AccessEntityAttribute(EntityName(entityName), attributeName) ->
+  		ExprStm(
+          Invoke(
+            Method(
+              MethodName(
+                AmbName(AmbName(Id("System")), Id("out"))
+              , Id("println")
+              )
+            )
+          , [ExprName(AmbName(Id(entityName)), Id(attributeName))]
+          )
+        )
+
 
 // Debugging	          
   to-java: a -> []
