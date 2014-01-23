@@ -15,6 +15,8 @@ desugar-all = bottomup(try(desugar);try(flatten-list))
 // remove all Some() constructs
 desugar: Some(a) -> a
 
+// make the top level construct indicate that it is desugared (we dont want any further processing if its not desugared)
+desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
 
 
 /**
@@ -40,3 +42,5 @@ qualify-role(|entityType): RoleValue(RoleNameUnqualified(role), value) -> RoleVa
 qualify-attribute(|entityType): AttributeValue(AttributeNameUnqualified(attribute),value) -> AttributeValue(AttributeName(entityType, attribute),value)
 
 
+signature constructors
+	ModuleDesugared: ID * ModelDef * DataDef * Executable -> ModuleDesugared

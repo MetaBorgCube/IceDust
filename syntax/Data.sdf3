@@ -20,5 +20,5 @@ RoleName.RoleNameUnqualified = <<ID>>
 EntityName.EntityName = <<ID>>
 
 // primitive data types
-Expression.String = <<STRING>>
+Expression.String = <"<STRING>">
 Expression.Integer = <<INT>>

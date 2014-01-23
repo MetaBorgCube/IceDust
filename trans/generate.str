@@ -6,37 +6,30 @@ imports
 	include/Relations
 	lib/java/Java
 	lib/java/pretty-print
+	desugar
 
-rules // Builder
+rules // Builders
 	
-	// Generates a Java program for selected AST.
-	// generate-java:
-	// 	(selected, position, ast, path, project-path) -> (filename, result)
-	// 	with
-	// 		filename := <guarantee-extension(|"java")> path;
-	// 		java-ast := <to-java> selected;
-	// 		result   := <pp-java-string> java-ast
-
 	generate-java:
 		(selected, position, ast, path, project-path) -> (fileName, result)
 		with
-			(fileName, result) := <to-java>(selected, path)
+			(fileName, result) := <generate-java>(selected, path)
 			
 	compile-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
-			(javaFileName, _) := <to-java>(selected, path);
+			(javaFileName, _) := <generate-java>(selected, path);
 			<compile-java> javaFileName
 			
 	execute-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
-			(javaFileName, _) := <to-java>(selected, path);
+			(javaFileName, _) := <generate-java>(selected, path);
 			classFileName := <compile-java> javaFileName;
 			<execute-java> classFileName
 			
 
-	to-java:
+	generate-java:
 	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
@@ -58,9 +51,9 @@ rules // Builder
 			<try(call)> ("java", [className])
 			
 
-// helper rules
-rules
-	// filewriter
+
+rules // Helper rules : file writer
+
 	write-file: (fileName, content) -> (fileName, content)
 		where
 			<dirname;ensure-dir> fileName
@@ -81,7 +74,7 @@ rules
 
 
 
-rules // Transformation to java strings.
+rules // Transformation to java ast.
 
   to-java:
     [_] -> <concat-strings> <map(to-java)>
@@ -89,45 +82,145 @@ rules // Transformation to java strings.
   to-java:
     () -> ""
 
+  to-java: Module(_,_,_,_) -> <fail>
+  	where <debug> "Please desugar before generating"
+
+// Module
   to-java:
-    Module(moduleName, model, data, execute) ->
+    ModuleDesugared(moduleName, model, data, execute) ->
 CompilationUnit(
   None()
 , []
-, [ ClassDec(
-      ClassDecHead([], Id(moduleName), None(), None(), None())
-    , ClassBody(
-        [ MethodDec(
-            MethodDecHead(
-              [Public(), Static()]
-            , None()
-            , Void()
-            , Id("main")
-            , [ Param(
-                  []
-                , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
-                , Id("args")
-                )
-              ]
-            , None()
-            )
-          , Block(
-              [ ExprStm(
-                  Invoke(
-                    Method(
-                      MethodName(
-                        AmbName(AmbName(Id("System")), Id("out"))
-                      , Id("println")
-                      )
-                    )
-                  , [Lit(String([Chars("Hello world!")]))]
-                  )
-                )
-              ]
-            )
-          )
-        ]
-      )
-    )
-  ]
+, <concat>[[ mainClass ], modelJava]
 )
+	where
+		mainClass := <main-class-to-java>ModuleDesugared(moduleName, model, data, execute);
+		modelJava := <to-java>model
+		
+  main-class-to-java: ModuleDesugared(moduleName, model, data, execute) ->
+	  ClassDec(
+	      ClassDecHead([], Id(moduleName), None(), None(), None())
+	    , ClassBody(
+	        [ MethodDec(
+	            MethodDecHead(
+	              [Public(), Static()]
+	            , None()
+	            , Void()
+	            , Id("main")
+	            , [ Param(
+	                  []
+	                , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
+	                , Id("args")
+	                )
+	              ]
+	            , None()
+	            )
+	          , Block(
+	           	<concat>[
+	              [ ExprStm(
+	                  Invoke(
+	                    Method(
+	                      MethodName(
+	                        AmbName(AmbName(Id("System")), Id("out"))
+	                      , Id("println")
+	                      )
+	                    )
+	                  , [Lit(String([Chars("Hello world!")]))]
+	                  )
+	                )
+	              ],
+	              dataJava
+	              ]
+	            )
+	          )
+	        ]
+	      )
+	    )
+	where
+		dataJava := <to-java>data
+
+// Model
+  to-java: ModelDef(model) -> <map(try(to-java))>model
+
+  to-java: EntityTypeDef(name, attributes) -> 
+	  ClassDec(
+	      ClassDecHead([], Id(name), None(), None(), None())
+	    , ClassBody(
+	        attributesJava
+	      )
+	    )
+	where
+		attributesJava := <map(to-java)>attributes
+		
+  to-java: RelationTypeDef(name, attributesAndRoles) -> 
+	  ClassDec(
+	      ClassDecHead([], Id(name), None(), None(), None())
+	    , ClassBody(
+	        attributesAndRolesJava
+	      )
+	    )
+	where
+		attributesAndRolesJava := <map(to-java)>attributesAndRoles
+
+  to-java: Attribute(name, PrimitiveType(type)) ->
+	  FieldDec(
+	            [Public()]
+	          , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	          , [VarDec(Id(name))]
+	          )
+	where
+		javaType := <to-java>type
+
+  to-java: "String" -> "String"
+  to-java: "Int"	-> "int"
+
+
+// Data
+  to-java: DataDef(defs) -> <map(to-java);concat> defs
+  
+  to-java: EntityOrRelation(
+        EntityType(entityType)
+      , entityName
+      , roleValues
+      , attributeValues
+      )
+      ->
+      <concat>[[
+      LocalVarDecStm(
+          LocalVarDec(
+            []
+          , ClassOrInterfaceType(TypeName(Id(entityType)), None())
+          , [ VarDec(
+                Id(entityName)
+              , NewInstance(
+                  None()
+                , ClassOrInterfaceType(TypeName(Id(entityType)), None())
+                , []
+                , None()
+                )
+              )
+            ]
+          )
+        )],
+        attributeValuesJava
+        ]
+	where
+		attributeValuesJava := <map(to-java(|entityName))> attributeValues
+
+  to-java(|entityName) : AttributeValue(AttributeName(_, attributeName), attributeValue) ->
+	  	ExprStm(
+	      Assign(
+	        ExprName(AmbName(Id(entityName)), Id(attributeName))
+	      , attributeValueJava
+	      )
+	    )
+    where
+    	attributeValueJava := <to-java>attributeValue
+
+  to-java: String(value) -> Lit(String([Chars(value)]))
+  to-java: Integer(value) -> Lit(Deci("1"))
+
+// Debugging	          
+  to-java: a -> []
+  	where <debug> ["no to-java defined for", a]
+	    
