@@ -1,0 +1,14 @@
+module HelloWorld
+
+model
+entity Message {
+	text     : String
+}
+
+data
+Message hello{
+	text="Hello World!"
+}
+
+execute
+hello.text
