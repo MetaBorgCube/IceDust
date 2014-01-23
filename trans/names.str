@@ -22,7 +22,7 @@ rules
 
   nabl-get-scope =
     ?Module(m, _, _, _)
-    ; ![NablNsEntityType()]
+    ; ![NablNsEntityType(), NablNsEntity()]
 
   nabl-get-name :
     Module(m, _, _, _) -> m
@@ -45,7 +45,7 @@ rules
           , NablNsModule()
           , Unique()
           , Current()
-          , [NablNsEntityType()]
+          , [NablNsEntityType(), NablNsEntity()]
           , []
           )
         , id

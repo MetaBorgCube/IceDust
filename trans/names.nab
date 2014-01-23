@@ -19,6 +19,7 @@ binding rules
 	Module(m, _, _, _) : 
 		defines Module m
 		scopes EntityType
+		scopes Entity
 
 
 	// entity types
