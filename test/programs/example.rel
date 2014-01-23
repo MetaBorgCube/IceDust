@@ -1,19 +1,19 @@
 module example
 
 model
-entity BlogUser {
+entity User {
 	name     : String
 	password : String
 	numPosts : Int
 }
-entity BlogPost {
+entity Post {
 	title : String
 	body  : String
 	name  : String
 }
 relation Posting {
-	BlogUser * poster
-	BlogPost 1 post
+	User * poster
+	Post 1 post
 	numEdits : Int
 	editMsg  : String
 }
@@ -25,17 +25,17 @@ relation LogItem {
 }
 
 data
-BlogUser me{
+User me{
 	name="My name"
 	password="notEncoded"
 	numPosts=1
 }
-BlogPost first{
+Post first{
 	title="First post"
 	body="Some text"
 	name="another name"
 }
-BlogPost second{
+Post second{
 	title="Second post"
 	body="Some more text"
 	name="yet another name"
@@ -51,5 +51,5 @@ Posting p2{
 }
 
 execute
-me > Posting > BlogPost
+me > Posting > Post
 me ->> Posting -> LogItem >> Log

@@ -79,8 +79,8 @@ test Friend model [[
 	model
 	entity Person{}
 	relation Friendship{
-		Person 1
-		Person 1
+		Person 1 personA
+		Person 1 personB
 	}
 ]] 0 errors
 
