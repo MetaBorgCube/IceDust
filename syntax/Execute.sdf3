@@ -7,6 +7,8 @@ imports
 
 templates
 
+Execute.AccessEntityAttribute = <<EntityName>.<ID>>
+
 Execute.Navigator = <<EntityName> <Navigate*>>
 
 Navigate.Navigate = <<NavType> <EntityType>>

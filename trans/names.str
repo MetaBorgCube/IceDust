@@ -94,22 +94,6 @@ rules
     ; match(sibl-uris__|s-uri1__)
     ; match(implicits__|[])
 
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?EntityTypeDef(e, _)
-    ; EntityTypeDef(
-        nabl-store-props(
-        | partition__
-        , [ Prop(
-              Type()
-            , Type(e)
-            , []
-            )
-          ]
-        )
-      , id
-      )
-    ; fail
-
   nabl-get-scope =
     ?RelationTypeDef(e, _)
     ; ![NablNsRole(), NablNsAttribute()]
@@ -146,22 +130,6 @@ rules
     ; match(sibl-uris__|s-uri1__)
     ; match(implicits__|[])
 
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?RelationTypeDef(e, _)
-    ; RelationTypeDef(
-        nabl-store-props(
-        | partition__
-        , [ Prop(
-              Type()
-            , Type(e)
-            , []
-            )
-          ]
-        )
-      , id
-      )
-    ; fail
-
   nabl-get-name :
     EntityType(e) -> e
 
@@ -191,16 +159,16 @@ rules
       )
 
   nabl-get-name :
-    EntityOrRelation(entityType, e, _, _) -> e
+    EntityOrRelation(EntityType(entityType), e, _, _) -> e
 
   nabl-name-apply(s) =
-    EntityOrRelation(id, s, id, id)
+    EntityOrRelation(EntityType(id), s, id, id)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?EntityOrRelation(entityType, e, _, _)
+    ?EntityOrRelation(EntityType(entityType), e, _, _)
     ; origin-track-forced(
         EntityOrRelation(
-          id
+          origin-track-forced(EntityType(id)|)
         , nabl-def(
             ?c-uri1__
           , ?s-uri1__
@@ -225,9 +193,9 @@ rules
     ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?EntityOrRelation(entityType, e, _, _)
+    ?EntityOrRelation(EntityType(entityType), e, _, _)
     ; EntityOrRelation(
-        id
+        EntityType(id)
       , nabl-store-props(
         | partition__
         , [Prop(Type(), entityType, [])]
@@ -341,6 +309,51 @@ rules
         )
       |
       )
+
+  nabl-get-name :
+    AccessEntityAttribute(EntityName(e), a) -> a
+
+  nabl-name-apply(s) =
+    AccessEntityAttribute(EntityName(id), s)
+
+  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+    ?AccessEntityAttribute(EntityName(e), a)
+    ; where(r9-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, e)
+                           ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
+                                                                           NablNsEntity()
+                                                                         , []
+                                                                         , Current()
+                                                                         , True()
+                                                                         , []
+                                                                         ))
+    ; origin-track-forced(
+        AccessEntityAttribute(
+          origin-track-forced(EntityName(id)|)
+        , nabl-use(
+          | lang__
+          , partition__
+          , uniques__
+          , uris__
+          , [ UseCandidate(
+                NablNsAttribute()
+              , []
+              , Context(
+                  NablNsEntityType()
+                , r9-1-1-1__
+                , []
+                , Current()
+                )
+              , True()
+              , [r9-1-1-1__]
+              )
+            ]
+          )
+        )
+      |
+      )
+
+  task-rewrite :
+    ("match9-1-1-1-1", (t, [])) -> t
 
   nabl-get-name :
     Role(roleType, multiplicity, role) -> role

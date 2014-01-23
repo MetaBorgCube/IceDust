@@ -24,10 +24,10 @@ binding rules
 
 	// entity types
 	EntityTypeDef(e, _) :
-		defines EntityType e of type Type(e)
+		defines EntityType e //of type Type(e)
 		scopes Attribute
 	RelationTypeDef(e, _) :
-		defines EntityType e of type Type(e)
+		defines EntityType e //of type Type(e)
 		scopes Role
 		scopes Attribute
 		
@@ -36,7 +36,7 @@ binding rules
 		
 	
 	// entities
-	EntityOrRelation(entityType, e, _, _) :
+	EntityOrRelation(EntityType(entityType), e, _, _) :
 		defines Entity e of type entityType
 	
 	EntityName(e) :
@@ -49,6 +49,10 @@ binding rules
 		
 	AttributeName(EntityType(e), a) :
 		refers to Attribute a in EntityType e
+		
+	AccessEntityAttribute(EntityName(e), a) :
+		refers to Attribute a in EntityType t
+		where Entity e has type t
 	
 	// roles
 	Role(roleType, multiplicity, role) :
