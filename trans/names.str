@@ -16,6 +16,7 @@ signature
     NablNsEntity     : Namespace
     NablNsAttribute  : Namespace
     NablNsRole       : Namespace
+    NablNsThis       : Namespace
 
 
 rules
@@ -158,6 +159,10 @@ rules
       |
       )
 
+  nabl-get-scope =
+    ?EntityOrRelation(EntityType(entityType), e, _, _)
+    ; ![NablNsThis()]
+
   nabl-get-name :
     EntityOrRelation(EntityType(entityType), e, _, _) -> e
 
@@ -180,7 +185,7 @@ rules
           , NablNsEntity()
           , Unique()
           , Current()
-          , []
+          , [NablNsThis()]
           , []
           )
         , id
@@ -188,21 +193,40 @@ rules
         )
       |
       )
-    ; match(child-uris__|c-uri1__)
-    ; match(sibl-uris__|s-uri1__)
-    ; match(implicits__|[])
+    ; where(i-2__ := <nabl-def(
+                        ?c-uri2__
+                      , ?s-uri2__
+                      | lang__
+                      , partition__
+                      , uniques__
+                      , c-uri1__
+                      , s-uri1__
+                      , NablNsThis()
+                      , Unique()
+                      , Current()
+                      , []
+                      , []
+                      )> "this")
+    ; match(child-uris__|c-uri2__)
+    ; match(sibl-uris__|s-uri2__)
+    ; match(implicits__|[i-2__])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
     ?EntityOrRelation(EntityType(entityType), e, _, _)
-    ; EntityOrRelation(
-        EntityType(id)
-      , nabl-store-props(
-        | partition__
-        , [Prop(Type(), entityType, [])]
-        )
-      , id
-      , id
-      )
+    ; (where([i-2__] := implicits__)
+       ; EntityOrRelation(
+           EntityType(id)
+         , nabl-store-props(
+           | partition__
+           , [Prop(Type(), entityType, [])]
+           )
+         , id
+         , id
+         )
+       ; where(<nabl-store-props(
+                | partition__
+                , [Prop(Type(), entityType, [])]
+                )> i-2__))
     ; fail
 
   nabl-get-name :
@@ -277,17 +301,24 @@ rules
     ; fail
 
   nabl-get-name :
-    AttributeName(EntityType(e), a) -> a
+    AttributeNameUnqualified(a) -> a
 
   nabl-name-apply(s) =
-    AttributeName(EntityType(id), s)
+    AttributeNameUnqualified(s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?AttributeName(EntityType(e), a)
+    ?AttributeNameUnqualified(a)
+    ; where(r8-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
+                           ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
+                                                                           NablNsThis()
+                                                                         , []
+                                                                         , Current()
+                                                                         , True()
+                                                                         , []
+                                                                         ))
     ; origin-track-forced(
-        AttributeName(
-          origin-track-forced(EntityType(id)|)
-        , nabl-use(
+        AttributeNameUnqualified(
+          nabl-use(
           | lang__
           , partition__
           , uniques__
@@ -297,18 +328,21 @@ rules
               , []
               , Context(
                   NablNsEntityType()
-                , e
+                , r8-1-1-1__
                 , []
                 , Current()
                 )
               , True()
-              , []
+              , [r8-1-1-1__]
               )
             ]
           )
         )
       |
       )
+
+  task-rewrite :
+    ("match8-1-1-1-1", (t, [])) -> t
 
   nabl-get-name :
     AccessEntityAttribute(EntityName(e), a) -> a
@@ -401,17 +435,24 @@ rules
     ; fail
 
   nabl-get-name :
-    RoleName(EntityType(e), r) -> r
+    RoleNameUnqualified(r) -> r
 
   nabl-name-apply(s) =
-    RoleName(EntityType(id), s)
+    RoleNameUnqualified(s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?RoleName(EntityType(e), r)
+    ?RoleNameUnqualified(r)
+    ; where(r11-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
+                            ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
+                                                                            NablNsThis()
+                                                                          , []
+                                                                          , Current()
+                                                                          , True()
+                                                                          , []
+                                                                          ))
     ; origin-track-forced(
-        RoleName(
-          origin-track-forced(EntityType(id)|)
-        , nabl-use(
+        RoleNameUnqualified(
+          nabl-use(
           | lang__
           , partition__
           , uniques__
@@ -421,15 +462,18 @@ rules
               , []
               , Context(
                   NablNsEntityType()
-                , e
+                , r11-1-1-1__
                 , []
                 , Current()
                 )
               , True()
-              , []
+              , [r11-1-1-1__]
               )
             ]
           )
         )
       |
       )
+
+  task-rewrite :
+    ("match11-1-1-1-1", (t, [])) -> t

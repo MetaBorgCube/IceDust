@@ -13,10 +13,7 @@ rules
 		where
 			not(<string-starts-with-capital> x)
 
-	// constraint-note:
-	// 	ModuleDesugared(x @ "example", _, _, _) -> (x, $[This is just an example program in the "entities" language 
-	// 	                                  (this note is defined in trans/check.str)])
 
-	constraint-warning:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
-	constraint-warning:	e@Role(_, _, _)		-> (e, $[This is not translated to java yet.])
-	constraint-warning:	e@RoleValue(_, _)	-> (e, $[This is not translated to java yet.])
+	constraint-note:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
+	constraint-note:	e@Role(_, _, _)		-> (e, $[This is not translated to java yet.])
+	constraint-note:	e@RoleValue(_, _)	-> (e, $[This is not translated to java yet.])
