@@ -28,7 +28,7 @@ data
 User me{
 	name="My name"
 	password="notEncoded"
-	numPosts=1				//TODO: should trigger a type error
+	numPosts=1
 }
 Post first{
 	title="First post"
@@ -39,7 +39,7 @@ Post second{
 	title="Second post"
 	body="Some more text"
 	name="yet another name"
-	name=1
+	name=1						//TODO: should trigger a type error
 }
 Posting p1{
 	poster:me
