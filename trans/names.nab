@@ -50,7 +50,7 @@ binding rules
 	Attribute(a, t) :
 		defines Attribute a of type t
 		
-	AttributeNameUnqualified(a):														//Post p1 {title="asdf"} works like Post p1 {this.title="asdf"}
+	AttributeName(a):																	//Post p1 {title="asdf"} works like Post p1 {this.title="asdf"}
 		refers to Attribute a in EntityType t
 		where This "this" has type t
 		
@@ -63,7 +63,7 @@ binding rules
 		defines Role role of type roleType //ignoring multiplicties in types atm
 		//TODO: implicitly defines a "RoleInRelation" relation in "EntityType" roleType, where relation is the parent of Role
 	
-	RoleNameUnqualified(r):																//Post p1 {poster:me} works like Post p1 {this.poster:me}
+	RoleName(r):																		//Post p1 {poster:me} works like Post p1 {this.poster:me}
 		refers to Role r in EntityType t
 		where This "this" has type t
 		

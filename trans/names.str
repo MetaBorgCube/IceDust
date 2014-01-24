@@ -301,13 +301,13 @@ rules
     ; fail
 
   nabl-get-name :
-    AttributeNameUnqualified(a) -> a
+    AttributeName(a) -> a
 
   nabl-name-apply(s) =
-    AttributeNameUnqualified(s)
+    AttributeName(s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?AttributeNameUnqualified(a)
+    ?AttributeName(a)
     ; where(r8-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
                            ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
                                                                            NablNsThis()
@@ -317,7 +317,7 @@ rules
                                                                          , []
                                                                          ))
     ; origin-track-forced(
-        AttributeNameUnqualified(
+        AttributeName(
           nabl-use(
           | lang__
           , partition__
@@ -435,13 +435,13 @@ rules
     ; fail
 
   nabl-get-name :
-    RoleNameUnqualified(r) -> r
+    RoleName(r) -> r
 
   nabl-name-apply(s) =
-    RoleNameUnqualified(s)
+    RoleName(s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?RoleNameUnqualified(r)
+    ?RoleName(r)
     ; where(r11-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
                             ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
                                                                             NablNsThis()
@@ -451,7 +451,7 @@ rules
                                                                           , []
                                                                           ))
     ; origin-track-forced(
-        RoleNameUnqualified(
+        RoleName(
           nabl-use(
           | lang__
           , partition__

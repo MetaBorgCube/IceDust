@@ -28,19 +28,5 @@ generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType
 
 	
 	
-/**
- *	Qualify names
- */	
-// desugar = qualify
-// 
-// qualify: EntityOrRelation(entityType, entityName, roles, attributes) -> EntityOrRelation(entityType, entityName, roles', attributes')
-// 	where
-// 		roles' := <all(try(qualify-role(|entityType)))> roles;
-// 		attributes' := <all(try(qualify-attribute(|entityType)))> attributes
-// 
-// qualify-role(|entityType): RoleValue(RoleNameUnqualified(role), value) -> RoleValue(RoleName(entityType, role),value)
-// qualify-attribute(|entityType): AttributeValue(AttributeNameUnqualified(attribute),value) -> AttributeValue(AttributeName(entityType, attribute),value)
-
-
 signature constructors
 	ModuleDesugared: ID * ModelDef * DataDef * Executable -> ModuleDesugared

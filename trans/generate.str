@@ -163,6 +163,14 @@ CompilationUnit(
 	where
 		javaType := <to-java>type
 
+  //FIXME: also generate code in the entities that this relationship roles point to
+  to-java: Role(EntityType(type), multiplicity, roleName) ->
+		FieldDec(
+            [Public()]
+          , ClassOrInterfaceType(TypeName(Id(type)), None())
+          , [VarDec(Id(roleName))]
+          )
+
   to-java: "String" -> "String"
   to-java: "Int"	-> "int"
 
@@ -199,7 +207,7 @@ CompilationUnit(
 	where
 		attributeValuesJava := <map(to-java(|entityName))> attributeValues
 
-  to-java(|entityName) : AttributeValue(AttributeName(_, attributeName), attributeValue) ->
+  to-java(|entityName) : AttributeValue(AttributeName(attributeName), attributeValue) ->
 	  	ExprStm(
 	      Assign(
 	        ExprName(AmbName(Id(entityName)), Id(attributeName))

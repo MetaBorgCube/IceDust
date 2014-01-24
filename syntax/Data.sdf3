@@ -12,11 +12,9 @@ Data.EntityOrRelation = <<EntityType> <ID>{
 	<AttributeValue*>
 }>
 AttributeValue.AttributeValue = <<AttributeName> = <Expression>>
-AttributeName.AttributeName = <<EntityType>.<ID>>
-AttributeName.AttributeNameUnqualified = <<ID>>
+AttributeName.AttributeName = <<ID>>
 RoleValue.RoleValue = <<RoleName> : <EntityName>>
-RoleName.RoleName = <<EntityType>.<ID>>
-RoleName.RoleNameUnqualified = <<ID>>
+RoleName.RoleName = <<ID>>
 EntityName.EntityName = <<ID>>
 
 // primitive data types
