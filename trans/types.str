@@ -10,3 +10,20 @@ rules
 	//TODO: is this possible in TS yet?
 	create-type-task(|ctx): Integer(_)  -> <type-is(|ctx)> PrimitiveType("Int")
 	create-type-task(|ctx): String(_)  -> <type-is(|ctx)> PrimitiveType("String")
+
+
+
+
+
+
+/**
+ *	Defing a property on entities for participating in relations, it should look something like this:
+ */
+// nabl-prop-site(|lang__, partition__, uris__, states__, implicits__):
+//     Entity(en, _) -> <fail>
+//     where
+//       uri := <nabl-uri> en
+//     ; scope := <nabl-uri-parent> uri
+//     ; relations := <nabl-resolve-all-tasks(|ctx, NablNsRelation(), [])> [scope]
+//     ; roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Type(EntityType(en))])> relations
+//     ; <nabl-store-roles(|ctx)>
