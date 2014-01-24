@@ -28,7 +28,7 @@ data
 User me{
 	name="My name"
 	password="notEncoded"
-	numPosts=1
+	numPosts=1				//TODO: should trigger a type error
 }
 Post first{
 	title="First post"
@@ -39,6 +39,7 @@ Post second{
 	title="Second post"
 	body="Some more text"
 	name="yet another name"
+	name=1
 }
 Posting p1{
 	poster:me
@@ -51,5 +52,8 @@ Posting p2{
 }
 
 execute
+me.name
+me.password
+me.numPosts
 me > Posting > Post
 me ->> Posting -> LogItem >> Log

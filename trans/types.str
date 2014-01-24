@@ -1,0 +1,12 @@
+module types
+
+imports
+	include/Relations
+	types.generated
+	lib/runtime/types/-
+
+rules
+	
+	//TODO: is this possible in TS yet?
+	create-type-task(|ctx): Integer(_)  -> <type-is(|ctx)> PrimitiveType("Int")
+	create-type-task(|ctx): String(_)  -> <type-is(|ctx)> PrimitiveType("String")

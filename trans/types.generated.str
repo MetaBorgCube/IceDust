@@ -9,6 +9,13 @@ imports
   
 rules
   
+  nabl-constraint(|ctx) :
+    AttributeValue(attributeName, attributeValue) -> <fail>
+    where attributeType := <type-task(|ctx)> attributeName;
+          valueType := <type-task(|ctx)> attributeValue;
+          eq23 := <type-match(|ctx, valueType)> attributeType;
+          <task-create-error-on-failure(|ctx, eq23, "Wrong type supplied")> attributeValue
+  
   
 rules // projections
   

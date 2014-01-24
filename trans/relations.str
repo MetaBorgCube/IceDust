@@ -19,7 +19,7 @@ imports
 	generate
 	pp
 	desugar
-	types.generated
+	types
 
 rules // Analysis
 	
