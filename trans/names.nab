@@ -59,7 +59,7 @@ binding rules
 		where Entity e has type t
 	
 	// roles
-	Role(roleType, multiplicity, role) :
+	Role(EntityType(roleType), multiplicity, role) :
 		defines Role role of type roleType //ignoring multiplicties in types atm
 		//TODO: implicitly defines a "RoleInRelation" relation in "EntityType" roleType, where relation is the parent of Role
 	

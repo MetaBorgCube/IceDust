@@ -15,8 +15,8 @@ rules
 	
 	//FIXME: (#1) why do I need to write this redundantly? Without this line the hover-help type works, but the constraint does not.
 	create-type-task(|ctx): e@AttributeName(_)	-> <get-type>e
-	// create-type-task(|ctx): e@RoleName(_)		-> <get-type>e
-	// create-type-task(|ctx): e@EntityName(_)		-> <get-type>e	
+	create-type-task(|ctx): e@RoleName(_)		-> <get-type>e
+	create-type-task(|ctx): e@EntityName(_)		-> <get-type>e	
 																
 
 

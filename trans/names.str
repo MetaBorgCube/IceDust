@@ -390,16 +390,16 @@ rules
     ("match9-1-1-1-1", (t, [])) -> t
 
   nabl-get-name :
-    Role(roleType, multiplicity, role) -> role
+    Role(EntityType(roleType), multiplicity, role) -> role
 
   nabl-name-apply(s) =
-    Role(id, id, s)
+    Role(EntityType(id), id, s)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?Role(roleType, multiplicity, role)
+    ?Role(EntityType(roleType), multiplicity, role)
     ; origin-track-forced(
         Role(
-          id
+          origin-track-forced(EntityType(id)|)
         , id
         , nabl-def(
             ?c-uri1__
@@ -423,9 +423,9 @@ rules
     ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?Role(roleType, multiplicity, role)
+    ?Role(EntityType(roleType), multiplicity, role)
     ; Role(
-        id
+        EntityType(id)
       , id
       , nabl-store-props(
         | partition__
