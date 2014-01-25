@@ -13,15 +13,15 @@ rules
     AttributeValue(attributeName, attributeValue) -> <fail>
     where attributeType := <type-task(|ctx)> attributeName;
           valueType := <type-task(|ctx)> attributeValue;
-          eq32 := <type-match(|ctx, valueType)> attributeType;
-          <task-create-error-on-failure(|ctx, eq32, "Wrong type supplied")> attributeValue
+          eq60 := <type-match(|ctx, valueType)> attributeType;
+          <task-create-error-on-failure(|ctx, eq60, "Wrong type supplied")> attributeValue
   
   nabl-constraint(|ctx) :
     RoleValue(roleName, valueEntityName) -> <fail>
     where roleType := <type-task(|ctx)> roleName;
           valueType := <type-task(|ctx)> valueEntityName;
-          eq33 := <type-match(|ctx, valueType)> roleType;
-          <task-create-error-on-failure(|ctx, eq33, "Wrong type supplied")> valueEntityName
+          eq61 := <type-match(|ctx, valueType)> roleType;
+          <task-create-error-on-failure(|ctx, eq61, "Wrong type supplied")> valueEntityName
   
   
 rules // projections

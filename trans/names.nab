@@ -13,6 +13,9 @@ namespaces
 	Role
 	This
 
+properties
+
+	fulfill-role of EntityType : EntityType	//points to the Relation of which it is a role (the relation is EntityType)
 	
 binding rules
 
@@ -25,10 +28,10 @@ binding rules
 
 	// entity types
 	EntityTypeDef(e, _) :
-		defines EntityType e //of type Type(e)
+		defines EntityType e
 		scopes Attribute
 	RelationTypeDef(e, _) :
-		defines EntityType e //of type Type(e)
+		defines EntityType e
 		scopes Role
 		scopes Attribute
 		

@@ -19,6 +19,65 @@ signature
     NablNsThis       : Namespace
 
 
+signature
+  constructors
+    NablProp_fulfill-role : Property
+
+
+rules
+
+  nabl-custom-properties(add-properties) =
+    ![NablProp_fulfill-role()] ; add-properties
+
+  fulfill-role-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  fulfill-role-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_fulfill-role())
+
+  fulfill-role-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  fulfill-role-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  fulfill-role-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  fulfill-role-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_fulfill-role(), task*, [])
+
+  fulfill-role-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_fulfill-role(), task*, dep*)
+
+  fulfill-role-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_fulfill-role()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  fulfill-role-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_fulfill-role(), task*, relation, expected)
+
+  create-fulfill-role-task(|task*) =
+    fail
+
+  get-fulfill-role =
+    get-property(|NablProp_fulfill-role())
+
+  store-fulfill-role(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_fulfill-role(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-fulfill-role-task(|partition)> term
+    where NablProp_fulfill-role() := kind
+
+
 rules
 
   nabl-get-scope =
