@@ -14,28 +14,28 @@ rules
 	
 
 
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@EntityTypeDef(name, _) -> <fail>
-		where
-			<debug> $[Fulfilling roles of [name]];
-			uri := <nabl-uri> name;
-			<debug> uri;
-			scope := <nabl-uri-parent> uri;
-			<debug> scope;
-			// find all relations
-			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
-			<debug-task> allRelations;
-			// find all roles in all these relations
-			allRoles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> allRelations;
-			<debug-task> allRoles;
-			<insert-results;map(map(debug;try(get-type);debug))>allRoles;
-			// TODO: get only the roles with me as type.
-			// <debug> "get roles";
-			// roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(name,[],[])])> allRelations; //doesnt seem to work: filtering by type
-			// <debug-task> roles;
-			// <debug> "have roles";
-			fulfills-roles := "foo";
-			<store-fulfill-role(|ctx, fulfills-roles)> name
+	// nabl-prop-site(|lang, ctx, uris, states, implicits):
+	// 	e@EntityTypeDef(name, _) -> <fail>
+	// 	where
+	// 		<debug> $[Fulfilling roles of [name]];
+	// 		uri := <nabl-uri> name;
+	// 		<debug> uri;
+	// 		scope := <nabl-uri-parent> uri;
+	// 		<debug> scope;
+	// 		// find all relations
+	// 		allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
+	// 		<debug-task> allRelations;
+	// 		// find all roles in all these relations
+	// 		allRoles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> allRelations;
+	// 		<debug-task> allRoles;
+	// 		<insert-results;map(map(debug;try(get-type);debug))>allRoles;
+	// 		// TODO: get only the roles with me as type.
+	// 		// <debug> "get roles";
+	// 		// roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(name,[],[])])> allRelations; //doesnt seem to work: filtering by type
+	// 		// <debug-task> roles;
+	// 		// <debug> "have roles";
+	// 		fulfills-roles := "foo";
+	// 		<store-fulfill-role(|ctx, fulfills-roles)> name
 
     
     
