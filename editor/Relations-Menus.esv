@@ -33,6 +33,8 @@ menus
       action: "Partition"          = debug-task-partition (openeditor) (meta)
       action: "Selection"          = debug-task-selection (openeditor) (meta)
     end
+    
+    action: "Index contents"	   = debug-index-contents (meta)  
   
   menu: "Generation"
     
