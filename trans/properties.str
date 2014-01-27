@@ -17,14 +17,23 @@ rules
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
 		e@EntityTypeDef(name, _) -> <fail>
 		where
-			// <debug> $[Fulfilling roles of [name]];
+			<debug> $[Fulfilling roles of [name]];
 			uri := <nabl-uri> name;
-			// <debug> uri;
+			<debug> uri;
 			scope := <nabl-uri-parent> uri;
-			// <debug> scope;
-			// TODO: find all relations
-			// <debug> allRelations;
-			// TODO: find all roles (with me as the type)
+			<debug> scope;
+			// find all relations
+			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
+			<debug-task> allRelations;
+			// find all roles in all these relations
+			allRoles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> allRelations;
+			<debug-task> allRoles;
+			<insert-results;map(map(debug;try(get-type);debug))>allRoles;
+			// TODO: get only the roles with me as type.
+			// <debug> "get roles";
+			// roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(name,[],[])])> allRelations; //doesnt seem to work: filtering by type
+			// <debug-task> roles;
+			// <debug> "have roles";
 			fulfills-roles := "foo";
 			<store-fulfill-role(|ctx, fulfills-roles)> name
 
@@ -42,3 +51,17 @@ rules
 //     ; relations := <nabl-resolve-all-tasks(|ctx, NablNsRelation(), [])> [scope]
 //     ; roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Type(EntityType(en))])> relations
 //     ; <nabl-store-roles(|ctx)>
+
+        nabl-resolve-all-tasks(|partition, ns, prop*) =
+                map(
+                  <new-task(|partition)> ResolveAllDefs(<id>, ns)
+                ; <nabl-use-propconstraint(|partition)> (<id>, prop*)
+                )
+
+	debug-task: task -> task
+		where
+			result := <try(insert-results)> task;
+			<debug-depth>[task, result];
+			<debug>[task, result]
+
+
