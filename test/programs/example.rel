@@ -39,7 +39,6 @@ Post second{
 	title="Second post"
 	body="Some more text"
 	name="yet another name"
-	name=1						//TODO: should trigger a type error
 }
 Posting p1{
 	poster:me
