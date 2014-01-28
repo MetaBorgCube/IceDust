@@ -21,6 +21,7 @@ imports
 	desugar
 	types
 	properties
+	debug
 
 rules // Analysis
 	
@@ -105,17 +106,3 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
-
-
-	debug-index-contents: 
-		(selected, position, ast, path, project-path) -> None()
-		with
-			<debug> "index contents";
-			task-setup(|project-path);
-			task := <task-create-execute(some-task)>;
-			<debug>task
-
-	some-task: _ -> <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope]
-		where
-			ctx := <task-create-execute-ctx>;
-			scope := URI(Language("Relations"),[])

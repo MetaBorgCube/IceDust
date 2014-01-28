@@ -34,7 +34,8 @@ menus
       action: "Selection"          = debug-task-selection (openeditor) (meta)
     end
     
-    action: "Index contents"	   = debug-index-contents (meta)  
+    action: "Index contents"	   = debug-index-contents (openeditor) (meta)
+    action: "Index contents (AST)" = debug-index-contents-ast (openeditor) (meta)    
   
   menu: "Generation"
     

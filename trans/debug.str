@@ -1,0 +1,72 @@
+module debug
+
+imports
+	include/Relations
+	runtime/editor/interop
+	lib/editor-common.generated
+	lib/runtime/index/-
+	lib/runtime/nabl/-
+	lib/runtime/properties/-
+	lib/runtime/types/-
+	lib/runtime/task/-
+	lib/runtime/analysis/-
+
+	
+
+rules
+
+/**
+ *	Builders for index content visualization
+ */
+	debug-index-contents:
+    	(_, _, _, path, project-path) -> (filename, result)
+	    with
+	    	language := <language>;
+	    	index-setup(|language, project-path);
+	    	result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+	    	result-ast' := <beautify-indices> result-ast;
+			if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
+			    filename := $[[project-path]/[<dirname> path]/project.index];
+			    result   := result-index
+			else
+			    filename := $[[project-path]/[<dirname> path]/index.project.aterm];
+			    result   := result-ast'
+			end
+			
+	debug-index-contents-ast:
+    	(_, _, _, path, project-path) -> (filename, result)
+	    with
+	    	language := <language>;
+	    	index-setup(|language, project-path);
+	    	result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+	    	result-ast' := <beautify-indices> result-ast;
+		    filename := $[[project-path]/[<dirname> path]/index.project.aterm];
+		    result   := result-ast'
+			
+		
+		
+/**
+ *	Beautify: make readable
+ */
+	beautify-indices: indexes -> <map(beautify-index)>indexes
+		
+	beautify-index: (partition, index) -> (partition, index3)
+		where
+			<debug> ["beautify index", partition];
+			index2 := <give-all-tasks-results>index;
+			index3 := <qsort(custom-compare)> index2
+
+	
+	// resolve all task results
+	give-all-tasks-results = bottomup(try(give-task-results))
+	give-task-results: e@Result(_) -> <insert-results>e
+	
+	// order the index entries
+	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]
+
+	custom-compare: (a,b) -> (a,b)
+		where
+			a-order := <get-index> (<get-constructor>a, <index-ordering>);
+			b-order := <get-index> (<get-constructor>b, <index-ordering>);
+			cmp-o := <lt>(a-order, b-order)
+
