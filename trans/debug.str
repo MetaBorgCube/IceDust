@@ -10,6 +10,7 @@ imports
 	lib/runtime/types/-
 	lib/runtime/task/-
 	lib/runtime/analysis/-
+	names
 
 	
 
@@ -63,10 +64,29 @@ rules
 	
 	// order the index entries
 	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]
+	index-ordering-ns: _ -> [
+	    NablNsModule(),
+	    NablNsEntityType(),
+	    NablNsAttribute(),
+	    NablNsRole(),
+	    NablNsEntity(),
+	    NablNsThis()
+	   ]
 
 	custom-compare: (a,b) -> (a,b)
 		where
 			a-order := <get-index> (<get-constructor>a, <index-ordering>);
 			b-order := <get-index> (<get-constructor>b, <index-ordering>);
-			cmp-o := <lt>(a-order, b-order)
+			if <eq>(a-order, b-order) then
+				[URI(_, a-url)|_] := <get-arguments>a;
+				[URI(_, b-url)|_] := <get-arguments>b;
+				[ID(a-namespace, _, _)|_] := a-url;
+				[ID(b-namespace, _, _)|_] := b-url;
+				a-ns-order := <get-index> (a-namespace, <index-ordering-ns>);
+				b-ns-order := <get-index> (b-namespace, <index-ordering-ns>);
+				cmp-o := <lt>(a-ns-order, b-ns-order)
+			else
+				cmp-o := <lt>(a-order, b-order)
+			end
+			
 
