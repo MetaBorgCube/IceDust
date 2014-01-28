@@ -19,3 +19,10 @@ type rules
 		and		valueEntityName	: valueType						//FIXME: (#1)
 		and		roleType == valueType
 		else error "Wrong type supplied" on valueEntityName		//TODO: give expected and given type
+		
+	//default and derived attributes
+	Attribute(name, type, Derivation(expression)) :-
+		where	expression		: expressionType
+		and		expressionType == type
+		else error "Wrong type supplied" on expression
+

@@ -1,0 +1,10 @@
+module Expressions
+
+imports
+	Common
+
+templates
+
+// primitive data types
+Expression.String = <"<STRING>">
+Expression.Integer = <<INT>>

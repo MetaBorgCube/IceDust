@@ -50,7 +50,7 @@ binding rules
 	
 	
 	// attributes
-	Attribute(a, t) :
+	Attribute(a, t, _) :
 		defines Attribute a of type t
 		
 	AttributeName(a):																	//Post p1 {title="asdf"} works like Post p1 {this.title="asdf"}

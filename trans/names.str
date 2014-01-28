@@ -317,13 +317,13 @@ rules
       )
 
   nabl-get-name :
-    Attribute(a, t) -> a
+    Attribute(a, t, _) -> a
 
   nabl-name-apply(s) =
-    Attribute(s, id)
+    Attribute(s, id, id)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?Attribute(a, t)
+    ?Attribute(a, t, _)
     ; origin-track-forced(
         Attribute(
           nabl-def(
@@ -341,6 +341,7 @@ rules
           , []
           )
         , id
+        , id
         )
       |
       )
@@ -349,12 +350,13 @@ rules
     ; match(implicits__|[])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?Attribute(a, t)
+    ?Attribute(a, t, _)
     ; Attribute(
         nabl-store-props(
         | partition__
         , [Prop(Type(), t, [])]
         )
+      , id
       , id
       )
     ; fail

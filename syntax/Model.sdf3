@@ -2,6 +2,7 @@ module Model
 
 imports
 	Common
+	Expressions
 
 templates
 
@@ -12,9 +13,9 @@ entity <ID> {
 }
 >
 
-Attribute.Attribute = <<ID> : <PrimitiveType>>
+Attribute.Attribute = <<ID> : <PrimitiveType> <Derivation?>>
 PrimitiveType.PrimitiveType = <<BasicType>>
-
+Derivation.Derivation = <= <Expression>>
 
 // relations with members and attributes
 Model.RelationTypeDef = <

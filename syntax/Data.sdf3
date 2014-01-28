@@ -3,6 +3,7 @@ module Data
 imports
 	Common
 	Model
+	Expressions
 
 templates
 
@@ -16,7 +17,3 @@ AttributeName.AttributeName = <<ID>>
 RoleValue.RoleValue = <<RoleName> : <EntityName>>
 RoleName.RoleName = <<ID>>
 EntityName.EntityName = <<ID>>
-
-// primitive data types
-Expression.String = <"<STRING>">
-Expression.Integer = <<INT>>

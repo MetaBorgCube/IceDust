@@ -154,7 +154,7 @@ CompilationUnit(
 	where
 		attributesAndRolesJava := <map(to-java)>attributesAndRoles
 
-  to-java: Attribute(name, PrimitiveType(type)) ->
+  to-java: Attribute(name, PrimitiveType(type), _) ->
 	  FieldDec(
 	            [Public()]
 	          , ClassOrInterfaceType(TypeName(Id(javaType)), None())

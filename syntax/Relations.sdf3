@@ -5,7 +5,6 @@ module Relations
 
 imports 
 
-	Common
 	Modules
 
 context-free start-symbols
