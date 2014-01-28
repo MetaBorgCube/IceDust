@@ -4,20 +4,21 @@ model
 entity User {
 	name     : String
 	password : String
-	numPosts : Int
+	numPosts : Int		= 0
 }
 entity Post {
 	title : String
 	body  : String
-	name  : String
+	name  : String		= "default placeholder" //why doesn't this show the hover type?
 }
 relation Posting {
-	User * poster
-	Post 1 post
+	User *
+	Post 1
 	numEdits : Int
 	editMsg  : String
 }
 entity Log {
+	body : String
 }
 relation LogItem {
 	Log 1
@@ -41,13 +42,13 @@ Post second{
 	name="yet another name"
 }
 Posting p1{
-	poster:me
-	post:first
+	User:me
+	Post:first
 	numEdits=1
 }
 Posting p2{
-	poster:me
-	post:second
+	User:me
+	Post:second
 }
 
 execute
