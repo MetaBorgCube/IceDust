@@ -55,7 +55,7 @@ rules
 		where
 			index2 := <give-all-tasks-results>index;
 			index3 := <reverse-uris> index2;
-			index4 := <qsort(custom-compare)> index3
+			index4 := <qsort(index-compare)> index3
 
 	
 	// resolve all task results
@@ -64,16 +64,8 @@ rules
 	
 	// order the index entries
 	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]
-	index-ordering-ns: _ -> [
-	    NablNsModule(),
-	    NablNsEntityType(),
-	    NablNsAttribute(),
-	    NablNsRole(),
-	    NablNsEntity(),
-	    NablNsThis()
-	   ]
 
-	custom-compare: (a,b) -> (a,b)
+	index-compare: (a,b) -> (a,b)
 		where
 			a-order := <get-index> (<get-constructor>a, <index-ordering>);
 			b-order := <get-index> (<get-constructor>b, <index-ordering>);
@@ -92,16 +84,14 @@ rules
 		where
 			ID(a-namespace, a-name, _) := a;
 			ID(b-namespace, b-name, _) := b;
-			a-ns-order := <get-index> (a-namespace, <index-ordering-ns>);
-			b-ns-order := <get-index> (b-namespace, <index-ordering-ns>);
-			if <eq>(a-ns-order, b-ns-order) then
+			if <eq>(a-namespace, b-namespace) then
 				if <eq>(a-name, b-name) then
 					<uri-compare> (as, bs)
 				else
 					<string-lt>(a-name, b-name)
 				end
 			else
-				<lt>(a-ns-order, b-ns-order)
+				<string-lt>(<get-constructor>a-namespace, <get-constructor>b-namespace)
 			end
 			
 	// reverse URIs (for having urls in the right order, and for ordering as tree)
