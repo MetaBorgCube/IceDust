@@ -49,7 +49,10 @@ rules
 /**
  *	Beautify: make readable
  */
-	beautify-indices: indexes -> <map(beautify-index)>indexes
+	beautify-indices: indices -> indices''
+		where
+			indices'  := <filter(ignore-extension)> indices;
+			indices'' := <map(beautify-index)>indices'
 		
 	beautify-index: (partition, index) -> (partition, index4)
 		where
@@ -57,9 +60,16 @@ rules
 			index3 := <reverse-uris> index2;
 			index4 := <qsort(index-compare)> index3
 
+	// ignore partitions of generated files
+	ignore-extensions: _ -> ["index", "analysis", "task", "aterm"]
+	ignore-extension: (partition, index) -> (partition, index)
+		where
+			(path, _) := partition;
+			extension := <get-extension>path;
+			<not(elem)> (extension, <ignore-extensions>)
 	
 	// resolve all task results
-	give-all-tasks-results = bottomup(try(give-task-results))
+	give-all-tasks-results = bottomup(try(give-task-results))	//TODO: fail if a task has no result yet + show a debug line instead of a stack trace
 	give-task-results: e@Result(_) -> <insert-results>e
 	
 	// order the index entries
