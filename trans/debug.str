@@ -80,8 +80,13 @@ rules
 			a-order := <get-index> (<get-constructor>a, <index-ordering>);
 			b-order := <get-index> (<get-constructor>b, <index-ordering>);
 			if <eq>(a-order, b-order) then
-				[URI(_, a-url)|_] := <get-arguments>a;
-				[URI(_, b-url)|_] := <get-arguments>b;
+				if Use(_) := a then
+					Use([Def(URI(_, a-url))]) := a;
+					Use([Def(URI(_, b-url))]) := b
+				else
+					[URI(_, a-url)|_] := <get-arguments>a;
+					[URI(_, b-url)|_] := <get-arguments>b
+				end;
 				<uri-compare> (a-url, b-url)
 			else
 				cmp-o := <lt>(a-order, b-order)
