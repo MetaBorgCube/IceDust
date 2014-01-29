@@ -54,8 +54,8 @@ rules
 	beautify-index: (partition, index) -> (partition, index4)
 		where
 			index2 := <give-all-tasks-results>index;
-			index3 := <qsort(custom-compare)> index2;
-			index4 := <reverse-uris> index3
+			index3 := <reverse-uris> index2;
+			index4 := <qsort(custom-compare)> index3
 
 	
 	// resolve all task results
@@ -80,20 +80,30 @@ rules
 			if <eq>(a-order, b-order) then
 				[URI(_, a-url)|_] := <get-arguments>a;
 				[URI(_, b-url)|_] := <get-arguments>b;
-				[ID(a-namespace, _, _)|_] := a-url;
-				[ID(b-namespace, _, _)|_] := b-url;
-				a-ns-order := <get-index> (a-namespace, <index-ordering-ns>);
-				b-ns-order := <get-index> (b-namespace, <index-ordering-ns>);
-				cmp-o := <lt>(a-ns-order, b-ns-order)
+				<uri-compare> (a-url, b-url)
 			else
 				cmp-o := <lt>(a-order, b-order)
 			end
 	
-	// url-compare: ([], []) -> <fail>
-	// url-compare: (a, []) -> (a, [])
-	// url-compare: ([], b) -> <fail>
-	// url-compare: ([a|as], [b|bs]) -> <url-compare> (as, bs)
-
+	uri-compare: ([], []) -> <fail>
+	uri-compare: (a, []) -> <fail>
+	uri-compare: ([], b) -> ([], b)
+	uri-compare: ([a|as], [b|bs]) -> ([a|as], [b|bs]) 
+		where
+			ID(a-namespace, a-name, _) := a;
+			ID(b-namespace, b-name, _) := b;
+			a-ns-order := <get-index> (a-namespace, <index-ordering-ns>);
+			b-ns-order := <get-index> (b-namespace, <index-ordering-ns>);
+			if <eq>(a-ns-order, b-ns-order) then
+				if <eq>(a-name, b-name) then
+					<uri-compare> (as, bs)
+				else
+					<string-lt>(a-name, b-name)
+				end
+			else
+				<lt>(a-ns-order, b-ns-order)
+			end
+			
 	// reverse URIs (for having urls in the right order, and for ordering as tree)
 	reverse-uris = bottomup(try(reverse-uri))
 	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
