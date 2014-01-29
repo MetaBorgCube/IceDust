@@ -51,10 +51,11 @@ rules
  */
 	beautify-indices: indexes -> <map(beautify-index)>indexes
 		
-	beautify-index: (partition, index) -> (partition, index3)
+	beautify-index: (partition, index) -> (partition, index4)
 		where
 			index2 := <give-all-tasks-results>index;
-			index3 := <qsort(custom-compare)> index2
+			index3 := <qsort(custom-compare)> index2;
+			index4 := <reverse-uris> index3
 
 	
 	// resolve all task results
@@ -87,5 +88,14 @@ rules
 			else
 				cmp-o := <lt>(a-order, b-order)
 			end
+	
+	// url-compare: ([], []) -> <fail>
+	// url-compare: (a, []) -> (a, [])
+	// url-compare: ([], b) -> <fail>
+	// url-compare: ([a|as], [b|bs]) -> <url-compare> (as, bs)
+
+	// reverse URIs (for having urls in the right order, and for ordering as tree)
+	reverse-uris = bottomup(try(reverse-uri))
+	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
 			
 
