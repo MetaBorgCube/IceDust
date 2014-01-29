@@ -25,6 +25,7 @@ menus
     
     submenu: "Show index"
       action: "Project"            = debug-index-project (openeditor) (meta)
+      action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta)
       action: "Partition"          = debug-index-partition (openeditor) (meta)
     end
     
@@ -34,8 +35,7 @@ menus
       action: "Selection"          = debug-task-selection (openeditor) (meta)
     end
     
-    action: "Index contents"	   = debug-index-contents (openeditor) (meta)
-    action: "Index contents (AST)" = debug-index-contents-ast (openeditor) (meta)    
+    
   
   menu: "Generation"
     

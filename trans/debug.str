@@ -19,11 +19,12 @@ rules
 /**
  *	Builders for index content visualization
  */
-	debug-index-contents:
+	debug-index-project-resolve:
     	(_, _, _, path, project-path) -> (filename, result)
 	    with
 	    	language := <language>;
 	    	index-setup(|language, project-path);
+	    	task-setup(|project-path);
 	    	result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
 	    	result-ast' := <beautify-indices> result-ast;
 			if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
@@ -34,16 +35,7 @@ rules
 			    result   := result-ast'
 			end
 			
-	debug-index-contents-ast:
-    	(_, _, _, path, project-path) -> (filename, result)
-	    with
-	    	language := <language>;
-	    	index-setup(|language, project-path);
-	    	result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
-	    	result-ast' := <beautify-indices> result-ast;
-		    filename := $[[project-path]/[<dirname> path]/index.project.aterm];
-		    result   := result-ast'
-			
+		
 		
 		
 /**
@@ -61,7 +53,7 @@ rules
 			index4 := <qsort(index-compare)> index3
 
 	// ignore partitions of generated files
-	ignore-extensions: _ -> ["index", "analysis", "task", "aterm"]
+	ignore-extensions: _ -> ["index", "analysis", "task"]
 	ignore-extension: (partition, index) -> (partition, index)
 		where
 			(path, _) := partition;
@@ -69,8 +61,8 @@ rules
 			<not(elem)> (extension, <ignore-extensions>)
 	
 	// resolve all task results
-	give-all-tasks-results = bottomup(try(give-task-results))	//TODO: fail if a task has no result yet + show a debug line instead of a stack trace
-	give-task-results: e@Result(_) -> <insert-results>e
+	give-all-tasks-results = bottomup(try(give-task-results))
+	give-task-results: e@Result(_) -> <insert-results <+ with(fail|"Task has no result yet: ")>e
 	
 	// order the index entries
 	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]
