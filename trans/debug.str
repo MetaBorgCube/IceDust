@@ -10,8 +10,6 @@ imports
 	lib/runtime/types/-
 	lib/runtime/task/-
 	lib/runtime/analysis/-
-	names
-
 	
 
 rules
@@ -36,10 +34,8 @@ rules
 			end
 			
 		
-		
-		
 /**
- *	Beautify: make readable
+ *	Beautify: organize the index entries in a readable manner
  */
 	beautify-indices: indices -> indices''
 		where
@@ -105,4 +101,3 @@ rules
 	reverse-uris = bottomup(try(reverse-uri))
 	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
 			
-
