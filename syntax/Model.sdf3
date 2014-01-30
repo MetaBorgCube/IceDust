@@ -16,9 +16,9 @@ entity <ID> {
 Attribute.Attribute = <<ID> : <PrimitiveType> <Derivation?>>
 PrimitiveType.PrimitiveType = <<BasicType>>
 Derivation.Derivation = <= <Expression> <DerivationType>>
-DerivationType.Default = <(default)>
-DerivationType.Derivation = <(derivation)>
-DerivationType.Derivation = <>
+DerivationType.DefaultValue	= <(default)>
+DerivationType.Derivation		= <(derivation)>
+DerivationType.Derivation		= <>
 
 
 // relations with members and attributes

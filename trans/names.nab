@@ -15,7 +15,7 @@ namespaces
 
 properties
 
-	derivation-type of Attribute :  DerivationType	//either is Derivation(), has Default() or is Normal()
+	derivation-type of Attribute :  DerivationType //either is Derivation(), has DefaultValue() or is Normal()
 	fulfill-role of EntityType : EntityType	//points to the Relation of which it is a role (the relation is EntityType)
 	
 binding rules
