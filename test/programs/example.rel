@@ -2,58 +2,29 @@ module example
 
 model
 entity User {
-	name     : String
-	password : String
-	numPosts : Int		= 0
+	name  : String = "no name"	(default)
+	name2 : String = name				(derivation)
+	name3 : String = name2
+	age		: Int
 }
-entity Post {
-	title : String
-	body  : String
-	name  : String		= "default placeholder" //why doesn't this show the hover type?
+
+relation Friendship {
+	User 1 friend1
+	User 1 friend2
 }
-relation Posting {
-	User *
-	Post 1
-	numEdits : Int
-	editMsg  : String
-}
-entity Log {
-	body : String
-}
-relation LogItem {
-	Log 1
-	Posting *
-}
+
 
 data
 User me{
-	name="My name"
-	password="notEncoded"
-	numPosts=1
+	name="my name"
 }
-Post first{
-	title="First post"
-	body="Some text"
-	name="another name"
+User you{
+	name="your name"
 }
-Post second{
-	title="Second post"
-	body="Some more text"
-	name="yet another name"
-}
-Posting p1{
-	User:me
-	Post:first
-	numEdits=1
-}
-Posting p2{
-	User:me
-	Post:second
+Friendship us{
+	friend1:me
+	friend2:you
 }
 
 execute
 me.name
-me.password
-me.numPosts
-me > Posting > Post
-me ->> Posting -> LogItem >> Log

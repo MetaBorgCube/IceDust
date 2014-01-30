@@ -131,19 +131,19 @@ rules
 rules
 
   nabl-get-scope =
-    ?Module(m, _, _, _)
+    ?ModuleDesugared(m, _, _, _)
     ; ![NablNsEntityType(), NablNsEntity()]
 
   nabl-get-name :
-    Module(m, _, _, _) -> m
+    ModuleDesugared(m, _, _, _) -> m
 
   nabl-name-apply(s) =
-    Module(s, id, id, id)
+    ModuleDesugared(s, id, id, id)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?Module(m, _, _, _)
+    ?ModuleDesugared(m, _, _, _)
     ; origin-track-forced(
-        Module(
+        ModuleDesugared(
           nabl-def(
             ?c-uri1__
           , ?s-uri1__
