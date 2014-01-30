@@ -8,6 +8,7 @@ imports
 	runtime/nabl/-
 	runtime/task/-
 	runtime/types/-
+	names
 
 rules
 	
@@ -22,9 +23,17 @@ rules
 	// constraint-note:	e@RoleValue(_, _)	-> (e, $[This is not translated to java yet.])
 
 
+rules // Check derivation types of attributes
+	
+	constraint-error:
+		x@AttributeValue(AttributeName(name), _) -> (x, $[Derivations cannot be assigned custom values.])
+			where
+				Derivation() := <get-derivation-type>name
 
 
 
+
+rules
 
 /**
  *	Random experimenting with the task engine.
