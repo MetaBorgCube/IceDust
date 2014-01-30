@@ -25,8 +25,8 @@ menus
     
     submenu: "Show index"
       action: "Project"            = debug-index-project (openeditor) (meta)
-      action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta)
-      action: "Project (resolved AST)" = debug-index-project-resolve-ast (openeditor) (meta)
+      action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta) (realtime) 
+      action: "Project (resolved AST)" = debug-index-project-resolve-ast (openeditor) (meta) (realtime) 
       action: "Partition"          = debug-index-partition (openeditor) (meta)
     end
     
