@@ -7,6 +7,9 @@ imports
 	lib/java/Java
 	lib/java/pretty-print
 	desugar
+	properties
+	names
+	
 
 rules // Builders
 	
@@ -83,7 +86,9 @@ rules // Transformation to java ast.
     () -> ""
 
   to-java: Module(_,_,_,_) -> <fail>
-  	where <debug> "Please desugar before generating"
+  	where
+  		err-msg(|"Desugar before generating code.")
+  		// ; with(fail|"Desugar before generating code.")
 
 
 // Module
@@ -296,5 +301,7 @@ CompilationUnit(
 
 // Debugging	          
   to-java: a -> []
-  	where <debug> ["no to-java defined for", a]
+  	where
+		  warn-msg(|$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].])
+
 	    
