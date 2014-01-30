@@ -21,7 +21,7 @@ type rules
 		else error "Wrong type supplied" on valueEntityName		//TODO: give expected and given type
 		
 	//default and derived attributes
-	Attribute(name, type, Derivation(expression)) :-
+	Attribute(name, type, Derivation(expression, derivationType)) :-
 		where	expression		: expressionType
 		and		expressionType == type
 		else error "Wrong type supplied" on expression

@@ -2,9 +2,12 @@ module Expressions
 
 imports
 	Common
+	Data
 
 templates
 
 // primitive data types
 Expression.String = <"<STRING>">
 Expression.Integer = <<INT>>
+
+Expression = <<AttributeName>>

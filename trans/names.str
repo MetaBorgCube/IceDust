@@ -21,13 +21,63 @@ signature
 
 signature
   constructors
-    NablProp_fulfill-role : Property
+    NablProp_derivation-type : Property
+    NablProp_fulfill-role    : Property
 
 
 rules
 
   nabl-custom-properties(add-properties) =
-    ![NablProp_fulfill-role()] ; add-properties
+    ![NablProp_derivation-type(), NablProp_fulfill-role()]
+    ; add-properties
+
+  derivation-type-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  derivation-type-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_derivation-type())
+
+  derivation-type-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  derivation-type-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  derivation-type-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  derivation-type-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_derivation-type(), task*, [])
+
+  derivation-type-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_derivation-type(), task*, dep*)
+
+  derivation-type-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_derivation-type()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  derivation-type-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_derivation-type(), task*, relation, expected)
+
+  create-derivation-type-task(|task*) =
+    fail
+
+  get-derivation-type =
+    get-property(|NablProp_derivation-type())
+
+  store-derivation-type(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_derivation-type(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-derivation-type-task(|partition)> term
+    where NablProp_derivation-type() := kind
 
   fulfill-role-is(|task*) =
     nabl-prop-calc(|task*, [])
@@ -120,7 +170,7 @@ rules
 
   nabl-get-scope =
     ?EntityTypeDef(e, _)
-    ; ![NablNsAttribute()]
+    ; ![NablNsAttribute(), NablNsThis()]
 
   nabl-get-name :
     EntityTypeDef(e, _) -> e
@@ -143,20 +193,43 @@ rules
           , NablNsEntityType()
           , Unique()
           , Current()
-          , [NablNsAttribute()]
+          , [NablNsAttribute(), NablNsThis()]
           , []
           )
         , id
         )
       |
       )
-    ; match(child-uris__|c-uri1__)
-    ; match(sibl-uris__|s-uri1__)
-    ; match(implicits__|[])
+    ; where(i-2__ := <nabl-def(
+                        ?c-uri2__
+                      , ?s-uri2__
+                      | lang__
+                      , partition__
+                      , uniques__
+                      , c-uri1__
+                      , s-uri1__
+                      , NablNsThis()
+                      , Unique()
+                      , Current()
+                      , []
+                      , []
+                      )> "this")
+    ; match(child-uris__|c-uri2__)
+    ; match(sibl-uris__|s-uri2__)
+    ; match(implicits__|[i-2__])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?EntityTypeDef(e, _)
+    ; (where([i-2__] := implicits__)
+       ; where(<nabl-store-props(
+                | partition__
+                , [Prop(Type(), e, [])]
+                )> i-2__))
+    ; fail
 
   nabl-get-scope =
     ?RelationTypeDef(e, _)
-    ; ![NablNsRole(), NablNsAttribute()]
+    ; ![NablNsRole(), NablNsAttribute(), NablNsThis()]
 
   nabl-get-name :
     RelationTypeDef(e, _) -> e
@@ -179,16 +252,39 @@ rules
           , NablNsEntityType()
           , Unique()
           , Current()
-          , [NablNsRole(), NablNsAttribute()]
+          , [NablNsRole(), NablNsAttribute(), NablNsThis()]
           , []
           )
         , id
         )
       |
       )
-    ; match(child-uris__|c-uri1__)
-    ; match(sibl-uris__|s-uri1__)
-    ; match(implicits__|[])
+    ; where(i-2__ := <nabl-def(
+                        ?c-uri2__
+                      , ?s-uri2__
+                      | lang__
+                      , partition__
+                      , uniques__
+                      , c-uri1__
+                      , s-uri1__
+                      , NablNsThis()
+                      , Unique()
+                      , Current()
+                      , []
+                      , []
+                      )> "this")
+    ; match(child-uris__|c-uri2__)
+    ; match(sibl-uris__|s-uri2__)
+    ; match(implicits__|[i-2__])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?RelationTypeDef(e, _)
+    ; (where([i-2__] := implicits__)
+       ; where(<nabl-store-props(
+                | partition__
+                , [Prop(Type(), e, [])]
+                )> i-2__))
+    ; fail
 
   nabl-get-name :
     EntityType(e) -> e
