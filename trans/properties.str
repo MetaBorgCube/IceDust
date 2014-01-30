@@ -13,7 +13,7 @@ signature constructors
 	
 	Normal: DerivationType
 
-rules // attributes are Derivation(), has DefaultValue() or are Normal()
+rules // Attributes are Derivation(), has DefaultValue() or are Normal()
 	
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
 		e@Attribute(name, type, None()) -> <fail>
@@ -26,72 +26,22 @@ rules // attributes are Derivation(), has DefaultValue() or are Normal()
 			where
 				<store-derivation-type(|ctx, derivationType)>e
 
-rules // entities role fulfilling
+rules // Entities role fulfilling
 
-// 	nabl-prop-site(|lang, ctx, uris, states, implicits):
-// 		e@EntityTypeDef(name, _) -> <fail>
-// 		where
-// 			<debug> $[Fulfilling roles of [name]];
-// 			uri := <nabl-uri> name;
-// 			<debug> uri;
-// 			scope := <nabl-uri-parent> uri;
-// 			<debug> scope;
-// 			// find all relations
-// 			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
-// 			<debug-task> allRelations;
-// 			// find all roles in all these relations
-// 			allRoles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> allRelations;
-// 			<debug-task> allRoles;
-// 			// <insert-results-or-delay;map(map(debug;try(get-type);debug))>allRoles;
-// 			// TODO: get only the roles with me as type.
-// 			<debug> "get roles";
-// 			//Prop  : URI * Property * Value -> Entry
-// 			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Type(name)])> allRelations; //doesnt seem to work: filtering by type
-// 			<debug-task> roles;
-// 			// <debug> "have roles";
-// 			fulfills-roles := "foo";
-// 			<store-fulfill-role(|ctx, fulfills-roles)> name
-// 
-//     
-// 	some-prop: _ ->
-// 	Prop(
-//     URI(
-//       Language("Relations")
-//     , [ ID(NablNsEntityType(), "Friendship", Unique("/Users/adminuser/Documents/workspace-spoofax/Relations-example/example.rel/0"))
-//       , ID(NablNsRole(), "friend1", Unique("/Users/adminuser/Documents/workspace-spoofax/Relations-example/example.rel/0"))
-//       ]
-//     )
-//   , Type()
-//   , ["User"{ Use(
-//                Def(
-//                  URI(
-//                    Language("Relations")
-//                  , [ID(NablNsEntityType(), "User", Unique("/Users/adminuser/Documents/workspace-spoofax/Relations-example/example.rel/0"))]
-//                  )
-//                )
-//              )
-//            }]
-//   )
-    
-    
-    
-/**
- *	Defing a property on entities for participating in relations, it should look something like this:
- */
-// nabl-prop-site(|lang__, partition__, uris__, states__, implicits__):
-//     Entity(en, _) -> <fail>
-//     where
-//       uri := <nabl-uri> en
-//     ; scope := <nabl-uri-parent> uri
-//     ; relations := <nabl-resolve-all-tasks(|ctx, NablNsRelation(), [])> [scope]
-//     ; roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Type(EntityType(en))])> relations
-//     ; <nabl-store-roles(|ctx)>
-
-
-	debug-task: task -> task
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		e@EntityTypeDef(name, _) -> <fail>
 		where
-			result := <try(insert-results-or-delay)> task;
-			<debug-depth>[task, result];
-			<debug>[task, result]
+			uri := <nabl-uri> name;
+			scope := <nabl-uri-parent> uri;
+			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
+			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(Type(), name, [])])> allRelations;
+			<store-fulfill-role(|ctx, roles)> name
 
 
+// rules // Helper rules
+// 
+// 	debug-task: task -> task
+// 		where
+// 			result := <try(insert-results-or-delay)> task;
+// 			<debug-depth>[task, result];
+// 			<debug>[task, result]
