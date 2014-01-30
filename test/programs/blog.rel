@@ -9,7 +9,7 @@ entity User {
 entity Post {
 	title : String
 	body  : String
-	name  : String		= "default placeholder" (default) //why doesn't this show the hover type?
+	name  : String		= "default placeholder" (default)
 }
 relation Posting {
 	User *
