@@ -142,7 +142,7 @@ CompilationUnit(
 	      )
 	    )
 	where
-		attributesJava := <map(to-java)>attributes
+		attributesJava := <map(to-java);concat>attributes
 		
   to-java: RelationTypeDef(name, attributesAndRoles) -> 
 	  ClassDec(
@@ -152,24 +152,77 @@ CompilationUnit(
 	      )
 	    )
 	where
-		attributesAndRolesJava := <map(to-java)>attributesAndRoles
+		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles
 
   to-java: Attribute(name, PrimitiveType(type), _) ->
-	  FieldDec(
-	            [Public()]
-	          , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-	          , [VarDec(Id(name))]
-	          )
+		[ FieldDec(
+	        [Private()]
+	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	      , [VarDec(Id(name))]
+	      )
+	    , MethodDec(
+	        MethodDecHead(
+	          [Public()]
+	        , None()
+	        , Void()
+	        , Id($[set_[name]])
+	        , [Param(
+	             []
+	           , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	           , Id(name)
+	           )]
+	        , None()
+	        )
+	      , Block(
+	          [ExprStm(
+	             Assign(Field(This(), Id(name)), ExprName(Id(name)))
+	           )]
+	        )
+	      )
+	    // , MethodDec(
+	    //     MethodDecHead(
+	    //       [Public()]
+	    //     , None()
+	    //     , Void()
+	    //     , Id($[unset_[name]])
+	    //     , []
+	    //     , None()
+	    //     )
+	    //   , Block(
+	    //       [ExprStm(Assign(ExprName(Id(name)), Lit(Null())))]
+	    //     )
+	    //   )
+	    , MethodDec(
+	        MethodDecHead(
+	          [Public()]
+	        , None()
+	        , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	        , Id($[get_[name]])
+	        , []
+	        , None()
+	        )
+	      , Block(
+	        	[Return(Some(ExprName(Id(name))))]
+	          // [ If(
+	          //     NotEq(ExprName(Id(name)), Lit(Null()))
+	          //   , Return(Some(ExprName(Id(name))))
+	          //   , Return(Some(Lit(Null())))
+	          //   )
+	          // ]
+	        )
+	      )
+	     ]
 	where
 		javaType := <to-java>type
 
   //FIXME: also generate code in the entities that this relationship roles point to
   to-java: Role(EntityType(type), multiplicity, roleName) ->
-		FieldDec(
-            [Public()]
-          , ClassOrInterfaceType(TypeName(Id(type)), None())
-          , [VarDec(Id(roleName))]
-          )
+		[	FieldDec(
+	      [Public()]
+	    , ClassOrInterfaceType(TypeName(Id(type)), None())
+	    , [VarDec(Id(roleName))]
+	    )
+		]
 
   to-java: "String" -> "String"
   to-java: "Int"	-> "int"
@@ -209,10 +262,10 @@ CompilationUnit(
 
   to-java(|entityName) : AttributeValue(AttributeName(attributeName), attributeValue) ->
 	  	ExprStm(
-	      Assign(
-	        ExprName(AmbName(Id(entityName)), Id(attributeName))
-	      , attributeValueJava
-	      )
+        Invoke(
+          Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))
+        , [attributeValueJava]
+        )
 	    )
     where
     	attributeValueJava := <to-java>attributeValue
@@ -233,7 +286,10 @@ CompilationUnit(
               , Id("println")
               )
             )
-          , [ExprName(AmbName(Id(entityName)), Id(attributeName))]
+          , [Invoke(
+               Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
+             , []
+             )]
           )
         )
 
