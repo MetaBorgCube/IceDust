@@ -1,12 +1,12 @@
 module properties
 
 imports
-lib/runtime/nabl/-
-lib/runtime/task/-
-lib/runtime/properties/-
-lib/runtime/types/-
-lib/runtime/editor/-
-include/Relations
+	lib/nabl/-
+	lib/task/-
+	lib/properties/-
+	lib/types/-
+	lib/editor/-
+	include/Relations
 	names
 	
 
@@ -28,7 +28,7 @@ rules
 	// 		// find all roles in all these relations
 	// 		allRoles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> allRelations;
 	// 		<debug-task> allRoles;
-	// 		<insert-results;map(map(debug;try(get-type);debug))>allRoles;
+	// 		<insert-results-or-delay;map(map(debug;try(get-type);debug))>allRoles;
 	// 		// TODO: get only the roles with me as type.
 	// 		// <debug> "get roles";
 	// 		// roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(name,[],[])])> allRelations; //doesnt seem to work: filtering by type
@@ -52,15 +52,10 @@ rules
 //     ; roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Type(EntityType(en))])> relations
 //     ; <nabl-store-roles(|ctx)>
 
-        nabl-resolve-all-tasks(|partition, ns, prop*) =
-                map(
-                  <new-task(|partition)> ResolveAllDefs(<id>, ns)
-                ; <nabl-use-propconstraint(|partition)> (<id>, prop*)
-                )
 
 	debug-task: task -> task
 		where
-			result := <try(insert-results)> task;
+			result := <try(insert-results-or-delay)> task;
 			<debug-depth>[task, result];
 			<debug>[task, result]
 

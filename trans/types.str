@@ -3,8 +3,8 @@ module types
 imports
 	include/Relations
 	types.generated
-	lib/runtime/types/-
-	lib/runtime/task/-
+	lib/types/-
+	lib/task/-
 	
 
 rules

@@ -22,6 +22,14 @@ trans/*.pp.generated.str
 .settings/org.eclipse.jdt.core.prefs
 utils
 lib/runtime
+lib/analysis
+lib/editor
+lib/index
+lib/nabl
+lib/properties
+lib/task
+lib/tmpl
+lib/types
 lib/*.generated.str
 lib-refactoring/*.generated.str
 *.aterm

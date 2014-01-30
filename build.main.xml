@@ -29,6 +29,50 @@
     <property name="externaljar" value="../lib.jar"/>
     <property name="externaljarflags" value="-la org.lib"/>
     -->
+	<target name="os-detection">
+	<condition property="isWin">
+	<os family="windows" />
+	</condition>
+	</target>
+
+	<target name="copy-lib-files" if="isWin" depends="os-detection">
+	<copy todir="${basedir}/lib/nabl">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/index">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/index/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/task">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/types">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/analysis">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/analysis/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/editor">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/editor/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/properties">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" includes="**" />
+	</copy>
+	<copy todir="${basedir}/lib/tmpl">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" includes="**" />
+	</copy>
+
+	</target>
+
+	<target name="link-lib-files" unless="isWin" depends="os-detection">
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/" link="${basedir}/lib/nabl" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/index/" link="${basedir}/lib/index" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" link="${basedir}/lib/task" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" link="${basedir}/lib/types" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/analysis/" link="${basedir}/lib/analysis" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/editor/" link="${basedir}/lib/editor" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" link="${basedir}/lib/properties" overwrite="true" />
+	<symlink resource="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" link="${basedir}/lib/tmpl" overwrite="true" />
+	</target>
 
     <!-- Environment configuration for command-line builds -->
     <condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
@@ -40,5 +84,5 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target name="all" depends="spoofaximp.default.ctree"/>
+    <target name="all" depends="spoofaximp.default.ctree, copy-lib-files, link-lib-files"/>
 </project>

@@ -4,12 +4,12 @@ imports
 	include/Relations
 	runtime/editor/interop
 	lib/editor-common.generated
-	lib/runtime/index/-
-	lib/runtime/nabl/-
-	lib/runtime/properties/-
-	lib/runtime/types/-
-	lib/runtime/task/-
-	lib/runtime/analysis/-
+	lib/index/-
+	lib/nabl/-
+	lib/properties/-
+	lib/types/-
+	lib/task/-
+	lib/analysis/-
 	
 
 rules
@@ -58,7 +58,7 @@ rules
 	
 	// resolve all task results
 	give-all-tasks-results = bottomup(try(give-task-results))
-	give-task-results: e@Result(_) -> <insert-results <+ with(fail|"Task has no result yet: ")>e
+	give-task-results: e@Result(_) -> <insert-results-or-delay <+ with(fail|"Task has no result yet: ")>e
 	
 	// order the index entries
 	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]

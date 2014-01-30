@@ -3,7 +3,7 @@ module pp
 imports
 
 	libstratego-gpp
-	lib/runtime/tmpl/pp
+	lib/tmpl/pp
 	Common.pp.generated
 	Model.pp.generated
 	Modules.pp.generated
