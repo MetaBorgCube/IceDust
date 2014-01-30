@@ -37,28 +37,28 @@
 
 	<target name="copy-lib-files" if="isWin" depends="os-detection">
 	<copy todir="${basedir}/lib/nabl">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/index">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/index/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/index/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/task">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/types">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/analysis">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/analysis/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/analysis/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/editor">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/editor/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/editor/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/properties">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" includes="**" />
 	</copy>
 	<copy todir="${basedir}/lib/tmpl">
-	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" includes="**" />
+	<fileset dir="${basedir}/../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" includes="**" />
 	</copy>
 
 	</target>
@@ -84,5 +84,5 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target name="all" depends="spoofaximp.default.ctree, copy-lib-files, link-lib-files"/>
+    <target name="all" depends="copy-lib-files, link-lib-files, spoofaximp.default.ctree"/>
 </project>
