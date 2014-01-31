@@ -2,27 +2,34 @@ module example
 
 model
 entity User{
-	name : String
-	name2 : String = "default value" (default)
-	name3 : String = "default value" (default)
-	name4 : String = name
-	name5 : String = name4
-	year : Int
-	year2 : Int = 6
+	name : String = "my name"
+}
+entity Post{
+	title : String
+	body : String = title (default)
+}
+relation UserPost{
+	User *
+	Post 1
 }
 
 data
-User me{
-	name = "My name"
-	name2 = "My name2"
-	year = 5
+User me{}
+Post p1{
+	title = "First post"
+}
+Post p2{
+	title = "Second post"
+	body = "Some text"
+}
+UserPost up1{
+	User:me
+	Post:p1
+}
+UserPost up2{
+	User:me
+	Post:p2
 }
 
 execute
-me.name
-me.name2
-me.name3
-me.name4
-me.name5
-me.year
-me.year2
+me > UserPost
