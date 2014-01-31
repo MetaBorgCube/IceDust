@@ -5,9 +5,10 @@ imports
 	include/Relations
 	lib/editor-common.generated
 	desugar
-	runtime/nabl/-
-	runtime/task/-
-	runtime/types/-
+	lib/nabl/-
+	lib/task/-
+	lib/types/-
+	lib/properties/-
 	names
 
 rules
@@ -17,7 +18,6 @@ rules
 		where
 			not(<string-starts-with-capital> x)
 
-
 	constraint-note:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
 	// constraint-note:	e@Role(_, _, _)		-> (e, $[This is not translated to java yet.])
 	// constraint-note:	e@RoleValue(_, _)	-> (e, $[This is not translated to java yet.])
@@ -25,36 +25,29 @@ rules
 
 rules // Check derivation types of attributes
 	
-	constraint-error:
-		x@AttributeValue(AttributeName(name), _) -> (x, $[Derivations cannot be assigned custom values.])
-			where
-				Derivation() := <get-derivation-type>name
+	// Non-task-engine version
+	// constraint-error:
+	// 	x@AttributeValue(AttributeName(name), _) -> (x, $[Derivations cannot be assigned custom values.])
+	// 		where
+	// 			Derivation() := <get-derivation-type>name
+				
+	// Task-engine version	
+	nabl-constraint(|ctx):
+		x@AttributeValue(AttributeName(name), _) -> <fail>
+		with
+			prop-task := <prop-create-lookup(|ctx, NablProp_derivation-type())> name;
+			match     := <derivation-type-match(|ctx, Derivation())> prop-task;
+			<task-create-error-on-success(|ctx, match, "Derivations cannot be assigned custom values.")> x
 
 
-
-
-rules
-
-/**
- *	Random experimenting with the task engine.
- */	
+rules // Random experimenting with the task engine
  
 	// task engine based (name binding) constraints.
 	nabl-constraint(|ctx):
 		e@AttributeName(name) -> <fail>
     	where
-    		// <debug> ["nabl-constraint", e];
-			<has-annotation(?Use(task))> name;							//annotation use means that a task should be resolved
+				<has-annotation(?Use(task))> name;																	//annotation use means that a task should be resolved
     		msg  := "Unresolved reference (from nabl-constraint task based)";
-			<task-create-error-on-failure(|ctx, task, msg)> name		//if this task fails: then create the error message
+				<task-create-error-on-failure(|ctx, task, msg)> name								//if this task fails: then create the error message
 
-	// // task engine based (name and type) constaints.
-	// nabl-constraint(|ctx):
-	// 	e@AttributeName(name) -> <fail>
-	// 	where
-	// 		lookup := <type-lookup(|ctx)> name;							// refers to a task getting the type
-	// 		match  := <type-match(|ctx, "Int")> lookup;
-	// 		//<debug> type;
-	// 		msg := $[This attribute is of type [name]];					// TODO: how to get the type itself, instead of a task resolving to the type?
-	// 		<task-create-note-on-failure(|ctx, match, msg)> name
 
