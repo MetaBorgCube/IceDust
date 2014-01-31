@@ -13,13 +13,13 @@ class example
     p2.set_body("Some text");
     UserPost up1 = new UserPost();
     up1.User = me;
-    up1.Post = p1;
     me.UserPost_User.add(up1);
+    up1.Post = p1;
     p1.UserPost_Post.add(up1);
     UserPost up2 = new UserPost();
     up2.User = me;
-    up2.Post = p2;
     me.UserPost_User.add(up2);
+    up2.Post = p2;
     p2.UserPost_Post.add(up2);
     System.out.println(me.UserPost_User.size());
   }

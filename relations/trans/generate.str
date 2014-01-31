@@ -104,7 +104,19 @@ rules // Transformation to java ast.
     ModuleDesugared(moduleName, model, data, execute) ->
 CompilationUnit(
   None()
-, []
+, [ TypeImportDec(
+      TypeName(
+        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
+      , Id("Collection")
+      )
+    )
+  , TypeImportDec(
+      TypeName(
+        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
+      , Id("HashSet")
+      )
+    )
+  ]
 , <concat>[[ mainClass ], modelJava]
 )
 	where
@@ -155,7 +167,11 @@ CompilationUnit(
 	      )
 	    )
 	where
-		attributesJava := <map(to-java);concat>attributes
+		attributesJava := <map(to-java);concat>attributes;
+		fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name;
+		<debug> ["fulfill", fulfillRoles]
+		//TODO: get AST parts instead of only the Def site
+		
 		
   to-java: RelationTypeDef(name, attributesAndRoles) -> 
 	  ClassDec(
@@ -165,7 +181,8 @@ CompilationUnit(
 	      )
 	    )
 	where
-		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles
+		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles//;
+		// fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
 		[ FieldDec(
@@ -293,10 +310,12 @@ CompilationUnit(
             ]
           )
         )],
-        attributeValuesJava
+        attributeValuesJava,
+        roleValuesJava
         ]
 	where
-		attributeValuesJava := <map(to-java(|entityName))> attributeValues
+		attributeValuesJava := <map(to-java(|entityName))> attributeValues;
+		roleValuesJava			:= <map(to-java(|entityName, entityType));concat> roleValues
 
   to-java(|entityName) : AttributeValue(AttributeName(attributeName), attributeValue) ->
 	  	ExprStm(
@@ -307,6 +326,29 @@ CompilationUnit(
 	    )
     where
     	attributeValueJava := <to-java>attributeValue
+    	
+  to-java(|entityName, entityType) :
+  	RoleValue(RoleName(roleName), EntityName(otherEntityName)) ->
+  	[	
+  		ExprStm(
+		      Assign(
+		        ExprName(AmbName(Id(entityName)), Id(roleName))
+		      , ExprName(Id(otherEntityName))
+		      )
+		    )
+		  , ExprStm(
+		      Invoke(
+		        Method(
+		          MethodName(
+		            AmbName(AmbName(Id(otherEntityName)), Id($[[entityType]_[roleName]]))
+		          , Id("add")
+		          )
+		        )
+		      , [ExprName(Id(entityName))]
+		      )
+		    )
+		 ]
+  
 
   to-java: String(value) -> Lit(String([Chars(value)]))
   to-java: Integer(value) -> Lit(Deci(value))
