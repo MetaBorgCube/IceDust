@@ -202,11 +202,10 @@ CompilationUnit(
 	     ]
 		where
 			javaType := <to-java>type;
-			derivationType := <get-derivation-type <+ warn-msg(|$[Could not get derivation type of Attribute.])>name;
+			derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
 			if Normal() := derivationType then
 				setter := <setter>(name, javaType);
 				getterExpr := ExprName(Id(name))
-				// <debug>[name, derivationType, 1]
 			else if DefaultValue() := derivationType then
 				setter := <setter>(name, javaType);
 				Derivation(derivationExpr, _) := derivation;
@@ -215,15 +214,10 @@ CompilationUnit(
 	                    , ExprName(Id(name))
 	                    , <to-java>derivationExpr
 	                    )
-				// <debug>[name, derivationType, 2]
 			else if Derivation() := derivationType then
 				setter := [];
 				Derivation(derivationExpr, _) := derivation;
-				// getterExpr := Some(ExprName(Id(name)));
-				// <debug> derivationExpr;
-				// <to-java;debug> derivationExpr
 				getterExpr := <to-java>derivationExpr
-				// <debug>[name, derivationType, 3]
 			end end end
 	
 	setter: (name, javaType) ->
