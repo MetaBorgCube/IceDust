@@ -159,31 +159,13 @@ CompilationUnit(
 	where
 		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles
 
-  to-java: Attribute(name, PrimitiveType(type), _) ->
+  to-java: Attribute(name, PrimitiveType(type), derivation) ->
 		[ FieldDec(
 	        [Private()]
 	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
 	      , [VarDec(Id(name))]
 	      )
-	    , MethodDec(
-	        MethodDecHead(
-	          [Public()]
-	        , None()
-	        , Void()
-	        , Id($[set_[name]])
-	        , [Param(
-	             []
-	           , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-	           , Id(name)
-	           )]
-	        , None()
-	        )
-	      , Block(
-	          [ExprStm(
-	             Assign(Field(This(), Id(name)), ExprName(Id(name)))
-	           )]
-	        )
-	      )
+	    , setter
 	    // , MethodDec(
 	    //     MethodDecHead(
 	    //       [Public()]
@@ -207,7 +189,8 @@ CompilationUnit(
 	        , None()
 	        )
 	      , Block(
-	        	[Return(Some(ExprName(Id(name))))]
+	        	[Return(Some(getterExpr))]
+	        	// [Return(Some(ExprName(Id(name))))]
 	          // [ If(
 	          //     NotEq(ExprName(Id(name)), Lit(Null()))
 	          //   , Return(Some(ExprName(Id(name))))
@@ -217,8 +200,52 @@ CompilationUnit(
 	        )
 	      )
 	     ]
-	where
-		javaType := <to-java>type
+		where
+			javaType := <to-java>type;
+			derivationType := <get-derivation-type <+ warn-msg(|$[Could not get derivation type of Attribute.])>name;
+			if Normal() := derivationType then
+				setter := <setter>(name, javaType);
+				getterExpr := ExprName(Id(name))
+				// <debug>[name, derivationType, 1]
+			else if DefaultValue() := derivationType then
+				setter := <setter>(name, javaType);
+				Derivation(derivationExpr, _) := derivation;
+				getterExpr := Cond(
+	                      NotEq(ExprName(Id(name)), <null-value>type)
+	                    , ExprName(Id(name))
+	                    , <to-java>derivationExpr
+	                    )
+				// <debug>[name, derivationType, 2]
+			else if Derivation() := derivationType then
+				setter := [];
+				Derivation(derivationExpr, _) := derivation;
+				// getterExpr := Some(ExprName(Id(name)));
+				// <debug> derivationExpr;
+				// <to-java;debug> derivationExpr
+				getterExpr := <to-java>derivationExpr
+				// <debug>[name, derivationType, 3]
+			end end end
+	
+	setter: (name, javaType) ->
+		MethodDec(
+      MethodDecHead(
+        [Public()]
+      , None()
+      , Void()
+      , Id($[set_[name]])
+      , [Param(
+           []
+         , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+         , Id(name)
+         )]
+      , None()
+      )
+    , Block(
+        [ExprStm(
+           Assign(Field(This(), Id(name)), ExprName(Id(name)))
+         )]
+      )
+    )
 
   //FIXME: also generate code in the entities that this relationship roles point to
   to-java: Role(EntityType(type), multiplicity, roleName) ->
@@ -232,6 +259,10 @@ CompilationUnit(
   to-java: "String" -> "String"
   to-java: "Int"	-> "int"
 
+	to-java: AttributeName(name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+	
+	null-value: "String" -> Lit(Null())
+	null-value: "Int" -> Lit(Deci("0"))
 
 // Data
   to-java: DataDef(defs) -> <map(to-java);concat> defs
@@ -276,7 +307,7 @@ CompilationUnit(
     	attributeValueJava := <to-java>attributeValue
 
   to-java: String(value) -> Lit(String([Chars(value)]))
-  to-java: Integer(value) -> Lit(Deci("1"))
+  to-java: Integer(value) -> Lit(Deci(value))
 
 
 // Execute
