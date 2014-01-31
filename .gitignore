@@ -19,6 +19,7 @@ editor/*.generated.*
 syntax/Relations*.generated.esv
 syntax/Relations.generated.pp
 trans/*.pp.generated.str
+trans/types.generated.str
 .settings/org.eclipse.jdt.core.prefs
 utils
 lib/runtime
