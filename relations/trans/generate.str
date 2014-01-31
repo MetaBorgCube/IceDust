@@ -163,15 +163,16 @@ CompilationUnit(
 	  ClassDec(
 	      ClassDecHead([], Id(name), None(), None(), None())
 	    , ClassBody(
-	        attributesJava
+	      	<concat>[
+	      		attributesJava,
+	      		fulfillRolesJava	
+	      	]
 	      )
 	    )
 	where
 		attributesJava := <map(to-java);concat>attributes;
 		fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name;
-		<debug> ["fulfill", fulfillRoles]
-		//TODO: get AST parts instead of only the Def site
-		
+		fulfillRolesJava := <map(to-java-fullfil-role)> fulfillRoles
 		
   to-java: RelationTypeDef(name, attributesAndRoles) -> 
 	  ClassDec(
@@ -183,6 +184,11 @@ CompilationUnit(
 	where
 		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles//;
 		// fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name
+
+	to-java-fullfil-role: fulfillRole@_ -> []
+		where
+			<debug> <debug> ["fulfill", fulfillRole]
+			//TODO: get AST parts instead of only the Def site
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
 		[ FieldDec(
