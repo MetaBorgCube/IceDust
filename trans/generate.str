@@ -9,6 +9,8 @@ imports
 	desugar
 	properties
 	names
+	lib/index/-
+	lib/task/-
 	
 
 rules // Builders
@@ -16,17 +18,23 @@ rules // Builders
 	generate-java:
 		(selected, position, ast, path, project-path) -> (fileName, result)
 		with
+			index-setup(|<language>, project-path);
+			task-setup(|project-path);
 			(fileName, result) := <generate-java>(selected, path)
 			
 	compile-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
+			index-setup(|<language>, project-path);
+			task-setup(|project-path);
 			(javaFileName, _) := <generate-java>(selected, path);
 			<compile-java> javaFileName
 			
 	execute-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
+			index-setup(|<language>, project-path);
+			task-setup(|project-path);
 			(javaFileName, _) := <generate-java>(selected, path);
 			classFileName := <compile-java> javaFileName;
 			<execute-java> classFileName
