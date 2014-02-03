@@ -33,3 +33,4 @@ UserPost up2{
 
 execute
 me > UserPost
+me > UserPost > Post

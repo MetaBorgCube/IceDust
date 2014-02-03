@@ -9,9 +9,9 @@ templates
 
 Execute.AccessEntityAttribute = <<EntityName>.<ID>>
 
-Execute.Navigator = <<EntityName> <Navigate*>>
+Execute.Navigator = <<EntityName> <Navigate>>
 
-Navigate.Navigate = <<NavType> <EntityType>>
+Navigate.Navigate = <<NavType> <EntityType> <Navigate?>>
 NavType.NavOr = <\>>
 NavType.NavAnd = <\>\>>
 NavType.NavOrEx = <-\>>
