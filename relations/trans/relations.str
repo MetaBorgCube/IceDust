@@ -103,6 +103,8 @@ rules // Debugging
 			  result   := result-ast'
 	debug-index-partition =
 		analysis-debug-index-partition(|<language>)
+	debug-index-selection-partition =
+		analysis-debug-index-partition-resolve(|<language>)
 
 	debug-task-project =
 		analysis-debug-task-project(|<language>)

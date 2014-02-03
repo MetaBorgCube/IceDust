@@ -28,6 +28,7 @@ menus
       action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta) (realtime) 
       action: "Project (resolved AST)" = debug-index-project-resolve-ast (openeditor) (meta) (realtime) 
       action: "Partition"          = debug-index-partition (openeditor) (meta)
+      action: "Partition (resolved)" = debug-index-selection-partition (openeditor) (meta)
     end
     
     submenu: "Show tasks"
