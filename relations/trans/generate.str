@@ -227,11 +227,7 @@ CompilationUnit(
 	de-def: Def(x) -> x
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
-		[ FieldDec(
-	        [Private()]
-	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-	      , [VarDec(Id(name))]
-	      )
+		[ field
 	    , setter
 	    , MethodDec(
 	        MethodDecHead(
@@ -251,9 +247,11 @@ CompilationUnit(
 			javaType := <to-java>type;
 			derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
 			if Normal() := derivationType then
+				field := <field>(name, javaType);
 				setter := <setter>(name, javaType);
 				getterExpr := ExprName(Id(name))
 			else if DefaultValue() := derivationType then
+				field := <field>(name, javaType);
 				setter := <setter>(name, javaType);
 				Derivation(derivationExpr, _) := derivation;
 				getterExpr := Cond(
@@ -262,10 +260,18 @@ CompilationUnit(
 	                    , <to-java>derivationExpr
 	                    )
 			else if Derivation() := derivationType then
+				field := [];
 				setter := [];
 				Derivation(derivationExpr, _) := derivation;
 				getterExpr := <to-java>derivationExpr
 			end end end
+	
+	field: (name, javaType) ->
+				FieldDec(
+	        [Private()]
+	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	      , [VarDec(Id(name))]
+	      )
 	
 	setter: (name, javaType) ->
 		MethodDec(
