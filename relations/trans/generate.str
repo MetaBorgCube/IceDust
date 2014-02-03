@@ -163,7 +163,13 @@ CompilationUnit(
 	  ClassDec(
 	      ClassDecHead([], Id(name), None(), None(), None())
 	    , ClassBody(
-	      	<concat>[
+	      	<concat>[[ConstrDec(
+	            ConstrDecHead([Public()], None(), Id(name), [], None())
+	          , ConstrBody(
+	              None()
+	            , fulfillRolesJavaInit
+	            )
+	          )],
 	      		attributesJava,
 	      		fulfillRolesJava	
 	      	]
@@ -172,7 +178,8 @@ CompilationUnit(
 	where
 		attributesJava := <map(to-java);concat>attributes;
 		fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name;
-		fulfillRolesJava := <map(to-java-fullfil-role)> fulfillRoles
+		fulfillRolesJava := <map(to-java-fullfil-role)> fulfillRoles;
+		fulfillRolesJavaInit := <map(to-java-fulfill-role-init)> fulfillRoles
 		
   to-java: RelationTypeDef(name, attributesAndRoles) -> 
 	  ClassDec(
@@ -183,12 +190,41 @@ CompilationUnit(
 	    )
 	where
 		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles//;
-		// fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name
 
-	to-java-fullfil-role: fulfillRole@_ -> []
+	to-java-fullfil-role: fulfillRole@_ ->
+			FieldDec(
+        [Public()]
+      , ClassOrInterfaceType(
+          TypeName(Id("Collection"))
+        , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+        )
+      , [VarDec(Id($[[relationName]_[roleName]]))]
+      )
 		where
+			relationName := "UserPost";
+			roleName := "User";
 			<debug> ["fulfill", fulfillRole]
-			//TODO: get AST parts instead of only the Def site
+			//FIXME: get "UserPost" (relationName) and "User" (roleName) here
+			
+	to-java-fulfill-role-init: fulfillRole@_ ->
+			ExprStm(
+	      Assign(
+	        ExprName(Id($[[relationName]_[roleName]]))
+	      , NewInstance(
+	          None()
+	        , ClassOrInterfaceType(
+	            TypeName(Id("HashSet"))
+	          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id($[[relationName]])), None())]))
+	          )
+	        , []
+	        , None()
+	        )
+	      )
+	    )
+		where
+			relationName := "UserPost";
+			roleName := "User"
+			//FIXME: get "UserPost" (relationName) and "User" (roleName) here
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
 		[ FieldDec(
