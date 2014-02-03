@@ -187,7 +187,7 @@ CompilationUnit(
 
 	to-java-fullfil-role: fulfillRole@_ -> []
 		where
-			<debug> <debug> ["fulfill", fulfillRole]
+			<debug> ["fulfill", fulfillRole]
 			//TODO: get AST parts instead of only the Def site
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
