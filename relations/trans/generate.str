@@ -11,6 +11,7 @@ imports
 	names
 	lib/index/-
 	lib/task/-
+	lib/nabl/-
 	
 
 rules // Builders
@@ -201,10 +202,8 @@ CompilationUnit(
       , [VarDec(Id($[[relationName]_[roleName]]))]
       )
 		where
-			relationName := "UserPost";
-			roleName := "User";
-			<debug> ["fulfill", fulfillRole]
-			//FIXME: get "UserPost" (relationName) and "User" (roleName) here
+			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
+			roleName := <de-def;nabl-uri-name>fulfillRole
 			
 	to-java-fulfill-role-init: fulfillRole@_ ->
 			ExprStm(
@@ -222,9 +221,10 @@ CompilationUnit(
 	      )
 	    )
 		where
-			relationName := "UserPost";
-			roleName := "User"
-			//FIXME: get "UserPost" (relationName) and "User" (roleName) here
+			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
+			roleName := <de-def;nabl-uri-name>fulfillRole
+
+	de-def: Def(x) -> x
 
   to-java: Attribute(name, PrimitiveType(type), derivation) ->
 		[ FieldDec(
@@ -233,19 +233,6 @@ CompilationUnit(
 	      , [VarDec(Id(name))]
 	      )
 	    , setter
-	    // , MethodDec(
-	    //     MethodDecHead(
-	    //       [Public()]
-	    //     , None()
-	    //     , Void()
-	    //     , Id($[unset_[name]])
-	    //     , []
-	    //     , None()
-	    //     )
-	    //   , Block(
-	    //       [ExprStm(Assign(ExprName(Id(name)), Lit(Null())))]
-	    //     )
-	    //   )
 	    , MethodDec(
 	        MethodDecHead(
 	          [Public()]
@@ -257,13 +244,6 @@ CompilationUnit(
 	        )
 	      , Block(
 	        	[Return(Some(getterExpr))]
-	        	// [Return(Some(ExprName(Id(name))))]
-	          // [ If(
-	          //     NotEq(ExprName(Id(name)), Lit(Null()))
-	          //   , Return(Some(ExprName(Id(name))))
-	          //   , Return(Some(Lit(Null())))
-	          //   )
-	          // ]
 	        )
 	      )
 	     ]
@@ -308,7 +288,6 @@ CompilationUnit(
       )
     )
 
-  //FIXME: also generate code in the entities that this relationship roles point to
   to-java: Role(EntityType(type), multiplicity, roleName) ->
 		[	FieldDec(
 	      [Public()]

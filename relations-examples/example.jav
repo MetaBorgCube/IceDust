@@ -27,6 +27,10 @@ class example
 
 class User  
 { 
+  public User(){
+	  UserPost_User = new HashSet<UserPost>();
+  }
+  
   private String name;
 
   public String get_name()
@@ -35,14 +39,14 @@ class User
   }
   
   public Collection<UserPost> UserPost_User;
-  
-  public User(){
-	  UserPost_User = new HashSet<UserPost>();
-  }
 }
 
 class Post  
 { 
+	public Post(){
+	  UserPost_Post = new HashSet<UserPost>();
+  }
+	
   private String title;
 
   public void set_title(String title)
@@ -68,10 +72,6 @@ class Post
   }
   
   public Collection<UserPost> UserPost_Post;
-  
-  public Post(){
-	  UserPost_Post = new HashSet<UserPost>();
-  }
 }
 
 class UserPost  
