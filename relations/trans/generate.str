@@ -59,8 +59,9 @@ rules // Builders
 	execute-java:
 		classFileName -> None()
 		with
-			className := <remove-extension> classFileName;
-			<try(call)> ("java", [className])
+			classPath := <dirname>classFileName;
+			className := <base-filename;remove-extension> classFileName;
+			<try(call)> ("java", ["-cp", classPath, className])
 			
 
 

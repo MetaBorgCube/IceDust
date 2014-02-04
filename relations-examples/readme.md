@@ -1,1 +1,0 @@
-Note: examples need to be run a separate project, in the root.
