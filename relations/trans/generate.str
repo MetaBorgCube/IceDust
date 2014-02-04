@@ -187,6 +187,8 @@ CompilationUnit(
 	where
 		attributesJava := <map(to-java);concat>attributes;
 		fulfillRoles := <get-fulfill-role <+ empty-list>name;
+		// <debug> fulfillRoles;
+		// <debug> <get-fulfill-role-multiple <+ empty-list>name;
 		fulfillRolesJava := <map(to-java-fullfil-role) <+ empty-list> fulfillRoles;
 		fulfillRolesJavaInit := <map(to-java-fulfill-role-init) <+ empty-list> fulfillRoles
 	
