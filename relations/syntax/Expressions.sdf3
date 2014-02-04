@@ -39,9 +39,6 @@ Exp 								= <<AttributeName>>
 
 template options
 context-free priorities
-{
-	"(" Exp ")" -> Exp
-} >
 { left:
 	Exp.Multiplication
 	Exp.Division
