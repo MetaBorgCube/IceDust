@@ -29,7 +29,7 @@ rules // Attributes are Derivation(), has DefaultValue() or are Normal()
 rules // Entities role fulfilling
 
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@EntityTypeDef(name, _) -> <fail>
+		e@EntityTypeDef(_, name, _) -> <fail>
 		where
 			uri := <nabl-uri> name;
 			scope := <nabl-uri-parent> uri;

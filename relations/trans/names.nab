@@ -28,15 +28,10 @@ binding rules
 
 
 	// entity types
-	EntityTypeDef(e, _) :
+	EntityTypeDef(_, e, _) :
 		defines EntityType e
 		scopes Attribute
-		scopes This
-		implicitly defines This "this" of type e
-	RelationTypeDef(e, _) :
-		defines EntityType e
 		scopes Role
-		scopes Attribute
 		scopes This
 		implicitly defines This "this" of type e
 		

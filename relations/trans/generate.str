@@ -168,7 +168,7 @@ CompilationUnit(
 // Model
   to-java: ModelDef(model) -> <map(try(to-java))>model
 
-  to-java: EntityTypeDef(name, attributes) -> 
+  to-java: EntityTypeDef(_, name, attributesAndRoles) -> 
 	  ClassDec(
 	      ClassDecHead([], Id(name), None(), None(), None())
 	    , ClassBody(
@@ -179,13 +179,13 @@ CompilationUnit(
 	            , fulfillRolesJavaInit
 	            )
 	          )],
-	      		attributesJava,
+	      		attributesAndRolesJava,
 	      		fulfillRolesJava	
 	      	]
 	      )
 	    )
 	where
-		attributesJava := <map(to-java);concat>attributes;
+		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles;
 		fulfillRoles := <get-fulfill-role <+ empty-list>name;
 		// <debug> fulfillRoles;
 		// <debug> <get-fulfill-role-multiple <+ empty-list>name;
@@ -194,16 +194,6 @@ CompilationUnit(
 	
 	empty-list: _ -> []
 	
-  to-java: RelationTypeDef(name, attributesAndRoles) -> 
-	  ClassDec(
-	      ClassDecHead([], Id(name), None(), None(), None())
-	    , ClassBody(
-	        attributesAndRolesJava
-	      )
-	    )
-	where
-		attributesAndRolesJava := <map(to-java);concat>attributesAndRoles//;
-
 	to-java-fullfil-role: fulfillRole@_ ->
 			FieldDec(
         [Public()]

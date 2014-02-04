@@ -6,12 +6,19 @@ imports
 
 templates
 
-// entities with attributes (only primitive types)
+// both entities and relations are entityTypeDefs
 Model.EntityTypeDef = <
-entity <ID> {
-	<Attribute*;separator="\n">
+<EntityOrRelation> <ID> {
+	<RoleOrAttribute*;separator="\n">
 }
 >
+
+EntityOrRelation.EntityType = <entity>
+EntityOrRelation.RelationType = <relation>
+
+// roles and attributes
+RoleOrAttribute = <<Role>>
+RoleOrAttribute = <<Attribute>>
 
 Attribute.Attribute = <<ID> : <PrimitiveType> <Derivation?>>
 PrimitiveType.PrimitiveType = <<BasicType>>
@@ -19,17 +26,6 @@ Derivation.Derivation = <= <Expression> <DerivationType>>
 DerivationType.DefaultValue	= <(default)>
 DerivationType.Derivation		= <(derivation)>
 DerivationType.Derivation		= <>
-
-
-// relations with members and attributes
-Model.RelationTypeDef = <
-relation <ID> {
-	<RoleOrAttribute*;separator="\n">	
-}
->
-
-RoleOrAttribute = <<Role>>
-RoleOrAttribute = <<Attribute>>
 
 Role.Role = <<EntityType> <Multiplicity> <ID?>>
 EntityType.EntityType = <<ID>>

@@ -169,20 +169,21 @@ rules
     ; match(implicits__|[])
 
   nabl-get-scope =
-    ?EntityTypeDef(e, _)
-    ; ![NablNsAttribute(), NablNsThis()]
+    ?EntityTypeDef(_, e, _)
+    ; ![NablNsAttribute(), NablNsRole(), NablNsThis()]
 
   nabl-get-name :
-    EntityTypeDef(e, _) -> e
+    EntityTypeDef(_, e, _) -> e
 
   nabl-name-apply(s) =
-    EntityTypeDef(s, id)
+    EntityTypeDef(id, s, id)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?EntityTypeDef(e, _)
+    ?EntityTypeDef(_, e, _)
     ; origin-track-forced(
         EntityTypeDef(
-          nabl-def(
+          id
+        , nabl-def(
             ?c-uri1__
           , ?s-uri1__
           | lang__
@@ -193,7 +194,7 @@ rules
           , NablNsEntityType()
           , Unique()
           , Current()
-          , [NablNsAttribute(), NablNsThis()]
+          , [NablNsAttribute(), NablNsRole(), NablNsThis()]
           , []
           )
         , id
@@ -219,66 +220,7 @@ rules
     ; match(implicits__|[i-2__])
 
   nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?EntityTypeDef(e, _)
-    ; (where([i-2__] := implicits__)
-       ; where(<nabl-store-props(
-                | partition__
-                , [Prop(Type(), e, [])]
-                )> i-2__))
-    ; fail
-
-  nabl-get-scope =
-    ?RelationTypeDef(e, _)
-    ; ![NablNsRole(), NablNsAttribute(), NablNsThis()]
-
-  nabl-get-name :
-    RelationTypeDef(e, _) -> e
-
-  nabl-name-apply(s) =
-    RelationTypeDef(s, id)
-
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?RelationTypeDef(e, _)
-    ; origin-track-forced(
-        RelationTypeDef(
-          nabl-def(
-            ?c-uri1__
-          , ?s-uri1__
-          | lang__
-          , partition__
-          , uniques__
-          , uri__
-          , uri__
-          , NablNsEntityType()
-          , Unique()
-          , Current()
-          , [NablNsRole(), NablNsAttribute(), NablNsThis()]
-          , []
-          )
-        , id
-        )
-      |
-      )
-    ; where(i-2__ := <nabl-def(
-                        ?c-uri2__
-                      , ?s-uri2__
-                      | lang__
-                      , partition__
-                      , uniques__
-                      , c-uri1__
-                      , s-uri1__
-                      , NablNsThis()
-                      , Unique()
-                      , Current()
-                      , []
-                      , []
-                      )> "this")
-    ; match(child-uris__|c-uri2__)
-    ; match(sibl-uris__|s-uri2__)
-    ; match(implicits__|[i-2__])
-
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?RelationTypeDef(e, _)
+    ?EntityTypeDef(_, e, _)
     ; (where([i-2__] := implicits__)
        ; where(<nabl-store-props(
                 | partition__
@@ -465,7 +407,7 @@ rules
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
     ?AttributeName(a)
-    ; where(r8-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
+    ; where(r7-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
                            ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
                                                                            NablNsThis()
                                                                          , []
@@ -476,6 +418,51 @@ rules
     ; origin-track-forced(
         AttributeName(
           nabl-use(
+          | lang__
+          , partition__
+          , uniques__
+          , uris__
+          , [ UseCandidate(
+                NablNsAttribute()
+              , []
+              , Context(
+                  NablNsEntityType()
+                , r7-1-1-1__
+                , []
+                , Current()
+                )
+              , True()
+              , [r7-1-1-1__]
+              )
+            ]
+          )
+        )
+      |
+      )
+
+  task-rewrite :
+    ("match7-1-1-1-1", (t, [])) -> t
+
+  nabl-get-name :
+    AccessEntityAttribute(EntityName(e), a) -> a
+
+  nabl-name-apply(s) =
+    AccessEntityAttribute(EntityName(id), s)
+
+  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+    ?AccessEntityAttribute(EntityName(e), a)
+    ; where(r8-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, e)
+                           ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
+                                                                           NablNsEntity()
+                                                                         , []
+                                                                         , Current()
+                                                                         , True()
+                                                                         , []
+                                                                         ))
+    ; origin-track-forced(
+        AccessEntityAttribute(
+          origin-track-forced(EntityName(id)|)
+        , nabl-use(
           | lang__
           , partition__
           , uniques__
@@ -500,51 +487,6 @@ rules
 
   task-rewrite :
     ("match8-1-1-1-1", (t, [])) -> t
-
-  nabl-get-name :
-    AccessEntityAttribute(EntityName(e), a) -> a
-
-  nabl-name-apply(s) =
-    AccessEntityAttribute(EntityName(id), s)
-
-  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
-    ?AccessEntityAttribute(EntityName(e), a)
-    ; where(r9-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, e)
-                           ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
-                                                                           NablNsEntity()
-                                                                         , []
-                                                                         , Current()
-                                                                         , True()
-                                                                         , []
-                                                                         ))
-    ; origin-track-forced(
-        AccessEntityAttribute(
-          origin-track-forced(EntityName(id)|)
-        , nabl-use(
-          | lang__
-          , partition__
-          , uniques__
-          , uris__
-          , [ UseCandidate(
-                NablNsAttribute()
-              , []
-              , Context(
-                  NablNsEntityType()
-                , r9-1-1-1__
-                , []
-                , Current()
-                )
-              , True()
-              , [r9-1-1-1__]
-              )
-            ]
-          )
-        )
-      |
-      )
-
-  task-rewrite :
-    ("match9-1-1-1-1", (t, [])) -> t
 
   nabl-get-name :
     Role(EntityType(roleType), multiplicity, role) -> role
@@ -599,7 +541,7 @@ rules
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
     ?RoleName(r)
-    ; where(r11-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
+    ; where(r10-1-1-1__ := <nabl-use-candidate(|lang__, partition__, uris__, "this")
                             ; nabl-prop-lookup(|Type(), partition__, [])> UseCandidate(
                                                                             NablNsThis()
                                                                           , []
@@ -619,12 +561,12 @@ rules
               , []
               , Context(
                   NablNsEntityType()
-                , r11-1-1-1__
+                , r10-1-1-1__
                 , []
                 , Current()
                 )
               , True()
-              , [r11-1-1-1__]
+              , [r10-1-1-1__]
               )
             ]
           )
@@ -633,4 +575,4 @@ rules
       )
 
   task-rewrite :
-    ("match11-1-1-1-1", (t, [])) -> t
+    ("match10-1-1-1-1", (t, [])) -> t
