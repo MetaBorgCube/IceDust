@@ -94,6 +94,9 @@ rules // Transformation to java ast.
     
   to-java:
     () -> ""
+    
+  to-java:
+  	None() -> ""
 
   to-java: Module(_,_,_,_) -> <fail>
   	where
@@ -155,7 +158,11 @@ CompilationUnit(
 	    )
 	where
 		dataJava := <to-java>data;
-		executeJava := <to-java>execute
+		if Executable(_) := execute then
+			executeJava := <to-java>execute
+		else
+			executeJava := []
+		end
 
 
 // Model
