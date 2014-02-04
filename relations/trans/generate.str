@@ -179,10 +179,12 @@ CompilationUnit(
 	    )
 	where
 		attributesJava := <map(to-java);concat>attributes;
-		fulfillRoles := <get-fulfill-role <+ err-msg(|$[Could not get fulfill roles of [name].])>name;
-		fulfillRolesJava := <map(to-java-fullfil-role)> fulfillRoles;
-		fulfillRolesJavaInit := <map(to-java-fulfill-role-init)> fulfillRoles
-		
+		fulfillRoles := <get-fulfill-role <+ empty-list>name;
+		fulfillRolesJava := <map(to-java-fullfil-role) <+ empty-list> fulfillRoles;
+		fulfillRolesJavaInit := <map(to-java-fulfill-role-init) <+ empty-list> fulfillRoles
+	
+	empty-list: _ -> []
+	
   to-java: RelationTypeDef(name, attributesAndRoles) -> 
 	  ClassDec(
 	      ClassDecHead([], Id(name), None(), None(), None())
