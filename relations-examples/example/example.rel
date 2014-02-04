@@ -1,0 +1,36 @@
+module example
+
+model
+entity User{
+	name : String = "my name"
+}
+entity Post{
+	title : String
+	body : String = title (default)
+}
+relation UserPost{
+	User *
+	Post 1
+}
+
+data
+User me{}
+Post p1{
+	title = "First post"
+}
+Post p2{
+	title = "Second post"
+	body = "Some text"
+}
+UserPost up1{
+	User:me
+	Post:p1
+}
+UserPost up2{
+	User:me
+	Post:p2
+}
+
+execute
+me > UserPost
+me > UserPost > Post
