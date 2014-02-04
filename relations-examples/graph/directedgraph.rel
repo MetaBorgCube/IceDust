@@ -1,0 +1,27 @@
+module directedgraph
+
+model
+entity Node{
+	
+}
+relation Edge{
+	Node * from
+	Node * to
+}
+
+data
+Node a{}
+Node b{}
+Node c{}
+Edge ab{
+	from:a
+	to:b
+}
+Edge bc{
+	from:b
+	to:c
+}
+Edge ca{
+	from:c
+	to:a
+}

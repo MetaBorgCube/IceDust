@@ -1,0 +1,46 @@
+module ternary
+
+model
+entity Supplier{
+	name : String = "Supplier name" (default)
+}
+entity Part{
+	name : String = "Part name" (default)
+}
+entity Project{
+	name : String = "Project name" (default)
+}
+relation Supply{
+	Supplier *
+	Part *
+	Project *
+	amount : Int
+}
+
+data
+Supplier s{
+	
+}
+Part p{
+	
+}
+Project pr{
+	
+}
+Supply x{
+	Supplier:s
+	Part:p
+	Project:pr
+	amount = 10
+}
+Supply y{
+	Supplier:s
+	Part:p
+	Project:pr
+	amount = 42
+}
+
+execute
+x.amount
+y.amount
+//TODO: get the total amount of parts from a supplier etc...

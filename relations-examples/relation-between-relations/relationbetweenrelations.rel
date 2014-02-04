@@ -1,0 +1,25 @@
+module relationbetweenrelations
+
+model
+entity Person{}
+relation Marriage{
+	Person 1 Husband
+	Person 1 Wife
+}
+relation Counseling{
+	Person * Counselor
+	Marriage 1
+}
+
+data
+Person man{}
+Person woman{}
+Marriage m{
+	Husband:man
+	Wife:woman
+}
+Person professional{}
+Counseling c{
+	Marriage:m
+	Counselor:professional
+}
