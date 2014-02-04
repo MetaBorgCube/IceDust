@@ -6,8 +6,48 @@ imports
 
 templates
 
-// primitive data types
-Expression.String = <"<STRING>">
-Expression.Integer = <<INT>>
+// brackets
+Exp 								= <(<Exp>)> {bracket}
 
-Expression = <<AttributeName>>
+// binary operations
+// TODO: add more binary expressions
+Exp.Multiplication	=	<<Exp> * <Exp>> {left}
+Exp.Division				=	<<Exp> / <Exp>> {left}
+Exp.Modulo					=	<<Exp> % <Exp>> {left}
+
+Exp.Addition				=	<<Exp> + <Exp>> {left}
+Exp.Subtraction			=	<<Exp> - <Exp>> {left}
+
+// // aggregation operations
+// Exp.Aggregation			= <<Aggr>( <Exp> )>
+// Aggr.Max						= <max>
+// Aggr.Min						= <min>
+// Aggr.Avg						= <avg>
+// Aggr.Concat					= <concat>
+// 
+// // making a list
+// ExpList.ExpList			= <<Exp*;separator=",">>
+
+// primitive data types
+Exp 								= <<Literal>>
+Literal.String 			= <"<STRING>">
+Literal.Integer 		= <<INT>>
+
+// referring to attribute names
+Exp 								= <<AttributeName>>
+
+
+template options
+context-free priorities
+{
+	"(" Exp ")" -> Exp
+} >
+{ left:
+	Exp.Multiplication
+	Exp.Division
+	Exp.Modulo
+} >
+{ left:
+	Exp.Addition
+	Exp.Subtraction
+}

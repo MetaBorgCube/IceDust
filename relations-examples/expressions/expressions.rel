@@ -1,0 +1,14 @@
+module expressions
+
+model
+entity Foo{
+	input1 : Int = 5
+	input2 : Int = 7
+	output : Int = input1 * 2 % 4 + input2 / 2 - 1
+}
+
+data
+Foo foo{}
+
+execute
+foo.output

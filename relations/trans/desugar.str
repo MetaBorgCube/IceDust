@@ -20,6 +20,16 @@ desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName,
 
 
 /**
+ *	Expressions
+ */
+desugar: Addition(e1, e2)				-> 	BinExp(Plus(), e1, e2)
+desugar: Subtraction(e1, e2)		-> 	BinExp(Minus(), e1, e2)
+desugar: Division(e1, e2) 			-> 	BinExp(Div(), e1, e2)
+desugar: Modulo(e1, e2) 				-> 	BinExp(Mod(), e1, e2)
+desugar: Multiplication(e1, e2)	-> 	BinExp(Mul(), e1, e2)
+
+
+/**
  *	Generate omitted names
  */
 desugar = generate-role-name
@@ -29,4 +39,11 @@ generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType
 	
 	
 signature constructors
-	ModuleDesugared: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+	
+	BinExp 					: Exp * BinOp * Exp -> Exp
+	Plus						: BinOp
+  Minus						: BinOp
+	Div							:	BinOp	
+  Mod							:	BinOp
+  Mul			:	BinOp
