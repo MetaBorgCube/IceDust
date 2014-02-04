@@ -5,6 +5,9 @@ entity Foo{
 	input1 : Int = 5
 	input2 : Int = 7
 	output : Int = input1 * (2 % 4 + input2) / 2 - 1
+	firstName : String = "My"
+	lastName : String = "Name"
+	name : String = firstName + " " + lastName
 }
 
 data
@@ -12,3 +15,4 @@ Foo foo{}
 
 execute
 foo.output
+foo.name
