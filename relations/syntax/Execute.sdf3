@@ -11,7 +11,9 @@ Execute.AccessEntityAttribute = <<EntityName>.<ID>>
 
 Execute.Navigator = <<EntityName> <Navigate>>
 
-Navigate.Navigate = <<NavType> <EntityType> <Navigate?>>
+Navigate.NavigateInOut	= <<NavType> <RoleName>]<EntityType>[<RoleName> <Navigate?>>
+Navigate.NavigateIn			= <<NavType> <RoleName>]<EntityType> <Navigate?>>
+Navigate.NavigateOut		= <<NavType> <EntityType>[<RoleName> <Navigate?>>
 NavType.NavOr = <\>>
 NavType.NavAnd = <\>\>>
 NavType.NavOrEx = <-\>>

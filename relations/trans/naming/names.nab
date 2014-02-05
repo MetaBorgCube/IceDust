@@ -62,6 +62,7 @@ binding rules
 	AccessEntityAttribute(EntityName(e), a) :
 		refers to Attribute a in EntityType t
 		where Entity e has type t
+
 	
 	// roles
 	Role(EntityType(roleType), multiplicity, role) :
@@ -72,7 +73,14 @@ binding rules
 		where This "this" has type t
 		
 
-
-
-
+	// navigators
+	NavigateInOut(_, inRole, EntityType(relationType), outRole, _) :
+		scopes This
+		implicitly defines This "this" of type relationType
+	NavigateIn(_, inRole, EntityType(relationType), _) :
+		scopes This
+		implicitly defines This "this" of type relationType
+	NavigateOut(_, EntityType(relationType), outRole, _) :
+		scopes This
+		implicitly defines This "this" of type relationType
 	

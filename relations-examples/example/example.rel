@@ -32,5 +32,5 @@ UserPost up2{
 }
 
 execute
-me > UserPost
-me > UserPost > Post
+me > User]UserPost[Post
+me > User]UserPost > UserPost[Post

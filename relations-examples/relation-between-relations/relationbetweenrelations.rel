@@ -23,3 +23,9 @@ Counseling c{
 	Marriage:m
 	Counselor:professional
 }
+
+execute
+man > Husband]Marriage[Wife
+man > Husband]Marriage > Marriage[Wife
+man > Husband]Marriage > Marriage]Counseling
+man > Husband]Marriage > Marriage]Counseling[Counselor
