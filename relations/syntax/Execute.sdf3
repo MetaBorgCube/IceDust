@@ -9,11 +9,13 @@ templates
 
 Execute.AccessEntityAttribute = <<EntityName>.<ID>>
 
-Execute.Navigator = <<EntityName> <Navigate>>
+Execute = <<Navigate>>
 
-Navigate.NavigateInOut	= <<NavType> <RoleName>]<EntityType>[<RoleName> <Navigate?>>
-Navigate.NavigateIn			= <<NavType> <RoleName>]<EntityType> <Navigate?>>
-Navigate.NavigateOut		= <<NavType> <EntityType>[<RoleName> <Navigate?>>
+Navigate = <<EntityName>>
+Navigate.NavigateInOut	= <<Navigate> <NavType> <RoleName>]<EntityType>[<RoleName>>
+Navigate.NavigateIn			= <<Navigate> <NavType> <RoleName>]<EntityType>>
+Navigate.NavigateOut		= <<Navigate> <NavType> <EntityType>[<RoleName>>
+
 NavType.NavOr = <\>>
 NavType.NavAnd = <\>\>>
 NavType.NavOrEx = <-\>>

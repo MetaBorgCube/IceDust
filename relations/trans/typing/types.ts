@@ -28,9 +28,24 @@ type rules // constraints
 		else error "Wrong type supplied" on expression
 
 type rules // expressions
+	
 	BinExp(operator, exp1, exp2) : exp2type
 		where	exp1		: exp1type
 		and		exp2		: exp2type
 		and		exp1type == exp2type
 		else error "Not the same types supplied to the Binary Operator." on exp2
+
+type rules // navigators
+
+	NavigateIn(prevNav, navType, inRole, EntityType(relationType)) : relationType
+		where prevNav	: prevNavType
+		and inRole		: inRoleType
+		and prevNavType == inRoleType
+		else error "The inRole is of the wrong type." on inRole
+	
+	NavigateOut(prevNav, navType, EntityType(relationType), outRole) : outType
+		where	outRole	: outType
+		and prevNav		: prevNavType
+		and relationType == prevNavType
+		else error "The relation is of the wrong type." on relationType
 		

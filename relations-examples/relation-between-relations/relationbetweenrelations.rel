@@ -14,19 +14,22 @@ relation Counseling{
 data
 Person man{}
 Person woman{}
-Marriage m{
+Marriage marriage{
 	Husband:man
 	Wife:woman
 }
 Person professional{}
 Counseling c{
-	Marriage:m
+	Marriage:marriage
 	Counselor:professional
 }
 
 execute
 man > Husband]Marriage
-man > Husband]Marriage[Wife
+marriage > Marriage]Counseling
+marriage > Marriage[Husband
 man > Husband]Marriage > Marriage[Wife
+man > Husband]Marriage[Wife
 man > Husband]Marriage > Marriage]Counseling
+man > Husband]Marriage > Husband]Counseling
 man > Husband]Marriage > Marriage]Counseling[Counselor

@@ -40,10 +40,11 @@ generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType
 /**
  *	Navigators
  */
-desugar: NavigateInOut(navType, inRole, relation, outRole, nextNav) ->
-	NavigateIn(NavOr(), inRole, relation,
-		NavigateOut(navType, relation, outRole, nextNav)
-	)
+desugar: NavigateInOut(prevNav, navType, inRole, relation, outRole) ->
+	NavigateOut(
+    NavigateIn(prevNav, NavOr(), inRole, relation)
+  , NavOr(), relation, outRole
+  )
 
 	
 signature constructors
