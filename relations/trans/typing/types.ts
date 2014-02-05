@@ -1,8 +1,9 @@
-module types
+module typing/types
 
 imports
 
-
+	include/Relations
+	trans/desugaring/desugar
 
 type rules // constraints
 

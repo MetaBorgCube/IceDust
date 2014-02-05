@@ -1,9 +1,9 @@
-module names
+module trans/naming/names
 
 imports
 	
 	include/Relations
-	desugar
+	trans/desugaring/desugar
 	
 namespaces
 	

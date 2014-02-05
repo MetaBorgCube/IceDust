@@ -1,15 +1,17 @@
-module check
+module trans/checking/check
 
 imports
 
-	include/Relations
 	lib/editor-common.generated
-	desugar
 	lib/nabl/-
+	lib/properties/-
 	lib/task/-
 	lib/types/-
-	lib/properties/-
-	names
+
+	include/Relations
+	
+	trans/desugaring/desugar
+	trans/naming/names
 
 rules
 	

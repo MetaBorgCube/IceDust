@@ -1,18 +1,21 @@
-module generate
+module trans/generating/generate
 
 imports
 
 	lib/editor-common.generated
-	include/Relations
 	lib/java/Java
 	lib/java/pretty-print
-	desugar
-	properties
-	names
 	lib/index/-
-	lib/task/-
 	lib/nabl/-
+	lib/task/-
 	
+	include/Relations
+	editor/Relations-Outliner
+
+	trans/desugaring/desugar
+	trans/naming/names
+	trans/naming/properties
+
 
 rules // Builders
 	

@@ -1,13 +1,15 @@
 module properties
 
 imports
+	lib/analysis/-
 	lib/nabl/-
-	lib/task/-
 	lib/properties/-
+	lib/task/-
 	lib/types/-
-	lib/editor/-
+	
 	include/Relations
-	names
+	
+	trans/naming/names
 	
 signature constructors
 	

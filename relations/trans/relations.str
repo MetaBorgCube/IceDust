@@ -5,23 +5,26 @@ imports
 	libstratego-lib
 	libstratego-gpp
 	libstratego-aterm
-	include/Relations
-	editor/Relations-Outliner
+
 	lib/editor-common.generated
+	lib/analysis/-
 	lib/index/-
 	lib/nabl/-
 	lib/properties/-
-	lib/types/-
 	lib/task/-
-	lib/analysis/-
-	names
-	check
-	generate
-	pp
-	desugar
-	types
-	properties
-	// debug
+	lib/types/-
+	
+	include/Relations
+	editor/Relations-Outliner
+	
+	trans/checking/check	
+	trans/desugaring/desugar
+	trans/generating/generate
+	trans/naming/names
+	trans/naming/properties
+	trans/prettyprinting/pp
+	trans/typing/types
+
 
 rules // Analysis
 	

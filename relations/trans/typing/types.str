@@ -2,11 +2,12 @@ module types
 
 imports
 	include/Relations
-	types.generated
+	
 	lib/types/-
 	lib/task/-
 	
-
+	trans/typing/types.generated
+	
 rules
 	
 	//TODO: is this possible in TS yet?

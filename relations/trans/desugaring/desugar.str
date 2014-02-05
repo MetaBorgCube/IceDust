@@ -1,4 +1,4 @@
-module desugaring/desugar
+module trans/desugaring/desugar
 
 imports
 	include/Relations
