@@ -3,6 +3,7 @@ module names
 imports
 	
 	include/Relations
+	desugar
 	
 namespaces
 	
