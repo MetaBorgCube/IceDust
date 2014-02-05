@@ -36,7 +36,7 @@ rules // Entities role fulfilling
 			uri := <nabl-uri> name;
 			scope := <nabl-uri-parent> uri;
 			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
-			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(Type(), name, [])])> allRelations;
+			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(Type(), name, [])]);task-create-combine(|ctx)> allRelations;
 			<store-fulfill-role(|ctx, roles)> name
   
   // // multiple version of properties/query.str (runtime)
