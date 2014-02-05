@@ -46,6 +46,12 @@ rules // Entities role fulfilling
   // get-fulfill-role-multiple =
   //   get-properties(|NablProp_fulfill-role())
 
+rules // Entities - is-relation
+	
+	nabl-prop-site(|lang, ctx, uris, states, implicits):
+		e@EntityTypeDef(RelationType(), name, _) -> <fail>
+		where
+			<store-is-relation(|ctx, 1)> name
 
 // rules // Helper rules
 // 
