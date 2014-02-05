@@ -42,6 +42,14 @@ rules // Check derivation types of attributes
 			match     := <derivation-type-match(|ctx, Derivation())> prop-task;
 			<task-create-error-on-success(|ctx, match, "Derivations cannot be assigned custom values.")> x
 
+rules // Only relations allowed in navigators
+	
+	nabl-constraint(|ctx):
+		NavigateIn(_, NavOr(), _, EntityType(entityType)) -> <fail>
+		with
+			prop-task := <prop-create-lookup(|ctx, NablProp_is-relation())> entityType;
+			<task-create-error-on-failure(|ctx, prop-task, $[Type error: [entityType] is an entity, a relation is expected.])> entityType
+
 
 rules // Random experimenting with the task engine
  
