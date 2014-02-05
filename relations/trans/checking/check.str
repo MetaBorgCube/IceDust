@@ -20,9 +20,7 @@ rules
 		where
 			not(<string-starts-with-capital> x)
 
-	constraint-note:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
-	// constraint-note:	e@Role(_, _, _)		-> (e, $[This is not translated to java yet.])
-	// constraint-note:	e@RoleValue(_, _)	-> (e, $[This is not translated to java yet.])
+	// constraint-note:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
 
 	constraint-error: EntityTypeDef(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
 	no-role: x@Role(_,_,_) -> [(x, $[An entity cannot have roles.])]

@@ -74,9 +74,9 @@ binding rules
 		
 
 	// navigators
-	NavigateInOut(_, inRole, EntityType(relationType), outRole, _) :
-		scopes This
-		implicitly defines This "this" of type relationType
+	// NavigateInOut(_, inRole, EntityType(relationType), outRole, _) :
+	// 	scopes This
+	// 	implicitly defines This "this" of type relationType
 	NavigateIn(_, inRole, EntityType(relationType), _) :
 		scopes This
 		implicitly defines This "this" of type relationType

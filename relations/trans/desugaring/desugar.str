@@ -36,7 +36,15 @@ desugar = generate-role-name
 
 generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
 
-	
+
+/**
+ *	Navigators
+ */
+desugar: NavigateInOut(navType, inRole, relation, outRole, nextNav) ->
+	NavigateIn(NavOr(), inRole, relation,
+		NavigateOut(navType, relation, outRole, nextNav)
+	)
+
 	
 signature constructors
 	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
