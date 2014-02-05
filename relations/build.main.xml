@@ -60,7 +60,10 @@
 	<copy todir="${basedir}/lib/tmpl">
 	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" includes="**" />
 	</copy>
-
+	<copy todir="${basedir}/lib/relations">
+	<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/relations/" includes="**" />
+	</copy>
+		
 	</target>
 
 	<target name="link-lib-files" unless="isWin" depends="os-detection">
@@ -72,6 +75,7 @@
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/editor/" link="${basedir}/lib/editor" overwrite="true" />
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" link="${basedir}/lib/properties" overwrite="true" />
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" link="${basedir}/lib/tmpl" overwrite="true" />
+	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/relations/" link="${basedir}/lib/relations" overwrite="true" />
 	</target>
 
     <!-- Environment configuration for command-line builds -->
