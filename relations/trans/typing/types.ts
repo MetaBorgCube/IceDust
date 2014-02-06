@@ -14,6 +14,9 @@ type rules // constraints
 		and		attributeType == valueType
 		else error "Wrong type supplied" on attributeValue		//TODO: give expected and given type
 		
+	AttributeName(name) : type
+	where definition of name : type
+		
 	//role assignment
 	RoleValue(roleName, valueEntityName) :-
 		where	roleName				: roleType						//FIXME: (#1)
