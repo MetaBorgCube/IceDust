@@ -1,0 +1,27 @@
+module blogsimple
+
+model
+entity User {
+}
+entity Post {
+}
+relation UserPost {
+	User *
+	Post 1
+}
+
+data
+User me{}
+Post first{}
+Post second{}
+UserPost p1{
+	User:me
+	Post:first
+}
+UserPost p2{
+	User:me
+	Post:second
+}
+
+execute
+me > User]UserPost[Post

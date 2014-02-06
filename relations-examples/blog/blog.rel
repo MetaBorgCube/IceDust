@@ -11,7 +11,7 @@ entity Post {
 	body  : String
 	name  : String		= "default placeholder" (default)
 }
-relation Posting {
+relation UserPost {
 	User *
 	Post 1
 	numEdits : Int
@@ -22,7 +22,7 @@ entity Log {
 }
 relation LogItem {
 	Log 1
-	Posting *
+	UserPost *
 }
 
 data
@@ -40,19 +40,15 @@ Post second{
 	body="Some more text"
 	name="yet another name"
 }
-Posting p1{
+UserPost p1{
 	User:me
 	Post:first
 	numEdits=1
 }
-Posting p2{
+UserPost p2{
 	User:me
 	Post:second
 }
 
 execute
-me.name
-me.password
-me.numPosts
-me > Posting > Post
-me ->> Posting -> LogItem >> Log
+me > User]UserPost[Post
