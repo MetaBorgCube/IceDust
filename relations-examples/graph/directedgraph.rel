@@ -25,3 +25,12 @@ Edge ca{
 	from:c
 	to:a
 }
+
+execute
+a
+b
+c
+a > from]Edge[to // must be b
+a > to]Edge[from // must be c
+a > from]Edge[to > from]Edge[to // must be c
+a > from]Edge[to > from]Edge[to > from]Edge[to // must be a

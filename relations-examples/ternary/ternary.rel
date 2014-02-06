@@ -43,4 +43,5 @@ Supply y{
 execute
 x.amount
 y.amount
-//TODO: get the total amount of parts from a supplier etc...
+p > Part]Supply[Supplier
+p > Part]Supply[Project

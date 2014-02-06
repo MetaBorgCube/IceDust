@@ -24,4 +24,7 @@ UserPost p2{
 }
 
 execute
+me
+me > User]UserPost
 me > User]UserPost[Post
+me > User]UserPost > UserPost[Post
