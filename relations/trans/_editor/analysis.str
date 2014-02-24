@@ -1,0 +1,20 @@
+module trans/_editor/analysis
+
+imports
+	
+	lib/editor-common.generated
+	lib/analysis/-
+
+	trans/desugaring/desugar
+	
+rules // Analysis
+	
+	editor-analyze = analysis-default-editor
+	
+	analysis-single-default-interface = 
+		analysis-single-default(desugar-all, id, id|<language>)
+	analysis-multiple-default-interface = 
+		analysis-multiple-default(parse-file <+ !(), desugar-all, id, id|<language>, <project-path>)
+	
+	editor-save = analysis-save-default(|<language>)
+

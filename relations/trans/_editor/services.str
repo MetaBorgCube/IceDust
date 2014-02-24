@@ -1,0 +1,38 @@
+module trans/_editor/services
+
+imports
+	
+	lib/editor-common.generated
+	lib/analysis/-
+	lib/types/-
+	
+	trans/prettyprinting/pp
+	
+rules // Editor services
+	
+	// Resolves a reference when the user control-clicks or presses F3 in the editor.
+	editor-resolve:
+		(node, position, ast, path, project-path) -> definition
+		where
+			definition := <analysis-resolve(|<language>, project-path)> node
+
+	// Returns "hover help" information for a particular node in the editor.
+	// For references, this rule is invoked using the resolved term.
+	editor-hover:
+		(target, position, ast, path, project-path) -> <get-type>target
+
+	// Completes an identifier when the user presses control-space
+	// (the completion identifier in the AST provides additional context information)
+	editor-complete:
+		(node, position, ast, path, project-path) -> proposals
+		where
+			proposals := <analysis-propose-completions(|<language>, project-path)> ast
+	
+	// Formats the program using a pretty printer		
+  editor-format:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+    	ext      := <get-extension> path;
+      filename := <guarantee-extension(|$[pp.[ext]])> path;
+      result   := <pp-debug> selected
+      //result := selected
