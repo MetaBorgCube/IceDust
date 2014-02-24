@@ -5,6 +5,9 @@ imports
 	lib/editor-common.generated
 	lib/analysis/-
 	lib/types/-
+	lib/nabl/-
+	
+	editor/interop
 	
 	trans/prettyprinting/pp
 	
@@ -19,7 +22,23 @@ rules // Editor services
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
-		(target, position, ast, path, project-path) -> <get-type>target
+		(target, position, ast, path, project-path) ->
+			(	("Target",	target-pp),
+			 	("Type",		type)
+			)
+		where
+			if Def(_) := target then
+				target-pp := "Def"
+				// TODO: prettyprint (how to call the pretty printer of URIs?)
+			else
+				target-pp := <topdown(try(rm-annotations))>target
+				// TODO: prettyprint (how to do all the boxes to a string?)
+				// <topdown(try(rm-annotations));try(pp-Relations-string);debug> target;
+			end;
+			(
+				type := <get-type>target <+
+				type := None()
+			)
 
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)

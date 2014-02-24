@@ -13,6 +13,7 @@ imports
 	Execute.pp.generated
 	Expressions.pp.generated
 
+	trans/prettyprinting/pp-desugared
 
 signature constructors
 	//FIXME: Common.pp.generated.str needs this constructor...
@@ -32,4 +33,4 @@ rules
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Relations-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
-pp-Relations-string = prettyprint-example
+	pp-Relations-string = prettyprint-example
