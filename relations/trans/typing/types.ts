@@ -5,32 +5,49 @@ imports
 	include/Relations
 	trans/desugaring/desugar
 
-type rules // constraints
 
-	//attribute assignment
-	AttributeValue(attributeName, attributeValue) :-
-		where	attributeName		: attributeType					//FIXME: (#1) doesn't work without the rule in types.str
-		and		attributeValue	: valueType
-		and		attributeType == valueType
-		else error "Wrong type supplied" on attributeValue		//TODO: give expected and given type
+type rules // type inference : model
 		
 	AttributeName(name) : type
 	where definition of name : type
 		
+	RoleName(name) : type
+	where definition of name : type
+	
+	EntityName(name) : type
+	where definition of name : type
+
+
+type rules // type inference : expressions
+
+	Integer(x) : PrimitiveType("Int")
+	String(x) : PrimitiveType("String")
+	
+
+type rules // constraints: attributes & values
+
+	//attribute assignment
+	AttributeValue(attributeName, attributeValue) :-
+		where	attributeName		: attributeType
+		and		attributeValue	: valueType
+		and		attributeType == valueType
+		else error "Wrong type supplied" on attributeValue		//TODO: give expected and given type
+
 	//role assignment
 	RoleValue(roleName, valueEntityName) :-
-		where	roleName				: roleType						//FIXME: (#1)
-		and		valueEntityName	: valueType						//FIXME: (#1)
+		where	roleName				: roleType
+		and		valueEntityName	: valueType
 		and		roleType == valueType
 		else error "Wrong type supplied" on valueEntityName		//TODO: give expected and given type
-		
+
 	//default and derived attributes
 	Attribute(name, type, Derivation(expression, derivationType)) :-
 		where	expression		: expressionType
 		and		expressionType == type
 		else error "Wrong type supplied" on expression
 
-type rules // expressions
+
+type rules // constraints: expressions
 	
 	BinExp(operator, exp1, exp2) : exp2type
 		where	exp1		: exp1type
@@ -38,7 +55,8 @@ type rules // expressions
 		and		exp1type == exp2type
 		else error "Not the same types supplied to the Binary Operator." on exp2
 
-type rules // navigators
+
+type rules // constraints: navigators
 
 	NavigateIn(prevNav, navType, inRole, EntityType(relationType)) : relationType
 		where prevNav	: prevNavType

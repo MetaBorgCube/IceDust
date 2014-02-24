@@ -23,7 +23,7 @@ imports
 	trans/naming/names
 	trans/naming/properties
 	trans/prettyprinting/pp
-	trans/typing/types
+	trans/typing/types.generated
 
 
 rules // Analysis
