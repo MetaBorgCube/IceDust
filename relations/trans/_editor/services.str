@@ -24,7 +24,7 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
 		(target, position, ast, path, project-path) ->
-			<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"<br/>\n");concat-strings)>
+			<map(\(a,b)->$[<b>[a]</b>: [b]]\);try(separate-by(|"<br/>\n");concat-strings)>
 			[	
 				("Target",			target-pp),
 				("Constructor",	constructor),
