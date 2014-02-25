@@ -1,6 +1,7 @@
 module trans/_editor/services
 
 imports
+	libstratego-gpp
 	
 	lib/editor-common.generated
 	lib/analysis/-
@@ -23,17 +24,17 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
 		(target, position, ast, path, project-path) ->
-			(	("Target",	target-pp),
+			<map(\(a,b)->b\)>
+			[	("Target",	target-pp),
 			 	("Type",		type)
-			)
+			]
 		where
 			if Def(_) := target then
 				target-pp := "Def"
 				// TODO: prettyprint (how to call the pretty printer of URIs?)
 			else
-				target-pp := <topdown(try(rm-annotations))>target
-				// TODO: prettyprint (how to do all the boxes to a string?)
-				// <topdown(try(rm-annotations));try(pp-Relations-string);debug> target;
+				target-pp := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>target <+
+				target-pp := $[[<get-constructor> target]/[<get-arguments;length> target] (no prettyprinter defined)]
 			end;
 			(
 				type := <get-type>target <+
