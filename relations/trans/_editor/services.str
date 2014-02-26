@@ -52,11 +52,6 @@ rules // Editor services
       filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <pp-debug> selected
       
-imports //TODO: remove this, property lookup should fail instead of throwing an exception
-	
-	include/Relations
-	trans/desugaring/desugar		
-	
 rules	// Properties
 	
 	get-editor-properties:
@@ -65,6 +60,7 @@ rules	// Properties
 				("Target",			<target-prop>t),
 				("Constructor",	<cons-prop>t),
 			 	("Type",				<type-prop>t),
+			 	("Name",				<name-prop>t),
 			 	("Defines",			<def-prop>t),
 			 	("Refers to",		<ref-prop>t)
 			]
@@ -74,26 +70,39 @@ rules	// Properties
 			tar := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>t <+
 			tar := <write-to-string>None()
 	
+	cons-prop: _ -> <write-to-string>None()
+		where is-string
 	cons-prop: t -> constr
+		where not(is-string)
 		with
 			constr := $[[<get-constructor> t]/[<get-arguments;length> t]] <+
 			constr := <write-to-string>None()
 	
-	type-prop: t -> <write-to-string>None()
-		where <is-string>t
-	type-prop: ModuleDesugared(_,_,_,_) -> <write-to-string>None()	//TODO: remove this, property lookup should fail instead of throwing an exception
-	type-prop: EntityTypeDef(_,_,_) 		-> <write-to-string>None()	//TODO: remove this, property lookup should fail instead of throwing an exception
+	// type-prop: t -> <write-to-string>None()
+	// 	where is-string
 	type-prop: t -> type
-		where <not(is-string)>t
+		// where not(is-string)
 		with
-			// <debug(|"get-type: ")> t;
 			type := <get-type;try(rm-annotations);write-to-string>t <+
 			type := <write-to-string>None()
 
-	def-prop: Def(uri) -> result
+	name-prop: t -> <try(rm-annotations);write-to-string>name
+		where
+			name := <nabl-get-name>t <+
+			name := None()
+
+	def-prop: t -> uri
 		with
-			result := <reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)> uri
-	def-prop: _ -> <write-to-string>None()
+			uri := <nabl-collect-def;nabl-uri;pp-uri>t <+
+			uri := <write-to-string>None()
+
+	ref-prop: Def(uri) -> <pp-uri>uri					//TODO: remove this when we can use hover without resolving	
+	ref-prop: t -> uri
+		with
+			uri := <nabl-collect-use;nabl-uri;pp-uri>t <+
+			uri := <write-to-string>None()
 	
-	ref-prop: _ -> <write-to-string>None()
+rules // helper rules
+	
+	pp-uri = reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)
 	
