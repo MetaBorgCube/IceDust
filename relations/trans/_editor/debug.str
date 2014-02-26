@@ -8,6 +8,7 @@ imports
 	lib/task/-
 	
 	trans/desugaring/desugar
+	trans/_editor/services
 	
 rules // Debugging builders
 	
@@ -32,6 +33,17 @@ rules // Debugging builders
 		with
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
+			
+	debug-properties:
+		(target, position, ast, path, project-path) -> (filename, result)
+			where
+	    	language := <language>;
+	    	index-setup(|language, project-path);
+	    	task-setup(|project-path);
+				filename := <guarantee-extension(|"properties.txt")> path;
+				result:=
+					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
+					<get-editor-properties>target
 			
 	debug-index-project =
 		analysis-debug-index-project(|<language>)

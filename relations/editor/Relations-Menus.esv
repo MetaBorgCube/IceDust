@@ -18,6 +18,8 @@ menus
     
     action: "Reset and reanalyze"  = debug-reanalyze (meta)   
 
+		action: "Show properties (selection)" = debug-properties (meta) (openeditor)
+
     submenu: "Show analysis"
       action: "Project"            = debug-project (openeditor) (meta)
       action: "Partition"          = debug-partition (openeditor) (meta)

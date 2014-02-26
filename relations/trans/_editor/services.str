@@ -10,10 +10,7 @@ imports
 	
 	editor/interop
 	
-	trans/desugaring/desugar		//TODO: remove this, make invoking get type different
 	trans/prettyprinting/pp
-	
-	include/Relations						//TODO: remove this, make invoking get type different
 	
 rules // Editor services
 	
@@ -28,38 +25,11 @@ rules // Editor services
 	editor-hover:
 		(target, position, ast, path, project-path) ->
 			<map(\(a,b)->$[<b>[a]</b>: [b]]\);try(separate-by(|"<br/>\n");concat-strings)>
-			<target-properties>target
+			<get-editor-properties>target
 
 	editor-properties:
-		e@_ -> <target-properties>e
+		e@_ -> <get-editor-properties>e
 			
-	target-properties:
-		target ->
-			[	
-				("Target",			target-pp),
-				("Constructor",	constructor),
-			 	("Type",				type)
-			]
-		with
-			if Def(uri) := target then
-				target-pp := <reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)> uri
-			else
-				target-pp := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>target <+
-				target-pp := $[[<get-constructor> target]/[<get-arguments;length> target]]
-			end
-		with
-			constructor := $[[<get-constructor> target]/[<get-arguments;length> target]]
-		with
-			if <not(is-string)>target then
-				type := <get-type;try(rm-annotations);write-to-string>target <+
-				type := <write-to-string>None()
-			else
-				type := <write-to-string>None()
-			end
-
-	get-type: ModuleDesugared(_,_,_,_) -> None()	//TODO: remove this, make invoking get type different
-	get-type: EntityTypeDef(_,_,_) -> None()			//TODO: remove this, make invoking get type different
-
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)
 	editor-complete:
@@ -74,4 +44,49 @@ rules // Editor services
     	ext      := <get-extension> path;
       filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <pp-debug> selected
-      //result := selected
+      
+imports //TODO: remove this, property lookup should fail instead of throwing an exception
+	
+	include/Relations
+	trans/desugaring/desugar		
+	
+rules	// Properties
+	
+	get-editor-properties:
+		t ->
+			[	
+				("Target",			<target-prop>t),
+				("Constructor",	<cons-prop>t),
+			 	("Type",				<type-prop>t),
+			 	("Defines",			<def-prop>t),
+			 	("Refers to",		<ref-prop>t)
+			]
+	
+	target-prop: t -> tar
+		with
+			tar := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>t <+
+			tar := <write-to-string>None()
+	
+	cons-prop: t -> constr
+		with
+			constr := $[[<get-constructor> t]/[<get-arguments;length> t]] <+
+			constr := <write-to-string>None()
+	
+	type-prop: t -> <write-to-string>None()
+		where <is-string>t
+	type-prop: ModuleDesugared(_,_,_,_) -> <write-to-string>None()	//TODO: remove this, property lookup should fail instead of throwing an exception
+	type-prop: EntityTypeDef(_,_,_) 		-> <write-to-string>None()	//TODO: remove this, property lookup should fail instead of throwing an exception
+	type-prop: t -> type
+		where <not(is-string)>t
+		with
+			// <debug(|"get-type: ")> t;
+			type := <get-type;try(rm-annotations);write-to-string>t <+
+			type := <write-to-string>None()
+
+	def-prop: Def(uri) -> result
+		with
+			result := <reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)> uri
+	def-prop: _ -> <write-to-string>None()
+	
+	ref-prop: _ -> <write-to-string>None()
+	

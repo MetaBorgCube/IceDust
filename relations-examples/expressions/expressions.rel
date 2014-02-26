@@ -3,7 +3,7 @@ module expressions
 model
 entity Foo{
 	input1 : Int = 5
-	input2 : Int = 7
+	input2 : Int = 7 + 4
 	output : Int = input1 * (2 % 4 + input2) / 2 - 1
 	firstName : String = "My"
 	lastName : String = "Name"
