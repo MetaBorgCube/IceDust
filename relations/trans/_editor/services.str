@@ -10,7 +10,10 @@ imports
 	
 	editor/interop
 	
+	trans/desugaring/desugar		//TODO: remove this, make invoking get type different
 	trans/prettyprinting/pp
+	
+	include/Relations						//TODO: remove this, make invoking get type different
 	
 rules // Editor services
 	
@@ -25,24 +28,37 @@ rules // Editor services
 	editor-hover:
 		(target, position, ast, path, project-path) ->
 			<map(\(a,b)->$[<b>[a]</b>: [b]]\);try(separate-by(|"<br/>\n");concat-strings)>
+			<target-properties>target
+
+	editor-properties:
+		e@_ -> <target-properties>e
+			
+	target-properties:
+		target ->
 			[	
 				("Target",			target-pp),
 				("Constructor",	constructor),
 			 	("Type",				type)
 			]
-		where
+		with
 			if Def(uri) := target then
 				target-pp := <reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)> uri
 			else
 				target-pp := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>target <+
 				target-pp := $[[<get-constructor> target]/[<get-arguments;length> target]]
 			end
-		where
+		with
 			constructor := $[[<get-constructor> target]/[<get-arguments;length> target]]
-		where
-			type := <get-type;write-to-string>target <+
-			type := <write-to-string>None()
+		with
+			if <not(is-string)>target then
+				type := <get-type;try(rm-annotations);write-to-string>target <+
+				type := <write-to-string>None()
+			else
+				type := <write-to-string>None()
+			end
 
+	get-type: ModuleDesugared(_,_,_,_) -> None()	//TODO: remove this, make invoking get type different
+	get-type: EntityTypeDef(_,_,_) -> None()			//TODO: remove this, make invoking get type different
 
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)

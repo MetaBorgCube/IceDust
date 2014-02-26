@@ -8,6 +8,7 @@ imports
   Relations-Folding
   Relations-References
   Relations-Syntax
+  Relations-Views
 
 language General properties
   
