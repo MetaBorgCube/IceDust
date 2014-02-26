@@ -7,6 +7,8 @@ imports
 	lib/analysis/-
 	lib/types/-
 	lib/nabl/-
+	lib/task/-
+	lib/index/-
 	
 	editor/interop
 	
@@ -29,6 +31,11 @@ rules // Editor services
 
 	editor-properties:
 		e@_ -> <get-editor-properties>e
+			with
+				language := <language>;
+				project-path := <project-path>;
+	    	index-setup(|language, project-path);
+	    	task-setup(|project-path)
 			
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)
