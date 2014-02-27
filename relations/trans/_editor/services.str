@@ -4,6 +4,7 @@ imports
 	libstratego-gpp
 	
 	lib/editor-common.generated
+	lib/editor/properties
 	lib/analysis/-
 	lib/types/-
 	lib/nabl/-
@@ -28,15 +29,12 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
 		(target, position, ast, path, project-path) ->
-			<get-editor-properties;properties-to-html>target
+			<get-editor-properties(pp-Relations-string |<language>, project-path);properties-to-html>target
 
+	// Gathers the properties for the properties view.
 	editor-properties:
 		(target, position, ast, path, project-path) ->
-		<get-editor-properties>target
-			with
-				language := <language>;
-	    	index-setup(|language, project-path);
-	    	task-setup(|project-path)
+			<get-editor-properties(pp-Relations-string |<language>, project-path)>target
 			
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)
@@ -52,104 +50,4 @@ rules // Editor services
     	ext      := <get-extension> path;
       filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <pp-debug> selected
-      
-rules	// Properties
-	
-	get-editor-properties:
-		t ->
-			<concat
-			;filter(not-none)
-			;map(\(a,b)->(a,<pp-property>b)\)>
-			[
-				[
-					("Target",			<target-prop>t),
-					("Constructor",	<cons-prop>t),
-				 	("Type",				<type-prop>t),
-				 	("Name",				<name-prop>t),
-				 	("Defines",			<def-prop>t),
-				 	("Refers to",		<ref-prop>t)
-				]
-			,	<nabl-props>t
-			]
-	
-	target-prop: t -> tar
-		with
-			tar := <pp-ast>t <+
-			tar := None()
-	
-	cons-prop: _ -> None()
-		where is-string
-	cons-prop: t -> constr
-		where not(is-string)
-		with
-			constr := <pp-cons>t <+
-			constr := None()
-	
-	type-prop: t -> type
-		with
-			type := <get-type>t <+
-			type := None()
-
-	name-prop: t -> name
-		where
-			name := <nabl-get-name>t <+
-			name := None()
-
-	def-prop: t -> uri
-		with
-			uri := <nabl-collect-def;nabl-uri;pp-uri>t <+
-			uri := None()
-
-	ref-prop: Def(uri) -> <pp-uri>uri	//TODO: remove this when we can use hover without resolving	
-	ref-prop: t -> uri
-		with
-			uri := <nabl-collect-use;nabl-uri;pp-uri>t <+
-			uri := None()
-	
-	nabl-props: t -> <nabl-custom-properties(id);map(nabl-prop(|t))>
-	nabl-prop(|t): p -> <nabl-prop>(t, p)
-	nabl-prop: (t, property) -> (name, prop)
-		with
-			name := <pp-nabl-prop-name>property
-		with
-			prop := <get-properties(|property);de-list;not(?Result(_); task-has-failed)>t <+
-			prop := None()
-	
-rules // helper rules: filtering
-
-	not-none: (a, b) -> (a, b)
-		where
-			<not(eq)>(b, None())
-	
-	de-list: [] -> None()
-	de-list: [a] -> a
-	de-list: [a|rest] -> [a|rest]
-	
-rules // helper rules: formatting
-	
-	pp-ast = topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)
-	
-	pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]]
-	
-	pp-uri = reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)
-	
-	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ");upper-case-first
-	
-	upper-case-first: string -> <implode-string>[<to-upper>c|hars]
-		with [c|hars] := <explode-string>string
-	
-	pp-property: a -> a
-		where is-string
-	pp-property: None() -> "-"
-	pp-property: a -> <map(pp-property;\x->("",x)\)>a
-		where is-list
-	pp-property: Def(uri) -> <pp-uri>uri
-	pp-property = try(rm-annotations);write-to-string
-	
-	properties-to-html = map(property-to-html);separate-by(|"<br/>\n");concat-strings
-	property-to-html: ("", prop) -> $[[<property-to-html>prop]]
-	property-to-html: (name, prop) -> $[<b>[name]</b>: [<property-to-html>prop]]
-	property-to-html: list -> $[<div>[<properties-to-html>list]</div>]
-		where is-list
-	property-to-html: prop -> prop
-		
+   

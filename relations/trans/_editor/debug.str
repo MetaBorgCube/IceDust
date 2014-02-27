@@ -4,11 +4,12 @@ imports
 	
 	lib/editor-common.generated
 	lib/analysis/-
+	lib/editor/properties
 	lib/index/-
 	lib/task/-
 	
 	trans/desugaring/desugar
-	trans/_editor/services
+	trans/prettyprinting/pp
 	
 rules // Debugging builders
 	
@@ -43,7 +44,7 @@ rules // Debugging builders
 				filename := <guarantee-extension(|"properties.txt")> path;
 				result:=
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
-					<get-editor-properties>target
+					<get-editor-properties(pp-Relations-string|<language>,project-path)>target
 			
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
