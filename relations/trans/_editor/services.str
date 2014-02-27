@@ -58,11 +58,10 @@ rules	// Properties
 	
 	get-editor-properties:
 		t ->
-			<concat>
+			<concat
+			;filter(not-none)
+			;map(\(a,b)->(a,<pp-property>b)\)>
 			[
-				// <debug
-				// ;filter(not-none)
-				<map(\(a,b)->(a,<pp-property>b)\)>
 				[
 					("Target",			<target-prop>t),
 					("Constructor",	<cons-prop>t),
@@ -110,22 +109,22 @@ rules	// Properties
 	
 	nabl-props: t -> <nabl-custom-properties(id);map(nabl-prop(|t))>
 	nabl-prop(|t): p -> <nabl-prop>(t, p)
-	nabl-prop: (t, property) -> (name, <write-to-string>prop)
+	nabl-prop: (t, property) -> (name, prop)
 		with
 			name := <pp-nabl-prop-name>property
 		with
-			props := <get-properties(|property)>t;
-			if [] := props then
-				prop := None()
-			else if [a] := props then
-				prop := a
-			else
-				prop := props
-			end end
+			prop := <get-properties(|property);de-list>t <+
+			prop := None()
 	
 rules // helper rules: filtering
-	// not-none: (a, None()) -> <fail>
-	// not-none: (a, b) -> (a, b)
+
+	not-none: (a, b) -> (a, b)
+		where
+			<not(eq)>(b, None())
+	
+	de-list: [] -> None()
+	de-list: [a] -> a
+	de-list: [a|rest] -> [a|rest]
 	
 rules // helper rules: formatting
 	
@@ -142,6 +141,7 @@ rules // helper rules: formatting
 	
 	pp-property: a -> a
 		where is-string
+	pp-property: None() -> "-"
 	pp-property = try(rm-annotations);write-to-string
 	
 	
