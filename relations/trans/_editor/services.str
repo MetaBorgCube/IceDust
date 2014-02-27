@@ -112,7 +112,7 @@ rules	// Properties
 		with
 			name := <pp-nabl-prop-name>property
 		with
-			prop := <get-properties(|property);de-list>t <+
+			prop := <get-properties(|property);de-list;not(?Result(_); task-has-failed)>t <+
 			prop := None()
 	
 rules // helper rules: filtering
