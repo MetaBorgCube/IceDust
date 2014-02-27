@@ -60,6 +60,8 @@ rules	// Properties
 		t ->
 			<concat>
 			[
+				// <debug
+				// ;filter(not-none)
 				<map(\(a,b)->(a,<pp-property>b)\)>
 				[
 					("Target",			<target-prop>t),
@@ -121,6 +123,10 @@ rules	// Properties
 				prop := props
 			end end
 	
+rules // helper rules: filtering
+	// not-none: (a, None()) -> <fail>
+	// not-none: (a, b) -> (a, b)
+	
 rules // helper rules: formatting
 	
 	pp-ast = topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)
@@ -129,7 +135,10 @@ rules // helper rules: formatting
 	
 	pp-uri = reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)
 	
-	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ")
+	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ");upper-case-first
+	
+	upper-case-first: string -> <implode-string>[<to-upper>c|hars]
+		with [c|hars] := <explode-string>string
 	
 	pp-property: a -> a
 		where is-string
