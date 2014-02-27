@@ -9,10 +9,12 @@ imports
 	lib/nabl/-
 	lib/task/-
 	lib/index/-
+	lib/properties/-
 	
 	editor/interop
 	
 	trans/prettyprinting/pp
+	trans/naming/names
 	
 rules // Editor services
 	
@@ -30,10 +32,10 @@ rules // Editor services
 			<get-editor-properties>target
 
 	editor-properties:
-		e@_ -> <get-editor-properties>e
+		(target, position, ast, path, project-path) ->
+		<get-editor-properties>target
 			with
 				language := <language>;
-				project-path := <project-path>;
 	    	index-setup(|language, project-path);
 	    	task-setup(|project-path)
 			
@@ -56,37 +58,39 @@ rules	// Properties
 	
 	get-editor-properties:
 		t ->
-			[	
-				("Target",			<target-prop>t),
-				("Constructor",	<cons-prop>t),
-			 	("Type",				<type-prop>t),
-			 	("Name",				<name-prop>t),
-			 	("Defines",			<def-prop>t),
-			 	("Refers to",		<ref-prop>t)
+			<concat>
+			[
+				<map(\(a,b)->(a,<pp-property>b)\)>
+				[
+					("Target",			<target-prop>t),
+					("Constructor",	<cons-prop>t),
+				 	("Type",				<type-prop>t),
+				 	("Name",				<name-prop>t),
+				 	("Defines",			<def-prop>t),
+				 	("Refers to",		<ref-prop>t)
+				]
+			,	<nabl-props>t
 			]
 	
 	target-prop: t -> tar
 		with
-			tar := <topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)>t <+
-			tar := <write-to-string>None()
+			tar := <pp-ast>t <+
+			tar := None()
 	
-	cons-prop: _ -> <write-to-string>None()
+	cons-prop: _ -> None()
 		where is-string
 	cons-prop: t -> constr
 		where not(is-string)
 		with
-			constr := $[[<get-constructor> t]/[<get-arguments;length> t]] <+
-			constr := <write-to-string>None()
+			constr := <pp-cons>t <+
+			constr := None()
 	
-	// type-prop: t -> <write-to-string>None()
-	// 	where is-string
 	type-prop: t -> type
-		// where not(is-string)
 		with
-			type := <get-type;try(rm-annotations);write-to-string>t <+
-			type := <write-to-string>None()
+			type := <get-type>t <+
+			type := None()
 
-	name-prop: t -> <try(rm-annotations);write-to-string>name
+	name-prop: t -> name
 		where
 			name := <nabl-get-name>t <+
 			name := None()
@@ -94,15 +98,41 @@ rules	// Properties
 	def-prop: t -> uri
 		with
 			uri := <nabl-collect-def;nabl-uri;pp-uri>t <+
-			uri := <write-to-string>None()
+			uri := None()
 
-	ref-prop: Def(uri) -> <pp-uri>uri					//TODO: remove this when we can use hover without resolving	
+	ref-prop: Def(uri) -> <pp-uri>uri	//TODO: remove this when we can use hover without resolving	
 	ref-prop: t -> uri
 		with
 			uri := <nabl-collect-use;nabl-uri;pp-uri>t <+
-			uri := <write-to-string>None()
+			uri := None()
 	
-rules // helper rules
+	nabl-props: t -> <nabl-custom-properties(id);map(nabl-prop(|t))>
+	nabl-prop(|t): p -> <nabl-prop>(t, p)
+	nabl-prop: (t, property) -> (name, <write-to-string>prop)
+		with
+			name := <pp-nabl-prop-name>property
+		with
+			props := <get-properties(|property)>t;
+			if [] := props then
+				prop := None()
+			else if [a] := props then
+				prop := a
+			else
+				prop := props
+			end end
+	
+rules // helper rules: formatting
+	
+	pp-ast = topdown(try(rm-annotations));pp-Relations-string;box2text-string(|80)
+	
+	pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]]
 	
 	pp-uri = reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)
+	
+	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ")
+	
+	pp-property: a -> a
+		where is-string
+	pp-property = try(rm-annotations);write-to-string
+	
 	
