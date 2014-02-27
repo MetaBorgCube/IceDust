@@ -28,8 +28,7 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
 		(target, position, ast, path, project-path) ->
-			<map(\(a,b)->$[<b>[a]</b>: [b]]\);try(separate-by(|"<br/>\n");concat-strings)>
-			<get-editor-properties>target
+			<get-editor-properties;properties-to-html>target
 
 	editor-properties:
 		(target, position, ast, path, project-path) ->
@@ -142,6 +141,15 @@ rules // helper rules: formatting
 	pp-property: a -> a
 		where is-string
 	pp-property: None() -> "-"
+	pp-property: a -> <map(pp-property;\x->("",x)\)>a
+		where is-list
+	pp-property: Def(uri) -> <pp-uri>uri
 	pp-property = try(rm-annotations);write-to-string
 	
-	
+	properties-to-html = map(property-to-html);separate-by(|"<br/>\n");concat-strings
+	property-to-html: ("", prop) -> $[[<property-to-html>prop]]
+	property-to-html: (name, prop) -> $[<b>[name]</b>: [<property-to-html>prop]]
+	property-to-html: list -> $[<div>[<properties-to-html>list]</div>]
+		where is-list
+	property-to-html: prop -> prop
+		
