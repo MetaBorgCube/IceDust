@@ -5,9 +5,13 @@ imports
 	lib/editor-common.generated
 	lib/index/-
 	lib/task/-
+	lib/analysis/single
 	
 	trans/generating/generate
 	trans/lib/files
+	
+	include/Relations
+	trans/desugaring/desugar
 
 rules // Builders
 	
@@ -29,22 +33,49 @@ rules // Builders
 rules // Build in steps
 	
 	build:
-		(code, path, project-path, i) -> (javaFileName, javaCode)
+		(ast, path, project-path, i) -> (javaFileName, javaCode)
 		with
 			index-setup(|<language>, project-path);
 			task-setup(|project-path);
 
+			if Module(_,_,_,_) := ast then
+				// log(|Info(),"Phase 0: Analyzing");
+				ast' := <analyze-ast-step> (ast, path, project-path)
+			else
+				ast' := ast
+			end;
+
 			if <leq>(1, i) then
-				(javaFileName, javaCode) := <generate-java-step>(code, path);
+				// log(|Info(),"Phase 1: Generating Java Code");
+				(javaFileName, javaCode) := <generate-java-step>(ast', path);
 				
 			if <leq>(2, i) then
+				// log(|Info(),"Phase 2: Compiling Java Code");
 				<write-file> (javaFileName, javaCode);
 				classFileName := <compile-java-step> javaFileName;
 				
 			if <leq>(3, i) then
+				// log(|Info(),"Phase 3: Executing");
 				<execute-java-step> classFileName
 				
 			end end end
+	
+	analyze-ast-step: (ast, path, project-path) -> analyzedAst
+	 with
+  	desugaredAst := <desugar-all> ast;
+  	(
+    	analyzedAst
+		, (error*, warning*, note*)
+		, removed-entry*
+		, added-entry*
+		, removed-task*
+		, added-task*
+		, invalidated-task*
+		, evaluated-task*
+		, skipped-task*
+		, unevaluated-task*
+		) := <analyze-one(|<language>, path, project-path)> desugaredAst	//TODO: should I call analyze-one ?
+
 	
 	generate-java-step = generate-java-code
 	
