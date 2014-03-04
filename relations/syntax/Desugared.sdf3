@@ -1,0 +1,19 @@
+module Desugared
+
+imports
+
+	Expressions
+
+templates // Desugared expressions
+
+	Exp.BinExp	=	<<Exp> <BinOp> <Exp>> {avoid}
+	
+	BinOp.Plus	= <+>
+	BinOp.Minus	= <->
+	BinOp.Div		= </>
+	BinOp.Mod		= <%>
+	BinOp.Mul		= <*>
+
+templates // Modules
+
+	

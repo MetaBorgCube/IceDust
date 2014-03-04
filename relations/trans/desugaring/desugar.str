@@ -2,6 +2,8 @@ module trans/desugaring/desugar
 
 imports
 	include/Relations
+	
+	trans/desugaring/constructors
 
 rules
 
@@ -22,11 +24,11 @@ desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName,
 /**
  *	Expressions
  */
-desugar: Addition(e1, e2)				-> 	BinExp(Plus(), e1, e2)
-desugar: Subtraction(e1, e2)		-> 	BinExp(Minus(), e1, e2)
-desugar: Division(e1, e2) 			-> 	BinExp(Div(), e1, e2)
-desugar: Modulo(e1, e2) 				-> 	BinExp(Mod(), e1, e2)
-desugar: Multiplication(e1, e2)	-> 	BinExp(Mul(), e1, e2)
+desugar: Addition(e1, e2)				-> 	BinExp(e1,Plus(), e2)
+desugar: Subtraction(e1, e2)		-> 	BinExp(e1,Minus(), e2)
+desugar: Division(e1, e2) 			-> 	BinExp(e1,Div(), e2)
+desugar: Modulo(e1, e2) 				-> 	BinExp(e1,Mod(), e2)
+desugar: Multiplication(e1, e2)	-> 	BinExp(e1,Mul(), e2)
 
 
 /**
@@ -50,9 +52,3 @@ desugar: NavigateInOut(prevNav, navType, inRole, relation, outRole) ->
 signature constructors
 	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
 	
-	BinExp 					: Exp * BinOp * Exp -> Exp
-	Plus						: BinOp
-  Minus						: BinOp
-	Div							:	BinOp	
-  Mod							:	BinOp
-  Mul			:	BinOp

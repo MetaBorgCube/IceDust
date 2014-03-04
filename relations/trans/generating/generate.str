@@ -12,6 +12,7 @@ imports
 	include/Relations
 	editor/Relations-Outliner
 
+	trans/desugaring/constructors
 	trans/desugaring/desugar
 	trans/naming/names
 	trans/naming/properties
@@ -531,11 +532,11 @@ CompilationUnit(
 
 
 // Expressions
-	to-java: BinExp(Plus(), exp1, exp2)		-> Plus(	<to-java>exp1, <to-java>exp2)
-	to-java: BinExp(Minus(), exp1, exp2)	-> Minus(	<to-java>exp1, <to-java>exp2)
-	to-java: BinExp(Div(), exp1, exp2)		-> Div(		<to-java>exp1, <to-java>exp2)
-	to-java: BinExp(Mod(), exp1, exp2)		-> Remain(<to-java>exp1, <to-java>exp2)
-	to-java: BinExp(Mul(), exp1, exp2)		-> Mul(		<to-java>exp1, <to-java>exp2)
+	to-java: BinExp(exp1, Plus(), exp2)		-> Plus(	<to-java>exp1, <to-java>exp2)
+	to-java: BinExp(exp1, Minus(), exp2)	-> Minus(	<to-java>exp1, <to-java>exp2)
+	to-java: BinExp(exp1, Div(), exp2)		-> Div(		<to-java>exp1, <to-java>exp2)
+	to-java: BinExp(exp1, Mod(), exp2)		-> Remain(<to-java>exp1, <to-java>exp2)
+	to-java: BinExp(exp1, Mul(), exp2)		-> Mul(		<to-java>exp1, <to-java>exp2)
 
 
 // Debugging	          

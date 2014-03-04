@@ -1,0 +1,74 @@
+module trans/desugaring/constructors
+
+// Note: this is a copy paste from the signatures file when generated with desugared syntax.
+
+signature
+  constructors
+    Mul                   : BinOp
+    Mod                   : BinOp
+    Div                   : BinOp
+    Minus                 : BinOp
+    Plus                  : BinOp
+    Executable            : List(Execute) -> Executable
+    DataDef               : List(Data) -> DataDef
+    ModelDef              : List(Model) -> ModelDef
+    Module                : ID * Option(ModelDef) * Option(DataDef) * Option(Executable) -> Start
+    NavAndEx              : NavType
+    NavOrEx               : NavType
+    NavAnd                : NavType
+    NavOr                 : NavType
+    NavigateOut           : Navigate * NavType * EntityType * RoleName -> Navigate
+    NavigateIn            : Navigate * NavType * RoleName * EntityType -> Navigate
+    NavigateInOut         : Navigate * NavType * RoleName * EntityType * RoleName -> Navigate
+                          : EntityName -> Navigate
+                          : Navigate -> Execute
+    AccessEntityAttribute : EntityName * ID -> Execute
+    ZeroOrMore            : Multiplicity
+    OneOrMore             : Multiplicity
+    ZeroOrOne             : Multiplicity
+    One                   : Multiplicity
+    EntityType            : ID -> EntityType
+    Role                  : EntityType * Multiplicity * Option(ID) -> Role
+    Derivation            : DerivationType
+    DefaultValue          : DerivationType
+    Derivation            : Exp * DerivationType -> Derivation
+    PrimitiveType         : BasicType -> PrimitiveType
+    Attribute             : ID * PrimitiveType * Option(Derivation) -> Attribute
+                          : Attribute -> RoleOrAttribute
+                          : Role -> RoleOrAttribute
+    RelationType          : EntityOrRelation
+    EntityType            : EntityOrRelation
+    EntityTypeDef         : EntityOrRelation * ID * List(RoleOrAttribute) -> Model
+    Integer               : INT -> Literal
+    String                : STRING -> Literal
+    BinExp                : Exp * BinOp * Exp -> Exp
+                          : AttributeName -> Exp
+                          : Literal -> Exp
+    Subtraction           : Exp * Exp -> Exp
+    Addition              : Exp * Exp -> Exp
+    Modulo                : Exp * Exp -> Exp
+    Division              : Exp * Exp -> Exp
+    Multiplication        : Exp * Exp -> Exp
+    EntityName            : ID -> EntityName
+    RoleName              : ID -> RoleName
+    RoleValue             : RoleName * EntityName -> RoleValue
+    AttributeName         : ID -> AttributeName
+    AttributeValue        : AttributeName * Literal -> AttributeValue
+    EntityOrRelation      : EntityType * ID * List(RoleValue) * List(AttributeValue) -> Data
+                          : String -> STRING
+                          : String -> INT
+                          : String -> BasicType
+                          : String -> ID
+
+
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+
+
+signature
+  constructors
+    Cons : a * List(a) -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)

@@ -49,7 +49,7 @@ type rules // constraints: attributes & values
 
 type rules // constraints: expressions
 	
-	BinExp(operator, exp1, exp2) : exp2type
+	BinExp(exp1, operator, exp2) : exp2type
 		where	exp1		: exp1type
 		and		exp2		: exp2type
 		and		exp1type == exp2type
