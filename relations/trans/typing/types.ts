@@ -3,7 +3,7 @@ module typing/types
 imports
 
 	include/Relations
-	trans/desugaring/desugar
+	trans/desugaring/constructors
 
 
 type rules // type inference : model

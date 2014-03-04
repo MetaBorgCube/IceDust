@@ -1,0 +1,284 @@
+module trans/generating/model
+
+imports
+
+	lib/java/Java
+	lib/nabl/-
+	include/Relations
+	trans/naming/names
+	trans/naming/properties
+
+rules
+	
+  to-java: ModelDef(model) -> <map(try(to-java))>model
+
+  to-java: EntityTypeDef(_, name, attributesAndRoles) -> 
+	  ClassDec(
+	      ClassDecHead([], Id(name), None(), None(), None())
+	    , ClassBody(
+	      	<concat>[[ConstrDec(
+	            ConstrDecHead([Public()], None(), Id(name), [], None())
+	          , ConstrBody(
+	              None()
+	            , fulfillRolesJavaInit
+	            )
+	          )],
+	      		attributesAndRolesJava,
+	      		fulfillRolesJava	
+	      	]
+	      )
+	    )
+	where
+		attributesAndRolesJava := <map(to-java(|name));concat>attributesAndRoles;
+		fulfillRoles := <get-fulfill-role-multiple>name;
+		fulfillRolesJava := <map(to-java-fullfil-role) <+ empty-list> fulfillRoles;
+		fulfillRolesJavaInit := <map(to-java-fulfill-role-init) <+ empty-list> fulfillRoles
+	
+	empty-list: _ -> []
+	
+	to-java-fullfil-role: fulfillRole@_ ->
+			FieldDec(
+        [Public()]
+      , ClassOrInterfaceType(
+          TypeName(Id("Collection"))
+        , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+        )
+      , [VarDec(Id($[[relationName]_[roleName]]))]
+      )
+		where
+			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
+			roleName := <de-def;nabl-uri-name>fulfillRole
+			
+	to-java-fulfill-role-init: fulfillRole@_ ->
+			ExprStm(
+	      Assign(
+	        ExprName(Id($[[relationName]_[roleName]]))
+	      , NewInstance(
+	          None()
+	        , ClassOrInterfaceType(
+	            TypeName(Id("HashSet"))
+	          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id($[[relationName]])), None())]))
+	          )
+	        , []
+	        , None()
+	        )
+	      )
+	    )
+		where
+			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
+			roleName := <de-def;nabl-uri-name>fulfillRole
+
+	de-def: Def(x) -> x
+
+  to-java(|entityName): Attribute(name, PrimitiveType(type), derivation) ->
+		[ field
+	    , setter
+	    , MethodDec(
+	        MethodDecHead(
+	          [Public()]
+	        , None()
+	        , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	        , Id($[get_[name]])
+	        , []
+	        , None()
+	        )
+	      , Block(
+	        	[Return(Some(getterExpr))]
+	        )
+	      )
+	     ]
+		where
+			javaType := <to-java>type;
+			derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
+			if Normal() := derivationType then
+				field := <field>(name, javaType);
+				setter := <setter>(name, javaType);
+				getterExpr := ExprName(Id(name))
+			else if DefaultValue() := derivationType then
+				field := <field>(name, javaType);
+				setter := <setter>(name, javaType);
+				Derivation(derivationExpr, _) := derivation;
+				getterExpr := Cond(
+	                      NotEq(ExprName(Id(name)), <null-value>type)
+	                    , ExprName(Id(name))
+	                    , <to-java>derivationExpr
+	                    )
+			else if Derivation() := derivationType then
+				field := [];
+				setter := [];
+				Derivation(derivationExpr, _) := derivation;
+				getterExpr := <to-java>derivationExpr
+			end end end
+	
+	field: (name, javaType) ->
+				FieldDec(
+	        [Private()]
+	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+	      , [VarDec(Id(name))]
+	      )
+	
+	setter: (name, javaType) ->
+		MethodDec(
+      MethodDecHead(
+        [Public()]
+      , None()
+      , Void()
+      , Id($[set_[name]])
+      , [Param(
+           []
+         , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+         , Id(name)
+         )]
+      , None()
+      )
+    , Block(
+        [ExprStm(
+           Assign(Field(This(), Id(name)), ExprName(Id(name)))
+         )]
+      )
+    )
+
+  to-java(|relationName): Role(EntityType(type), multiplicity, roleName) ->
+		[	FieldDec(
+	      [Public()]
+	    , ClassOrInterfaceType(TypeName(Id(type)), None())
+	    , [VarDec(Id(roleName))]
+	    )
+    , MethodDec(
+        MethodDecHead(
+          [Public(), Static()]
+        , None()
+        , ClassOrInterfaceType(
+            TypeName(Id("Collection"))
+          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+          )
+        , Id($[[roleName]_in])
+        , [ Param(
+              []
+            , ClassOrInterfaceType(
+                TypeName(Id("Collection"))
+              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+              )
+            , Id("in")
+            )
+          ]
+        , None()
+        )
+      , Block(
+          [ LocalVarDecStm(
+              LocalVarDec(
+                []
+              , ClassOrInterfaceType(
+                  TypeName(Id("Collection"))
+                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+                )
+              , [ VarDec(
+                    Id("result")
+                  , NewInstance(
+                      None()
+                    , ClassOrInterfaceType(
+                        TypeName(Id("HashSet"))
+                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+                      )
+                    , []
+                    , None()
+                    )
+                  )
+                ]
+              )
+            )
+          , ForEach(
+              Param(
+                []
+              , ClassOrInterfaceType(TypeName(Id(type)), None())
+              , Id("elem")
+              )
+            , ExprName(Id("in"))
+            , Block(
+                [ ExprStm(
+                    Invoke(
+                      Method(MethodName(AmbName(Id("result")), Id("addAll")))
+                    , [ExprName(AmbName(Id("elem")), Id($[[relationName]_[roleName]]))]
+                    )
+                  )
+                ]
+              )
+            )
+          , Return(Some(ExprName(Id("result"))))
+          ]
+        )
+      )
+    , MethodDec(
+        MethodDecHead(
+          [Public(), Static()]
+        , None()
+        , ClassOrInterfaceType(
+            TypeName(Id("Collection"))
+          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+          )
+        , Id($[[roleName]_out])
+        , [ Param(
+              []
+            , ClassOrInterfaceType(
+                TypeName(Id("Collection"))
+              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+              )
+            , Id("out")
+            )
+          ]
+        , None()
+        )
+      , Block(
+          [ LocalVarDecStm(
+              LocalVarDec(
+                []
+              , ClassOrInterfaceType(
+                  TypeName(Id("Collection"))
+                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+                )
+              , [ VarDec(
+                    Id("result")
+                  , NewInstance(
+                      None()
+                    , ClassOrInterfaceType(
+                        TypeName(Id("HashSet"))
+                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+                      )
+                    , []
+                    , None()
+                    )
+                  )
+                ]
+              )
+            )
+          , ForEach(
+              Param(
+                []
+              , ClassOrInterfaceType(TypeName(Id(relationName)), None())
+              , Id("u")
+              )
+            , ExprName(Id("out"))
+            , Block(
+                [ ExprStm(
+                    Invoke(
+                      Method(MethodName(AmbName(Id("result")), Id("add")))
+                    , [ExprName(AmbName(Id("u")), Id(roleName))]
+                    )
+                  )
+                ]
+              )
+            )
+          , Return(Some(ExprName(Id("result"))))
+          ]
+        )
+      )
+		]
+				
+
+  to-java: "String" -> "String"
+  to-java: "Int"	-> "int"
+
+	to-java: AttributeName(name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+	
+	null-value: "String" -> Lit(Null())
+	null-value: "Int" -> Lit(Deci("0"))

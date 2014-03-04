@@ -1,0 +1,30 @@
+module trans/lib/files
+
+imports
+
+	lib/editor-common.generated
+
+rules
+
+	write-file: (fileName, content) -> (fileName, content)
+		where
+			<dirname;ensure-dir> fileName
+		where
+			fileDescriptor := <fopen> (fileName, "w");
+			<fputs> (content, fileDescriptor);
+			<fclose> fileDescriptor;
+			<refresh-workspace-file> fileName
+			
+	ensure-dir: path -> path
+		where
+			<file-exists;filemode;isdir> path
+	ensure-dir: path -> path
+		where
+			<not(file-exists;filemode;isdir)> path;
+			<dirname;ensure-dir> path;
+			<mkdir> path
+			
+	delete-file: path -> <fail>
+		where
+			err-msg(|"Deleting files not implemented.")
+			

@@ -1,0 +1,77 @@
+module trans/generating/data
+
+imports
+
+	lib/java/Java
+	include/Relations
+
+rules
+	
+  to-java: DataDef(defs) -> <map(to-java);concat> defs
+  
+  to-java: EntityOrRelation(
+        EntityType(entityType)
+      , entityName
+      , roleValues
+      , attributeValues
+      )
+      ->
+      <concat>[[
+      LocalVarDecStm(
+          LocalVarDec(
+            []
+          , ClassOrInterfaceType(TypeName(Id(entityType)), None())
+          , [ VarDec(
+                Id(entityName)
+              , NewInstance(
+                  None()
+                , ClassOrInterfaceType(TypeName(Id(entityType)), None())
+                , []
+                , None()
+                )
+              )
+            ]
+          )
+        )],
+        attributeValuesJava,
+        roleValuesJava
+        ]
+	where
+		attributeValuesJava := <map(to-java(|entityName))> attributeValues;
+		roleValuesJava			:= <map(to-java(|entityName, entityType));concat> roleValues
+
+  to-java(|entityName) : AttributeValue(AttributeName(attributeName), attributeValue) ->
+	  	ExprStm(
+        Invoke(
+          Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))
+        , [attributeValueJava]
+        )
+	    )
+    where
+    	attributeValueJava := <to-java>attributeValue
+    	
+  to-java(|entityName, entityType) :
+  	RoleValue(RoleName(roleName), EntityName(otherEntityName)) ->
+  	[	
+  		ExprStm(
+		      Assign(
+		        ExprName(AmbName(Id(entityName)), Id(roleName))
+		      , ExprName(Id(otherEntityName))
+		      )
+		    )
+		  , ExprStm(
+		      Invoke(
+		        Method(
+		          MethodName(
+		            AmbName(AmbName(Id(otherEntityName)), Id($[[entityType]_[roleName]]))
+		          , Id("add")
+		          )
+		        )
+		      , [ExprName(Id(entityName))]
+		      )
+		    )
+		 ]
+  
+
+  to-java: String(value) -> Lit(String([Chars(value)]))
+  to-java: Integer(value) -> Lit(Deci(value))

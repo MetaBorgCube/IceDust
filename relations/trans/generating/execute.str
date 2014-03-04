@@ -1,0 +1,47 @@
+module trans/generating/execute
+
+imports
+
+	lib/java/Java
+	include/Relations
+
+rules
+
+  to-java: Executable(executes) -> <map(to-java;syso)>executes
+  
+  to-java: AccessEntityAttribute(EntityName(entityName), attributeName) ->
+		Invoke(
+       Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
+     , []
+     )
+
+	to-java: NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
+		Invoke(
+      Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
+    , [<to-java>prevNav]
+    )
+  
+  to-java: NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
+		Invoke(
+		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
+		, [ <to-java>prevNav ]
+		)
+		
+	to-java: EntityName(entityName) -> 
+		Invoke(
+		   Method(MethodName(Id("toCollection")))
+		 , [ExprName(Id(entityName))]
+		 )
+		 
+	syso: javaExpr ->
+		ExprStm(
+		  Invoke(
+		    Method(
+		      MethodName(
+		        AmbName(AmbName(Id("System")), Id("out"))
+		      , Id("println")
+		      )
+		    )
+		  , [ javaExpr ]
+		  )
+		)

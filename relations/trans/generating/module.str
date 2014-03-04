@@ -1,0 +1,70 @@
+module trans/generating/module
+
+imports
+
+	lib/java/Java
+	include/Relations
+	trans/desugaring/desugar
+	trans/generating/runtime
+
+rules
+
+  to-java:
+    ModuleDesugared(moduleName, model, data, execute) ->
+			CompilationUnit(
+			  None()
+			, [ TypeImportDec(
+			      TypeName(
+			        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
+			      , Id("Collection")
+			      )
+			    )
+			  , TypeImportDec(
+			      TypeName(
+			        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
+			      , Id("HashSet")
+			      )
+			    )
+			  ]
+			, <concat>[[ mainClass ], modelJava]
+			)
+	where
+		mainClass := <main-class-to-java>ModuleDesugared(moduleName, model, data, execute);
+		modelJava := <to-java>model
+		
+  main-class-to-java: ModuleDesugared(moduleName, model, data, execute) ->
+	  ClassDec(
+	      ClassDecHead([], Id(moduleName), None(), None(), None())
+	    , ClassBody(
+	        [ MethodDec(
+	            MethodDecHead(
+	              [Public(), Static()]
+	            , None()
+	            , Void()
+	            , Id("main")
+	            , [ Param(
+	                  []
+	                , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
+	                , Id("args")
+	                )
+	              ]
+	            , None()
+	            )
+	          , Block(
+	           	<concat>[
+	              dataJava,
+	              executeJava
+	              ]
+	            )
+	          ),
+	          <to-collection>
+	        ]
+	      )
+	    )
+	where
+		dataJava := <to-java>data;
+		if Executable(_) := execute then
+			executeJava := <to-java>execute
+		else
+			executeJava := []
+		end

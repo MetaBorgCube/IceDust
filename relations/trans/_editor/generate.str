@@ -7,29 +7,57 @@ imports
 	lib/task/-
 	
 	trans/generating/generate
+	trans/lib/files
 
-rules // Generate builders
+rules // Builders
 	
 	generate-java:
 		(selected, position, ast, path, project-path) -> (fileName, result)
 		with
-			index-setup(|<language>, project-path);
-			task-setup(|project-path);
-			(fileName, result) := <generate-java2>(selected, path)
+			(fileName, result) := <build>(selected, path, project-path, 1)
 			
 	compile-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
-			index-setup(|<language>, project-path);
-			task-setup(|project-path);
-			(javaFileName, _) := <generate-java2>(selected, path);
-			<compile-java2> javaFileName
+			<build>(selected, path, project-path, 2)
 			
 	execute-java:
 		(selected, position, ast, path, project-path) -> None()
 		with
+			<build>(selected, path, project-path, 3)
+
+rules // Build in steps
+	
+	build:
+		(code, path, project-path, i) -> (javaFileName, javaCode)
+		with
 			index-setup(|<language>, project-path);
 			task-setup(|project-path);
-			(javaFileName, _) := <generate-java2>(selected, path);
-			classFileName := <compile-java2> javaFileName;
-			<execute-java2> classFileName
+
+			if <leq>(1, i) then
+				(javaFileName, javaCode) := <generate-java-step>(code, path);
+				
+			if <leq>(2, i) then
+				<write-file> (javaFileName, javaCode);
+				classFileName := <compile-java-step> javaFileName;
+				
+			if <leq>(3, i) then
+				<execute-java-step> classFileName
+				
+			end end end
+	
+	generate-java-step = generate-java-code
+	
+	compile-java-step:
+		javaFileName -> classFileName
+		with
+			<try(call)> ("javac", [javaFileName]);
+			classFileName := <guarantee-extension(|"class")> javaFileName;
+			<refresh-workspace-file> classFileName
+
+	execute-java-step:
+		classFileName -> None()
+		with
+			classPath := <dirname>classFileName;
+			className := <base-filename;remove-extension> classFileName;
+			<try(call)> ("java", ["-cp", classPath, className])
