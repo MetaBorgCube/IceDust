@@ -9,7 +9,7 @@ rules
 
   to-java: Executable(executes) -> <map(to-java;syso)>executes
   
-  to-java: AccessEntityAttribute(EntityName(entityName), attributeName) ->
+  to-java: AttributeName(EntityName(entityName), attributeName) ->
 		Invoke(
        Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
      , []

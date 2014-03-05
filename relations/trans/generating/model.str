@@ -278,7 +278,7 @@ rules
   to-java: "String" -> "String"
   to-java: "Int"	-> "int"
 
-	to-java: AttributeName(name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+	to-java: AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
 	
 	null-value: "String" -> Lit(Null())
 	null-value: "Int" -> Lit(Deci("0"))

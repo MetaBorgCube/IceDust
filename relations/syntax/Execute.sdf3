@@ -6,4 +6,4 @@ imports
 templates
 
 Execute = <<MathExp>>
-Execute = <<NavExp>>
+Execute = <<NavExp>> {prefer}
