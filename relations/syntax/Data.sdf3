@@ -12,8 +12,7 @@ Data.EntityOrRelation = <<EntityType> <ID>{
 	<RoleValue*>
 	<AttributeValue*>
 }>
-AttributeValue.AttributeValue = <<AttributeName> = <Literal>>
-AttributeName.AttributeName = <<ID>>
+AttributeValue.AttributeValue = <<AttributeNameThis> = <LitValExp>>
 RoleValue.RoleValue = <<RoleName> : <EntityName>>
 RoleName.RoleName = <<ID>>
 EntityName.EntityName = <<ID>>

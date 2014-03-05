@@ -17,8 +17,9 @@ templates
 lexical syntax
         Keyword = BasicType
         
-        Keyword =     "entity"         
-        Keyword =     "relationship"   
+        Keyword =     "entity"
+        Keyword =     "relationship"
+        Keyword =     "this"
 
 
 lexical restrictions

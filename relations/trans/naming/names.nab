@@ -45,7 +45,7 @@ binding rules
 	EntityOrRelation(EntityType(entityType), e, _, _) :
 		defines Entity e of type entityType
 		scopes This
-		implicitly defines This "this" of type entityType								//Post p1 {title="asdf"} works like Post p1 {this.title="asdf"}
+		implicitly defines This "this" of type entityType
 	
 	EntityName(e) :
 		refers to Entity e
@@ -55,11 +55,11 @@ binding rules
 	Attribute(a, t, _) :
 		defines Attribute a of type t
 		
-	AttributeName(a):																	//Post p1 {title="asdf"} works like Post p1 {this.title="asdf"}
+	AttributeName(This(), a) :
 		refers to Attribute a in EntityType t
 		where This "this" has type t
 		
-	AccessEntityAttribute(EntityName(e), a) :
+	AttributeName(EntityName(e), a) :
 		refers to Attribute a in EntityType t
 		where Entity e has type t
 
@@ -68,7 +68,7 @@ binding rules
 	Role(EntityType(roleType), multiplicity, role) :
 		defines Role role of type roleType //ignoring multiplicties in types atm
 	
-	RoleName(r):																		//Post p1 {poster:me} works like Post p1 {this.poster:me}
+	RoleName(r):
 		refers to Role r in EntityType t
 		where This "this" has type t
 		

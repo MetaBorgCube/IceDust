@@ -8,7 +8,7 @@ imports
 
 type rules // type inference : model
 		
-	AttributeName(name) : type
+	AttributeName(e, name) : type
 	where definition of name : type
 		
 	RoleName(name) : type

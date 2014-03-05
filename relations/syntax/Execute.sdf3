@@ -1,22 +1,9 @@
 module Execute
 
 imports
-	Common
-	Model
-	Data
+	Expressions
 
 templates
 
-Execute.AccessEntityAttribute = <<EntityName>.<ID>>
-
-Execute = <<Navigate>>
-
-Navigate = <<EntityName>>
-Navigate.NavigateInOut	= <<Navigate> <NavType> <RoleName>]<EntityType>[<RoleName>>
-Navigate.NavigateIn			= <<Navigate> <NavType> <RoleName>]<EntityType>>
-Navigate.NavigateOut		= <<Navigate> <NavType> <EntityType>[<RoleName>>
-
-NavType.NavOr = <\>>
-NavType.NavAnd = <\>\>>
-NavType.NavOrEx = <-\>>
-NavType.NavAndEx = <-\>\>>
+Execute = <<MathExp>>
+Execute = <<NavExp>>

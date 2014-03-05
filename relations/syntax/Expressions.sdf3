@@ -3,48 +3,64 @@ module Expressions
 imports
 	Common
 	Data
+	Model
 
-templates
+templates //exp : PrimitiveType, 0-*
 
-// brackets
-Exp 								= <(<Exp>)> {bracket}
+	MathExp 									= <(<MathExp>)> 					{bracket}
+	MathExp.Multiplication		=	<<MathExp> * <MathExp>> {left}
+	MathExp.Division					=	<<MathExp> / <MathExp>> {left}
+	MathExp.Modulo						=	<<MathExp> % <MathExp>> {left}
+	MathExp.Addition					=	<<MathExp> + <MathExp>> {left}
+	MathExp.Subtraction				=	<<MathExp> - <MathExp>> {left}
+	MathExp.Aggregation				= <<Aggr>( <MathExp> )>
+	MathExp										= <<AttributeExp>>
+	MathExp										= <<LitValExp>>
 
-// binary operations
-// TODO: add more binary expressions
-Exp.Multiplication	=	<<Exp> * <Exp>> {left}
-Exp.Division				=	<<Exp> / <Exp>> {left}
-Exp.Modulo					=	<<Exp> % <Exp>> {left}
+	Aggr.Max		= <max>
+	Aggr.Min		= <min>
+	Aggr.Avg		= <avg>
+	Aggr.Concat	= <concat>
 
-Exp.Addition				=	<<Exp> + <Exp>> {left}
-Exp.Subtraction			=	<<Exp> - <Exp>> {left}
+templates //exp : PrimitiveType, 0-*
 
-// // aggregation operations
-// Exp.Aggregation			= <<Aggr>( <Exp> )>
-// Aggr.Max						= <max>
-// Aggr.Min						= <min>
-// Aggr.Avg						= <avg>
-// Aggr.Concat					= <concat>
-// 
-// // making a list
-// ExpList.ExpList			= <<Exp*;separator=",">>
+	AttributeExp.AttributeName= <<NavExp>.<ID>>
+	AttributeExp 							= <<AttributeNameThis>>
+	
+	AttributeNameThis.AttributeNameThis =<<ID>>
 
-// primitive data types
-Exp 								= <<Literal>>
-Literal.String 			= <"<STRING>">
-Literal.Integer 		= <<INT>>
+templates //exp : PrimitiveType, 1
 
-// referring to attribute names
-Exp 								= <<AttributeName>>
+	LitValExp.String 					= <"<STRING>">
+	LitValExp.Integer 				= <<INT>>
+
+templates //exp : EntityType, 0-*
+
+	NavExp.NavigateInOut			= <<NavExp> <NavType> <RoleName>]<EntityType>[<RoleName>>
+	NavExp.NavigateIn					= <<NavExp> <NavType> <RoleName>]<EntityType>>
+	NavExp.NavigateOut				= <<NavExp> <NavType> <EntityType>[<RoleName>>
+	NavExp 										= <<EntityNameExp>>
+	NavExp 										= <<ThisExp>>
+	
+	NavType.NavOr							= <\>>
+	NavType.NavAnd						= <\>\>>
+	NavType.NavOrEx 					= <-\>>
+	NavType.NavAndEx					= <-\>\>>
+
+templates //exp : EntityType, 1
+
+	EntityNameExp.EntityName	= <<ID>>
+	ThisExp.This							= <this>
 
 
 template options
 context-free priorities
-{ left:
-	Exp.Multiplication
-	Exp.Division
-	Exp.Modulo
-} >
-{ left:
-	Exp.Addition
-	Exp.Subtraction
-}
+	{ left:
+		MathExp.Multiplication
+		MathExp.Division
+		MathExp.Modulo
+	} >
+	{ left:
+		MathExp.Addition
+		MathExp.Subtraction
+	}

@@ -30,6 +30,8 @@ desugar: Division(e1, e2) 			-> 	BinExp(e1,Div(), e2)
 desugar: Modulo(e1, e2) 				-> 	BinExp(e1,Mod(), e2)
 desugar: Multiplication(e1, e2)	-> 	BinExp(e1,Mul(), e2)
 
+desugar: AttributeNameThis(a)		->	AttributeName(This(), a)
+
 
 /**
  *	Generate omitted names

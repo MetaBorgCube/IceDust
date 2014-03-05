@@ -13,24 +13,24 @@ Model.EntityTypeDef = <
 }
 >
 
-EntityOrRelation.EntityType = <entity>
-EntityOrRelation.RelationType = <relation>
+EntityOrRelation.EntityType		= <entity>
+EntityOrRelation.RelationType	= <relation>
 
 // roles and attributes
-RoleOrAttribute = <<Role>>
-RoleOrAttribute = <<Attribute>>
+RoleOrAttribute								= <<Role>>
+RoleOrAttribute								= <<Attribute>>
 
-Attribute.Attribute = <<ID> : <PrimitiveType> <Derivation?>>
-PrimitiveType.PrimitiveType = <<BasicType>>
-Derivation.Derivation = <= <Exp> <DerivationType>>
-DerivationType.DefaultValue	= <(default)>
-DerivationType.Derivation		= <(derivation)>
-DerivationType.Derivation		= <>
+Attribute.Attribute 					= <<ID> : <PrimitiveType> <Derivation?>>
+PrimitiveType.PrimitiveType		= <<BasicType>>
+Derivation.Derivation 				= <= <MathExp> <DerivationType>>
+DerivationType.DefaultValue		= <(default)>
+DerivationType.Derivation			= <(derivation)>
+DerivationType.Derivation			= <>
 
-Role.Role = <<EntityType> <Multiplicity> <ID?>>
-EntityType.EntityType = <<ID>>
-Multiplicity.One	 		= <1>
-Multiplicity.ZeroOrOne		= <?>
-Multiplicity.OneOrMore		= <+>
-Multiplicity.ZeroOrMore		= <*>
+Role.Role											= <<EntityType> <Multiplicity> <ID?>>
+EntityType.EntityType 				= <<ID>>
+Multiplicity.One	 						= <1>
+Multiplicity.ZeroOrOne				= <?>
+Multiplicity.OneOrMore				= <+>
+Multiplicity.ZeroOrMore				= <*>
 
