@@ -1,0 +1,32 @@
+module recursiveavg
+
+model
+entity Node{
+	value : Int = avg( this > parent]Tree[child . value ) (default)
+}
+relation Tree{
+	Node 1 parent
+	Node 1 child
+}
+
+data
+Node n1{
+	value = 2
+}
+Node n2{
+	value = 4
+}
+Node n3{}
+Tree t1{
+	parent:n3
+	child:n1
+}
+Tree t2{
+	parent:n3
+	child:n2
+}
+
+execute
+n1.value
+n2.value
+n3.value
