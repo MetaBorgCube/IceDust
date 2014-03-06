@@ -10,6 +10,8 @@ type rules // type inference : model
 		
 	AttributeName(e, name) : type
 	where definition of name : type
+	AttributeName(e, name) has multiplicity mult
+	where definition of name has multiplicity mult
 		
 	RoleName(name) : type
 	where definition of name : type
@@ -21,7 +23,12 @@ type rules // type inference : model
 type rules // type inference : expressions
 
 	Integer(x) : PrimitiveType("Int")
+	Integer(x) has multiplicity One()
+	
 	String(x) : PrimitiveType("String")
+	String(x) has multiplicity One()
+	
+	Attribute(a, t, e) has multiplicity One()
 	
 
 type rules // constraints: attributes & values
@@ -54,6 +61,11 @@ type rules // constraints: expressions
 		and		exp2		: exp2type
 		and		exp1type == exp2type
 		else error "Not the same types supplied to the Binary Operator." on exp2
+	BinExp(exp1, operator, exp2) has multiplicity exp2mult
+		where	exp1		has multiplicity exp1mult
+		and		exp2		has multiplicity exp2mult
+		and		exp1mult == exp2mult
+		else error "Not the same multiplicities supplied to the Binary Operator." on exp2
 		
 	Aggregation(operator, exp) : expType
 		where	exp			: expType

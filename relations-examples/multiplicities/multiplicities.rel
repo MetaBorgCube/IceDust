@@ -1,0 +1,8 @@
+module multiplcities
+
+model
+entity Foo{
+	input1	: Int = 5
+	input2	: Int = 7 + 4
+	value		: Int = 1 + input2
+}
