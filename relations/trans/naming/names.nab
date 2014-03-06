@@ -35,7 +35,7 @@ binding rules
 		scopes Attribute
 		scopes Role
 		scopes This
-		implicitly defines This "this" of type e
+		implicitly defines This This() of type e
 		
 	EntityType(e) :
 		refers to EntityType e
@@ -45,7 +45,7 @@ binding rules
 	EntityOrRelation(EntityType(entityType), e, _, _) :
 		defines Entity e of type entityType
 		scopes This
-		implicitly defines This "this" of type entityType
+		implicitly defines This This() of type entityType
 	
 	EntityName(e) :
 		refers to Entity e
@@ -57,7 +57,7 @@ binding rules
 		
 	AttributeName(This(), a) :
 		refers to Attribute a in EntityType t
-		where This "this" has type t
+		where This This() has type t
 		
 	AttributeName(EntityName(e), a) :
 		refers to Attribute a in EntityType t
@@ -70,12 +70,12 @@ binding rules
 	
 	RoleName(r):
 		refers to Role r in EntityType t
-		where This "this" has type t
+		where This This() has type t
 		
 
 	// navigators
 	NavigateIn(_, _, inRole, EntityType(relationType)) :
-		implicitly defines This "this" of type relationType in inRole
+		implicitly defines This This() of type relationType in inRole
 	NavigateOut(_, _, EntityType(relationType), outRole) :
-		implicitly defines This "this" of type relationType in outRole
+		implicitly defines This This() of type relationType in outRole
 	
