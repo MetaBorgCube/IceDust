@@ -59,9 +59,9 @@ binding rules
 		refers to Attribute a in EntityType t
 		where This This() has type t
 		
-	AttributeName(EntityName(e), a) :
+	AttributeName(exp, a) :
 		refers to Attribute a in EntityType t
-		where Entity e has type t
+		where exp has type t
 
 	
 	// roles

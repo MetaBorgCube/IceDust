@@ -54,9 +54,18 @@ type rules // constraints: expressions
 		and		exp2		: exp2type
 		and		exp1type == exp2type
 		else error "Not the same types supplied to the Binary Operator." on exp2
+		
+	Aggregation(operator, exp) : expType
+		where	exp			: expType
 
 
 type rules // constraints: navigators
+
+	//TODO: remove this rule after this is name bound and type checked - This() is not type checked
+	NavigateIn(This(), navType, inRole, EntityType(relationType)) : relationType
+		where inRole		: inRoleType
+	NavigateOut(This(), navType, EntityType(relationType), outRole) : outType
+		where	outRole	: outType
 
 	NavigateIn(prevNav, navType, inRole, EntityType(relationType)) : relationType
 		where prevNav	: prevNavType
@@ -69,4 +78,5 @@ type rules // constraints: navigators
 		and prevNav		: prevNavType
 		and relationType == prevNavType
 		else error "The relation is of the wrong type." on relationType
+	
 		
