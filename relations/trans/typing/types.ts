@@ -33,8 +33,6 @@ type rules // type inference : expressions
 	String(x) : String()
 	String(x) has multiplicity One()
 	
-	Attribute(a, t, e) has multiplicity One()
-	
 
 type rules // constraints: attributes & values
 

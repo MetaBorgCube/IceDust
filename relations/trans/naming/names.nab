@@ -60,7 +60,7 @@ binding rules
 	
 	// attributes
 	Attribute(a, t, _) :
-		defines Attribute a of type t
+		defines Attribute a of type t of multiplicity One()
 		
 	AttributeName(This(), a) :
 		refers to Attribute a in EntityType t
