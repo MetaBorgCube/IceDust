@@ -16,8 +16,12 @@ type rules // references have types and multiplicites of their defs
 	AttributeName(e, name) : type
 	where definition of name : type
 	
-	AttributeName(e, name) has multiplicity mult
-	where definition of name has multiplicity mult
+	// AttributeName(e, name) has multiplicity attr-mu
+	// where	definition of name has multiplicity attr-mu
+	
+	AttributeName(e, name) has multiplicity e-mu
+	where	e has multiplicity e-mu
+	// 	and definition of name has multiplicity One() else error "Attribute should have multiplicity One" on name
 		
 	RoleName(name) : type
 	where definition of name : type
@@ -87,15 +91,24 @@ type rules // math expressions
 +	Avg(x) : x-ty
 	where	x	: x-ty
 		and x-ty == Int() else error "Int expected" on x
+
+	Min(x)
++	Max(x)
++	Avg(x) has multiplicity One() //TODO mu
+	where x has multiplicity x-mu
+	and (
+				x-mu == ZeroOrMore() //and ZeroOrOne() => mu
+		 or x-mu == OneOrMore()	 //and One() => mu
+		 or x-mu == ZeroOrOne()	 //and ZeroOrOne() => mu
+		 or x-mu == One()				 //and One() => mu
+	) 
+	// else error "Expected multiplicity of higher than One" on x
 		
 	Concat(x) : x-ty
 	where x : x-ty
 		and x-ty == String() else error "String expected" on x
 		
-	Min(x)
-+	Max(x)
-+	Avg(x)
-+ Concat(x) has multiplicity One() //TODO: only true when One or OneOrMore for ints, and for strings always true
+	Concat(x) has multiplicity One() //TODO: zero goes to multiplicity zero or to empty string?
 
 
 type rules // this expression
