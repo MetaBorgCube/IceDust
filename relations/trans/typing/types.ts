@@ -1,6 +1,12 @@
 module typing/types
 
 imports
+	
+  lib/nabl/-
+  lib/task/-
+  lib/properties/-
+  lib/types/-
+  lib/editor/-
 
 	include/Relations
 	trans/desugaring/constructors

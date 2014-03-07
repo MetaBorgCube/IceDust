@@ -1,6 +1,12 @@
 module trans/naming/names
 
 imports
+
+  lib/nabl/-
+  lib/task/-
+  lib/properties/-
+  lib/types/-
+  lib/editor/-
 	
 	include/Relations
 	trans/desugaring/desugar
