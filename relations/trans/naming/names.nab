@@ -37,52 +37,62 @@ binding rules
 
 
 	// entity types
-	EntityTypeDef(_, e, _) :
-		defines EntityType e
+	EntityTypeDef(_, e-ty, _) :
+		defines EntityType e-ty
 		scopes Attribute
 		scopes Role
 		scopes This
-		implicitly defines This This() of type e
+		implicitly defines This This()
+			of type e-ty
 		
 	EntityType(e) :
 		refers to EntityType e
 		
 	
 	// entities
-	EntityOrRelation(EntityType(entityType), e, _, _) :
-		defines Entity e of type entityType
+	EntityOrRelation(EntityType(e-ty), e, _, _) :
+		defines Entity e
+			of type e-ty
 		scopes This
-		implicitly defines This This() of type entityType
+		implicitly defines This This()
+			of type e-ty
 	
 	EntityName(e) :
 		refers to Entity e
 	
 	
 	// attributes
-	Attribute(a, t, _) :
-		defines Attribute a of type t of multiplicity One()
+	Attribute(a, a-ty, _) :
+		defines Attribute a
+			of type a-ty
+			of multiplicity One()
 		
 	AttributeName(This(), a) :
-		refers to Attribute a in EntityType t
-		where This This() has type t
+		refers to Attribute a in EntityType e-ty
+		where This This() has type e-ty
 		
 	AttributeName(exp, a) :
-		refers to Attribute a in EntityType t
-		where exp has type t
+		refers to Attribute a in EntityType e-ty
+		where exp has type e-ty
 
 	
 	// roles
-	Role(EntityType(roleType), multiplicity, role) :
-		defines Role role of type roleType //ignoring multiplicties in types atm
+	Role(EntityType(role-ty), role-mu, role) :
+		defines Role role
+			of type role-ty
+			of multiplicity role-mu
 	
 	RoleName(r):
-		refers to Role r in EntityType t
-		where This This() has type t
+		refers to Role r in EntityType e-ty
+		where This This() has type e-ty
 		
 
 	// navigators
-	NavigateIn(_, _, inRole, EntityType(relationType)) :
-		implicitly defines This This() of type relationType in inRole
-	NavigateOut(_, _, EntityType(relationType), outRole) :
-		implicitly defines This This() of type relationType in outRole
+	NavigateIn(_, _, in2, EntityType(r-ty)) :
+		implicitly defines This This()
+			of type r-ty in in2
+		
+	NavigateOut(_, _, EntityType(r-ty), out) :
+		implicitly defines This This()
+			of type r-ty in out
 	
