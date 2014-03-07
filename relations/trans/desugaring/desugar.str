@@ -3,8 +3,6 @@ module trans/desugaring/desugar
 imports
 	include/Relations
 	
-	// trans/desugaring/constructors
-
 rules
 
 
@@ -24,12 +22,6 @@ desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName,
 /**
  *	Expressions
  */
-// desugar: Addition(e1, e2)				-> 	BinExp(e1,Plus(), e2)
-// desugar: Subtraction(e1, e2)		-> 	BinExp(e1,Minus(), e2)
-// desugar: Division(e1, e2) 			-> 	BinExp(e1,Div(), e2)
-// desugar: Modulo(e1, e2) 				-> 	BinExp(e1,Mod(), e2)
-// desugar: Multiplication(e1, e2)	-> 	BinExp(e1,Mul(), e2)
-
 desugar: AttributeNameThis(a)		->	AttributeName(This(), a)
 
 

@@ -9,7 +9,6 @@ imports
   lib/editor/-
 
 	include/Relations
-	// trans/desugaring/constructors
 
 
 type rules // type inference : model

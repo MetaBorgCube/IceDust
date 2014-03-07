@@ -13,10 +13,6 @@ imports
 	Execute.pp.generated
 	Expressions.pp.generated
 
-	// desugared pretty printing
-	// trans/desugaring/constructors
-	// Desugared.pp.generated
-
 signature constructors
 	//FIXME: Common.pp.generated.str needs this constructor...
 	Identifier: Identifier -> Identifier
