@@ -9,7 +9,7 @@ imports
   lib/editor/-
 
 	include/Relations
-	trans/desugaring/constructors
+	// trans/desugaring/constructors
 
 
 type rules // type inference : model
@@ -62,19 +62,26 @@ type rules // constraints: attributes & values
 
 type rules // constraints: expressions
 	
-	BinExp(exp1, operator, exp2) : exp2type
-		where	exp1		: exp1type
-		and		exp2		: exp2type
-		and		exp1type == exp2type
-		else error "Not the same types supplied to the Binary Operator." on exp2
-	BinExp(exp1, operator, exp2) has multiplicity exp2mult
-		where	exp1		has multiplicity exp1mult
-		and		exp2		has multiplicity exp2mult
-		and		exp1mult == exp2mult
-		else error "Not the same multiplicities supplied to the Binary Operator." on exp2
+	Multiplication(x, y)
++	Division(x, y)
++	Modulo(x, y)
++	Addition(x, y)
++	Subtraction(x, y) : y-ty
+	where	x	: x-ty
+		and	y	: y-ty
+		and	x-ty == y-ty else error "Not the same types supplied to Addition." on y
 		
-	Aggregation(operator, exp) : expType
-		where	exp			: expType
+	Multiplication(x, y)
++	Division(x, y)
++	Modulo(x, y)
++	Addition(x, y)
++	Subtraction(x, y) has multiplicity y-mu
+	where	x	has multiplicity x-mu
+		and	y	has multiplicity y-mu
+		and	x-mu == y-mu else error "Not the same multiplicities supplied to Addition." on y
+		
+	Aggregation(op, x) : x-ty
+		where	x	: x-ty
 
 
 type rules // constraints: navigators

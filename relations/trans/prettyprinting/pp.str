@@ -14,8 +14,8 @@ imports
 	Expressions.pp.generated
 
 	// desugared pretty printing
-	trans/desugaring/constructors
-	Desugared.pp.generated
+	// trans/desugaring/constructors
+	// Desugared.pp.generated
 
 signature constructors
 	//FIXME: Common.pp.generated.str needs this constructor...

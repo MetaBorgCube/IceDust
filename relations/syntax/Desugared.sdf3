@@ -6,13 +6,13 @@ imports
 
 templates // Desugared expressions
 
-	Exp.BinExp	=	<<Exp> <BinOp> <Exp>> {avoid}
+	// Exp.BinExp	=	<<Exp> <BinOp> <Exp>> {avoid}
 	
-	BinOp.Plus	= <+>
-	BinOp.Minus	= <->
-	BinOp.Div		= </>
-	BinOp.Mod		= <%>
-	BinOp.Mul		= <*>
+	// BinOp.Plus	= <+>
+	// BinOp.Minus	= <->
+	// BinOp.Div		= </>
+	// BinOp.Mod		= <%>
+	// BinOp.Mul		= <*>
 
 templates // Modules
 
