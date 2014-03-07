@@ -70,7 +70,7 @@ rules
 
 	de-def: Def(x) -> x
 
-  to-java(|entityName): Attribute(name, PrimitiveType(type), derivation) ->
+  to-java(|entityName): Attribute(name, type, derivation) ->
 		[ field
 	    , setter
 	    , MethodDec(
@@ -275,10 +275,10 @@ rules
 		]
 				
 
-  to-java: "String" -> "String"
-  to-java: "Int"	-> "int"
+  to-java: String() -> "String"
+  to-java: Int()	-> "int"
 
 	to-java: AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
 	
-	null-value: "String" -> Lit(Null())
-	null-value: "Int" -> Lit(Deci("0"))
+	null-value: String() -> Lit(Null())
+	null-value: Int() -> Lit(Deci("0"))

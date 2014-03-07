@@ -1,40 +1,33 @@
 module Common
 
 
-// IDs
-lexical syntax
-        ID = [a-zA-Z\_][0-9a-zA-Z\_]*
-        ID = Keyword {reject}        
+
+lexical syntax // IDs
+
+  ID = [a-zA-Z\_][0-9a-zA-Z\_]*
+  ID = Keyword {reject}        
                 
 lexical restrictions
-        ID -/- [a-zA-Z0-9\_]
+	
+	ID -/- [a-zA-Z0-9\_]
         
-templates
-        Identifier.Identifier = <<ID>>
+// templates
+// 
+// 	Identifier.Identifier = <<ID>>
 
 
-// Keywords
-lexical syntax
-        Keyword = BasicType
-        
-        Keyword =     "entity"
-        Keyword =     "relationship"
-        Keyword =     "this"
+lexical syntax // Keywords
+
+	Keyword = "entity"
+	Keyword = "relationship"
+	Keyword = "this"
+	Keyword = "String"
+	Keyword = "Int"
 
 
 lexical restrictions
-        Keyword -/- [a-zA-Z0-9\_]
 
-
-// Primitive types
-lexical syntax
-        BasicType = "String"
-        BasicType = "Int"
-        
-lexical restrictions
-        BasicType -/- [a-zA-Z0-9\_]
-
-
+	Keyword -/- [a-zA-Z0-9\_]
 
 
 

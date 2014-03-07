@@ -12,6 +12,7 @@ imports
 	Data.pp.generated
 	Execute.pp.generated
 	Expressions.pp.generated
+	Types.pp.generated
 
 signature constructors
 	//FIXME: Common.pp.generated.str needs this constructor...

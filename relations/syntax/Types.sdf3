@@ -1,0 +1,8 @@
+module Types
+
+imports
+
+templates
+
+PrimitiveType.Int			= <Int>
+PrimitiveType.String	= <String>

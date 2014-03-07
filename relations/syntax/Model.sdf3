@@ -3,6 +3,7 @@ module Model
 imports
 	Common
 	Expressions
+	Types
 
 templates
 
@@ -21,7 +22,6 @@ RoleOrAttribute								= <<Role>>
 RoleOrAttribute								= <<Attribute>>
 
 Attribute.Attribute 					= <<ID> : <PrimitiveType> <Derivation?>>
-PrimitiveType.PrimitiveType		= <<BasicType>>
 Derivation.Derivation 				= <= <MathExp> <DerivationType>>
 DerivationType.DefaultValue		= <(default)>
 DerivationType.Derivation			= <(derivation)>
