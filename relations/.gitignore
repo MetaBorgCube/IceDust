@@ -20,7 +20,7 @@ syntax/Relations*.generated.esv
 syntax/Relations.generated.pp
 trans/*.pp.generated.str
 trans/types.generated.str
-trans/*/types.generated.str
+trans/*/*.generated.str
 trans/names.str
 trans/*/names.str
 .settings/org.eclipse.jdt.core.prefs
