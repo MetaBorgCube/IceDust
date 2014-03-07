@@ -32,7 +32,7 @@ templates //exp : PrimitiveType, 0-*
 templates //exp : PrimitiveType, 1
 
 	LitValExp.String 					= <"<STRING>">
-	LitValExp.Integer 				= <<INT>>
+	LitValExp.Int			 				= <<INT>>
 
 templates //exp : EntityType, 0-*
 

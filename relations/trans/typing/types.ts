@@ -28,8 +28,8 @@ type rules // type inference : model
 
 type rules // type inference : expressions
 
-	Integer(x) : PrimitiveType("Int")
-	Integer(x) has multiplicity One()
+	Int(x) : PrimitiveType("Int")
+	Int(x) has multiplicity One()
 	
 	String(x) : PrimitiveType("String")
 	String(x) has multiplicity One()

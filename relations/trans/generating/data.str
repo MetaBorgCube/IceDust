@@ -74,4 +74,4 @@ rules
   
 
   to-java: String(value) -> Lit(String([Chars(value)]))
-  to-java: Integer(value) -> Lit(Deci(value))
+  to-java: Int(value) -> Lit(Deci(value))
