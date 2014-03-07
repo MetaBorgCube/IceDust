@@ -13,14 +13,12 @@ templates //exp : PrimitiveType, 0-*
 	MathExp.Modulo						=	<<MathExp> % <MathExp>> {left}
 	MathExp.Addition					=	<<MathExp> + <MathExp>> {left}
 	MathExp.Subtraction				=	<<MathExp> - <MathExp>> {left}
-	MathExp.Aggregation				= <<Aggr>( <MathExp> )>
+	MathExp.Min								= <min ( <MathExp> )>
+	MathExp.Max								= <max ( <MathExp> )>
+	MathExp.Avg								= <avg ( <MathExp> )>
+	MathExp.Concat						= <concat ( <MathExp> )>
 	MathExp										= <<AttributeExp>>
 	MathExp										= <<LitValExp>>
-
-	Aggr.Max		= <max>
-	Aggr.Min		= <min>
-	Aggr.Avg		= <avg>
-	Aggr.Concat	= <concat>
 
 templates //exp : PrimitiveType, 0-*
 

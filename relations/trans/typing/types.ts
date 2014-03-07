@@ -82,8 +82,20 @@ type rules // math expressions
 		and	y	has multiplicity y-mu
 		and	x-mu == y-mu else error "Not the same multiplicities supplied to Binary Expression." on y
 		
-	Aggregation(op, x) : x-ty
+	Min(x)
++	Max(x)
++	Avg(x) : x-ty
 	where	x	: x-ty
+		and x-ty == Int() else error "Int expected" on x
+		
+	Concat(x) : x-ty
+	where x : x-ty
+		and x-ty == String() else error "String expected" on x
+		
+	Min(x)
++	Max(x)
++	Avg(x)
++ Concat(x) has multiplicity One() //TODO: only true when One or OneOrMore for ints, and for strings always true
 
 
 type rules // this expression
