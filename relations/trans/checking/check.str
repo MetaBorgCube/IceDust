@@ -36,7 +36,7 @@ rules // Check derivation types of attributes
 				
 	// Task-engine version	
 	nabl-constraint(|ctx):
-		x@AttributeValue(AttributeName(name), _) -> <fail>
+		x@AttributeValue(AttributeName(_, name), _) -> <fail>
 		with
 			prop-task := <prop-create-lookup(|ctx, NablProp_derivation-type())> name;
 			match     := <derivation-type-match(|ctx, Derivation())> prop-task;
@@ -55,7 +55,7 @@ rules // Random experimenting with the task engine
  
 	// task engine based (name binding) constraints.
 	nabl-constraint(|ctx):
-		e@AttributeName(name) -> <fail>
+		e@AttributeName(_, name) -> <fail>
     	where
 				<has-annotation(?Use(task))> name;																	//annotation use means that a task should be resolved
     		msg  := "Unresolved reference (from nabl-constraint task based)";
