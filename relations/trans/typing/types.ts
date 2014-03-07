@@ -51,15 +51,17 @@ type rules // constraints: attributes & values
 		else error "Wrong type supplied" on valueEntityName		//TODO: give expected and given type
 
 	//default and derived attributes
-	Attribute(name, type, Derivation(expression, derivationType)) :-
-		where	expression		: expressionType
-		and		expressionType == type
-		else error "Wrong type supplied" on expression
-
+	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+		where	e	: e-ty
+			and	e-ty == a-ty else error "Wrong type supplied" on e
+			
+	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+		where	e has multiplicity e-mu
+			and definition of a has multiplicity a-mu
+			and e-mu == a-mu else error "Wrong multiplicity supplied" on e
 
 type rules // constraints: expressions
 	
-
 	Addition(x, y) : y-ty
 	where	x	: x-ty
 		and	y	: y-ty
