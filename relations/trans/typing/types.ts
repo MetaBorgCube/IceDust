@@ -11,10 +11,11 @@ imports
 	include/Relations
 
 
-type rules // type inference : model
+type rules // references have types and multiplicites of their defs
 		
 	AttributeName(e, name) : type
 	where definition of name : type
+	
 	AttributeName(e, name) has multiplicity mult
 	where definition of name has multiplicity mult
 		
@@ -25,42 +26,38 @@ type rules // type inference : model
 	where definition of name : type
 
 
-type rules // type inference : expressions
+type rules // assigning values
+
+	AttributeValue(a, val) :-
+	where	a		: a-ty
+		and	val	: val-ty
+		and	a-ty == val-ty	else error "Wrong type supplied" on val
+
+	RoleValue(r, val) :-
+	where	r		: r-ty
+		and	val	: val-ty
+		and	r-ty == val-ty else error "Wrong type supplied" on val
+
+	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+	where	e	: e-ty
+		and	e-ty == a-ty else error "Wrong type supplied" on e
+			
+	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+	where	e has multiplicity e-mu
+		and definition of a has multiplicity a-mu
+		and e-mu == a-mu else error "Wrong multiplicity supplied" on e
+
+
+type rules // literal expressions
 
 	Int(x) : Int()
 	Int(x) has multiplicity One()
 	
 	String(x) : String()
 	String(x) has multiplicity One()
-	
 
-type rules // constraints: attributes & values
 
-	//attribute assignment
-	AttributeValue(attributeName, attributeValue) :-
-		where	attributeName		: attributeType
-		and		attributeValue	: valueType
-		and		attributeType == valueType
-		else error "Wrong type supplied" on attributeValue		//TODO: give expected and given type
-
-	//role assignment
-	RoleValue(roleName, valueEntityName) :-
-		where	roleName				: roleType
-		and		valueEntityName	: valueType
-		and		roleType == valueType
-		else error "Wrong type supplied" on valueEntityName		//TODO: give expected and given type
-
-	//default and derived attributes
-	Attribute(a, a-ty, Derivation(e, derivationType)) :-
-		where	e	: e-ty
-			and	e-ty == a-ty else error "Wrong type supplied" on e
-			
-	Attribute(a, a-ty, Derivation(e, derivationType)) :-
-		where	e has multiplicity e-mu
-			and definition of a has multiplicity a-mu
-			and e-mu == a-mu else error "Wrong multiplicity supplied" on e
-
-type rules // constraints: expressions
+type rules // math expressions
 	
 	Addition(x, y) : y-ty
 	where	x	: x-ty
@@ -86,27 +83,25 @@ type rules // constraints: expressions
 		and	x-mu == y-mu else error "Not the same multiplicities supplied to Binary Expression." on y
 		
 	Aggregation(op, x) : x-ty
-		where	x	: x-ty
+	where	x	: x-ty
 
 
-type rules // constraints: navigators
+type rules // navigator expressions
 
-	//TODO: remove this rule after this is name bound and type checked - This() is not type checked
-	NavigateIn(This(), navType, inRole, EntityType(relationType)) : relationType
-		where inRole		: inRoleType
-	NavigateOut(This(), navType, EntityType(relationType), outRole) : outType
-		where	outRole	: outType
-
-	NavigateIn(prevNav, navType, inRole, EntityType(relationType)) : relationType
-		where prevNav	: prevNavType
-		and inRole		: inRoleType
-		and prevNavType == inRoleType
-		else error "The inRole is of the wrong type." on inRole
+	NavigateIn(This(), nav, into, EntityType(rel-ty)) : rel-ty
+	where into 	: into-ty
 	
-	NavigateOut(prevNav, navType, EntityType(relationType), outRole) : outType
-		where	outRole	: outType
-		and prevNav		: prevNavType
-		and relationType == prevNavType
-		else error "The relation is of the wrong type." on relationType
+	NavigateOut(This(), nav, EntityType(rel-ty), out) : out-ty
+	where	out		: out-ty
+
+	NavigateIn(prev, nav, into, EntityType(rel-ty)) : rel-ty
+	where prev	: prev-ty
+		and into	: into-ty
+		and prev-ty == into-ty else error "The inRole is of the wrong type." on into
+	
+	NavigateOut(prev, nav, EntityType(rel-ty), out) : out-ty
+	where	out		: out-ty
+		and prev	: prev-ty
+		and rel-ty == prev-ty	else error "The relation is of the wrong type." on rel-ty
 	
 		
