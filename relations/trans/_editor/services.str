@@ -17,6 +17,8 @@ imports
 	trans/prettyprinting/pp
 	trans/naming/names
 	
+	include/Relations
+	
 rules // Editor services
 	
 	// Resolves a reference when the user control-clicks or presses F3 in the editor.
@@ -35,6 +37,11 @@ rules // Editor services
 	editor-properties:
 		(target, position, ast, path, project-path) ->
 			<get-all-editor-properties(pp-Relations-string |<language>, project-path)>target
+			
+	pp-property : ZeroOrOne() -> "[0, 1], zero or one, maybe/nullable"
+	pp-property : One() 			-> "[1, 1], exactly one, required"
+	pp-property : ZeroOrMore()-> "[0, n), zero or more, maybe/nullable"
+	pp-property : OneOrMore()	-> "[1, n), one or more, required"
 			
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)
