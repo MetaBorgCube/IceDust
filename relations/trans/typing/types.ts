@@ -86,6 +86,11 @@ type rules // math expressions
 	where	x	: x-ty
 
 
+type rules // this expression
+
+	This() has multiplicity One()
+
+
 type rules // navigator expressions
 
 	NavigateIn(This(), nav, into, EntityType(rel-ty)) : rel-ty
@@ -99,9 +104,16 @@ type rules // navigator expressions
 		and into	: into-ty
 		and prev-ty == into-ty else error "The inRole is of the wrong type." on into
 	
+	NavigateIn(prev, nav, into, EntityType(rel-ty)) has multiplicity ZeroOrMore() //TODO: make correct rule
+	// where prev has multiplicity prev-mu
+		// and into has multiplicity into-mu
+	
 	NavigateOut(prev, nav, EntityType(rel-ty), out) : out-ty
 	where	out		: out-ty
 		and prev	: prev-ty
 		and rel-ty == prev-ty	else error "The relation is of the wrong type." on rel-ty
-	
 		
+	// NavigateOut(prev, nav, EntityType(rel-ty), out) has multiplicity prev-mu
+	// where prev has multiplicity prev-mu
+	
+	
