@@ -9,6 +9,7 @@ imports
   lib/editor/-
 
 	include/Relations
+	trans/naming/names
 
 type rules
 	
