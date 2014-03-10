@@ -7,6 +7,7 @@ imports
 	lib/editor/properties
 	lib/index/-
 	lib/task/-
+	lib/nabl/entries
 	
 	trans/desugaring/desugar
 	trans/prettyprinting/pp
@@ -35,6 +36,23 @@ rules // Debugging builders
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
 			
+	debug-show-analyzed-resolved:
+		(selected, position, ast, path, project-path) -> (filename, result)
+			where
+	    	language := <language>;
+	    	index-setup(|language, project-path);
+	    	task-setup(|project-path)
+			with
+				filename := <guarantee-extension(|"analyzed.aterm")> path;
+				ast'		 := <bottomup(try(id{bottomup(try(give-task-results))}))>ast;
+				ast''		 := <bottomup(try(id{bottomup(try(rm-annotations);try(pp-uri;string-replace(|"\"","")))}))>ast';
+				result	 := ast''
+
+	debug-show-analyzed-resolved2 = debug-show-analyzed-resolved;bottomup(try(no-use-def))
+				
+	no-use-def: a{Use(_)} -> a{}
+	no-use-def: a{Def(_)} -> a{}
+
 	debug-properties:
 		(target, position, ast, path, project-path) -> (filename, result)
 			where
