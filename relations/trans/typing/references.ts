@@ -26,7 +26,9 @@ type rules
 	RoleName(name) : type
 	where definition of name : type
 	
-	EntityName(name) : type
+	Identifier(name) : type
 	where definition of name : type
+	
+	Identifier(name) has multiplicity One() //One() if refers to entity type, One() or ZeroOrOne() if refers to attribute
 
 	This() has multiplicity One()

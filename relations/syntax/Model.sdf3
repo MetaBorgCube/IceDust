@@ -22,7 +22,7 @@ RoleOrAttribute								= <<Role>>
 RoleOrAttribute								= <<Attribute>>
 
 Attribute.Attribute 					= <<ID> : <PrimitiveType> <Derivation?>>
-Derivation.Derivation 				= <= <MathExp> <DerivationType>>
+Derivation.Derivation 				= <= <Exp> <DerivationType>>
 DerivationType.DefaultValue		= <(default)>
 DerivationType.Derivation			= <(derivation)>
 DerivationType.Derivation			= <>

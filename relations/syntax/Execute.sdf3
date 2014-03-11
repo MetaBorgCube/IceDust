@@ -5,5 +5,4 @@ imports
 
 templates
 
-Execute = <<MathExp>>
-Execute = <<NavExp>> {prefer}
+Execute = <<Exp>>

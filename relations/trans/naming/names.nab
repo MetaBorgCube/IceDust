@@ -57,8 +57,13 @@ binding rules
 		implicitly defines This This()
 			of type e-ty
 	
-	EntityName(e) :
-		refers to Entity e
+	
+	// entities or attributes
+	Identifier(x) :
+		refers to Entity x
+	otherwise
+		refers to Attribute x in EntityType e-ty
+		where This This() has type e-ty
 	
 	
 	// attributes

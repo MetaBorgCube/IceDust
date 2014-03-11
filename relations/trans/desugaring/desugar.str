@@ -22,7 +22,7 @@ desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName,
 /**
  *	Expressions
  */
-desugar: AttributeNameThis(a)		->	AttributeName(This(), a)
+// desugar: AttributeNameThis(a)		->	AttributeName(This(), a)
 
 
 /**

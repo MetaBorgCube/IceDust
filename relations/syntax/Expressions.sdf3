@@ -5,68 +5,69 @@ imports
 	Data
 	Model
 
-templates //exp : PrimitiveType, 0-*
+templates //exp (misc)
 
-	MathExp 									= <(<MathExp>)> 					{bracket}
-	MathExp.Multiplication		=	<<MathExp> * <MathExp>> {left}
-	MathExp.Division					=	<<MathExp> / <MathExp>> {left}
-	MathExp.Modulo						=	<<MathExp> % <MathExp>> {left}
-	MathExp.Addition					=	<<MathExp> + <MathExp>> {left}
-	MathExp.Subtraction				=	<<MathExp> - <MathExp>> {left}
-	MathExp.Merge							=	<<MathExp> :: <MathExp>> {left}
-	MathExp.ChoiceLeft				=	<<MathExp> \<+ <MathExp>> {left}
-	MathExp.Min								= <min ( <MathExp> )>
-	MathExp.Max								= <max ( <MathExp> )>
-	MathExp.Avg								= <avg ( <MathExp> )>
-	MathExp.Concat						= <concat ( <MathExp> )>
-	MathExp										= <<AttributeExp>>
-	MathExp										= <<LitValExp>>
+	Exp 									= <(<Exp>)> 					{bracket}
 
-templates //exp : PrimitiveType, 0-*
+templates //exp (math) : PrimitiveType, 0-*
 
-	AttributeExp.AttributeName= <<NavExp>.<ID>>
-	AttributeExp 							= <<AttributeNameThis>>
+	Exp.Multiplication		=	<<Exp> * <Exp>> {left}
+	Exp.Division					=	<<Exp> / <Exp>> {left}
+	Exp.Modulo						=	<<Exp> % <Exp>> {left}
+	Exp.Addition					=	<<Exp> + <Exp>> {left}
+	Exp.Subtraction				=	<<Exp> - <Exp>> {left}
+
+templates //exp (aggregations)	
+
+	Exp.Min								= <min ( <Exp> )>
+	Exp.Max								= <max ( <Exp> )>
+	Exp.Avg								= <avg ( <Exp> )>
+	Exp.Concat						= <concat ( <Exp> )>
 	
-	AttributeNameThis.AttributeNameThis =<<ID>>
+templates //exp (multiplicities)
+
+	Exp.Merge							=	<<Exp> :: <Exp>> {left}
+	Exp.ChoiceLeft				=	<<Exp> \<+ <Exp>> {left}
 
 templates //exp : PrimitiveType, 1
 
-	LitValExp.String 					= <"<STRING>">
-	LitValExp.Int			 				= <<INT>>
+	Exp										= <<LitVal>>
+	LitVal.String 				= <"<STRING>">
+	LitVal.Int			 			= <<INT>>
 
 templates //exp : EntityType, 0-*
 
-	NavExp.NavigateInOut			= <<NavExp> <NavType> <RoleName>]<EntityType>[<RoleName>>
-	NavExp.NavigateIn					= <<NavExp> <NavType> <RoleName>]<EntityType>>
-	NavExp.NavigateOut				= <<NavExp> <NavType> <EntityType>[<RoleName>>
-	NavExp 										= <<EntityNameExp>>
-	NavExp 										= <<ThisExp>>
+	Exp.NavigateInOut			= <<Exp> <NavType> <RoleName>]<EntityType>[<RoleName>>
+	Exp.NavigateIn				= <<Exp> <NavType> <RoleName>]<EntityType>>
+	Exp.NavigateOut				= <<Exp> <NavType> <EntityType>[<RoleName>>
 	
-	NavType.NavOr							= <\>>
-	NavType.NavAnd						= <\>\>>
-	NavType.NavOrEx 					= <-\>>
-	NavType.NavAndEx					= <-\>\>>
+	NavType.NavOr					= <\>>
+	NavType.NavAnd				= <\>\>>
+	NavType.NavOrEx 			= <-\>>
+	NavType.NavAndEx			= <-\>\>>
 
-templates //exp : EntityType, 1
+templates //exp (references)
 
-	EntityNameExp.EntityName	= <<ID>>
-	ThisExp.This							= <this>
+	Exp.This							= <this>
+	Exp										= <<Identifier>>
+	Identifier.Identifier	= <<ID>>
+	Exp.AttributeName			= <<Exp>.<ID>>
 
 
 template options
 context-free priorities
 	{ left:
-		MathExp.Multiplication
-		MathExp.Division
-		MathExp.Modulo
+		Exp.Multiplication
+		Exp.Division
+		Exp.Modulo
 	} >
 	{ left:
-		MathExp.Addition
-		MathExp.Subtraction
+		Exp.Addition
+		Exp.Subtraction
 	} >
 	{ left:
-		MathExp.Merge
+		Exp.Merge
 	} >
 	{ left:
-		MathExp.ChoiceLeft
+		Exp.ChoiceLeft
 	}
