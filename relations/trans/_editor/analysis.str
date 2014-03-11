@@ -3,18 +3,34 @@ module trans/_editor/analysis
 imports
 	
 	lib/editor-common.generated
-	lib/analysis/-
+	lib/analysis/defaults
+	lib/task/core
 
 	trans/desugaring/desugar
+	trans/prettyprinting/pp
 	
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
 	analysis-single-default-interface = 
-		analysis-single-default(desugar-all, id, id|<language>)
+	  analysis-single-default(desugar-all, id, pp-message-top|<language>)
 	analysis-multiple-default-interface = 
-		analysis-multiple-default(parse-file <+ !(), desugar-all, id, id|<language>, <project-path>)
+	  analysis-multiple-default(parse-file <+ !(), desugar-all, id, pp-message-top|<language>, <project-path>)
 	
 	editor-save = analysis-save-default(|<language>)
 
+rules	//@see http://yellowgrass.org/issue/TS/2
+	
+	pp-message-top = origin-track-forced((id, strip-annos; pp-message))
+	pp-message = not(is-list); (is-string <+ pp-result <+ pp-Relations-string <+ (strip-annos; write-to-string))
+	pp-message = map(pp-message); concat-strings
+	
+	pp-result:
+	    result@Result(_) -> msg
+	    where
+	       if <task-has-failed> result then
+	         msg := "fail"
+	       else
+	         msg := <task-get-results; map(pp-message); separate-by(|" or "); concat-strings> result
+	       end
