@@ -14,10 +14,6 @@ imports
 	Expressions.pp.generated
 	Types.pp.generated
 
-signature constructors
-	//FIXME: Common.pp.generated.str needs this constructor...
-	Identifier: Identifier -> Identifier
-
 rules
 	
   pp-Relations-string =
@@ -32,4 +28,4 @@ rules
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Relations-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
-	pp-Relations-string = prettyprint-example
+	pp-Relations-box = prettyprint-example
