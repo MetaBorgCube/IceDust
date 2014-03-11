@@ -51,7 +51,7 @@ rules
     	attributeValueJava := <to-java>attributeValue
     	
   to-java(|entityName, entityType) :
-  	RoleValue(RoleName(roleName), EntityName(otherEntityName)) ->
+  	RoleValue(RoleName(roleName), Identifier(otherEntityName)) ->
   	[	
   		ExprStm(
 		      Assign(

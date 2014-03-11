@@ -4,12 +4,12 @@ model
 entity Node{
 	value : Int
 	rootVal : Int = root . value
-	childVal : Int = avg( root > parent]Tree[child .value )
+	childVal : Int = avg( root > parent]Tree[child .value ) <+ 0
 }
 relation Tree{
 	Node 1 parent
 	Node 1 child
-	value : Int = max( this > Tree[parent . value)
+	value : Int = max( this > Tree[parent . value) <+ 0
 }
 
 data
