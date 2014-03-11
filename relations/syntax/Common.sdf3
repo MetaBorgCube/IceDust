@@ -18,7 +18,11 @@ lexical restrictions
 
 lexical syntax // Keywords
 
+	Keyword = "avg"
+	Keyword = "concat"
 	Keyword = "entity"
+	Keyword = "max"
+	Keyword = "min"
 	Keyword = "relationship"
 	Keyword = "this"
 	Keyword = "String"

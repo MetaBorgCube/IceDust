@@ -28,12 +28,6 @@ rules
 
 rules // Check derivation types of attributes
 	
-	// Non-task-engine version
-	// constraint-error:
-	// 	x@AttributeValue(AttributeName(name), _) -> (x, $[Derivations cannot be assigned custom values.])
-	// 		where
-	// 			Derivation() := <get-derivation-type>name
-				
 	// Task-engine version	
 	nabl-constraint(|ctx):
 		x@AttributeValue(AttributeName(_, name), _) -> <fail>
@@ -49,16 +43,3 @@ rules // Only relations allowed in navigators
 		with
 			prop-task := <prop-create-lookup(|ctx, NablProp_is-relation())> entityType;
 			<task-create-error-on-failure(|ctx, prop-task, $[Type error: [entityType] is an entity, a relation is expected.])> entityType
-
-
-rules // Random experimenting with the task engine
- 
-	// task engine based (name binding) constraints.
-	nabl-constraint(|ctx):
-		e@AttributeName(_, name) -> <fail>
-    	where
-				<has-annotation(?Use(task))> name;																	//annotation use means that a task should be resolved
-    		msg  := "Unresolved reference (from nabl-constraint task based)";
-				<task-create-error-on-failure(|ctx, task, msg)> name								//if this task fails: then create the error message
-
-

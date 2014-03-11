@@ -1,0 +1,42 @@
+module names-roles
+
+language Relations
+
+setup Common [[
+	module test
+	model
+]]
+
+test Duplicate role fails [[
+	entity Node {
+	}
+	relation Edge{
+		Node * in
+		Node * in
+	}
+]] 2 errors
+
+test Resolve role from Navigator [[
+	entity Node {
+		name : String = concat(this > [[in]]]Edge[out .name)
+	}
+	relation Edge{
+		Node * [[in]]
+		Node * out
+	}
+]] resolve #1 to #2
+
+test Resolve invalid Navigator role fails [[
+	entity Node {
+		name : String
+	}
+	relation Edge{
+		Node * in
+		Node * out
+	}
+	data
+	Node n{}
+	execute
+	n.notin
+]] 1 error
+

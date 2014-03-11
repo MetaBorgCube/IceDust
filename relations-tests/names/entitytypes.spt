@@ -1,0 +1,71 @@
+module names-entitytypes
+
+language Relations
+
+setup Common [[
+	module test
+	model
+]]
+
+test Duplicate entity type fails [[
+	entity User {}
+	entity User {}
+]] 2 errors
+
+test Duplicate relation fails [[
+	entity User{}
+	entity Book{}
+	relation Owns{
+		User *
+		Book 1
+	}
+	relation Owns{
+		User *
+		Book 1
+	}
+]] 2 errors
+
+test Resolve relation member to entity [[
+	entity [[User]]{}
+	entity Book{}
+	relation Owns{
+		[[User]] *
+		Book 1
+	}
+]] resolve #2 to #1
+
+test Resolve invalid relation member fails [[
+	entity User{}
+	entity Book{}
+	relation Owns{
+		User *
+		Paper 1
+	}
+]] 1 errors
+
+test Resolve Navigation to entity [[
+	entity User{}
+	entity Book{}
+	relation [[Owns]]{
+		User *
+		Book 1
+	}
+	data
+	User u{}
+	execute
+	u > User][[Owns]][Book
+]] resolve #2 to #1
+
+test Resolve invalid Navigation fails [[
+	entity User{}
+	entity Book{}
+	relation [[Owns]]{
+		User *
+		Book 1
+	}
+	data
+	User u{}
+	execute
+	u > User][[OwnsXX]][Book
+]] 1 error
+

@@ -1,0 +1,76 @@
+module names-attributes
+
+language Relations
+
+setup Common [[
+	module test
+	model
+]]
+
+test Duplicate attribute fails [[
+	entity User {
+		name : String
+		name : String
+	}
+]] 2 errors
+
+test Resolve attribute from Identifier [[
+	entity User {
+		[[name]] : String = [[name]]
+	}
+]] resolve #2 to #1
+
+test Resolve invalid Identifier fails [[
+	entity User {
+		name : String = x
+	}
+]] 1 error
+
+test Resolve attribute from this.attribute [[
+	entity User {
+		[[name]] : String = this.[[name]]
+	}
+]] resolve #2 to #1
+
+test Resolve invalid this.attribute fails [[
+	entity User {
+		name : String = this.x
+	}
+]] 1 error
+
+test Resolve attribute from entity.attribute [[
+	entity Node {
+		[[name]] : String = n.[[name]]
+	}
+	data
+	Node n{}
+]] resolve #2 to #1
+
+test Resolve invalid entity.attribute fails [[
+	entity Node {
+		name : String = n.name
+	}
+	data
+	Node n{}
+]] 1 error
+
+test Resolve attribute from Navigator.attribute [[
+	entity Node {
+		[[name]] : String = concat(this > in]Edge[out .[[name]])
+	}
+	relation Edge{
+		Node * in
+		Node * out
+	}
+]] resolve #2 to #1
+
+test Resolve invalid Navigator.attribute fails [[
+	entity Node {
+		name : String = concat(this > in]Edge[out .name)
+	}
+	relation Edge{
+		Node * in
+		Node * out
+	}
+]] 1 error
+

@@ -1,7 +1,4 @@
-/**
-* Relations and relation-patterns
-*/
-module test-program
+module syntax-model
 
 language Relations
 

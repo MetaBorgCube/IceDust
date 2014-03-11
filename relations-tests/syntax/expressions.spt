@@ -1,0 +1,103 @@
+module syntax-data
+
+language Relations
+
+setup Common [[
+	module test
+	
+	model
+	entity User{
+		name : String
+	}
+	entity Post{
+		title: String
+		body : String
+	}
+	relation UserPost{
+		User *
+		Post 1
+	}
+	
+	data
+	User u{}
+	
+	execute
+]]
+
+test Literal Int [[
+	1
+]]
+
+test literal String [[
+	"Asdf"
+]]
+
+test math plus [[
+	1 + 3
+]]
+
+test math minus [[
+	3 - 2
+]]
+
+test math mult [[
+	8*8
+]]
+
+test math div [[
+	4 / 7
+]]
+
+test math modulo [[
+	8%3
+]]
+
+test aggr min [[
+	min(4 :: 3)
+]]
+
+test aggr max [[
+	max(4 :: 3 :: 8)
+]]
+
+test aggr avg [[
+	avg(1::3)
+]]
+
+test aggr concat [[
+	concat("Asdf" :: "Fdsa")
+]]
+
+test multiplicity merge [[
+	4 :: 4
+]]
+
+// This is going to give an error, since choice doesn't make sense for something that is always there
+test multiplicity choice [[
+	4 <+ 3
+]]
+
+test navigate in [[
+	u > User]UserPost
+]]
+
+test navigate inout [[
+	u > User]UserPost[Post
+]]
+
+test navigate out [[
+	u > User]UserPost > UserPost[User
+]]
+
+test Identifier [[
+	u
+]]
+
+test Identifier.attribute [[
+	u.name
+]]
+
+test Navigator.attribute [[
+	u > User]UserPost > UserPost[User .name
+]]
+

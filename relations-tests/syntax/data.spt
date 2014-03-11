@@ -1,0 +1,39 @@
+module syntax-data
+
+language Relations
+
+setup Common [[
+	module test
+	
+	model
+	entity User{
+		name : String
+	}
+	entity Post{
+		title: String
+		body : String
+	}
+	relation UserPost{
+		User *
+		Post 1
+	}
+	
+	data
+]]
+
+test Blog data [[
+	User alice{
+		name = "Alice"
+	}
+	User bob{
+		name = "Bob"
+	}
+	Post p1{
+		title="First Post"
+		body="Some text"
+	}
+	UserPost up1{
+		User:alice
+		Post:p1
+	}
+]] 0 errors
