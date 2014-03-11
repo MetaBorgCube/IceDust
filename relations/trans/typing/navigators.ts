@@ -22,7 +22,7 @@ type rules
 	NavigateIn(prev, nav, into, EntityType(rel-ty)) : rel-ty
 	where prev	: prev-ty
 		and into	: into-ty
-		and prev-ty == into-ty else error "The inRole is of the wrong type." on into
+		and prev-ty == into-ty else error $[Type mismatch: expected [prev-ty] got [into-ty] in Navigation] on into
 	
 	NavigateIn(prev, nav, into, EntityType(rel-ty)) has multiplicity into-mu	//TODO: this is only true of prev has multiplicity of One()
 	where prev has multiplicity prev-mu
@@ -31,7 +31,7 @@ type rules
 	NavigateOut(prev, nav, EntityType(rel-ty), out) : out-ty
 	where	out		: out-ty
 		and prev	: prev-ty
-		and rel-ty == prev-ty	else error "The relation is of the wrong type." on rel-ty
+		and rel-ty == prev-ty	else error $[Type mismatch: expected [prev-ty] got [rel-ty] in Navigation] on rel-ty
 		
 	NavigateOut(prev, nav, EntityType(rel-ty), out) has multiplicity prev-mu
 	where prev has multiplicity prev-mu

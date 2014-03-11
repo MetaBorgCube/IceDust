@@ -17,7 +17,7 @@ type rules
 +	Max(x)
 +	Avg(x) : x-ty
 	where	x	: x-ty
-		and x-ty == Int() else error "Int expected" on x
+		and x-ty == Int() else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
 
 	Min(x)
 +	Max(x)
@@ -33,6 +33,6 @@ type rules
 		
 	Concat(x) : x-ty
 	where x : x-ty
-		and x-ty == String() else error "String expected" on x
+		and x-ty == String() else error $[Type mismatch: expected String got [x-ty] in Concatenation] on x
 		
 	Concat(x) has multiplicity One() //TODO: zero goes to multiplicity zero or to empty string?

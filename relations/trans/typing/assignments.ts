@@ -16,18 +16,18 @@ type rules
 	AttributeValue(a, val) :-
 	where	a		: a-ty
 		and	val	: val-ty
-		and	a-ty == val-ty	else error "Wrong type supplied" on val
+		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Assignment] on val
 
 	RoleValue(r, val) :-
 	where	r		: r-ty
 		and	val	: val-ty
-		and	r-ty == val-ty else error "Wrong type supplied" on val
+		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
 
 	Attribute(a, a-ty, Derivation(e, derivationType)) :-
 	where	e	: e-ty
-		and	e-ty == a-ty else error "Wrong type supplied" on e
+		and	e-ty == a-ty else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
 			
 	Attribute(a, a-ty, Derivation(e, derivationType)) :-
 	where	e has multiplicity e-mu
 		and definition of a has multiplicity a-mu
-		and e-mu == a-mu else error "Wrong multiplicity supplied" on e
+		and e-mu == a-mu else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e
