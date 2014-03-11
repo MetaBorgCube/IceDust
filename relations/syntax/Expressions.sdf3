@@ -13,6 +13,7 @@ templates //exp : PrimitiveType, 0-*
 	MathExp.Modulo						=	<<MathExp> % <MathExp>> {left}
 	MathExp.Addition					=	<<MathExp> + <MathExp>> {left}
 	MathExp.Subtraction				=	<<MathExp> - <MathExp>> {left}
+	MathExp.Merge							=	<<MathExp> :: <MathExp>> {left}
 	MathExp.ChoiceLeft				=	<<MathExp> \<+ <MathExp>> {left}
 	MathExp.Min								= <min ( <MathExp> )>
 	MathExp.Max								= <max ( <MathExp> )>
@@ -62,6 +63,9 @@ context-free priorities
 	{ left:
 		MathExp.Addition
 		MathExp.Subtraction
+	} >
+	{ left:
+		MathExp.Merge
 	} >
 	{ left:
 		MathExp.ChoiceLeft
