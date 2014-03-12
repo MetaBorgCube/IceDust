@@ -1,4 +1,4 @@
-module syntax-data
+module syntax-expressions
 
 language Relations
 
