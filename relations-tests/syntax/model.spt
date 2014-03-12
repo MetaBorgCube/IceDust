@@ -11,7 +11,7 @@ test Blog model [[
 		BlogUser *
 		BlogPost 1
 	}
-]] 0 errors
+]] parse succeeds
 
 test Exam prerequisites model [[
 	module Exam
@@ -31,7 +31,7 @@ test Exam prerequisites model [[
 		Student *
 		Exam *
 	}
-]] 0 errors
+]] parse succeeds
 
 test Supply model [[
 	module Supply
@@ -44,7 +44,7 @@ test Supply model [[
 		Project *
 		Supplier *
 	}
-]] 0 errors
+]] parse succeeds
 
 test Marriage model [[
 	module Mariage
@@ -54,7 +54,7 @@ test Marriage model [[
 		Person 1 husband
 		Person 1 wife
 	}
-]] 0 errors
+]] parse succeeds
 
 test Marriage counseling model [[
 	module Mariage
@@ -68,7 +68,7 @@ test Marriage counseling model [[
 		Person * counselor
 		Marriage *
 	}
-]] 0 errors
+]] parse succeeds
 
 //FIXME: specify symmetry
 test Friend model [[
@@ -79,7 +79,7 @@ test Friend model [[
 		Person 1 personA
 		Person 1 personB
 	}
-]] 0 errors
+]] parse succeeds
 
 // would probably specify a marriage as relation and derive parents with derivations
 test Family tree model [[
@@ -91,7 +91,7 @@ test Family tree model [[
 		Person * father	//can have multiple children
 		Person * mother	//can have multiple children
 	}
-]] 0 errors
+]] parse succeeds
 
 //NOTE: these multiplicities do not enforce a tree (is closest normal models can get to it)
 test Tree partial model [[
@@ -102,7 +102,7 @@ test Tree partial model [[
 		TreeNode * parent	//parent has multiple edges to children
 		TreeNode 1 child	//child has edge to parent
 	}
-]] 0 errors
+]] parse succeeds
 
 //FIXME: use a hierarchy pattern for the tree
 test Tree model [[
@@ -113,6 +113,6 @@ test Tree model [[
 		TreeNode * parent
 		TreeNode 1 child
 	}
-]] 0 errors
+]] parse succeeds
 
 //TODO: add derivation and constraint examples

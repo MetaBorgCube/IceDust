@@ -36,4 +36,4 @@ test Blog data [[
 		User:alice
 		Post:p1
 	}
-]] 0 errors
+]] parse succeeds
