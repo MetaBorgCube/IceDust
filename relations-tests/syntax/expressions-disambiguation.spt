@@ -1,0 +1,42 @@
+module syntax-data
+
+language Relations
+
+setup Common [[
+	module test
+	
+	model
+	entity Node{
+		name : String
+	}
+	relation Edge{
+		Node * in
+		Node * out
+	}
+	
+	data
+	Node n{}
+	
+	execute
+]]
+
+test Disambiguate left associative multiplication [[21 * 14 * 14]] parse to [[(21 * 14) * 14]]
+test Disambiguate left associative division [[21 / 14 / 14]] parse to [[(21 / 14) / 14]]
+test Disambiguate left associative modulo [[21 % 14 % 14]] parse to [[(21 % 14) % 14]]
+
+test Disambiguate left associative addition [[21 + 14 + 14]] parse to [[(21 + 14) + 14]]
+test Disambiguate left associative subtraction [[21 - 14 - 14]] parse to [[(21 - 14) - 14]]
+test Disambiguate left associative addition and subtraction   [[21 + 14 - 14]] parse to [[(21 + 14) - 14]]
+test Disambiguate left associative addition and subtraction 2 [[21 - 14 + 14]] parse to [[(21 - 14) + 14]]
+test Disambiguate left associative mul div mod [[1 * 2 / 3 % 4]] parse to [[((1 * 2) / 3) % 4]]
+
+test Disambiguate mult over plus [[2 + 3 * 4]] parse to [[2 + (3 * 4)]]
+test Disambiguate div over plus  [[2 + 3 / 4]] parse to [[2 + (3 / 4)]]
+test Disambiguate mod over minus [[2 - 3 % 4]] parse to [[2 - (3 % 4)]]
+
+test Disambiguate left associative choice [[21 <+ 14 <+ 14]] parse to [[(21 <+ 14) <+ 14]]
+test Disambiguate left associative merge  [[21 :: 14 :: 14]] parse to [[(21 :: 14) :: 14]]
+
+test Disambiguate plus over merge   [[2 :: 3 + 4]] parse to [[2 :: (3 + 4)]]
+test Disambiguate mult over choice  [[2 <+ 3 * 4]] parse to [[2 <+ (3 * 4)]]
+test Disambiguate merge over choice [[2 <+ 3 :: 4]] parse to [[2 <+ (3 :: 4)]]
