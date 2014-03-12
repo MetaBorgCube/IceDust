@@ -1,0 +1,34 @@
+module types-navigators
+
+language Relations
+
+setup Common [[
+	module test
+	model
+	entity Node{}
+	relation Edge{
+		Node ? maybe
+		Node 1 one
+		Node * star
+		Node + plus
+	}
+	data
+	Node n{}
+	execute
+]]
+
+
+test type of navigate in	[[ [[n > maybe]Edge]] ]] run get-type to "Edge"{_}
+test type of navigate inout	[[ [[n > maybe]Edge[one]] ]] run get-type to "Node"{_}
+test type of navigate in out	[[ [[n > maybe]Edge > Edge[one]] ]] run get-type to "Node"{_}
+test type of navigate inout in	[[ [[n > maybe]Edge[one > star]Edge]] ]] run get-type to "Edge"{_}
+
+
+test multiplicity of navigate in ZeroOrOne	[[ [[n > maybe]Edge]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of navigate in One				[[ [[n > one	]Edge]] ]] run get-multiplicity to One
+test multiplicity of navigate in ZeroOrMore	[[ [[n > star ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test multiplicity of navigate in OneOrMore	[[ [[n > plus ]Edge]] ]] run get-multiplicity to OneOrMore
+
+test multiplicity of navigate inout ZeroOrOne 	[[ [[n > maybe]Edge[maybe]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of navigate inout ZeroOrOne 2	[[ [[n > maybe]Edge[star]]  ]] run get-multiplicity to ZeroOrOne
+test multiplicity of navigate inout ZeroOrOne 3	[[ [[n > maybe]Edge[plus]]  ]] run get-multiplicity to ZeroOrOne

@@ -1,0 +1,36 @@
+module types-multiplicity-operators
+
+language Relations
+
+setup Common [[
+	module test
+	model
+	entity X{
+		i : Int ?
+	}
+	data
+	X x{}
+	execute
+]]
+
+
+test type of choice Int		[[ [[4 <+ 3]] 		]] run get-type to Int
+test type of choice String[[ [["a" <+ "b"]] ]] run get-type to String
+
+
+test mul ZeroOrOne	choice ZeroOrOne	[[ [[x.i 				<+ x.i]] 				]] run get-multiplicity to ZeroOrOne
+test mul ZeroOrOne	choice One				[[ [[x.i 				<+ 3]] 					]] run get-multiplicity to One
+test mul ZeroOrOne	choice ZeroOrMore [[ [[x.i 				<+ (x.i::x.i)]] ]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrOne	choice OneOrMore	[[ [[x.i 				<+ (3::2)]] 		]] run get-multiplicity to OneOrMore
+test mul One 				choice ZeroOrOne	[[ [[4 					<+ x.i]] 				]] run get-multiplicity to One
+test mul One				choice One				[[ [[4 					<+ 3]] 					]] run get-multiplicity to One
+test mul One				choice ZeroOrMore [[ [[4 					<+ (x.i::x.i)]] ]] run get-multiplicity to One
+test mul One				choice OneOrMore	[[ [[4 					<+ (3::2)]] 		]] run get-multiplicity to One
+test mul ZeroOrMore choice ZeroOrOne	[[ [[(x.i::x.i) <+ x.i]] 				]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrMore	choice One				[[ [[(x.i::x.i) <+ 3]] 					]] run get-multiplicity to OneOrMore
+test mul ZeroOrMore	choice ZeroOrMore [[ [[(x.i::x.i) <+ (x.i::x.i)]] ]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrMore	choice OneOrMore	[[ [[(x.i::x.i) <+ (3::2)]] 		]] run get-multiplicity to OneOrMore
+test mul OneOrMore	choice ZeroOrOne	[[ [[(3::2) 		<+ x.i]] 				]] run get-multiplicity to OneOrMore
+test mul OneOrMore	choice One				[[ [[(3::2) 		<+ 3]] 					]] run get-multiplicity to OneOrMore
+test mul OneOrMore	choice ZeroOrMore [[ [[(3::2) 		<+ (x.i::x.i)]]	]] run get-multiplicity to OneOrMore
+test mul OneOrMore	choice OneOrMore	[[ [[(3::2) 		<+ (3::2)]] 		]] run get-multiplicity to OneOrMore

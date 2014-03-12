@@ -1,0 +1,37 @@
+module types-navigators
+
+language Relations
+
+setup Common [[
+	module test
+	model
+	entity Node{}
+	relation Edge{
+		Node ? maybe
+		Node 1 one
+		Node * star
+		Node + plus
+	}
+	data
+	Node n{}
+	execute
+]]
+
+
+test nav ZeroOrOne  ZeroOrOne [[ [[n > maybe]Edge[maybe > maybe]Edge]] ]] run get-multiplicity to ZeroOrOne
+test nav ZeroOrOne  One       [[ [[n > maybe]Edge[maybe > one  ]Edge]] ]] run get-multiplicity to ZeroOrOne
+test nav ZeroOrOne  ZeroOrMore[[ [[n > maybe]Edge[maybe > star ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav ZeroOrOne  OneOrMore [[ [[n > maybe]Edge[maybe > plus ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav One        ZeroOrOne [[ [[n > one  ]Edge[maybe > maybe]Edge]] ]] run get-multiplicity to ZeroOrOne
+test nav One        One       [[ [[n > one  ]Edge[maybe > one  ]Edge]] ]] run get-multiplicity to One
+test nav One        ZeroOrMore[[ [[n > one  ]Edge[maybe > star ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav One        OneOrMore [[ [[n > one  ]Edge[maybe > plus ]Edge]] ]] run get-multiplicity to OneOrMore
+test nav ZeroOrMore ZeroOrOne [[ [[n > star ]Edge[maybe > maybe]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav ZeroOrMore One       [[ [[n > star ]Edge[maybe > one  ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav ZeroOrMore ZeroOrMore[[ [[n > star ]Edge[maybe > star ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav ZeroOrMore OneOrMore [[ [[n > star ]Edge[maybe > plus ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav OneOrMore  ZeroOrOne [[ [[n > plus ]Edge[maybe > maybe]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav OneOrMore  One       [[ [[n > plus ]Edge[maybe > one  ]Edge]] ]] run get-multiplicity to OneOrMore
+test nav OneOrMore  ZeroOrMore[[ [[n > plus ]Edge[maybe > star ]Edge]] ]] run get-multiplicity to ZeroOrMore
+test nav OneOrMore  OneOrMore [[ [[n > plus ]Edge[maybe > plus ]Edge]] ]] run get-multiplicity to OneOrMore
+
