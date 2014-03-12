@@ -70,7 +70,7 @@ rules
 
 	de-def: Def(x) -> x
 
-  to-java(|entityName): Attribute(name, type, derivation) ->
+  to-java(|entityName): Attribute(name, type, multiplicity, derivation) ->
 		[ field
 	    , setter
 	    , MethodDec(

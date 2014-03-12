@@ -18,13 +18,13 @@ signature constructors
 rules // Attributes are Derivation(), has DefaultValue() or are Normal()
 	
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@Attribute(name, type, None()) -> <fail>
+		e@Attribute(name, type, multiplicity, None()) -> <fail>
 			where
 				derivationType := Normal();
 				<store-derivation-type(|ctx, derivationType)>e
 
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@Attribute(name, type, Derivation(derivationExpr, derivationType)) -> <fail>
+		e@Attribute(name, type, multiplicity, Derivation(derivationExpr, derivationType)) -> <fail>
 			where
 				<store-derivation-type(|ctx, derivationType)>e
 

@@ -51,11 +51,14 @@ templates //exp (references)
 	Exp.This							= <this>
 	Exp										= <<Identifier>>
 	Identifier.Identifier	= <<ID>>
-	Exp.AttributeName			= <<Exp>.<ID>>
+	Exp.AttributeName			= <<Exp>.<ID>> {left}
 
 
 template options
 context-free priorities
+	{ left:
+		Exp.AttributeName
+	} >	
 	{ left:
 		Exp.Multiplication
 		Exp.Division

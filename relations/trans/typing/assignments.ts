@@ -23,11 +23,11 @@ type rules
 		and	val	: val-ty
 		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
 
-	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e	: e-ty
 		and	e-ty == a-ty else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
 			
-	Attribute(a, a-ty, Derivation(e, derivationType)) :-
+	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e has multiplicity e-mu
 		and definition of a has multiplicity a-mu
 		and e-mu == a-mu else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e

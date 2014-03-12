@@ -21,7 +21,7 @@ EntityOrRelation.RelationType	= <relation>
 RoleOrAttribute								= <<Role>>
 RoleOrAttribute								= <<Attribute>>
 
-Attribute.Attribute 					= <<ID> : <PrimitiveType> <Derivation?>>
+Attribute.Attribute 					= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
 Derivation.Derivation 				= <= <Exp> <DerivationType>>
 DerivationType.DefaultValue		= <(default)>
 DerivationType.Derivation			= <(derivation)>

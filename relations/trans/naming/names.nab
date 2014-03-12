@@ -67,10 +67,10 @@ binding rules
 	
 	
 	// attributes
-	Attribute(a, a-ty, _) :
+	Attribute(a, a-ty, a-mu, _) :
 		defines Attribute a
 			of type a-ty
-			of multiplicity One()
+			of multiplicity a-mu
 		
 	AttributeName(This(), a) :
 		refers to Attribute a in EntityType e-ty
