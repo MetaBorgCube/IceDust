@@ -26,6 +26,12 @@ desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName,
 
 
 /**
+ *	Nonspecified multiplicities are One
+ */
+desugar: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+
+
+/**
  *	Generate omitted names
  */
 desugar = generate-role-name

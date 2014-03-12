@@ -1,0 +1,126 @@
+module types-assignments
+
+language Relations
+
+setup Common [[
+	module test
+]]
+
+
+test error on assign attribute String to Int [[
+	model
+	entity X{
+		i 			: Int
+		s 			: String
+	}
+	
+	data
+	X x{
+		i=[["a"]]
+	}
+]] 1 error
+
+test error on assign attribute Int to String [[
+	model
+	entity X{
+		i 			: Int
+		s 			: String
+	}
+	
+	data
+	X x{
+		s=[[4]]
+	}
+]] 1 error
+
+test error on assign role wrong entityType [[
+	model
+	entity Node{}
+	relation Edge{
+		Node 1 in
+		Node 1 out
+	}
+	
+	data
+	Node x{}
+	Edge e{
+		in:x
+		out:[[e]]
+	}
+]] 1 error
+
+test error on derivation assign wrong Int to String [[
+	model
+	entity X{
+		i : Int = [["a"]]
+	}
+]] 1 error
+
+test error on derivation assign wrong String to Int [[
+	model
+	entity X{
+		i : Int = [["a"]]
+	}
+]] 1 error
+
+
+test error on derivation assign wrong ZeroOrOne to One [[
+	model
+	entity X{
+		i : Int = [[j]]
+		j : Int ?
+	}
+]] 1 error
+
+test no error on derivation assign wrong One to One [[
+	model
+	entity X{
+		i : Int = 4
+	}
+]] 0 errors
+
+test error on derivation assign wrong ZeroOrMore to One [[
+	model
+	entity X{
+		i : Int = [[(j :: j)]]
+		j : Int ?
+	}
+]] 1 error
+
+test error on derivation assign wrong OneOrMore to One [[
+	model
+	entity X{
+		i : Int = [[(1 :: 2)]]
+	}
+]] 1 error
+
+test no error on derivation assign wrong One to ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = 4
+	}
+]] 0 errors
+
+test no error on derivation assign wrong ZeroOrOne to ZeroOrOne [[
+	model
+	entity X{
+		i : Int ?
+		j : Int ? = i
+	}
+]] 0 errors
+
+test error on derivation assign wrong ZeroOrMore to ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = [[(j :: j)]]
+		j : Int ?
+	}
+]] 1 error
+
+test error on derivation assign wrong OneOrMore to ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = [[(1 :: 2)]]
+	}
+]] 1 error
+

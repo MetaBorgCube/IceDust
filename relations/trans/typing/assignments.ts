@@ -29,5 +29,4 @@ type rules
 			
 	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e has multiplicity e-mu
-		and definition of a has multiplicity a-mu
 		and e-mu == a-mu else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e
