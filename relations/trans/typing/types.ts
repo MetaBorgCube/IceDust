@@ -10,8 +10,8 @@ imports
 
 	trans/typing/aggregation.generated
 	trans/typing/assignments.generated
-	trans/typing/choices.generated
 	trans/typing/literals.generated
 	trans/typing/math.generated
+	trans/typing/multiplicity-operators.generated
 	trans/typing/navigators.generated
 	trans/typing/references.generated

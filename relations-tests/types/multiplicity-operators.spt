@@ -1,0 +1,24 @@
+module types-aggregation
+
+language Relations
+
+setup Common [[
+	module test
+	model
+	data
+	execute
+]]
+
+test type of choice Int		[[ [[4 <+ 3]] 		]] run get-type to Int
+test type of choice String[[ [["a" <+ "b"]] ]] run get-type to String
+
+test type of merge Int		[[ [[4 :: 3]] 		]] run get-type to Int
+test type of merge String	[[ [["a" :: "b"]] ]] run get-type to String
+
+test multiplicity of merge Int		[[ [[4 :: 3]] 		]] run get-multiplicity to OneOrMore
+test multiplicity of merge String	[[ [["a" :: "b"]] ]] run get-multiplicity to OneOrMore
+
+test multiplicity of choice Int		[[ [[4 <+ 3]] 		]] run get-multiplicity to One
+test multiplicity of choice String[[ [["a" <+ "b"]] ]] run get-multiplicity to One
+
+// TODO: add more testcases covering x : ZeroOrOne and x : ZeroOrMore

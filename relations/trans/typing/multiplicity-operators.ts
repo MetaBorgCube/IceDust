@@ -1,4 +1,4 @@
-module typing/choice
+module typing/multiplicity-operators
 
 imports
 	
