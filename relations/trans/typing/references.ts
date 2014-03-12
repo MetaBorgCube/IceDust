@@ -13,22 +13,23 @@ imports
 
 type rules
 
-	AttributeName(e, name) : type
-	where definition of name : type
+	AttributeName(expr, attr) : attr-ty
+	where definition of attr : attr-ty
 	
-	// AttributeName(e, name) has multiplicity attr-mu
-	// where	definition of name has multiplicity attr-mu
-	
-	AttributeName(e, name) has multiplicity e-mu
-	where	e has multiplicity e-mu
-	// 	and definition of name has multiplicity One() else error "Attribute should have multiplicity One" on name
+	AttributeName(expr, attr) has multiplicity expr-mu
+	where	expr has multiplicity expr-mu
+	// and definition of attr has attr-mu
+	//TODO: use both expr-mu and attr-mu to get result mu
 
-	RoleName(name) : type
-	where definition of name : type
+	RoleName(r) : r-ty
+	where definition of r : r-ty
 	
-	Identifier(name) : type
-	where definition of name : type
+	Identifier(a) : ty
+	where definition of a : ty
 	
-	Identifier(name) has multiplicity One() //One() if refers to entity type, One() or ZeroOrOne() if refers to attribute
+	Identifier(a) has multiplicity One()
+	//TODO: One() if refers to entity type, One() or ZeroOrOne() if refers to attribute
+
+	//TODO: type of This()
 
 	This() has multiplicity One()

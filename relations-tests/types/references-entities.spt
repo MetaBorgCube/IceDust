@@ -1,0 +1,49 @@
+module types-references-entities
+
+language Relations
+
+setup Common [[
+	module test
+]]
+
+
+test type of ref entity this [[
+	model
+	entity X{
+		i : Int = [[this]].i
+	}
+	
+	data
+	X x{}
+]] run get-type to X
+	 
+test type of ref entity Identifier [[
+	model
+	entity X{
+		i : Int = [[x]].i
+	}
+	
+	data
+	X x{}
+]] run get-type to X
+
+
+test multiplicity of ref this [[
+	model
+	entity X{
+		i : Int = [[this]].i
+	}
+	
+	data
+	X x{}
+]] run get-multiplicity to One
+	 
+test multiplicity of ref entity Identifier [[
+	model
+	entity X{
+		i : Int = [[x]].i
+	}
+	
+	data
+	X x{}
+]] run get-multiplicity to One

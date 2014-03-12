@@ -1,0 +1,183 @@
+module types-references-attributes
+
+language Relations
+
+setup Common [[
+	module test
+]]
+
+test type of ref attribute (Identifier) [[
+	model
+	entity X{
+		i : Int = [[i]]
+	}
+]] run get-type to Int
+
+test type of ref this.attribute [[
+	model
+	entity X{
+		i : Int = [[this.i]]
+	}
+]] run get-type to Int
+
+test type of ref entity.attribute [[
+	model
+	entity X{
+		i : Int = [[x.i]]
+	}
+	
+	data
+	X x{}
+]] run get-type to Int
+
+test type of ref navigator.attribute [[
+	model
+	entity Node{
+		i : Int = [[this>in]Edge[out.i]]
+	}
+	relation Edge{
+		Node 1 in
+		Node 1 out
+	}
+]] run get-type to Int
+
+
+test multiplicity of ref attribute (Identifier) One [[
+	model
+	entity X{
+		i : Int = [[i]]
+	}
+]] run get-multiplicity to One
+
+test multiplicity of ref attribute (Identifier) ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = [[i]]
+	}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref this.attribute One [[
+	model
+	entity X{
+		i : Int = [[this.i]]
+	}
+]] run get-multiplicity to One
+
+test multiplicity of ref this.attribute ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = [[this.i]]
+	}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref entity.attribute One [[
+	model
+	entity X{
+		i : Int = [[x.i]]
+	}
+	
+	data
+	X x{}
+]] run get-multiplicity to One
+
+test multiplicity of ref entity.attribute ZeroOrOne [[
+	model
+	entity X{
+		i : Int ? = [[x.i]]
+	}
+	
+	data
+	X x{}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref navigator.attribute ZeroOrOne ZeroOrOne [[
+	model
+	entity Node{
+		i : Int = [[this>in]Edge[out.j]] <+ 0
+		j : Int ?
+	}
+	relation Edge{
+		Node ? in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref navigator.attribute ZeroOrOne One [[
+	model
+	entity Node{
+		i : Int = [[this>in]Edge[out.i]] <+ 0
+	}
+	relation Edge{
+		Node ? in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref navigator.attribute One ZeroOrOne [[
+	model
+	entity Node{
+		i : Int = [[this>in]Edge[out.j]]
+		j : Int ?
+	}
+	relation Edge{
+		Node 1 in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of ref navigator.attribute One One [[
+	model
+	entity Node{
+		i : Int = [[this>in]Edge[out.i]]
+	}
+	relation Edge{
+		Node 1 in
+		Node 1 out
+	}
+]] run get-multiplicity to One
+
+test multiplicity of ref navigator.attribute ZeroOrMore ZeroOrOne [[
+	model
+	entity Node{
+		i : Int = max( [[this>in]Edge[out.j]] ) <+ 0
+		j : Int ?
+	}
+	relation Edge{
+		Node * in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrMore
+
+test multiplicity of ref navigator.attribute ZeroOrMore One [[
+	model
+	entity Node{
+		i : Int = max( [[this>in]Edge[out.i]] ) <+ 0
+	}
+	relation Edge{
+		Node * in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrMore
+
+test multiplicity of ref navigator.attribute OneOrMore ZeroOrOne [[
+	model
+	entity Node{
+		i : Int = max( [[this>in]Edge[out.j]] ) <+ 0
+		j : Int ?
+	}
+	relation Edge{
+		Node + in
+		Node 1 out
+	}
+]] run get-multiplicity to ZeroOrMore
+
+test multiplicity of ref navigator.attribute OneOrMore One [[
+	model
+	entity Node{
+		i : Int = max( [[this>in]Edge[out.i]] ) <+ 0
+	}
+	relation Edge{
+		Node + in
+		Node 1 out
+	}
+]] run get-multiplicity to OneOrMore
