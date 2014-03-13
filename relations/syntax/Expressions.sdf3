@@ -37,14 +37,11 @@ templates //exp : PrimitiveType, 1
 
 templates //exp : EntityType, 0-*
 
-	Exp.NavigateInOut			= <<Exp> <NavType> <RoleName>]<EntityType>[<RoleName>>
-	Exp.NavigateIn				= <<Exp> <NavType> <RoleName>]<EntityType>>
-	Exp.NavigateOut				= <<Exp> <NavType> <EntityType>[<RoleName>>
+	Exp.NavigateInOut			= <<Exp> \><Placeholder3> <RoleName>]<EntityType>[<RoleName>>
+	Exp.NavigateIn				= <<Exp> \><Placeholder3> <RoleName>]<EntityType>>
+	Exp.NavigateOut				= <<Exp> \><Placeholder3> <EntityType>[<RoleName>>
 	
-	NavType.NavOr					= <\>>
-	NavType.NavAnd				= <\>\>>
-	NavType.NavOrEx 			= <-\>>
-	NavType.NavAndEx			= <-\>\>>
+	Placeholder3.NavOr		= <>
 
 templates //exp (references)
 

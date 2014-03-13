@@ -9,13 +9,18 @@ templates
 
 // both entities and relations are entityTypeDefs
 Model.EntityTypeDef = <
-<EntityOrRelation> <ID> {
+entity<Placeholder1> <ID> {
 	<RoleOrAttribute*;separator="\n">
 }
 >
+Placeholder1.EntityType = <>
 
-EntityOrRelation.EntityType		= <entity>
-EntityOrRelation.RelationType	= <relation>
+Model.EntityTypeDef = <
+relation<Placeholder2> <ID> {
+	<RoleOrAttribute*;separator="\n">
+}
+>
+Placeholder2.RelationType =<>
 
 // roles and attributes
 RoleOrAttribute								= <<Role>>
