@@ -34,24 +34,44 @@ test Resolve attribute from this.attribute [[
 
 test Resolve invalid this.attribute fails [[
 	entity User {
-		name : String = this.x
+		name : String = this.[[x]]
 	}
 ]] 1 error
 
 test Resolve attribute from entity.attribute [[
 	entity Node {
-		[[name]] : String = n.[[name]]
+		[[name]] : String = n.[[name]] (default)
 	}
 	data
-	Node n{}
+	Node n{
+		name = "a"
+	}
 ]] resolve #2 to #1
 
 test Resolve invalid entity.attribute fails [[
 	entity Node {
-		name : String = n.name
+		name : String = [[n2]].name (default)
 	}
 	data
-	Node n{}
+	Node n{
+		name = "a"
+	}
+]] 1 error
+
+test Resolve entity.invalid attribute fails [[
+	entity Node {
+		name : String
+	}
+	relation Edge{
+		Node * in
+		Node * out
+	}
+	data
+	Node n{
+		name = "a"
+	}
+	execute
+	n.[[notin]]
 ]] 1 error
 
 test Resolve attribute from Navigator.attribute [[
@@ -66,7 +86,7 @@ test Resolve attribute from Navigator.attribute [[
 
 test Resolve invalid Navigator.attribute fails [[
 	entity Node {
-		name : String = concat(this > in]Edge[out .name)
+		name : String = concat(this > in]Edge[out .[[x]])
 	}
 	relation Edge{
 		Node * in

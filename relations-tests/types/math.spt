@@ -10,7 +10,10 @@ setup Common [[
 		s : String ?
 	}
 	data
-	X x{}
+	X x{
+		i=3
+		s="a"
+	}
 	execute
 ]]
 

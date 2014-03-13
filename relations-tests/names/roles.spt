@@ -26,17 +26,3 @@ test Resolve role from Navigator [[
 	}
 ]] resolve #1 to #2
 
-test Resolve invalid Navigator role fails [[
-	entity Node {
-		name : String
-	}
-	relation Edge{
-		Node * in
-		Node * out
-	}
-	data
-	Node n{}
-	execute
-	n.notin
-]] 1 error
-

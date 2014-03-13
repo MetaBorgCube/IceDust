@@ -24,11 +24,13 @@ test type of ref this.attribute [[
 test type of ref entity.attribute [[
 	model
 	entity X{
-		i : Int = [[x.i]]
+		i : Int = [[x.i]] (default)
 	}
 	
 	data
-	X x{}
+	X x{
+		i=3
+	}
 ]] run get-type to Int
 
 test type of ref navigator.attribute [[
@@ -74,11 +76,13 @@ test multiplicity of ref this.attribute ZeroOrOne [[
 test multiplicity of ref entity.attribute One [[
 	model
 	entity X{
-		i : Int = [[x.i]]
+		i : Int = [[x.i]] (default)
 	}
 	
 	data
-	X x{}
+	X x{
+		i=3
+	}
 ]] run get-multiplicity to One
 
 test multiplicity of ref entity.attribute ZeroOrOne [[

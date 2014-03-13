@@ -17,6 +17,7 @@ test error on assign attribute String to Int [[
 	data
 	X x{
 		i=[["a"]]
+		s="a"
 	}
 ]] 1 error
 
@@ -29,6 +30,7 @@ test error on assign attribute Int to String [[
 	
 	data
 	X x{
+		i=3
 		s=[[4]]
 	}
 ]] 1 error

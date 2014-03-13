@@ -9,7 +9,9 @@ setup Common [[
 		i : Int ?
 	}
 	data
-	X x{}
+	X x{
+		i=9
+	}
 	execute
 ]]
 
