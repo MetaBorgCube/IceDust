@@ -13,7 +13,7 @@ test error on omitting required attribute [[
 		i : Int
 	}
 	data
-	[[X x{}]]
+	X [[x]]{}
 ]] 1 error
 
 test error on omitting required attribute multiple [[
@@ -23,8 +23,8 @@ test error on omitting required attribute multiple [[
 		j : String
 	}
 	data
-	[[X x{}]]
-]] 2 errors
+	X [[x]]{}
+]] 1 errors
 
 test no error on omitting optional attribute[[
 	model
@@ -42,7 +42,7 @@ test error on omitting only on required attribute[[
 		j : String
 	}
 	data
-	X x{}
+	X [[x]]{}
 ]] 1 error
 
 //TODO: add testcases for required relations/roles
