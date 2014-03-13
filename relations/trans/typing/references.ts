@@ -16,10 +16,10 @@ type rules
 	AttributeName(expr, attr) : attr-ty
 	where definition of attr : attr-ty
 	
-	AttributeName(expr, attr) has multiplicity expr-mu
+	AttributeName(expr, attr) has multiplicity mu
 	where	expr has multiplicity expr-mu
-	// and definition of attr has attr-mu
-	//TODO: use both expr-mu and attr-mu to get result mu
+		and definition of attr has multiplicity attr-mu
+		and <mu-or-join-backup2> (expr-mu, attr-mu) => mu
 
 	RoleName(r) : r-ty
 	where definition of r : r-ty
@@ -33,3 +33,19 @@ type rules
 	//TODO: type of This()
 
 	This() has multiplicity One()
+
+
+type functions
+
+	mu-or-join:
+		(x-mu, y-mu) -> mu
+		where x-mu == One() and y-mu == One()																										and One() => mu
+			 or (x-mu == ZeroOrOne() or x-mu == One()) and (y-mu == ZeroOrOne() or y-mu == One()) and ZeroOrOne() => mu
+			 or (x-mu == ZeroOrMore() or y-mu == ZeroOrMore())																		and ZeroOrMore() => mu
+			 or x-mu == OneOrMore() and y-mu == ZeroOrOne()																				and ZeroOrMore() => mu
+			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
+			 or																																												OneOrMore() => mu
+
+	mu-or-join-backup2:		//backup function as long as dep-fails do not work yet in TS
+		(x-mu, y-mu) -> mu
+		where x-mu => mu
