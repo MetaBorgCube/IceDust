@@ -72,7 +72,7 @@ test error on derivation assign wrong ZeroOrOne to One [[
 	}
 ]] 1 error
 
-test no error on derivation assign wrong One to One [[
+test no error on derivation assign One to One [[
 	model
 	entity X{
 		i : Int = 4
@@ -94,14 +94,14 @@ test error on derivation assign wrong OneOrMore to One [[
 	}
 ]] 1 error
 
-test no error on derivation assign wrong One to ZeroOrOne [[
+test no error on derivation assign One to ZeroOrOne [[
 	model
 	entity X{
 		i : Int ? = 4
 	}
 ]] 0 errors
 
-test no error on derivation assign wrong ZeroOrOne to ZeroOrOne [[
+test no error on derivation assign ZeroOrOne to ZeroOrOne [[
 	model
 	entity X{
 		i : Int ?
