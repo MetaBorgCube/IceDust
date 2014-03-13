@@ -54,6 +54,8 @@ rules // check if entities have all the required attributes assigned
 			as-attrs  := <task-create-combine(|ctx)> as-defs ;
 			diff    := <task-create-diff(|ctx)> (ty-attrs, as-attrs);
 			//TODO: filter by diff by multiplicity [1,1] gives error, [0,1] is not required.
-			<task-create-error-on-success(|ctx, diff, $[Provide all required attributes.])> e	//TODO: provide information on what attribute is missing.
+			<task-create-error-on-success(|ctx, diff, $[Provide all required attributes.])> e
+			//TODO: provide attribute name in error message.
+			//TODO: provide error for each missing attribute.
 			
 
