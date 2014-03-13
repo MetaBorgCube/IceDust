@@ -49,8 +49,3 @@ type functions
 			 or x-mu == OneOrMore() and y-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or																																												OneOrMore() => mu
-
-		
-		
-		// where ((x-mu == OneOrMore() or x-mu == One()) and One() => mu)
-		// 	 or ZeroOrOne() => mu
