@@ -31,7 +31,26 @@ type rules
 +	Division(x, y)
 +	Modulo(x, y)
 +	Addition(x, y)
-+	Subtraction(x, y) has multiplicity y-mu
++	Subtraction(x, y) has multiplicity mu
 	where	x	has multiplicity x-mu
 		and	y	has multiplicity y-mu
-		and	x-mu == y-mu else error $[Multiplicity mismatch: expected [x-mu] got [y-mu] in Math Operation] on y
+		and <mu-or-join> (x-mu, y-mu) => mu
+		and (x-mu == ZeroOrOne() or x-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [x-mu] in Math Operation] on x
+		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
+
+
+type functions
+
+	mu-or-join:
+		(x-mu, y-mu) -> mu
+		where x-mu == One() and y-mu == One()																										and One() => mu
+			 or (x-mu == ZeroOrOne() or x-mu == One()) and (y-mu == ZeroOrOne() or y-mu == One()) and ZeroOrOne() => mu
+			 or (x-mu == ZeroOrMore() or y-mu == ZeroOrMore())																		and ZeroOrMore() => mu
+			 or x-mu == OneOrMore() and y-mu == ZeroOrOne()																				and ZeroOrMore() => mu
+			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
+			 or																																												OneOrMore() => mu
+
+		
+		
+		// where ((x-mu == OneOrMore() or x-mu == One()) and One() => mu)
+		// 	 or ZeroOrOne() => mu
