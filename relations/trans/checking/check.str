@@ -20,8 +20,6 @@ rules
 		where
 			not(<string-starts-with-capital> x)
 
-	// constraint-note:	e@Navigator(_, _)	-> (e, $[This is not translated to java yet.])
-
 	constraint-error: EntityTypeDef(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
 	no-role: x@Role(_,_,_) -> [(x, $[An entity cannot have roles.])]
 	no-role: Attribute(_,_,_,_) -> []
@@ -30,7 +28,7 @@ rules // Check derivation types of attributes
 	
 	// Task-engine version	
 	nabl-constraint(|ctx):
-		x@AttributeValue(AttributeName(_, name), _) -> <fail>
+		x@AttributeValue(Identifier(name), _) -> <fail>
 		with
 			prop-task := <prop-create-lookup(|ctx, NablProp_derivation-type())> name;
 			match     := <derivation-type-match(|ctx, Derivation())> prop-task;
@@ -43,3 +41,19 @@ rules // Only relations allowed in navigators
 		with
 			prop-task := <prop-create-lookup(|ctx, NablProp_is-relation())> entityType;
 			<task-create-error-on-failure(|ctx, prop-task, $[Type error: [entityType] is an entity, a relation is expected.])> entityType
+
+
+rules // check if entities have all the required attributes assigned
+
+	nabl-constraint(|ctx):
+		EntityOrRelation(EntityType(e-ty), e, _, as) -> <fail>
+		with
+			<debug>"";
+			<debug(|"Attributes set check ")> e; 
+			e-ty-uri := <nabl-uri> e-ty;	//Not task (?)
+			<debug(|"1 ")> e-ty-uri;	
+			e-ty-allAttributes := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [e-ty-uri]; //Task with as result [Def( URI(...)), ...]
+			<debug(|"2 ")> e-ty-allAttributes; 
+			as-uris := <map(\AttributeValue(Identifier(a),_)->a\;nabl-uri)> as;	//Not task
+			<debug(|"3 ")> as-uris
+			//TODO: compare e-ty-allAttributes and as-uris
