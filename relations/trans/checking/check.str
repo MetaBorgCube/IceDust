@@ -48,12 +48,12 @@ rules // check if entities have all the required attributes assigned
 	nabl-constraint(|ctx):
 		EntityOrRelation(EntityType(e-ty), e, _, as) -> <fail>
 		with
-			<debug>"";
-			<debug(|"Attributes set check ")> e; 
-			e-ty-uri := <nabl-uri> e-ty;	//Not task (?)
-			<debug(|"1 ")> e-ty-uri;	
-			e-ty-allAttributes := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [e-ty-uri]; //Task with as result [Def( URI(...)), ...]
-			<debug(|"2 ")> e-ty-allAttributes; 
-			as-uris := <map(\AttributeValue(Identifier(a),_)->a\;nabl-uri)> as;	//Not task
-			<debug(|"3 ")> as-uris
-			//TODO: compare e-ty-allAttributes and as-uris
+			ty-def := <nabl-create-collectdefs(|ctx)> e-ty;
+			[ty-attrs] := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
+			as-defs := <map(?AttributeValue(Identifier(<nabl-create-collectdefs(|ctx)>), _))> as;	
+			as-attrs  := <task-create-combine(|ctx)> as-defs ;
+			diff    := <task-create-diff(|ctx)> (ty-attrs, as-attrs);
+			//TODO: filter by diff by multiplicity [1,1] gives error, [0,1] is not required.
+			<task-create-error-on-success(|ctx, diff, $[Provide all required attributes.])> e	//TODO: provide information on what attribute is missing.
+			
+
