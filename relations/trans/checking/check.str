@@ -11,7 +11,7 @@ imports
 	include/Relations
 	
 	trans/desugaring/desugar
-	trans/naming/names
+	trans/naming/-
 
 rules
 	
@@ -53,9 +53,9 @@ rules // check if entities have all the required attributes assigned
 			as-defs := <map(?AttributeValue(Identifier(<nabl-create-collectdefs(|ctx)>), _))> as;	
 			as-attrs  := <task-create-combine(|ctx)> as-defs ;
 			diff    := <task-create-diff(|ctx)> (ty-attrs, as-attrs);
-			//TODO: filter by diff by multiplicity: [1,1] gives error, [0,1] gives no error.
-			//TODO: filter by diff by derivationType: Normal gives error, Derivation and Default give no error.
-			<task-create-error-on-success(|ctx, diff, $[Provide all required attributes.])> e
+			diff' := <nabl-create-propconstraint(|ctx, NablProp_derivation-type(), diff)> Normal();
+			diff'' := <nabl-create-propconstraint(|ctx, NablProp_multiplicity(), diff')> One();
+			<task-create-error-on-success(|ctx, diff'', $[Provide all required attributes.])> e
 			//TODO: provide attribute name in error message.
 			//TODO: provide error for each missing attribute.
 			
