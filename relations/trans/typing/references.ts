@@ -27,8 +27,8 @@ type rules
 	Identifier(a) : ty
 	where definition of a : ty
 	
-	Identifier(a) has multiplicity One()
-	//TODO: One() if refers to entity type, One() or ZeroOrOne() if refers to attribute
+	Identifier(a) has multiplicity a-mu
+	where definition of a has multiplicity a-mu
 
 	//TODO: type of This()
 

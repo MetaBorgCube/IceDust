@@ -53,9 +53,11 @@ binding rules
 	EntityOrRelation(EntityType(e-ty), e, _, _) :
 		defines Entity e
 			of type e-ty
+			of multiplicity One()
 		scopes This
 		implicitly defines This This()
 			of type e-ty
+			of multiplicity One()
 	
 	
 	// entities or attributes
