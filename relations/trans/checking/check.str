@@ -57,3 +57,14 @@ rules // check if entities have all the required attributes assigned
 			diff''     := <nabl-create-propconstraint(|ctx, NablProp_multiplicity(), diff')> One();
 			<task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> e
 			//TODO: provide pp-ed attribute names in error message.
+			
+	nabl-constraint(|ctx):
+		EntityOrRelation(EntityType(e-ty), e, roles, _) -> <fail>
+		with
+			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
+			[ty-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
+			as-defs    := <map(?RoleValue(RoleName(<nabl-create-collectdefs(|ctx)>), _))> roles;
+			as-roles   := <task-create-combine(|ctx)> as-defs ;
+			diff       := <task-create-diff(|ctx)> (ty-roles, as-roles);
+			<task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> e
+			//TODO: provide pp-ed attribute names in error message.

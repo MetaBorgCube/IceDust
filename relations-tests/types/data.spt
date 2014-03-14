@@ -45,4 +45,45 @@ test error on omitting only on required attribute[[
 	X [[x]]{}
 ]] 1 error
 
-//TODO: add testcases for required relations/roles
+test no error on not omitting role in relation[[
+	model
+	entity Node{}
+	relation Edge{
+		Node 1 in
+		Node * out
+	}
+	data
+	Node n{}
+	Edge e{
+		in:n
+		out:n
+	}
+]] 0 errors
+
+test error on omitting role in relation[[
+	model
+	entity Node{}
+	relation Edge{
+		Node 1 in
+		Node * out
+	}
+	data
+	Node n{}
+	Edge [[e]]{
+		in:n
+	}
+]] 1 error
+
+test error on omitting roles in relation[[
+	model
+	entity Node{}
+	relation Edge{
+		Node 1 in
+		Node * out
+	}
+	data
+	Node n{}
+	Edge [[e]]{}
+]] 1 error
+
+//TODO: add testcases for required relations (need syntax for specifying relations inside entities)
