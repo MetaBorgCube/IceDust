@@ -15,5 +15,5 @@ imports
 type rules
 
 	AttributeValue(Identifier(a), val) :-
-	where	a has derivation-type a-dt
+	where definition of a has derivation-type a-dt
 	  and	(a-dt == Normal() or a-dt == DefaultValue()) else error "Derivations cannot be assigned custom values." on a
