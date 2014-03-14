@@ -1,0 +1,24 @@
+module generate-expressions-math
+
+language Relations
+
+setup Common [[
+	module ExpressionsMath
+	
+	model
+	entity X {
+		val : Int = 42 * 6 % 10 / (5 - 10) + 4 - 3 * 8 / -1
+	}
+	
+	data
+	X x{}
+	
+	execute
+	x.val
+]]
+
+test Expressions Math generate-java [[ ]] build generate-java
+
+test Expressions Math compile-java [[ ]] build compile-java
+
+test Expressions Math execute-java [[ ]] build execute-java //to "28"
