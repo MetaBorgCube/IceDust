@@ -52,3 +52,11 @@ type functions
 	mu-or-join-backup:		//backup function as long as dep-fails do not work yet in TS
 		(x-mu, y-mu) -> mu
 		where y-mu => mu
+		
+
+type rules // give errors on enties in places where relations are expected
+
+	NavigateIn(_, _, _, EntityType(e-ty))
++ NavigateOut(_, _, EntityType(e-ty), _) :-
+	where definition of e-ty has entity-or-relation e-er
+	  and e-er == RelationType() else error ["Type error: ", e-ty, " is an entity, a relation is expected."] on e-ty

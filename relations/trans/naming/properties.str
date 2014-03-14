@@ -15,19 +15,6 @@ signature constructors
 	
 	Normal: DerivationType
 
-rules // Attributes are Derivation(), has DefaultValue() or are Normal()
-	
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@Attribute(name, type, multiplicity, None()) -> <fail>
-			where
-				derivationType := Normal();
-				<store-derivation-type(|ctx, derivationType)>e
-
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@Attribute(name, type, multiplicity, Derivation(derivationExpr, derivationType)) -> <fail>
-			where
-				<store-derivation-type(|ctx, derivationType)>e
-
 rules // Entities role fulfilling
 
 	nabl-prop-site(|lang, ctx, uris, states, implicits):
@@ -43,17 +30,3 @@ rules // Entities role fulfilling
   get-fulfill-role-multiple =
     get-properties(|NablProp_fulfill-role())
 
-rules // Entities - is-relation
-	
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@EntityTypeDef(RelationType(), name, _) -> <fail>
-		where
-			<store-is-relation(|ctx, 1)> name
-
-// rules // Helper rules
-// 
-// 	debug-task: task -> task
-// 		where
-// 			result := <try(insert-results-or-delay)> task;
-// 			<debug-depth>[task, result];
-// 			<debug>[task, result]

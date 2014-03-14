@@ -10,6 +10,7 @@ imports
 
 	trans/typing/aggregation.generated
 	trans/typing/assignments.generated
+	trans/typing/data.generated
 	trans/typing/literals.generated
 	trans/typing/math.generated
 	trans/typing/multiplicity-operators.generated
