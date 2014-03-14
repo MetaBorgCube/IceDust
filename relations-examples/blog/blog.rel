@@ -14,8 +14,8 @@ entity Post {
 relation UserPost {
 	User *
 	Post 1
-	numEdits : Int
-	editMsg  : String
+	numEdits : Int = 1 (default)
+	editMsg  : String = "" (default)
 }
 entity Log {
 	body : String

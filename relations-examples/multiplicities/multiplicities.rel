@@ -6,3 +6,9 @@ entity Foo{
 	input2	: Int = 7 + 4
 	value		: Int = 1 + input2
 }
+
+data
+Foo f{}
+
+execute
+f.value

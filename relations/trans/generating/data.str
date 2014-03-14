@@ -36,11 +36,11 @@ rules
         attributeValuesJava,
         roleValuesJava
         ]
-	where
+	with
 		attributeValuesJava := <map(to-java(|entityName))> attributeValues;
 		roleValuesJava			:= <map(to-java(|entityName, entityType));concat> roleValues
 
-  to-java(|entityName) : AttributeValue(AttributeName(This(),attributeName), attributeValue) ->
+  to-java(|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
 	  	ExprStm(
         Invoke(
           Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))

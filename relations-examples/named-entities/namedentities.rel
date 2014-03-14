@@ -7,9 +7,9 @@ entity Node{
 	childVal : Int = avg( root > parent]Tree[child .value ) <+ 0
 }
 relation Tree{
-	Node 1 parent
+	Node + parent
 	Node 1 child
-	value : Int = max( this > Tree[parent . value) <+ 0
+	value : Int =  this > Tree[parent . value
 }
 
 data
@@ -19,7 +19,9 @@ Node n1{
 Node n2{
 	value = 4
 }
-Node root{}
+Node root{
+	value = 3
+}
 Tree t1{
 	parent:root
 	child:n1
