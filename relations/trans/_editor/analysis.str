@@ -5,6 +5,8 @@ imports
 	lib/editor-common.generated
 	lib/analysis/defaults
 	lib/task/core
+	lib/editor/properties
+	lib/nabl/entries
 
 	trans/desugaring/desugar
 	trans/prettyprinting/pp
@@ -23,8 +25,10 @@ rules // Analysis
 rules	//@see http://yellowgrass.org/issue/Spoofax/823
 	
 	pp-message-top = origin-track-forced((id, strip-annos; pp-message))
+	pp-message : Def(uri) -> <pp-uri>uri
 	pp-message = not(is-list); (is-string <+ pp-result <+ pp-Relations-string <+ (strip-annos; write-to-string))
-	pp-message = map(pp-message); concat-strings
+	pp-message: list -> $[<div>[<map(pp-message); separate-by(|"<br/>"); concat-strings>list]</div>]
+		where is-list
 	
 	pp-result:
 	    result@Result(_) -> msg
