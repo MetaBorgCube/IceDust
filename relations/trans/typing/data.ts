@@ -10,7 +10,7 @@ imports
 
 	include/Relations
 	trans/naming/names
-	trans/naming/properties
+	trans/naming/_notNaBL
 
 type rules
 

@@ -6,7 +6,7 @@ imports
 	lib/nabl/-
 	include/Relations
 	trans/naming/names
-	trans/naming/properties
+	trans/naming/_notNaBL
 
 rules
 	

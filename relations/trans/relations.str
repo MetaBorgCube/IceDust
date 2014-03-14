@@ -7,5 +7,4 @@ imports
 	trans/_editor/generate
 	trans/_editor/services
 
-	trans/checking/check
 	trans/typing/types.generated

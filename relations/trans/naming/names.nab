@@ -10,7 +10,7 @@ imports
 	
 	include/Relations
 	trans/desugaring/desugar
-	trans/naming/properties
+	trans/naming/_notNaBL
 	
 namespaces
 	
