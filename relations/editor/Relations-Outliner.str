@@ -2,10 +2,40 @@ module editor/Relations-Outliner
 
 imports
   include/Relations
-  lib/runtime/editor/outline-library
-  lib/runtime/editor/origins
-  editor/Relations-Outliner.generated
+  lib/editor/outline-library
+  lib/editor/origins
+
 
 rules
   
-  outline-expand-to-level = !3
+  outline-expand-to-level = !5
+
+	//TODO: call this on desugared, or even analyzed AST
+  outline = simple-label-outline(to-outline-label)
+  
+  // to-outline-label = ?Module(<id>,_,_,_)
+  
+	  to-outline-label : ModelDef(_) -> "Model"{"icons/model.png"}
+	  
+	  	to-outline-label : EntityTypeDef(et-er, et, _) 									-> $[[<pp-o>et] : [<pp-o>et-er]]{"icons/square-red.png"}
+	  		where EntityType() := et-er
+	  	to-outline-label : EntityTypeDef(et-er, et, _) 									-> $[[<pp-o>et] : [<pp-o>et-er]]{"icons/diamond-yellow.png"}
+	  		where RelationType() := et-er
+	  		
+	  		to-outline-label : Attribute(a, a-ty, a-mu, _) 								-> $[[<pp-o>a] : [<pp-o>a-ty] [<pp-o>a-mu]]{"icons/circle-green.png"}
+	  		to-outline-label : Role(EntityType(r-ty), r-mu, Some(r)) 			-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
+	  
+	  to-outline-label : DataDef(_) -> "Data"{"icons/data.png"}
+	  
+	  	to-outline-label : EntityOrRelation(EntityType(e-ty), e, _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
+	  	
+	  to-outline-label : Executable(_) -> "Execute"{"icons/execute.png"}
+	  
+rules
+	
+  pp-o =
+  is-string 
+    <+
+  ?term{a}; origin-text; ?label; !label{a}
+    <+
+  write-to-string // fallback
