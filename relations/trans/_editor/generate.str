@@ -123,6 +123,7 @@ rules // Build in steps
 
 rules // call helper
 	
+	//TODO: now this returns the exitCode, but it should return (exitCode, stdoutString). And the stdout should not be in the console.
 	call-read-output =
 	  ?(program, args);
 	
