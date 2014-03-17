@@ -15,24 +15,40 @@ imports
 
 rules // Builders
 	
-	generate-java:
+	generate-java      = generate-java(error-handler-editor)
+	generate-java-test = generate-java(error-handler-tests)
+	generate-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
 		with
-			result := <build>(selected, path, project-path, 1)
-			
-	compile-java:
+			result := <build(error-handler)>(selected, path, project-path, 1)
+	
+	compile-java       = compile-java(error-handler-editor)
+	compile-java-test  = compile-java(error-handler-tests)
+	compile-java(error-handler):
 		(selected, position, ast, path, project-path) -> None()
 		with
-			<build>(selected, path, project-path, 2)
-			
-	execute-java:
+			<build(error-handler)>(selected, path, project-path, 2)
+	
+	execute-java       = execute-java(error-handler-editor)
+	execute-java-test  = execute-java(error-handler-tests)
+	execute-java(error-handler):
 		(selected, position, ast, path, project-path) -> None()
 		with
-			<build>(selected, path, project-path, 3)
+			<build(error-handler)>(selected, path, project-path, 3)
+
+rules // Error handlers (editor: report error, do not fail, tests: fail with error)
+
+	error-handler-editor : msg -> None()
+		with
+			err-msg(|msg)
+
+	error-handler-tests : msg -> None()
+		with
+			with(fail|msg)
 
 rules // Build in steps
 	
-	build:
+	build(error-handler):
 		(ast, path, project-path, i) -> result
 		with
 			index-setup(|<language>, project-path);
@@ -47,7 +63,7 @@ rules // Build in steps
 			end;
 			
 			if not([] := error*) then
-				err-msg(|"Fix errors before generating code. Exiting code generation.");
+				<error-handler>"Fix errors before generating code. Exiting code generation.";
 				result := None()
 			else
 

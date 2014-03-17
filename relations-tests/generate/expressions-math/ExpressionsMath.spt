@@ -17,8 +17,8 @@ setup Common [[
 	x.val
 ]]
 
-test Expressions Math generate-java [[ ]] build generate-java
+test Expressions Math generate-java [[ ]] build generate-java-test
 
-test Expressions Math compile-java [[ ]] build compile-java
-
-test Expressions Math execute-java [[ ]] build execute-java //to "28"
+// test Expressions Math compile-java [[ ]] build compile-java-test
+// 
+// test Expressions Math execute-java [[ ]] build execute-java-test //to "28"
