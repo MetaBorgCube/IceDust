@@ -4,6 +4,26 @@ imports
 
 	lib/editor-common.generated
 
+rules // builders
+	
+	cleanup-generated-files : (selected, position, ast, path, project-path) -> None()
+		with
+			<guarantee-extension(|"java");delete-file> path;
+			<guarantee-extension(|"aterm");delete-file> path;
+			<guarantee-extension(|"analyzed.aterm");delete-file> path;
+			<guarantee-extension(|"desugared.aterm");delete-file> path;
+			<guarantee-extension(|"partition.analysis");delete-file> path;
+			<guarantee-extension(|"partition.task");delete-file> path;
+			<guarantee-extension(|"properties.txt");delete-file> path;
+			<guarantee-extension(|"selection.task");delete-file> path;
+			<guarantee-extension(|"project.aterm");delete-file> path;
+			<delete-file>$[[<dirname>path]/project.analysis];
+			<delete-file>$[[<dirname>path]/project.index];
+			<delete-file>$[[<dirname>path]/project.task];
+			<delete-file>$[[<dirname>path]/index.project.aterm];
+			<delete-files>(<dirname>$[[project-path]/[path]],"class");
+			<dirname;refresh-workspace-file>$[[project-path]/[path]]
+
 rules
 
 	write-file: (fileName, content) -> (fileName, content)
@@ -24,7 +44,10 @@ rules
 			<dirname;ensure-dir> path;
 			<mkdir> path
 			
-	delete-file: path -> <fail>
-		where
-			err-msg(|"Deleting files not implemented.")
-			
+	delete-file: a -> None()
+		with
+			if file-exists then remove-file end
+	
+	delete-files: (path, extension) -> None()
+		with
+			<readdir;filter(has-extension(|"class"));map(\a->$[[path]/[a]]\;delete-file)>path

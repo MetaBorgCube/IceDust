@@ -76,7 +76,7 @@ rules // Build in steps
 			if <leq>(2, i) then
 				// log(|Info(),"Phase 2: Compiling Java Code");
 				<write-file> (javaFileName, javaCode);
-				(exitCode, classFileName) := <compile-java-step> javaFileName;
+				(exitCode, classFileName) := <compile-java-step> (javaFileName, project-path);
 
 			if not(0 := exitCode) then
 				<error-handler>"Java compilation failed. Exiting code execution."
@@ -108,11 +108,11 @@ rules // Build in steps
 	generate-java-step(error-handler) = generate-java-code(error-handler)
 	
 	compile-java-step:
-		javaFileName -> (exitCode, classFileName)
+		(javaFileName, project-path) -> (exitCode, classFileName)
 		with
 			exitCode:= <call-read-output> ("javac", [javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
-			<refresh-workspace-file> classFileName
+			<dirname;refresh-workspace-file> $[[project-path]/[javaFileName]]
 
 	execute-java-step:
 		classFileName -> None()
