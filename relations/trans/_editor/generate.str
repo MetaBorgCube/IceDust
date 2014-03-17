@@ -71,19 +71,22 @@ rules // Build in steps
 				// log(|Info(),"Phase 1: Generating Java Code");
 				(javaFileName, javaCode) := <generate-java-step(error-handler)>(ast', path);
 				result := (javaFileName, javaCode);
-				//TODO: on fail do not continue to next step.
+				//TODO: on error do not continue to next step (the error-handler for manual build doesn't fail, only the testing one does).
 				
 			if <leq>(2, i) then
 				// log(|Info(),"Phase 2: Compiling Java Code");
 				<write-file> (javaFileName, javaCode);
-				classFileName := <compile-java-step> javaFileName;
-				//TODO: get javac output and check if there were errors. If errors exit.
+				(exitCode, classFileName) := <compile-java-step> javaFileName;
+
+			if not(0 := exitCode) then
+				<error-handler>"Java compilation failed. Exiting code execution."
+			else
 				
 			if <leq>(3, i) then
 				// log(|Info(),"Phase 3: Executing");
 				<execute-java-step> classFileName
 				
-			end end end end
+			end end end end end
 	
 	analyze-ast-step: (ast, path, project-path) -> (analyzedAst, error*)
 	 with
@@ -105,9 +108,9 @@ rules // Build in steps
 	generate-java-step(error-handler) = generate-java-code(error-handler)
 	
 	compile-java-step:
-		javaFileName -> classFileName
+		javaFileName -> (exitCode, classFileName)
 		with
-			<try(call)> ("javac", [javaFileName]);
+			exitCode:= <call-read-output> ("javac", [javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
 			<refresh-workspace-file> classFileName
 
@@ -116,4 +119,17 @@ rules // Build in steps
 		with
 			classPath := <dirname>classFileName;
 			className := <base-filename;remove-extension> classFileName;
-			<try(call)> ("java", ["-cp", classPath, className])
+			<call-read-output> ("java", ["-cp", classPath, className])
+
+rules // call helper
+	
+	call-read-output =
+	  ?(program, args);
+	
+	  Stream(instream)  := <stdin-stream>;
+	  Stream(outstream) := <stdout-stream>;
+	  Stream(errstream) := <stderr-stream>;
+	  
+	  log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+	  prim("SSL_EXT_call", program, args, instream, outstream, errstream)
+
