@@ -1,0 +1,26 @@
+module generate-expressions-references
+
+language Relations
+
+setup Common [[
+	module ExpressionsReferences
+	
+	model
+	entity Foo{
+		input1	: Int = 5
+		input2	: Int?
+		value		: Int = f.input1
+	}
+	
+	data
+	Foo f{}
+	
+	execute
+	f.value
+]]
+
+test Expressions References generate-java [[ ]] build generate-java-test
+
+test Expressions References compile-java [[ ]] build compile-java-test
+
+// test Expressions References execute-java [[ ]] build execute-java-test
