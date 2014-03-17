@@ -7,9 +7,9 @@ imports
 
 rules
 	
-  to-java: DataDef(defs) -> <map(to-java);concat> defs
+  to-java(error-handler): DataDef(defs) -> <map(to-java(error-handler));concat> defs
   
-  to-java: EntityOrRelation(
+  to-java(error-handler): EntityOrRelation(
         EntityType(entityType)
       , entityName
       , roleValues
@@ -37,10 +37,10 @@ rules
         roleValuesJava
         ]
 	with
-		attributeValuesJava := <map(to-java(|entityName))> attributeValues;
-		roleValuesJava			:= <map(to-java(|entityName, entityType));concat> roleValues
+		attributeValuesJava := <map(to-java(error-handler|entityName))> attributeValues;
+		roleValuesJava			:= <map(to-java(error-handler|entityName, entityType));concat> roleValues
 
-  to-java(|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
+  to-java(error-handler|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
 	  	ExprStm(
         Invoke(
           Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))
@@ -48,9 +48,9 @@ rules
         )
 	    )
     where
-    	attributeValueJava := <to-java>attributeValue
+    	attributeValueJava := <to-java(error-handler)>attributeValue
     	
-  to-java(|entityName, entityType) :
+  to-java(error-handler|entityName, entityType) :
   	RoleValue(RoleName(roleName), Identifier(otherEntityName)) ->
   	[	
   		ExprStm(
@@ -73,5 +73,5 @@ rules
 		 ]
   
 
-  to-java: String(value) -> Lit(String([Chars(value)]))
-  to-java: Int(value) -> Lit(Deci(value))
+  to-java(error-handler): String(value) -> Lit(String([Chars(value)]))
+  to-java(error-handler): Int(value) -> Lit(Deci(value))

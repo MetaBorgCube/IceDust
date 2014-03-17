@@ -17,29 +17,29 @@ imports
 
 rules // Builders
 	
-	generate-java-code:
+	generate-java-code(error-handler):
 	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
-			java-ast := <to-java> selected;
+			java-ast := <to-java(error-handler)> selected;
 			result   := <pp-java-string> java-ast
 
 rules	// General Java generation rules
 
-  to-java:
-    [_] -> <concat-strings> <map(to-java)>
+  to-java(error-handler):
+    [_] -> <concat-strings> <map(to-java(error-handler))>
     
-  to-java:
+  to-java(error-handler):
     () -> ""
     
-  to-java:
+  to-java(error-handler):
   	None() -> ""
 
-  to-java: Module(_,_,_,_) -> <fail>
+  to-java(error-handler): Module(_,_,_,_) -> None()
   	where
-  		err-msg(|"Desugar before generating code.")
+  		<error-handler> "Desugar before generating code."
 	
-  to-java: a -> []
+  to-java(error-handler): a -> []
   	where
-		  warn-msg(|$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].])
+		  <error-handler>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
 

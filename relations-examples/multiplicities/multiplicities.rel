@@ -3,8 +3,8 @@ module multiplcities
 model
 entity Foo{
 	input1	: Int = 5
-	input2	: Int = 7 + 4
-	value		: Int = 1 + input2
+	input2	: Int?
+	value		: Int = input2 <+ input1
 }
 
 data

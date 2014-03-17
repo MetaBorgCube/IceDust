@@ -9,7 +9,7 @@ imports
 
 rules
 
-  to-java:
+  to-java(error-handler):
     ModuleDesugared(moduleName, model, data, execute) ->
 			CompilationUnit(
 			  None()
@@ -29,10 +29,10 @@ rules
 			, <concat>[[ mainClass ], modelJava]
 			)
 	where
-		mainClass := <main-class-to-java>ModuleDesugared(moduleName, model, data, execute);
-		modelJava := <to-java>model
+		mainClass := <main-class-to-java(error-handler)>ModuleDesugared(moduleName, model, data, execute);
+		modelJava := <to-java(error-handler)>model
 		
-  main-class-to-java: ModuleDesugared(moduleName, model, data, execute) ->
+  main-class-to-java(error-handler): ModuleDesugared(moduleName, model, data, execute) ->
 	  ClassDec(
 	      ClassDecHead([], Id(moduleName), None(), None(), None())
 	    , ClassBody(
@@ -62,9 +62,9 @@ rules
 	      )
 	    )
 	where
-		dataJava := <to-java>data;
+		dataJava := <to-java(error-handler)>data;
 		if Executable(_) := execute then
-			executeJava := <to-java>execute
+			executeJava := <to-java(error-handler)>execute
 		else
 			executeJava := []
 		end

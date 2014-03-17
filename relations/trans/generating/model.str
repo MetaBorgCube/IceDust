@@ -10,9 +10,9 @@ imports
 
 rules
 	
-  to-java: ModelDef(model) -> <map(try(to-java))>model
+  to-java(error-handler): ModelDef(model) -> <map(try(to-java(error-handler)))>model
 
-  to-java: EntityTypeDef(_, name, attributesAndRoles) -> 
+  to-java(error-handler): EntityTypeDef(_, name, attributesAndRoles) -> 
 	  ClassDec(
 	      ClassDecHead([], Id(name), None(), None(), None())
 	    , ClassBody(
@@ -29,14 +29,14 @@ rules
 	      )
 	    )
 	where
-		attributesAndRolesJava := <map(to-java(|name));concat>attributesAndRoles;
+		attributesAndRolesJava := <map(to-java(error-handler|name));concat>attributesAndRoles;
 		fulfillRoles := <get-fulfill-role-multiple>name;
-		fulfillRolesJava := <map(to-java-fullfil-role) <+ empty-list> fulfillRoles;
-		fulfillRolesJavaInit := <map(to-java-fulfill-role-init) <+ empty-list> fulfillRoles
+		fulfillRolesJava := <map(to-java-fullfil-role(error-handler)) <+ empty-list> fulfillRoles;
+		fulfillRolesJavaInit := <map(to-java-fulfill-role-init(error-handler)) <+ empty-list> fulfillRoles
 	
 	empty-list: _ -> []
 	
-	to-java-fullfil-role: fulfillRole@_ ->
+	to-java-fullfil-role(error-handler): fulfillRole@_ ->
 			FieldDec(
         [Public()]
       , ClassOrInterfaceType(
@@ -49,7 +49,7 @@ rules
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
 			roleName := <de-def;nabl-uri-name>fulfillRole
 			
-	to-java-fulfill-role-init: fulfillRole@_ ->
+	to-java-fulfill-role-init(error-handler): fulfillRole@_ ->
 			ExprStm(
 	      Assign(
 	        ExprName(Id($[[relationName]_[roleName]]))
@@ -70,7 +70,7 @@ rules
 
 	de-def: Def(x) -> x
 
-  to-java(|entityName): Attribute(name, type, multiplicity, derivation) ->
+  to-java(error-handler|entityName): Attribute(name, type, multiplicity, derivation) ->
 		[ field
 	    , setter
 	    , MethodDec(
@@ -88,7 +88,7 @@ rules
 	      )
 	     ]
 		where
-			javaType := <to-java>type;
+			javaType := <to-java(error-handler)>type;
 			derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
 			if Normal() := derivationType then
 				field := <field>(name, javaType);
@@ -101,13 +101,13 @@ rules
 				getterExpr := Cond(
 	                      NotEq(ExprName(Id(name)), <null-value>type)
 	                    , ExprName(Id(name))
-	                    , <to-java>derivationExpr
+	                    , <to-java(error-handler)>derivationExpr
 	                    )
 			else if Derivation() := derivationType then
 				field := [];
 				setter := [];
 				Derivation(derivationExpr, _) := derivation;
-				getterExpr := <to-java>derivationExpr
+				getterExpr := <to-java(error-handler)>derivationExpr
 			end end end
 	
 	field: (name, javaType) ->
@@ -138,7 +138,7 @@ rules
       )
     )
 
-  to-java(|relationName): Role(EntityType(type), multiplicity, roleName) ->
+  to-java(error-handler|relationName): Role(EntityType(type), multiplicity, roleName) ->
 		[	FieldDec(
 	      [Public()]
 	    , ClassOrInterfaceType(TypeName(Id(type)), None())
@@ -275,10 +275,10 @@ rules
 		]
 				
 
-  to-java: String() -> "String"
-  to-java: Int()	-> "int"
+  to-java(error-handler): String() -> "String"
+  to-java(error-handler): Int()	-> "int"
 
-	to-java: AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+	to-java(error-handler): AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
 	
 	null-value: String() -> Lit(Null())
 	null-value: Int() -> Lit(Deci("0"))

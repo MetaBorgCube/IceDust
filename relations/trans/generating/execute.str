@@ -7,28 +7,28 @@ imports
 
 rules
 
-  to-java: Executable(executes) -> <map(to-java;syso)>executes
+  to-java(error-handler): Executable(executes) -> <map(to-java(error-handler);syso)>executes
   
-  to-java: AttributeName(Identifier(entityName), attributeName) ->
+  to-java(error-handler): AttributeName(Identifier(entityName), attributeName) ->
 		Invoke(
        Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
      , []
      )
 
-	to-java: NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
+	to-java(error-handler): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
 		Invoke(
       Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
-    , [<to-java>prevNav]
+    , [<to-java(error-handler)>prevNav]
     )
   
-  to-java: NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
+  to-java(error-handler): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
 		Invoke(
 		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
-		, [ <to-java>prevNav ]
+		, [ <to-java(error-handler)>prevNav ]
 		)
 		
 	//TODO: this rule is too general
-	to-java: Identifier(entityName) ->
+	to-java(error-handler): Identifier(entityName) ->
 		Invoke(
 		   Method(MethodName(Id("toCollection")))
 		 , [ExprName(Id(entityName))]

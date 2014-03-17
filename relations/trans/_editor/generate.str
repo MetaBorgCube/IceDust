@@ -69,7 +69,7 @@ rules // Build in steps
 
 			if <leq>(1, i) then
 				// log(|Info(),"Phase 1: Generating Java Code");
-				(javaFileName, javaCode) := <generate-java-step>(ast', path);
+				(javaFileName, javaCode) := <generate-java-step(error-handler)>(ast', path);
 				result := (javaFileName, javaCode);
 				//TODO: on fail do not continue to next step.
 				
@@ -102,7 +102,7 @@ rules // Build in steps
 		) := <analyze-one(|<language>, path, project-path)> desugaredAst	//TODO: should I call analyze-one ?
 
 	
-	generate-java-step = generate-java-code
+	generate-java-step(error-handler) = generate-java-code(error-handler)
 	
 	compile-java-step:
 		javaFileName -> classFileName
