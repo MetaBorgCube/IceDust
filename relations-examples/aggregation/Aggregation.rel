@@ -1,0 +1,12 @@
+module Aggregation
+
+model
+entity X {
+	val : Int = max( 2 :: 5 :: 3)
+}
+
+data
+X x{}
+
+execute
+x.val

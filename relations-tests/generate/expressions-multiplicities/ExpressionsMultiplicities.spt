@@ -21,3 +21,7 @@ setup Common [[
 ]]
 
 test Expressions Multiplicities generate-java [[ ]] build generate-java-test
+
+// test Expressions Multiplicities compile-java [[ ]] build compile-java-test
+// 
+// test Expressions Multiplicities execute-java [[ ]] build execute-java-test
