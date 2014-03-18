@@ -21,7 +21,7 @@ test Resolve role from Navigator [[
 		name : String = concat(this > [[in]]]Edge[out .name)
 	}
 	relation Edge{
-		Node * [[in]]
+		Node + [[in]]
 		Node * out
 	}
 ]] resolve #1 to #2

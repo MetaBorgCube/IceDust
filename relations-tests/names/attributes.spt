@@ -79,7 +79,7 @@ test Resolve attribute from Navigator.attribute [[
 		[[name]] : String = concat(this > in]Edge[out .[[name]])
 	}
 	relation Edge{
-		Node * in
+		Node + in
 		Node * out
 	}
 ]] resolve #2 to #1
