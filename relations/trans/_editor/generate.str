@@ -107,10 +107,17 @@ rules // Build in steps
 	
 	generate-java-step(error-handler) = generate-java-code(error-handler)
 	
+	copy-java-libraries: (javaFileName, project-path) -> None()
+		with
+			sourceDir := $[[project-path]/../relations/lib-java/src/lib];
+			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
+			<copy-dir>(sourceDir, targetDir)
+	
 	compile-java-step:
 		(javaFileName, project-path) -> (exitCode, classFileName)
 		with
-			exitCode:= <call-read-output> ("javac", [javaFileName]);
+			<copy-java-libraries>(javaFileName, project-path);
+			exitCode:= <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
 			<dirname;refresh-workspace-file> $[[project-path]/[javaFileName]]
 

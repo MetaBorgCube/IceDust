@@ -13,7 +13,8 @@ rules
     ModuleDesugared(moduleName, model, data, execute) ->
 			CompilationUnit(
 			  None()
-			, [ TypeImportDec(
+			, [ TypeImportOnDemandDec(PackageName([Id("lib"), Id("relations")]))
+			  ,	TypeImportDec(
 			      TypeName(
 			        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
 			      , Id("Collection")
@@ -56,8 +57,7 @@ rules
 	              executeJava
 	              ]
 	            )
-	          ),
-	          <to-collection>
+	          )
 	        ]
 	      )
 	    )

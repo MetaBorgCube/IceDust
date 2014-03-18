@@ -17,3 +17,6 @@
 *.class
 */*.class
 */*/*.class
+*/lib
+*/*/lib
+*/*/*/lib

@@ -43,7 +43,9 @@ rules
 			<not(file-exists;filemode;isdir)> path;
 			<dirname;ensure-dir> path;
 			<mkdir> path
-			
+
+rules
+
 	delete-file: a -> None()
 		with
 			if file-exists then remove-file end
@@ -51,3 +53,24 @@ rules
 	delete-files: (path, extension) -> None()
 		with
 			<readdir;filter(has-extension(|"class"));map(\a->$[[path]/[a]]\;delete-file)>path
+
+rules
+
+	copy-dir(|source, target): file -> None()
+		with
+			<copy-dir>($[[source]/[file]], $[[target]/[file]])
+			
+	copy-dir: (source, target) -> None()
+		where
+			<isdir> source
+		with
+			<ensure-dir> target;
+			files := <readdir> source;
+			<readdir;map(copy-dir(|source, target))> source
+			
+	copy-dir: (source, target) -> None()
+		where
+			<file-exists> source
+		with
+			<copy-file> (source, target)
+

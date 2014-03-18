@@ -30,7 +30,7 @@ rules
 	//TODO: this rule is too general
 	to-java(error-handler): Identifier(entityName) ->
 		Invoke(
-		   Method(MethodName(Id("toCollection")))
+		   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
 		 , [ExprName(Id(entityName))]
 		 )
 		 

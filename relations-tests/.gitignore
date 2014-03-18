@@ -1,4 +1,6 @@
 **/*.class
 **/*.java
+**/lib
 /*/*/*.class
 /*/*/*.java
+/*/*/lib
