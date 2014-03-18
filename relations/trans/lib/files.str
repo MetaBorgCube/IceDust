@@ -70,7 +70,11 @@ rules
 		where
 			file-exists
 		with
-			delete-file 
+			delete-file
+	
+	delete-dir: target -> None()
+		where
+			not(file-exists)
 	
 	delete-dir(|target) : file -> None()
 		with
