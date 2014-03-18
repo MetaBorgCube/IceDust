@@ -21,6 +21,7 @@ rules // builders
 			<delete-file>$[[<dirname>path]/project.index];
 			<delete-file>$[[<dirname>path]/project.task];
 			<delete-file>$[[<dirname>path]/index.project.aterm];
+			<delete-dir>$[[<dirname>path]/lib];
 			<delete-files>(<dirname>$[[project-path]/[path]],"class");
 			<dirname;refresh-workspace-file>$[[project-path]/[path]]
 
@@ -34,7 +35,9 @@ rules
 			<fputs> (content, fileDescriptor);
 			<fclose> fileDescriptor;
 			<refresh-workspace-file> fileName
-			
+
+rules
+
 	ensure-dir: path -> path
 		where
 			<file-exists;filemode;isdir> path
@@ -55,17 +58,31 @@ rules
 			<readdir;filter(has-extension(|"class"));map(\a->$[[path]/[a]]\;delete-file)>path
 
 rules
-
-	copy-dir(|source, target): file -> None()
+	
+	delete-dir: target -> None()
+		where
+			isdir
 		with
-			<copy-dir>($[[source]/[file]], $[[target]/[file]])
+			<readdir;map(delete-dir(|target))> target;
+			<rmdir> target
+
+	delete-dir: target -> None()
+		where
+			file-exists
+		with
+			delete-file 
+	
+	delete-dir(|target) : file -> None()
+		with
+			<delete-dir> $[[target]/[file]]
+
+rules
 			
 	copy-dir: (source, target) -> None()
 		where
 			<isdir> source
 		with
 			<ensure-dir> target;
-			files := <readdir> source;
 			<readdir;map(copy-dir(|source, target))> source
 			
 	copy-dir: (source, target) -> None()
@@ -74,3 +91,6 @@ rules
 		with
 			<copy-file> (source, target)
 
+	copy-dir(|source, target): file -> None()
+		with
+			<copy-dir>($[[source]/[file]], $[[target]/[file]])
