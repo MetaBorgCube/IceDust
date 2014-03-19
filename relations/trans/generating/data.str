@@ -4,12 +4,14 @@ imports
 
 	lib/java/Java
 	include/Relations
+	
+	trans/generating/expressions
 
 rules
 	
-  to-java(error-handler): DataDef(defs) -> <map(to-java(error-handler));concat> defs
+  to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
   
-  to-java(error-handler): EntityOrRelation(
+  to-java(err): EntityOrRelation(
         EntityType(entityType)
       , entityName
       , roleValues
@@ -37,10 +39,10 @@ rules
         roleValuesJava
         ]
 	with
-		attributeValuesJava := <map(to-java(error-handler|entityName))> attributeValues;
-		roleValuesJava			:= <map(to-java(error-handler|entityName, entityType));concat> roleValues
+		attributeValuesJava := <map(to-java(err|entityName))> attributeValues;
+		roleValuesJava			:= <map(to-java(err|entityName, entityType));concat> roleValues
 
-  to-java(error-handler|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
+  to-java(err|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
 	  	ExprStm(
         Invoke(
           Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))
@@ -48,9 +50,9 @@ rules
         )
 	    )
     where
-    	attributeValueJava := <to-java(error-handler)>attributeValue
+    	attributeValueJava := <exp-to-java(err)>attributeValue
     	
-  to-java(error-handler|entityName, entityType) :
+  to-java(err|entityName, entityType) :
   	RoleValue(RoleName(roleName), Identifier(otherEntityName)) ->
   	[	
   		ExprStm(
@@ -71,7 +73,4 @@ rules
 		      )
 		    )
 		 ]
-  
-
-  to-java(error-handler): String(value) -> Lit(String([Chars(value)]))
-  to-java(error-handler): Int(value) -> Lit(Deci(value))
+    

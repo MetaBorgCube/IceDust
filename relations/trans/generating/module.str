@@ -5,11 +5,10 @@ imports
 	lib/java/Java
 	include/Relations
 	trans/desugaring/desugar
-	trans/generating/runtime
 
 rules
 
-  to-java(error-handler):
+  to-java(err):
     ModuleDesugared(moduleName, model, data, execute) ->
 			CompilationUnit(
 			  None()
@@ -30,10 +29,10 @@ rules
 			, <concat>[[ mainClass ], modelJava]
 			)
 	where
-		mainClass := <main-class-to-java(error-handler)>ModuleDesugared(moduleName, model, data, execute);
-		modelJava := <to-java(error-handler)>model
+		mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
+		modelJava := <to-java(err)>model
 		
-  main-class-to-java(error-handler): ModuleDesugared(moduleName, model, data, execute) ->
+  main-class-to-java(err): ModuleDesugared(moduleName, model, data, execute) ->
 	  ClassDec(
 	      ClassDecHead([], Id(moduleName), None(), None(), None())
 	    , ClassBody(
@@ -62,9 +61,9 @@ rules
 	      )
 	    )
 	where
-		dataJava := <to-java(error-handler)>data;
+		dataJava := <to-java(err)>data;
 		if Executable(_) := execute then
-			executeJava := <to-java(error-handler)>execute
+			executeJava := <to-java(err)>execute
 		else
 			executeJava := []
 		end

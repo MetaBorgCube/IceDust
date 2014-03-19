@@ -7,35 +7,46 @@ imports
 
 rules // math
 
-	to-java(err): Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "plus")
-	to-java(err): Subtraction(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "minus")
-	to-java(err): Division(e1, e2) 			-> <lib-java-bin-exp(err)>(e1, e2, "div")
-	to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
-	to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
+	exp-to-java(err): Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "plus")
+	exp-to-java(err): Subtraction(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "minus")
+	exp-to-java(err): Division(e1, e2) 			-> <lib-java-bin-exp(err)>(e1, e2, "div")
+	exp-to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
+	exp-to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
 
 rules // aggregations
 	
-	to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
-	to-java(err): Min(e)								-> <lib-java-un-exp(err)>(e, "min")
-	to-java(err): Avg(e)								-> <lib-java-un-exp(err)>(e, "avg")
-	to-java(err): Concat(e)							-> <lib-java-un-exp(err)>(e, "concat")
+	exp-to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
+	exp-to-java(err): Min(e)								-> <lib-java-un-exp(err)>(e, "min")
+	exp-to-java(err): Avg(e)								-> <lib-java-un-exp(err)>(e, "avg")
+	exp-to-java(err): Concat(e)							-> <lib-java-un-exp(err)>(e, "concat")
 
 rules // multiplicities
 	
-	to-java(err): Merge(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "merge")
-	to-java(err): ChoiceLeft(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "choice")
-		 
+	exp-to-java(err): Merge(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "merge")
+	exp-to-java(err): ChoiceLeft(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "choice")
+
+rules // literals
+	
+  exp-to-java(err): String(value) 				-> Lit(String([Chars(value)]))
+  exp-to-java(err): Int(value) 						-> Lit(Deci(value))
+
 rules // lib expression calls
 	
-	lib-java-un-exp(error-handler): (exp, lib-call) ->
+	lib-java-un-exp(err): (exp, lib-call) ->
 		Invoke(
 		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
-		 , [<to-java(error-handler)>exp]
+		 , [<exp-to-java(err)>exp]
 		 )
 	
-	lib-java-bin-exp(error-handler): (exp1, exp2, lib-call) ->
+	lib-java-bin-exp(err): (exp1, exp2, lib-call) ->
 		Invoke(
 		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
-		 , [<to-java(error-handler)>exp1,
-		    <to-java(error-handler)>exp2]
+		 , [<exp-to-java(err)>exp1,
+		    <exp-to-java(err)>exp2]
 		 )
+		 
+rules
+	
+  exp-to-java(err): a -> []
+	where
+	  <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]

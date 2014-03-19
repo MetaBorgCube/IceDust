@@ -5,30 +5,32 @@ imports
 	lib/java/Java
 	include/Relations
 
+	trans/generating/expressions
+
 rules
 
-  to-java(error-handler): Executable(executes) -> <map(to-java(error-handler);syso)>executes
+  to-java(err): Executable(executes) -> <map(exp-to-java(err);syso)>executes
   
-  to-java(error-handler): AttributeName(Identifier(entityName), attributeName) ->
+  exp-to-java(err): AttributeName(Identifier(entityName), attributeName) ->
 		Invoke(
        Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
      , []
      )
 
-	to-java(error-handler): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
+	exp-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
 		Invoke(
       Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
-    , [<to-java(error-handler)>prevNav]
+    , [<exp-to-java(err)>prevNav]
     )
   
-  to-java(error-handler): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
+  exp-to-java(err): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
 		Invoke(
 		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
-		, [ <to-java(error-handler)>prevNav ]
+		, [ <exp-to-java(err)>prevNav ]
 		)
 		
 	//TODO: this rule is too general
-	to-java(error-handler): Identifier(entityName) ->
+	exp-to-java(err): Identifier(entityName) ->
 		Invoke(
 		   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
 		 , [ExprName(Id(entityName))]

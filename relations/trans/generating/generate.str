@@ -10,36 +10,34 @@ imports
 
 	trans/generating/data
 	trans/generating/execute
-	trans/generating/expressions
 	trans/generating/model
 	trans/generating/module
-	trans/generating/runtime
 
 rules // Builders
 	
-	generate-java-code(error-handler):
+	generate-java-code(err):
 	    (selected, path) -> (fileName, result)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
-			java-ast := <to-java(error-handler)> selected;
+			java-ast := <to-java(err)> selected;
 			result   := <pp-java-string> java-ast
 
 rules	// General Java generation rules
 
-  to-java(error-handler):
-    [_] -> <concat-strings> <map(to-java(error-handler))>
+  to-java(err):
+    [_] -> <concat-strings> <map(to-java(err))>
     
-  to-java(error-handler):
+  to-java(err):
     () -> ""
     
-  to-java(error-handler):
+  to-java(err):
   	None() -> ""
 
-  to-java(error-handler): Module(_,_,_,_) -> None()
+  to-java(err): Module(_,_,_,_) -> None()
   	where
-  		<error-handler> "Desugar before generating code."
+  		<err> "Desugar before generating code."
 	
-  to-java(error-handler): a -> []
+  to-java(err): a -> []
   	where
-		  <error-handler>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+		  <err>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
 

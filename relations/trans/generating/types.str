@@ -1,0 +1,12 @@
+module trans/generating/types
+
+imports
+
+	include/Relations
+	lib/java/Java
+
+rules // primitives
+	
+	type-to-java(err): String()	-> "String"
+  type-to-java(err): Int()			-> "Integer"
+ 
