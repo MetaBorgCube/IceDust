@@ -11,31 +11,6 @@ rules
 
   to-java(err): Executable(executes) -> <map(exp-to-java(err);syso)>executes
   
-  exp-to-java(err): AttributeName(Identifier(entityName), attributeName) ->
-		Invoke(
-       Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
-     , []
-     )
-
-	exp-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
-		Invoke(
-      Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
-    , [<exp-to-java(err)>prevNav]
-    )
-  
-  exp-to-java(err): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
-		Invoke(
-		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
-		, [ <exp-to-java(err)>prevNav ]
-		)
-		
-	//TODO: this rule is too general
-	exp-to-java(err): Identifier(entityName) ->
-		Invoke(
-		   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
-		 , [ExprName(Id(entityName))]
-		 )
-		 
 	syso: javaExpr ->
 		ExprStm(
 		  Invoke(

@@ -1,0 +1,22 @@
+module trans/generating/expressions-navigators
+
+imports
+
+	include/Relations
+	lib/java/Java
+	
+	trans/generating/expressions
+
+rules 
+
+	nav-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
+		Invoke(
+      Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
+    , [<exp-to-java(err)>prevNav]
+    )
+  
+  nav-to-java(err): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
+		Invoke(
+		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
+		, [ <exp-to-java(err)>prevNav ]
+		)

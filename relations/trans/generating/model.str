@@ -276,11 +276,6 @@ rules
         )
       )
 		]
-				
-
-
-
-	to-java(err): AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
 	
 	null-value: String() -> Lit(Null())
 	null-value: Int() -> Lit(Deci("0"))

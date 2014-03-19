@@ -1,0 +1,25 @@
+module trans/generating/expressions-references
+
+imports
+
+	include/Relations
+	lib/java/Java
+	
+	trans/generating/expressions
+
+rules 
+
+  ref-to-java(err): AttributeName(Identifier(entityName), attributeName) ->
+		Invoke(
+       Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
+     , []
+     )
+     
+	ref-to-java(err): AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+
+	//TODO: this rule is too general
+	ref-to-java(err): Identifier(entityName) ->
+		Invoke(
+		   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
+		 , [ExprName(Id(entityName))]
+		 )

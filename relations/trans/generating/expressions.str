@@ -5,6 +5,14 @@ imports
 	include/Relations
 	lib/java/Java
 
+	trans/generating/expressions-navigators
+	trans/generating/expressions-references
+
+rules
+	
+	exp-to-java(err) = nav-to-java(err)
+	exp-to-java(err) = ref-to-java(err)
+
 rules // math
 
 	exp-to-java(err): Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "plus")
