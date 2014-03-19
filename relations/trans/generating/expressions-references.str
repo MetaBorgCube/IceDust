@@ -17,7 +17,8 @@ rules // attributes of expressions
 	ref-to-java(err): AttributeName(exp, name) -> result
 		where
 			One()       := <get-multiplicity>exp <+
-			ZeroOrOne() := <get-multiplicity>exp
+			ZeroOrOne() := <get-multiplicity>exp <+
+			This()      := exp //an un-typed This(): unqualified attribute reference
 		with
 			result :=
 				Invoke(
@@ -48,8 +49,10 @@ rules // direct references
 		where
 			NablNsEntity() := <nabl-uri;nabl-uri-namespace>entityName
 				 
-	ref-to-java(err): Identifier(name) -> <ref-to-java(err)>AttributeName(This(), name) //forward to this.name
+	ref-to-java(err): Identifier(name) -> result
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
-
+		with
+			result := <ref-to-java(err)>AttributeName(This(), name) //forward to this.name
+			
 	ref-to-java(err): This() -> This()
