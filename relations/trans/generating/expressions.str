@@ -5,10 +5,24 @@ imports
 	include/Relations
 	lib/java/Java
 
-rules
+rules // math
 
-	to-java(error-handler): Addition(exp1, exp2)				-> Plus(	<to-java(error-handler)>exp1, <to-java(error-handler)>exp2)
-	to-java(error-handler): Subtraction(exp1, exp2)		-> Minus(	<to-java(error-handler)>exp1, <to-java(error-handler)>exp2)
-	to-java(error-handler): Division(exp1, exp2) 			-> Div(		<to-java(error-handler)>exp1, <to-java(error-handler)>exp2)
-	to-java(error-handler): Modulo(exp1, exp2) 				-> Remain(<to-java(error-handler)>exp1, <to-java(error-handler)>exp2)
-	to-java(error-handler): Multiplication(exp1, exp2)	-> Mul(		<to-java(error-handler)>exp1, <to-java(error-handler)>exp2)
+	to-java(err): Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "plus")
+	to-java(err): Subtraction(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "minus")
+	to-java(err): Division(e1, e2) 			-> <lib-java-bin-exp(err)>(e1, e2, "div")
+	to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
+	to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
+
+rules // multiplicities
+	
+	to-java(err): Merge(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "merge")
+	to-java(err): ChoiceLeft(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "choice")
+		 
+rules // lib expression calls
+	
+	lib-java-bin-exp(error-handler): (exp1, exp2, lib-call) ->
+		Invoke(
+		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
+		 , [<to-java(error-handler)>exp1,
+		    <to-java(error-handler)>exp2]
+		 )
