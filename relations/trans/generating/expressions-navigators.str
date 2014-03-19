@@ -5,6 +5,7 @@ imports
 	include/Relations
 	lib/java/Java
 	
+	trans/naming/names
 	trans/generating/expressions
 
 rules 
@@ -12,11 +13,30 @@ rules
 	nav-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(relationName)) ->
 		Invoke(
       Method(MethodName(AmbName(Id(relationName)), Id($[[roleInName]_in])))
-    , [<exp-to-java(err)>prevNav]
+    , [<wrap-prev-to-java(err)>prevNav]
     )
   
   nav-to-java(err): NavigateOut(prevNav, _, EntityType(relationName), RoleName(roleOutName)) ->
 		Invoke(
 		  Method(MethodName(AmbName(Id(relationName)), Id($[[roleOutName]_out])))
-		, [ <exp-to-java(err)>prevNav ]
+		, [ <wrap-prev-to-java(err)>prevNav ]
 		)
+
+rules
+	
+	wrap-prev-to-java(err): prevNav -> result
+		where
+			One() := <get-multiplicity>prevNav <+
+			ZeroOrOne() := <get-multiplicity>prevNav
+		with
+			result :=
+				Invoke(
+				   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
+				 , [<exp-to-java(err)>prevNav]
+				 )
+	
+	wrap-prev-to-java(err): prevNav -> <exp-to-java(err)>prevNav
+		where
+			OneOrMore() := <get-multiplicity>prevNav <+
+			ZeroOrMore() := <get-multiplicity>prevNav
+			
