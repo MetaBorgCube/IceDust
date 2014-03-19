@@ -1,25 +1,36 @@
 module trans/generating/expressions-references
 
 imports
+	
+	lib/nabl/interface
+	lib/nabl/uri
 
 	include/Relations
 	lib/java/Java
 	
+	trans/naming/names
 	trans/generating/expressions
 
-rules 
-
-  ref-to-java(err): AttributeName(Identifier(entityName), attributeName) ->
-		Invoke(
-       Method(MethodName(AmbName(Id(entityName)), Id($[get_[attributeName]])))
-     , []
-     )
+rules // attributes of expressions
      
-	ref-to-java(err): AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
+	ref-to-java(err): AttributeName(exp, name) ->
+	Invoke(
+		Method(
+	      <exp-to-java(err)>exp
+	    , None()
+	    , Id($[get_[name]])
+	    )
+	  , []
+	)
 
-	//TODO: this rule is too general
-	ref-to-java(err): Identifier(entityName) ->
-		Invoke(
-		   Method(MethodName(AmbName(Id("Expressions")), Id("toCollection")))
-		 , [ExprName(Id(entityName))]
-		 )
+rules // direct references
+
+	ref-to-java(err): Identifier(entityName) -> ExprName(Id(entityName))
+		where
+			NablNsEntity() := <nabl-uri;nabl-uri-namespace>entityName
+				 
+	ref-to-java(err): Identifier(name) -> <ref-to-java(err)>AttributeName(This(), name) //forward to this.name
+		where
+			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
+
+	ref-to-java(err): This() -> This()
