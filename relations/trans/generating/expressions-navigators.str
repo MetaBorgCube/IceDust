@@ -26,8 +26,8 @@ rules
 	
 	wrap-prev-to-java(err): prevNav -> result
 		where
-			One() := <get-multiplicity>prevNav <+
-			ZeroOrOne() := <get-multiplicity>prevNav
+			This() 				:= prevNav <+
+			Identifier(_) := prevNav
 		with
 			result :=
 				Invoke(
@@ -36,7 +36,3 @@ rules
 				 )
 	
 	wrap-prev-to-java(err): prevNav -> <exp-to-java(err)>prevNav
-		where
-			OneOrMore() := <get-multiplicity>prevNav <+
-			ZeroOrMore() := <get-multiplicity>prevNav
-			
