@@ -46,6 +46,3 @@ type functions
 			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or																																												OneOrMore() => mu
 
-	// mu-or-join-backup2:		//backup function as long as dep-fails do not work yet in TS
-	// 	(x-mu, y-mu) -> mu
-	// 	where x-mu => mu

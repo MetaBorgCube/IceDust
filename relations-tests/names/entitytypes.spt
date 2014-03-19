@@ -67,5 +67,5 @@ test Resolve invalid Navigation fails [[
 	User u{}
 	execute
 	u > User][[OwnsXX]][Book
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/TS/1
 
