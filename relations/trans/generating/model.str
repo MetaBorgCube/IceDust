@@ -89,6 +89,7 @@ rules
 	        	[Return(Some(getterExpr))]
 	        )
 	      )
+	    , getter-multi 
 	     ]
 		where
 			javaType := <type-to-java(err)>type;
@@ -111,7 +112,8 @@ rules
 				setter := [];
 				Derivation(derivationExpr, _) := derivation;
 				getterExpr := <exp-to-java(err)>derivationExpr
-			end end end
+			end end end;
+			getter-multi := <getter-multi>(name, javaType, entityName)
 	
 	field: (name, javaType) ->
 				FieldDec(
@@ -140,6 +142,70 @@ rules
          )]
       )
     )
+    
+  getter-multi: (name, javaType, entityName) ->
+		MethodDec(
+		  MethodDecHead(
+		    [Public(), Static()]
+		  , None()
+		  , ClassOrInterfaceType(
+		      TypeName(Id("Collection"))
+		    , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(javaType)), None())]))
+		    )
+		  , Id($[get_[name]])
+		  , [ Param(
+		        []
+		      , ClassOrInterfaceType(
+		          TypeName(Id("Collection"))
+		        , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(entityName)), None())]))
+		        )
+		      , Id("c")
+		      )
+		    ]
+		  , None()
+		  )
+		, Block(
+		    [ LocalVarDecStm(
+		        LocalVarDec(
+		          []
+		        , ClassOrInterfaceType(
+		            TypeName(Id("Collection"))
+		          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(javaType)), None())]))
+		          )
+		        , [ VarDec(
+		              Id("i")
+		            , Invoke(
+		                Method(MethodName(AmbName(Id("Expressions")), Id("emptyCollection")))
+		              , []
+		              )
+		            )
+		          ]
+		        )
+		      )
+		    , ForEach(
+		        Param(
+		          []
+		        , ClassOrInterfaceType(TypeName(Id(entityName)), None())
+		        , Id("n")
+		        )
+		      , ExprName(Id("c"))
+		      , Block(
+		          [ ExprStm(
+		              Invoke(
+		                Method(MethodName(AmbName(Id("i")), Id("add")))
+		              , [Invoke(
+		                   Method(MethodName(AmbName(Id("n")), Id($[get_[name]])))
+		                 , []
+		                 )]
+		              )
+		            )
+		          ]
+		        )
+		      )
+		    , Return(Some(ExprName(Id("i"))))
+		    ]
+		  )
+		)
 
   to-java(err|relationName): Role(EntityType(type), multiplicity, roleName) ->
 		[	FieldDec(
@@ -278,4 +344,4 @@ rules
 		]
 	
 	null-value: String() -> Lit(Null())
-	null-value: Int() -> Lit(Deci("0"))
+	null-value: Int() -> Lit(Null())

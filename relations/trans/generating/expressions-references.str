@@ -4,6 +4,7 @@ imports
 	
 	lib/nabl/interface
 	lib/nabl/uri
+	lib/types/query
 
 	include/Relations
 	lib/java/Java
@@ -13,15 +14,33 @@ imports
 
 rules // attributes of expressions
      
-	ref-to-java(err): AttributeName(exp, name) ->
-	Invoke(
-		Method(
-	      <exp-to-java(err)>exp
-	    , None()
-	    , Id($[get_[name]])
-	    )
-	  , []
-	)
+	ref-to-java(err): AttributeName(exp, name) -> result
+		where
+			One()       := <get-multiplicity>exp <+
+			ZeroOrOne() := <get-multiplicity>exp
+		with
+			result :=
+				Invoke(
+					Method(
+				      <exp-to-java(err)>exp
+				    , None()
+				    , Id($[get_[name]])
+				    )
+				  , []
+				)
+
+	ref-to-java(err): AttributeName(exp, name) -> result
+		where
+			ZeroOrMore():= <get-multiplicity>exp <+
+			OneOrMore() := <get-multiplicity>exp
+		with
+			exp-ty := <get-type>exp
+		with
+			result :=
+				Invoke(
+				  Method(MethodName(AmbName(Id(exp-ty)), Id($[get_[name]])))
+				, [ <exp-to-java(err)>exp ]
+				)
 
 rules // direct references
 
