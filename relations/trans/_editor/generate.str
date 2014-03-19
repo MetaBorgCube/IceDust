@@ -5,13 +5,13 @@ imports
 	lib/editor-common.generated
 	lib/index/-
 	lib/task/-
-	lib/analysis/single
 	
 	trans/generating/generate
 	trans/lib/files
 	
 	include/Relations
 	trans/desugaring/desugar
+	trans/_editor/analysis
 
 rules // Builders
 	
@@ -88,22 +88,9 @@ rules // Build in steps
 				
 			end end end end end
 	
-	analyze-ast-step: (ast, path, project-path) -> (analyzedAst, error*)
-	 with
-  	desugaredAst := <desugar-all> ast;
-  	(
-    	analyzedAst
-		, (error*, warning*, note*)
-		, removed-entry*
-		, added-entry*
-		, removed-task*
-		, added-task*
-		, invalidated-task*
-		, evaluated-task*
-		, skipped-task*
-		, unevaluated-task*
-		) := <analyze-one(|<language>, path, project-path)> desugaredAst	//TODO: should I call analyze-one ?
-
+	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
+		with
+			(analyzed-ast, [error*|_], warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
 	generate-java-step(error-handler) = generate-java-code(error-handler)
 	
