@@ -13,12 +13,25 @@ rules // math
 	to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
 	to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
 
+rules // aggregations
+	
+	to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
+	to-java(err): Min(e)								-> <lib-java-un-exp(err)>(e, "min")
+	to-java(err): Avg(e)								-> <lib-java-un-exp(err)>(e, "avg")
+	to-java(err): Concat(e)							-> <lib-java-un-exp(err)>(e, "concat")
+
 rules // multiplicities
 	
 	to-java(err): Merge(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "merge")
 	to-java(err): ChoiceLeft(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "choice")
 		 
 rules // lib expression calls
+	
+	lib-java-un-exp(error-handler): (exp, lib-call) ->
+		Invoke(
+		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
+		 , [<to-java(error-handler)>exp]
+		 )
 	
 	lib-java-bin-exp(error-handler): (exp1, exp2, lib-call) ->
 		Invoke(

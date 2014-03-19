@@ -68,7 +68,7 @@ public class Expressions {
 	}
 
 	// math expressions
-	
+
 	public static String plus(String i, String j) {
 		return i != null && j != null ? i + j : null;
 	}
@@ -92,6 +92,56 @@ public class Expressions {
 	public static Integer div(Integer i, Integer j) {
 		return i != null && j != null && j != 0 ? i / j : null;
 	}
-	
-	// TODO: aggregation expressions
+
+	// aggregation expressions
+
+	public static Integer avg(Collection<Integer> c) {
+		if (c.size() == 0)
+			return null;
+		int sum = 0;
+		for (int i : c) {
+			sum += i;
+		}
+		return sum / c.size();
+	}
+
+	public static Integer sum(Collection<Integer> c) {
+		if (c.size() == 0)
+			return null;
+		int sum = 0;
+		for (int i : c) {
+			sum += i;
+		}
+		return sum;
+	}
+
+	public static Integer max(Collection<Integer> c) {
+		if (c.size() == 0)
+			return null;
+		int max = Integer.MIN_VALUE;
+		for (int i : c) {
+			max = Math.max(max, i);
+		}
+		return max;
+	}
+
+	public static Integer min(Collection<Integer> c) {
+		if (c.size() == 0)
+			return null;
+		int min = Integer.MAX_VALUE;
+		for (int i : c) {
+			min = Math.min(min, i);
+		}
+		return min;
+	}
+
+	public static String concat(Collection<String> c) {
+		if (c.size() == 0)
+			return null;
+		StringBuffer sb = new StringBuffer();
+		for (String s : c) {
+			sb.append(s);
+		}
+		return sb.toString();
+	}
 }
