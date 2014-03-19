@@ -27,7 +27,7 @@ type rules
 	NavigateIn(prev, nav, into, EntityType(rel-ty)) has multiplicity mu
 	where prev has multiplicity prev-mu
 		and definition of into has multiplicity into-mu
-		and <mu-or-join-backup> (prev-mu, into-mu) => mu
+		and <mu-or-join> (prev-mu, into-mu) => mu
 	
 	NavigateOut(prev, nav, EntityType(rel-ty), out) : out-ty
 	where	out		: out-ty
@@ -48,10 +48,6 @@ type functions
 			 or x-mu == OneOrMore() and y-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or																																												OneOrMore() => mu
-
-	mu-or-join-backup:		//backup function as long as dep-fails do not work yet in TS
-		(x-mu, y-mu) -> mu
-		where y-mu => mu
 		
 
 type rules // give errors on enties in places where relations are expected

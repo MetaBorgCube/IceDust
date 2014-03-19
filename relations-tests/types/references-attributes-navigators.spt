@@ -33,7 +33,7 @@ test multiplicity of ref navigator.attribute ZeroOrOne One [[
 test multiplicity of ref navigator.attribute One ZeroOrOne [[
 	model
 	entity Node{
-		i : Int = [[this>in]Edge[out.j]]
+		i : Int = [[this>in]Edge[out.j]] <+ 3
 		j : Int ?
 	}
 	relation Edge{

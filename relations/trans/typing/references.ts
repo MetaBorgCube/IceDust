@@ -19,7 +19,7 @@ type rules
 	AttributeName(expr, attr) has multiplicity mu
 	where	expr has multiplicity expr-mu
 		and definition of attr has multiplicity attr-mu
-		and <mu-or-join-backup2> (expr-mu, attr-mu) => mu
+		and <mu-or-join> (expr-mu, attr-mu) => mu
 
 	RoleName(r) : r-ty
 	where definition of r : r-ty
@@ -46,6 +46,6 @@ type functions
 			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
 			 or																																												OneOrMore() => mu
 
-	mu-or-join-backup2:		//backup function as long as dep-fails do not work yet in TS
-		(x-mu, y-mu) -> mu
-		where x-mu => mu
+	// mu-or-join-backup2:		//backup function as long as dep-fails do not work yet in TS
+	// 	(x-mu, y-mu) -> mu
+	// 	where x-mu => mu
