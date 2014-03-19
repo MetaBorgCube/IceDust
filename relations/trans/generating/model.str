@@ -276,7 +276,7 @@ rules
 				
 
   to-java(error-handler): String() -> "String"
-  to-java(error-handler): Int()	-> "int"
+  to-java(error-handler): Int()	-> "Integer"
 
 	to-java(error-handler): AttributeName(This(), name) -> Invoke(Method(MethodName(Id($[get_[name]]))), [])
 	

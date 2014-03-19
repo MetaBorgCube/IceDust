@@ -13,7 +13,8 @@ public class Expressions {
 
 	public static <E> Collection<E> toCollection(E e) {
 		Collection<E> collection = emptyCollection();
-		collection.add(e);
+		if (e != null)
+			collection.add(e);
 		return collection;
 	}
 
