@@ -46,6 +46,7 @@ relation AssignmentLeaf{
 	Assignment 1 child
 }
 
+
 data
 Student alice{
 	name = "Alice"
@@ -54,9 +55,7 @@ Student bob{
 	name = "Bob"
 }
 
-Course compiler{
-	
-}
+Course compiler{}
 
 Enrollment e1{
 	Student: alice
@@ -67,8 +66,91 @@ Enrollment e2{
 	Course : compiler
 }
 
+AssignmentGroup comp{}
+
+CourseAssignments comp2{
+	Course: compiler
+	AssignmentGroup : comp
+}
+
+AssignmentGroup practical{}
+
+AssignmentTree prac{
+	parent:comp
+	child: practical
+}
+
+AssignmentGroup milestone1{}
+
+AssignmentTree mile1{
+	parent: practical
+	child : milestone1
+}
+
+Assignment assignment11{}
+
+AssignmentLeaf as11{
+	parent: milestone1
+	child : assignment11
+}
+
+Assignment assignment12{}
+
+AssignmentLeaf as12{
+	parent: milestone1
+	child : assignment12
+}
+
+Assignment assignment13{}
+
+AssignmentLeaf as13{
+	parent: milestone1
+	child : assignment13
+}
+
+AssignmentGroup milestone2{}
+
+AssignmentTree mile2{
+	parent: practical
+	child : milestone2
+}
+
+Assignment assignment21{}
+
+AssignmentLeaf as21{
+	parent: milestone2
+	child : assignment21
+}
+
+Assignment assignment22{}
+
+AssignmentLeaf as22{
+	parent: milestone2
+	child : assignment22
+}
+
+Assignment assignment23{}
+
+AssignmentLeaf as23{
+	parent: milestone2
+	child : assignment23
+}
+
+Submission s{
+	Student : alice
+	Assignment : assignment11
+	grade = 7
+}
 
 execute
-"hello world"
+"The average grade of all submissions"
+
+comp > parent]AssignmentTree[child
+comp > parent]AssignmentTree[child > parent]AssignmentTree[child
+comp > parent]AssignmentTree[child > parent]AssignmentTree[child . avgGrade
+comp > parent]AssignmentTree[child > parent]AssignmentLeaf[child . avgGrade
+comp > parent]AssignmentTree[child . avgGrade
+comp > parent]AssignmentTree[child . avgGrade :: comp > parent]AssignmentLeaf[child . avgGrade
+compiler.avgGrade
 
 
