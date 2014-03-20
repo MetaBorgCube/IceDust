@@ -190,16 +190,30 @@ rules
 		        )
 		      , ExprName(Id("c"))
 		      , Block(
-		          [ ExprStm(
-		              Invoke(
-		                Method(MethodName(AmbName(Id("i")), Id("add")))
-		              , [Invoke(
-		                   Method(MethodName(AmbName(Id("n")), Id($[get_[name]])))
-		                 , []
-		                 )]
-		              )
-		            )
-		          ]
+					    [ LocalVarDecStm(
+					        LocalVarDec(
+					          []
+					        , ClassOrInterfaceType(TypeName(Id(javaType)), None())
+					        , [ VarDec(
+					              Id("v")
+					            , Invoke(
+					                Method(MethodName(AmbName(Id("n")), Id($[get_[name]])))
+					              , []
+					              )
+					            )
+					          ]
+					        )
+					      )
+					    , If(
+					        NotEq(ExprName(Id("v")), Lit(Null()))
+					      , ExprStm(
+					          Invoke(
+					            Method(MethodName(AmbName(Id("i")), Id("add")))
+					          , [ExprName(Id("v"))]
+					          )
+					        )
+					      )
+					    ]
 		        )
 		      )
 		    , Return(Some(ExprName(Id("i"))))
