@@ -1,0 +1,74 @@
+module weblab
+
+model
+entity Student{
+	name : String
+}
+
+entity Course{
+	avgGrade : Int? = this > Course]CourseAssignments[AssignmentGroup . avgGrade
+}
+
+relation Enrollment{
+	Course *
+	Student *
+}
+
+relation CourseAssignments{
+	Course 1
+	AssignmentGroup ?
+}
+
+entity Assignment{
+	avgGrade : Int ? = avg( this > Assignment]Submission . grade)
+}
+
+relation Submission{
+	Student *
+	Assignment *
+	grade : Int
+}
+
+entity AssignmentGroup {
+	avgGrade : Int? = avg(
+		this > parent]AssignmentTree[child . avgGrade ::
+		this > parent]AssignmentLeaf[child . avgGrade
+	)
+}
+
+relation AssignmentTree{
+	AssignmentGroup * parent
+	AssignmentGroup * child
+}
+
+relation AssignmentLeaf{
+	AssignmentGroup * parent
+	Assignment 1 child
+}
+
+data
+Student alice{
+	name = "Alice"
+}
+Student bob{
+	name = "Bob"
+}
+
+Course compiler{
+	
+}
+
+Enrollment e1{
+	Student: alice
+	Course : compiler
+}
+Enrollment e2{
+	Student: bob
+	Course : compiler
+}
+
+
+execute
+"hello world"
+
+
