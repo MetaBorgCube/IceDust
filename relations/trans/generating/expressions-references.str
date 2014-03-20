@@ -13,7 +13,44 @@ imports
 	trans/generating/expressions
 
 rules // attributes of expressions
-     
+
+	//wrap navigator result in .iterator().next() if it has multiplicity One()
+	//TODO: make navigators in java get correct Multiplicities
+	ref-to-java(err): AttributeName(exp, name) -> result
+		where
+			(
+				One()       := <get-multiplicity>exp <+
+				ZeroOrOne() := <get-multiplicity>exp
+			);
+			(
+				NavigateIn(_,_,_,_)  := exp <+
+				NavigateOut(_,_,_,_) := exp
+			)
+		with
+			result :=
+				Invoke(
+					Method(
+						Invoke(
+		          Method(
+		            Invoke(
+		              Method(
+		                <exp-to-java(err)>exp
+		              , None()
+		              , Id("iterator")
+		              )
+		            , []
+		            )
+		          , None()
+		          , Id("next")
+		          )
+		        , []
+		        )
+			    , None()
+			    , Id($[get_[name]])
+			    )
+			  , []
+				)
+
 	ref-to-java(err): AttributeName(exp, name) -> result
 		where
 			One()       := <get-multiplicity>exp <+
