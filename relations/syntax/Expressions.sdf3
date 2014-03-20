@@ -54,6 +54,11 @@ templates //exp (references)
 template options
 context-free priorities
 	{ left:
+		Exp.NavigateInOut
+		Exp.NavigateIn
+		Exp.NavigateOut
+	} >	
+	{ left:
 		Exp.AttributeName
 	} >	
 	{ left:
