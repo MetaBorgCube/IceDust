@@ -136,21 +136,44 @@ AssignmentLeaf as23{
 	child : assignment23
 }
 
+Assignment exam{}
+
+AssignmentLeaf exam1{
+	parent: comp
+	child : exam
+}
+
 Submission s{
 	Student : alice
 	Assignment : assignment11
 	grade = 7
 }
 
+Submission s2{
+	Student : alice
+	Assignment : assignment12
+	grade = 9
+}
+
+Submission s3{
+	Student : alice
+	Assignment : assignment13
+	grade = 6
+}
+
+Submission s4{
+	Student : alice
+	Assignment : exam
+	grade = 6
+}
+
+Submission s5{
+	Student : bob
+	Assignment : exam
+	grade = 10
+}
+
+
 execute
 "The average grade of all submissions"
-
-comp > parent]AssignmentTree[child
-comp > parent]AssignmentTree[child > parent]AssignmentTree[child
-comp > parent]AssignmentTree[child > parent]AssignmentTree[child . avgGrade
-comp > parent]AssignmentTree[child > parent]AssignmentLeaf[child . avgGrade
-comp > parent]AssignmentTree[child . avgGrade
-comp > parent]AssignmentTree[child . avgGrade :: comp > parent]AssignmentLeaf[child . avgGrade
 compiler.avgGrade
-
-
