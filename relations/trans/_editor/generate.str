@@ -96,7 +96,7 @@ rules // Build in steps
 	
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
-			sourceDir := $[[project-path]/../relations/lib-java/src/lib];
+			sourceDir := $[[<plugin-path>]/lib-java/src/lib];
 			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir)
 	
