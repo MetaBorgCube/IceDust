@@ -7,9 +7,9 @@ imports
 
 templates //exp (misc)
 
-	Exp 									= <(<Exp>)> 					{bracket}
+	Exp 									= <(<Exp>)> {bracket}
 
-templates //exp (math) : PrimitiveType, 0-*
+templates //exp (math) : PrimitiveType, [0-1]
 
 	Exp.Multiplication		=	<<Exp> * <Exp>> {left}
 	Exp.Division					=	<<Exp> / <Exp>> {left}
@@ -22,8 +22,23 @@ templates //exp (aggregations)
 	Exp.Min								= <min ( <Exp> )>
 	Exp.Max								= <max ( <Exp> )>
 	Exp.Avg								= <avg ( <Exp> )>
+	Exp.Sum								= <sum ( <Exp> )>
 	Exp.Concat						= <concat ( <Exp> )>
-	
+	Exp.Count							= <count ( <Exp> )>
+
+templates //exp (logic)
+
+	Exp.Not								=	<!<Exp>> {right}
+	Exp.LessThan					= <<Exp> \< <Exp>> {left}
+	Exp.LessThanEqual			=	<<Exp> \<= <Exp>> {left}
+	Exp.GreaterThan				= <<Exp> \> <Exp>> {left}
+	Exp.GreaterThanEqual	=	<<Exp> \>= <Exp>> {left}
+	Exp.Equal 						= <<Exp> == <Exp>> {left}
+	Exp.Inequal 					= <<Exp> != <Exp>> {left}
+	Exp.And								= <<Exp> && <Exp>> {left}
+	Exp.Or								= <<Exp> || <Exp>> {left}
+	Exp.TernaryConditional= <<Exp> ? <Exp> : <Exp>> {right}
+
 templates //exp (multiplicities)
 
 	Exp.Merge							=	<<Exp> :: <Exp>> {left}
@@ -34,6 +49,8 @@ templates //exp : PrimitiveType, 1
 	Exp										= <<LitVal>>
 	LitVal.String 				= <"<STRING>">
 	LitVal.Int			 			= <<INT>>
+	LitVal.True						= <true>
+	LitVal.False					= <false>
 
 templates //exp : EntityType, 0-*
 
@@ -61,6 +78,9 @@ context-free priorities
 	{ left:
 		Exp.AttributeName
 	} >	
+	{ right:
+		Exp.Not
+	} >
 	{ left:
 		Exp.Multiplication
 		Exp.Division
@@ -69,6 +89,25 @@ context-free priorities
 	{ left:
 		Exp.Addition
 		Exp.Subtraction
+	} >
+	{ left:
+		Exp.LessThan
+		Exp.LessThanEqual
+		Exp.GreaterThan
+		Exp.GreaterThanEqual
+	} >
+	{ left:
+		Exp.Equal
+		Exp.Inequal
+	} >
+	{ left:
+		Exp.And
+	} >
+	{ left:
+		Exp.Or
+	} >
+	{ right:
+		Exp.TernaryConditional
 	} >
 	{ left:
 		Exp.Merge

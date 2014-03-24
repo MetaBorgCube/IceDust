@@ -20,14 +20,18 @@ lexical syntax // Keywords
 
 	Keyword = "avg"
 	Keyword = "concat"
+	Keyword = "count"
 	Keyword = "entity"
+	Keyword = "false"
+	Keyword = "Int"
 	Keyword = "max"
 	Keyword = "min"
 	Keyword = "relationship"
-	Keyword = "this"
 	Keyword = "String"
-	Keyword = "Int"
-
+	Keyword = "sum"
+	Keyword = "this"
+	Keyword = "true"
+	
 
 lexical restrictions
 

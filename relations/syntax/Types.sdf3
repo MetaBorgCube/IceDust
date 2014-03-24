@@ -4,5 +4,6 @@ imports
 
 templates
 
+PrimitiveType.Boolean	= <Boolean>
 PrimitiveType.Int			= <Int>
 PrimitiveType.String	= <String>
