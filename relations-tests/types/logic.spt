@@ -28,11 +28,11 @@ test type of eq	String [[ [["a" == "b"]] ]] run get-type to Boolean
 
 test type of inline if [[ [[true?6:3]] ]] run get-type to Int
 test type of inline if String [[ [[true?"a":"b"]] ]] run get-type to String
-test type of inline if Boolean [[ [[true?false:false]] ]] run get-type to String
+test type of inline if Boolean [[ [[true?false:false]] ]] run get-type to Boolean
 
 test error on Boolean and Int  [[ true && [[3]] ]] 1 error
-test error on String gt Int [[ [["b"]] > 4 ]] 1 error
-test error on String inline if[[ [["a"]] ? 3 : 4 ]] 1 error
+test error on String gt Int [[ "b" > [[4]] ]] 1 error
+test error on String inline if[[ [["a"]] ? 3 : 4 ]] 1 error // http://yellowgrass.org/issue/TS/6
 test error on inline if String Int [[ true ? "a" : [[4]] ]] 1 error
 
 
@@ -42,7 +42,6 @@ test multiplicity of One inline if One One[[ [[true?4:5]] ]] run get-multiplicit
 
 test multiplicity of One and ZeroOrOne					[[ [[true && x.b]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One eq ZeroOrOne 					[[ [["s" == x.s]] ]] run get-multiplicity to ZeroOrOne
-test multiplicity of ZeroOrOne minus One				[[ [[x.b - 5]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of ZeroOrOne inline if One One[[ [[x.b ? 4 : 6]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One inline if ZeroOrOne One[[ [[false ? x.s : "a"]] ]] run get-multiplicity to ZeroOrOne
 

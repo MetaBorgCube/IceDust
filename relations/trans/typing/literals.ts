@@ -18,3 +18,9 @@ type rules
 	
 	String(x) : String()
 	String(x) has multiplicity One()
+	
+	True() : Boolean()
+	True() has multiplicity One()
+	
+	False() : Boolean()
+	False() has multiplicity One()
