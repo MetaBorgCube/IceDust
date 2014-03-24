@@ -1,6 +1,14 @@
 module Relations-Completions
 
-imports Relations-Completions.generated
+imports 
+	Common.generated
+	Data.generated
+	Execute.generated
+	Expressions.generated
+	Model
+	Modules.generated
+	Types.generated
+
 
 completions
                                                                    
@@ -13,14 +21,14 @@ completions
                                              
   // Syntax completion:                      
                                              
-  completion template Start :
-    "module " <m> (blank)  
-                                             
-  completion template Definition :
-    "entity " <e> " {" (cursor) "}" (blank)  
-                                             
-  completion template Property : "property : Type" =
-    <x> " : " <T> (blank)  
+  // completion template Start :
+  //   "module " <m> (blank)  
+  //                                            
+  // completion template Definition :
+  //   "entity " <e> " {" (cursor) "}" (blank)  
+  //                                            
+  // completion template Property : "property : Type" =
+  //   <x> " : " <T> (blank)  
                                              
 
 completions
@@ -28,4 +36,4 @@ completions
                                          
   completion proposer                  : editor-complete
                                          
-  completion trigger                   : ":"
+  // completion trigger                   : ":"

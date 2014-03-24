@@ -1,0 +1,26 @@
+
+module Model
+
+completions
+  completion template Model : "entity ID { }" =
+    "entity " <ID:ID> " {\n\t" (cursor) "\n}" (blank)  
+  completion template Model : "relation ID { }" =
+    "relation " <ID:ID> " {\n\t" (cursor) "\n}" (blank)  
+  completion template Attribute : "ID : PrimitiveType " =
+    <ID:ID> " : " <PrimitiveType:PrimitiveType> " " <:Multiplicity> " " <:Derivation>  
+  completion template Derivation : "= Exp DerivationType" =
+    "= " <Exp:Exp> " " <DerivationType:DerivationType>  
+  completion template DerivationType : "(default)" =
+    "(default)"                    
+  completion template DerivationType : "(derivation)" =
+    "(derivation)"              
+  completion template Role : "EntityType Multiplicity " =
+    <EntityType:EntityType> " " <Multiplicity:Multiplicity> " " <:ID>  
+  completion template Multiplicity : "1" =
+    "1"                                      
+  completion template Multiplicity : "?" =
+    "?"                                      
+  completion template Multiplicity : "+" =
+    "+"                                      
+  completion template Multiplicity : "*" =
+    "*"                                      
