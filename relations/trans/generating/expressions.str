@@ -26,7 +26,9 @@ rules // aggregations
 	exp-to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
 	exp-to-java(err): Min(e)								-> <lib-java-un-exp(err)>(e, "min")
 	exp-to-java(err): Avg(e)								-> <lib-java-un-exp(err)>(e, "avg")
+	exp-to-java(err): Sum(e)								-> <lib-java-un-exp(err)>(e, "sum")
 	exp-to-java(err): Concat(e)							-> <lib-java-un-exp(err)>(e, "concat")
+	exp-to-java(err): Count(e)							-> <lib-java-un-exp(err)>(e, "count")
 
 rules // multiplicities
 	
