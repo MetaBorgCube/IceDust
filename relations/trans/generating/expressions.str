@@ -80,6 +80,6 @@ rules // lib expression calls
 		 
 rules
 	
-  exp-to-java(err): a -> []
+  exp-to-java(err): a -> a'
 	where
-	  <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]

@@ -16,11 +16,13 @@ imports
 rules // Builders
 	
 	generate-java-code(err):
-	    (selected, path) -> (fileName, result)
+	    (selected, path) -> (fileName, result, errors)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
 			java-ast := <to-java(err)> selected;
-			result   := <pp-java-string> java-ast
+			errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+			java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
+			result   := <pp-java-string> java-ast'
 
 rules	// General Java generation rules
 
@@ -37,7 +39,7 @@ rules	// General Java generation rules
   	where
   		<err> "Desugar before generating code."
 	
-  to-java(err): a -> []
+  to-java(err): a -> a'
   	where
-		  <err>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+		  a' := <err>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
 

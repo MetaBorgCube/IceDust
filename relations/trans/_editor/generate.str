@@ -38,7 +38,7 @@ rules // Builders
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
-	error-handler-editor : msg -> None()
+	error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
 		with
 			err-msg(|msg)
 
@@ -69,10 +69,13 @@ rules // Build in steps
 
 			if <leq>(1, i) then
 				// log(|Info(),"Phase 1: Generating Java Code");
-				(javaFileName, javaCode) := <generate-java-step(error-handler)>(ast', path);
+				(javaFileName, javaCode, error') := <generate-java-step(error-handler)>(ast', path);
 				result := (javaFileName, javaCode);
 				<copy-java-libraries>(javaFileName, project-path);
-				//TODO: on error do not continue to next step (the error-handler for manual build doesn't fail, only the testing one does).
+				
+			if not([] := error') then
+				<error-handler>"Fix errors compiling Java. Exiting code compilation."
+			else
 				
 			if <leq>(2, i) then
 				// log(|Info(),"Phase 2: Compiling Java Code");
@@ -87,7 +90,7 @@ rules // Build in steps
 				// log(|Info(),"Phase 3: Executing");
 				<execute-java-step> classFileName
 				
-			end end end end end
+			end end end end end end
 	
 	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
 		with
