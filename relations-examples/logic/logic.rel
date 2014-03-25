@@ -8,5 +8,10 @@ entity Foo{
 
 data
 Foo foo{}
+Foo goo{b=true}
+Foo boo{b=false}
 
 execute
+foo.val
+goo.val
+boo.val

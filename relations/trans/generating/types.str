@@ -8,5 +8,6 @@ imports
 rules // primitives
 	
 	type-to-java(err): String()	-> "String"
-  type-to-java(err): Int()			-> "Integer"
+  type-to-java(err): Int()		-> "Integer"
+  type-to-java(err): Boolean()-> "Boolean"
  

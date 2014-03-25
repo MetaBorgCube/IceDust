@@ -145,4 +145,96 @@ public class Expressions {
 		}
 		return sb.toString();
 	}
+
+	public static <E> Integer count(Collection<E> c) {
+		return c.size();
+	}
+
+	public static <E> Integer count(E c) {
+		return c == null ? 0 : 1;
+	}
+
+	// logic expressions
+
+	public static Boolean not(Boolean e) {
+		return e == null ? null : !e;
+	}
+
+	public static Boolean lt(Integer i, Integer j) {
+		return i != null && j != null ? i < j : null;
+	}
+
+	public static Boolean lte(Integer i, Integer j) {
+		return i != null && j != null ? i <= j : null;
+	}
+
+	public static Boolean gt(Integer i, Integer j) {
+		return i != null && j != null ? i > j : null;
+	}
+
+	public static Boolean gte(Integer i, Integer j) {
+		return i != null && j != null ? i >= j : null;
+	}
+
+	public static Boolean and(Boolean i, Boolean j) {
+		return i != null && j != null ? i && j : null;
+	}
+
+	public static Boolean or(Boolean i, Boolean j) {
+		return i != null && j != null ? i || j : null;
+	}
+
+	// logic expressions : equality
+
+	public static <E> Boolean eq(E i, E j) {
+		return i == null || j == null ? null : i.equals(j);
+	}
+
+	public static <E> Boolean eq(E i, Collection<E> j) {
+		return i == null || j.size() == 0 ? null : toCollection(i).equals(j);
+	}
+
+	public static <E> Boolean eq(Collection<E> i, E j) {
+		return i.size() == 0 || j == null ? null : toCollection(j).equals(i);
+	}
+
+	public static <E> Boolean eq(Collection<E> i, Collection<E> j) {
+		return i.size() == 0 || j.size() == 0 ? null : i.equals(j);
+	}
+
+	public static <E> Boolean neq(E i, E j) {
+		return i == null || j == null ? null : !i.equals(j);
+	}
+
+	public static <E> Boolean neq(E i, Collection<E> j) {
+		return i == null || j.size() == 0 ? null : !toCollection(i).equals(j);
+	}
+
+	public static <E> Boolean neq(Collection<E> i, E j) {
+		return i.size() == 0 || j == null ? null : !toCollection(j).equals(i);
+	}
+
+	public static <E> Boolean neq(Collection<E> i, Collection<E> j) {
+		return i.size() == 0 || j.size() == 0 ? null : !i.equals(j);
+	}
+
+	// logic expressions : conditional
+
+	public static <E> E conditional(Boolean b, E i, E j) {
+		return b == null ? null : b ? i : j;
+	}
+
+	public static <E> Collection<E> conditional(Boolean b, E i, Collection<E> j) {
+		return b == null ? null : b ? toCollection(i) : j;
+	}
+
+	public static <E> Collection<E> conditional(Boolean b, Collection<E> i, E j) {
+		return b == null ? null : b ? i : toCollection(j);
+	}
+
+	public static <E> Collection<E> conditional(Boolean b, Collection<E> i,
+			Collection<E> j) {
+		return b == null ? null : b ? i : j;
+	}
+
 }

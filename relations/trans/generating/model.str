@@ -359,3 +359,5 @@ rules
 	
 	null-value: String() -> Lit(Null())
 	null-value: Int() -> Lit(Null())
+	null-value: Boolean() -> Lit(Null())
+	

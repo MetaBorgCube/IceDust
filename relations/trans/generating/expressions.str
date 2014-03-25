@@ -21,6 +21,19 @@ rules // math
 	exp-to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
 	exp-to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
 
+rules // logic
+	
+	exp-to-java(err): Not(e)								-> <lib-java-un-exp(err)>(e, "not")
+	exp-to-java(err): LessThan(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "lt")	
+	exp-to-java(err): LessThanEqual(e1, e2)	-> <lib-java-bin-exp(err)>(e1, e2, "lte")	
+	exp-to-java(err): GreaterThan(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "gt")	
+	exp-to-java(err): GreaterThanEqual(e1,e2)-><lib-java-bin-exp(err)>(e1, e2, "gte")	
+	exp-to-java(err): Equal(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "eq")	
+	exp-to-java(err): Inequal(e1, e2)				-> <lib-java-bin-exp(err)>(e1, e2, "neq")	
+	exp-to-java(err): And(e1, e2)						-> <lib-java-bin-exp(err)>(e1, e2, "and")
+	exp-to-java(err): Or(e1, e2)						-> <lib-java-bin-exp(err)>(e1, e2, "or")
+	exp-to-java(err): TernaryConditional(e1,e2,e3)-><lib-java-ter-exp(err)>(e1, e2, e3, "conditional")
+
 rules // aggregations
 	
 	exp-to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
@@ -39,6 +52,8 @@ rules // literals
 	
   exp-to-java(err): String(value) 				-> Lit(String([Chars(value)]))
   exp-to-java(err): Int(value) 						-> Lit(Deci(value))
+  exp-to-java(err): True() 								-> Lit(True())
+  exp-to-java(err): False() 							-> Lit(False())
 
 rules // lib expression calls
 	
@@ -53,6 +68,14 @@ rules // lib expression calls
 		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
 		 , [<exp-to-java(err)>exp1,
 		    <exp-to-java(err)>exp2]
+		 )
+		 
+	lib-java-ter-exp(err): (exp1, exp2, exp3, lib-call) ->
+		Invoke(
+		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
+		 , [<exp-to-java(err)>exp1,
+		    <exp-to-java(err)>exp2,
+		    <exp-to-java(err)>exp3]
 		 )
 		 
 rules
