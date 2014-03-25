@@ -38,6 +38,11 @@ desugar = generate-role-name
 
 generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
 
+desugar = generate-entity-name
+
+generate-entity-name: EntityOrRelation(EntityType(e-ty), None(), r, a) -> EntityOrRelation(EntityType(e-ty), e, r, a)
+	with
+		e := <newname>e-ty
 
 /**
  *	Navigators

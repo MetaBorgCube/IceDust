@@ -58,117 +58,117 @@ Student bob{
 
 Course compiler{}
 
-Enrollment e1{
+Enrollment{
 	Student: alice
 	Course : compiler
 }
-Enrollment e2{
+Enrollment{
 	Student: bob
 	Course : compiler
 }
 
 AssignmentGroup comp{}
 
-CourseAssignments comp2{
+CourseAssignments{
 	Course: compiler
 	AssignmentGroup : comp
 }
 
 AssignmentGroup practical{}
 
-AssignmentTree prac{
+AssignmentTree{
 	parent:comp
 	child: practical
 }
 
 AssignmentGroup milestone1{}
 
-AssignmentTree mile1{
+AssignmentTree{
 	parent: practical
 	child : milestone1
 }
 
 Assignment assignment11{}
 
-AssignmentLeaf as11{
+AssignmentLeaf{
 	parent: milestone1
 	child : assignment11
 }
 
 Assignment assignment12{}
 
-AssignmentLeaf as12{
+AssignmentLeaf{
 	parent: milestone1
 	child : assignment12
 }
 
 Assignment assignment13{}
 
-AssignmentLeaf as13{
+AssignmentLeaf{
 	parent: milestone1
 	child : assignment13
 }
 
 AssignmentGroup milestone2{}
 
-AssignmentTree mile2{
+AssignmentTree{
 	parent: practical
 	child : milestone2
 }
 
 Assignment assignment21{}
 
-AssignmentLeaf as21{
+AssignmentLeaf{
 	parent: milestone2
 	child : assignment21
 }
 
 Assignment assignment22{}
 
-AssignmentLeaf as22{
+AssignmentLeaf{
 	parent: milestone2
 	child : assignment22
 }
 
 Assignment assignment23{}
 
-AssignmentLeaf as23{
+AssignmentLeaf{
 	parent: milestone2
 	child : assignment23
 }
 
 Assignment exam{}
 
-AssignmentLeaf exam1{
+AssignmentLeaf{
 	parent: comp
 	child : exam
 }
 
-Submission s{
+Submission{
 	Student : alice
 	Assignment : assignment11
 	grade = 7
 }
 
-Submission s2{
+Submission{
 	Student : alice
 	Assignment : assignment12
 	grade = 9
 }
 
-Submission s3{
+Submission{
 	Student : alice
 	Assignment : assignment13
 	grade = 6
 }
 
-Submission s4{
+Submission{
 	Student : alice
 	Assignment : exam
 	grade = 6
 }
 
-Submission s5{
+Submission{
 	Student : bob
 	Assignment : exam
 	grade = 10

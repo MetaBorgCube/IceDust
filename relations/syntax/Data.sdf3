@@ -8,7 +8,7 @@ imports
 templates
 
 // entities (or relations)
-Data.EntityOrRelation = <<EntityType> <ID>{
+Data.EntityOrRelation = <<EntityType> <ID?>{
 	<RoleValue*>
 	<AttributeValue*>
 }>

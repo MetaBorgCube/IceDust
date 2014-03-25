@@ -38,10 +38,12 @@ rules
 	  		
 	  		to-outline-label : Attribute(a, a-ty, a-mu, _) 								-> $[[<pp-o>a] : [<pp-o>a-ty] [<pp-o>a-mu]]{"icons/circle-green.png"}
 	  		to-outline-label : Role(EntityType(r-ty), r-mu, Some(r)) 			-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
+	  		to-outline-label : Role(EntityType(r-ty), r-mu, None()) 			-> $[[<pp-o>r-ty] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
 	  
 	  to-outline-label : DataDef(_) -> "Data"{"icons/data.png"}
 	  
-	  	to-outline-label : EntityOrRelation(EntityType(e-ty), e, _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
+	  	to-outline-label : EntityOrRelation(EntityType(e-ty), Some(e), _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
+	  	to-outline-label : EntityOrRelation(EntityType(e-ty), None(), _, _)	-> $[<noname> : [<pp-o>e-ty]]{"icons/square-gray.png"}
 	  	
 	  to-outline-label : Executable(_) -> "Execute"{"icons/execute.png"}
 	  
