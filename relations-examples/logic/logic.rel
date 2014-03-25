@@ -1,0 +1,12 @@
+module logic
+
+model
+entity Foo{
+	b : Boolean ?
+	val : Int = (42 >= 4 && !b ? "a" : "b") == "a" ? 5 : 88 + 4 <+ 4
+}
+
+data
+Foo foo{}
+
+execute

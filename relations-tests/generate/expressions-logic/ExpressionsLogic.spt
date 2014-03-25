@@ -1,0 +1,24 @@
+module generate-expressions-logic
+
+language Relations
+
+setup Common [[
+	module ExpressionsLogic
+	
+	model
+	entity X {
+		val : Int = (42 >= 4 && !false ? "a" : "b") == "a" ? 5 : 88 + 4
+	}
+	
+	data
+	X x{}
+	
+	execute
+	x.val
+]]
+
+test Expressions Logic generate-java [[ ]] build generate-java-test
+
+test Expressions Logic compile-java [[ ]] build compile-java-test
+
+// test Expressions Math execute-java [[ ]] build execute-java-test //to "28"
