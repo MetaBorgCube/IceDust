@@ -27,6 +27,7 @@ relation Submission{
 	Student *
 	Assignment *
 	grade : Int
+	passed : Boolean = grade >= 6 
 }
 
 entity AssignmentGroup {
