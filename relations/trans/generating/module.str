@@ -8,62 +8,38 @@ imports
 
 rules
 
-  to-java(err):
-    ModuleDesugared(moduleName, model, data, execute) ->
-			CompilationUnit(
-			  None()
-			, [ TypeImportOnDemandDec(PackageName([Id("lib"), Id("relations")]))
-			  ,	TypeImportDec(
-			      TypeName(
-			        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
-			      , Id("Collection")
-			      )
-			    )
-			  , TypeImportDec(
-			      TypeName(
-			        PackageOrTypeName(PackageOrTypeName(Id("java")), Id("util"))
-			      , Id("HashSet")
-			      )
-			    )
-			  ]
-			, <concat>[[ mainClass ], modelJava]
-			)
-	where
-		mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
-		modelJava := <to-java(err)>model
+	to-java(err):
+		ModuleDesugared(moduleName, model, data, execute) ->
+			compilation-unit |[
+				import lib.relations.*;
+				import java.util.Collection;
+				import java.util.HashSet;
+				
+				~mainClass
+				~modelJava*
+			]|
+		with
+			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
+			modelJava* := <to-java(err)>model
+
+	main-class-to-java(err):
+		ModuleDesugared(moduleName, model, data, execute) ->
+			type-dec |[
+				class ~className	
+				{ 
+					public static void main(String[] args)
+					{ 
+						~dataJava*
+						~executeJava*
+					}
+				}
+			]|
+		with
+			dataJava* := <to-java(err)>data;
+			if Executable(_) := execute then
+				executeJava* := <to-java(err)>execute
+			else
+				executeJava* := []
+			end;
+			className := Id(moduleName)
 		
-  main-class-to-java(err): ModuleDesugared(moduleName, model, data, execute) ->
-	  ClassDec(
-	      ClassDecHead([], Id(moduleName), None(), None(), None())
-	    , ClassBody(
-	        [ MethodDec(
-	            MethodDecHead(
-	              [Public(), Static()]
-	            , None()
-	            , Void()
-	            , Id("main")
-	            , [ Param(
-	                  []
-	                , ArrayType(ClassOrInterfaceType(TypeName(Id("String")), None()))
-	                , Id("args")
-	                )
-	              ]
-	            , None()
-	            )
-	          , Block(
-	           	<concat>[
-	              dataJava,
-	              executeJava
-	              ]
-	            )
-	          )
-	        ]
-	      )
-	    )
-	where
-		dataJava := <to-java(err)>data;
-		if Executable(_) := execute then
-			executeJava := <to-java(err)>execute
-		else
-			executeJava := []
-		end
