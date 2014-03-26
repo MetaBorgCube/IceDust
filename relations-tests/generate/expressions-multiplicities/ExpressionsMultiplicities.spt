@@ -16,7 +16,6 @@ setup Common [[
 	Foo f{}
 	
 	execute
-	f.value
 	f.input1 :: f.input2
 ]]
 
@@ -24,4 +23,4 @@ test Expressions Multiplicities generate-java [[ ]] build generate-java-test
 
 test Expressions Multiplicities compile-java [[ ]] build compile-java-test
 
-// test Expressions Multiplicities execute-java [[ ]] build execute-java-test
+test Expressions Multiplicities execute-java [[ ]] build execute-java-test to "[5]"

@@ -21,4 +21,4 @@ test Expressions Aggregation generate-java [[ ]] build generate-java-test
 
 test Expressions Aggregation compile-java [[ ]] build compile-java-test
 
-// test Expressions Aggregation execute-java [[ ]] build execute-java-test
+test Expressions Aggregation execute-java [[ ]] build execute-java-test to "5"

@@ -29,12 +29,12 @@ rules // Builders
 		with
 			<build(error-handler)>(selected, path, project-path, 2)
 	
-	execute-java       = execute-java(error-handler-editor)
+	execute-java       = execute-java(error-handler-editor);debug;\ _ -> None() \
 	execute-java-test  = execute-java(error-handler-tests)
 	execute-java(error-handler):
-		(selected, position, ast, path, project-path) -> None()
+		(selected, position, ast, path, project-path) -> result
 		with
-			<build(error-handler)>(selected, path, project-path, 3)
+			result := <build(error-handler)>(selected, path, project-path, 3)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -70,25 +70,34 @@ rules // Build in steps
 			if <leq>(1, i) then
 				// log(|Info(),"Phase 1: Generating Java Code");
 				(javaFileName, javaCode, error') := <generate-java-step(error-handler)>(ast', path);
-				result := (javaFileName, javaCode);
 				<copy-java-libraries>(javaFileName, project-path);
+				if <eq>(1, i) then
+					result := (javaFileName, javaCode)
+				end;
 				
 			if not([] := error') then
-				<error-handler>"Fix errors compiling Java. Exiting code compilation."
+				<error-handler>"Fix errors compiling Java. Exiting code compilation.";
+				result := None()
 			else
 				
 			if <leq>(2, i) then
 				// log(|Info(),"Phase 2: Compiling Java Code");
 				<write-file> (javaFileName, javaCode);
-				(exitCode, classFileName) := <compile-java-step> (javaFileName, project-path);
+				(exitCode, output, classFileName) := <compile-java-step> (javaFileName, project-path);
+				if <eq>(2, i) then
+					result := None()
+				end;
 
 			if not(0 := exitCode) then
-				<error-handler>"Java compilation failed. Exiting code execution."
+				<error-handler>output;
+				<error-handler>"Java compilation failed. Exiting code execution.";
+				result := None()
 			else
 				
 			if <leq>(3, i) then
 				// log(|Info(),"Phase 3: Executing");
-				<execute-java-step> classFileName
+				(exitCode', output') := <execute-java-step> classFileName;
+				result := output'
 				
 			end end end end end end
 	
@@ -106,29 +115,34 @@ rules // Build in steps
 			<dirname;refresh-workspace-file> targetDir
 	
 	compile-java-step:
-		(javaFileName, project-path) -> (exitCode, classFileName)
+		(javaFileName, project-path) -> (exitCode, output, classFileName)
 		with
-			exitCode:= <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
+			(exitCode, output) := <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
 			<dirname;refresh-workspace-file> $[[project-path]/[javaFileName]]
 
 	execute-java-step:
-		classFileName -> None()
+		classFileName -> (exitCode, output)
 		with
 			classPath := <dirname>classFileName;
 			className := <base-filename;remove-extension> classFileName;
-			<call-read-output> ("java", ["-cp", classPath, className])
+			(exitCode, output) := <call-read-output> ("java", ["-cp", classPath, className])
 
 rules // call helper
 	
-	//TODO: now this returns the exitCode, but it should return (exitCode, stdoutString). And the stdout should not be in the console.
-	call-read-output =
-	  ?(program, args);
-	
-	  Stream(instream)  := <stdin-stream>;
-	  Stream(outstream) := <stdout-stream>;
-	  Stream(errstream) := <stderr-stream>;
-	  
-	  log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
-	  prim("SSL_EXT_call", program, args, instream, outstream, errstream)
+	call-read-output: (program, args) -> (exitCode, <conc-strings> (errors, output))
+		with
+		  Stream(instream)   := <stdin-stream>;
+		  Stream(filestream) := <fopen> ("stdout.txt", "w");
+		  Stream(filestream2):= <fopen> ("stderr.txt", "w")
+		with
+		  // log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+		  exitCode := <prim("SSL_EXT_call", program, args, instream, filestream, filestream2)>
+		with
+		  <fclose>filestream;
+		  <fclose>filestream2;
+		  output := <read-text-file> "stdout.txt";
+		  errors := <read-text-file> "stderr.txt";
+		  <delete-file>"stdout.txt";
+		  <delete-file>"stderr.txt"
 

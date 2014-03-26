@@ -43,4 +43,4 @@ test Expressions Navigators generate-java [[ ]] build generate-java-test
 
 test Expressions Navigators compile-java [[ ]] build compile-java-test
 
-// test Expressions Navigators execute-java [[ ]] build execute-java-test
+// test Expressions Navigators execute-java [[ ]] build execute-java-test //well we cant test memory addresses that chan

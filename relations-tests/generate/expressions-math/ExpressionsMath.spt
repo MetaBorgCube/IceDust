@@ -21,4 +21,4 @@ test Expressions Math generate-java [[ ]] build generate-java-test
 
 test Expressions Math compile-java [[ ]] build compile-java-test
 
-// test Expressions Math execute-java [[ ]] build execute-java-test //to "28"
+test Expressions Math execute-java [[ ]] build execute-java-test to "28"
