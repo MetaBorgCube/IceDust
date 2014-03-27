@@ -60,45 +60,29 @@ rules
 
   to-java(err|entityName): Attribute(name, type, multiplicity, derivation) ->
 		[ field
-	    , setter
-	    , MethodDec(
-	        MethodDecHead(
-	          [Public()]
-	        , None()
-	        , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-	        , Id($[get_[name]])
-	        , []
-	        , None()
-	        )
-	      , Block(
-	        	[Return(Some(getterExpr))]
-	        )
-	      )
-	    , getter-multi 
-	     ]
-		where
-			javaType := <type-to-java(err)>type;
-			derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
-			if Normal() := derivationType then
-				field := <field>(name, javaType);
-				setter := <setter>(name, javaType);
-				getterExpr := ExprName(Id(name))
-			else if DefaultValue() := derivationType then
-				field := <field>(name, javaType);
-				setter := <setter>(name, javaType);
-				Derivation(derivationExpr, _) := derivation;
-				getterExpr := Cond(
-	                      NotEq(ExprName(Id(name)), <null-value>type)
-	                    , ExprName(Id(name))
-	                    , <exp-to-java(err)>derivationExpr
-	                    )
-			else if Derivation() := derivationType then
-				field := [];
-				setter := [];
-				Derivation(derivationExpr, _) := derivation;
-				getterExpr := <exp-to-java(err)>derivationExpr
-			end end end;
-			getter-multi := <getter-multi>(name, javaType, entityName)
+    , setter
+    , getter
+    , getter-multi 
+    ]
+	where
+		javaType := <type-to-java(err)>type;
+		derivationType := <get-derivation-type <+ err-msg(|$[Could not get derivation type of Attribute.])>name;
+		if Normal() := derivationType then
+			field := <field>(name, javaType);
+			setter := <setter>(name, javaType);
+			getter := <getter-no-derivation>(name, javaType)
+		else if DefaultValue() := derivationType then
+			field := <field>(name, javaType);
+			setter := <setter>(name, javaType);
+			Derivation(derivationExpr, _) := derivation;
+			getter := <getter-default-value(err)>(name, javaType, derivationExpr)
+		else if Derivation() := derivationType then
+			field := [];
+			setter := [];
+			Derivation(derivationExpr, _) := derivation;
+			getter := <getter-derivation(err)>(name, javaType, derivationExpr)
+		end end end;
+		getter-multi := <getter-multi>(name, javaType, entityName)
 	
 	field: (x_name, x_type) -> |[private x_type x_name;]|
 	
@@ -121,9 +105,28 @@ rules
 	  ]|
 	 with
 	 	x_getter := $[get_[x_name]]
+	
+	getter-derivation(err): (x_name, x_type, derivationExpr) ->
+		|[
+		  public x_type x_getter()
+		  {
+		  	return ~expressionJava;
+		  }
+	  ]|
+	 with
+	 	x_getter := $[get_[x_name]];
+	 	expressionJava := <exp-to-java(err)>derivationExpr
 	 	
-	//TODO: getter-default-value
-	//TODO: getter-derivation
+	getter-default-value(err): (x_name, x_type, derivationExpr) ->
+		|[
+		  public x_type x_getter()
+		  {
+		  	return x_name != null ? x_name : ~expressionJava;
+		  }
+	  ]|
+	 with
+	 	x_getter := $[get_[x_name]];
+	 	expressionJava := <exp-to-java(err)>derivationExpr
 
 	getter-multi: (x_name, x_type, x_entity) ->
 		|[
@@ -142,143 +145,168 @@ rules
 	with
 		x_getter := $[get_[x_name]]
 
-  to-java(err|relationName): Role(EntityType(type), multiplicity, roleName) ->
-		[	FieldDec(
-	      [Public()]
-	    , ClassOrInterfaceType(TypeName(Id(type)), None())
-	    , [VarDec(Id(roleName))]
-	    )
-    , MethodDec(
-        MethodDecHead(
-          [Public(), Static()]
-        , None()
-        , ClassOrInterfaceType(
-            TypeName(Id("Collection"))
-          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
-          )
-        , Id($[[roleName]_in])
-        , [ Param(
-              []
-            , ClassOrInterfaceType(
-                TypeName(Id("Collection"))
-              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
-              )
-            , Id("in")
-            )
-          ]
-        , None()
-        )
-      , Block(
-          [ LocalVarDecStm(
-              LocalVarDec(
-                []
-              , ClassOrInterfaceType(
-                  TypeName(Id("Collection"))
-                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
-                )
-              , [ VarDec(
-                    Id("result")
-                  , NewInstance(
-                      None()
-                    , ClassOrInterfaceType(
-                        TypeName(Id("HashSet"))
-                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
-                      )
-                    , []
-                    , None()
-                    )
-                  )
-                ]
-              )
-            )
-          , ForEach(
-              Param(
-                []
-              , ClassOrInterfaceType(TypeName(Id(type)), None())
-              , Id("elem")
-              )
-            , ExprName(Id("in"))
-            , Block(
-                [ ExprStm(
-                    Invoke(
-                      Method(MethodName(AmbName(Id("result")), Id("addAll")))
-                    , [ExprName(AmbName(Id("elem")), Id($[[relationName]_[roleName]]))]
-                    )
-                  )
-                ]
-              )
-            )
-          , Return(Some(ExprName(Id("result"))))
-          ]
-        )
-      )
-    , MethodDec(
-        MethodDecHead(
-          [Public(), Static()]
-        , None()
-        , ClassOrInterfaceType(
-            TypeName(Id("Collection"))
-          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
-          )
-        , Id($[[roleName]_out])
-        , [ Param(
-              []
-            , ClassOrInterfaceType(
-                TypeName(Id("Collection"))
-              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
-              )
-            , Id("out")
-            )
-          ]
-        , None()
-        )
-      , Block(
-          [ LocalVarDecStm(
-              LocalVarDec(
-                []
-              , ClassOrInterfaceType(
-                  TypeName(Id("Collection"))
-                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
-                )
-              , [ VarDec(
-                    Id("result")
-                  , NewInstance(
-                      None()
-                    , ClassOrInterfaceType(
-                        TypeName(Id("HashSet"))
-                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
-                      )
-                    , []
-                    , None()
-                    )
-                  )
-                ]
-              )
-            )
-          , ForEach(
-              Param(
-                []
-              , ClassOrInterfaceType(TypeName(Id(relationName)), None())
-              , Id("u")
-              )
-            , ExprName(Id("out"))
-            , Block(
-                [ ExprStm(
-                    Invoke(
-                      Method(MethodName(AmbName(Id("result")), Id("add")))
-                    , [ExprName(AmbName(Id("u")), Id(roleName))]
-                    )
-                  )
-                ]
-              )
-            )
-          , Return(Some(ExprName(Id("result"))))
-          ]
-        )
-      )
-		]
-	
-	null-value: String() -> Lit(Null())
-	null-value: Int() -> Lit(Null())
-	null-value: Boolean() -> Lit(Null())
+	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) ->
+		|[
+		  public x_entityType x_roleName;
+		
+		  public static Collection<x_relType> x_in(Collection<x_entityType> in)
+		  { 
+		    Collection<x_relType> result = new HashSet<x_relType>();
+		    for(x_entityType elem : in)
+		    { 
+		      result.addAll(elem.x_relRole);
+		    }
+		    return result;
+		  }
+		
+		  public static Collection<x_entityType> x_out(Collection<x_relType> out)
+		  { 
+		    Collection<x_entityType> result = new HashSet<x_entityType>();
+		    for(x_relType u : out)
+		    { 
+		      result.add(u.right);
+		    }
+		    return result;
+		  }
+		]|
+	with
+		x_in := $[[x_roleName]_in];
+		x_out := $[[x_roleName]_out];
+		x_relRole := $[[x_relType]_[x_roleName]]
+
+ //  to-java(err|relationName): Role(EntityType(type), multiplicity, roleName) ->
+	// 	[	FieldDec(
+	//       [Public()]
+	//     , ClassOrInterfaceType(TypeName(Id(type)), None())
+	//     , [VarDec(Id(roleName))]
+	//     )
+ //    , MethodDec(
+ //        MethodDecHead(
+ //          [Public(), Static()]
+ //        , None()
+ //        , ClassOrInterfaceType(
+ //            TypeName(Id("Collection"))
+ //          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+ //          )
+ //        , Id($[[roleName]_in])
+ //        , [ Param(
+ //              []
+ //            , ClassOrInterfaceType(
+ //                TypeName(Id("Collection"))
+ //              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+ //              )
+ //            , Id("in")
+ //            )
+ //          ]
+ //        , None()
+ //        )
+ //      , Block(
+ //          [ LocalVarDecStm(
+ //              LocalVarDec(
+ //                []
+ //              , ClassOrInterfaceType(
+ //                  TypeName(Id("Collection"))
+ //                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+ //                )
+ //              , [ VarDec(
+ //                    Id("result")
+ //                  , NewInstance(
+ //                      None()
+ //                    , ClassOrInterfaceType(
+ //                        TypeName(Id("HashSet"))
+ //                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+ //                      )
+ //                    , []
+ //                    , None()
+ //                    )
+ //                  )
+ //                ]
+ //              )
+ //            )
+ //          , ForEach(
+ //              Param(
+ //                []
+ //              , ClassOrInterfaceType(TypeName(Id(type)), None())
+ //              , Id("elem")
+ //              )
+ //            , ExprName(Id("in"))
+ //            , Block(
+ //                [ ExprStm(
+ //                    Invoke(
+ //                      Method(MethodName(AmbName(Id("result")), Id("addAll")))
+ //                    , [ExprName(AmbName(Id("elem")), Id($[[relationName]_[roleName]]))]
+ //                    )
+ //                  )
+ //                ]
+ //              )
+ //            )
+ //          , Return(Some(ExprName(Id("result"))))
+ //          ]
+ //        )
+ //      )
+ //    , MethodDec(
+ //        MethodDecHead(
+ //          [Public(), Static()]
+ //        , None()
+ //        , ClassOrInterfaceType(
+ //            TypeName(Id("Collection"))
+ //          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+ //          )
+ //        , Id($[[roleName]_out])
+ //        , [ Param(
+ //              []
+ //            , ClassOrInterfaceType(
+ //                TypeName(Id("Collection"))
+ //              , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
+ //              )
+ //            , Id("out")
+ //            )
+ //          ]
+ //        , None()
+ //        )
+ //      , Block(
+ //          [ LocalVarDecStm(
+ //              LocalVarDec(
+ //                []
+ //              , ClassOrInterfaceType(
+ //                  TypeName(Id("Collection"))
+ //                , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+ //                )
+ //              , [ VarDec(
+ //                    Id("result")
+ //                  , NewInstance(
+ //                      None()
+ //                    , ClassOrInterfaceType(
+ //                        TypeName(Id("HashSet"))
+ //                      , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(type)), None())]))
+ //                      )
+ //                    , []
+ //                    , None()
+ //                    )
+ //                  )
+ //                ]
+ //              )
+ //            )
+ //          , ForEach(
+ //              Param(
+ //                []
+ //              , ClassOrInterfaceType(TypeName(Id(relationName)), None())
+ //              , Id("u")
+ //              )
+ //            , ExprName(Id("out"))
+ //            , Block(
+ //                [ ExprStm(
+ //                    Invoke(
+ //                      Method(MethodName(AmbName(Id("result")), Id("add")))
+ //                    , [ExprName(AmbName(Id("u")), Id(roleName))]
+ //                    )
+ //                  )
+ //                ]
+ //              )
+ //            )
+ //          , Return(Some(ExprName(Id("result"))))
+ //          ]
+ //        )
+ //      )
+	// 	]
 	
