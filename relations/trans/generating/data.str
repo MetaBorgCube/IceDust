@@ -10,67 +10,35 @@ imports
 rules
 	
   to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
-  
-  to-java(err): EntityOrRelation(
-        EntityType(entityType)
-      , entityName
-      , roleValues
-      , attributeValues
-      )
-      ->
-      <concat>[[
-      LocalVarDecStm(
-          LocalVarDec(
-            []
-          , ClassOrInterfaceType(TypeName(Id(entityType)), None())
-          , [ VarDec(
-                Id(entityName)
-              , NewInstance(
-                  None()
-                , ClassOrInterfaceType(TypeName(Id(entityType)), None())
-                , []
-                , None()
-                )
-              )
-            ]
-          )
-        )],
-        attributeValuesJava,
-        roleValuesJava
-        ]
-	with
-		attributeValuesJava := <map(to-java(err|entityName))> attributeValues;
-		roleValuesJava			:= <map(to-java(err|entityName, entityType));concat> roleValues
 
-  to-java(err|entityName) : AttributeValue(Identifier(attributeName), attributeValue) ->
-	  	ExprStm(
-        Invoke(
-          Method(MethodName(AmbName(Id(entityName)), Id($[set_[attributeName]])))
-        , [attributeValueJava]
-        )
-	    )
-    where
-    	attributeValueJava := <exp-to-java(err)>attributeValue
-    	
-  to-java(err|entityName, entityType) :
-  	RoleValue(RoleName(roleName), Identifier(otherEntityName)) ->
-  	[	
-  		ExprStm(
-		      Assign(
-		        ExprName(AmbName(Id(entityName)), Id(roleName))
-		      , ExprName(Id(otherEntityName))
-		      )
-		    )
-		  , ExprStm(
-		      Invoke(
-		        Method(
-		          MethodName(
-		            AmbName(AmbName(Id(otherEntityName)), Id($[[entityType]_[roleName]]))
-		          , Id("add")
-		          )
-		        )
-		      , [ExprName(Id(entityName))]
-		      )
-		    )
-		 ]
-    
+	to-java(err): EntityOrRelation(
+									EntityType(x_type)
+								, x_name
+								, roleValues
+								, attributeValues
+								)
+  -> 
+ 	|[
+    x_type x_name = new x_type();
+    ~attributeValuesJava*
+    ~roleValuesJava*
+ 	]|
+	with
+		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
+		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
+
+  to-java(err|x_name) : AttributeValue(Identifier(attributeName), attributeValue) ->
+		stm |[
+			x_name.x_setter(~attributeValueJava);
+		]|
+	  with
+	  	x_setter := $[set_[attributeName]];
+	  	attributeValueJava := <exp-to-java(err)>attributeValue
+
+  to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) ->
+  	[
+			stm |[ x_entityName.x_roleName = x_otherName; ]|,
+	  	stm |[ x_otherName.x_roleNameOther.add(x_entityName);]|
+	  ]
+	with
+		x_roleNameOther := $[[entityType]_[x_roleName]]

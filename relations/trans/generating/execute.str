@@ -11,15 +11,17 @@ rules
 
   to-java(err): Executable(executes) -> <map(exp-to-java(err);syso)>executes
   
-	syso: javaExpr ->
-		ExprStm(
-		  Invoke(
-		    Method(
-		      MethodName(
-		        AmbName(AmbName(Id("System")), Id("out"))
-		      , Id("println")
-		      )
-		    )
-		  , [ javaExpr ]
-		  )
-		)
+  syso: javaExpr -> |[System.out.println(~javaExpr);]|
+  
+	// syso: javaExpr ->
+	// 	ExprStm(
+	// 	  Invoke(
+	// 	    Method(
+	// 	      MethodName(
+	// 	        AmbName(AmbName(Id("System")), Id("out"))
+	// 	      , Id("println")
+	// 	      )
+	// 	    )
+	// 	  , [ javaExpr ]
+	// 	  )
+	// 	)
