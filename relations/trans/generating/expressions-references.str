@@ -27,29 +27,10 @@ rules // attributes of expressions
 				NavigateOut(_,_,_,_) := exp
 			)
 		with
-			result :=
-				Invoke(
-					Method(
-						Invoke(
-		          Method(
-		            Invoke(
-		              Method(
-		                <exp-to-java(err)>exp
-		              , None()
-		              , Id("iterator")
-		              )
-		            , []
-		            )
-		          , None()
-		          , Id("next")
-		          )
-		        , []
-		        )
-			    , None()
-			    , Id($[get_[name]])
-			    )
-			  , []
-				)
+			expJava := <exp-to-java(err)>exp;
+			x_getter := $[get_[name]]
+		with
+			result := |[~expJava.iterator().next().x_getter()]|
 
 	ref-to-java(err): AttributeName(exp, name) -> result
 		where
@@ -57,34 +38,27 @@ rules // attributes of expressions
 			ZeroOrOne() := <get-multiplicity>exp <+
 			This()      := exp //an un-typed This(): unqualified attribute reference
 		with
-			result :=
-				Invoke(
-					Method(
-				      <exp-to-java(err)>exp
-				    , None()
-				    , Id($[get_[name]])
-				    )
-				  , []
-				)
+			expJava := <exp-to-java(err)>exp;
+			x_getter := $[get_[name]]
+		with
+			result :=	|[~expJava.x_getter()]|
 
 	ref-to-java(err): AttributeName(exp, name) -> result
 		where
 			ZeroOrMore():= <get-multiplicity>exp <+
 			OneOrMore() := <get-multiplicity>exp
 		with
-			exp-ty := <get-type>exp
+			x_expType := <get-type>exp;
+			x_getter := $[get_[name]];
+			expJava := <exp-to-java(err)>exp
 		with
-			result :=
-				Invoke(
-				  Method(MethodName(AmbName(Id(exp-ty)), Id($[get_[name]])))
-				, [ <exp-to-java(err)>exp ]
-				)
+			result := |[x_expType.x_getter(~expJava)]|
 
 rules // direct references
 
-	ref-to-java(err): Identifier(entityName) -> ExprName(Id(entityName))
+	ref-to-java(err): Identifier(x_entityName) -> expr |[x_entityName]|
 		where
-			NablNsEntity() := <nabl-uri;nabl-uri-namespace>entityName
+			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
 	ref-to-java(err): Identifier(name) -> result
 		where
@@ -92,4 +66,4 @@ rules // direct references
 		with
 			result := <ref-to-java(err)>AttributeName(This(), name) //forward to this.name
 			
-	ref-to-java(err): This() -> This()
+	ref-to-java(err): This() -> |[this]|
