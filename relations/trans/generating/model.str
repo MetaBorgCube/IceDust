@@ -16,60 +16,45 @@ rules
   to-java(err): ModelDef(model) -> <map(try(to-java(err)))>model
 
   to-java(err): EntityTypeDef(_, name, attributesAndRoles) -> 
-	  ClassDec(
-	      ClassDecHead([], Id(name), None(), None(), None())
-	    , ClassBody(
-	      	<concat>[[ConstrDec(
-	            ConstrDecHead([Public()], None(), Id(name), [], None())
-	          , ConstrBody(
-	              None()
-	            , fulfillRolesJavaInit
-	            )
-	          )],
-	      		attributesAndRolesJava,
-	      		fulfillRolesJava	
-	      	]
-	      )
-	    )
-	where
-		attributesAndRolesJava := <map(to-java(err|name));concat>attributesAndRoles;
+		type-dec |[
+			class x_class
+			{
+				public x_class()
+				{
+					~fulfillRolesJavaInit*
+				}
+				~attributesAndRolesJava*
+				~fulfillRolesJava*
+			}
+		]|
+	with
+		x_class := name;
+		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles;
 		fulfillRoles := <get-fulfill-role-multiple>name;
-		fulfillRolesJava := <map(to-java-fullfil-role(err)) <+ empty-list> fulfillRoles;
-		fulfillRolesJavaInit := <map(to-java-fulfill-role-init(err)) <+ empty-list> fulfillRoles
+		fulfillRolesJava* := <map(to-java-fullfil-role(err)) <+ empty-list> fulfillRoles;
+		fulfillRolesJavaInit* := <map(to-java-fulfill-role-init(err)) <+ empty-list> fulfillRoles
 	
 	empty-list: _ -> []
 	
-	to-java-fullfil-role(err): fulfillRole@_ ->
-			FieldDec(
-        [Public()]
-      , ClassOrInterfaceType(
-          TypeName(Id("Collection"))
-        , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(relationName)), None())]))
-        )
-      , [VarDec(Id($[[relationName]_[roleName]]))]
-      )
+	to-java-fullfil-role(err): fulfillRole ->
+			|[
+  			public Collection<x_type> x_field;
+			]|
 		where
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
-			roleName := <de-def;nabl-uri-name>fulfillRole
-			
+			roleName := <de-def;nabl-uri-name>fulfillRole;
+			x_field := $[[relationName]_[roleName]];
+			x_type := relationName
+
 	to-java-fulfill-role-init(err): fulfillRole@_ ->
-			ExprStm(
-	      Assign(
-	        ExprName(Id($[[relationName]_[roleName]]))
-	      , NewInstance(
-	          None()
-	        , ClassOrInterfaceType(
-	            TypeName(Id("HashSet"))
-	          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id($[[relationName]])), None())]))
-	          )
-	        , []
-	        , None()
-	        )
-	      )
-	    )
+			|[
+				x_field = new HashSet<x_type>();
+			]|
 		where
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
-			roleName := <de-def;nabl-uri-name>fulfillRole
+			roleName := <de-def;nabl-uri-name>fulfillRole;
+			x_field := $[[relationName]_[roleName]];
+			x_type := relationName
 
 	de-def: Def(x) -> x
 
@@ -115,111 +100,47 @@ rules
 			end end end;
 			getter-multi := <getter-multi>(name, javaType, entityName)
 	
-	field: (name, javaType) ->
-				FieldDec(
-	        [Private()]
-	      , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-	      , [VarDec(Id(name))]
-	      )
+	field: (x_name, x_type) -> |[private x_type x_name;]|
 	
-	setter: (name, javaType) ->
-		MethodDec(
-      MethodDecHead(
-        [Public()]
-      , None()
-      , Void()
-      , Id($[set_[name]])
-      , [Param(
-           []
-         , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-         , Id(name)
-         )]
-      , None()
-      )
-    , Block(
-        [ExprStm(
-           Assign(Field(This(), Id(name)), ExprName(Id(name)))
-         )]
-      )
-    )
-    
-  getter-multi: (name, javaType, entityName) ->
-		MethodDec(
-		  MethodDecHead(
-		    [Public(), Static()]
-		  , None()
-		  , ClassOrInterfaceType(
-		      TypeName(Id("Collection"))
-		    , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(javaType)), None())]))
-		    )
-		  , Id($[get_[name]])
-		  , [ Param(
-		        []
-		      , ClassOrInterfaceType(
-		          TypeName(Id("Collection"))
-		        , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(entityName)), None())]))
-		        )
-		      , Id("c")
-		      )
-		    ]
-		  , None()
-		  )
-		, Block(
-		    [ LocalVarDecStm(
-		        LocalVarDec(
-		          []
-		        , ClassOrInterfaceType(
-		            TypeName(Id("Collection"))
-		          , Some(TypeArgs([ClassOrInterfaceType(TypeName(Id(javaType)), None())]))
-		          )
-		        , [ VarDec(
-		              Id("i")
-		            , Invoke(
-		                Method(MethodName(AmbName(Id("Expressions")), Id("emptyCollection")))
-		              , []
-		              )
-		            )
-		          ]
-		        )
-		      )
-		    , ForEach(
-		        Param(
-		          []
-		        , ClassOrInterfaceType(TypeName(Id(entityName)), None())
-		        , Id("n")
-		        )
-		      , ExprName(Id("c"))
-		      , Block(
-					    [ LocalVarDecStm(
-					        LocalVarDec(
-					          []
-					        , ClassOrInterfaceType(TypeName(Id(javaType)), None())
-					        , [ VarDec(
-					              Id("v")
-					            , Invoke(
-					                Method(MethodName(AmbName(Id("n")), Id($[get_[name]])))
-					              , []
-					              )
-					            )
-					          ]
-					        )
-					      )
-					    , If(
-					        NotEq(ExprName(Id("v")), Lit(Null()))
-					      , ExprStm(
-					          Invoke(
-					            Method(MethodName(AmbName(Id("i")), Id("add")))
-					          , [ExprName(Id("v"))]
-					          )
-					        )
-					      )
-					    ]
-		        )
-		      )
-		    , Return(Some(ExprName(Id("i"))))
-		    ]
-		  )
-		)
+	setter: (x_name, x_type) ->
+		|[
+			public void x_setter(x_type x_name)
+			{ 
+				this.x_name = x_name;
+			}
+		]|
+	with
+		x_setter := $[set_[x_name]]
+
+	getter-no-derivation: (x_name, x_type) ->
+		|[
+		  public x_type x_getter()
+		  { 
+		    return x_name;
+		  }
+	  ]|
+	 with
+	 	x_getter := $[get_[x_name]]
+	 	
+	//TODO: getter-default-value
+	//TODO: getter-derivation
+
+	getter-multi: (x_name, x_type, x_entity) ->
+		|[
+			public static Collection<x_type> x_getter(Collection<x_entity> c)
+			{ 
+				Collection<x_type> result = Expressions.emptyCollection();
+				for(x_entity n : c)
+				{ 
+					x_type v = n.x_getter();
+					if(v != null)
+						result.add(v);
+				}
+				return result;
+			}
+		]|
+	with
+		x_getter := $[get_[x_name]]
 
   to-java(err|relationName): Role(EntityType(type), multiplicity, roleName) ->
 		[	FieldDec(
