@@ -9,40 +9,6 @@ imports
 	trans/generating/expressions-references
 
 rules
-  
-  
-//   emit-java-class:
-//     x_name -> 
-//       |[
-//         package x_name;
-//         
-//         public class x_name implements x_name {
-// 
-//           ~body_fdec
-//           
-//           ~body_mdec
-//           
-//         }
-//       ]|
-//     with
-//       body_fdec := <emit-java-field>;
-//       body_mdec := <emit-java-method>
-//     
-//   
-//   emit-java-field =
-//     ! class-body-dec |[ private final String id = "1234"; ]|
-//   
-//   emit-java-method =
-//     bstm* := <generate-my-body> "" ; 
-//     !|[
-//       public void foobar() {
-//         bstm*
-//       }
-//     ]|
-//   
-//   generate-my-body = ! [ stm |[ throw new RuntimeException(); ]|, stm |[ throw new RuntimeException(); ]| ]
-
-rules
 	
 	exp-to-java(err) = nav-to-java(err)
 	exp-to-java(err) = ref-to-java(err)
@@ -91,27 +57,24 @@ rules // literals
 
 rules // lib expression calls
 	
-	lib-java-un-exp(err): (exp, lib-call) ->
-		Invoke(
-		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
-		 , [<exp-to-java(err)>exp]
-		 )
+	lib-java-un-exp(err): (exp, x_method) ->
+		|[Expressions.x_method(~expJ)]|
+	with
+		expJ := <exp-to-java(err)>exp
+		
+	lib-java-bin-exp(err): (exp1, exp2, x_method) ->
+		|[Expressions.x_method(~exp1j, ~exp2j)]|
+	with
+		exp1j := <exp-to-java(err)>exp1;
+		exp2j := <exp-to-java(err)>exp2
 	
-	lib-java-bin-exp(err): (exp1, exp2, lib-call) ->
-		Invoke(
-		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
-		 , [<exp-to-java(err)>exp1,
-		    <exp-to-java(err)>exp2]
-		 )
-		 
-	lib-java-ter-exp(err): (exp1, exp2, exp3, lib-call) ->
-		Invoke(
-		   Method(MethodName(AmbName(Id("Expressions")), Id(lib-call)))
-		 , [<exp-to-java(err)>exp1,
-		    <exp-to-java(err)>exp2,
-		    <exp-to-java(err)>exp3]
-		 )
-		 
+	lib-java-ter-exp(err): (exp1, exp2, exp3, x_method) ->
+		|[Expressions.x_method(~exp1j, ~exp2j, ~exp3j)]|
+	with
+		exp1j := <exp-to-java(err)>exp1;
+		exp2j := <exp-to-java(err)>exp2;
+		exp3j := <exp-to-java(err)>exp3
+
 rules
 	
   exp-to-java(err): a -> a'
