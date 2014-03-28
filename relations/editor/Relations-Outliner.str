@@ -6,6 +6,8 @@ imports
   lib/editor/outline-library
   lib/editor/origins
 
+	trans/desugaring/desugar
+
 	// imports for ast -> aast
 	// lib/index/core
 	// lib/task/core
@@ -17,7 +19,7 @@ rules
   outline-expand-to-level = !5
 
 	//TODO: call this on desugared, or even analyzed AST @see http://yellowgrass.org/issue/Spoofax/837
-  outline = simple-label-outline(to-outline-label)
+  outline = desugar-all;simple-label-outline(to-outline-label)
   
 	// analyzeast: ast -> analyzed-ast
 	// 	with
@@ -37,13 +39,11 @@ rules
 	  		where RelationType() := et-er
 	  		
 	  		to-outline-label : Attribute(a, a-ty, a-mu, _) 								-> $[[<pp-o>a] : [<pp-o>a-ty] [<pp-o>a-mu]]{"icons/circle-green.png"}
-	  		to-outline-label : Role(EntityType(r-ty), r-mu, Some(r)) 			-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
-	  		to-outline-label : Role(EntityType(r-ty), r-mu, None()) 			-> $[[<pp-o>r-ty] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
+	  		to-outline-label : Role(EntityType(r-ty), r-mu, r) 						-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
 	  
 	  to-outline-label : DataDef(_) -> "Data"{"icons/data.png"}
 	  
-	  	to-outline-label : EntityOrRelation(EntityType(e-ty), Some(e), _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
-	  	to-outline-label : EntityOrRelation(EntityType(e-ty), None(), _, _)	-> $[<noname> : [<pp-o>e-ty]]{"icons/square-gray.png"}
+	  	to-outline-label : EntityOrRelation(EntityType(e-ty), e, _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
 	  	
 	  to-outline-label : Executable(_) -> "Execute"{"icons/execute.png"}
 	  
@@ -52,6 +52,13 @@ rules
   pp-o =
   is-string 
     <+
+  pp-o-multiplicity
+  	<+
   ?term{a}; origin-text; ?label; !label{a}
     <+
   write-to-string // fallback
+  
+  pp-o-multiplicity : ZeroOrOne() -> "[0, 1]"
+  pp-o-multiplicity : One() -> "[1, 1]"
+  pp-o-multiplicity : ZeroOrMore() -> "[0, n)"
+  pp-o-multiplicity : OneOrMore() -> "[1, n)"
