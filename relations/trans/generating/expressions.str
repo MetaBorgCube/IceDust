@@ -11,10 +11,10 @@ imports
 
 rules
 	
-	exp-to-java-stm(err): a	-> ([], <exp-to-java(err)>a)
+	// exp-to-java-stm(err): a	-> ([], <exp-to-java(err)>a)
 	
-	exp-to-java(err) = nav-to-java(err)
-	exp-to-java(err) = ref-to-java(err)
+	// exp-to-java(err) = nav-to-java(err)
+	// exp-to-java(err) = ref-to-java(err)
 
 // rules // math
 // 
@@ -85,6 +85,11 @@ rules
 	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
 
 //================================================================================================//
+
+rules
+
+	exp-to-java-stm(err) = nav-to-java(err)
+	exp-to-java-stm(err) = ref-to-java(err)
 
 rules // math
 
@@ -176,5 +181,5 @@ rules
 
   exp-to-java-stm(err): a -> (a', a')
 	where
-	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+	  a' := <err>$[No exp-to-java-stm defined for [<get-constructor> a]/[<get-arguments;length> a].]
 

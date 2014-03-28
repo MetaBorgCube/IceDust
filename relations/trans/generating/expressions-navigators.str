@@ -7,20 +7,33 @@ imports
 	
 	trans/naming/names
 	trans/generating/expressions
+	trans/generating/types
 
 rules 
     
-	nav-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(x_relationName)) -> result
+	nav-to-java(err): e@NavigateIn(prevNav, _, RoleName(roleInName), EntityType(x_relationName)) -> (stms, exp)
 		with
 			x_call := $[[roleInName]_in];
-			prevJava := <exp-to-java(err)>prevNav
+			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;
+			e-ty := <java-type>e;
+			x_var := <newname>"var"
 		with
-			result := |[x_relationName.x_call(~prevJava)]|
+			stms := bstm* |[
+				~stms*
+				~e-ty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
   
-  nav-to-java(err): NavigateOut(prevNav, _, EntityType(x_relationName), RoleName(roleOutName)) -> result
+  nav-to-java(err): e@NavigateOut(prevNav, _, EntityType(x_relationName), RoleName(roleOutName)) -> (stms, exp)
 		with
 			x_call := $[[roleOutName]_out];
-			prevJava := <exp-to-java(err)>prevNav
+			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;
+			e-ty := <java-type>e;
+			x_var := <newname>"var"
 		with
-			result := |[x_relationName.x_call(~prevJava)]|
+			stms := bstm* |[
+				~stms*
+				~e-ty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
 
