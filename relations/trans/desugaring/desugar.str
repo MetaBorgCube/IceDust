@@ -6,65 +6,39 @@ imports
 	
 rules
 
+	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names
 
-desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names
-
-
-/**
- *	Default desugarings
- */
-// remove all Some() constructs
-desugar: Some(a) -> a
-
-// make the top level construct indicate that it is desugared (we dont want any further processing if its not desugared)
-desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
-
-
-/**
- *	Expressions
- */
-// desugar: AttributeNameThis(a)		->	AttributeName(This(), a)
-
-
-/**
- *	Nonspecified multiplicities are One
- */
-desugar: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
-
-
-/**
- *	Generate omitted names
- */
-desugar = generate-role-name
-
-generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
-
-generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(c'), d)
-	with
-		(c', _) := <generate-entity-names-recursive>(c, [])
-
-generate-entity-names-recursive: ([], history) -> ([], history)
-generate-entity-names-recursive: ([e|rest], history) -> ([e'|rest'], history'')
-	with
-		(e', history') := <generate-entity-name>(e, history);
-		(rest', history'') := <generate-entity-names-recursive>(rest, history')
-
-generate-entity-name: (EntityOrRelation(EntityType(e-ty), None(), r, a), history) -> (EntityOrRelation(EntityType(e-ty), e, r, a), history')
-	with
-		(e, history') := <new-name>(e-ty, history)
-
-generate-entity-name = id // if it is not None() but had a name already
-
-/**
- *	Navigators
- */
-desugar: NavigateInOut(prevNav, navType, inRole, relation, outRole) ->
-	NavigateOut(
-    NavigateIn(prevNav, NavOr(), inRole, relation)
-  , NavOr(), relation, outRole
-  )
-
-	
 signature constructors
+	
 	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+
+rules // general
+
+	desugar: Some(a) -> a
+
+	desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
+
+rules // generate omitted multiplicities
+
+	desugar: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+
+rules // generate omitted names
+
+	desugar: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
+
+rules // combined navigators into single steps
+
+	desugar: NavigateInOut(prevNav, navType, inRole, relation, outRole) ->
+		NavigateOut(
+	    NavigateIn(prevNav, NavOr(), inRole, relation)
+	  , NavOr(), relation, outRole
+	  )	
+
+rules	// custom traversal desugarings
+
+	generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(<new-name-map(try(generate-entity-name))>c), d)
+	
+	generate-entity-name: (EntityOrRelation(EntityType(e-ty), None(), r, a), history) -> (EntityOrRelation(EntityType(e-ty), e, r, a), history')
+		with
+			(e, history') := <new-name>(e-ty, history)
 	

@@ -30,7 +30,22 @@ rules // alternative implementation of newname, passing the names and counters a
 	update-history-prefix(|prefix): (prefix2, count) -> (prefix2, <inc>count)
 		where
 			<eq>(prefix, prefix2)
+
+rules
 	
+	new-name-map(map-strategy): input-list -> output-list
+		with
+			(output-list, _) := <map-fold(map-strategy)>(input-list, [])
+
+rules
+
+	map-fold(map-strategy): ([], fold-base-value) -> ([], fold-base-value)
+
+	map-fold(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
+		with
+			(input-head', fold-value') := <map-strategy>(input-head, fold-value);
+			(input-rest', fold-value'') := <map-fold(map-strategy)>(input-rest, fold-value')
+			
 rules
 	
 	test-new-name: a -> a
