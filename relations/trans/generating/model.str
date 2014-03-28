@@ -185,8 +185,7 @@ rules
 
 	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
 		where
-			ZeroOrMore() := multiplicity <+
-			OneOrMore() := multiplicity
+			<upper-many>multiplicity
 		with
 			x_in := $[[x_roleName]_in];
 			x_out := $[[x_roleName]_out];
@@ -229,8 +228,7 @@ rules
 
 	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
 		where
-			ZeroOrOne() := multiplicity <+
-			One() := multiplicity
+			<upper-one>multiplicity
 		with
 			x_in := $[[x_roleName]_in];
 			x_out := $[[x_roleName]_out];
