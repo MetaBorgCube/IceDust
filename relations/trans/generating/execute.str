@@ -9,19 +9,15 @@ imports
 
 rules
 
-  to-java(err): Executable(executes) -> <map(exp-to-java(err);syso)>executes
-  
-  syso: javaExpr -> |[System.out.println(~javaExpr);]|
-  
-	// syso: javaExpr ->
-	// 	ExprStm(
-	// 	  Invoke(
-	// 	    Method(
-	// 	      MethodName(
-	// 	        AmbName(AmbName(Id("System")), Id("out"))
-	// 	      , Id("println")
-	// 	      )
-	// 	    )
-	// 	  , [ javaExpr ]
-	// 	  )
-	// 	)
+  to-java-executable(err): exp -> result
+  	with
+  		(stms*, exp') := <exp-to-java-stm(err|0)>exp
+  	with
+  		result := bstm* |[
+  			{
+	  			~stms*
+	  			System.out.println(~exp');
+  			}
+  		]|
+
+	to-java(err): Executable(executes) -> <map(to-java-executable(err));concat>executes

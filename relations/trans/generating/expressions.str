@@ -7,76 +7,112 @@ imports
 
 	trans/generating/expressions-navigators
 	trans/generating/expressions-references
-
-rules
-	
-	exp-to-java(err) = nav-to-java(err)
-	exp-to-java(err) = ref-to-java(err)
+	trans/generating/types
 
 rules // math
 
-	exp-to-java(err): Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "plus")
-	exp-to-java(err): Subtraction(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "minus")
-	exp-to-java(err): Division(e1, e2) 			-> <lib-java-bin-exp(err)>(e1, e2, "div")
-	exp-to-java(err): Modulo(e1, e2) 				-> <lib-java-bin-exp(err)>(e1, e2, "mod")
-	exp-to-java(err): Multiplication(e1, e2)-> <lib-java-bin-exp(err)>(e1, e2, "mul")
+	lib-call: Addition(_, _)				->"plus"
+	lib-call: Subtraction(_, _)			->"minus"
+	lib-call: Division(_, _) 				->"div"
+	lib-call: Modulo(_, _) 					->"mod"
+	lib-call: Multiplication(_, _)	->"mul"
 
 rules // logic
 	
-	exp-to-java(err): Not(e)								-> <lib-java-un-exp(err)>(e, "not")
-	exp-to-java(err): LessThan(e1, e2)			-> <lib-java-bin-exp(err)>(e1, e2, "lt")	
-	exp-to-java(err): LessThanEqual(e1, e2)	-> <lib-java-bin-exp(err)>(e1, e2, "lte")	
-	exp-to-java(err): GreaterThan(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "gt")	
-	exp-to-java(err): GreaterThanEqual(e1,e2)-><lib-java-bin-exp(err)>(e1, e2, "gte")	
-	exp-to-java(err): Equal(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "eq")	
-	exp-to-java(err): Inequal(e1, e2)				-> <lib-java-bin-exp(err)>(e1, e2, "neq")	
-	exp-to-java(err): And(e1, e2)						-> <lib-java-bin-exp(err)>(e1, e2, "and")
-	exp-to-java(err): Or(e1, e2)						-> <lib-java-bin-exp(err)>(e1, e2, "or")
-	exp-to-java(err): TernaryConditional(e1,e2,e3)-><lib-java-ter-exp(err)>(e1, e2, e3, "conditional")
+	lib-call: Not(_)								->"not"
+	lib-call: LessThan(_, _)				->"lt"
+	lib-call: LessThanEqual(_, _)		->"lte"
+	lib-call: GreaterThan(_, _)			->"gt"
+	lib-call: GreaterThanEqual(_,_)	->"gte"
+	lib-call: Equal(_, _)						->"eq"
+	lib-call: Inequal(_, _)					->"neq"
+	lib-call: And(_, _)							->"and"
+	lib-call: Or(_, _)							->"or"
+	lib-call: TernaryConditional(_,_,_)->"conditional"
 
 rules // aggregations
 	
-	exp-to-java(err): Max(e)								-> <lib-java-un-exp(err)>(e, "max")
-	exp-to-java(err): Min(e)								-> <lib-java-un-exp(err)>(e, "min")
-	exp-to-java(err): Avg(e)								-> <lib-java-un-exp(err)>(e, "avg")
-	exp-to-java(err): Sum(e)								-> <lib-java-un-exp(err)>(e, "sum")
-	exp-to-java(err): Concat(e)							-> <lib-java-un-exp(err)>(e, "concat")
-	exp-to-java(err): Count(e)							-> <lib-java-un-exp(err)>(e, "count")
+	lib-call: Max(_)								->"max"
+	lib-call: Min(_)								->"min"
+	lib-call: Avg(_)								->"avg"
+	lib-call: Sum(_)								->"sum"
+	lib-call: Concat(_)							->"concat"
+	lib-call: Count(_)							->"count"
 
 rules // multiplicities
 	
-	exp-to-java(err): Merge(e1, e2)					-> <lib-java-bin-exp(err)>(e1, e2, "merge")
-	exp-to-java(err): ChoiceLeft(e1, e2)		-> <lib-java-bin-exp(err)>(e1, e2, "choice")
-
-rules // literals
-	
-  exp-to-java(err): String(value) 				-> Lit(String([Chars(value)]))
-  exp-to-java(err): Int(value) 						-> Lit(Deci(value))
-  exp-to-java(err): True() 								-> Lit(True())
-  exp-to-java(err): False() 							-> Lit(False())
+	lib-call: Merge(_, _)						->"merge"
+	lib-call: ChoiceLeft(_, _)			->"choice"
 
 rules // lib expression calls
 	
-	lib-java-un-exp(err): (exp, x_method) ->
-		|[Expressions.x_method(~expJ)]|
-	with
-		expJ := <exp-to-java(err)>exp
+	exp-to-java-stm(err|i): e -> (stms, exp)
+		where
+			x_method := <lib-call>e;
+			[e1] := <get-arguments>e
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			refty := <java-type>e;
+			x_var := $[var[<inc>j]]
+		with
+			stms := bstm*|[
+				~exp1s*
+				refty x_var = Expressions.x_method(~exp1j);
+			]|;
+			exp := expr |[x_var]|
 		
-	lib-java-bin-exp(err): (exp1, exp2, x_method) ->
-		|[Expressions.x_method(~exp1j, ~exp2j)]|
-	with
-		exp1j := <exp-to-java(err)>exp1;
-		exp2j := <exp-to-java(err)>exp2
+	exp-to-java-stm(err|i): e -> (stms, exp)
+		where
+			x_method := <lib-call>e;
+			[e1, e2] := <get-arguments>e
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			(exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
+			k := <add>(j, <length>exp2s*);
+			refty := <java-type>e;
+			x_var := $[var[<inc>k]]
+		with
+			stms := bstm*|[
+				~exp1s*
+				~exp2s*
+				refty x_var = Expressions.x_method(~exp1j, ~exp2j);
+			]|;
+			exp := expr |[x_var]|
 	
-	lib-java-ter-exp(err): (exp1, exp2, exp3, x_method) ->
-		|[Expressions.x_method(~exp1j, ~exp2j, ~exp3j)]|
-	with
-		exp1j := <exp-to-java(err)>exp1;
-		exp2j := <exp-to-java(err)>exp2;
-		exp3j := <exp-to-java(err)>exp3
+	exp-to-java-stm(err|i): e -> (stms, exp)
+		where
+			x_method := <lib-call>e;
+			[e1, e2, e3] := <get-arguments>e
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			(exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
+			k := <add>(j, <length>exp2s*);
+			(exp3s*, exp3j) := <exp-to-java-stm(err|k)>e3;
+			l := <add>(k, <length>exp3s*);
+			refty := <java-type>e;
+			x_var := $[var[<inc>l]]
+		with
+			stms := bstm*|[
+				~exp1s*
+				~exp2s*
+				~exp3s*
+				refty x_var = Expressions.x_method(~exp1j, ~exp2j, ~exp3j);
+			]|;
+			exp := expr |[x_var]|
+
+rules // literals
+	
+  exp-to-java-stm(err|i): String(value) 				-> ([], Lit(String([Chars(value)])))
+  exp-to-java-stm(err|i): Int(value) 						-> ([], Lit(Deci(value)))
+  exp-to-java-stm(err|i): True() 								-> ([], Lit(True()))
+  exp-to-java-stm(err|i): False() 							-> ([], Lit(False()))
 
 rules
-	
-  exp-to-java(err): a -> a'
+
+  exp-to-java-stm(err|i): a -> (a', a')
 	where
-	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+	  a' := <err>$[No exp-to-java-stm defined for [<get-constructor> a]/[<get-arguments;length> a].]
+

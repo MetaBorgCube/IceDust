@@ -111,7 +111,7 @@ rules
 			x_type := <type-to-java(err)>type;
 			x_getter := $[get_[x_name]];
 			x_setter := $[set_[x_name]];
-			expressionJava := <exp-to-java(err)>derivationExpr
+			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
 		with
 			result :=
 				|[
@@ -124,7 +124,10 @@ rules
 					
 				  public x_type x_getter()
 				  { 
-		  			return x_name != null ? x_name : ~expressionJava;
+				  	if(x_name != null)
+				  		return x_name;
+				  	~stms*
+		  			return ~exp;
 				  }
 				  
 					public static x_type x_getter(x_entity c)
@@ -152,13 +155,14 @@ rules
 			x_type := <type-to-java(err)>type;
 			x_getter := $[get_[x_name]];
 			x_setter := $[set_[x_name]];
-			expressionJava := <exp-to-java(err)>derivationExpr
+			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
 		with
 			result :=
 				|[
 				  public x_type x_getter()
 				  { 
-		  			return ~expressionJava;
+				  	~stms*
+		  			return ~exp;
 				  }
 				  
 					public static x_type x_getter(x_entity c)
@@ -181,8 +185,7 @@ rules
 
 	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
 		where
-			ZeroOrMore() := multiplicity <+
-			OneOrMore() := multiplicity
+			<upper-many>multiplicity
 		with
 			x_in := $[[x_roleName]_in];
 			x_out := $[[x_roleName]_out];
@@ -225,8 +228,7 @@ rules
 
 	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
 		where
-			ZeroOrOne() := multiplicity <+
-			One() := multiplicity
+			<upper-one>multiplicity
 		with
 			x_in := $[[x_roleName]_in];
 			x_out := $[[x_roleName]_out];
