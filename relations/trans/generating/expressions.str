@@ -7,6 +7,7 @@ imports
 
 	trans/generating/expressions-navigators
 	trans/generating/expressions-references
+	trans/generating/types
 
 rules
 	
@@ -80,3 +81,31 @@ rules
   exp-to-java(err): a -> a'
 	where
 	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+
+rules
+
+	exp-to-java-stm(err): Addition(e1, e2) -> (stms, exp)
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
+			exp1t := <java-type>e1;
+			(exp2s*, exp2j) := <exp-to-java-stm(err)>e2;
+			exp2t := <java-type>e2;
+			x_var1 := <newname>"var";
+			x_var2 := <newname>"var"
+		with
+			stms := bstm*|[
+				~exp1s*
+				~exp1t x_var1 = ~exp1j;
+				~exp2s*
+				~exp2t x_var2 = ~exp2j;
+			]|;
+			exp := expr |[Expressions.plus(x_var1, x_var2)]|
+
+  exp-to-java-stm(err): Int(value) 						-> ([], Lit(Deci(value)))
+
+rules
+
+  exp-to-java-stm(err): a -> (a', a')
+	where
+	  a' := <err>$[No exp-to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
+
