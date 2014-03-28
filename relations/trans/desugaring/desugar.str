@@ -2,6 +2,7 @@ module trans/desugaring/desugar
 
 imports
 	include/Relations
+	trans/lib/new-name
 	
 rules
 
@@ -38,14 +39,21 @@ desugar = generate-role-name
 
 generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
 
-// desugar = generate-entity-name
-
-generate-entity-names: ModuleDesugared(a, b, None(), d) -> ModuleDesugared(a, b, None(), d)
-generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(<map-with-index(try(generate-entity-name))>c), d)
-generate-entity-name: (index, EntityOrRelation(EntityType(e-ty), None(), r, a)) -> EntityOrRelation(EntityType(e-ty), e, r, a)
+generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(c'), d)
 	with
-		e := $[[e-ty][index]]
-		// e := <newname>e-ty
+		(c', _) := <generate-entity-names-recursive>(c, [])
+
+generate-entity-names-recursive: ([], history) -> ([], history)
+generate-entity-names-recursive: ([e|rest], history) -> ([e'|rest'], history'')
+	with
+		(e', history') := <generate-entity-name>(e, history);
+		(rest', history'') := <generate-entity-names-recursive>(rest, history')
+
+generate-entity-name: (EntityOrRelation(EntityType(e-ty), None(), r, a), history) -> (EntityOrRelation(EntityType(e-ty), e, r, a), history')
+	with
+		(e, history') := <new-name>(e-ty, history)
+
+generate-entity-name = id // if it is not None() but had a name already
 
 /**
  *	Navigators
