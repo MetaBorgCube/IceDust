@@ -40,5 +40,5 @@ rules	// custom traversal desugarings
 	
 	generate-entity-name: (EntityOrRelation(EntityType(e-ty), None(), r, a), history) -> (EntityOrRelation(EntityType(e-ty), e, r, a), history')
 		with
-			(e, history') := <new-name>(e-ty, history)
+			(e, history') := <new-name>(<lcfirst>e-ty, history)
 	

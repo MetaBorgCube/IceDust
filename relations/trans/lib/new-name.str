@@ -54,3 +54,8 @@ rules
 			(name2, history2) := <new-name;debug>("a",history1);
 			(name3, history3) := <new-name;debug>("b",history2);
 			(name4, history4) := <new-name;debug>("a",history3)
+
+rules
+	
+	lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
+	lcfirst = string-as-chars(lcfirst-chars)
