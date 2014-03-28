@@ -13,7 +13,6 @@ rules
 			compilation-unit |[
 				import lib.relations.*;
 				import java.util.Collection;
-				import java.util.HashSet;
 				
 				~mainClass
 				~modelJava*

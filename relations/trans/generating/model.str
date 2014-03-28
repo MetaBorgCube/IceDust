@@ -59,7 +59,7 @@ rules
 			if <upper-one> multiplicity then
 				result := |[ x_field = null; ]|
 			else
-				result := |[ x_field = new HashSet<x_type>(); ]|
+				result := |[ x_field = Expressions.emptyCollection(); ]|
 			end
 
 	de-def: Def(x) -> x
@@ -202,7 +202,7 @@ rules
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
 				  { 
-				    Collection<x_relType> result = new HashSet<x_relType>();
+				    Collection<x_relType> result = Expressions.emptyCollection();
 				    for(x_entityType elem : in)
 				    { 
 				      result.addAll(elem.x_relRole);
@@ -217,7 +217,7 @@ rules
 				
 				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
 				  { 
-				    Collection<x_entityType> result = new HashSet<x_entityType>();
+				    Collection<x_entityType> result = Expressions.emptyCollection();
 				    for(x_relType u : out)
 				    { 
 				      result.add(u.x_roleName);
@@ -245,7 +245,7 @@ rules
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
 				  { 
-				    Collection<x_relType> result = new HashSet<x_relType>();
+				    Collection<x_relType> result = Expressions.emptyCollection();
 				    for(x_entityType elem : in)
 				    { 
 				      result.add(elem.x_relRole);
@@ -260,7 +260,7 @@ rules
 				
 				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
 				  { 
-				    Collection<x_entityType> result = new HashSet<x_entityType>();
+				    Collection<x_entityType> result = Expressions.emptyCollection();
 				    for(x_relType u : out)
 				    { 
 				      result.add(u.x_roleName);
