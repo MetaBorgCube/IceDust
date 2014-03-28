@@ -9,8 +9,6 @@ imports
 
 rules
 
-  // to-java(err): Executable(executes) -> <map(to-java-executable(err))>executes
-  // 
   to-java-executable(err): exp -> result
   	with
   		(stms*, exp') := <exp-to-java-stm(err)>exp
@@ -20,28 +18,4 @@ rules
   			System.out.println(~exp');
   		]|
 
-
-  to-java(err): Executable(executes) -> <map(to-java-executable(err));concat>executes
-  
-  // to-java-executable(err): exp -> result
-  // 	with
-  // 		exp' := <exp-to-java(err)>exp
-  // 	with
-  // 		result:= bstm* |[
-  // 			System.out.println(~exp');
-  // 		]|
-  
-  // syso: javaExpr -> |[System.out.println(~javaExpr);]|
-  
-	// syso: javaExpr ->
-	// 	ExprStm(
-	// 	  Invoke(
-	// 	    Method(
-	// 	      MethodName(
-	// 	        AmbName(AmbName(Id("System")), Id("out"))
-	// 	      , Id("println")
-	// 	      )
-	// 	    )
-	// 	  , [ javaExpr ]
-	// 	  )
-	// 	)
+	to-java(err): Executable(executes) -> <map(to-java-executable(err));concat>executes
