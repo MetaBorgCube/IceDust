@@ -86,6 +86,11 @@ rules
 				    return x_name;
 				  }
 				  
+					public static x_type x_getter(x_entity c)
+					{ 
+						return c == null ? null : c.x_getter();
+					}
+				  
 					public static Collection<x_type> x_getter(Collection<x_entity> c)
 					{ 
 						Collection<x_type> result = Expressions.emptyCollection();
@@ -122,6 +127,11 @@ rules
 		  			return x_name != null ? x_name : ~expressionJava;
 				  }
 				  
+					public static x_type x_getter(x_entity c)
+					{ 
+						return c == null ? null : c.x_getter();
+					}
+				  
 					public static Collection<x_type> x_getter(Collection<x_entity> c)
 					{ 
 						Collection<x_type> result = Expressions.emptyCollection();
@@ -150,6 +160,11 @@ rules
 				  { 
 		  			return ~expressionJava;
 				  }
+				  
+					public static x_type x_getter(x_entity c)
+					{ 
+						return c == null ? null : c.x_getter();
+					}
 				  
 					public static Collection<x_type> x_getter(Collection<x_entity> c)
 					{ 
