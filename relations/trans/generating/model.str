@@ -34,25 +34,33 @@ rules
 		fulfillRolesJava* := <map(to-java-fullfil-role(err))> fulfillRoles;
 		fulfillRolesJavaInit* := <map(to-java-fulfill-role-init(err))> fulfillRoles
 	
-	to-java-fullfil-role(err): fulfillRole ->
-			|[
-  			public Collection<x_type> x_field;
-			]|
+	to-java-fullfil-role(err): fulfillRole -> result
 		with
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
-			x_type := relationName
+			x_type := relationName;
+			multiplicity := <get-multiplicity>fulfillRole
+		with
+			if <upper-one> multiplicity then
+				result := |[ public x_type x_field; ]|
+			else
+				result := |[ public Collection<x_type> x_field; ]|
+			end
 
-	to-java-fulfill-role-init(err): fulfillRole@_ ->
-			|[
-				x_field = new HashSet<x_type>();
-			]|
+	to-java-fulfill-role-init(err): fulfillRole -> result
 		with
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
-			x_type := relationName
+			x_type := relationName;
+			multiplicity := <get-multiplicity>fulfillRole
+		with
+			if <upper-one> multiplicity then
+				result := |[ x_field = null; ]|
+			else
+				result := |[ x_field = new HashSet<x_type>(); ]|
+			end
 
 	de-def: Def(x) -> x
 
@@ -215,7 +223,7 @@ rules
 		
 				  public static x_relType x_in(x_entityType in)
 				  { 
-				    return in.x_relRole.size() == 0 ? null : in.x_relRole.iterator().next();
+				    return in.x_relRole;
 				  }
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
@@ -223,7 +231,7 @@ rules
 				    Collection<x_relType> result = new HashSet<x_relType>();
 				    for(x_entityType elem : in)
 				    { 
-				      result.addAll(elem.x_relRole);
+				      result.add(elem.x_relRole);
 				    }
 				    return result;
 				  }

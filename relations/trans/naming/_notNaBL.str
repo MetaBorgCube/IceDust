@@ -140,3 +140,14 @@ rules // check if Entity Type names start wiht a capital
 			not(<string-starts-with-capital> x)
 	//TODO: move this to tasks
 			
+rules // predicates over multiplcities
+	
+	upper-one: ZeroOrOne() -> <id>
+	upper-one: One() -> <id>
+	upper-many: ZeroOrMore() -> <id>
+	upper-many: OneOrMore() -> <id>
+	lower-zero: ZeroOrOne() -> <id>
+	lower-zero: ZeroOrMore() -> <id>
+	lower-one: One() -> <id>
+	lower-one: OneOrMore() -> <id>
+	nullable = lower-zero

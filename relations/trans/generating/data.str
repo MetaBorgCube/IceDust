@@ -6,6 +6,8 @@ imports
 	include/Relations
 	
 	trans/generating/expressions
+	trans/naming/names
+	trans/naming/_notNaBL
 
 rules
 	
@@ -35,10 +37,15 @@ rules
 	  	x_setter := $[set_[attributeName]];
 	  	attributeValueJava := <exp-to-java(err)>attributeValue
 
-  to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) ->
-  	[
-			stm |[ x_entityName.x_roleName = x_otherName; ]|,
-	  	stm |[ x_otherName.x_roleNameOther.add(x_entityName);]|
-	  ]
-	with
-		x_roleNameOther := $[[entityType]_[x_roleName]]
+  to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) -> [result1, result2]
+		with
+			x_roleNameOther := $[[entityType]_[x_roleName]];
+			multiplicity := <get-multiplicity>x_roleName
+		with
+			result1 := stm |[ x_entityName.x_roleName = x_otherName; ]|;
+			if <upper-many>multiplicity then
+				result2 := stm |[ x_otherName.x_roleNameOther.add(x_entityName);]|
+			else
+				result2 := stm |[ x_otherName.x_roleNameOther = x_entityName;]|
+			end
+			  
