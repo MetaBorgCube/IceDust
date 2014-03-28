@@ -158,32 +158,92 @@ rules
 					}
 				]|
 
-	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) ->
-		|[
-		  public x_entityType x_roleName;
+	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
+		where
+			ZeroOrMore() := multiplicity <+
+			OneOrMore() := multiplicity
+		with
+			x_in := $[[x_roleName]_in];
+			x_out := $[[x_roleName]_out];
+			x_relRole := $[[x_relType]_[x_roleName]]
+		with
+			result :=
+				|[
+				  public x_entityType x_roleName;
 		
-		  public static Collection<x_relType> x_in(Collection<x_entityType> in)
-		  { 
-		    Collection<x_relType> result = new HashSet<x_relType>();
-		    for(x_entityType elem : in)
-		    { 
-		      result.addAll(elem.x_relRole);
-		    }
-		    return result;
-		  }
+				  public static Collection<x_relType> x_in(x_entityType in)
+				  { 
+				    return in.x_relRole;
+				  }
 		
-		  public static Collection<x_entityType> x_out(Collection<x_relType> out)
-		  { 
-		    Collection<x_entityType> result = new HashSet<x_entityType>();
-		    for(x_relType u : out)
-		    { 
-		      result.add(u.x_roleName);
-		    }
-		    return result;
-		  }
-		]|
-	with
-		x_in := $[[x_roleName]_in];
-		x_out := $[[x_roleName]_out];
-		x_relRole := $[[x_relType]_[x_roleName]]
+				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
+				  { 
+				    Collection<x_relType> result = new HashSet<x_relType>();
+				    for(x_entityType elem : in)
+				    { 
+				      result.addAll(elem.x_relRole);
+				    }
+				    return result;
+				  }
+				
+				  public static x_entityType x_out(x_relType out)
+				  { 
+				    return out.x_roleName;
+				  }
+				
+				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
+				  { 
+				    Collection<x_entityType> result = new HashSet<x_entityType>();
+				    for(x_relType u : out)
+				    { 
+				      result.add(u.x_roleName);
+				    }
+				    return result;
+				  }
+				]|
+
+	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
+		where
+			ZeroOrOne() := multiplicity <+
+			One() := multiplicity
+		with
+			x_in := $[[x_roleName]_in];
+			x_out := $[[x_roleName]_out];
+			x_relRole := $[[x_relType]_[x_roleName]]
+		with
+			result :=
+				|[
+				  public x_entityType x_roleName;
 		
+				  public static x_relType x_in(x_entityType in)
+				  { 
+				    return in.x_relRole.iterator().next();
+				  }
+		
+				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
+				  { 
+				    Collection<x_relType> result = new HashSet<x_relType>();
+				    for(x_entityType elem : in)
+				    { 
+				      result.addAll(elem.x_relRole);
+				    }
+				    return result;
+				  }
+				
+				  public static x_entityType x_out(x_relType out)
+				  { 
+				    return out.x_roleName;
+				  }
+				
+				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
+				  { 
+				    Collection<x_entityType> result = new HashSet<x_entityType>();
+				    for(x_relType u : out)
+				    { 
+				      result.add(u.x_roleName);
+				    }
+				    return result;
+				  }
+				]|
+
+

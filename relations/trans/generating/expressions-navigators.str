@@ -13,26 +13,14 @@ rules
 	nav-to-java(err): NavigateIn(prevNav, _, RoleName(roleInName), EntityType(x_relationName)) -> result
 		with
 			x_call := $[[roleInName]_in];
-			prevJava := <wrap-prev-to-java(err)>prevNav
+			prevJava := <exp-to-java(err)>prevNav
 		with
 			result := |[x_relationName.x_call(~prevJava)]|
   
   nav-to-java(err): NavigateOut(prevNav, _, EntityType(x_relationName), RoleName(roleOutName)) -> result
 		with
 			x_call := $[[roleOutName]_out];
-			prevJava := <wrap-prev-to-java(err)>prevNav
+			prevJava := <exp-to-java(err)>prevNav
 		with
 			result := |[x_relationName.x_call(~prevJava)]|
 
-rules
-	
-	wrap-prev-to-java(err): prevNav -> result
-		where
-			This() 				:= prevNav <+
-			Identifier(_) := prevNav
-		with
-			prevJava := <exp-to-java(err)>prevNav
-		with
-			result := |[Expressions.toCollection(~prevJava)]|
-	
-	wrap-prev-to-java(err): prevNav -> <exp-to-java(err)>prevNav
