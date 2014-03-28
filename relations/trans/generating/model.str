@@ -31,16 +31,14 @@ rules
 		x_class := name;
 		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles;
 		fulfillRoles := <get-fulfill-role-multiple>name;
-		fulfillRolesJava* := <map(to-java-fullfil-role(err)) <+ empty-list> fulfillRoles;
-		fulfillRolesJavaInit* := <map(to-java-fulfill-role-init(err)) <+ empty-list> fulfillRoles
-	
-	empty-list: _ -> []
+		fulfillRolesJava* := <map(to-java-fullfil-role(err))> fulfillRoles;
+		fulfillRolesJavaInit* := <map(to-java-fulfill-role-init(err))> fulfillRoles
 	
 	to-java-fullfil-role(err): fulfillRole ->
 			|[
   			public Collection<x_type> x_field;
 			]|
-		where
+		with
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
@@ -50,7 +48,7 @@ rules
 			|[
 				x_field = new HashSet<x_type>();
 			]|
-		where
+		with
 			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
@@ -173,7 +171,7 @@ rules
 		
 				  public static Collection<x_relType> x_in(x_entityType in)
 				  { 
-				    return in.x_relRole;
+				    return in == null ? null : in.x_relRole;
 				  }
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
@@ -188,7 +186,7 @@ rules
 				
 				  public static x_entityType x_out(x_relType out)
 				  { 
-				    return out.x_roleName;
+				    return out == null ? null : out.x_roleName;
 				  }
 				
 				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
@@ -217,7 +215,7 @@ rules
 		
 				  public static x_relType x_in(x_entityType in)
 				  { 
-				    return in.x_relRole.iterator().next();
+				    return in.x_relRole.size() == 0 ? null : in.x_relRole.iterator().next();
 				  }
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
@@ -232,7 +230,7 @@ rules
 				
 				  public static x_entityType x_out(x_relType out)
 				  { 
-				    return out.x_roleName;
+				    return out == null ? null : out.x_roleName;
 				  }
 				
 				  public static Collection<x_entityType> x_out(Collection<x_relType> out)

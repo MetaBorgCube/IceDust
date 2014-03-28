@@ -114,8 +114,16 @@ rules // Entities fulfill roles
 			<store-fulfill-role(|ctx, roles)> name
   
   // multiple version of names.str (generated) TODO: needs to be generated to names.str @see http://yellowgrass.org/issue/NaBL/95
-  get-fulfill-role-multiple =
-    get-properties(|NablProp_fulfill-role())
+  get-fulfill-role-multiple: name -> result'
+  	with
+  		result := <get-properties(|NablProp_fulfill-role())>name;
+  		(
+  			[Result(_)] := result;
+  			result' := []
+  		<+
+  			result' := result
+  		)
+  		
 
 rules // check if Entity (not Relation) has no roles
 
