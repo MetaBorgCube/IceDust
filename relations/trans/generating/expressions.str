@@ -46,14 +46,15 @@ rules // multiplicities
 
 rules // lib expression calls
 	
-	exp-to-java-stm(err): e -> (stms, exp)
+	exp-to-java-stm(err|i): e -> (stms, exp)
 		where
 			x_method := <lib-call>e;
 			[e1] := <get-arguments>e
 		with
-			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
 			refty := <java-type>e;
-			x_var := <newname>"var"
+			x_var := $[var[<inc>j]]
 		with
 			stms := bstm*|[
 				~exp1s*
@@ -61,15 +62,17 @@ rules // lib expression calls
 			]|;
 			exp := expr |[x_var]|
 		
-	exp-to-java-stm(err): e -> (stms, exp)
+	exp-to-java-stm(err|i): e -> (stms, exp)
 		where
 			x_method := <lib-call>e;
 			[e1, e2] := <get-arguments>e
 		with
-			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
-			(exp2s*, exp2j) := <exp-to-java-stm(err)>e2;
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			(exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
+			k := <add>(j, <length>exp2s*);
 			refty := <java-type>e;
-			x_var := <newname>"var"
+			x_var := $[var[<inc>k]]
 		with
 			stms := bstm*|[
 				~exp1s*
@@ -78,16 +81,19 @@ rules // lib expression calls
 			]|;
 			exp := expr |[x_var]|
 	
-	exp-to-java-stm(err): e -> (stms, exp)
+	exp-to-java-stm(err|i): e -> (stms, exp)
 		where
 			x_method := <lib-call>e;
 			[e1, e2, e3] := <get-arguments>e
 		with
-			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
-			(exp2s*, exp2j) := <exp-to-java-stm(err)>e2;
-			(exp3s*, exp3j) := <exp-to-java-stm(err)>e3;
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			(exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
+			k := <add>(j, <length>exp2s*);
+			(exp3s*, exp3j) := <exp-to-java-stm(err|k)>e3;
+			l := <add>(k, <length>exp3s*);
 			refty := <java-type>e;
-			x_var := <newname>"var"
+			x_var := $[var[<inc>l]]
 		with
 			stms := bstm*|[
 				~exp1s*
@@ -99,14 +105,14 @@ rules // lib expression calls
 
 rules // literals
 	
-  exp-to-java-stm(err): String(value) 				-> ([], Lit(String([Chars(value)])))
-  exp-to-java-stm(err): Int(value) 						-> ([], Lit(Deci(value)))
-  exp-to-java-stm(err): True() 								-> ([], Lit(True()))
-  exp-to-java-stm(err): False() 							-> ([], Lit(False()))
+  exp-to-java-stm(err|i): String(value) 				-> ([], Lit(String([Chars(value)])))
+  exp-to-java-stm(err|i): Int(value) 						-> ([], Lit(Deci(value)))
+  exp-to-java-stm(err|i): True() 								-> ([], Lit(True()))
+  exp-to-java-stm(err|i): False() 							-> ([], Lit(False()))
 
 rules
 
-  exp-to-java-stm(err): a -> (a', a')
+  exp-to-java-stm(err|i): a -> (a', a')
 	where
 	  a' := <err>$[No exp-to-java-stm defined for [<get-constructor> a]/[<get-arguments;length> a].]
 

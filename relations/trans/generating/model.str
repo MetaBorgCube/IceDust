@@ -111,7 +111,7 @@ rules
 			x_type := <type-to-java(err)>type;
 			x_getter := $[get_[x_name]];
 			x_setter := $[set_[x_name]];
-			(stms*, exp) := <exp-to-java-stm(err)>derivationExpr
+			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
 		with
 			result :=
 				|[
@@ -155,7 +155,7 @@ rules
 			x_type := <type-to-java(err)>type;
 			x_getter := $[get_[x_name]];
 			x_setter := $[set_[x_name]];
-			(stms*, exp) := <exp-to-java-stm(err)>derivationExpr
+			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
 		with
 			result :=
 				|[

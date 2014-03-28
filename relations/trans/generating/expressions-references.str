@@ -16,20 +16,21 @@ imports
 rules // attributes of expressions
 
 	// This() has no type, so cannot use the static getter
-	exp-to-java-stm(err): AttributeName(This(), name) -> ([], result)
+	exp-to-java-stm(err|i): AttributeName(This(), name) -> ([], result)
 		with
 			x_getter := $[get_[name]]
 		with
 			result :=	|[this.x_getter()]|
 			
 
-	exp-to-java-stm(err): e@AttributeName(e1, name) -> (stms, exp)
+	exp-to-java-stm(err|i): e@AttributeName(e1, name) -> (stms, exp)
 		with
 			x_expType := <get-type>e1;
 			x_getter := $[get_[name]];
-			(stms*, e1exp) := <exp-to-java-stm(err)>e1;
+			(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
 			refty := <java-type>e;
-			x_var := <newname>"var"
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]]
 		with
 			stms := bstm* |[
 				~stms*
@@ -39,12 +40,12 @@ rules // attributes of expressions
 
 rules // direct references
 
-	exp-to-java-stm(err): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
+	exp-to-java-stm(err|i): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
 		where
 			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
-	exp-to-java-stm(err): Identifier(name) -> <exp-to-java-stm(err)>AttributeName(This(), name) //forward to this.name
+	exp-to-java-stm(err|i): Identifier(name) -> <exp-to-java-stm(err|i)>AttributeName(This(), name) //forward to this.name
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
 			
-	exp-to-java-stm(err): This() -> ([], |[this]|)
+	exp-to-java-stm(err|i): This() -> ([], |[this]|)

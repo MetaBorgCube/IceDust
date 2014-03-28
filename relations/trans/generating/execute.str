@@ -11,11 +11,13 @@ rules
 
   to-java-executable(err): exp -> result
   	with
-  		(stms*, exp') := <exp-to-java-stm(err)>exp
+  		(stms*, exp') := <exp-to-java-stm(err|0)>exp
   	with
   		result := bstm* |[
-  			~stms*
-  			System.out.println(~exp');
+  			{
+	  			~stms*
+	  			System.out.println(~exp');
+  			}
   		]|
 
 	to-java(err): Executable(executes) -> <map(to-java-executable(err));concat>executes

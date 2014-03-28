@@ -35,7 +35,7 @@ rules
 		]|
 	  with
 	  	x_setter := $[set_[attributeName]];
-	  	(_, attributeValueJava) := <exp-to-java-stm(err)>attributeValue
+	  	(_, attributeValueJava) := <exp-to-java-stm(err|0)>attributeValue
 
   to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) -> [result1, result2]
 		with
