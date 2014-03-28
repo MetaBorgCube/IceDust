@@ -61,12 +61,12 @@ rules // lib expression calls
 	lib-java-un-exp(err): (e, e1, x_method) -> (stms, exp)
 		with
 			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm*|[
 				~exp1s*
-				~e-ty x_var = Expressions.x_method(~exp1j);
+				refty x_var = Expressions.x_method(~exp1j);
 			]|;
 			exp := expr |[x_var]|
 		
@@ -74,13 +74,13 @@ rules // lib expression calls
 		with
 			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
 			(exp2s*, exp2j) := <exp-to-java-stm(err)>e2;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm*|[
 				~exp1s*
 				~exp2s*
-				~e-ty x_var = Expressions.x_method(~exp1j, ~exp2j);
+				refty x_var = Expressions.x_method(~exp1j, ~exp2j);
 			]|;
 			exp := expr |[x_var]|
 	
@@ -89,14 +89,14 @@ rules // lib expression calls
 			(exp1s*, exp1j) := <exp-to-java-stm(err)>e1;
 			(exp2s*, exp2j) := <exp-to-java-stm(err)>e2;
 			(exp3s*, exp3j) := <exp-to-java-stm(err)>e3;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm*|[
 				~exp1s*
 				~exp2s*
 				~exp3s*
-				~e-ty x_var = Expressions.x_method(~exp1j, ~exp2j, ~exp3j);
+				refty x_var = Expressions.x_method(~exp1j, ~exp2j, ~exp3j);
 			]|;
 			exp := expr |[x_var]|
 

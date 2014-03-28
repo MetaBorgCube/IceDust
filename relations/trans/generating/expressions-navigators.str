@@ -15,12 +15,12 @@ rules
 		with
 			x_call := $[[roleInName]_in];
 			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm* |[
 				~stms*
-				~e-ty x_var = x_relationName.x_call(~prevJava);
+				refty x_var = x_relationName.x_call(~prevJava);
 			]|;
 			exp := expr |[x_var]|
   
@@ -28,12 +28,12 @@ rules
 		with
 			x_call := $[[roleOutName]_out];
 			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm* |[
 				~stms*
-				~e-ty x_var = x_relationName.x_call(~prevJava);
+				refty x_var = x_relationName.x_call(~prevJava);
 			]|;
 			exp := expr |[x_var]|
 

@@ -28,12 +28,12 @@ rules // attributes of expressions
 			x_expType := <get-type>e1;
 			x_getter := $[get_[name]];
 			(stms*, e1exp) := <exp-to-java-stm(err)>e1;
-			e-ty := <java-type>e;
+			refty := <java-type>e;
 			x_var := <newname>"var"
 		with
 			stms := bstm* |[
 				~stms*
-				~e-ty x_var = x_expType.x_getter(~e1exp);
+				refty x_var = x_expType.x_getter(~e1exp);
 			]|;
 			exp := expr |[x_var]|
 
