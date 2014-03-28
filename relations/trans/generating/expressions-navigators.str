@@ -11,7 +11,7 @@ imports
 
 rules 
     
-	nav-to-java(err): e@NavigateIn(prevNav, _, RoleName(roleInName), EntityType(x_relationName)) -> (stms, exp)
+	exp-to-java-stm(err): e@NavigateIn(prevNav, _, RoleName(roleInName), EntityType(x_relationName)) -> (stms, exp)
 		with
 			x_call := $[[roleInName]_in];
 			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;
@@ -24,7 +24,7 @@ rules
 			]|;
 			exp := expr |[x_var]|
   
-  nav-to-java(err): e@NavigateOut(prevNav, _, EntityType(x_relationName), RoleName(roleOutName)) -> (stms, exp)
+  exp-to-java-stm(err): e@NavigateOut(prevNav, _, EntityType(x_relationName), RoleName(roleOutName)) -> (stms, exp)
 		with
 			x_call := $[[roleOutName]_out];
 			(stms*, prevJava) := <exp-to-java-stm(err)>prevNav;

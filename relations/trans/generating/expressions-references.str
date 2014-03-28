@@ -16,14 +16,14 @@ imports
 rules // attributes of expressions
 
 	// This() has no type, so cannot use the static getter
-	ref-to-java(err): AttributeName(This(), name) -> ([], result)
+	exp-to-java-stm(err): AttributeName(This(), name) -> ([], result)
 		with
 			x_getter := $[get_[name]]
 		with
 			result :=	|[this.x_getter()]|
 			
 
-	ref-to-java(err): e@AttributeName(e1, name) -> (stms, exp)
+	exp-to-java-stm(err): e@AttributeName(e1, name) -> (stms, exp)
 		with
 			x_expType := <get-type>e1;
 			x_getter := $[get_[name]];
@@ -39,14 +39,12 @@ rules // attributes of expressions
 
 rules // direct references
 
-	ref-to-java(err): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
+	exp-to-java-stm(err): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
 		where
 			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
-	ref-to-java(err): Identifier(name) -> result
+	exp-to-java-stm(err): Identifier(name) -> <exp-to-java-stm(err)>AttributeName(This(), name) //forward to this.name
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
-		with
-			result := <ref-to-java(err)>AttributeName(This(), name) //forward to this.name
 			
-	ref-to-java(err): This() -> ([], |[this]|)
+	exp-to-java-stm(err): This() -> ([], |[this]|)

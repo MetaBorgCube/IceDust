@@ -9,11 +9,6 @@ imports
 	trans/generating/expressions-references
 	trans/generating/types
 
-rules
-
-	exp-to-java-stm(err) = nav-to-java(err)
-	exp-to-java-stm(err) = ref-to-java(err)
-
 rules // math
 
 	exp-to-java-stm(err): e@Addition(e1, e2)			-> <lib-java-bin-exp(err)>(e, e1, e2, "plus")
