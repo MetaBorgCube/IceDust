@@ -6,7 +6,7 @@ imports
 rules
 
 
-desugar-all = bottomup(try(desugar);try(flatten-list))
+desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names
 
 
 /**
@@ -38,11 +38,14 @@ desugar = generate-role-name
 
 generate-role-name: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
 
-desugar = generate-entity-name
+// desugar = generate-entity-name
 
-generate-entity-name: EntityOrRelation(EntityType(e-ty), None(), r, a) -> EntityOrRelation(EntityType(e-ty), e, r, a)
+generate-entity-names: ModuleDesugared(a, b, None(), d) -> ModuleDesugared(a, b, None(), d)
+generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(<map-with-index(try(generate-entity-name))>c), d)
+generate-entity-name: (index, EntityOrRelation(EntityType(e-ty), None(), r, a)) -> EntityOrRelation(EntityType(e-ty), e, r, a)
 	with
-		e := <newname>e-ty
+		e := $[[e-ty][index]]
+		// e := <newname>e-ty
 
 /**
  *	Navigators
