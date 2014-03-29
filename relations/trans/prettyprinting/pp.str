@@ -20,6 +20,11 @@ rules
     prettyprint-Start
     ; !V([], <id>)
     ; box2text-string(|120)
+
+  pp-partial-Relations-string =
+    prettyprint-example
+    ; !V([], <id>)
+    ; box2text-string(|120)
        
   pp-debug :
     ast -> result
@@ -28,4 +33,10 @@ rules
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Relations-string); debug(!"cannot pp ")))> ast
     ;  result := ""
 
-	pp-Relations-box = prettyprint-example
+rules // needed after desugaring
+	
+	pp-option(pp): x -> <pp>x
+		where
+			not(None() := x);
+			not(Some(_) := x)
+	

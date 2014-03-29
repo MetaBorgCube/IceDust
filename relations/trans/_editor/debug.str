@@ -62,7 +62,7 @@ rules // Debugging builders
 				filename := <guarantee-extension(|"properties.txt")> path;
 				result:=
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
-					<get-editor-properties(pp-Relations-box|<language>,project-path)>target
+					<get-editor-properties(pp-partial-Relations-string|<language>,project-path)>target
 			
 	debug-index-project =
 		analysis-debug-index-project(|<language>)

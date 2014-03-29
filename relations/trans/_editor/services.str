@@ -31,12 +31,12 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
 		(target, position, ast, path, project-path) ->
-			<get-editor-properties(pp-Relations-box |<language>, project-path);properties-to-html>target
+			<get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target
 
 	// Gathers the properties for the properties view.
 	editor-properties:
 		(target, position, ast, path, project-path) ->
-			<get-all-editor-properties(pp-Relations-box |<language>, project-path)>target
+			<get-all-editor-properties(pp-partial-Relations-string |<language>, project-path)>target
 			
 	pp-property : ZeroOrOne() -> "[0, 1], zero or one, maybe/nullable"
 	pp-property : One() 			-> "[1, 1], exactly one, required"
