@@ -2,8 +2,16 @@ module Relations-Colorer
 
 imports Relations-Colorer.generated
 
-colorer
-                                                                      
-  // This file can be used for custom colorer rules.                  
-  //                                                                  
-  // See the imported file for a brief introduction and examples.     
+colorer Entity and Role namespaces
+	
+	// _.EntityTypeDef : 0 64 128 italic bold	//how to only color the name?
+  _.EntityType: 0 64 128 italic bold
+  _.RoleName: 0 64 128 italic
+
+colorer Multiplicity
+
+	Multiplicity: 160 0 0 bold
+
+colorer Primitive types
+
+	_.String: blue
