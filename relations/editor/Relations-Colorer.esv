@@ -13,5 +13,4 @@ colorer Multiplicity
 	Multiplicity: 160 0 0 bold
 
 colorer Primitive types
-
-	_.String: blue
+	LitVal.String: blue
