@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/Relations_Language_Plugin_0.1.0.jar" id="Relations_Language_Plugin" version="0.1.0">
+      <category name="Relations_Language_Editor"/>
+   </feature>
+   <category-def name="Relations_Language_Editor" label="Relations Language Editor">
+      <description>
+         The editor for the relations language.
+      </description>
+   </category-def>
+</site>
