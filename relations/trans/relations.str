@@ -6,5 +6,6 @@ imports
 	trans/_editor/debug
 	trans/_editor/generate
 	trans/_editor/services
+	editor/Relations-outliner
 
 	trans/typing/types.generated
