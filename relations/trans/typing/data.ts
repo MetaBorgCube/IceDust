@@ -2,12 +2,6 @@ module typing/data
 
 imports
 	
-  lib/nabl/-
-  lib/task/-
-  lib/properties/-
-  lib/types/-
-  lib/editor/-
-
 	include/Relations
 	trans/naming/names
 	trans/naming/_notNaBL

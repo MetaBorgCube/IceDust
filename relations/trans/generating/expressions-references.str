@@ -2,9 +2,9 @@ module trans/generating/expressions-references
 
 imports
 	
-	lib/nabl/interface
-	lib/nabl/uri
-	lib/types/query
+	lib/runtime/nabl/interface
+	lib/runtime/nabl/uri
+	lib/runtime/types/query
 
 	include/Relations
 	lib/java/Java

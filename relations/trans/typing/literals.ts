@@ -1,12 +1,6 @@
 module typing/aggregation
 
 imports
-	
-  lib/nabl/-
-  lib/task/-
-  lib/properties/-
-  lib/types/-
-  lib/editor/-
 
 	include/Relations
 

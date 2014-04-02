@@ -1,12 +1,6 @@
 module typing/types
 
 imports
-	
-  lib/nabl/-
-  lib/task/-
-  lib/properties/-
-  lib/types/-
-  lib/editor/-
 
 	trans/typing/aggregation.generated
 	trans/typing/assignments.generated

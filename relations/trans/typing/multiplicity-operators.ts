@@ -1,12 +1,6 @@
 module typing/multiplicity-operators
 
 imports
-	
-  lib/nabl/-
-  lib/task/-
-  lib/properties/-
-  lib/types/-
-  lib/editor/-
 
 	include/Relations
 
