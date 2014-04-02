@@ -7,11 +7,16 @@ imports
 
 templates
 
-// entities (or relations)
-Data.EntityOrRelation = <<EntityType> <ID?>{
-	<RoleValue*>
-	<AttributeValue*>
-}>
-AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
-RoleValue.RoleValue = <<RoleName> : <Identifier>>
-RoleName.RoleName = <<ID>>
+  // entities (or relations)
+  Data.EntityOrRelation = <
+    <EntityType> <ID?> {
+	    <RoleValue*; separator="\n">
+	    <AttributeValue*; separator="\n">
+    }
+  >
+
+  AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
+ 
+  RoleValue.RoleValue = <<RoleName> : <Identifier>>
+
+  RoleName.RoleName = <<ID>>  

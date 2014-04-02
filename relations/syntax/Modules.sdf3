@@ -9,28 +9,31 @@ imports
 
 templates
 
-// modules
-Start.Module = <
-module <ID>
-
-<ModelDef?>
-
-<DataDef?>
-
-<Executable?>
->
-
-ModelDef.ModelDef =  <
-model
-<Model*;separator="\n">
->
-
-DataDef.DataDef =  <
-data
-<Data*;separator="\n">
->
-
-Executable.Executable = <
-execute
-<Execute*;separator="\n">
->
+	// modules
+	Start.Module = <
+		module <ID>
+		
+		<ModelDef?>
+		
+		<DataDef?>
+		
+		<Executable?>
+	>
+	
+	ModelDef.ModelDef = <
+		model
+		
+		  <Model*;separator="\n\n">
+	>
+	
+	DataDef.DataDef = <
+		data
+		
+		  <Data*;separator="\n\n">
+	>
+	
+	Executable.Executable = <
+		execute
+		
+		  <Execute*;separator="\n\n">
+  >

@@ -1,15 +1,18 @@
 module directedgraph
 
 model
+
 entity Node{
 	
 }
+
 relation Edge{
 	Node * from
 	Node * to
 }
 
 data
+
 Node a{}
 Node b{}
 Node c{}
@@ -27,6 +30,7 @@ Edge ca{
 }
 
 execute
+
 a
 b
 c

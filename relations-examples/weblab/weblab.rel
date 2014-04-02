@@ -14,7 +14,7 @@ relation Enrollment{
 	Student *
 }
 
-relation CourseAssignments{
+relation CourseAssignments {
 	Course 1
 	AssignmentGroup ?
 }
@@ -26,7 +26,7 @@ entity Assignment{
 relation Submission{
 	Student *
 	Assignment *
-	grade : Int
+	grade : Int = 1 (default)
 	passed : Boolean = grade >= 6 
 }
 
@@ -37,12 +37,32 @@ entity AssignmentGroup {
 	)
 }
 
-relation AssignmentTree{
+relation AssignmentGroupSubmission { 
+	Student *
+	AssignmentGroup *
+	grade : Int = avg( 
+		 this > AssignmentGroupSubmission[AssignmentGroup > parent]AssignmentLeaf[child > Assignment]Submission. grade ::
+		 this > AssignmentGroupSubmission[AssignmentGroup > parent]AssignmentTree[child > Assignment]Submission. grade 
+  )
+	passed : Boolean = grade >= 6
+}
+
+relation AssignmentGroupSubmissionTree {	
+	AssignmentGroupSubmission * parent
+	AssignmentGroupSubmission * child
+}
+
+relation AssignmentGroupSubmissionLeaf {
+	AssignmentGroup * parent
+	Assignment 1 child = 
+}
+
+relation AssignmentTree {
 	AssignmentGroup * parent
 	AssignmentGroup * child
 }
 
-relation AssignmentLeaf{
+relation AssignmentLeaf {
 	AssignmentGroup * parent
 	Assignment 1 child
 }

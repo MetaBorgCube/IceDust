@@ -28,3 +28,4 @@ language General properties
   observer: editor-analyze (multifile)
   
   on save : editor-save
+
