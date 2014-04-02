@@ -2,39 +2,46 @@ module directedgraph
 
 model
 
-entity Node{
-	
-}
+  entity Node {
+  }
 
-relation Edge{
-	Node * from
-	Node * to
-}
+  relation Edge {
+    Node * From
+    Node * To
+  }
 
 data
 
-Node a{}
-Node b{}
-Node c{}
-Edge ab{
-	from:a
-	to:b
-}
-Edge bc{
-	from:b
-	to:c
-}
-Edge ca{
-	from:c
-	to:a
-}
+  Node a {
+  }
+
+  Node b {
+  }
+
+  Node c {
+  }
+
+  Edge ab {
+    From : a
+    To : b
+  }
+
+  Edge bc {
+    From : b
+    To : c
+  }
+
+  Edge ca {
+    From : c
+    To : a
+  }
 
 execute
 
-a
-b
-c
-a > from]Edge[to // must be b
-a > to]Edge[from // must be c
-a > from]Edge[to > from]Edge[to // must be c
-a > from]Edge[to > from]Edge[to > from]Edge[to // must be a
+  a
+  b
+  c
+  a > From]Edge[To //must be b
+  a > To]Edge[From //must be c
+  a > From]Edge[To > From]Edge[To //must be b
+  a > From]Edge[To > From]Edge[To > From]Edge[To //must be a

@@ -1,200 +1,196 @@
 module weblab
 
 model
-entity Student{
-	name : String
-}
 
-entity Course{
-	avgGrade : Int? = this > Course]CourseAssignments[AssignmentGroup . avgGrade
-}
+  entity Student {
+    name : String  
+  }
 
-relation Enrollment{
-	Course *
-	Student *
-}
+  entity Course {
+    avgGrade : Int ? = this > Course]CourseAssignments[AssignmentGroup.avgGrade (derivation)
+  }
 
-relation CourseAssignments {
-	Course 1
-	AssignmentGroup ?
-}
+  relation Enrollment {
+    Course * 
+    Student * 
+  }
 
-entity Assignment{
-	avgGrade : Int ? = avg( this > Assignment]Submission . grade)
-}
+  relation CourseAssignments {
+    Course 1 
+    AssignmentGroup ? 
+  }
 
-relation Submission{
-	Student *
-	Assignment *
-	grade : Int = 1 (default)
-	passed : Boolean = grade >= 6 
-}
+  entity Assignment {
+    avgGrade : Int ? = avg ( this > Assignment]Submission.grade ) (derivation)
+  }
 
-entity AssignmentGroup {
-	avgGrade : Int? = avg(
-		this > parent]AssignmentTree[child . avgGrade ::
-		this > parent]AssignmentLeaf[child . avgGrade
-	)
-}
+  relation Submission {
+    Student * 
+    Assignment * 
+    grade : Int  
+    passed : Boolean  = grade >= 6 (derivation)
+  }
 
-relation AssignmentGroupSubmission { 
-	Student *
-	AssignmentGroup *
-	grade : Int = avg( 
-		 this > AssignmentGroupSubmission[AssignmentGroup > parent]AssignmentLeaf[child > Assignment]Submission. grade ::
-		 this > AssignmentGroupSubmission[AssignmentGroup > parent]AssignmentTree[child > Assignment]Submission. grade 
-  )
-	passed : Boolean = grade >= 6
-}
+  entity AssignmentGroup {
+    avgGrade : Int ? = avg ( 
+    	this > parent]AssignmentTree[child.avgGrade :: 
+    	this > parent]AssignmentLeaf[child.avgGrade 
+    ) (derivation)
+  }
 
-relation AssignmentGroupSubmissionTree {	
-	AssignmentGroupSubmission * parent
-	AssignmentGroupSubmission * child
-}
+  relation AssignmentTree {
+    AssignmentGroup * parent
+    AssignmentGroup * child
+  }
 
-relation AssignmentGroupSubmissionLeaf {
-	AssignmentGroup * parent
-	Assignment 1 child = 
-}
-
-relation AssignmentTree {
-	AssignmentGroup * parent
-	AssignmentGroup * child
-}
-
-relation AssignmentLeaf {
-	AssignmentGroup * parent
-	Assignment 1 child
-}
-
+  relation AssignmentLeaf {
+    AssignmentGroup * parent
+    Assignment 1 child
+  }
 
 data
-Student alice{
-	name = "Alice"
-}
-Student bob{
-	name = "Bob"
-}
 
-Course compiler{}
+  Student alice {
+    name = "Alice"
+  }
 
-Enrollment{
-	Student: alice
-	Course : compiler
-}
-Enrollment{
-	Student: bob
-	Course : compiler
-}
+  Student bob {
+    name = "Bob"
+  }
 
-AssignmentGroup comp{}
+  Course compiler {
+  }
 
-CourseAssignments{
-	Course: compiler
-	AssignmentGroup : comp
-}
+  Enrollment  {
+    Student : alice
+    Course : compiler
+  }
 
-AssignmentGroup practical{}
+  Enrollment  {
+    Student : bob
+    Course : compiler
+  }
 
-AssignmentTree{
-	parent:comp
-	child: practical
-}
+  AssignmentGroup comp {
+  }
 
-AssignmentGroup milestone1{}
+  CourseAssignments  {
+    Course : compiler
+    AssignmentGroup : comp
+  }
 
-AssignmentTree{
-	parent: practical
-	child : milestone1
-}
+  AssignmentGroup practical {
+  }
 
-Assignment assignment11{}
+  AssignmentTree  {
+    parent : comp
+    child : practical
+  }
 
-AssignmentLeaf{
-	parent: milestone1
-	child : assignment11
-}
+  AssignmentGroup milestone1 {
+  }
 
-Assignment assignment12{}
+  AssignmentTree  {
+    parent : practical
+    child : milestone1
+  }
 
-AssignmentLeaf{
-	parent: milestone1
-	child : assignment12
-}
+  Assignment assignment11 {
+  }
 
-Assignment assignment13{}
+  AssignmentLeaf  {
+    parent : milestone1
+    child : assignment11
+  }
 
-AssignmentLeaf{
-	parent: milestone1
-	child : assignment13
-}
+  Assignment assignment12 {
+  }
 
-AssignmentGroup milestone2{}
+  AssignmentLeaf  {
+    parent : milestone1
+    child : assignment12
+  }
 
-AssignmentTree{
-	parent: practical
-	child : milestone2
-}
+  Assignment assignment13 {
+  }
 
-Assignment assignment21{}
+  AssignmentLeaf  {
+    parent : milestone1
+    child : assignment13
+  }
 
-AssignmentLeaf{
-	parent: milestone2
-	child : assignment21
-}
+  AssignmentGroup milestone2 {
+  }
 
-Assignment assignment22{}
+  AssignmentTree  {
+    parent : practical
+    child : milestone2
+  }
 
-AssignmentLeaf{
-	parent: milestone2
-	child : assignment22
-}
+  Assignment assignment21 {
+  }
 
-Assignment assignment23{}
+  AssignmentLeaf  {
+    parent : milestone2
+    child : assignment21
+  }
 
-AssignmentLeaf{
-	parent: milestone2
-	child : assignment23
-}
+  Assignment assignment22 {
+  }
 
-Assignment exam{}
+  AssignmentLeaf  {
+    parent : milestone2
+    child : assignment22
+  }
 
-AssignmentLeaf{
-	parent: comp
-	child : exam
-}
+  Assignment assignment23 {
+  }
 
-Submission{
-	Student : alice
-	Assignment : assignment11
-	grade = 7
-}
+  AssignmentLeaf  {
+    parent : milestone2
+    child : assignment23
+  }
 
-Submission{
-	Student : alice
-	Assignment : assignment12
-	grade = 9
-}
+  Assignment exam {
+  }
 
-Submission{
-	Student : alice
-	Assignment : assignment13
-	grade = 6
-}
+  AssignmentLeaf  {
+    parent : comp
+    child : exam
+  }
 
-Submission{
-	Student : alice
-	Assignment : exam
-	grade = 6
-}
+  Submission  {
+    Student : alice
+    Assignment : assignment11
+    grade = 7
+  }
 
-Submission{
-	Student : bob
-	Assignment : exam
-	grade = 10
-}
+  Submission  {
+    Student : alice
+    Assignment : assignment12
+    grade = 9
+  }
 
+  Submission  {
+    Student : alice
+    Assignment : assignment13
+    grade = 6
+  }
+
+  Submission  {
+    Student : alice
+    Assignment : exam
+    grade = 6
+  }
+
+  Submission  {
+    Student : bob
+    Assignment : exam
+    grade = 10
+  }
 
 execute
-"The average grade of all submissions"
-compiler.avgGrade
+
+  "The average grade of all submissions"
+
+  compiler.avgGrade

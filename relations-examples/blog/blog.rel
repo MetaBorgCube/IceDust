@@ -1,54 +1,51 @@
 module blog
 
 model
-entity User {
-	name     : String
-	password : String
-	numPosts : Int		= 0 (derivation)
-}
-entity Post {
-	title : String
-	body  : String
-	name  : String		= "default placeholder" (default)
-}
-relation UserPost {
-	User *
-	Post 1
-	numEdits : Int = 1 (default)
-	editMsg  : String = "" (default)
-}
-entity Log {
-	body : String
-}
-relation LogItem {
-	Log 1
-	UserPost *
-}
+
+  entity User {
+    name : String  = "my name" (derivation)
+  }
+
+  entity Post {
+    title : String  
+    body : String  = title (default)
+  }
+
+  relation Author {
+    User * 
+    Post 1 
+  }
 
 data
-User me{
-	name="My name"
-	password="notEncoded"
-}
-Post first{
-	title="First post"
-	body="Some text"
-	name="another name"
-}
-Post second{
-	title="Second post"
-	body="Some more text"
-	name="yet another name"
-}
-UserPost p1{
-	User:me
-	Post:first
-	numEdits=1
-}
-UserPost p2{
-	User:me
-	Post:second
-}
+
+  User me {
+  }
+
+  Post p1 {
+    title = "First post"
+  }
+
+  Post p2 {
+    title = "Second post"
+    body = "Some text"
+  }
+
+  Author {
+    User : me
+    Post : p1
+  }
+
+  Author {
+    User : me
+    Post : p2
+  }
 
 execute
-me > User]UserPost[Post
+
+  me > User]Author // give Author objects for me
+
+  me > User]Author > Author[Post // give Posts that are authored by me
+
+  me > User]Author[Post // shorthand for previous
+
+  me > User]Author[Post . title // my blogpost titles

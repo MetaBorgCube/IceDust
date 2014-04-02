@@ -1,14 +1,22 @@
-module multiplcities
+module multiplicities
 
 model
-entity Foo{
-	input1	: Int = 5
-	input2	: Int?
-	value		: Int = input2 <+ input1
-}
+
+  entity Foo {
+    input : Int ?
+    value : Int  = input <+ 4 (derivation)
+  }
 
 data
-Foo f{}
+
+  Foo f {}
+  
+  Foo g {
+  	input = 2
+  }
 
 execute
-f.value
+
+  f.value // f doesn't have its input defined -> default value 4
+
+  g.value // g has its input defined -> input value 2

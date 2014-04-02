@@ -5,15 +5,16 @@ imports
 	Model
 	Expressions
 
-templates
+templates   // entities or relations
 
-  // entities (or relations)
   Data.EntityOrRelation = <
     <EntityType> <ID?> {
 	    <RoleValue*; separator="\n">
 	    <AttributeValue*; separator="\n">
     }
   >
+
+templates
 
   AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
  

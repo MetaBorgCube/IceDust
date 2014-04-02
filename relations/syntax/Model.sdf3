@@ -5,14 +5,14 @@ imports
 	Expressions
 	Types
 
-templates
+templates // both entities and relations are EntityTypeDefs
 
-	// both entities and relations are entityTypeDefs
 	Model.EntityTypeDef = <
 		entity<Placeholder1> <ID> {
 			<RoleOrAttribute*;separator="\n">
 		}
 	>
+	
 	Placeholder1.EntityType = <>
 	
 	Model.EntityTypeDef = <
@@ -20,20 +20,30 @@ templates
 			<RoleOrAttribute*;separator="\n">
 		}
 	>
-	Placeholder2.RelationType = <>
 	
-	// roles and attributes
+	Placeholder2.RelationType = <>
+
+templates // roles and attributes
+
 	RoleOrAttribute								= <<Role>>
 	RoleOrAttribute								= <<Attribute>>
-	
+
+templates
+
 	Attribute.Attribute 					= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
+	
 	Derivation.Derivation 				= <= <Exp> <DerivationType>>
+	
 	DerivationType.DefaultValue		= <(default)>
 	DerivationType.Derivation			= <(derivation)>
 	DerivationType.Derivation			= <>
-	
+
+templates
+
 	Role.Role											= <<EntityType> <Multiplicity> <ID?>>
+	
 	EntityType.EntityType 				= <<ID>>
+	
 	Multiplicity.One	 						= <1>
 	Multiplicity.ZeroOrOne				= <?>
 	Multiplicity.OneOrMore				= <+>

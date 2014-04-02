@@ -1,12 +1,15 @@
 module Aggregation
 
 model
-entity X {
-	val : Int = max( 2 :: 5 :: 3)
-}
+
+  entity X {
+    val : Int  = max ( 2 :: 5 :: 3 ) (derivation)
+  }
 
 data
-X x{}
+
+  X x {}
 
 execute
-x.val
+
+  x . val

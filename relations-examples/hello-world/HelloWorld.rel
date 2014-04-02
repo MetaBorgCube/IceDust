@@ -1,14 +1,17 @@
 module HelloWorld
 
 model
-entity Message {
-	text     : String
-}
+
+  entity Message {
+    text : String  
+  }
 
 data
-Message hello{
-	text="Hello World!"
-}
+
+  Message hello {
+    text = "Hello World!"
+  }
 
 execute
-hello.text
+
+  hello . text

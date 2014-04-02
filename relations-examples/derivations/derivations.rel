@@ -1,28 +1,28 @@
 module derivations
 
 model
-entity User{
-	name : String
-	name2 : String = "default value" (default)
-	name3 : String = "default value" (default)
-	name4 : String = name
-	name5 : String = name4
-	year : Int
-	year2 : Int = 6
-}
+
+  entity User {
+    name             : String  
+    nameWithDefault  : String  = "default name" (default)				// we do not override this in User me
+    nameWithDefault2 : String  = "default name" (default)       // we override this
+    nameDerived      : String  = name + "Surname" (derivation)  // one cannot assign to derived values, only to defaults
+    nameDerived2     : String  = name + "Surname" 							// you can omit (derivation)
+  }
 
 data
-User me{
-	name = "My name"
-	name2 = "My name2"
-	year = 5
-}
+
+  User me {
+    name = "My name"
+    nameWithDefault2 = "Override default"
+  }
 
 execute
-me.name
-me.name2
-me.name3
-me.name4
-me.name5
-me.year
-me.year2
+
+  me . name
+
+  me . nameWithDefault
+  
+  me . nameWithDefault2
+
+  me . nameDerived

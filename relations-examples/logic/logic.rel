@@ -1,17 +1,29 @@
 module logic
 
 model
-entity Foo{
-	b : Boolean ?
-	val : Int = (42 >= 4 && !b ? "a" : "b") == "a" ? 5 : 88 + 4 <+ 4
-}
+
+  entity Foo {
+  	input : Int ?
+  	output : String = (input >= 10 ? "bigger" : "smaller") <+ "no input"
+  }
 
 data
-Foo foo{}
-Foo goo{b=true}
-Foo boo{b=false}
+
+  Foo foo {
+  }
+
+  Foo goo {
+    input = 5
+  }
+
+  Foo boo {
+    input = 42
+  }
 
 execute
-foo.val
-goo.val
-boo.val
+
+  foo . output
+
+  goo . output
+
+  boo . output

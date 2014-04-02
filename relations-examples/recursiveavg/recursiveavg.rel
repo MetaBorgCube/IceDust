@@ -1,32 +1,43 @@
 module recursiveavg
 
 model
-entity Node{
-	value : Int ? = avg( this > parent]Dominates[child .value ) (default)
-}
-relation Dominates {
-	Node * parent
-	Node 1 child
-}
+
+  entity Node {
+    value : Int ? = avg ( this > Parent]Dominates[Child.value ) (default)
+  }
+
+  relation Dominates {
+    Node * Parent
+    Node 1 Child
+  }
 
 data
-Node n1{
-	value = 2
-}
-Node n2{
-	value = 4
-}
-Node n3{}
-Dominates t1{
-	parent:n3
-	child:n1
-}
-Dominates t2{
-	parent:n3
-	child:n2
-}
+
+  Node root {
+  }
+
+  Node n1 {
+    value = 2
+  }
+
+  Node n2 {
+    value = 4
+  }
+
+  Dominates {
+    Parent : root
+    Child : n1
+  }
+
+  Dominates {
+    Parent : root
+    Child : n2
+  }
 
 execute
-n1.value
-n2.value
-n3.value
+
+  n1.value // we defined this as 2
+
+  n2.value // we defined this as 4
+
+  root.value // the average of this is 3

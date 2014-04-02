@@ -65,7 +65,7 @@ templates //exp (references)
 	Exp.This							= <this>
 	Exp										= <<Identifier>>
 	Identifier.Identifier	= <<ID>>
-	Exp.AttributeName			= <<Exp>.<ID>> {left}
+	Exp.AttributeName			= <<Exp> . <ID>> {left}
 
 
 template options
