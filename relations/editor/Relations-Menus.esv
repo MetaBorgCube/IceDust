@@ -45,8 +45,8 @@ menus
   
   menu: "Generation"
     
-    action: "Generate Java"        = generate-java (openeditor) (realtime)
-    action: "Compile Java"         = compile-java
+    action: "Generate Java"        = generate-java (openeditor) (realtime) (meta)
+    action: "Compile Java"         = compile-java (meta)
     action: "Execute Java"         = execute-java
     
     action: "Cleanup Generated Code" = cleanup-generated-files
