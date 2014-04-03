@@ -29,7 +29,7 @@ rules // Builders
 		with
 			<build(error-handler)>(selected, path, project-path, 2)
 	
-	execute-java       = execute-java(error-handler-editor);debug;\ _ -> None() \
+	execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
 	execute-java-test  = execute-java(error-handler-tests)
 	execute-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
