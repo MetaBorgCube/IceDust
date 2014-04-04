@@ -4,16 +4,19 @@
       label="Relations Language Editor"
       version="0.1.1">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="https://github.com/dcharkes/relations">
+      The Relations Language Editor
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright url="https://github.com/dcharkes/relations">
+      Copyright (c) Daco Harkes 2014
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://github.com/dcharkes/relations">
+      Relations Language License Information
+      
+This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (LGPL). Runtime components related to the IMP, EMF and GMF libraries are licensed under the Eclipse Public License (EPL).
    </license>
 
    <includes
