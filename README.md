@@ -2,14 +2,19 @@
 
 This is a programming language for relational programming; a declarative programming style based on modelling with first class relations.
 
-## Getting the editor
+## Getting the editor (build it with Spoofax) - Recommended
 
 1. Get Eclipse 4.3.2
 2. Install Spoofax-nightly trough the update site http://download.spoofax.org/update/nightly/
 3. Check out this git repo
 4. Build the editor project in [relations](relations)
 
-(An Eclipse plugin via update site will be available in the future, and will replace step 2-4)
+## Getting the editor (install as Eclipse Plugin) - Has bugs
+
+1. Get Eclipse 4.3.2
+2. Install the new Relations Editor Plugin. Updatelink:  [http://dl.bintray.com/dcharkes/Relations-Language](http://dl.bintray.com/dcharkes/Relations-Language)
+
+Note that there is an issue with the pre-packaged plugin. There is no command line output displayed ([Issue](http://yellowgrass.org/issue/StrategoXT/899)).
 
 ## Try the examples
 
