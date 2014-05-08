@@ -1,0 +1,91 @@
+module crud
+
+model
+	
+	entity Folder{
+		
+		/*
+		create {
+			
+		}
+		update {
+			
+		}
+		delete {
+			Parent]Sub -> abort
+			Folder]In -> abort
+		}
+		delete nonrecursiveDelete{
+			Parent]Sub -> abort
+			Folder]In -> delete
+		}
+		delete forceDelete {
+			Parent]Sub -> forceDelete
+			Folder]In -> delete
+		}
+		*/
+	}
+	
+	entity File{
+		
+		/*
+		create (Folder f) {
+			create In{
+				File = this
+				Folder = f
+			}
+		}
+		update {
+			
+		}
+		delete {
+			
+		}
+		*/
+	}
+
+	relation In{
+		Folder *
+		File 1
+		
+		/*
+		create {
+			// implicit Folder and File
+		}
+		update {
+			
+		}
+		delete {
+			File -> delete
+		}
+		*/
+	}
+	
+	relation Sub{
+		Folder * Parent
+		Folder ? Child
+		
+		/*
+		create {
+			// implicit Parent and Child
+		}
+		update {
+			
+		}
+		delete {
+			Child -> delete
+		}
+		delete forceDelete {
+			Child -> forceDelete
+		}
+		*/
+	}
+	
+execute
+	
+	
+	
+	
+	
+	
+	
