@@ -3,6 +3,7 @@ module crud
 model
 	
 	entity Folder{
+		name : String
 		
 		/*
 		create {
@@ -27,6 +28,7 @@ model
 	}
 	
 	entity File{
+		name : String
 		
 		/*
 		create (Folder f) {
@@ -83,7 +85,44 @@ model
 	
 execute
 	
+	/*
+	create Folder root {
+		name = "root"
+	}
 	
+	create Folder {
+		name = "subfolder"
+		
+		create Sub[Child {
+			Parent = root
+		}
+	}
+	
+	create File {
+		name = "document 1"
+	}
+	{
+		name = "document 2"
+	}
+	
+	//=== adding and/or setting ===//
+	//set set => folder1.files = {file1, file2} && file1.folder = folder1 && file2.folder = folder1
+	//add set => folder1.files += {file1, file2} && file1.folder = folder1 && file2.folder = folder1
+	//add add => folder1.files += {file1, file2} && file1.folder += folder1 && file2.folder += folder1
+	//set add => folder1.files = {file1, file2} && file1.folder += folder1 && file2.folder += folder1
+	
+	//=== creating relations with new or existing entities ===//
+	//existing existing ==> folder1.files = {file1, file2} && file1.folder = folder1 && file2.folder = folder1
+	//existing new      ==> folder1.files = {new file1, new file2} && file1.folder = folder1 && file2.folder = folder1
+	//new new           ==> new folder1.files = {new file1, new file2} && file1.folder = folder1 && file2.folder = folder1
+	//new existing      ==> new folder1.files = {file1, file2} && file1.folder = folder1 && file2.folder = folder1
+	
+	//=== perspectives ===//
+	//folder   ==> folder1.files = {file1, file2}          //means set for folder, set or add for files
+	//file     ==> {file1, file2}.folder = folder1         //means set or add for folder, set for files
+	//relation ==> In{Folder=folder1, File={file1,file2}}  //means set or add for folder, set or add for files
+	
+	*/
 	
 	
 	
