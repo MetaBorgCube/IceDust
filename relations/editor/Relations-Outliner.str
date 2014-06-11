@@ -19,7 +19,9 @@ rules
   outline-expand-to-level = !5
 
 	//TODO: call this on desugared, or even analyzed AST @see http://yellowgrass.org/issue/Spoofax/837
-  outline = desugar-all;simple-label-outline(to-outline-label)
+  outline: (selected, position, ast, path, project-path) -> result
+  	with
+  		result := <desugar-all;simple-label-outline(to-outline-label)> ast
   
 	// analyzeast: ast -> analyzed-ast
 	// 	with
