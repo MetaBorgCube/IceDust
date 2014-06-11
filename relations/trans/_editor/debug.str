@@ -3,11 +3,11 @@ module trans/_editor/debug
 imports
 	
 	lib/editor-common.generated
-	lib/runtime/analysis/-
-	lib/runtime/editor/properties
-	lib/runtime/index/-
-	lib/runtime/task/-
-	lib/runtime/nabl/entries
+	lib/analysis/-
+	lib/editor/properties
+	lib/index/-
+	lib/task/-
+	lib/nabl/entries
 	
 	trans/desugaring/desugar
 	trans/prettyprinting/pp

@@ -38,7 +38,7 @@
     <property name="externaljar" value="../lib.jar"/>
     <property name="externaljarflags" value="-la org.lib"/>
     -->
-	<!--
+
 	<target name="os-detection">
 	<condition property="isWin">
 	<os family="windows" />
@@ -86,7 +86,7 @@
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/properties/" link="${basedir}/lib/properties" overwrite="true" />
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/tmpl/" link="${basedir}/lib/tmpl" overwrite="true" />
 	<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/relations/" link="${basedir}/lib/relations" overwrite="true" />
-	</target> -->
+	</target> 
 
     <!-- Environment configuration for command-line builds -->
     <condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
@@ -98,5 +98,5 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target name="all" depends="spoofaximp.default.jar"/>
+    <target name="all" depends="link-lib-files,copy-lib-files,spoofaximp.default.jar"/>
 </project>
