@@ -24,7 +24,7 @@ rules // generate omitted multiplicities
 
 rules // generate omitted names
 
-	desugar: Role(EntityType(e), multiplicity, None()) -> Role(EntityType(e), multiplicity, e)
+	desugar: Role(EntityType(e), multiplicity, None(), inverse) -> Role(EntityType(e), multiplicity, e, inverse)
 
 rules // combined navigators into single steps
 

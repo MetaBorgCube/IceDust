@@ -116,3 +116,19 @@ test Tree model [[
 ]] parse succeeds
 
 //TODO: add derivation and constraint examples
+
+
+test Inverse definitions [[
+	module inverses
+
+	model
+		
+		entity Student{}
+		
+		entity Course{}
+		
+		relation Enrollment{
+			Student * student <- enrollments
+			Course  + course  <- enrollments
+		}
+]] parse succeeds

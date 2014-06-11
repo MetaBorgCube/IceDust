@@ -39,7 +39,7 @@ rules
 	  		where RelationType() := et-er
 	  		
 	  		to-outline-label : Attribute(a, a-ty, a-mu, _) 								-> $[[<pp-o>a] : [<pp-o>a-ty] [<pp-o>a-mu]]{"icons/circle-green.png"}
-	  		to-outline-label : Role(EntityType(r-ty), r-mu, r) 						-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
+	  		to-outline-label : Role(EntityType(r-ty), r-mu, r, inverse) 	-> $[[<pp-o>r] : [<pp-o>r-ty] [<pp-o>r-mu]]{"icons/triangle-blue.png"}
 	  
 	  to-outline-label : DataDef(_) -> "Data"{"icons/data.png"}
 	  

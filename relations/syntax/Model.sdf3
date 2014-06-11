@@ -40,7 +40,10 @@ templates
 
 templates
 
-	Role.Role											= <<EntityType> <Multiplicity> <ID?>>
+	Role.Role											= <<EntityType> <Multiplicity> <ID?> <PlaceHolder3>>
+	Role.Role											= <<EntityType> <Multiplicity> <ID?> \<- <ID?>>
+	
+	PlaceHolder3.None = <>
 	
 	EntityType.EntityType 				= <<ID>>
 	

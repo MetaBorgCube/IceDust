@@ -1,0 +1,34 @@
+module names-inverses
+
+language Relations
+
+setup Common [[
+	module inverses
+
+	model
+	
+		entity Course{}
+]]
+
+test Resolve inverse [[
+	entity Student{
+		numCourses : Int = count(this.[[enrollments]])
+	}
+	
+	relation Enrollment{
+		Student * student <- [[enrollments]]
+		Course  + course  <- enrollments
+	}
+]] resolve #1 to #2
+
+test Resolve invalid inverse fails [[
+	entity Student{
+		numCourses : Int = count(this.iDoNotExist)
+	}
+	
+	relation Enrollment{
+		Student * student <- enrollments
+		Course  + course  <- enrollments
+	}
+]] 1 error
+

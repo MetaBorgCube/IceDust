@@ -88,7 +88,7 @@ binding rules
 
 	
 	// roles
-	Role(EntityType(role-ty), role-mu, role) :
+	Role(EntityType(role-ty), role-mu, role, inverseName) :
 		defines Role role
 			of type role-ty
 			of multiplicity role-mu
