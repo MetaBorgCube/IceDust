@@ -63,14 +63,9 @@ binding rules
 		refers to Entity x
 	otherwise
 		refers to Attribute x
-		// __Pre NaBL Core Syntax (works with old Spoofax)
-		// in EntityType e-ty
-		// where This This() has type e-ty
-		
-		// __Proposed Solution for NaBL Core
-		// in EntityType e-ty
-		// where This() resolves to This this
-		// and this has type e-ty
+		in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
 	
 	
 	// attributes
@@ -99,9 +94,9 @@ binding rules
 	
 	//FIXME: http://yellowgrass.org/issue/NaBL/108
 	RoleName(r):
-		refers to Role r
-		// in EntityType e-ty
-		// where This This() has type e-ty
+		refers to Role r in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
 		
 
 	// navigators
