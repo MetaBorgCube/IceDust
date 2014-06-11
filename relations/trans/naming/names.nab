@@ -61,8 +61,13 @@ binding rules
 	Identifier(x) :
 		refers to Entity x
 	otherwise
-		refers to Attribute x in EntityType e-ty
-		where This This() has type e-ty
+		refers to Attribute x 
+		// in EntityType e-ty
+		
+		// where This This() has type e-ty
+		
+		// where This() resolves to This this
+		// and this has type e-ty
 	
 	
 	// attributes
@@ -79,8 +84,9 @@ binding rules
 			of derivation-type a-dt
 		
 	AttributeName(This(), a) :
-		refers to Attribute a in EntityType e-ty
-		where This This() has type e-ty
+		refers to Attribute a
+		// in EntityType e-ty
+		// where This This() has type e-ty
 		
 	AttributeName(exp, a) :
 		refers to Attribute a in EntityType e-ty
@@ -94,8 +100,9 @@ binding rules
 			of multiplicity role-mu
 	
 	RoleName(r):
-		refers to Role r in EntityType e-ty
-		where This This() has type e-ty
+		refers to Role r
+		// in EntityType e-ty
+		// where This This() has type e-ty
 		
 
 	// navigators
@@ -107,3 +114,7 @@ binding rules
 		implicitly defines This This()
 			of type r-ty in out
 	
+	
+	// this
+	This() :
+		refers to This This()
