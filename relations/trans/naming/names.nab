@@ -58,14 +58,17 @@ binding rules
 	
 	
 	// entities or attributes
+	//FIXME: http://yellowgrass.org/issue/NaBL/108
 	Identifier(x) :
 		refers to Entity x
 	otherwise
-		refers to Attribute x 
+		refers to Attribute x
+		// __Pre NaBL Core Syntax (works with old Spoofax)
 		// in EntityType e-ty
-		
 		// where This This() has type e-ty
 		
+		// __Proposed Solution for NaBL Core
+		// in EntityType e-ty
 		// where This() resolves to This this
 		// and this has type e-ty
 	
@@ -83,11 +86,6 @@ binding rules
 			of multiplicity a-mu
 			of derivation-type a-dt
 		
-	// AttributeName(This(), a) :
-		// refers to Attribute a
-		// in EntityType e-ty
-		// where This This() has type e-ty
-		
 	AttributeName(exp, a) :
 		refers to Attribute a in EntityType e-ty
 		where exp has type e-ty
@@ -99,6 +97,7 @@ binding rules
 			of type role-ty
 			of multiplicity role-mu
 	
+	//FIXME: http://yellowgrass.org/issue/NaBL/108
 	RoleName(r):
 		refers to Role r
 		// in EntityType e-ty
