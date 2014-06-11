@@ -83,8 +83,8 @@ binding rules
 			of multiplicity a-mu
 			of derivation-type a-dt
 		
-	AttributeName(This(), a) :
-		refers to Attribute a
+	// AttributeName(This(), a) :
+		// refers to Attribute a
 		// in EntityType e-ty
 		// where This This() has type e-ty
 		
