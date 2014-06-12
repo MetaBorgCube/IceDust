@@ -58,7 +58,6 @@ binding rules
 	
 	
 	// entities or attributes
-	//FIXME: http://yellowgrass.org/issue/NaBL/108
 	Identifier(x) :
 		refers to Entity x
 	otherwise
@@ -92,7 +91,6 @@ binding rules
 			of type role-ty
 			of multiplicity role-mu
 	
-	//FIXME: http://yellowgrass.org/issue/NaBL/108
 	RoleName(r):
 		refers to Role r in EntityType e-ty
 		where This() resolves to This this
