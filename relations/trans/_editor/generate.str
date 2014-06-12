@@ -3,8 +3,8 @@ module trans/_editor/generate
 imports
 	
 	lib/editor-common.generated
-	lib/index/-
-	lib/task/-
+	lib/runtime/index/-
+	lib/runtime/task/-
 	
 	trans/generating/generate
 	trans/lib/files
