@@ -136,6 +136,26 @@ public class Expressions {
 		return min;
 	}
 
+	public static Boolean conj(Collection<Boolean> b) {
+		if (b.size() == 0)
+			return null;
+		boolean conj = true;
+		for (boolean v : b) {
+			conj = conj && v;
+		}
+		return conj;
+	}
+
+	public static Boolean disj(Collection<Boolean> b) {
+		if (b.size() == 0)
+			return null;
+		boolean disj = false;
+		for (boolean v : b) {
+			disj = disj || v;
+		}
+		return disj;
+	}
+	
 	public static String concat(Collection<String> c) {
 		if (c.size() == 0)
 			return null;

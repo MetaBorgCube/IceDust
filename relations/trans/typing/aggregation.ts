@@ -14,6 +14,11 @@ type rules
 	where	x	: x-ty
 		and x-ty == Int() else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
 
+  Conj(x)
++	Disj(x) : x-ty
+	where	x	: x-ty
+		and x-ty == Boolean() else error $[Type mismatch: expected Boolean got [x-ty] in Aggregation] on x
+
 	Concat(x) : x-ty
 	where x : x-ty
 		and x-ty == String() else error $[Type mismatch: expected String got [x-ty] in Concatenation] on x
@@ -25,6 +30,8 @@ type rules
 +	Max(x)
 + Sum(x)
 +	Avg(x)
++ Conj(x)
++ Disj(x)
 + Concat(x) has multiplicity mu
 	where x has multiplicity x-mu
 		and <mu-aggr> (x-mu) => mu

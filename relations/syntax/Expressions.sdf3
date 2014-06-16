@@ -23,6 +23,8 @@ templates //exp (aggregations)
 	Exp.Max								= <max ( <Exp> )>
 	Exp.Avg								= <avg ( <Exp> )>
 	Exp.Sum								= <sum ( <Exp> )>
+	Exp.Conj							= <conj ( <Exp> )>
+	Exp.Disj							= <disj ( <Exp> )>
 	Exp.Concat						= <concat ( <Exp> )>
 	Exp.Count							= <count ( <Exp> )>
 
