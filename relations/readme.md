@@ -3,6 +3,7 @@
 * Formal: inverses and shortcuts, Implementation: navigators
 * Formal: no default values
 * Formal: Cartesian product for all operators, Implementation: only specified for [0,1]
+* Formal: lookup expression, Implementation: data section with identifiers
 
 Issues
 

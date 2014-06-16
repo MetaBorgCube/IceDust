@@ -7,12 +7,6 @@ imports
 
 type rules
 
-	NavigateIn(This(), nav, into, EntityType(rel-ty)) : rel-ty
-	where into 	: into-ty
-	
-	NavigateOut(This(), nav, EntityType(rel-ty), out) : out-ty
-	where	out		: out-ty
-
 	NavigateIn(prev, nav, into, EntityType(rel-ty)) : rel-ty
 	where prev	: prev-ty
 		and into	: into-ty
