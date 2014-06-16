@@ -7,7 +7,7 @@ model
     nameWithDefault  : String  = "default name" (default)				// we do not override this in User me
     nameWithDefault2 : String  = "default name" (default)       // we override this
     nameDerived      : String  = name + "Surname" (derivation)  // one cannot assign to derived values, only to defaults
-    nameDerived2     : String  = name + "Surname" 							// you can omit (derivation)
+    nameDerived2     : String  = this.name + "Surname" 							// you can omit (derivation)
   }
 
 data

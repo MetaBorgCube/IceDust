@@ -17,7 +17,7 @@ test type of ref entity this [[
 	X x{
 		i=8
 	}
-]] run get-type to "X"{_} // http://yellowgrass.org/issue/Spoofax/818
+]] run get-type to "X"{_}
 	 
 test type of ref entity Identifier [[
 	model

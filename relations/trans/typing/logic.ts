@@ -16,7 +16,7 @@ type rules
 +	GreaterThan(x, y)
 +	GreaterThanEqual(x, y) : Boolean()
 	where	x	: x-ty
-		and (x-ty == Int() or x-ty == String()) else error $[Type mismatch: Int or String got [x-ty] in Comparison] on x
+		and (x-ty == Int() or x-ty == String()) else error $[Type mismatch: expected Int or String got [x-ty] in Comparison] on x
 		and	y	: y-ty
 		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
 
