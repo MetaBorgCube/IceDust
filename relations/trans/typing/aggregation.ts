@@ -34,14 +34,14 @@ type rules
 + Disj(x)
 + Concat(x) has multiplicity mu
 	where x has multiplicity x-mu
-		and <mu-aggr> (x-mu) => mu
+		and <upperbound-one> (x-mu) => mu
 		and (x-mu == ZeroOrMore() or x-mu == OneOrMore())	else error "Expected multiplicity of higher than One" on x
 
 	Count(x) has multiplicity One()
 
 type functions
 
-	mu-aggr:
+	upperbound-one:
 		(x-mu) -> mu
-		where ((x-mu == OneOrMore() or x-mu == One()) and One() => mu)
-			 or ZeroOrOne() => mu
+		where (x-mu == OneOrMore() or x-mu == One()) and One()       => mu
+			 or                                            ZeroOrOne() => mu
