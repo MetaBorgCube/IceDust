@@ -25,6 +25,8 @@ test type of mod	[[ [[8 % 3]] ]] run get-type to Int
 
 test type of plus String [[ [["a" + "b"]] ]] run get-type to String
 
+
+test error on Boolean plus Boolean [[ [[true]] + false ]] 1 error // http://yellowgrass.org/issue/TS/6
 test error on Int plus String  [[ 1 + [["b"]] ]] 1 error
 test error on Int minus String [[ 1 - [["b"]] ]] 1 error
 test error on String mod String[[ [["a"]] % [["b"]] ]] 2 errors

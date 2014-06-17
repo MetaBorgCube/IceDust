@@ -10,6 +10,7 @@ type rules
 	Addition(x, y) : y-ty
 	where	x	: x-ty
 		and	y	: y-ty
+		and (x-ty == Int() or x-ty == String()) else error  $[Type mismatch: expected Int or String got [x-ty] in Addition] on x
 		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Addition] on y
 		
 	Multiplication(x, y)
