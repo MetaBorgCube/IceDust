@@ -56,7 +56,7 @@ test Resolve Navigation to entity [[
 	u > user][[Owns]][book
 ]] resolve #2 to #1
 
-test Resolve invalid Navigation fails [[
+test (TS/1) Resolve invalid Navigation fails [[
 	entity User{}
 	entity Book{}
 	relation [[Owns]]{

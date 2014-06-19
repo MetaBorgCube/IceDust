@@ -32,7 +32,7 @@ test type of inline if Boolean [[ [[true?false:false]] ]] run get-type to Boolea
 
 test error on Boolean and Int  [[ true && [[3]] ]] 1 error
 test error on String gt Int [[ "b" > [[4]] ]] 1 error
-test error on String inline if[[ [["a"]] ? 3 : 4 ]] 1 error // http://yellowgrass.org/issue/TS/6
+test (TS/6) error on String inline if[[ [["a"]] ? 3 : 4 ]] 1 error // http://yellowgrass.org/issue/TS/6
 test error on inline if String Int [[ true ? "a" : [[4]] ]] 1 error
 
 
