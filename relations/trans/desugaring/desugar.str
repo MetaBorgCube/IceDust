@@ -3,6 +3,7 @@ module trans/desugaring/desugar
 imports
 	include/Relations
 	trans/lib/new-name
+	editor/origins
 	
 rules
 
@@ -22,9 +23,17 @@ rules // generate omitted multiplicities
 
 	desugar: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
 
-rules // generate omitted names
+rules // generate omitted role names
 
-	desugar: Role(EntityType(e), multiplicity, None(), inverse) -> Role(EntityType(e), multiplicity, e, inverse)
+	desugar: Role(EntityType(e), multiplicity, None(), inverse) -> Role(EntityType(e), multiplicity, <origin-track-forced(lcfirst)>e, inverse)
+
+rules // generate omitted inverse names
+	
+	desugar: EntityTypeDef(a,entityName,roles) -> EntityTypeDef(a,entityName,roles')
+		with
+			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
+
+	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <lcfirst>entityName)
 
 rules // combined navigators into single steps
 
