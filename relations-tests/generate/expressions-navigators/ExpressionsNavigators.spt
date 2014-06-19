@@ -41,6 +41,6 @@ setup Common [[
 
 test Expressions Navigators generate-java [[ ]] build generate-java-test
 
-test (NaBL/64) Expressions Navigators compile-java [[ ]] build compile-java-test
+test (NaBL/110) Expressions Navigators compile-java [[ ]] build compile-java-test
 
 // test Expressions Navigators execute-java [[ ]] build execute-java-test //well we cant test memory addresses that chan

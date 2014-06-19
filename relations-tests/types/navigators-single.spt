@@ -19,8 +19,8 @@ setup Common [[
 
 
 test type of navigate in	[[ [[n > maybe]Edge]] ]] run get-type to "Edge"{_}
-test (NaBL/64) type of navigate inout	[[ [[n > maybe]Edge[one]] ]] run get-type to "Node"{_}
-test (NaBL/64) type of navigate in out	[[ [[n > maybe]Edge > Edge[one]] ]] run get-type to "Node"{_}
+test (NaBL/110) type of navigate inout	[[ [[n > maybe]Edge[one]] ]] run get-type to "Node"{_}
+test (NaBL/110) type of navigate in out	[[ [[n > maybe]Edge > Edge[one]] ]] run get-type to "Node"{_}
 test type of navigate inout in	[[ [[n > maybe]Edge[one > star]Edge]] ]] run get-type to "Edge"{_}
 
 
