@@ -95,7 +95,7 @@ binding rules // references
 		where This() resolves to This this
 		and this has type e-ty
 
-	AttributeName(exp, a) :
+	MemberAccess(exp, a) :
 		refers to Attribute a in EntityType e-ty
 		where exp has type e-ty
 	otherwise

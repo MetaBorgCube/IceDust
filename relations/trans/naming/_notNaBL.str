@@ -40,7 +40,7 @@ rules // unresolved references
 
 		  
 	nabl-constraint(|ctx):
-		AttributeName(_, e) -> <fail>
+		MemberAccess(_, e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute"]

@@ -7,10 +7,10 @@ imports
 
 type rules
 
-	AttributeName(expr, attr) : attr-ty
+	MemberAccess(expr, attr) : attr-ty
 	where definition of attr : attr-ty
 	
-	AttributeName(expr, attr) has multiplicity mu
+	MemberAccess(expr, attr) has multiplicity mu
 	where	expr has multiplicity expr-mu
 		and definition of attr has multiplicity attr-mu
 		and <mu-or-join> (expr-mu, attr-mu) => mu

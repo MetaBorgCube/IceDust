@@ -11,7 +11,7 @@ templates // brackets
 
 templates // operators
 
-  Exp.AttributeName      = <<Exp> . <ID>>          {left}
+  Exp.MemberAccess      = <<Exp> . <ID>>          {left}
   Exp.Not                = <!<Exp>>                {right}
 
   Exp.Multiplication     = <<Exp> * <Exp>>         {left}
@@ -75,7 +75,7 @@ context-free priorities
 		Exp.NavigateOut
 	} >	
 	{ left:
-		Exp.AttributeName
+		Exp.MemberAccess
 	} >	
 	{ right:
 		Exp.Not
