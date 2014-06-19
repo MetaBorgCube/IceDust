@@ -11,14 +11,14 @@ model
   	vacation   : Int = 80 (default) // 8 percent
   	thirteenth : Int = 83 (default) // 8.3 percent
   	
-  	hoursPerWeek : Int = 40 (default)
-  	vacationDays : Int = 24 (default)
+  	// hoursPerWeek : Int = 40 (default)
+  	// vacationDays : Int = 24 (default)
   	
-  	workDays         : Int = 365 - 104 - 8 - vacationDays
-  	workHoursPerYear : Int = workDays * hoursPerWeek / 5 <+ 0
+  	// workDays         : Int = 365 - 104 - 8 - vacationDays
+  	// workHoursPerYear : Int = workDays * hoursPerWeek / 5
   	
-  	hourlyBruto  : Int = monthlyBruto / 157 <+ 0
-  	monthlyBruto : Int = (yearlyPay / 12 <+ monthlyPay <+ hourlyPay * 157 <+ 0) * (1000+vacation+thirteenth) / 1000 <+ 0
+  	hourlyBruto  : Int = monthlyBruto / 157
+  	monthlyBruto : Int = (yearlyPay / 12 <+ monthlyPay <+ hourlyPay * 157 <+ 0) * (1000+vacation+thirteenth) / 1000
   	yearlyBruto  : Int = monthlyBruto * 12
   	
   	hourlyNetto  : Int = yearlyNetto / 365 <+ 0
@@ -47,15 +47,15 @@ model
   	slice3 : Int = min(yearlyTaxed - slice1 - slice2 :: slice3boundrary - slice2boundrary)
   	slice4 : Int = min(yearlyTaxed - slice1 - slice2 - slice3 :: 0)
   	
-  	slice1tax : Int = slice1 * slice1percentage / 10000 <+0
-  	slice2tax : Int = slice2 * slice2percentage / 10000 <+0
-  	slice3tax : Int = slice3 * slice3percentage / 10000 <+0
-  	slice4tax : Int = slice4 * slice4percentage / 10000 <+0
+  	slice1tax : Int = slice1 * slice1percentage / 10000
+  	slice2tax : Int = slice2 * slice2percentage / 10000
+  	slice3tax : Int = slice3 * slice3percentage / 10000
+  	slice4tax : Int = slice4 * slice4percentage / 10000
   	
   	box1tax : Int = slice1tax + slice2tax + slice3tax + slice4tax
 
-  	workTaxDiscount    : Int = 2097                                        // only true for 19.248 - 40.721  	
-  	defaultTaxDiscount : Int = 2103 - (yearlyBruto - 19645) * 2 / 100 <+ 0 // only true for 19.645 - 56.495
+  	workTaxDiscount    : Int = 2097                                   // only true for 19.248 - 40.721  	
+  	defaultTaxDiscount : Int = 2103 - (yearlyBruto - 19645) * 2 / 100 // only true for 19.645 - 56.495
   	
   	tax : Int = box1tax - workTaxDiscount - defaultTaxDiscount
   	
