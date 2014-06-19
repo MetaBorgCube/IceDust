@@ -21,8 +21,8 @@ model
   	monthlyBruto : Int = (yearlyPay / 12 <+ monthlyPay <+ hourlyPay * 157 <+ 0) * (1000+vacation+thirteenth) / 1000
   	yearlyBruto  : Int = monthlyBruto * 12
   	
-  	hourlyNetto  : Int = yearlyNetto / 365 <+ 0
-  	monthlyNetto : Int = yearlyNetto / 12 <+ 0
+  	hourlyNetto  : Int = yearlyNetto / 365
+  	monthlyNetto : Int = yearlyNetto / 12
   	yearlyNetto  : Int = yearlyBruto - tax
 
 		leaseCar           : Int?
