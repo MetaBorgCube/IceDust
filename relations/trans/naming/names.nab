@@ -67,6 +67,9 @@ binding rules // model
 		  scopes Inverse
 		defines Inverse inverseName
 			of multiplicity role-mu
+			of type e-ty
+			where This() resolves to This this
+			and this has type e-ty
 
 binding rules // data
 
