@@ -13,6 +13,7 @@ namespaces
 	Entity
 	Attribute
 	Role
+	Inverse
 	This
 
 properties
@@ -23,51 +24,24 @@ properties
 	fulfill-role 				of EntityType : EntityType			//points to the Relation of which it is a role (the relation is EntityType)
 	multiplicity				of Attribute	: Term
 	
-binding rules
+binding rules // modules
 
-	// modules
 	ModuleDesugared(m, _, _, _) : 
 		defines Module m
 		scopes EntityType
 		scopes Entity
 
+binding rules // model
 
-	// entity types
 	EntityTypeDef(ent-or-rel, e-ty, _) :
-		defines EntityType e-ty
+		defines non-unique EntityType e-ty
 			of entity-or-relation ent-or-rel
 		scopes Attribute
 		scopes Role
 		scopes This
 		implicitly defines This This()
 			of type e-ty
-		
-	EntityType(e) :
-		refers to EntityType e
-		
-	
-	// entities
-	EntityOrRelation(EntityType(e-ty), e, _, _) :
-		defines Entity e
-			of type e-ty
-			of multiplicity One()
-		scopes This
-		implicitly defines This This()
-			of type e-ty
-			of multiplicity One()
-	
-	
-	// entities or attributes
-	Identifier(x) :
-		refers to Entity x
-	otherwise
-		refers to Attribute x
-		in EntityType e-ty
-		where This() resolves to This this
-		and this has type e-ty
-	
-	
-	// attributes
+
 	Attribute(a, a-ty, a-mu, None()) :
 		defines Attribute a
 			of type a-ty
@@ -79,25 +53,57 @@ binding rules
 			of type a-ty
 			of multiplicity a-mu
 			of derivation-type a-dt
-		
-	AttributeName(exp, a) :
-		refers to Attribute a in EntityType e-ty
-		where exp has type e-ty
 
-	
-	// roles
+	Role(EntityType(role-ty), role-mu, role, None()) :
+		defines Role role
+			of type role-ty
+			of multiplicity role-mu
+
 	Role(EntityType(role-ty), role-mu, role, inverseName) :
 		defines Role role
 			of type role-ty
 			of multiplicity role-mu
+		defines non-unique EntityType role-ty
+		  scopes Inverse
+		defines Inverse inverseName
+			of multiplicity role-mu
+
+binding rules // data
+
+	EntityOrRelation(EntityType(e-ty), e, _, _) :
+		defines Entity e
+			of type e-ty
+			of multiplicity One()
+		scopes This
+		implicitly defines This This()
+			of type e-ty
+			of multiplicity One()
+
+binding rules // references
+
+	EntityType(e) :
+		refers to EntityType e
+
+	Identifier(x) :
+		refers to Entity x
+	otherwise
+		refers to Attribute x
+		in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
+
+	AttributeName(exp, a) :
+		refers to Attribute a in EntityType e-ty
+		where exp has type e-ty
+	otherwise
+	  refers to Inverse a in EntityType e-ty
+	  where exp has type e-ty
 	
 	RoleName(r):
 		refers to Role r in EntityType e-ty
 		where This() resolves to This this
 		and this has type e-ty
 		
-
-	// navigators
 	NavigateIn(_, _, in2, EntityType(r-ty)) :
 		implicitly defines This This()
 			of type r-ty in in2
@@ -106,7 +112,5 @@ binding rules
 		implicitly defines This This()
 			of type r-ty in out
 	
-	
-	// this
 	This() :
 		refers to This This()
