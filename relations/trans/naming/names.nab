@@ -99,6 +99,9 @@ binding rules // references
 		refers to Attribute a in EntityType e-ty
 		where exp has type e-ty
 	otherwise
+	  refers to Role a in EntityType e-ty
+	  where exp has type e-ty
+	otherwise
 	  refers to Inverse a in EntityType e-ty
 	  where exp has type e-ty
 	
