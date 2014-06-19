@@ -10,6 +10,7 @@ namespaces
 	
 	Module
 	EntityType
+	EntityType2                            //Nasty Hack to enforce no duplicate entity types
 	Entity
 	Attribute
 	Role
@@ -29,11 +30,13 @@ binding rules // modules
 	ModuleDesugared(m, _, _, _) : 
 		defines Module m
 		scopes EntityType
+		scopes EntityType2
 		scopes Entity
 
 binding rules // model
 
 	EntityTypeDef(ent-or-rel, e-ty, _) :
+		defines EntityType2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique EntityType e-ty
 			of entity-or-relation ent-or-rel
 		scopes Attribute
