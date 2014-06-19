@@ -24,7 +24,8 @@ type rules
 	Identifier(a) has multiplicity a-mu
 	where definition of a has multiplicity a-mu
 
-	//TODO: type of This()
+	this@This() : ty
+	where definition of this : ty 
 
 	This() has multiplicity One()
 

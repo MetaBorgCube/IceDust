@@ -36,6 +36,8 @@ rules // aggregations
 	lib-call: Min(_)								->"min"
 	lib-call: Avg(_)								->"avg"
 	lib-call: Sum(_)								->"sum"
+	lib-call: Conj(_)								->"conj"
+	lib-call: Disj(_)								->"disj"
 	lib-call: Concat(_)							->"concat"
 	lib-call: Count(_)							->"count"
 

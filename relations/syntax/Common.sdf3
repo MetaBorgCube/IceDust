@@ -1,7 +1,5 @@
 module Common
 
-
-
 lexical syntax // IDs
 
   ID = [a-zA-Z\_][0-9a-zA-Z\_]*
@@ -10,17 +8,14 @@ lexical syntax // IDs
 lexical restrictions
 	
 	ID -/- [a-zA-Z0-9\_]
-        
-// templates
-// 
-// 	Identifier.Identifier = <<ID>>
-
 
 lexical syntax // Keywords
 
 	Keyword = "avg"
 	Keyword = "concat"
+	Keyword = "conj"
 	Keyword = "count"
+	Keyword = "disj"
 	Keyword = "entity"
 	Keyword = "false"
 	Keyword = "Int"
@@ -31,28 +26,21 @@ lexical syntax // Keywords
 	Keyword = "sum"
 	Keyword = "this"
 	Keyword = "true"
-	
 
 lexical restrictions
 
 	Keyword -/- [a-zA-Z0-9\_]
 
+lexical syntax // literals
 
-
-/**
- * Default stuff
- */
-lexical syntax
-
-	// [a-zA-Z][a-zA-Z0-9]* -> ID
-	"-"? [0-9]+          -> INT
+	"-"? [0-9]+   -> INT
+	StringChar*   -> STRING
+	~[\"\n]       -> StringChar
+	"\\\""        -> StringChar
+	BackSlashChar -> StringChar
+	"\\"          -> BackSlashChar
 	
-	// "\"" StringChar* "\"" -> STRING
-	StringChar* -> STRING
-	~[\"\n]               -> StringChar
-	"\\\""                -> StringChar
-	BackSlashChar         -> StringChar
-	"\\"                  -> BackSlashChar
+lexical syntax // layout
 	
 	[\ \t\n\r] -> LAYOUT
 	
@@ -68,13 +56,8 @@ lexical restrictions
 	
 	CommentChar   -/- [\/]
 	INT           -/- [0-9]
-	// ID            -/- [a-zA-Z0-9\_]
-	
-	// EOF may not be followed by any char
-	
+
 	EOF           -/- ~[]
-	
-	// Backslash chars in strings may not be followed by " 
 	
 	BackSlashChar -/- [\"]
 

@@ -1,0 +1,131 @@
+module tax
+
+model
+  
+  entity Record{
+  	
+  	hourlyPay  : Int?
+  	monthlyPay : Int?
+  	yearlyPay  : Int?
+  	
+  	vacation   : Int = 80 (default) // 8 percent
+  	thirteenth : Int = 83 (default) // 8.3 percent
+  	
+  	// hoursPerWeek : Int = 40 (default)
+  	// vacationDays : Int = 24 (default)
+  	
+  	// workDays         : Int = 365 - 104 - 8 - vacationDays
+  	// workHoursPerYear : Int = workDays * hoursPerWeek / 5
+  	
+  	hourlyBruto  : Int = monthlyBruto / 157
+  	monthlyBruto : Int = (yearlyPay / 12 <+ monthlyPay <+ hourlyPay * 157 <+ 0) * (1000+vacation+thirteenth) / 1000
+  	yearlyBruto  : Int = monthlyBruto * 12
+  	
+  	hourlyNetto  : Int = yearlyNetto / 365
+  	monthlyNetto : Int = yearlyNetto / 12
+  	yearlyNetto  : Int = yearlyBruto - tax
+
+		leaseCar           : Int?
+		leaseCarPercentage : Int?
+		
+		leaseCarAddition   : Int = leaseCar * leaseCarPercentage / 100 <+ 0
+		lease              : Boolean = leaseCar > 0 && leaseCarPercentage > -1 <+ false
+		
+		yearlyTaxed : Int = yearlyBruto + leaseCarAddition
+  	
+  	slice1percentage : Int = 3625 // 36.25 percent
+  	slice2percentage : Int = 4200
+  	slice3percentage : Int = 4200
+  	slice4percentage : Int = 5200
+  	
+  	slice1boundrary : Int = 19645
+  	slice2boundrary : Int = 33363
+  	slice3boundrary : Int = 56531
+
+  	slice1 : Int = min(yearlyTaxed :: slice1boundrary)
+  	slice2 : Int = min(yearlyTaxed - slice1 :: slice2boundrary - slice1boundrary)
+  	slice3 : Int = min(yearlyTaxed - slice1 - slice2 :: slice3boundrary - slice2boundrary)
+  	slice4 : Int = min(yearlyTaxed - slice1 - slice2 - slice3 :: 0)
+  	
+  	slice1tax : Int = slice1 * slice1percentage / 10000
+  	slice2tax : Int = slice2 * slice2percentage / 10000
+  	slice3tax : Int = slice3 * slice3percentage / 10000
+  	slice4tax : Int = slice4 * slice4percentage / 10000
+  	
+  	box1tax : Int = slice1tax + slice2tax + slice3tax + slice4tax
+
+  	workTaxDiscount    : Int = 2097                                   // only true for 19.248 - 40.721  	
+  	defaultTaxDiscount : Int = 2103 - (yearlyBruto - 19645) * 2 / 100 // only true for 19.645 - 56.495
+  	
+  	tax : Int = box1tax - workTaxDiscount - defaultTaxDiscount
+  	
+  }
+  
+data
+
+  Record sideline{
+  	hourlyPay = 18
+  	vacation = 0
+  	thirteenth = 0
+  }
+  
+  Record phdYear1{ monthlyPay = 2062 }
+  Record phdYear2{ monthlyPay = 2403 }
+  Record phdYear3{ monthlyPay = 2516 }
+  Record phdYear4{ monthlyPay = 2638 }
+  
+  Record secondment { monthlyPay = 2350 thirteenth = 0 leaseCar = 14000 leaseCarPercentage = 14}
+  
+  Record consultant { monthlyPay = 2650 thirteenth = 0 leaseCar = 17000 leaseCarPercentage = 14}
+  
+execute
+
+  "=== Sideline Job - hourly pay ==="
+  "Bruto (hour):"
+  sideline.hourlyBruto
+  "Bruto (month):"
+	sideline.monthlyBruto
+	"Netto (month):"
+	sideline.monthlyNetto
+	"Lease car:"
+	sideline.lease
+
+  ""
+  "=== Secondment ==="
+  "Base salary (month):"
+  secondment.monthlyPay
+  "Bruto (month):"
+	secondment.monthlyBruto
+	"Netto (month):"
+	secondment.monthlyNetto
+	"Lease car:"
+	secondment.lease
+
+  ""
+  "=== Consultant ==="
+  "Base salary (month):"
+  consultant.monthlyPay
+  "Bruto (month):"
+	consultant.monthlyBruto
+	"Netto (month):"
+	consultant.monthlyNetto
+	"Lease car:"
+	consultant.lease
+	
+  ""
+  "=== PhD - 1st year ==="
+  "Base salary (month):"
+  phdYear1.monthlyPay
+  "Bruto (month):"
+	phdYear1.monthlyBruto
+	"Netto (month):"
+	phdYear1.monthlyNetto
+	"Lease car:"
+	phdYear1.lease
+
+  ""
+  "=== PhD - Netto (month) - year 1,2,3 and 4 ==="
+  phdYear1.monthlyNetto
+  phdYear2.monthlyNetto
+  phdYear3.monthlyNetto
+  phdYear4.monthlyNetto
