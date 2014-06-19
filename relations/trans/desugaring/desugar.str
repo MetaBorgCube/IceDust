@@ -33,7 +33,9 @@ rules // generate omitted inverse names
 		with
 			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
 
-	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <lcfirst>entityName)
+	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
+
+	custom-origin(|term) : custom-origin -> term
 
 rules // combined navigators into single steps
 
