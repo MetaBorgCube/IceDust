@@ -1,3 +1,8 @@
+# TODO:
+
+* Implement inverses with partial classes (in a different name space)
+* Implement shortcuts with desugarings
+
 # Differences between formal specification and implementation
 
 * Formal: inverses and shortcuts, Implementation: navigators
