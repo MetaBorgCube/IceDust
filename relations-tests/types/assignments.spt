@@ -39,7 +39,7 @@ test error on assign role wrong entityType [[
 	model
 	entity Node{}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node 1 out
 	}
 	

@@ -8,12 +8,12 @@ setup Common [[
 	model
 	entity Person{}
 	relation Marriage{
-		Person 1 Husband
+		Person 1 Husband <- x
 		Person 1 Wife
 	}
 	relation Counseling{
 		Person * Counselor
-		Marriage 1
+		Marriage 1 Marriage
 	}
 	
 	data

@@ -7,9 +7,9 @@ setup Common [[
 	model
 	entity Node{}
 	relation Edge{
-		Node ? maybe
-		Node 1 one
-		Node * star
+		Node ? maybe <- x
+		Node 1 one   <- y
+		Node * star  <- z
 		Node + plus
 	}
 	data

@@ -10,7 +10,7 @@ entity Node{
 	a : Int  = 1
 }
 relation Tree{
-	Node * parent
+	Node * parent <- x
 	Node ? child
 }
 

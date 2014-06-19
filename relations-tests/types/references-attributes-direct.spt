@@ -39,7 +39,7 @@ test type of ref navigator.attribute [[
 		i : Int = [[this>in]Edge[out.i]]
 	}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node 1 out
 	}
 ]] run get-type to Int

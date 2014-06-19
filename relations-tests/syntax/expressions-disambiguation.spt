@@ -10,7 +10,7 @@ setup Common [[
 		name : String ?
 	}
 	relation Edge{
-		Node * in
+		Node * in <- x
 		Node * out
 	}
 	

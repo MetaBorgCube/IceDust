@@ -14,7 +14,7 @@ test multiplicity of ref navigator.attribute ZeroOrOne ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node ? in
+		Node ? in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -25,7 +25,7 @@ test multiplicity of ref navigator.attribute ZeroOrOne One [[
 		i : Int = [[this>in]Edge[out.i]] <+ 0
 	}
 	relation Edge{
-		Node ? in
+		Node ? in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -37,7 +37,7 @@ test multiplicity of ref navigator.attribute One ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -48,7 +48,7 @@ test multiplicity of ref navigator.attribute One One [[
 		i : Int = [[this>in]Edge[out.i]]
 	}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to One
@@ -60,7 +60,7 @@ test multiplicity of ref navigator.attribute ZeroOrMore ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node * in
+		Node * in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -71,7 +71,7 @@ test multiplicity of ref navigator.attribute ZeroOrMore One [[
 		i : Int = max( [[this>in]Edge[out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node * in
+		Node * in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -83,7 +83,7 @@ test multiplicity of ref navigator.attribute OneOrMore ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node + in
+		Node + in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -94,7 +94,7 @@ test multiplicity of ref navigator.attribute OneOrMore One [[
 		i : Int = max( [[this>in]Edge[out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node + in
+		Node + in <- x
 		Node 1 out
 	}
 ]] run get-multiplicity to OneOrMore

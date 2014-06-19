@@ -20,8 +20,8 @@ test Duplicate relation fails [[
 		Book 1
 	}
 	relation Owns{
-		User *
-		Book 1
+		User * user1 <- x
+		Book 1 book1 <- y
 	}
 ]] 2 errors
 
@@ -53,7 +53,7 @@ test Resolve Navigation to entity [[
 	data
 	User u{}
 	execute
-	u > User][[Owns]][Book
+	u > user][[Owns]][book
 ]] resolve #2 to #1
 
 test Resolve invalid Navigation fails [[
@@ -66,6 +66,6 @@ test Resolve invalid Navigation fails [[
 	data
 	User u{}
 	execute
-	u > User][[OwnsXX]][Book
+	u > user][[OwnsXX]][book
 ]] 1 error // http://yellowgrass.org/issue/TS/1
 
