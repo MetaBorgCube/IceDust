@@ -74,23 +74,23 @@ test Resolve entity.invalid attribute fails [[
 	n.[[notin]]
 ]] 1 error
 
-test Resolve attribute from Navigator.attribute [[
+test Resolve attribute from role.attribute [[
 	entity Node {
-		[[name]] : String = concat(this > in]Edge[out .[[name]])
+		[[name]] : String = concat(this.in.out.[[name]]) <+ ""
 	}
 	relation Edge{
-		Node + in <- x
-		Node * out
+		Node * in  <- in
+		Node * out <- out
 	}
 ]] resolve #2 to #1
 
-test (TS/1) Resolve invalid Navigator.attribute fails [[
+test (TS/1) Resolve invalid role.attribute fails [[
 	entity Node {
-		name : String = concat(this > in]Edge[out .[[x]])
+		name : String = concat(this.in.out.[[x]]) <+ ""
 	}
 	relation Edge{
-		Node * in <- x
-		Node * out
+		Node * in  <- in
+		Node * out <- out
 	}
 ]] 1 error  // http://yellowgrass.org/issue/TS/1
 

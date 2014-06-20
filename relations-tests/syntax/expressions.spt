@@ -56,11 +56,11 @@ test logic inline if[[true?3:5]] parse succeeds
 test multiplicity merge	[[4 :: 4]] parse succeeds
 test multiplicity choice[[4 <+ 3]] parse succeeds // This is going to give an error, since choice doesn't make sense for something that is always there
 
-test navigate in [[	u > User]UserPost]] parse succeeds
-test navigate inout [[	u > User]UserPost[Post]] parse succeeds
-test navigate out [[	u > User]UserPost > UserPost[User]] parse succeeds
+test inverse [[	u.userPost]] parse succeeds
+test inervse.role [[	u.userPost.post]] parse succeeds
+test inverse.role.inverse [[	u.userPost.post.user]] parse succeeds
 
 test Identifier						[[u]] parse succeeds
 test Identifier.attribute [[u.name]] parse succeeds
-test Navigator.attribute	[[u > User]UserPost > UserPost[User .name]] parse succeeds
+test inverse.role.inverse.attribute	[[u.userPost.post.user.name]] parse succeeds
 
