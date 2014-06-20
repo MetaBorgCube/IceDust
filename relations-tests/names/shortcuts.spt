@@ -1,0 +1,38 @@
+module names-shortcuts
+
+language Relations
+
+setup Common [[
+	module inverses
+
+	model
+	
+		entity Course{}
+]]
+
+test Resolve shortcut [[
+	entity Student{
+		numCourses : Int = count(this.[[courses]])
+	}
+	
+	relation Enrollment{
+		Student *
+		Course  +
+		
+		student.[[courses]] Student <-> Course course.students
+	}
+]] resolve #1 to #2
+
+test Resolve invalid shortcut fails [[
+	entity Student{
+		numCourses : Int = count(this.[[iDoNotExist]])
+	}
+	
+	relation Enrollment{
+		Student *
+		Course  +
+		
+		student.courses Student <-> Course course.students
+	}
+]] 1 error
+

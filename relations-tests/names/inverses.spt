@@ -23,7 +23,7 @@ test Resolve inverse [[
 
 test Resolve invalid inverse fails [[
 	entity Student{
-		numCourses : Int = count(this.iDoNotExist)
+		numCourses : Int = count(this.[[iDoNotExist]])
 	}
 	
 	relation Enrollment{
