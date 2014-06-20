@@ -15,14 +15,6 @@ imports
 
 rules // attributes of expressions
 
-	// // This() has no type, so cannot use the static getter
-	// exp-to-java-stm(err|i): MemberAccess(This(), name) -> ([], result)
-	// 	with
-	// 		x_getter := $[get_[name]]
-	// 	with
-	// 		result :=	|[this.x_getter()]|
-			
-
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
@@ -46,8 +38,12 @@ rules // direct references
 		where
 			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> <exp-to-java-stm(err|i)>MemberAccess(This(), name) //forward to this.name
+	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_getter := $[get_[name]]
+		with
+			result :=	|[this.x_getter()]|
 			
 	exp-to-java-stm(err|i): This() -> ([], |[this]|)

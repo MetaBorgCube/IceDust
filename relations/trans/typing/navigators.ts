@@ -14,7 +14,7 @@ type rules
 	
 	NavigateIn(prev, nav, into, EntityType(rel-ty)) has multiplicity mu
 	where prev has multiplicity prev-mu
-		and definition of into has multiplicity into-mu
+		and definition of into has multiplicity2 into-mu
 		and <mu-or-join> (prev-mu, into-mu) => mu
 	
 	NavigateOut(prev, nav, EntityType(rel-ty), out) : out-ty
