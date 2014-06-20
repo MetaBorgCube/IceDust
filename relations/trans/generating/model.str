@@ -40,7 +40,7 @@ rules
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity>fulfillRole
+			multiplicity := <get-multiplicity2>fulfillRole
 		with
 			if <upper-one> multiplicity then
 				result := |[ public x_type x_field; ]|
@@ -54,7 +54,7 @@ rules
 			roleName := <de-def;nabl-uri-name>fulfillRole;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity>fulfillRole
+			multiplicity := <get-multiplicity2>fulfillRole
 		with
 			if <upper-one> multiplicity then
 				result := |[ x_field = null; ]|

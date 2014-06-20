@@ -24,6 +24,7 @@ properties
 	derivation-type 		of Attribute	: DerivationType	//either is Derivation(), has DefaultValue() or is Normal()
 	fulfill-role 				of EntityType : EntityType			//points to the Relation of which it is a role (the relation is EntityType)
 	multiplicity				of Attribute	: Term
+	multiplicity2				of Attribute  : Term
 	
 binding rules // modules
 
@@ -60,7 +61,8 @@ binding rules // model
 	Role(role-ty, role-mu, role, inverseName) :
 		defines Role role
 			of type role-ty
-			of multiplicity role-mu
+			of multiplicity One()
+			of multiplicity2 role-mu
 		defines non-unique EntityType role-ty
 		  scopes Inverse
 		defines Inverse inverseName
