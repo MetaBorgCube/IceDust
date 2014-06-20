@@ -27,6 +27,7 @@ templates // roles and attributes
 
 	RoleOrAttribute								= <<Role>>
 	RoleOrAttribute								= <<Attribute>>
+	RoleOrAttribute								= <<Shortcut>>
 
 templates
 
@@ -37,6 +38,8 @@ templates
 	DerivationType.DefaultValue		= <(default)>
 	DerivationType.Derivation			= <(derivation)>
 	DerivationType.Derivation			= <>
+	
+	Shortcut.Shortcut							= <<ID>.<ID> <ID?> \<-\> <ID?> <ID>.<ID>>
 
 templates
 

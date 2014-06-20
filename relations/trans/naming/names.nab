@@ -15,6 +15,7 @@ namespaces
 	Attribute
 	Role
 	Inverse
+	Shortcut
 	This
 
 properties
@@ -26,6 +27,7 @@ properties
 	multiplicity				of Attribute	: Term
 	multiplicity2				of Attribute  : Term
 	origin-role					of Inverse		: Role
+	origin-role2				of Shortcut		: Role
 	
 binding rules // modules
 
@@ -74,6 +76,28 @@ binding rules // model
 			and this has type e-ty
 		// refers to EntityType2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
 
+	Shortcut(role1, shortcut1, type1, type2, role2, shortcut2):
+		refers to Role role1
+		refers to Role role2
+		defines non-unique EntityType type1
+			scopes Shortcut
+		defines Shortcut shortcut1
+			of type type2
+			of multiplicity mu1
+			of origin-role role1
+			of origin-role2 role2
+			where role1 resolves to Role role1def
+			and role1def has multiplicity2 mu1
+		defines non-unique EntityType type2
+			scopes Shortcut
+		defines Shortcut shortcut2
+			of type type1
+			of multiplicity mu2
+			of origin-role role2
+			of origin-role2 role1
+			where role2 resolves to Role role2def
+			and role2def has multiplicity2 mu2
+
 binding rules // data
 
 	EntityOrRelation(EntityType(e-ty), e, _, _) :
@@ -97,6 +121,7 @@ binding rules // references
 		in EntityType e-ty
 		where This() resolves to This this
 		and this has type e-ty
+	//TODO: otherwise refers to Role, Inverse or Shortcut (+ code generation)
 
 	MemberAccess(exp, a) :
 		refers to Attribute a in EntityType e-ty
@@ -106,6 +131,9 @@ binding rules // references
 	  where exp has type e-ty
 	otherwise
 	  refers to Inverse a in EntityType e-ty
+	  where exp has type e-ty
+	otherwise
+	  refers to Shortcut a in EntityType e-ty
 	  where exp has type e-ty
 	
 	RoleName(r):
