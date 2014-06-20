@@ -25,7 +25,7 @@ rules // generate omitted multiplicities
 
 rules // generate omitted role names
 
-	desugar: Role(EntityType(e), multiplicity, None(), inverse) -> Role(EntityType(e), multiplicity, <origin-track-forced(lcfirst)>e, inverse)
+	desugar: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
 
 rules // generate omitted inverse names
 	
