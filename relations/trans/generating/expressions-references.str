@@ -15,15 +15,17 @@ imports
 
 rules // attributes of expressions
 
-	// This() has no type, so cannot use the static getter
-	exp-to-java-stm(err|i): MemberAccess(This(), name) -> ([], result)
-		with
-			x_getter := $[get_[name]]
-		with
-			result :=	|[this.x_getter()]|
+	// // This() has no type, so cannot use the static getter
+	// exp-to-java-stm(err|i): MemberAccess(This(), name) -> ([], result)
+	// 	with
+	// 		x_getter := $[get_[name]]
+	// 	with
+	// 		result :=	|[this.x_getter()]|
 			
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
 		with
 			x_expType := <get-type>e1;
 			x_getter := $[get_[name]];

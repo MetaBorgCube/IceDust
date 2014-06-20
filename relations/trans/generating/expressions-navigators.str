@@ -1,7 +1,11 @@
 module trans/generating/expressions-navigators
 
 imports
-
+	
+	lib/nabl/interface
+	lib/nabl/uri
+	lib/types/query
+	
 	include/Relations
 	lib/java/Java
 	
@@ -39,3 +43,58 @@ rules
 			]|;
 			exp := expr |[x_var]|
 
+rules // member access
+
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+		with
+			<debug> "Role";
+			<debug> name;
+			<nabl-uri;nabl-uri-parent;nabl-uri-name;debug> name
+		// with
+		// 	x_expType := <get-type>e1;
+		// 	x_getter := $[get_[name]];
+		// 	(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+		// 	refty := <java-type>e;
+		// 	j := <add>(i, <length>stms*);
+		// 	x_var := $[var[<inc>j]]
+		// with
+		// 	stms := bstm* |[
+		// 		~stms*
+		// 		refty x_var = x_expType.x_getter(~e1exp);
+		// 	]|;
+		// 	exp := expr |[x_var]|
+		with
+			x_call := $[[name]_out];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
+	
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+		with
+			<debug> "Inverse";
+			<debug> name
+		with
+			x_expType := <get-type>e1;
+			x_getter := $[get_[name]];
+			(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]]
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_expType.x_getter(~e1exp);
+			]|;
+			exp := expr |[x_var]|
