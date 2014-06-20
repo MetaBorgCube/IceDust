@@ -7,13 +7,13 @@ imports
 
 type rules
 
-	MemberAccess(expr, attr) : attr-ty
-	where definition of attr : attr-ty
+	MemberAccess(expr, member) : member-ty
+	where definition of member : member-ty
 	
-	MemberAccess(expr, attr) has multiplicity mu
+	MemberAccess(expr, member) has multiplicity mu
 	where	expr has multiplicity expr-mu
-		and definition of attr has multiplicity attr-mu
-		and <mu-or-join> (expr-mu, attr-mu) => mu
+		and definition of member has multiplicity member-mu
+		and <mu-or-join> (expr-mu, member-mu) => mu
 
 	RoleName(r) : r-ty
 	where definition of r : r-ty
