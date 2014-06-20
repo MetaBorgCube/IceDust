@@ -25,6 +25,7 @@ properties
 	fulfill-role 				of EntityType : EntityType			//points to the Relation of which it is a role (the relation is EntityType)
 	multiplicity				of Attribute	: Term
 	multiplicity2				of Attribute  : Term
+	origin-role					of Inverse		: Role
 	
 binding rules // modules
 
@@ -68,6 +69,7 @@ binding rules // model
 		defines Inverse inverseName
 			of multiplicity role-mu
 			of type e-ty
+			of origin-role role
 			where This() resolves to This this
 			and this has type e-ty
 		// refers to EntityType2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
