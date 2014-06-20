@@ -98,6 +98,6 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-	  <target name="all" depends="link-lib-files,copy-lib-files,spoofaximp.default.ctree"/>
+	  <target name="all" depends="link-lib-files,copy-lib-files,spoofaximp.default.jar"/>
 
 </project>
