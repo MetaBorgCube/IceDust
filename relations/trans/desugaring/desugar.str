@@ -3,7 +3,7 @@ module trans/desugaring/desugar
 imports
 	include/Relations
 	trans/lib/new-name
-	editor/origins
+	runtime/editor/origins
 	
 rules
 
