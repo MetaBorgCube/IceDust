@@ -48,10 +48,6 @@ rules // member access
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
 			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
-		with
-			<debug> "Role";
-			<debug> name;
-			<nabl-uri;nabl-uri-parent;nabl-uri-name;debug> name
 		// with
 		// 	x_expType := <get-type>e1;
 		// 	x_getter := $[get_[name]];
