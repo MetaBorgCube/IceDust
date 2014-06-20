@@ -41,7 +41,7 @@ test Disambiguate plus over merge   [[2 :: 3 + 4]] parse to [[2 :: (3 + 4)]]
 test Disambiguate mult over choice  [[2 <+ 3 * 4]] parse to [[2 <+ (3 * 4)]]
 test Disambiguate merge over choice [[2 <+ 3 :: 4]] parse to [[2 <+ (3 :: 4)]]
 
-test Disambiguate navigate over attribute [[ 
+test Disambiguate member access over merge [[ 
 		n.in.out.name
 	::n.out.in.name
 ]]
