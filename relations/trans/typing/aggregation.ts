@@ -28,7 +28,6 @@ type rules
 
 	Min(x)
 +	Max(x)
-+ Sum(x)
 +	Avg(x)
 + Conj(x)
 + Disj(x)
@@ -37,7 +36,8 @@ type rules
 		and <upperbound-one> (x-mu) => mu
 		and (x-mu == ZeroOrMore() or x-mu == OneOrMore())	else error "Expected multiplicity of higher than One" on x
 
-	Count(x) has multiplicity One()
+	Sum(x)
++	Count(x) has multiplicity One()
 
 type functions
 
