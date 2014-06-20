@@ -9,5 +9,4 @@ imports
 	trans/typing/logic.generated
 	trans/typing/math.generated
 	trans/typing/multiplicity-operators.generated
-	trans/typing/navigators.generated
 	trans/typing/references.generated

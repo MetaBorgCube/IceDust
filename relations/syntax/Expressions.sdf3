@@ -58,22 +58,9 @@ templates // literal values
   LitVal.True            = <true>
   LitVal.False           = <false>
 
-templates // navigators
-
-	Exp.NavigateInOut			= <<Exp> \><Placeholder3> <RoleName>]<EntityType>[<RoleName>>
-	Exp.NavigateIn				= <<Exp> \><Placeholder3> <RoleName>]<EntityType>>
-	Exp.NavigateOut				= <<Exp> \><Placeholder3> <EntityType>[<RoleName>>
-	
-	Placeholder3.NavOr		= <>
-
 
 template options
 context-free priorities
-	{ left:
-		Exp.NavigateInOut
-		Exp.NavigateIn
-		Exp.NavigateOut
-	} >	
 	{ left:
 		Exp.MemberAccess
 	} >	

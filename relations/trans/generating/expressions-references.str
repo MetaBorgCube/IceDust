@@ -13,7 +13,7 @@ imports
 	trans/generating/expressions
 	trans/generating/types
 
-rules // attributes of expressions
+rules // member access
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
@@ -29,6 +29,41 @@ rules // attributes of expressions
 			stms := bstm* |[
 				~stms*
 				refty x_var = x_expType.x_getter(~e1exp);
+			]|;
+			exp := expr |[x_var]|
+
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_call := $[[name]_out];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
+	
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			x_call := $[[roleName]_in];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call(~prevJava);
 			]|;
 			exp := expr |[x_var]|
 

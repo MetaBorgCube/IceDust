@@ -112,14 +112,6 @@ binding rules // references
 		refers to Role r in EntityType e-ty
 		where This() resolves to This this
 		and this has type e-ty
-		
-	NavigateIn(_, _, in2, EntityType(r-ty)) :
-		implicitly defines This This()
-			of type r-ty in in2
-		
-	NavigateOut(_, _, EntityType(r-ty), out) :
-		implicitly defines This This()
-			of type r-ty in out
 	
 	This() :
 		refers to This This()

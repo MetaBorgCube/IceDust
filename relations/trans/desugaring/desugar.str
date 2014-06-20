@@ -37,14 +37,6 @@ rules // generate omitted inverse names
 
 	custom-origin(|term) : custom-origin -> term
 
-rules // combined navigators into single steps
-
-	desugar: NavigateInOut(prevNav, navType, inRole, relation, outRole) ->
-		NavigateOut(
-	    NavigateIn(prevNav, NavOr(), inRole, relation)
-	  , NavOr(), relation, outRole
-	  )	
-
 rules	// custom traversal desugarings
 
 	generate-entity-names: ModuleDesugared(a, b, None(), d)     -> ModuleDesugared(a, b, None(), d)

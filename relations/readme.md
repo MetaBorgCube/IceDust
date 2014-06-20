@@ -1,7 +1,5 @@
 # TODO:
 
-* Implement inverse code generation
-* Remove navigators
 * Implement shortcuts with desugarings
 
 # Differences between formal specification and implementation

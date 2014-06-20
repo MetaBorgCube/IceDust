@@ -1,4 +1,4 @@
-module typing/navigators
+module typing/references
 
 imports
 
