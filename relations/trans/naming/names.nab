@@ -57,12 +57,6 @@ binding rules // model
 			of multiplicity a-mu
 			of derivation-type a-dt
 
-	Role(role-ty, role-mu, role, None()) :
-		defines Role role
-			of type role-ty
-			of multiplicity role-mu
-		// refers to EntityType2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
-
 	Role(role-ty, role-mu, role, inverseName) :
 		defines Role role
 			of type role-ty
