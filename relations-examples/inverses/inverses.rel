@@ -26,4 +26,4 @@ data
 	
 execute
 
-	bob > student]Enrollment[course
+	bob.enrollments.course

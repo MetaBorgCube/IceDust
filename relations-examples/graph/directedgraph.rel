@@ -6,8 +6,10 @@ model
   }
 
   relation Edge {
-    Node * From
-    Node * To
+    Node * from<- edge_from
+    Node * to  <- edge_to
+    
+    from.to Node <-> Node to.from
   }
 
 data
@@ -22,18 +24,18 @@ data
   }
 
   Edge ab {
-    From : a
-    To : b
+    from : a
+    to : b
   }
 
   Edge bc {
-    From : b
-    To : c
+    from : b
+    to : c
   }
 
   Edge ca {
-    From : c
-    To : a
+    from : c
+    to : a
   }
 
 execute
@@ -41,7 +43,7 @@ execute
   a
   b
   c
-  a > From]Edge[To //must be b
-  a > To]Edge[From //must be c
-  a > From]Edge[To > From]Edge[To //must be b
-  a > From]Edge[To > From]Edge[To > From]Edge[To //must be a
+  a.to //must be b
+  a.from //must be c
+  a.to.to //must be c
+  a.to.to.to //must be a

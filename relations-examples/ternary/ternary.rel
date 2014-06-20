@@ -30,25 +30,25 @@ data
   Project pr {}
 
   Supply x {
-    Supplier : s
-    Part : p
-    Project : pr
+    supplier : s
+    part : p
+    project : pr
     amount = 10
   }
 
   Supply y {
-    Supplier : s
-    Part : p
-    Project : pr
+    supplier : s
+    part : p
+    project : pr
     amount = 42
   }
 
 execute
 
-  p > Part]Supply // this part participates in two supply relations
+  p.supply // this part participates in two supply relations
 
-  p > Part]Supply . amount // and these two have both an amount
+  p.supply . amount // and these two have both an amount
 
-  p > Part]Supply[Supplier // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
+  p.supply.supplier // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
 
-  p > Part]Supply[Project // and to the same project -> 1 project, set based navigation
+  p.supply.project // and to the same project -> 1 project, set based navigation

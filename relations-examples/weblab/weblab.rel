@@ -7,7 +7,7 @@ model
   }
 
   entity Course {
-    avgGrade : Int ? = this > Course]CourseAssignments[AssignmentGroup.avgGrade (derivation)
+    avgGrade : Int ? = this.assignments.avgGrade (derivation)
   }
 
   relation Enrollment {
@@ -17,11 +17,13 @@ model
 
   relation CourseAssignments {
     Course 1 
-    AssignmentGroup ? 
+    AssignmentGroup ?
+    
+    course.assignments Course <-> AssignmentGroup assignmentgroup.course
   }
 
   entity Assignment {
-    avgGrade : Int ? = avg ( this > Assignment]Submission.grade ) (derivation)
+    avgGrade : Int ? = avg ( this.submission.grade ) (derivation)
   }
 
   relation Submission {
@@ -33,19 +35,23 @@ model
 
   entity AssignmentGroup {
     avgGrade : Int ? = avg ( 
-    	this > parent]AssignmentTree[child.avgGrade :: 
-    	this > parent]AssignmentLeaf[child.avgGrade 
+    	this.children.avgGrade :: 
+    	this.leaves.avgGrade 
     ) (derivation)
   }
 
   relation AssignmentTree {
-    AssignmentGroup * parent
-    AssignmentGroup * child
+    AssignmentGroup * parent <- parent
+    AssignmentGroup * child  <- child
+    
+    parent.children AssignmentGroup <-> AssignmentGroup child.parent
   }
 
   relation AssignmentLeaf {
     AssignmentGroup * parent
     Assignment 1 child
+    
+    parent.leaves AssignmentGroup <-> Assignment child.parent
   }
 
 data
@@ -62,21 +68,21 @@ data
   }
 
   Enrollment  {
-    Student : alice
-    Course : compiler
+    student : alice
+    course : compiler
   }
 
   Enrollment  {
-    Student : bob
-    Course : compiler
+    student : bob
+    course : compiler
   }
 
   AssignmentGroup comp {
   }
 
   CourseAssignments  {
-    Course : compiler
-    AssignmentGroup : comp
+    course : compiler
+    assignmentGroup : comp
   }
 
   AssignmentGroup practical {
@@ -160,32 +166,32 @@ data
   }
 
   Submission  {
-    Student : alice
-    Assignment : assignment11
+    student : alice
+    assignment : assignment11
     grade = 7
   }
 
   Submission  {
-    Student : alice
-    Assignment : assignment12
+    student : alice
+    assignment : assignment12
     grade = 9
   }
 
   Submission  {
-    Student : alice
-    Assignment : assignment13
+    student : alice
+    assignment : assignment13
     grade = 6
   }
 
   Submission  {
-    Student : alice
-    Assignment : exam
+    student : alice
+    assignment : exam
     grade = 6
   }
 
   Submission  {
-    Student : bob
-    Assignment : exam
+    student : bob
+    assignment : exam
     grade = 10
   }
 
