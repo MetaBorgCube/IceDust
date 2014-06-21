@@ -7,8 +7,7 @@ model
   }
 
   entity Course {
-  	// uncommenting causes: org.strategoxt.lang.StrategoErrorExit: Internal error: escaped term in string quotation is not a string
-    // avgGrade : Int? = this.assignments.avgGrade
+    avgGrade : Int? = this.assignments.avgGrade
   }
 
   relation Enrollment {
@@ -20,7 +19,7 @@ model
     Course 1 
     AssignmentGroup ?
     
-    course.assignments Course <-> AssignmentGroup assignmentgroup.course
+    course.assignments Course <-> AssignmentGroup assignmentGroup.course
   }
 
   entity Assignment {
@@ -200,6 +199,4 @@ execute
 
   "The average grade of all submissions"
 
-	compiler
-
-  // compiler.avgGrade
+  compiler.avgGrade
