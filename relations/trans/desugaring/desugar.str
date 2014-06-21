@@ -7,7 +7,7 @@ imports
 	
 rules
 
-	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names;generate-shortcut-types
+	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names;generate-shortcuts;generate-shortcut-types
 
 signature constructors
 	
@@ -71,3 +71,35 @@ rules
 	role-type(|role): (role2, type) -> <id>
 		where
 			<eq>(role, role2)
+
+rules
+
+	generate-shortcuts: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
+	generate-shortcuts: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), c, d)
+	
+	generate-shortcuts: EntityTypeDef(a,entityName,members) -> EntityTypeDef(a,entityName,members')
+		where
+			roles 				:= <filter(role-name);string-sort>members;
+			shortcuts			:= <filter(shortcut-roles)>members;
+			shortcuts-all := <join-half>roles;
+			shortcuts-add := <diff>(shortcuts-all, shortcuts);
+			members-new		:= <map(create-shortcut)>shortcuts-add;
+			members'			:= <conc>(members,members-new)
+			
+	role-name: Role(_, _, name, _) -> name
+	
+	shortcut-roles: Shortcut(RoleName(role1), _, _, _, RoleName(role2), _) -> <string-sort;ListToTuple>[role1,role2]
+	
+	join-half: [] -> []
+	
+	join-half: [h|t] -> <conc>(r,r2)
+		with
+			r := <join-half> t;
+			r2:= <map(pair-with(|h))>t
+			
+	pair-with(|h): t -> (h,t)
+
+	create-shortcut: (role1,role2) -> Shortcut(RoleName(role1), role2, None(), None(), RoleName(role2), role1)
+			
+	
+	
