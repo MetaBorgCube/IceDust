@@ -8,8 +8,6 @@ model
   relation Edge {
     Node * from<- edge_from
     Node * to  <- edge_to
-    
-    from.to <-> to.from
   }
 
 data
