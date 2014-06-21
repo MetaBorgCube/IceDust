@@ -76,9 +76,7 @@ binding rules // model
 			and this has type e-ty
 		// refers to EntityType2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
 
-	Shortcut(role1, shortcut1, type1, type2, role2, shortcut2):
-		refers to Role role1
-		refers to Role role2
+	Shortcut(RoleName(role1), shortcut1, type1, type2, RoleName(role2), shortcut2):
 		defines non-unique EntityType type1
 			scopes Shortcut
 		defines Shortcut shortcut1

@@ -20,4 +20,3 @@ templates
  
   RoleValue.RoleValue = <<RoleName> : <Identifier>>
 
-  RoleName.RoleName = <<ID>>  
