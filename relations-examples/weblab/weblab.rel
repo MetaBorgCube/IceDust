@@ -7,7 +7,8 @@ model
   }
 
   entity Course {
-    avgGrade : Int ? = this.assignments.avgGrade (derivation)
+  	// uncommenting causes: org.strategoxt.lang.StrategoErrorExit: Internal error: escaped term in string quotation is not a string
+    // avgGrade : Int? = this.assignments.avgGrade
   }
 
   relation Enrollment {
@@ -55,140 +56,140 @@ model
   }
 
 data
-
+ 
   Student alice {
     name = "Alice"
   }
-
+ 
   Student bob {
     name = "Bob"
   }
-
+ 
   Course compiler {
   }
-
+ 
   Enrollment  {
     student : alice
     course : compiler
   }
-
+ 
   Enrollment  {
     student : bob
     course : compiler
   }
-
+ 
   AssignmentGroup comp {
   }
-
+ 
   CourseAssignments  {
     course : compiler
     assignmentGroup : comp
   }
-
+ 
   AssignmentGroup practical {
   }
-
+ 
   AssignmentTree  {
     parent : comp
     child : practical
   }
-
+ 
   AssignmentGroup milestone1 {
   }
-
+ 
   AssignmentTree  {
     parent : practical
     child : milestone1
   }
-
+ 
   Assignment assignment11 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone1
     child : assignment11
   }
-
+ 
   Assignment assignment12 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone1
     child : assignment12
   }
-
+ 
   Assignment assignment13 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone1
     child : assignment13
   }
-
+ 
   AssignmentGroup milestone2 {
   }
-
+ 
   AssignmentTree  {
     parent : practical
     child : milestone2
   }
-
+ 
   Assignment assignment21 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone2
     child : assignment21
   }
-
+ 
   Assignment assignment22 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone2
     child : assignment22
   }
-
+ 
   Assignment assignment23 {
   }
-
+ 
   AssignmentLeaf  {
     parent : milestone2
     child : assignment23
   }
-
+ 
   Assignment exam {
   }
-
+ 
   AssignmentLeaf  {
     parent : comp
     child : exam
   }
-
+ 
   Submission  {
     student : alice
     assignment : assignment11
     grade = 7
   }
-
+ 
   Submission  {
     student : alice
     assignment : assignment12
     grade = 9
   }
-
+ 
   Submission  {
     student : alice
     assignment : assignment13
     grade = 6
   }
-
+ 
   Submission  {
     student : alice
     assignment : exam
     grade = 6
   }
-
+ 
   Submission  {
     student : bob
     assignment : exam
@@ -199,4 +200,6 @@ execute
 
   "The average grade of all submissions"
 
-  compiler.avgGrade
+	compiler
+
+  // compiler.avgGrade
