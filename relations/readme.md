@@ -1,6 +1,6 @@
 # TODO:
 
-* Implement shortcuts desugarings: auto add types + auto add shortcuts
+* Implement shortcuts desugarings: auto add shortcuts
 
 # Differences between formal specification and implementation
 
