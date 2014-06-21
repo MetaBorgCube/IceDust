@@ -7,7 +7,7 @@ imports
 	
 rules
 
-	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names
+	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names;generate-shortcut-types
 
 signature constructors
 	
@@ -46,3 +46,28 @@ rules	// custom traversal desugarings
 		with
 			(e, history') := <new-name>(<lcfirst>e-ty, history)
 	
+rules
+	
+	generate-shortcut-types: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
+	generate-shortcut-types: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcut-types))>b), c, d)
+	
+	generate-shortcut-types: EntityTypeDef(a,entityName,members) -> EntityTypeDef(a,entityName,members')
+		where
+			role-types := <filter(role-name-and-type)>members;
+			members' := <map(try(add-shortcut-types(|role-types)))> members
+	
+	role-name-and-type: Role(type, _, name, _) -> (name, type)
+	
+	add-shortcut-types(|role-types): Shortcut(RoleName(role1), b, None(), None(), RoleName(role2), f) ->
+																	 Shortcut(RoleName(role1), b, type1,  type2,  RoleName(role2), f)
+		where
+			type1 := <role-type>(role1, role-types);
+			type2 := <role-type>(role2, role-types)
+		
+	role-type : (role, role-types) -> type
+		where
+			[(_, type)] := <filter(role-type(|role))>role-types
+			
+	role-type(|role): (role2, type) -> <id>
+		where
+			<eq>(role, role2)
