@@ -36,6 +36,20 @@ test Resolve invalid shortcut fails [[
 	}
 ]] 1 error
 
+
+
+test Resolve role in shortcut [[
+	entity Student{
+	}
+	
+	relation Enrollment{
+		Student * [[student]]
+		Course  +
+		
+		student.abc Student <-> Course [[student]].bcd
+	}
+]] resolve #2 to #1
+
 test Resolve invalid role in shortcut fails [[
 	entity Student{
 	}
