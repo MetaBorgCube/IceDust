@@ -10,7 +10,7 @@ model
     Node * parent <- p
     Node 1 child  <- c
     
-    parent.dominates Node <-> Node child.dominatedBy
+    parent.dominates <-> child.dominatedBy
   }
 
 data

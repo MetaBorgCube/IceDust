@@ -9,7 +9,7 @@ model
     Node * from<- edge_from
     Node * to  <- edge_to
     
-    from.to Node <-> Node to.from
+    from.to <-> to.from
   }
 
 data

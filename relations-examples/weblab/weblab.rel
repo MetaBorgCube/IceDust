@@ -19,7 +19,7 @@ model
     Course 1 
     AssignmentGroup ?
     
-    course.assignments Course <-> AssignmentGroup assignmentGroup.course
+    course.assignments <-> assignmentGroup.course
   }
 
   entity Assignment {
@@ -44,14 +44,14 @@ model
     AssignmentGroup * parent <- parent
     AssignmentGroup * child  <- child
     
-    parent.children AssignmentGroup <-> AssignmentGroup child.parent
+    parent.children <-> child.parent
   }
 
   relation AssignmentLeaf {
     AssignmentGroup * parent
     Assignment 1 child
     
-    parent.leaves AssignmentGroup <-> Assignment child.parent
+    parent.leaves <-> child.parent
   }
 
 data

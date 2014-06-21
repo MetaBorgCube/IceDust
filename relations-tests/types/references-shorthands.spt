@@ -18,7 +18,7 @@ setup Common [[
 		Student *
 		Course +
 		
-		student.courses Student <-> Course course.students
+		student.courses <-> course.students
 	}
 
 	data

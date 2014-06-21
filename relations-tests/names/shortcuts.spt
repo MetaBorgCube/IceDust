@@ -19,7 +19,7 @@ test Resolve shortcut [[
 		Student *
 		Course  +
 		
-		student.[[courses]] Student <-> Course course.students
+		student.[[courses]] <-> course.students
 	}
 ]] resolve #1 to #2
 
@@ -32,7 +32,7 @@ test Resolve invalid shortcut fails [[
 		Student *
 		Course  +
 		
-		student.courses Student <-> Course course.students
+		student.courses <-> course.students
 	}
 ]] 1 error
 
@@ -46,7 +46,7 @@ test Resolve role in shortcut [[
 		Student * [[student]]
 		Course  +
 		
-		student.abc Student <-> Course [[student]].bcd
+		student.abc <-> [[student]].bcd
 	}
 ]] resolve #2 to #1
 
@@ -58,6 +58,6 @@ test Resolve invalid role in shortcut fails [[
 		Student *
 		Course  +
 		
-		student.abc Student <-> Course [[iDoNotExist]].bcd
+		student.abc <-> [[iDoNotExist]].bcd
 	}
 ]] 1 error

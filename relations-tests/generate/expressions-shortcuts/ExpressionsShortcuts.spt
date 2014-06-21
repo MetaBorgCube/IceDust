@@ -13,7 +13,7 @@ setup Common [[
 		Node * parent <- parent
 		Node 1 child  <- child
 		
-		child.parent Node <-> Node parent.children
+		child.parent <-> parent.children
 	}
 	
 	data
