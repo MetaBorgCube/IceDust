@@ -7,196 +7,126 @@ model
   }
 
   entity Course {
-    avgGrade : Int? = this.assignments.avgGrade
+    avgGrade : Int? = this.assignment.avgGrade
   }
 
   relation Enrollment {
     Course * 
-    Student * 
+    Student *
+    
+    grade : Int ? = this.studentAssignment.grade
   }
 
   relation CourseAssignments {
     Course 1 
-    AssignmentGroup ?
-    
-    course.assignments <-> assignmentGroup.course
-  }
-
-  entity Assignment {
-    avgGrade : Int ? = avg ( this.submission.grade ) (derivation)
+    Assignment ?
   }
 
   relation Submission {
     Student * 
     Assignment * 
-    grade : Int  
-    passed : Boolean  = grade >= 6 (derivation)
+
+    grade  : Int  
+    passed : Boolean  = grade >= 6
   }
 
-  entity AssignmentGroup {
-    avgGrade : Int ? = avg ( 
-    	this.children.avgGrade :: 
-    	this.leaves.avgGrade 
-    ) (derivation)
-  }
-
-  relation AssignmentTree {
-    AssignmentGroup * parent <- parent
-    AssignmentGroup * child  <- child
+  entity Assignment {
+    avgGrade            : Int ? = avgGradeSubmissions <+ avgGradeParts
     
-    parent.children <-> child.parent
+    avgGradeSubmissions : Int ? = avg ( this.submission.grade )
+    avgGradeParts       : Int ? = avg ( this.part.avgGrade )
   }
-
-  relation AssignmentLeaf {
-    AssignmentGroup * parent
-    Assignment 1 child
+  
+  relation AssignmentPart {
+    Assignment * whole <- wholeAssignment
+    Assignment ? part  <- partAssignment
+  }
+  
+  entity StudentAssignment {
+    grade : Int ? = gradeSubmission <+ gradeParts
     
-    parent.leaves <-> child.parent
+    gradeSubmission : Int ? = this.submission.grade
+    gradeParts      : Int ? = avg ( this.part.grade )
+  }
+  
+  relation StudentAssignmentPart {
+    StudentAssignment * whole <- wholeAssignment
+    StudentAssignment ? part  <- partAssignment
+  }
+  
+  relation StudentAssignmentEnrollment {
+    StudentAssignment ?
+    Enrollment 1
   }
 
-data
- 
-  Student alice {
-    name = "Alice"
+  relation StudentAssignmentSubmission {
+    Submission 1
+    StudentAssignment ?
   }
- 
-  Student bob {
-    name = "Bob"
-  }
- 
-  Course compiler {
-  }
- 
-  Enrollment  {
-    student : alice
-    course : compiler
-  }
- 
-  Enrollment  {
-    student : bob
-    course : compiler
-  }
- 
-  AssignmentGroup comp {
-  }
- 
-  CourseAssignments  {
-    course : compiler
-    assignmentGroup : comp
-  }
- 
-  AssignmentGroup practical {
-  }
- 
-  AssignmentTree  {
-    parent : comp
-    child : practical
-  }
- 
-  AssignmentGroup milestone1 {
-  }
- 
-  AssignmentTree  {
-    parent : practical
-    child : milestone1
-  }
- 
-  Assignment assignment11 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone1
-    child : assignment11
-  }
- 
-  Assignment assignment12 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone1
-    child : assignment12
-  }
- 
-  Assignment assignment13 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone1
-    child : assignment13
-  }
- 
-  AssignmentGroup milestone2 {
-  }
- 
-  AssignmentTree  {
-    parent : practical
-    child : milestone2
-  }
- 
-  Assignment assignment21 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone2
-    child : assignment21
-  }
- 
-  Assignment assignment22 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone2
-    child : assignment22
-  }
- 
-  Assignment assignment23 {
-  }
- 
-  AssignmentLeaf  {
-    parent : milestone2
-    child : assignment23
-  }
- 
-  Assignment exam {
-  }
- 
-  AssignmentLeaf  {
-    parent : comp
-    child : exam
-  }
- 
-  Submission  {
-    student : alice
-    assignment : assignment11
-    grade = 7
-  }
- 
-  Submission  {
-    student : alice
-    assignment : assignment12
-    grade = 9
-  }
- 
-  Submission  {
-    student : alice
-    assignment : assignment13
-    grade = 6
-  }
- 
-  Submission  {
-    student : alice
-    assignment : exam
-    grade = 6
-  }
- 
-  Submission  {
-    student : bob
-    assignment : exam
-    grade = 10
-  }
+
+data 
+  Student alice { name = "Alice" }
+  Student bob   { name = "Bob" }
+  Course compiler { }
+
+  Enrollment enA { student : alice course : compiler }
+  Enrollment enB { student : bob   course : compiler }
+
+  Assignment compAssignments { }  CourseAssignments  { course : compiler assignment : compAssignments }
+
+  Assignment exam { }
+  Assignment practical { }
+  Assignment practicalA { }
+  Assignment practicalB { }
+
+  AssignmentPart { whole : compAssignments part : exam         }
+  AssignmentPart { whole : compAssignments part : practical    }
+  AssignmentPart { whole : practical       part : practicalA   }
+  AssignmentPart { whole : practical       part : practicalB   }
+
+  Submission s1 { student : alice assignment : practicalA grade = 5  }
+  Submission s2 { student : alice assignment : practicalB grade = 9  }
+  Submission s3 { student : alice assignment : exam       grade = 6  }
+  Submission s4 { student : bob   assignment : exam       grade = 10 }
+  
+  StudentAssignment compAlice { }
+  StudentAssignment examAlice { }
+  StudentAssignment practicalAlice { }
+  StudentAssignment practicalAAlice { }
+  StudentAssignment practicalBAlice { }
+  StudentAssignment compBob { }
+  StudentAssignment examBob { }
+  StudentAssignment practicalBob { }
+  StudentAssignment practicalABob { }
+  StudentAssignment practicalBBob { }
+  
+  StudentAssignmentPart { whole : compAlice      part : examAlice       }
+  StudentAssignmentPart { whole : compAlice      part : practicalAlice  }
+  StudentAssignmentPart { whole : practicalAlice part : practicalAAlice }
+  StudentAssignmentPart { whole : practicalAlice part : practicalBAlice }
+  StudentAssignmentPart { whole : compBob        part : examBob         }
+  StudentAssignmentPart { whole : compBob        part : practicalBob    }
+  StudentAssignmentPart { whole : practicalBob   part : practicalABob   }
+  StudentAssignmentPart { whole : practicalBob   part : practicalBBob   }
+
+  StudentAssignmentEnrollment { studentAssignment : compAlice enrollment : enA }
+  StudentAssignmentEnrollment { studentAssignment : compBob   enrollment : enB }
+
+  StudentAssignmentSubmission { studentAssignment : practicalAAlice submission : s1 }
+  StudentAssignmentSubmission { studentAssignment : practicalBAlice submission : s2 }  
+  StudentAssignmentSubmission { studentAssignment : examAlice       submission : s3 }
+  StudentAssignmentSubmission { studentAssignment : examBob         submission : s4 }
 
 execute
 
-  "The average grade of all submissions"
+  "Alice's compiler grade:"
+  enA.grade
 
+	""
+	"Bob's compiler grade:"
+  enB.grade
+
+	""
+  "The average grade of all submissions:"
   compiler.avgGrade
+  
