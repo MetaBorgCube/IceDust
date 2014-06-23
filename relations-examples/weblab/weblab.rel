@@ -20,14 +20,14 @@ model
 
   entity Assignment {
   	gradeMinimum:Int = 55 (default)
+  	gradeWeight :Int = 1  (default)
   }
 
   relation Submission {
     Student * 
     Assignment * 
 
-    grade :Int  
-    passed:Boolean  = grade >= this.assignment.gradeMinimum
+    grade:Int // between 10 (min) and 100 (max)
   }
   
   relation CourseAssignments {
@@ -48,9 +48,11 @@ model
   	
     grade          :Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
     
+    gradeWeighted  :Int? = grade * this.assignment.gradeWeight
+    
     gradeSubmission:Int? = this.submission.grade
     gradeParts     :Int? = count(this.part)==count(this.part.grade)
-                             ? avg ( this.part.grade )
+                             ? sum ( this.part.gradeWeighted ) / sum ( this.assignment.part.gradeWeight )
                              : noValue
     
     noValue:Int?
@@ -74,85 +76,113 @@ model
   }
 
 data 
-  Student alice { name = "Alice" }
-  Student bob   { name = "Bob" }
+  Student alice   { name = "Alice"   }
+  Student bob     { name = "Bob"     }
+  Student charlie { name = "Charlie" }
   Course compiler { }
 
-  Enrollment enA { student:alice course:compiler }
-  Enrollment enB { student:bob   course:compiler }
+  Enrollment enA { student:alice   course:compiler }
+  Enrollment enB { student:bob     course:compiler }
+  Enrollment enC { student:charlie course:compiler }
 
-  Assignment compAssignments { }  CourseAssignments  { course:compiler assignment:compAssignments }
+  Assignment comp       { }  Assignment exam       { gradeWeight = 2 gradeMinimum = 60 }
+  Assignment practical  { gradeWeight = 1 gradeMinimum = 60 }
+  Assignment practicalA { gradeWeight = 2 gradeMinimum = 50 }
+  Assignment practicalB { gradeWeight = 3 gradeMinimum = 50 }
 
-  Assignment exam {       gradeMinimum = 60 }
-  Assignment practical {  gradeMinimum = 60 }
-  Assignment practicalA { gradeMinimum = 50 }
-  Assignment practicalB { gradeMinimum = 50 }
+  CourseAssignments { course:compiler assignment:comp }
 
-  AssignmentPart { whole:compAssignments part:exam         }
-  AssignmentPart { whole:compAssignments part:practical    }
-  AssignmentPart { whole:practical       part:practicalA   }
-  AssignmentPart { whole:practical       part:practicalB   }
+  AssignmentPart { whole:comp      part:exam       }
+  AssignmentPart { whole:comp      part:practical  }
+  AssignmentPart { whole:practical part:practicalA }
+  AssignmentPart { whole:practical part:practicalB }
 
-  Submission sa1 { student:alice assignment:practicalA grade = 50  }
-  Submission sa2 { student:alice assignment:practicalB grade = 90  }
-  Submission sa3 { student:alice assignment:exam       grade = 60  }
-  Submission sb1 { student:bob   assignment:practicalA grade = 50  }
-  Submission sb2 { student:bob   assignment:practicalB grade = 60  }
-  Submission sb3 { student:bob   assignment:exam       grade = 100 }
+  Submission sa1 { student:alice   assignment:practicalA grade = 50  }
+  Submission sa2 { student:alice   assignment:practicalB grade = 90  }
+  Submission sa3 { student:alice   assignment:exam       grade = 60  }
+  Submission sb1 { student:bob     assignment:practicalA grade = 50  }
+  Submission sb2 { student:bob     assignment:practicalB grade = 60  }
+  Submission sb3 { student:bob     assignment:exam       grade = 100 }
+  Submission sc1 { student:charlie assignment:practicalA grade = 88  }
+  Submission sc2 { student:charlie assignment:practicalB grade = 76  }
+  Submission sc3 { student:charlie assignment:exam       grade = 98  }
   
-  StudentAssignment compAlice { }
-  StudentAssignment examAlice { }
-  StudentAssignment practicalAlice { }
-  StudentAssignment practicalAAlice { }
-  StudentAssignment practicalBAlice { }
-  StudentAssignment compBob { }
-  StudentAssignment examBob { }
-  StudentAssignment practicalBob { }
-  StudentAssignment practicalABob { }
-  StudentAssignment practicalBBob { }
+  StudentAssignment aComp   { }
+  StudentAssignment aExam   { }
+  StudentAssignment aPract  { }
+  StudentAssignment aPractA { }
+  StudentAssignment aPractB { }
+  StudentAssignment bComp   { }
+  StudentAssignment bExam   { }
+  StudentAssignment bPract  { }
+  StudentAssignment bPractA { }
+  StudentAssignment bPractB { }
+  StudentAssignment cComp   { }
+  StudentAssignment cExam   { }
+  StudentAssignment cPract  { }
+  StudentAssignment cPractA { }
+  StudentAssignment cPractB { }
   
-  StudentAssignmentPart { whole:compAlice      part:examAlice       }
-  StudentAssignmentPart { whole:compAlice      part:practicalAlice  }
-  StudentAssignmentPart { whole:practicalAlice part:practicalAAlice }
-  StudentAssignmentPart { whole:practicalAlice part:practicalBAlice }
-  StudentAssignmentPart { whole:compBob        part:examBob         }
-  StudentAssignmentPart { whole:compBob        part:practicalBob    }
-  StudentAssignmentPart { whole:practicalBob   part:practicalABob   }
-  StudentAssignmentPart { whole:practicalBob   part:practicalBBob   }
+  StudentAssignmentPart { whole:aComp  part:aExam   }
+  StudentAssignmentPart { whole:aComp  part:aPract  }
+  StudentAssignmentPart { whole:aPract part:aPractA }
+  StudentAssignmentPart { whole:aPract part:aPractB }
+  StudentAssignmentPart { whole:bComp  part:bExam   }
+  StudentAssignmentPart { whole:bComp  part:bPract  }
+  StudentAssignmentPart { whole:bPract part:bPractA }
+  StudentAssignmentPart { whole:bPract part:bPractB }
+  StudentAssignmentPart { whole:cComp  part:cExam   }
+  StudentAssignmentPart { whole:cComp  part:cPract  }
+  StudentAssignmentPart { whole:cPract part:cPractA }
+  StudentAssignmentPart { whole:cPract part:cPractB }
 
-  StudentAssignmentEnrollment { studentAssignment:compAlice enrollment:enA }
-  StudentAssignmentEnrollment { studentAssignment:compBob   enrollment:enB }
+  StudentAssignmentEnrollment { studentAssignment:aComp   enrollment:enA }
+  StudentAssignmentEnrollment { studentAssignment:bComp   enrollment:enB }
+  StudentAssignmentEnrollment { studentAssignment:cComp   enrollment:enC }
 
-  StudentAssignmentSubmission { studentAssignment:practicalAAlice submission:sa1 }
-  StudentAssignmentSubmission { studentAssignment:practicalBAlice submission:sa2 }
-  StudentAssignmentSubmission { studentAssignment:examAlice       submission:sa3 }
-  StudentAssignmentSubmission { studentAssignment:practicalABob   submission:sb1 }
-  StudentAssignmentSubmission { studentAssignment:practicalBBob   submission:sb2 }  
-  StudentAssignmentSubmission { studentAssignment:examBob         submission:sb3 }
+  StudentAssignmentSubmission { studentAssignment:aPractA submission:sa1 }
+  StudentAssignmentSubmission { studentAssignment:aPractB submission:sa2 }
+  StudentAssignmentSubmission { studentAssignment:aExam   submission:sa3 }
+  StudentAssignmentSubmission { studentAssignment:bPractA submission:sb1 }
+  StudentAssignmentSubmission { studentAssignment:bPractB submission:sb2 }  
+  StudentAssignmentSubmission { studentAssignment:bExam   submission:sb3 }
+  StudentAssignmentSubmission { studentAssignment:cPractA submission:sc1 }
+  StudentAssignmentSubmission { studentAssignment:cPractB submission:sc2 }
+  StudentAssignmentSubmission { studentAssignment:cExam   submission:sc3 }
   
-  StudentAssignmentAssignment { studentAssignment:compAlice       assignment:compAssignments }
-  StudentAssignmentAssignment { studentAssignment:examAlice       assignment:exam            }
-  StudentAssignmentAssignment { studentAssignment:practicalAlice  assignment:practical       }
-  StudentAssignmentAssignment { studentAssignment:practicalAAlice assignment:practicalA      }
-  StudentAssignmentAssignment { studentAssignment:practicalBAlice assignment:practicalB      }
-  StudentAssignmentAssignment { studentAssignment:compBob         assignment:compAssignments }
-  StudentAssignmentAssignment { studentAssignment:examBob         assignment:exam            }
-  StudentAssignmentAssignment { studentAssignment:practicalBob    assignment:practical       }
-  StudentAssignmentAssignment { studentAssignment:practicalABob   assignment:practicalA      }
-  StudentAssignmentAssignment { studentAssignment:practicalBBob   assignment:practicalB      }
+  StudentAssignmentAssignment { studentAssignment:aComp   assignment:comp       }
+  StudentAssignmentAssignment { studentAssignment:aExam   assignment:exam       }
+  StudentAssignmentAssignment { studentAssignment:aPract  assignment:practical  }
+  StudentAssignmentAssignment { studentAssignment:aPractA assignment:practicalA }
+  StudentAssignmentAssignment { studentAssignment:aPractB assignment:practicalB }
+  StudentAssignmentAssignment { studentAssignment:bComp   assignment:comp       }
+  StudentAssignmentAssignment { studentAssignment:bExam   assignment:exam       }
+  StudentAssignmentAssignment { studentAssignment:bPract  assignment:practical  }
+  StudentAssignmentAssignment { studentAssignment:bPractA assignment:practicalA }
+  StudentAssignmentAssignment { studentAssignment:bPractB assignment:practicalB }
+  StudentAssignmentAssignment { studentAssignment:cComp   assignment:comp       }
+  StudentAssignmentAssignment { studentAssignment:cExam   assignment:exam       }
+  StudentAssignmentAssignment { studentAssignment:cPract  assignment:practical  }
+  StudentAssignmentAssignment { studentAssignment:cPractA assignment:practicalA }
+  StudentAssignmentAssignment { studentAssignment:cPractB assignment:practicalB }
 
 execute
 
   "Alice's compiler pass & grade:"
   enA.pass
   enA.grade
-
+  
 	""
 	"Bob's compiler pass & grade:"
 	enB.pass
   enB.grade
 
 	""
-  "The average grade of all submissions:"
+	"Charlie's compiler pass & grade:"
+	enC.pass
+  enC.grade
+
+	""
+  "The average grade of all students with grades:"
   compiler.avgGrade
   
