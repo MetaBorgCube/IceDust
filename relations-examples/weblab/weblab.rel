@@ -3,39 +3,36 @@ module weblab
 model
 
   entity Student {
-    name : String  
+    name:String  
   }
 
   entity Course {
-    avgGrade : Int? = this.assignment.avgGrade
+    avgGrade:Int? = avg( this.enrollment.grade )
   }
 
   relation Enrollment {
     Course * 
     Student *
     
-    pass  : Boolean = this.studentAssignment.pass
-    grade : Int ?   = this.studentAssignment.grade
+    pass :Boolean = this.studentAssignment.pass
+    grade:Int ?   = this.studentAssignment.grade
   }
 
-  relation CourseAssignments {
-    Course 1 
-    Assignment ?
+  entity Assignment {
+  	gradeMinimum:Int = 55 (default)
   }
 
   relation Submission {
     Student * 
     Assignment * 
 
-    grade  : Int  
-    passed : Boolean  = grade >= 6
+    grade :Int  
+    passed:Boolean  = grade >= this.assignment.gradeMinimum
   }
-
-  entity Assignment {
-    avgGrade            : Int ? = avgGradeSubmissions <+ avgGradeParts
-    
-    avgGradeSubmissions : Int ? = avg ( this.submission.grade )
-    avgGradeParts       : Int ? = avg ( this.part.avgGrade )
+  
+  relation CourseAssignments {
+    Course 1 
+    Assignment ?
   }
   
   relation AssignmentPart {
@@ -44,15 +41,19 @@ model
   }
   
   entity StudentAssignment {
-  	pass      : Boolean = passGrade && passParts
+  	pass     :Boolean = passGrade && passParts
   	
-    passGrade : Boolean = grade >= 6 <+ false
-    passParts : Boolean = conj( this.part.pass ) <+ true 
+    passGrade:Boolean = grade >= this.assignment.gradeMinimum <+ false
+    passParts:Boolean = conj( this.part.pass ) <+ true 
   	
-    grade           : Int? = gradeSubmission <+ gradeParts
+    grade          :Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
     
-    gradeSubmission : Int? = this.submission.grade
-    gradeParts      : Int? = avg ( this.part.grade )
+    gradeSubmission:Int? = this.submission.grade
+    gradeParts     :Int? = count(this.part)==count(this.part.grade)
+                             ? avg ( this.part.grade )
+                             : noValue
+    
+    noValue:Int?
   }
   
   relation StudentAssignmentPart {
@@ -61,13 +62,15 @@ model
   }
   
   relation StudentAssignmentEnrollment {
-    StudentAssignment ?
-    Enrollment 1
+    StudentAssignment ? Enrollment 1
   }
 
   relation StudentAssignmentSubmission {
-    Submission 1
-    StudentAssignment ?
+    StudentAssignment ? Submission 1
+  }
+
+  relation StudentAssignmentAssignment {
+    StudentAssignment 1 Assignment *
   }
 
 data 
@@ -75,25 +78,27 @@ data
   Student bob   { name = "Bob" }
   Course compiler { }
 
-  Enrollment enA { student : alice course : compiler }
-  Enrollment enB { student : bob   course : compiler }
+  Enrollment enA { student:alice course:compiler }
+  Enrollment enB { student:bob   course:compiler }
 
-  Assignment compAssignments { }  CourseAssignments  { course : compiler assignment : compAssignments }
+  Assignment compAssignments { }  CourseAssignments  { course:compiler assignment:compAssignments }
 
-  Assignment exam { }
-  Assignment practical { }
-  Assignment practicalA { }
-  Assignment practicalB { }
+  Assignment exam {       gradeMinimum = 60 }
+  Assignment practical {  gradeMinimum = 60 }
+  Assignment practicalA { gradeMinimum = 50 }
+  Assignment practicalB { gradeMinimum = 50 }
 
-  AssignmentPart { whole : compAssignments part : exam         }
-  AssignmentPart { whole : compAssignments part : practical    }
-  AssignmentPart { whole : practical       part : practicalA   }
-  AssignmentPart { whole : practical       part : practicalB   }
+  AssignmentPart { whole:compAssignments part:exam         }
+  AssignmentPart { whole:compAssignments part:practical    }
+  AssignmentPart { whole:practical       part:practicalA   }
+  AssignmentPart { whole:practical       part:practicalB   }
 
-  Submission s1 { student : alice assignment : practicalA grade = 6  }
-  Submission s2 { student : alice assignment : practicalB grade = 9  }
-  Submission s3 { student : alice assignment : exam       grade = 6  }
-  Submission s4 { student : bob   assignment : exam       grade = 10 }
+  Submission sa1 { student:alice assignment:practicalA grade = 50  }
+  Submission sa2 { student:alice assignment:practicalB grade = 90  }
+  Submission sa3 { student:alice assignment:exam       grade = 60  }
+  Submission sb1 { student:bob   assignment:practicalA grade = 50  }
+  Submission sb2 { student:bob   assignment:practicalB grade = 60  }
+  Submission sb3 { student:bob   assignment:exam       grade = 100 }
   
   StudentAssignment compAlice { }
   StudentAssignment examAlice { }
@@ -106,22 +111,35 @@ data
   StudentAssignment practicalABob { }
   StudentAssignment practicalBBob { }
   
-  StudentAssignmentPart { whole : compAlice      part : examAlice       }
-  StudentAssignmentPart { whole : compAlice      part : practicalAlice  }
-  StudentAssignmentPart { whole : practicalAlice part : practicalAAlice }
-  StudentAssignmentPart { whole : practicalAlice part : practicalBAlice }
-  StudentAssignmentPart { whole : compBob        part : examBob         }
-  StudentAssignmentPart { whole : compBob        part : practicalBob    }
-  StudentAssignmentPart { whole : practicalBob   part : practicalABob   }
-  StudentAssignmentPart { whole : practicalBob   part : practicalBBob   }
+  StudentAssignmentPart { whole:compAlice      part:examAlice       }
+  StudentAssignmentPart { whole:compAlice      part:practicalAlice  }
+  StudentAssignmentPart { whole:practicalAlice part:practicalAAlice }
+  StudentAssignmentPart { whole:practicalAlice part:practicalBAlice }
+  StudentAssignmentPart { whole:compBob        part:examBob         }
+  StudentAssignmentPart { whole:compBob        part:practicalBob    }
+  StudentAssignmentPart { whole:practicalBob   part:practicalABob   }
+  StudentAssignmentPart { whole:practicalBob   part:practicalBBob   }
 
-  StudentAssignmentEnrollment { studentAssignment : compAlice enrollment : enA }
-  StudentAssignmentEnrollment { studentAssignment : compBob   enrollment : enB }
+  StudentAssignmentEnrollment { studentAssignment:compAlice enrollment:enA }
+  StudentAssignmentEnrollment { studentAssignment:compBob   enrollment:enB }
 
-  StudentAssignmentSubmission { studentAssignment : practicalAAlice submission : s1 }
-  StudentAssignmentSubmission { studentAssignment : practicalBAlice submission : s2 }  
-  StudentAssignmentSubmission { studentAssignment : examAlice       submission : s3 }
-  StudentAssignmentSubmission { studentAssignment : examBob         submission : s4 }
+  StudentAssignmentSubmission { studentAssignment:practicalAAlice submission:sa1 }
+  StudentAssignmentSubmission { studentAssignment:practicalBAlice submission:sa2 }
+  StudentAssignmentSubmission { studentAssignment:examAlice       submission:sa3 }
+  StudentAssignmentSubmission { studentAssignment:practicalABob   submission:sb1 }
+  StudentAssignmentSubmission { studentAssignment:practicalBBob   submission:sb2 }  
+  StudentAssignmentSubmission { studentAssignment:examBob         submission:sb3 }
+  
+  StudentAssignmentAssignment { studentAssignment:compAlice       assignment:compAssignments }
+  StudentAssignmentAssignment { studentAssignment:examAlice       assignment:exam            }
+  StudentAssignmentAssignment { studentAssignment:practicalAlice  assignment:practical       }
+  StudentAssignmentAssignment { studentAssignment:practicalAAlice assignment:practicalA      }
+  StudentAssignmentAssignment { studentAssignment:practicalBAlice assignment:practicalB      }
+  StudentAssignmentAssignment { studentAssignment:compBob         assignment:compAssignments }
+  StudentAssignmentAssignment { studentAssignment:examBob         assignment:exam            }
+  StudentAssignmentAssignment { studentAssignment:practicalBob    assignment:practical       }
+  StudentAssignmentAssignment { studentAssignment:practicalABob   assignment:practicalA      }
+  StudentAssignmentAssignment { studentAssignment:practicalBBob   assignment:practicalB      }
 
 execute
 
