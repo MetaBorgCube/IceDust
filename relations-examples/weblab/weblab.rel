@@ -14,7 +14,8 @@ model
     Course * 
     Student *
     
-    grade : Int ? = this.studentAssignment.grade
+    pass  : Boolean = this.studentAssignment.pass
+    grade : Int ?   = this.studentAssignment.grade
   }
 
   relation CourseAssignments {
@@ -43,10 +44,15 @@ model
   }
   
   entity StudentAssignment {
-    grade : Int ? = gradeSubmission <+ gradeParts
+  	pass      : Boolean = passGrade && passParts
+  	
+    passGrade : Boolean = grade >= 6 <+ false
+    passParts : Boolean = conj( this.part.pass ) <+ true 
+  	
+    grade           : Int? = gradeSubmission <+ gradeParts
     
-    gradeSubmission : Int ? = this.submission.grade
-    gradeParts      : Int ? = avg ( this.part.grade )
+    gradeSubmission : Int? = this.submission.grade
+    gradeParts      : Int? = avg ( this.part.grade )
   }
   
   relation StudentAssignmentPart {
@@ -84,7 +90,7 @@ data
   AssignmentPart { whole : practical       part : practicalA   }
   AssignmentPart { whole : practical       part : practicalB   }
 
-  Submission s1 { student : alice assignment : practicalA grade = 5  }
+  Submission s1 { student : alice assignment : practicalA grade = 6  }
   Submission s2 { student : alice assignment : practicalB grade = 9  }
   Submission s3 { student : alice assignment : exam       grade = 6  }
   Submission s4 { student : bob   assignment : exam       grade = 10 }
@@ -119,11 +125,13 @@ data
 
 execute
 
-  "Alice's compiler grade:"
+  "Alice's compiler pass & grade:"
+  enA.pass
   enA.grade
 
 	""
-	"Bob's compiler grade:"
+	"Bob's compiler pass & grade:"
+	enB.pass
   enB.grade
 
 	""
