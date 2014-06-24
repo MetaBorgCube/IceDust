@@ -9,8 +9,8 @@ imports
 namespaces
 	
 	Module
-	EntityType
-	EntityType2                            //Nasty Hack to enforce no duplicate entity types
+	Entity
+	Entity2                            //Nasty Hack to enforce no duplicate entity types
 	EntityInstance
 	Attribute
 	Role
@@ -30,15 +30,15 @@ binding rules // modules
 
 	ModuleDesugared(m, _, _, _) : 
 		defines Module m
-		scopes EntityType
-		scopes EntityType2
+		scopes Entity
+		scopes Entity2
 		scopes EntityInstance
 
 binding rules // model
 
 	Entity(ent-or-rel, e-ty, _) :
-		defines EntityType2 e-ty             //Nasty Hack to enforce no duplicate entity types
-		defines non-unique EntityType e-ty
+		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+		defines non-unique Entity e-ty
 		scopes Attribute
 		scopes Role
 		scopes This
@@ -62,7 +62,7 @@ binding rules // model
 			of type role-ty
 			of multiplicity One()
 			of multiplicity2 role-mu
-		defines non-unique EntityType role-ty
+		defines non-unique Entity role-ty
 		  scopes Inverse
 		defines Inverse inverseName
 			of multiplicity role-mu
@@ -70,10 +70,10 @@ binding rules // model
 			of origin-role role
 			where This() resolves to This this
 			and this has type e-ty
-		// refers to EntityType2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
+		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
 
 	Shortcut(RoleRef(role1), shortcut1, type1, type2, RoleRef(role2), shortcut2):
-		defines non-unique EntityType type1
+		defines non-unique Entity type1
 			scopes Shortcut
 		defines Shortcut shortcut1
 			of type type2
@@ -82,7 +82,7 @@ binding rules // model
 			of origin-role2 role2
 			where role1 resolves to Role role1def
 			and role1def has multiplicity2 mu1
-		defines non-unique EntityType type2
+		defines non-unique Entity type2
 			scopes Shortcut
 		defines Shortcut shortcut2
 			of type type1
@@ -108,40 +108,40 @@ binding rules // references
 	Identifier(x) :
 		refers to EntityInstance x
 	otherwise
-		refers to Attribute x	in EntityType e-ty
+		refers to Attribute x	in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
 	otherwise
-	  refers to Role x in EntityType e-ty
+	  refers to Role x in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
 	otherwise
-	  refers to Inverse x in EntityType e-ty
+	  refers to Inverse x in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
 	otherwise
-	  refers to Shortcut x in EntityType e-ty
+	  refers to Shortcut x in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
 
 	MemberAccess(exp, a) :
-		refers to Attribute a in EntityType e-ty
+		refers to Attribute a in Entity e-ty
 		where exp has type e-ty
 	otherwise
-	  refers to Role a in EntityType e-ty
+	  refers to Role a in Entity e-ty
 	  where exp has type e-ty
 	otherwise
-	  refers to Inverse a in EntityType e-ty
+	  refers to Inverse a in Entity e-ty
 	  where exp has type e-ty
 	otherwise
-	  refers to Shortcut a in EntityType e-ty
+	  refers to Shortcut a in Entity e-ty
 	  where exp has type e-ty
 
 	EntityType(e) :
-		refers to EntityType e
+		refers to Entity e
 	
 	RoleRef(r):
-		refers to Role r in EntityType e-ty
+		refers to Role r in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
 	
