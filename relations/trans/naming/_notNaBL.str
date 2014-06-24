@@ -102,29 +102,6 @@ rules // check if entities have all the required attributes and roles assigned
 			diff       := <task-create-diff(|ctx)> (ty-roles, as-roles);
 			<task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> e
 
-rules // Entities fulfill roles
-
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@EntityTypeDef(_, name, _) -> <fail>
-		where
-			uri := <nabl-uri> name;
-			scope := <nabl-uri-parent> uri;
-			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
-			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(Type(), name, [])]);task-create-combine(|ctx)> allRelations;
-			<store-fulfill-role(|ctx, roles)> name
-  
-  // multiple version of names.str (generated) TODO: needs to be generated to names.str @see http://yellowgrass.org/issue/NaBL/95
-  get-fulfill-role-multiple: name -> result'
-  	with
-  		result := <get-properties(|NablProp_fulfill-role())>name;
-  		(
-  			[Result(_)] := result;
-  			result' := []
-  		<+
-  			result' := result
-  		)
-  		
-
 rules // check if Entity (not Relation) has no roles
 
 	constraint-error: EntityTypeDef(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
