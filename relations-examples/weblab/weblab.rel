@@ -15,17 +15,17 @@ model
     Student *
     
     pass  : Boolean = this.studentAssignment.pass
-    grade : Int ?   = this.studentAssignment.grade
+    grade : Int?    = this.studentAssignment.grade
   }
 
   entity Assignment {
-  	gradeMinimum  : Int = 55 (default)
-  	gradeWeight   : Int = 1  (default)
-  	
-  	deadline      : Int? // day since start academic year
-  	extension     : Int?
-  	extensionDays : Int? = extension - deadline
-  	panelty       : Int? // for using the full extension
+    gradeMinimum  : Int = 55 (default)
+    gradeWeight   : Int = 1  (default)
+    
+    deadline      : Int? // day since start academic year
+    extension     : Int?
+    extensionDays : Int? = extension - deadline
+    panelty       : Int? // for using the full extension
   }
 
   relation Submission {
@@ -36,8 +36,8 @@ model
     
     gradePanelty  : Int? = this.assignment.panelty*lateDays/this.assignment.extensionDays
     gradeDeadline : Int? = onTime      ? grade :
-    	                     onExtension ? grade - gradePanelty :
-    	                     noValue
+                           onExtension ? grade - gradePanelty :
+                           noValue
     
     date          : Int?
     extension     : Int? = this.assignment.extension (default)
@@ -46,8 +46,8 @@ model
                               <+ 
                               count(date)==1 || count(this.assignment.deadline)==0
                             
-		onExtension   : Boolean = date <= extension && !onTime
-		                          <+
+    onExtension   : Boolean = date <= extension && !onTime
+                              <+
                               count(date)==1 || count(extension)==0
                                        
     lateDays      : Int? = date - this.assignment.deadline
@@ -66,11 +66,11 @@ model
   }
   
   entity StudentAssignment {
-  	pass            : Boolean = passGrade && passParts
-  	
+    pass            : Boolean = passGrade && passParts
+    
     passGrade       : Boolean = grade >= this.assignment.gradeMinimum <+ false
     passParts       : Boolean = conj( this.part.pass ) <+ true 
-  	
+    
     grade           : Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
     
     gradeWeighted   : Int? = grade * this.assignment.gradeWeight
@@ -198,17 +198,17 @@ execute
   enA.pass
   enA.grade
   
-	""
-	"Bob's compiler pass & grade:"
-	enB.pass
+  ""
+  "Bob's compiler pass & grade:"
+  enB.pass
   enB.grade
 
-	""
-	"Charlie's compiler pass & grade:"
-	enC.pass
+  ""
+  "Charlie's compiler pass & grade:"
+  enC.pass
   enC.grade
 
-	""
+  ""
   "The average grade of all students with grades:"
   compiler.avgGrade
   
