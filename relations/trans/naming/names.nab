@@ -11,7 +11,7 @@ namespaces
 	Module
 	EntityType
 	EntityType2                            //Nasty Hack to enforce no duplicate entity types
-	Entity
+	EntityInstance
 	Attribute
 	Role
 	Inverse
@@ -32,7 +32,7 @@ binding rules // modules
 		defines Module m
 		scopes EntityType
 		scopes EntityType2
-		scopes Entity
+		scopes EntityInstance
 
 binding rules // model
 
@@ -95,7 +95,7 @@ binding rules // model
 binding rules // data
 
 	EntityInstance(EntityType(e-ty), e, _, _) :
-		defines Entity e
+		defines EntityInstance e
 			of type e-ty
 			of multiplicity One()
 		scopes This
@@ -106,7 +106,7 @@ binding rules // data
 binding rules // references
 
 	Identifier(x) :
-		refers to Entity x
+		refers to EntityInstance x
 	otherwise
 		refers to Attribute x	in EntityType e-ty
 		where This() resolves to This this

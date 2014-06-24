@@ -92,7 +92,7 @@ rules // direct references
 
 	exp-to-java-stm(err|i): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
 		where
-			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
+			NablNsEntityInstance() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
 	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
 		where
