@@ -5,9 +5,9 @@ imports
 	Expressions
 	Types
 
-templates // both entities and relations are EntityTypeDefs
+templates // both entities and relations are Entitys
 
-	Model.EntityTypeDef = <
+	Model.Entity = <
 		entity<Placeholder1> <ID> {
 			<RoleOrAttribute*;separator="\n">
 		}
@@ -15,7 +15,7 @@ templates // both entities and relations are EntityTypeDefs
 	
 	Placeholder1.EntityType = <>
 	
-	Model.EntityTypeDef = <
+	Model.Entity = <
 		relation<Placeholder2> <ID> {
 			<RoleOrAttribute*;separator="\n">
 		}

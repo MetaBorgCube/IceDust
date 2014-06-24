@@ -29,7 +29,7 @@ rules // generate omitted role names
 
 rules // generate omitted inverse names
 	
-	desugar: EntityTypeDef(a,entityName,roles) -> EntityTypeDef(a,entityName,roles')
+	desugar: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
 		with
 			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
 
@@ -51,7 +51,7 @@ rules
 	generate-shortcut-types: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
 	generate-shortcut-types: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcut-types))>b), c, d)
 	
-	generate-shortcut-types: EntityTypeDef(a,entityName,members) -> EntityTypeDef(a,entityName,members')
+	generate-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
 		where
 			role-types := <filter(role-name-and-type)>members;
 			members' := <map(try(add-shortcut-types(|role-types)))> members
@@ -77,7 +77,7 @@ rules
 	generate-shortcuts: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
 	generate-shortcuts: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), c, d)
 	
-	generate-shortcuts: EntityTypeDef(a,entityName,members) -> EntityTypeDef(a,entityName,members')
+	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
 		where
 			roles 				:= <filter(role-name);string-sort>members;
 			shortcuts			:= <filter(shortcut-roles)>members;

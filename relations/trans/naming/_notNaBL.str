@@ -104,7 +104,7 @@ rules // check if entities have all the required attributes and roles assigned
 
 rules // check if Entity (not Relation) has no roles
 
-	constraint-error: EntityTypeDef(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
+	constraint-error: Entity(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
 	no-role: x@Role(_,_,_,_) -> [(x, $[An entity cannot have roles.])]
 	no-role: Attribute(_,_,_,_) -> []
 	//TODO: move this to tasks
@@ -112,7 +112,7 @@ rules // check if Entity (not Relation) has no roles
 rules // check if Entity Type names start wiht a capital
 	
 	constraint-warning:
-		EntityTypeDef(_, x, _) -> (x, $[Entity type names must start with a capital])
+		Entity(_, x, _) -> (x, $[Entity type names must start with a capital])
 		where
 			not(<string-starts-with-capital> x)
 	//TODO: move this to tasks

@@ -15,7 +15,7 @@ rules
 	
   to-java(err): ModelDef(model) -> <map(try(to-java(err)))>model
 
-  to-java(err): EntityTypeDef(_, name, attributesAndRoles) -> 
+  to-java(err): Entity(_, name, attributesAndRoles) -> 
 		type-dec |[
 			class x_class
 			{

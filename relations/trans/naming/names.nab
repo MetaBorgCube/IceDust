@@ -36,7 +36,7 @@ binding rules // modules
 
 binding rules // model
 
-	EntityTypeDef(ent-or-rel, e-ty, _) :
+	Entity(ent-or-rel, e-ty, _) :
 		defines EntityType2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique EntityType e-ty
 		scopes Attribute

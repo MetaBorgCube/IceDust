@@ -4,7 +4,7 @@ imports Relations-Colorer.generated
 
 colorer Entity and Role namespaces
 	
-	// _.EntityTypeDef : 0 64 128 italic bold	//how to only color the name?
+	// _.Entity : 0 64 128 italic bold	//how to only color the name?
   _.EntityType: 0 64 128 italic bold
   _.RoleRef: 0 64 128 italic
 
