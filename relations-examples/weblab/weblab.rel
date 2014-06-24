@@ -7,15 +7,15 @@ model
   }
 
   entity Course {
-    avgGrade : Int? = avg( this.enrollment.grade )
+    avgGrade : Int? = avg( enrollment.grade )
   }
 
   relation Enrollment {
     Course * 
     Student *
     
-    pass  : Boolean = this.studentAssignment.pass
-    grade : Int?    = this.studentAssignment.grade
+    pass  : Boolean = studentAssignment.pass
+    grade : Int?    = studentAssignment.grade
   }
 
   entity Assignment {
@@ -34,23 +34,23 @@ model
 
     grade         : Int // between 10 (min) and 100 (max)
     
-    gradePanelty  : Int? = this.assignment.panelty*lateDays/this.assignment.extensionDays
+    gradePanelty  : Int? = assignment.panelty*lateDays/assignment.extensionDays
     gradeDeadline : Int? = onTime      ? grade :
                            onExtension ? grade - gradePanelty :
                            noValue
     
     date          : Int?
-    extension     : Int? = this.assignment.extension (default)
+    extension     : Int? = assignment.extension (default)
     
-    onTime        : Boolean = date <= this.assignment.deadline
+    onTime        : Boolean = date <= assignment.deadline
                               <+ 
-                              count(date)==1 || count(this.assignment.deadline)==0
+                              count(date)==1 || count(assignment.deadline)==0
                             
     onExtension   : Boolean = date <= extension && !onTime
                               <+
                               count(date)==1 || count(extension)==0
                                        
-    lateDays      : Int? = date - this.assignment.deadline
+    lateDays      : Int? = date - assignment.deadline
     
     noValue : Int?
   }
@@ -68,16 +68,16 @@ model
   entity StudentAssignment {
     pass            : Boolean = passGrade && passParts
     
-    passGrade       : Boolean = grade >= this.assignment.gradeMinimum <+ false
-    passParts       : Boolean = conj( this.part.pass ) <+ true 
+    passGrade       : Boolean = grade >= assignment.gradeMinimum <+ false
+    passParts       : Boolean = conj( part.pass ) <+ true 
     
     grade           : Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
     
-    gradeWeighted   : Int? = grade * this.assignment.gradeWeight
+    gradeWeighted   : Int? = grade * assignment.gradeWeight
     
-    gradeSubmission : Int? = this.submission.gradeDeadline
-    gradeParts      : Int? = count(this.part)==count(this.part.grade)
-                             ? sum ( this.part.gradeWeighted ) / sum ( this.assignment.part.gradeWeight )
+    gradeSubmission : Int? = submission.gradeDeadline
+    gradeParts      : Int? = count(part)==count(part.grade)
+                             ? sum ( part.gradeWeighted ) / sum ( assignment.part.gradeWeight )
                              : noValue
     
     noValue : Int?
