@@ -58,8 +58,8 @@ rules
 	
 	role-name-and-type: Role(type, _, name, _) -> (name, type)
 	
-	add-shortcut-types(|role-types): Shortcut(RoleName(role1), b, None(), None(), RoleName(role2), f) ->
-																	 Shortcut(RoleName(role1), b, type1,  type2,  RoleName(role2), f)
+	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, None(), None(), RoleRef(role2), f) ->
+																	 Shortcut(RoleRef(role1), b, type1,  type2,  RoleRef(role2), f)
 		where
 			type1 := <role-type>(role1, role-types);
 			type2 := <role-type>(role2, role-types)
@@ -88,7 +88,7 @@ rules
 			
 	role-name: Role(_, _, name, _) -> name
 	
-	shortcut-roles: Shortcut(RoleName(role1), _, _, _, RoleName(role2), _) -> <string-sort;ListToTuple>[role1,role2]
+	shortcut-roles: Shortcut(RoleRef(role1), _, _, _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
 	
 	join-half: [] -> []
 	
@@ -99,7 +99,7 @@ rules
 			
 	pair-with(|h): t -> (h,t)
 
-	create-shortcut: (role1,role2) -> Shortcut(RoleName(role1), role2, None(), None(), RoleName(role2), role1)
+	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, None(), None(), RoleRef(role2), role1)
 			
 	
 	

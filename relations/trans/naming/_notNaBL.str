@@ -47,7 +47,7 @@ rules // unresolved references
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
-		RoleName(e) -> <fail>
+		RoleRef(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role"]
@@ -97,7 +97,7 @@ rules // check if entities have all the required attributes and roles assigned
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
-			as-defs    := <map(?RoleValue(RoleName(<nabl-create-collectdefs(|ctx)>), _))> roles;
+			as-defs    := <map(?RoleValue(RoleRef(<nabl-create-collectdefs(|ctx)>), _))> roles;
 			as-roles   := <task-create-combine(|ctx)> as-defs ;
 			diff       := <task-create-diff(|ctx)> (ty-roles, as-roles);
 			<task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> e

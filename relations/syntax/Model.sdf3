@@ -39,7 +39,7 @@ templates
 	DerivationType.Derivation			= <(derivation)>
 	DerivationType.Derivation			= <>
 	
-	Shortcut.Shortcut							= <<RoleName>.<ID> <ID?> \<-\> <ID?> <RoleName>.<ID>>
+	Shortcut.Shortcut							= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>
 
 templates
 
@@ -47,7 +47,7 @@ templates
 	Inverse												= <\<- <ID>>
 	
 	EntityType.EntityType 				= <<ID>>
-	RoleName.RoleName							= <<ID>>  
+	RoleRef.RoleRef							= <<ID>>  
 	
 	Multiplicity.One	 						= <1>
 	Multiplicity.ZeroOrOne				= <?>

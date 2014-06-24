@@ -15,7 +15,7 @@ type rules
 		and definition of member has multiplicity member-mu
 		and <mu-or-join> (expr-mu, member-mu) => mu
 
-	RoleName(r) : r-ty
+	RoleRef(r) : r-ty
 	where definition of r : r-ty
 	
 	Identifier(a) : ty

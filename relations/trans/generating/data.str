@@ -37,7 +37,7 @@ rules
 	  	x_setter := $[set_[attributeName]];
 	  	(_, attributeValueJava) := <exp-to-java-stm(err|0)>attributeValue
 
-  to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) -> [result1, result2]
+  to-java(err|x_entityName, entityType) :	RoleValue(RoleRef(x_roleName), Identifier(x_otherName)) -> [result1, result2]
 		with
 			x_roleNameOther := $[[entityType]_[x_roleName]];
 			multiplicity := <get-multiplicity2>x_roleName

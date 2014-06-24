@@ -6,7 +6,7 @@ colorer Entity and Role namespaces
 	
 	// _.EntityTypeDef : 0 64 128 italic bold	//how to only color the name?
   _.EntityType: 0 64 128 italic bold
-  _.RoleName: 0 64 128 italic
+  _.RoleRef: 0 64 128 italic
 
 colorer Multiplicity
 

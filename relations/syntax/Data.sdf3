@@ -18,5 +18,5 @@ templates
 
   AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
  
-  RoleValue.RoleValue = <<RoleName> : <Identifier>>
+  RoleValue.RoleValue = <<RoleRef> : <Identifier>>
 
