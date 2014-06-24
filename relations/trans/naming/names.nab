@@ -115,11 +115,21 @@ binding rules // references
 	Identifier(x) :
 		refers to Entity x
 	otherwise
-		refers to Attribute x
-		in EntityType e-ty
+		refers to Attribute x	in EntityType e-ty
 		where This() resolves to This this
 		and this has type e-ty
-	//TODO: otherwise refers to Role, Inverse or Shortcut (+ code generation)
+	otherwise
+	  refers to Role x in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	otherwise
+	  refers to Inverse x in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	otherwise
+	  refers to Shortcut x in EntityType e-ty
+		where This() resolves to This this
+		and this has type e-ty
 
 	MemberAccess(exp, a) :
 		refers to Attribute a in EntityType e-ty

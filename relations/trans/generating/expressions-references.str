@@ -101,5 +101,36 @@ rules // direct references
 			x_getter := $[get_[name]]
 		with
 			result :=	|[this.x_getter()]|
+				 
+	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+		where
+			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_call := $[[name]_out];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name
+		with
+			result :=	|[x_relationName.x_call(this)]|
+				 
+	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+		where
+			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			x_call := $[[roleName]_in];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+		with
+			result :=	|[x_relationName.x_call(this)]|
+				 
+	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+		where
+			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			roleName2 := <get-origin-role2>name;
+			x_call := $[[roleName]_in];
+			x_call2 := $[[roleName2]_out];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+		with
+			result :=	|[x_relationName.x_call2(x_relationName.x_call(this))]|
 			
 	exp-to-java-stm(err|i): This() -> ([], |[this]|)
