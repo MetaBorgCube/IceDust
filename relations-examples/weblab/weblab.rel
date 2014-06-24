@@ -88,15 +88,15 @@ model
     StudentAssignment ? part  <- partAssignment
   }
   
-  relation StudentAssignmentEnrollment {
+  relation SA_E {
     StudentAssignment ? Enrollment 1
   }
 
-  relation StudentAssignmentSubmission {
+  relation SA_S {
     StudentAssignment ? Submission 1
   }
 
-  relation StudentAssignmentAssignment {
+  relation SA_A {
     StudentAssignment 1 Assignment *
   }
 
@@ -162,35 +162,35 @@ data
   StudentAssignmentPart { whole:cPract part:cPractA }
   StudentAssignmentPart { whole:cPract part:cPractB }
 
-  StudentAssignmentEnrollment { studentAssignment:aComp   enrollment:enA }
-  StudentAssignmentEnrollment { studentAssignment:bComp   enrollment:enB }
-  StudentAssignmentEnrollment { studentAssignment:cComp   enrollment:enC }
+  SA_E { studentAssignment:aComp   enrollment:enA }
+  SA_E { studentAssignment:bComp   enrollment:enB }
+  SA_E { studentAssignment:cComp   enrollment:enC }
 
-  StudentAssignmentSubmission { studentAssignment:aPractA submission:sa1 }
-  StudentAssignmentSubmission { studentAssignment:aPractB submission:sa2 }
-  StudentAssignmentSubmission { studentAssignment:aExam   submission:sa3 }
-  StudentAssignmentSubmission { studentAssignment:bPractA submission:sb1 }
-  StudentAssignmentSubmission { studentAssignment:bPractB submission:sb2 }  
-  StudentAssignmentSubmission { studentAssignment:bExam   submission:sb3 }
-  StudentAssignmentSubmission { studentAssignment:cPractA submission:sc1 }
-  StudentAssignmentSubmission { studentAssignment:cPractB submission:sc2 }
-  StudentAssignmentSubmission { studentAssignment:cExam   submission:sc3 }
+  SA_S { studentAssignment:aPractA submission:sa1 }
+  SA_S { studentAssignment:aPractB submission:sa2 }
+  SA_S { studentAssignment:aExam   submission:sa3 }
+  SA_S { studentAssignment:bPractA submission:sb1 }
+  SA_S { studentAssignment:bPractB submission:sb2 }  
+  SA_S { studentAssignment:bExam   submission:sb3 }
+  SA_S { studentAssignment:cPractA submission:sc1 }
+  SA_S { studentAssignment:cPractB submission:sc2 }
+  SA_S { studentAssignment:cExam   submission:sc3 }
   
-  StudentAssignmentAssignment { studentAssignment:aComp   assignment:comp       }
-  StudentAssignmentAssignment { studentAssignment:aExam   assignment:exam       }
-  StudentAssignmentAssignment { studentAssignment:aPract  assignment:practical  }
-  StudentAssignmentAssignment { studentAssignment:aPractA assignment:practicalA }
-  StudentAssignmentAssignment { studentAssignment:aPractB assignment:practicalB }
-  StudentAssignmentAssignment { studentAssignment:bComp   assignment:comp       }
-  StudentAssignmentAssignment { studentAssignment:bExam   assignment:exam       }
-  StudentAssignmentAssignment { studentAssignment:bPract  assignment:practical  }
-  StudentAssignmentAssignment { studentAssignment:bPractA assignment:practicalA }
-  StudentAssignmentAssignment { studentAssignment:bPractB assignment:practicalB }
-  StudentAssignmentAssignment { studentAssignment:cComp   assignment:comp       }
-  StudentAssignmentAssignment { studentAssignment:cExam   assignment:exam       }
-  StudentAssignmentAssignment { studentAssignment:cPract  assignment:practical  }
-  StudentAssignmentAssignment { studentAssignment:cPractA assignment:practicalA }
-  StudentAssignmentAssignment { studentAssignment:cPractB assignment:practicalB }
+  SA_A { studentAssignment:aComp   assignment:comp       }
+  SA_A { studentAssignment:aExam   assignment:exam       }
+  SA_A { studentAssignment:aPract  assignment:practical  }
+  SA_A { studentAssignment:aPractA assignment:practicalA }
+  SA_A { studentAssignment:aPractB assignment:practicalB }
+  SA_A { studentAssignment:bComp   assignment:comp       }
+  SA_A { studentAssignment:bExam   assignment:exam       }
+  SA_A { studentAssignment:bPract  assignment:practical  }
+  SA_A { studentAssignment:bPractA assignment:practicalA }
+  SA_A { studentAssignment:bPractB assignment:practicalB }
+  SA_A { studentAssignment:cComp   assignment:comp       }
+  SA_A { studentAssignment:cExam   assignment:exam       }
+  SA_A { studentAssignment:cPract  assignment:practical  }
+  SA_A { studentAssignment:cPractA assignment:practicalA }
+  SA_A { studentAssignment:cPractB assignment:practicalB }
 
 execute
 
