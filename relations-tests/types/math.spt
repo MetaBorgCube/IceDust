@@ -46,4 +46,4 @@ test multiplicity of One plus ZeroOrOne String	[[ [["s" + x.s]] ]] run get-multi
 test multiplicity of ZeroOrOne minus One				[[ [[x.i - 5]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of ZeroOrOne mult ZeroOrOne		[[ [[x.i * x.i]] ]] run get-multiplicity to ZeroOrOne
 
-test error on One plus OneOrMore [[ 1 + [[(2 :: 3)]] ]] 1 error
+test error on One plus OneOrMore [[ 1 + [[(2 ++ 3)]] ]] 1 error

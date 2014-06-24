@@ -42,10 +42,10 @@ model
   	slice2boundrary : Int = 33363
   	slice3boundrary : Int = 56531
 
-  	slice1 : Int = min(yearlyTaxed :: slice1boundrary)
-  	slice2 : Int = min(yearlyTaxed - slice1 :: slice2boundrary - slice1boundrary)
-  	slice3 : Int = min(yearlyTaxed - slice1 - slice2 :: slice3boundrary - slice2boundrary)
-  	slice4 : Int = min(yearlyTaxed - slice1 - slice2 - slice3 :: 0)
+  	slice1 : Int = min(yearlyTaxed ++ slice1boundrary)
+  	slice2 : Int = min(yearlyTaxed - slice1 ++ slice2boundrary - slice1boundrary)
+  	slice3 : Int = min(yearlyTaxed - slice1 - slice2 ++ slice3boundrary - slice2boundrary)
+  	slice4 : Int = min(yearlyTaxed - slice1 - slice2 - slice3 ++ 0)
   	
   	slice1tax : Int = slice1 * slice1percentage / 10000
   	slice2tax : Int = slice2 * slice2percentage / 10000

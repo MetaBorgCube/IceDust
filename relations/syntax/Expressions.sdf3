@@ -30,7 +30,7 @@ templates // operators
   Exp.Or                 = <<Exp> || <Exp>>        {left}
   Exp.TernaryConditional = <<Exp> ? <Exp> : <Exp>> {right}
 
-  Exp.Merge              = <<Exp> :: <Exp>>        {left}
+  Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
 templates // built-in functions

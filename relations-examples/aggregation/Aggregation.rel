@@ -3,7 +3,7 @@ module Aggregation
 model
 
   entity X {
-    val : Int  = max ( 2 :: 5 :: 3 ) (derivation)
+    val : Int  = max ( 2 ++ 5 ++ 3 ) (derivation)
   }
 
 data
@@ -14,4 +14,4 @@ execute
 
   x . val
 
-	conj(true :: false)
+	conj(true ++ false)
