@@ -20,8 +20,6 @@ namespaces
 
 properties
 
-	is-relation					of EntityType	: Term						//true iff relation, unset if entity
-	entity-or-relation	of EntityType : Term						//EntityType() iff entity, RelationType() iff relation
 	derivation-type 		of Attribute	: DerivationType	//either is Derivation(), has DefaultValue() or is Normal()
 	fulfill-role 				of EntityType : EntityType			//points to the Relation of which it is a role (the relation is EntityType)
 	multiplicity				of Attribute	: Term
@@ -42,7 +40,6 @@ binding rules // model
 	EntityTypeDef(ent-or-rel, e-ty, _) :
 		defines EntityType2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique EntityType e-ty
-			of entity-or-relation ent-or-rel
 		scopes Attribute
 		scopes Role
 		scopes This
