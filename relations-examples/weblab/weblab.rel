@@ -8,6 +8,7 @@ model
 
   entity Course {
     avgGrade : Int? = avg( enrollment.grade )
+    passPerc : Int? = 100 * count(enrollment.pass2) / count(enrollment)
   }
 
   relation Enrollment {
@@ -15,6 +16,7 @@ model
     Student *
     
     pass  : Boolean = studentAssignment.pass
+    pass2 : Int     = pass?1:0
     grade : Int?    = studentAssignment.grade
   }
 
@@ -33,7 +35,6 @@ model
     Assignment * 
 
     grade        : Int // between 10 (min) and 100 (max)
-    
     gradePanelty : Int? = assignment.panelty*lateDays/assignment.extensionDays
     gradeReal    : Int? = onTime      ? grade :
                           onExtension ? grade - gradePanelty :
@@ -41,7 +42,6 @@ model
     
     date         : Int?
     extension    : Int? = assignment.extension (default)
-    
     lateDays     : Int? = date - assignment.deadline
     
     onTime       : Boolean = date <= assignment.deadline
@@ -209,6 +209,8 @@ execute
   enC.grade
 
   ""
-  "The average grade of all students with grades:"
+  "The average of all student grades:"
   compiler.avgGrade
+  "Pass percentage:"
+  compiler.passPerc
   
