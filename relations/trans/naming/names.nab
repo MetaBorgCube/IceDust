@@ -106,9 +106,6 @@ binding rules // data
 
 binding rules // references
 
-	EntityType(e) :
-		refers to EntityType e
-
 	Identifier(x) :
 		refers to Entity x
 	otherwise
@@ -140,6 +137,9 @@ binding rules // references
 	otherwise
 	  refers to Shortcut a in EntityType e-ty
 	  where exp has type e-ty
+
+	EntityType(e) :
+		refers to EntityType e
 	
 	RoleName(r):
 		refers to Role r in EntityType e-ty
