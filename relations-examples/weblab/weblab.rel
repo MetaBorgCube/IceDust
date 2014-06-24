@@ -32,26 +32,25 @@ model
     Student * 
     Assignment * 
 
-    grade         : Int // between 10 (min) and 100 (max)
+    grade        : Int // between 10 (min) and 100 (max)
     
-    gradePanelty  : Int? = assignment.panelty*lateDays/assignment.extensionDays
-    gradeDeadline : Int? = onTime      ? grade :
-                           onExtension ? grade - gradePanelty :
-                           noValue
+    gradePanelty : Int? = assignment.panelty*lateDays/assignment.extensionDays
+    gradeReal    : Int? = onTime      ? grade :
+                          onExtension ? grade - gradePanelty :
+                          noValue
     
-    date          : Int?
-    extension     : Int? = assignment.extension (default)
+    date         : Int?
+    extension    : Int? = assignment.extension (default)
     
-    onTime        : Boolean = date <= assignment.deadline
-                              <+ 
-                              count(date)==1 || count(assignment.deadline)==0
+    lateDays     : Int? = date - assignment.deadline
+    
+    onTime       : Boolean = date <= assignment.deadline
+                             <+ 
+                             count(date)==1 || count(assignment.deadline)==0
                             
-    onExtension   : Boolean = date <= extension && !onTime
-                              <+
-                              count(date)==1 || count(extension)==0
-                                       
-    lateDays      : Int? = date - assignment.deadline
-    
+    onExtension  : Boolean = date <= extension && !onTime
+                             <+
+                             count(date)==1 || count(extension)==0
     noValue : Int?
   }
   
@@ -75,9 +74,10 @@ model
     
     gradeWeighted   : Int? = grade * assignment.gradeWeight
     
-    gradeSubmission : Int? = submission.gradeDeadline
+    gradeSubmission : Int? = submission.gradeReal
     gradeParts      : Int? = count(part)==count(part.grade)
-                             ? sum ( part.gradeWeighted ) / sum ( assignment.part.gradeWeight )
+                             ? sum ( part.gradeWeighted ) / 
+                               sum ( assignment.part.gradeWeight )
                              : noValue
     
     noValue : Int?
