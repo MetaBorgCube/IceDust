@@ -27,27 +27,28 @@ model
     deadline      : Int? // day since start academic year
     extension     : Int?
     extensionDays : Int? = extension - deadline
-    panelty       : Int? // for using the full extension
+    penalty       : Int? // for using the full extension
   }
 
   relation Submission {
     Student * 
     Assignment * 
 
-    grade        : Int // between 10 (min) and 100 (max)
-    gradePanelty : Int? = assignment.panelty*lateDays/assignment.extensionDays
+    grade        : Int    // between 10 (min) and 100 (max)
+    date         : Int?
+    extension    : Int? = assignment.extension (default)
+    
+    gradePanelty : Int? = assignment.penalty*lateDays/assignment.extensionDays
     gradeReal    : Int? = onTime      ? grade :
                           onExtension ? grade - gradePanelty :
                           noValue
     
-    date         : Int?
-    extension    : Int? = assignment.extension (default)
     lateDays     : Int? = date - assignment.deadline
     
     onTime       : Boolean = date <= assignment.deadline
                              <+ 
                              count(date)==1 || count(assignment.deadline)==0
-                            
+
     onExtension  : Boolean = date <= extension && !onTime
                              <+
                              count(date)==1 || count(extension)==0
@@ -113,7 +114,7 @@ data
   Assignment comp       { }  Assignment exam       { gradeWeight=2 gradeMinimum=60 }
   Assignment practical  { gradeWeight=1 gradeMinimum=60 }
   Assignment practicalA { gradeWeight=2 gradeMinimum=50 deadline=7 }
-  Assignment practicalB { gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 panelty=20 }
+  Assignment practicalB { gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20 }
 
   CourseAssignments { course:compiler assignment:comp }
 
