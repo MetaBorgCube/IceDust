@@ -25,10 +25,10 @@ rules // unresolved references
 	nabl-check-disable-unresolved = id
 
 	nabl-constraint(|ctx):
-		EntityType(e) -> <fail>
+		EntityRef(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityType"]
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityRef"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
@@ -81,7 +81,7 @@ rules // duplicate definitions : overwrite the generic one with a generic one wi
 rules // check if entities have all the required attributes and roles assigned
 
 	nabl-constraint(|ctx):
-		EntityInstance(EntityType(e-ty), e, _, as) -> <fail>
+		EntityInstance(EntityRef(e-ty), e, _, as) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-attrs] := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
@@ -93,7 +93,7 @@ rules // check if entities have all the required attributes and roles assigned
 			<task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> e
 			
 	nabl-constraint(|ctx):
-		EntityInstance(EntityType(e-ty), e, roles, _) -> <fail>
+		EntityInstance(EntityRef(e-ty), e, roles, _) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
@@ -104,7 +104,7 @@ rules // check if entities have all the required attributes and roles assigned
 
 rules // check if Entity (not Relation) has no roles
 
-	constraint-error: Entity(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
+	constraint-error: Entity(EntityRef(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
 	no-role: x@Role(_,_,_,_) -> [(x, $[An entity cannot have roles.])]
 	no-role: Attribute(_,_,_,_) -> []
 	//TODO: move this to tasks

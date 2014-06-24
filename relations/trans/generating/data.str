@@ -14,7 +14,7 @@ rules
   to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
 
 	to-java(err): EntityInstance(
-									EntityType(x_type)
+									EntityRef(x_type)
 								, x_name
 								, roleValues
 								, attributeValues

@@ -70,7 +70,7 @@ binding rules // model
 			of origin-role role
 			where This() resolves to This this
 			and this has type e-ty
-		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityType2 having no attributes etc.)
+		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityRef2 having no attributes etc.)
 
 	Shortcut(RoleRef(role1), shortcut1, type1, type2, RoleRef(role2), shortcut2):
 		defines non-unique Entity type1
@@ -94,7 +94,7 @@ binding rules // model
 
 binding rules // data
 
-	EntityInstance(EntityType(e-ty), e, _, _) :
+	EntityInstance(EntityRef(e-ty), e, _, _) :
 		defines EntityInstance e
 			of type e-ty
 			of multiplicity One()
@@ -137,7 +137,7 @@ binding rules // references
 	  refers to Shortcut a in Entity e-ty
 	  where exp has type e-ty
 
-	EntityType(e) :
+	EntityRef(e) :
 		refers to Entity e
 	
 	RoleRef(r):

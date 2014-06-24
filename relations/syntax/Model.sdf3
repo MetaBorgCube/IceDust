@@ -13,7 +13,7 @@ templates // both entities and relations are Entitys
 		}
 	>
 	
-	Placeholder1.EntityType = <>
+	Placeholder1.EntityRef = <>
 	
 	Model.Entity = <
 		relation<Placeholder2> <ID> {
@@ -46,7 +46,7 @@ templates
 	Role.Role											= <<ID> <Multiplicity> <ID?> <Inverse?>>
 	Inverse												= <\<- <ID>>
 	
-	EntityType.EntityType 				= <<ID>>
+	EntityRef.EntityRef 				= <<ID>>
 	RoleRef.RoleRef							= <<ID>>  
 	
 	Multiplicity.One	 						= <1>
