@@ -42,7 +42,7 @@ rules	// custom traversal desugarings
 	generate-entity-names: ModuleDesugared(a, b, None(), d)     -> ModuleDesugared(a, b, None(), d)
 	generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(<new-name-map(try(generate-entity-name))>c), d)
 	
-	generate-entity-name: (EntityOrRelation(EntityType(e-ty), None(), r, a), history) -> (EntityOrRelation(EntityType(e-ty), e, r, a), history')
+	generate-entity-name: (EntityInstance(EntityType(e-ty), None(), r, a), history) -> (EntityInstance(EntityType(e-ty), e, r, a), history')
 		with
 			(e, history') := <new-name>(<lcfirst>e-ty, history)
 	

@@ -94,7 +94,7 @@ binding rules // model
 
 binding rules // data
 
-	EntityOrRelation(EntityType(e-ty), e, _, _) :
+	EntityInstance(EntityType(e-ty), e, _, _) :
 		defines Entity e
 			of type e-ty
 			of multiplicity One()

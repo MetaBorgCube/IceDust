@@ -45,7 +45,7 @@ rules
 	  
 	  to-outline-label : DataDef(_) -> "Data"{"icons/data.png"}
 	  
-	  	to-outline-label : EntityOrRelation(EntityType(e-ty), e, _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
+	  	to-outline-label : EntityInstance(EntityType(e-ty), e, _, _)	-> $[[<pp-o>e] : [<pp-o>e-ty]]{"icons/square-gray.png"}
 	  	
 	  to-outline-label : Executable(_) -> "Execute"{"icons/execute.png"}
 	  

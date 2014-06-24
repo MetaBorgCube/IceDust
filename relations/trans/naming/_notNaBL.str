@@ -81,7 +81,7 @@ rules // duplicate definitions : overwrite the generic one with a generic one wi
 rules // check if entities have all the required attributes and roles assigned
 
 	nabl-constraint(|ctx):
-		EntityOrRelation(EntityType(e-ty), e, _, as) -> <fail>
+		EntityInstance(EntityType(e-ty), e, _, as) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-attrs] := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
@@ -93,7 +93,7 @@ rules // check if entities have all the required attributes and roles assigned
 			<task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> e
 			
 	nabl-constraint(|ctx):
-		EntityOrRelation(EntityType(e-ty), e, roles, _) -> <fail>
+		EntityInstance(EntityType(e-ty), e, roles, _) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];

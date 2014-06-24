@@ -7,7 +7,7 @@ imports
 
 templates   // entities or relations
 
-  Data.EntityOrRelation = <
+  Data.EntityInstance = <
     <EntityType> <ID?> {
 	    <RoleValue*; separator="\n">
 	    <AttributeValue*; separator="\n">
