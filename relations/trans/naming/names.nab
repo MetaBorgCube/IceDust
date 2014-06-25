@@ -149,6 +149,9 @@ binding rules // references
 		refers to Role r in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
+
+	EntityInstanceRef(e) :
+		refers to EntityInstance e
 	
 	This() :
 		refers to This This()

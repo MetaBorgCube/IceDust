@@ -31,8 +31,11 @@ type rules // specific references
 	RoleRef(r) : r-ty
 	where definition of r : r-ty
 	
-	AttributeRef(a) : r-ty
-	where definition of a : r-ty
+	AttributeRef(a) : a-ty
+	where definition of a : a-ty
+	
+	EntityInstanceRef(e) : e-ty
+	where definition of e : e-ty
 
 type functions
 
