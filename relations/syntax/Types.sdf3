@@ -2,6 +2,11 @@ module Types
 
 templates
 
-	PrimitiveType.Boolean	= <Boolean>
-	PrimitiveType.Int			= <Int>
-	PrimitiveType.String	= <String>
+	PrimitiveType.Boolean	  = <Boolean>
+	PrimitiveType.Int			  = <Int>
+	PrimitiveType.String	  = <String>
+	
+	Multiplicity.One	 			= <1>
+	Multiplicity.ZeroOrOne	= <?>
+	Multiplicity.OneOrMore	= <+>
+	Multiplicity.ZeroOrMore	= <*>

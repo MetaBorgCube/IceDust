@@ -9,45 +9,36 @@ templates // entities
 
 	Model.Entity = <
 		entity<Placeholder1> <ID> {
-			<RoleOrAttribute*;separator="\n">
+			<Member*;separator="\n">
 		}
 	>
 	Placeholder1.EntityRef = <>
 	
 	Model.Entity = <
-		relation<Placeholder2> <ID> {
-			<RoleOrAttribute*;separator="\n">
+		relation<RelationType> <ID> {
+			<Member*;separator="\n">
 		}
 	>
-	Placeholder2.RelationType = <>
+	RelationType.RelationType = <>
 
 templates // entity members
 
-	RoleOrAttribute								= <<Role>>
-	RoleOrAttribute								= <<Attribute>>
-	RoleOrAttribute								= <<Shortcut>>
+	Member											= <<Attribute>>
+	Member											= <<Role>>
+	Member											= <<Shortcut>>
 
-templates
+	Attribute.Attribute 				= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
+	Derivation.Derivation 			= <= <Exp> <DerivationType>>
+	DerivationType.DefaultValue	= <(default)>
+	DerivationType.Derivation		= <>
 
-	Attribute.Attribute 					= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
-	
-	Derivation.Derivation 				= <= <Exp> <DerivationType>>
-	
-	DerivationType.DefaultValue		= <(default)>
-	DerivationType.Derivation			= <>
-	
-	Shortcut.Shortcut							= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>
+	Role.Role										= <<ID> <Multiplicity> <ID?> <Inverse?>>
+	Inverse											= <\<- <ID>>
 
-templates
+	Shortcut.Shortcut						= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>
 
-	Role.Role											= <<ID> <Multiplicity> <ID?> <Inverse?>>
-	Inverse												= <\<- <ID>>
+templates // specific references
 	
 	EntityRef.EntityRef 				= <<ID>>
 	RoleRef.RoleRef							= <<ID>>  
 	
-	Multiplicity.One	 						= <1>
-	Multiplicity.ZeroOrOne				= <?>
-	Multiplicity.OneOrMore				= <+>
-	Multiplicity.ZeroOrMore				= <*>
-
