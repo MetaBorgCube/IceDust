@@ -12,7 +12,6 @@ namespaces
 	Entity
 	Entity2                            //Nasty Hack to enforce no duplicate entity types
 	EntityInstance
-	// Member														 //Hack to enforce no duplicate member names
 	Attribute
 	Role
 	Inverse
@@ -40,7 +39,6 @@ binding rules // model
 	Entity(ent-or-rel, e-ty, _) :
 		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique Entity e-ty
-		// scopes Member
 		scopes Attribute
 		scopes Role
 		scopes This
@@ -48,29 +46,24 @@ binding rules // model
 			of type e-ty
 
 	Attribute(a, a-ty, a-mu, None()) :
-		// defines Member a                 //Hack to enforce no duplicate member names
 		defines Attribute a
 			of type a-ty
 			of multiplicity a-mu
 			of derivation-type Normal()
 			
 	Attribute(a, a-ty, a-mu, Derivation(_, a-dt)) :
-		// defines Member a                 //Hack to enforce no duplicate member names
 		defines Attribute a
 			of type a-ty
 			of multiplicity a-mu
 			of derivation-type a-dt
 
 	Role(role-ty, role-mu, role, inverseName) :
-		// defines Member role                 //Hack to enforce no duplicate member names
 		defines Role role
 			of type role-ty
 			of multiplicity One()
 			of multiplicity2 role-mu
 		defines non-unique Entity role-ty
 		  scopes Inverse
-		//   scopes Member
-		// defines Member inverseName                 //Hack to enforce no duplicate member names
 		defines Inverse inverseName
 			of multiplicity role-mu
 			of type e-ty
@@ -82,7 +75,6 @@ binding rules // model
 	Shortcut(RoleRef(role1), shortcut1, type1, type2, RoleRef(role2), shortcut2):
 		defines non-unique Entity type1
 			scopes Shortcut
-		// defines Member shortcut1                 //Hack to enforce no duplicate member names
 		defines Shortcut shortcut1
 			of type type2
 			of multiplicity mu1
@@ -92,7 +84,6 @@ binding rules // model
 			and role1def has multiplicity2 mu1
 		defines non-unique Entity type2
 			scopes Shortcut
-		// defines Member shortcut2                 //Hack to enforce no duplicate member names
 		defines Shortcut shortcut2
 			of type type1
 			of multiplicity mu2
