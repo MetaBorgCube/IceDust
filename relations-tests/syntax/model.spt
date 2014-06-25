@@ -132,3 +132,16 @@ test Inverse definitions [[
 			Course  + course  <- enrollments
 		}
 ]] parse succeeds
+
+
+test error on role in relation[[
+	module stuff
+
+	model
+		
+		entity Course{}
+		
+		entity Enrollment{
+			[[Student * student <- enrollments]]
+		}
+]] 1 error

@@ -79,18 +79,23 @@ rules // check if entities have all the required attributes and roles assigned
 
 rules // check if Entity (not Relation) has no roles
 
-	constraint-error: Entity(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
-	no-role: x@Role(_,_,_,_) -> [(x, $[An entity cannot have roles.])]
-	no-role: Attribute(_,_,_,_) -> []
-	//TODO: move this to tasks
+	nabl-constraint(|ctx):
+		Entity(EntityType(), _, attributesAndRoles) -> <fail>
+		with
+			<filter(no-role-task(|ctx))> attributesAndRoles
+			
+	no-role-task(|ctx): x@Role(_,_,_,_) -> None()
+		with
+			<task-create-error(|ctx, ["An entity cannot have roles."])> x
 
-rules // check if Entity Type names start wiht a capital
+rules // check if Entity names start with a capital
 	
-	constraint-warning:
-		Entity(_, x, _) -> (x, $[Entity type names must start with a capital])
-		where
-			not(<string-starts-with-capital> x)
-	//TODO: move this to tasks
+	nabl-constraint(|ctx):
+		Entity(_, x, _) -> <fail>
+		with
+			if not(<string-starts-with-capital> x) then
+				<task-create-warning(|ctx, ["Entity type names must start with a capital."])> x
+			end
 			
 rules // predicates over multiplcities
 	
