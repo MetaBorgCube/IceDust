@@ -20,37 +20,50 @@ signature constructors
  *	Note: all these rules should go into NaBL and TS (when NaBL and TS support these)
  */
 
-rules // unresolved references
+rules // unresolved references manual messages
 
 	nabl-check-disable-unresolved = id
 
 	nabl-constraint(|ctx):
-		EntityRef(e) -> <fail>
-		where
-		  <has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityRef"]
-		; <task-create-error-on-failure(|ctx, task, msg)> e
-		  
-	nabl-constraint(|ctx):
 		Ref(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity or Attribute"]
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance, Attribute, Role, Inverse or Shortcut"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
-		  
 	nabl-constraint(|ctx):
 		MemberAccess(_, e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute, Role, Inverse or Shortcut"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+	nabl-constraint(|ctx):
+		AttributeRef(e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
-		  
+
 	nabl-constraint(|ctx):
 		RoleRef(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+	nabl-constraint(|ctx):
+		EntityRef(e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+	nabl-constraint(|ctx):
+		EntityInstanceRef(e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
 rules // check if entities have all the required attributes and roles assigned
