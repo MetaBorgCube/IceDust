@@ -8,11 +8,11 @@ imports
 templates // entities
 
 	Model.Entity = <
-		entity<Placeholder1> <ID> {
+		entity<EntityType> <ID> {
 			<Member*;separator="\n">
 		}
 	>
-	Placeholder1.EntityRef = <>
+	EntityType.EntityType = <>
 	
 	Model.Entity = <
 		relation<RelationType> <ID> {

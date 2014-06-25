@@ -36,7 +36,7 @@ rules
 	  to-outline-label : ModelDef(_) -> "Model"{"icons/model.png"}
 	  
 	  	to-outline-label : Entity(et-er, et, _) 									-> $[[<pp-o>et] : [<pp-o>et-er]]{"icons/square-red.png"}
-	  		where EntityRef() := et-er
+	  		where EntityType() := et-er
 	  	to-outline-label : Entity(et-er, et, _) 									-> $[[<pp-o>et] : [<pp-o>et-er]]{"icons/diamond-yellow.png"}
 	  		where RelationType() := et-er
 	  		
