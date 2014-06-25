@@ -5,7 +5,7 @@ imports
 	Model
 	Expressions
 
-templates   // entities or relations
+templates   // entity instances
 
   Data.EntityInstance = <
     <EntityRef> <ID?> {
@@ -13,8 +13,6 @@ templates   // entities or relations
 	    <AttributeValue*; separator="\n">
     }
   >
-
-templates
 
   AttributeValue.AttributeValue = <<Ref> = <LitVal>>
  

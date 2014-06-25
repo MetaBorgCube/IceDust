@@ -11,7 +11,7 @@ templates // brackets
 
 templates // operators
 
-  Exp.MemberAccess      = <<Exp> . <ID>>          {left}
+  Exp.MemberAccess      = <<Exp> . <ID>>           {left}
   Exp.Not                = <!<Exp>>                {right}
 
   Exp.Multiplication     = <<Exp> * <Exp>>         {left}
@@ -48,7 +48,7 @@ templates // references
 
   Exp.This               = <this>
   Exp                    = <<Ref>>
-  Ref.Ref  = <<ID>>
+  Ref.Ref                = <<ID>>
   
 templates // literal values
 
