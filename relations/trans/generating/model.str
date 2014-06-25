@@ -41,7 +41,7 @@ rules
 			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity2>roleName
+			multiplicity := <get-multiplicity-inverse>roleName
 		with
 			if <upper-one> multiplicity then
 				result := |[ public x_type x_field; ]|
@@ -54,7 +54,7 @@ rules
 			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity2>roleName
+			multiplicity := <get-multiplicity-inverse>roleName
 		with
 			if <upper-one> multiplicity then
 				result := |[ x_field = null; ]|
