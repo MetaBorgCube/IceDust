@@ -40,5 +40,5 @@ templates // entity members
 templates // specific references
 	
 	EntityRef.EntityRef 				= <<ID>>
-	RoleRef.RoleRef							= <<ID>>  
-	
+	AttributeRef.AttributeRef   = <<ID>>
+	RoleRef.RoleRef							= <<ID>>

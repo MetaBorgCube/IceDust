@@ -29,7 +29,7 @@ rules
 		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
 		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
 
-  to-java(err|x_name) : AttributeValue(Ref(attributeName), attributeValue) ->
+  to-java(err|x_name) : AttributeValue(AttributeRef(attributeName), attributeValue) ->
 		stm |[
 			x_name.x_setter(~attributeValueJava);
 		]|

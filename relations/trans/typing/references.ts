@@ -5,7 +5,7 @@ imports
 	include/Relations
 	trans/naming/names
 
-type rules
+type rules // general references
 
 	MemberAccess(expr, member) : member-ty
 	where definition of member : member-ty
@@ -15,9 +15,6 @@ type rules
 		and definition of member has multiplicity member-mu
 		and <mu-or-join> (expr-mu, member-mu) => mu
 
-	RoleRef(r) : r-ty
-	where definition of r : r-ty
-	
 	Ref(a) : ty
 	where definition of a : ty
 	
@@ -29,6 +26,13 @@ type rules
 
 	This() has multiplicity One()
 
+type rules // specific references
+
+	RoleRef(r) : r-ty
+	where definition of r : r-ty
+	
+	AttributeRef(a) : r-ty
+	where definition of a : r-ty
 
 type functions
 

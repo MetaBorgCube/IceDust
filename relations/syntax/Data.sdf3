@@ -14,7 +14,7 @@ templates   // entity instances
     }
   >
 
-  AttributeValue.AttributeValue = <<Ref> = <LitVal>>
+  AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  
   RoleValue.RoleValue = <<RoleRef> : <Ref>>
 

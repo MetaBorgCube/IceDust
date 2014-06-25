@@ -140,6 +140,11 @@ binding rules // references
 	EntityRef(e) :
 		refers to Entity e
 	
+	AttributeRef(a):
+		refers to Attribute a in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	
 	RoleRef(r):
 		refers to Role r in Entity e-ty
 		where This() resolves to This this
