@@ -5,14 +5,13 @@ imports
 	Expressions
 	Types
 
-templates // both entities and relations are Entitys
+templates // entities
 
 	Model.Entity = <
 		entity<Placeholder1> <ID> {
 			<RoleOrAttribute*;separator="\n">
 		}
 	>
-	
 	Placeholder1.EntityRef = <>
 	
 	Model.Entity = <
@@ -20,10 +19,9 @@ templates // both entities and relations are Entitys
 			<RoleOrAttribute*;separator="\n">
 		}
 	>
-	
 	Placeholder2.RelationType = <>
 
-templates // roles and attributes
+templates // entity members
 
 	RoleOrAttribute								= <<Role>>
 	RoleOrAttribute								= <<Attribute>>
@@ -36,7 +34,6 @@ templates
 	Derivation.Derivation 				= <= <Exp> <DerivationType>>
 	
 	DerivationType.DefaultValue		= <(default)>
-	DerivationType.Derivation			= <(derivation)>
 	DerivationType.Derivation			= <>
 	
 	Shortcut.Shortcut							= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>

@@ -3,7 +3,7 @@ module blog
 model
 
   entity User {
-    name : String  = "my name" (derivation)
+    name : String  = "my name" 
   }
 
   entity Post {
