@@ -38,10 +38,3 @@ type rules
 
 	Sum(x)
 +	Count(x) has multiplicity One()
-
-type functions
-
-	upperbound-one:
-		(x-mu) -> mu
-		where (x-mu == OneOrMore() or x-mu == One()) and One()       => mu
-			 or                                            ZeroOrOne() => mu

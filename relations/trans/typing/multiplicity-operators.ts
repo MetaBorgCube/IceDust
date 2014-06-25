@@ -25,23 +25,4 @@ type rules
 	where	x	has multiplicity x-mu
 		and	y	has multiplicity  y-mu
 		and <mu-merge> (x-mu, y-mu) => mu
-		
-type functions
 
-  mu-choice:
-    (x-mu, y-mu) -> mu
-    where x-mu == One()                                 and One()        => mu
-       or x-mu == OneOrMore()                           and OneOrMore()  => mu
-       or x-mu == ZeroOrOne() and y-mu == ZeroOrOne()   and ZeroOrOne()  => mu
-       or (x-mu == ZeroOrOne() or x-mu == ZeroOrMore()) and
-          (y-mu == ZeroOrOne() or y-mu == ZeroOrMore()) and ZeroOrMore() => mu
-       or x-mu == ZeroOrOne() and y-mu == One()         and One()        => mu
-       or                                                   OneOrMore()  => mu
-
-
-	// if one of the multiplicities have a lower bound of One then OneOrMore else ZeroOrMore
-  mu-merge:
-    (x-mu, y-mu) -> mu
-    where (x-mu == One() or x-mu == OneOrMore() or
-           y-mu == One() or y-mu == OneOrMore())    and OneOrMore()  => mu
-       or                                               ZeroOrMore() => mu

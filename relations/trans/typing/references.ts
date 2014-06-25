@@ -13,7 +13,7 @@ type rules // general references
 	MemberAccess(expr, member) has multiplicity mu
 	where	expr has multiplicity expr-mu
 		and definition of member has multiplicity member-mu
-		and <mu-or-join> (expr-mu, member-mu) => mu
+		and <cartesian-product> (expr-mu, member-mu) => mu
 
 	Ref(a) : ty
 	where definition of a : ty
@@ -36,15 +36,3 @@ type rules // specific references
 	
 	EntityInstanceRef(e) : e-ty
 	where definition of e : e-ty
-
-type functions
-
-	mu-or-join:
-		(x-mu, y-mu) -> mu
-		where x-mu == One() and y-mu == One()																										and One() => mu
-			 or (x-mu == ZeroOrOne() or x-mu == One()) and (y-mu == ZeroOrOne() or y-mu == One()) and ZeroOrOne() => mu
-			 or (x-mu == ZeroOrMore() or y-mu == ZeroOrMore())																		and ZeroOrMore() => mu
-			 or x-mu == OneOrMore() and y-mu == ZeroOrOne()																				and ZeroOrMore() => mu
-			 or y-mu == OneOrMore() and x-mu == ZeroOrOne()																				and ZeroOrMore() => mu
-			 or																																												OneOrMore() => mu
-
