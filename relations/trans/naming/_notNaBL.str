@@ -32,7 +32,7 @@ rules // unresolved references
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
-		Identifier(e) -> <fail>
+		Ref(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity or Attribute"]
@@ -85,7 +85,7 @@ rules // check if entities have all the required attributes and roles assigned
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-attrs] := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
-			as-defs    := <map(?AttributeValue(Identifier(<nabl-create-collectdefs(|ctx)>), _))> as;	
+			as-defs    := <map(?AttributeValue(Ref(<nabl-create-collectdefs(|ctx)>), _))> as;	
 			as-attrs   := <task-create-combine(|ctx)> as-defs ;
 			diff       := <task-create-diff(|ctx)> (ty-attrs, as-attrs);
 			diff'      := <nabl-create-propconstraint(|ctx, NablProp_derivation-type(), diff)> Normal();

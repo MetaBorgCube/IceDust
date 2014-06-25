@@ -47,8 +47,8 @@ templates // built-in functions
 templates // references
 
   Exp.This               = <this>
-  Exp                    = <<Identifier>>
-  Identifier.Identifier  = <<ID>>
+  Exp                    = <<Ref>>
+  Ref.Ref  = <<ID>>
   
 templates // literal values
 

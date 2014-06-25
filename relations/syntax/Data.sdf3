@@ -16,7 +16,7 @@ templates   // entities or relations
 
 templates
 
-  AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
+  AttributeValue.AttributeValue = <<Ref> = <LitVal>>
  
-  RoleValue.RoleValue = <<RoleRef> : <Identifier>>
+  RoleValue.RoleValue = <<RoleRef> : <Ref>>
 

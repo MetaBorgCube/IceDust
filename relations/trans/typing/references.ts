@@ -18,10 +18,10 @@ type rules
 	RoleRef(r) : r-ty
 	where definition of r : r-ty
 	
-	Identifier(a) : ty
+	Ref(a) : ty
 	where definition of a : ty
 	
-	Identifier(a) has multiplicity a-mu
+	Ref(a) has multiplicity a-mu
 	where definition of a has multiplicity a-mu
 
 	this@This() : ty

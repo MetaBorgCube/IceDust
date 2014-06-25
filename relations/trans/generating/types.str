@@ -14,7 +14,7 @@ rules // primitives
   type-to-java(err): Int()		-> "Integer"
   type-to-java(err): Boolean()-> "Boolean"
 
-rules // Java-Identifiers
+rules // Java-Refs
 	
 	java-id: String()	-> "String"
   java-id: Int()		-> "Integer"

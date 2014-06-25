@@ -105,7 +105,7 @@ binding rules // data
 
 binding rules // references
 
-	Identifier(x) :
+	Ref(x) :
 		refers to EntityInstance x
 	otherwise
 		refers to Attribute x	in Entity e-ty

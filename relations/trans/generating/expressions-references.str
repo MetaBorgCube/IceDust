@@ -90,11 +90,11 @@ rules // member access
 
 rules // direct references
 
-	exp-to-java-stm(err|i): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
+	exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
 		where
 			NablNsEntityInstance() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+	exp-to-java-stm(err|i): Ref(name) -> ([], result)
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
 		with
@@ -102,7 +102,7 @@ rules // direct references
 		with
 			result :=	|[this.x_getter()]|
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+	exp-to-java-stm(err|i): Ref(name) -> ([], result)
 		where
 			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
 		with
@@ -111,7 +111,7 @@ rules // direct references
 		with
 			result :=	|[x_relationName.x_call(this)]|
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+	exp-to-java-stm(err|i): Ref(name) -> ([], result)
 		where
 			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
 		with
@@ -121,7 +121,7 @@ rules // direct references
 		with
 			result :=	|[x_relationName.x_call(this)]|
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> ([], result)
+	exp-to-java-stm(err|i): Ref(name) -> ([], result)
 		where
 			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
 		with
