@@ -53,31 +53,6 @@ rules // unresolved references
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
-rules // duplicate definitions : overwrite the generic one with a generic one with better error messages.
-	
-	nabl-check-disable-duplicate(|uri, ns) = id
-
-	nabl-duplicate-task(|ctx, unique):
-		name -> name
-		where
-			uri := <nabl-uri> name;
-			ns	:= <nabl-uri-namespace> uri
-		with
-			if Unique() := unique then
-				uri'		:= <nabl-uri-parent> uri;
-				resolve := <nabl-create-resolvedefs(|ctx, ns, name, [])> uri';
-				if(
-					parent:= <nabl-uri-name> uri';
-					parent-ns := <nabl-uri-namespace> uri'
-				)then
-					<task-create-error-on-multiple(|ctx, resolve, ["Duplicate ", <pp-ns>ns ," ", name , " in ", <pp-ns>parent-ns, " ", parent ])> name
-				else
-					<task-create-error-on-multiple(|ctx, resolve, ["Duplicate ", <pp-ns>ns ," ", name])> name
-				end
-			end
-
-	pp-ns = write-to-string;string-replace(|"NablNs","")
-
 rules // check if entities have all the required attributes and roles assigned
 
 	nabl-constraint(|ctx):
