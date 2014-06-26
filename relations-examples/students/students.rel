@@ -1,0 +1,45 @@
+module students
+
+model
+	
+	entity Student {
+		name         : String
+	}
+	
+	entity Course {
+		name         : String
+		averageGrade : Int? = avg(enrollment.grade)
+	}
+	
+	relation Enrollment {
+		Student *
+		Course  *
+		
+		grade      : Int?
+		pass       : Boolean = grade >= 6 <+ false
+	}
+	
+data
+
+  Student alice   { name="Alice" }
+  Student bob     { name="Bob" }
+  Student charlie { name="Charlie" }
+
+  Course  math { name="Mathematics" }
+
+  Enrollment { student:alice   course:math grade=9 }
+  Enrollment { student:bob     course:math grade=5 }
+  Enrollment { student:charlie course:math }
+  
+execute
+
+	"Did alice pass math?"
+	alice.enrollment.pass
+  
+  ""
+  "The average grade at Mathematics:"
+  math.averageGrade
+  
+	""
+	"Bob's classmates (including self):"
+	bob.course.student.name
