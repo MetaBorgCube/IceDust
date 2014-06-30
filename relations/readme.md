@@ -1,6 +1,5 @@
 
-# Differences between formal specification and implementation
+# Implementation TODOs
 
-* Formal: no default values  --> possibly update formal definition
-* Formal: Cartesian product for all operators, Implementation: only specified for [0,1] --> change typing rules and extend Java library
-* Formal: lookup expression, Implementation: data section with identifiers --> dump lookup expression, possibly add data section to formalism.
+* Cartesian product for all operators, Implementation: only specified for [0,1] (typing rules and Java implementation)
+* Assigning values to derivations should not be possible
