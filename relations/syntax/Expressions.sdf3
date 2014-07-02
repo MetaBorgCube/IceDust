@@ -58,7 +58,6 @@ templates // literal values
   LitVal.False           = <false>
 
 
-template options
 context-free priorities
 	{ left:
 		Exp.MemberAccess
