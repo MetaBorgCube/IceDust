@@ -4,7 +4,7 @@ model
 
   entity Foo {
     input : Int ?
-    value : Int  = input <+ 4 (derivation)
+    value : Int  = input <+ 4 
   }
 
 data

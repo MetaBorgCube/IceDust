@@ -9,65 +9,42 @@ imports
 namespaces
 	
 	Module
-	EntityType
 	Entity
+	Entity2                            //Nasty Hack to enforce no duplicate entity types
+	EntityInstance
 	Attribute
 	Role
+	Inverse
+	Shortcut
 	This
 
 properties
 
-	is-relation					of EntityType	: Term						//true iff relation, unset if entity
-	entity-or-relation	of EntityType : Term						//EntityType() iff entity, RelationType() iff relation
-	derivation-type 		of Attribute	: DerivationType	//either is Derivation(), has DefaultValue() or is Normal()
-	fulfill-role 				of EntityType : EntityType			//points to the Relation of which it is a role (the relation is EntityType)
-	multiplicity				of Attribute	: Term
+	derivation-type 		 of Attribute	: DerivationType	//Derivation(), DefaultValue() or Normal()
+	multiplicity				 of Attribute	: Multiplicity
+	multiplicity-inverse of Role      : Multiplicity
+	origin-role					 of Inverse		: Role
+	origin-role2				 of Shortcut	: Role
 	
-binding rules
+binding rules // modules
 
-	// modules
 	ModuleDesugared(m, _, _, _) : 
 		defines Module m
-		scopes EntityType
 		scopes Entity
+		scopes Entity2
+		scopes EntityInstance
 
+binding rules // model
 
-	// entity types
-	EntityTypeDef(ent-or-rel, e-ty, _) :
-		defines EntityType e-ty
-			of entity-or-relation ent-or-rel
+	Entity(ent-or-rel, e-ty, _) :
+		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+		defines non-unique Entity e-ty
 		scopes Attribute
 		scopes Role
 		scopes This
 		implicitly defines This This()
 			of type e-ty
-		
-	EntityType(e) :
-		refers to EntityType e
-		
-	
-	// entities
-	EntityOrRelation(EntityType(e-ty), e, _, _) :
-		defines Entity e
-			of type e-ty
-			of multiplicity One()
-		scopes This
-		implicitly defines This This()
-			of type e-ty
-			of multiplicity One()
-	
-	
-	// entities or attributes
-	Identifier(x) :
-		refers to Entity x
-	otherwise
-		refers to Attribute x
-		in EntityType e-ty
-		where This() resolves to This this
-		and this has type e-ty
-	
-	
-	// attributes
+
 	Attribute(a, a-ty, a-mu, None()) :
 		defines Attribute a
 			of type a-ty
@@ -79,34 +56,102 @@ binding rules
 			of type a-ty
 			of multiplicity a-mu
 			of derivation-type a-dt
-		
-	AttributeName(exp, a) :
-		refers to Attribute a in EntityType e-ty
-		where exp has type e-ty
 
-	
-	// roles
-	Role(EntityType(role-ty), role-mu, role) :
+	Role(role-ty, role-mu, role, inverseName) :
 		defines Role role
 			of type role-ty
+			of multiplicity One()
+			of multiplicity-inverse role-mu
+		defines non-unique Entity role-ty
+		  scopes Inverse
+		defines Inverse inverseName
 			of multiplicity role-mu
-	
-	RoleName(r):
-		refers to Role r in EntityType e-ty
+			of type e-ty
+			of origin-role role
+			where This() resolves to This this
+			and this has type e-ty
+		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityRef2 having no attributes etc.)
+
+	Shortcut(RoleRef(role1), shortcut1, type1, type2, RoleRef(role2), shortcut2):
+		defines non-unique Entity type1
+			scopes Shortcut
+		defines Shortcut shortcut1
+			of type type2
+			of multiplicity mu1
+			of origin-role role1
+			of origin-role2 role2
+			where role1 resolves to Role role1def
+			and role1def has multiplicity-inverse mu1
+		defines non-unique Entity type2
+			scopes Shortcut
+		defines Shortcut shortcut2
+			of type type1
+			of multiplicity mu2
+			of origin-role role2
+			of origin-role2 role1
+			where role2 resolves to Role role2def
+			and role2def has multiplicity-inverse mu2
+
+binding rules // data
+
+	EntityInstance(EntityRef(e-ty), e, _, _) :
+		defines EntityInstance e
+			of type e-ty
+			of multiplicity One()
+		scopes This
+		implicitly defines This This()
+			of type e-ty
+			of multiplicity One()
+
+binding rules // references
+
+	Ref(x) :
+		refers to EntityInstance x
+	otherwise
+		refers to Attribute x	in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
-		
+	otherwise
+	  refers to Role x in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	otherwise
+	  refers to Inverse x in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	otherwise
+	  refers to Shortcut x in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
 
-	// navigators
-	NavigateIn(_, _, in2, EntityType(r-ty)) :
-		implicitly defines This This()
-			of type r-ty in in2
-		
-	NavigateOut(_, _, EntityType(r-ty), out) :
-		implicitly defines This This()
-			of type r-ty in out
+	MemberAccess(exp, a) :
+		refers to Attribute a in Entity e-ty
+		where exp has type e-ty
+	otherwise
+	  refers to Role a in Entity e-ty
+	  where exp has type e-ty
+	otherwise
+	  refers to Inverse a in Entity e-ty
+	  where exp has type e-ty
+	otherwise
+	  refers to Shortcut a in Entity e-ty
+	  where exp has type e-ty
+
+	EntityRef(e) :
+		refers to Entity e
 	
+	AttributeRef(a):
+		refers to Attribute a in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
 	
-	// this
+	RoleRef(r):
+		refers to Role r in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+
+	EntityInstanceRef(e) :
+		refers to EntityInstance e
+	
 	This() :
 		refers to This This()

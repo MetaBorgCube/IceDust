@@ -34,7 +34,11 @@ rules
 				}
 			]|
 		with
-			dataJava* := <to-java(err)>data;
+			if DataDef(_) := data then
+				dataJava* := <to-java(err)>data
+			else
+				dataJava* := []
+			end;
 			if Executable(_) := execute then
 				executeJava* := <to-java(err)>execute
 			else

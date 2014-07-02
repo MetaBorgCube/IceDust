@@ -6,12 +6,12 @@ model
   }
 
   relation Marriage {
-    Person 1 Husband
-    Person 1 Wife
+    Person 1 husband
+    Person 1 wife    <- marriage2
   }
 
   relation Counseling {
-    Person * Counselor
+    Person * counselor
     Marriage 1 
   }
 
@@ -24,24 +24,24 @@ data
   }
 
   Marriage marriage {
-    Husband : man
-    Wife : woman
+    husband : man
+    wife : woman
   }
 
   Person professional {
   }
 
   Counseling {
-    Marriage : marriage
-    Counselor : professional
+    marriage : marriage
+    counselor : professional
   }
 
 execute
 
-  man > Husband]Marriage // get the marriage
+  man.marriage // get the marriage
 
-  man > Husband]Marriage[Wife // get his wife
+  man.marriage.wife // get his wife
 
-  man > Husband]Marriage > Marriage]Counseling // go from the man to his marriage to the counseling of this marriage
+  man.marriage.counseling // go from the man to his marriage to the counseling of this marriage
 
-  man > Husband]Marriage > Marriage]Counseling[Counselor // and then get the counselor of this marriage
+  man.marriage.counseling.counselor // and then get the counselor of this marriage

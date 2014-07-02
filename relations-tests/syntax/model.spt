@@ -116,3 +116,32 @@ test Tree model [[
 ]] parse succeeds
 
 //TODO: add derivation and constraint examples
+
+
+test Inverse definitions [[
+	module inverses
+
+	model
+		
+		entity Student{}
+		
+		entity Course{}
+		
+		relation Enrollment{
+			Student * student <- enrollments
+			Course  + course  <- enrollments
+		}
+]] parse succeeds
+
+
+test error on role in relation[[
+	module stuff
+
+	model
+		
+		entity Course{}
+		
+		entity Enrollment{
+			[[Student * student <- enrollments]]
+		}
+]] 1 error

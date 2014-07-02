@@ -20,72 +20,60 @@ signature constructors
  *	Note: all these rules should go into NaBL and TS (when NaBL and TS support these)
  */
 
-rules // unresolved references
+rules // unresolved references manual messages
 
 	nabl-check-disable-unresolved = id
 
 	nabl-constraint(|ctx):
-		EntityType(e) -> <fail>
+		Ref(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityType"]
-		; <task-create-error-on-failure(|ctx, task, msg)> e
-		  
-	nabl-constraint(|ctx):
-		Identifier(e) -> <fail>
-		where
-		  <has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity or Attribute"]
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance, Attribute, Role, Inverse or Shortcut"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
-		  
 	nabl-constraint(|ctx):
-		AttributeName(_, e) -> <fail>
+		MemberAccess(_, e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute, Role, Inverse or Shortcut"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+	nabl-constraint(|ctx):
+		AttributeRef(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
-		  
+
 	nabl-constraint(|ctx):
-		RoleName(e) -> <fail>
+		RoleRef(e) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
-rules // duplicate definitions : overwrite the generic one with a generic one with better error messages.
-	
-	nabl-check-disable-duplicate(|uri, ns) = id
-
-	nabl-duplicate-task(|ctx, unique):
-		name -> name
+	nabl-constraint(|ctx):
+		EntityRef(e) -> <fail>
 		where
-			uri := <nabl-uri> name;
-			ns	:= <nabl-uri-namespace> uri
-		with
-			if Unique() := unique then
-				uri'		:= <nabl-uri-parent> uri;
-				resolve := <nabl-create-resolvedefs(|ctx, ns, name, [])> uri';
-				if(
-					parent:= <nabl-uri-name> uri';
-					parent-ns := <nabl-uri-namespace> uri'
-				)then
-					<task-create-error-on-multiple(|ctx, resolve, ["Duplicate ", <pp-ns>ns ," ", name , " in ", <pp-ns>parent-ns, " ", parent ])> name
-				else
-					<task-create-error-on-multiple(|ctx, resolve, ["Duplicate ", <pp-ns>ns ," ", name])> name
-				end
-			end
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
 
-	pp-ns = write-to-string;string-replace(|"NablNs","")
+	nabl-constraint(|ctx):
+		EntityInstanceRef(e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
 
 rules // check if entities have all the required attributes and roles assigned
 
 	nabl-constraint(|ctx):
-		EntityOrRelation(EntityType(e-ty), e, _, as) -> <fail>
+		EntityInstance(EntityRef(e-ty), e, _, as) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-attrs] := <nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
-			as-defs    := <map(?AttributeValue(Identifier(<nabl-create-collectdefs(|ctx)>), _))> as;	
+			as-defs    := <map(?AttributeValue(AttributeRef(<nabl-create-collectdefs(|ctx)>), _))> as;	
 			as-attrs   := <task-create-combine(|ctx)> as-defs ;
 			diff       := <task-create-diff(|ctx)> (ty-attrs, as-attrs);
 			diff'      := <nabl-create-propconstraint(|ctx, NablProp_derivation-type(), diff)> Normal();
@@ -93,52 +81,34 @@ rules // check if entities have all the required attributes and roles assigned
 			<task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> e
 			
 	nabl-constraint(|ctx):
-		EntityOrRelation(EntityType(e-ty), e, roles, _) -> <fail>
+		EntityInstance(EntityRef(e-ty), e, roles, _) -> <fail>
 		with
 			ty-def 		 := <nabl-create-collectdefs(|ctx)> e-ty;
 			[ty-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
-			as-defs    := <map(?RoleValue(RoleName(<nabl-create-collectdefs(|ctx)>), _))> roles;
+			as-defs    := <map(?RoleValue(RoleRef(<nabl-create-collectdefs(|ctx)>), _))> roles;
 			as-roles   := <task-create-combine(|ctx)> as-defs ;
 			diff       := <task-create-diff(|ctx)> (ty-roles, as-roles);
 			<task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> e
 
-rules // Entities fulfill roles
-
-	nabl-prop-site(|lang, ctx, uris, states, implicits):
-		e@EntityTypeDef(_, name, _) -> <fail>
-		where
-			uri := <nabl-uri> name;
-			scope := <nabl-uri-parent> uri;
-			allRelations := <nabl-resolve-all-tasks(|ctx, NablNsEntityType(), [])> [scope];
-			roles := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [Prop(Type(), name, [])]);task-create-combine(|ctx)> allRelations;
-			<store-fulfill-role(|ctx, roles)> name
-  
-  // multiple version of names.str (generated) TODO: needs to be generated to names.str @see http://yellowgrass.org/issue/NaBL/95
-  get-fulfill-role-multiple: name -> result'
-  	with
-  		result := <get-properties(|NablProp_fulfill-role())>name;
-  		(
-  			[Result(_)] := result;
-  			result' := []
-  		<+
-  			result' := result
-  		)
-  		
-
 rules // check if Entity (not Relation) has no roles
 
-	constraint-error: EntityTypeDef(EntityType(), _, attributesAndRoles) -> <map(no-role);concat> attributesAndRoles
-	no-role: x@Role(_,_,_) -> [(x, $[An entity cannot have roles.])]
-	no-role: Attribute(_,_,_,_) -> []
-	//TODO: move this to tasks
+	nabl-constraint(|ctx):
+		Entity(EntityType(), _, attributesAndRoles) -> <fail>
+		with
+			<filter(no-role-task(|ctx))> attributesAndRoles
+			
+	no-role-task(|ctx): x@Role(_,_,_,_) -> None()
+		with
+			<task-create-error(|ctx, ["An entity cannot have roles."])> x
 
-rules // check if Entity Type names start wiht a capital
+rules // check if Entity names start with a capital
 	
-	constraint-warning:
-		EntityTypeDef(_, x, _) -> (x, $[Entity type names must start with a capital])
-		where
-			not(<string-starts-with-capital> x)
-	//TODO: move this to tasks
+	nabl-constraint(|ctx):
+		Entity(_, x, _) -> <fail>
+		with
+			if not(<string-starts-with-capital> x) then
+				<task-create-warning(|ctx, ["Entity type names must start with a capital."])> x
+			end
 			
 rules // predicates over multiplcities
 	

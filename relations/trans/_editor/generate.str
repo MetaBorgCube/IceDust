@@ -103,7 +103,7 @@ rules // Build in steps
 	
 	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
 		with
-			(analyzed-ast, [error*|_], warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
+			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
 	generate-java-step(error-handler) = generate-java-code(error-handler)
 	

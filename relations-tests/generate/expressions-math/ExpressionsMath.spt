@@ -7,7 +7,7 @@ setup Common [[
 	
 	model
 	entity X {
-		val : Int = 42 * 6 % 10 / (5 - 10) + 4 - 3 * 8 / -1
+		val : Int ? = 42 * 6 % 10 / (5 - 10) + 4 - 3 * 8 / -1
 	}
 	
 	data

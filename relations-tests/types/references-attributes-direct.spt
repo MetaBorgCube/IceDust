@@ -33,14 +33,14 @@ test type of ref entity.attribute [[
 	}
 ]] run get-type to Int
 
-test type of ref navigator.attribute [[
+test type of ref role.attribute [[
 	model
 	entity Node{
-		i : Int = [[this>in]Edge[out.i]]
+		i : Int = [[this.in.out.i]]
 	}
 	relation Edge{
-		Node 1 in
-		Node 1 out
+		Node 1 in  <- in
+		Node 1 out <- out
 	}
 ]] run get-type to Int
 

@@ -14,8 +14,8 @@ completions
     "(default)"                    
   completion template DerivationType : "(derivation)" =
     "(derivation)"              
-  completion template Role : "EntityType Multiplicity " =
-    <EntityType:EntityType> " " <Multiplicity:Multiplicity> " " <:ID>  
+  completion template Role : "EntityRef Multiplicity " =
+    <EntityRef:EntityRef> " " <Multiplicity:Multiplicity> " " <:ID>  
   completion template Multiplicity : "1" =
     "1"                                      
   completion template Multiplicity : "?" =

@@ -13,8 +13,8 @@ rules
 	
   to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
 
-	to-java(err): EntityOrRelation(
-									EntityType(x_type)
+	to-java(err): EntityInstance(
+									EntityRef(x_type)
 								, x_name
 								, roleValues
 								, attributeValues
@@ -29,7 +29,7 @@ rules
 		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
 		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
 
-  to-java(err|x_name) : AttributeValue(Identifier(attributeName), attributeValue) ->
+  to-java(err|x_name) : AttributeValue(AttributeRef(attributeName), attributeValue) ->
 		stm |[
 			x_name.x_setter(~attributeValueJava);
 		]|
@@ -37,10 +37,10 @@ rules
 	  	x_setter := $[set_[attributeName]];
 	  	(_, attributeValueJava) := <exp-to-java-stm(err|0)>attributeValue
 
-  to-java(err|x_entityName, entityType) :	RoleValue(RoleName(x_roleName), Identifier(x_otherName)) -> [result1, result2]
+  to-java(err|x_entityName, entityType) :	RoleValue(RoleRef(x_roleName), EntityInstanceRef(x_otherName)) -> [result1, result2]
 		with
 			x_roleNameOther := $[[entityType]_[x_roleName]];
-			multiplicity := <get-multiplicity>x_roleName
+			multiplicity := <get-multiplicity-inverse>x_roleName
 		with
 			result1 := stm |[ x_entityName.x_roleName = x_otherName; ]|;
 			if <upper-many>multiplicity then

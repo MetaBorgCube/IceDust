@@ -20,12 +20,12 @@ test Duplicate relation fails [[
 		Book 1
 	}
 	relation Owns{
-		User *
-		Book 1
+		User * user1 <- x
+		Book 1 book1 <- y
 	}
 ]] 2 errors
 
-test Resolve relation member to entity [[
+test (Wontfix non-unique) Resolve relation member to entity [[
 	entity [[User]]{}
 	entity Book{}
 	relation Owns{
@@ -34,7 +34,7 @@ test Resolve relation member to entity [[
 	}
 ]] resolve #2 to #1
 
-test Resolve invalid relation member fails [[
+test (Wontfix non-unique) Resolve invalid relation member fails [[
 	entity User{}
 	entity Book{}
 	relation Owns{
@@ -43,29 +43,4 @@ test Resolve invalid relation member fails [[
 	}
 ]] 1 errors
 
-test Resolve Navigation to entity [[
-	entity User{}
-	entity Book{}
-	relation [[Owns]]{
-		User *
-		Book 1
-	}
-	data
-	User u{}
-	execute
-	u > User][[Owns]][Book
-]] resolve #2 to #1
-
-test Resolve invalid Navigation fails [[
-	entity User{}
-	entity Book{}
-	relation [[Owns]]{
-		User *
-		Book 1
-	}
-	data
-	User u{}
-	execute
-	u > User][[OwnsXX]][Book
-]] 1 error // http://yellowgrass.org/issue/TS/1
 

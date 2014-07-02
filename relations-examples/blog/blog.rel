@@ -3,7 +3,7 @@ module blog
 model
 
   entity User {
-    name : String  = "my name" (derivation)
+    name : String  = "my name" 
   }
 
   entity Post {
@@ -31,21 +31,19 @@ data
   }
 
   Author {
-    User : me
-    Post : p1
+    user : me
+    post : p1
   }
 
   Author {
-    User : me
-    Post : p2
+    user : me
+    post : p2
   }
 
 execute
 
-  me > User]Author // give Author objects for me
+  me.author // give Author objects for me
 
-  me > User]Author > Author[Post // give Posts that are authored by me
+  me.author.post // give Posts that are authored by me
 
-  me > User]Author[Post // shorthand for previous
-
-  me > User]Author[Post . title // my blogpost titles
+   me.author.post.title // my blogpost titles

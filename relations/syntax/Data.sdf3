@@ -5,19 +5,19 @@ imports
 	Model
 	Expressions
 
-templates   // entities or relations
+templates   // entity instances
 
-  Data.EntityOrRelation = <
-    <EntityType> <ID?> {
+  Data.EntityInstance = <
+    <EntityRef> <ID?> {
 	    <RoleValue*; separator="\n">
 	    <AttributeValue*; separator="\n">
     }
   >
 
-templates
-
-  AttributeValue.AttributeValue = <<Identifier> = <LitVal>>
+  AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  
-  RoleValue.RoleValue = <<RoleName> : <Identifier>>
+  RoleValue.RoleValue = <<RoleRef> : <EntityInstanceRef>>
 
-  RoleName.RoleName = <<ID>>  
+templates // specific references
+	
+	EntityInstanceRef.EntityInstanceRef = <<ID>>

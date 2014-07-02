@@ -13,7 +13,9 @@ lexical syntax // Keywords
 
 	Keyword = "avg"
 	Keyword = "concat"
+	Keyword = "conj"
 	Keyword = "count"
+	Keyword = "disj"
 	Keyword = "entity"
 	Keyword = "false"
 	Keyword = "Int"

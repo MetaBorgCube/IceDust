@@ -13,17 +13,11 @@ imports
 	trans/generating/expressions
 	trans/generating/types
 
-rules // attributes of expressions
+rules // member access
 
-	// This() has no type, so cannot use the static getter
-	exp-to-java-stm(err|i): AttributeName(This(), name) -> ([], result)
-		with
-			x_getter := $[get_[name]]
-		with
-			result :=	|[this.x_getter()]|
-			
-
-	exp-to-java-stm(err|i): e@AttributeName(e1, name) -> (stms, exp)
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
 		with
 			x_expType := <get-type>e1;
 			x_getter := $[get_[name]];
@@ -38,14 +32,125 @@ rules // attributes of expressions
 			]|;
 			exp := expr |[x_var]|
 
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_call := $[[name]_out];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
+	
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			x_call := $[[roleName]_in];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call(~prevJava);
+			]|;
+			exp := expr |[x_var]|
+	
+	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+		where
+			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			roleName2 := <get-origin-role2>name;
+			x_call := $[[roleName]_in];
+			x_call2 := $[[roleName2]_out];
+			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
+			refty := <java-type>e;
+			j := <add>(i, <length>stms*);
+			x_var := $[var[<inc>j]];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+		with
+			stms := bstm* |[
+				~stms*
+				refty x_var = x_relationName.x_call2(x_relationName.x_call(~prevJava));
+			]|;
+			exp := expr |[x_var]|
+
+
 rules // direct references
 
-	exp-to-java-stm(err|i): Identifier(x_entityName) -> ([], expr |[x_entityName]|)
+	exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
 		where
-			NablNsEntity() := <nabl-uri;nabl-uri-namespace>x_entityName
+			NablNsEntityInstance() := <nabl-uri;nabl-uri-namespace>x_entityName
 				 
-	exp-to-java-stm(err|i): Identifier(name) -> <exp-to-java-stm(err|i)>AttributeName(This(), name) //forward to this.name
+	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
 			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_getter := $[get_[name]];
+			refty := <java-type>e;
+			x_var := $[var[<inc>i]]
+		with
+			stms := bstm* |[
+				refty x_var = this.x_getter();
+			]|;
+			exp := expr |[x_var]|
+				 
+	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
+		where
+			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+		with
+			x_call := $[[name]_out];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name;
+			refty := <java-type>e;
+			x_var := $[var[<inc>i]]
+		with
+			stms := bstm* |[
+				refty x_var = x_relationName.x_call(this);
+			]|;
+			exp := expr |[x_var]|
+				 
+	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
+		where
+			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			x_call := $[[roleName]_in];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			refty := <java-type>e;
+			x_var := $[var[<inc>i]]
+		with
+			stms := bstm* |[
+				refty x_var = x_relationName.x_call(this);
+			]|;
+			exp := expr |[x_var]|
+				 
+	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
+		where
+			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
+		with
+			roleName := <get-origin-role>name;
+			roleName2 := <get-origin-role2>name;
+			x_call := $[[roleName]_in];
+			x_call2 := $[[roleName2]_out];
+			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			refty := <java-type>e;
+			x_var := $[var[<inc>i]]
+		with
+			stms := bstm* |[
+				refty x_var = x_relationName.x_call2(x_relationName.x_call(this));
+			]|;
+			exp := expr |[x_var]|
 			
 	exp-to-java-stm(err|i): This() -> ([], |[this]|)

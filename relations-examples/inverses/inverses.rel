@@ -1,0 +1,29 @@
+module inverses
+
+model
+	
+	entity Student{
+		//numCourses : Int = count(this.enrollments)
+	}
+	
+	entity Course{}
+	
+	relation Enrollment{
+		Student * student <- enrollments
+		Course  + course  <- enrollments
+	}
+	
+data
+	
+	Student bob {}
+	
+	Course math {}
+	
+	Enrollment e {
+		student : bob
+		course  : math
+	}
+	
+execute
+
+	bob.enrollments.course
