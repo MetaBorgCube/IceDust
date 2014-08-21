@@ -1,14 +1,14 @@
 package lib.relations;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class Expressions {
 
 	// helper methods
 
 	public static <E> Collection<E> emptyCollection() {
-		return new HashSet<E>();
+		return new ArrayList<E>();
 	}
 
 	public static <E> Collection<E> toCollection(E e) {
