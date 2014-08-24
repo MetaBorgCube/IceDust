@@ -13,16 +13,16 @@ model
 			
 		}
 		delete {
-			Parent]Sub -> abort
-			Folder]In -> abort
+			asParent -> abort
+			in -> abort
 		}
 		delete nonrecursiveDelete{
-			Parent]Sub -> abort
-			Folder]In -> delete
+			asParent -> abort
+			in -> delete
 		}
 		delete forceDelete {
-			Parent]Sub -> forceDelete
-			Folder]In -> delete
+			asParent -> forceDelete
+			in -> delete
 		}
 		*/
 	}
@@ -50,6 +50,8 @@ model
 		Folder *
 		File 1
 		
+		folder.files <-> file.folder
+		
 		/*
 		create {
 			// implicit Folder and File
@@ -58,14 +60,16 @@ model
 			
 		}
 		delete {
-			File -> delete
+			file -> delete
 		}
 		*/
 	}
 	
 	relation Sub{
-		Folder * Parent
-		Folder ? Child
+		Folder * parent <- asParent
+		Folder ? child  <- asChild
+		
+		child.parent <-> parent.children
 		
 		/*
 		create {
@@ -75,10 +79,10 @@ model
 			
 		}
 		delete {
-			Child -> delete
+			child -> delete
 		}
 		delete forceDelete {
-			Child -> forceDelete
+			child -> forceDelete
 		}
 		*/
 	}
