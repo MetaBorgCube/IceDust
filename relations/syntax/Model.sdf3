@@ -5,47 +5,40 @@ imports
 	Expressions
 	Types
 
-templates // both entities and relations are EntityTypeDefs
+templates // entities
 
-	Model.EntityTypeDef = <
-		entity<Placeholder1> <ID> {
-			<RoleOrAttribute*;separator="\n">
+	Model.Entity = <
+		entity<EntityType> <ID> {
+			<Member*;separator="\n">
 		}
 	>
+	EntityType.EntityType = <>
 	
-	Placeholder1.EntityType = <>
-	
-	Model.EntityTypeDef = <
-		relation<Placeholder2> <ID> {
-			<RoleOrAttribute*;separator="\n">
+	Model.Entity = <
+		relation<RelationType> <ID> {
+			<Member*;separator="\n">
 		}
 	>
+	RelationType.RelationType = <>
+
+templates // entity members
+
+	Member											= <<Attribute>>
+	Member											= <<Role>>
+	Member											= <<Shortcut>>
+
+	Attribute.Attribute 				= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
+	Derivation.Derivation 			= <= <Exp> <DerivationType>>
+	DerivationType.DefaultValue	= <(default)>
+	DerivationType.Derivation		= <>
+
+	Role.Role										= <<ID> <Multiplicity> <ID?> <Inverse?>>
+	Inverse											= <\<- <ID>>
+
+	Shortcut.Shortcut						= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>
+
+templates // specific references
 	
-	Placeholder2.RelationType = <>
-
-templates // roles and attributes
-
-	RoleOrAttribute								= <<Role>>
-	RoleOrAttribute								= <<Attribute>>
-
-templates
-
-	Attribute.Attribute 					= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
-	
-	Derivation.Derivation 				= <= <Exp> <DerivationType>>
-	
-	DerivationType.DefaultValue		= <(default)>
-	DerivationType.Derivation			= <(derivation)>
-	DerivationType.Derivation			= <>
-
-templates
-
-	Role.Role											= <<EntityType> <Multiplicity> <ID?>>
-	
-	EntityType.EntityType 				= <<ID>>
-	
-	Multiplicity.One	 						= <1>
-	Multiplicity.ZeroOrOne				= <?>
-	Multiplicity.OneOrMore				= <+>
-	Multiplicity.ZeroOrMore				= <*>
-
+	EntityRef.EntityRef 				= <<ID>>
+	AttributeRef.AttributeRef   = <<ID>>
+	RoleRef.RoleRef							= <<ID>>

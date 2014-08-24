@@ -3,13 +3,13 @@ module generate-expressions-references
 language Relations
 
 setup Common [[
-	module ExpressionsReferences
+	module ExpressionsMultiplicities
 	
 	model
 	entity Foo{
 		input1	: Int = 5
 		input2	: Int?
-		value		: Int = f.input1
+		value		: Int = input1
 	}
 	
 	data

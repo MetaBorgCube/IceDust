@@ -15,32 +15,33 @@ rules
 	
   to-java(err): ModelDef(model) -> <map(try(to-java(err)))>model
 
-  to-java(err): EntityTypeDef(_, name, attributesAndRoles) -> 
+  to-java(err): Entity(_, name, attributesAndRoles) -> 
 		type-dec |[
 			class x_class
 			{
 				public x_class()
 				{
-					~fulfillRolesJavaInit*
+					~participateJavaInit*
 				}
 				~attributesAndRolesJava*
-				~fulfillRolesJava*
+				~participateJava*
 			}
 		]|
 	with
 		x_class := name;
-		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles;
-		fulfillRoles := <get-fulfill-role-multiple>name;
-		fulfillRolesJava* := <map(to-java-fullfil-role(err))> fulfillRoles;
-		fulfillRolesJavaInit* := <map(to-java-fulfill-role-init(err))> fulfillRoles
+		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles
+	with
+		inverses := <nabl-get-child-definitions(|NablNsInverse())> name;
+		origin-roles := <map(get-origin-role)> inverses;
+		participateJava* := <map(to-java-participate(err))> origin-roles;
+		participateJavaInit* := <map(to-java-participate-init(err))> origin-roles
 	
-	to-java-fullfil-role(err): fulfillRole -> result
+	to-java-participate(err): roleName -> result
 		with
-			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
-			roleName := <de-def;nabl-uri-name>fulfillRole;
+			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity>fulfillRole
+			multiplicity := <get-multiplicity-inverse>roleName
 		with
 			if <upper-one> multiplicity then
 				result := |[ public x_type x_field; ]|
@@ -48,21 +49,18 @@ rules
 				result := |[ public Collection<x_type> x_field; ]|
 			end
 
-	to-java-fulfill-role-init(err): fulfillRole -> result
+	to-java-participate-init(err): roleName -> result
 		with
-			relationName := <de-def;nabl-uri-parent;nabl-uri-name>fulfillRole;
-			roleName := <de-def;nabl-uri-name>fulfillRole;
+			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
-			multiplicity := <get-multiplicity>fulfillRole
+			multiplicity := <get-multiplicity-inverse>roleName
 		with
 			if <upper-one> multiplicity then
 				result := |[ x_field = null; ]|
 			else
 				result := |[ x_field = Expressions.emptyCollection(); ]|
 			end
-
-	de-def: Def(x) -> x
 
 	to-java(err|x_entity): Attribute(x_name, type, multiplicity, derivation) -> result
 		where
@@ -183,7 +181,7 @@ rules
 					}
 				]|
 
-	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-many>multiplicity
 		with
@@ -226,7 +224,7 @@ rules
 				  }
 				]|
 
-	to-java(err|x_relType): Role(EntityType(x_entityType), multiplicity, x_roleName) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-one>multiplicity
 		with
@@ -270,3 +268,4 @@ rules
 				]|
 
 
+	to-java(err|x_entity): Shortcut(_,_,_,_,_,_) -> []

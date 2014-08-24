@@ -1,14 +1,14 @@
 package lib.relations;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class Expressions {
 
 	// helper methods
 
 	public static <E> Collection<E> emptyCollection() {
-		return new HashSet<E>();
+		return new ArrayList<E>();
 	}
 
 	public static <E> Collection<E> toCollection(E e) {
@@ -136,6 +136,26 @@ public class Expressions {
 		return min;
 	}
 
+	public static Boolean conj(Collection<Boolean> b) {
+		if (b.size() == 0)
+			return null;
+		boolean conj = true;
+		for (boolean v : b) {
+			conj = conj && v;
+		}
+		return conj;
+	}
+
+	public static Boolean disj(Collection<Boolean> b) {
+		if (b.size() == 0)
+			return null;
+		boolean disj = false;
+		for (boolean v : b) {
+			disj = disj || v;
+		}
+		return disj;
+	}
+	
 	public static String concat(Collection<String> c) {
 		if (c.size() == 0)
 			return null;

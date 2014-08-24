@@ -16,7 +16,7 @@ setup Common [[
 	Foo f{}
 	
 	execute
-	f.input1 :: f.input2
+	f.input1 ++ f.input2
 ]]
 
 test Expressions Multiplicities generate-java [[ ]] build generate-java-test

@@ -1,0 +1,42 @@
+module generate-auto-shortcuts
+
+language Relations
+
+setup Common [[
+	module AutoShortcuts
+	
+	model
+	entity Node{
+		value : Int ? = avg( this.child.value ) (default)
+	}
+	relation Tree{
+		Node * parent <- tree_as_parent
+		Node 1 child  <- tree_as_child
+	}
+	
+	data
+	Node n1{
+		value = 2
+	}
+	Node n2{
+		value = 4
+	}
+	Node n3{}
+	Tree t1{
+		parent:n3
+		child:n1
+	}
+	Tree t2{
+		parent:n3
+		child:n2
+	}
+	
+	execute
+	n3.value
+]]
+
+test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
+
+test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
+
+test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3"

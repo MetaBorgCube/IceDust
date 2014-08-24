@@ -7,11 +7,11 @@ setup Common [[
 	
 	model
 	entity Node{
-		value : Int ? = avg( this > parent]Tree[child .value ) (default)
+		value : Int ? = avg( this.parent.child.value ) (default)
 	}
 	relation Tree{
-		Node * parent
-		Node 1 child
+		Node * parent <- parent
+		Node 1 child  <- child
 	}
 	
 	data

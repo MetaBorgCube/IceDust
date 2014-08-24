@@ -39,7 +39,7 @@ test error on assign role wrong entityType [[
 	model
 	entity Node{}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node 1 out
 	}
 	
@@ -84,7 +84,7 @@ test no error on derivation assign One to One [[
 test error on derivation assign wrong ZeroOrMore to One [[
 	model
 	entity X{
-		i : Int = [[(j :: j)]]
+		i : Int = [[(j ++ j)]]
 		j : Int ?
 	}
 ]] 1 error
@@ -92,7 +92,7 @@ test error on derivation assign wrong ZeroOrMore to One [[
 test error on derivation assign wrong OneOrMore to One [[
 	model
 	entity X{
-		i : Int = [[(1 :: 2)]]
+		i : Int = [[(1 ++ 2)]]
 	}
 ]] 1 error
 
@@ -114,7 +114,7 @@ test no error on derivation assign ZeroOrOne to ZeroOrOne [[
 test error on derivation assign wrong ZeroOrMore to ZeroOrOne [[
 	model
 	entity X{
-		i : Int ? = [[(j :: j)]]
+		i : Int ? = [[(j ++ j)]]
 		j : Int ?
 	}
 ]] 1 error
@@ -122,7 +122,7 @@ test error on derivation assign wrong ZeroOrMore to ZeroOrOne [[
 test error on derivation assign wrong OneOrMore to ZeroOrOne [[
 	model
 	entity X{
-		i : Int ? = [[(1 :: 2)]]
+		i : Int ? = [[(1 ++ 2)]]
 	}
 ]] 1 error
 

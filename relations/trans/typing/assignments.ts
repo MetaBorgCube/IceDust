@@ -5,17 +5,7 @@ imports
 	include/Relations
 	trans/naming/names
 
-type rules
-
-	AttributeValue(a, val) :-
-	where	a		: a-ty
-		and	val	: val-ty
-		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Assignment] on val
-
-	RoleValue(r, val) :-
-	where	r		: r-ty
-		and	val	: val-ty
-		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
+type rules // derivations well-formedness
 
 	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e	: e-ty
@@ -28,3 +18,16 @@ type rules
 				 or a-mu == e-mu
 				)
 		else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e
+
+type rules // data well-formedness
+
+	AttributeValue(a, val) :-
+	where	a		: a-ty
+		and	val	: val-ty
+		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Assignment] on val
+
+	RoleValue(r, val) :-
+	where	r		: r-ty
+		and	val	: val-ty
+		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
+

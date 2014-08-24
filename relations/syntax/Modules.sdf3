@@ -7,9 +7,8 @@ imports
 	Execute
 
 
-templates
+templates // modules
 
-	// modules
 	Start.Module = <
 		module <ID>
 		
@@ -20,8 +19,6 @@ templates
 		<Executable?>
 		
 	>
-
-templates
 
 	ModelDef.ModelDef = <
 		model

@@ -1,0 +1,35 @@
+module generate-expressions-roles-inverse-multiplicities
+
+language Relations
+
+setup Common [[
+module ExpressionsRolesInversesMultiplicities
+
+model
+entity Node{
+	a : Int  = 1
+}
+relation Tree{
+	Node * parent <- parent
+	Node ? child  <- child
+}
+
+data
+Node n1{}
+Node n2{}
+Tree{
+	parent: n1
+	child : n2
+}
+
+execute
+]]
+
+test Expressions Roles Inverses Multiplicities generate-java [[ ]] build generate-java-test
+
+test Expressions Roles Inverses Multiplicities compile-java [[ ]] build compile-java-test
+
+test Expressions Roles Inverses Multiplicities execute-java 1 in single [[ n2.child.parent . a ]] build execute-java-test to "1"
+test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.child.parent . a ]] build execute-java-test to "null"
+test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.parent.child . a ]] build execute-java-test to "[1]"
+test Expressions Roles Inverses Multiplicities execute-java 0 in single [[ n2.parent.child . a ]] build execute-java-test to "[]"

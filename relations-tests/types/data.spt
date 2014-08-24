@@ -49,7 +49,7 @@ test no error on not omitting role in relation[[
 	model
 	entity Node{}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node * out
 	}
 	data
@@ -64,7 +64,7 @@ test error on omitting role in relation[[
 	model
 	entity Node{}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node * out
 	}
 	data
@@ -78,7 +78,7 @@ test error on omitting roles in relation[[
 	model
 	entity Node{}
 	relation Edge{
-		Node 1 in
+		Node 1 in <- x
 		Node * out
 	}
 	data

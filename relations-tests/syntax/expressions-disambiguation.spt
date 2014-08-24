@@ -10,8 +10,8 @@ setup Common [[
 		name : String ?
 	}
 	relation Edge{
-		Node * in
-		Node * out
+		Node * in  <- in
+		Node * out <- out
 	}
 	
 	data
@@ -35,16 +35,16 @@ test Disambiguate div over plus  [[2 + 3 / 4]] parse to [[2 + (3 / 4)]]
 test Disambiguate mod over minus [[2 - 3 % 4]] parse to [[2 - (3 % 4)]]
 
 test Disambiguate left associative choice [[21 <+ 14 <+ 14]] parse to [[(21 <+ 14) <+ 14]]
-test Disambiguate left associative merge  [[21 :: 14 :: 14]] parse to [[(21 :: 14) :: 14]]
+test Disambiguate left associative merge  [[21 ++ 14 ++ 14]] parse to [[(21 ++ 14) ++ 14]]
 
-test Disambiguate plus over merge   [[2 :: 3 + 4]] parse to [[2 :: (3 + 4)]]
+test Disambiguate plus over merge   [[2 ++ 3 + 4]] parse to [[2 ++ (3 + 4)]]
 test Disambiguate mult over choice  [[2 <+ 3 * 4]] parse to [[2 <+ (3 * 4)]]
-test Disambiguate merge over choice [[2 <+ 3 :: 4]] parse to [[2 <+ (3 :: 4)]]
+test Disambiguate merge over choice [[2 <+ 3 ++ 4]] parse to [[2 <+ (3 ++ 4)]]
 
-test Disambiguate navigate over attribute [[ 
-		this > in]Edge[out . name
-	::this > out]Edge[in . name
+test Disambiguate member access over merge [[ 
+		n.in.out.name
+	++n.out.in.name
 ]]
 
-test Disambiguate large expression [[5 * 8 - 5 <+ 3 :: 0 * 9]] parse to [[((5*8)-5) <+ (3::(0*9))]]
+test Disambiguate large expression [[5 * 8 - 5 <+ 3 ++ 0 * 9]] parse to [[((5*8)-5) <+ (3++(0*9))]]
 test Disambiguate large expression 2 [["a"+"b"+"c"+"d"+"e"]] parse to [[((("a"+"b")+"c")+"d")+"e"]]

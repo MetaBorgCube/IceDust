@@ -3,7 +3,7 @@ module trans/_editor/analysis
 imports
 	
 	lib/editor-common.generated
-	lib/runtime/analysis/defaults
+	lib/runtime/analysis/legacy
 	lib/runtime/task/core
 	lib/runtime/editor/properties
 	lib/runtime/nabl/entries

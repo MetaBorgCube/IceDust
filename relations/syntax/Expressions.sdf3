@@ -5,78 +5,62 @@ imports
 	Data
 	Model
 
-templates //exp (misc)
+templates // brackets
 
-	Exp 									= <(<Exp>)> {bracket}
+  Exp                    = <(<Exp>)>               {bracket}
 
-templates //exp (math) : PrimitiveType, [0-1]
+templates // operators
 
-	Exp.Multiplication		=	<<Exp> * <Exp>> {left}
-	Exp.Division					=	<<Exp> / <Exp>> {left}
-	Exp.Modulo						=	<<Exp> % <Exp>> {left}
-	Exp.Addition					=	<<Exp> + <Exp>> {left}
-	Exp.Subtraction				=	<<Exp> - <Exp>> {left}
+  Exp.MemberAccess       = <<Exp> . <ID>>          {left}
+  Exp.Not                = <!<Exp>>                {right}
 
-templates //exp (aggregations)	
+  Exp.Multiplication     = <<Exp> * <Exp>>         {left}
+  Exp.Division           = <<Exp> / <Exp>>         {left}
+  Exp.Modulo             = <<Exp> % <Exp>>         {left}
+  Exp.Addition           = <<Exp> + <Exp>>         {left}
+  Exp.Subtraction        = <<Exp> - <Exp>>         {left}
 
-	Exp.Min								= <min ( <Exp> )>
-	Exp.Max								= <max ( <Exp> )>
-	Exp.Avg								= <avg ( <Exp> )>
-	Exp.Sum								= <sum ( <Exp> )>
-	Exp.Concat						= <concat ( <Exp> )>
-	Exp.Count							= <count ( <Exp> )>
+  Exp.LessThan           = <<Exp> \< <Exp>>        {left}
+  Exp.LessThanEqual      = <<Exp> \<= <Exp>>       {left}
+  Exp.GreaterThan        = <<Exp> \> <Exp>>        {left}
+  Exp.GreaterThanEqual   = <<Exp> \>= <Exp>>       {left}
+  Exp.Equal              = <<Exp> == <Exp>>        {left}
+  Exp.Inequal            = <<Exp> != <Exp>>        {left}
+  Exp.And                = <<Exp> && <Exp>>        {left}
+  Exp.Or                 = <<Exp> || <Exp>>        {left}
+  Exp.TernaryConditional = <<Exp> ? <Exp> : <Exp>> {right}
 
-templates //exp (logic)
+  Exp.Merge              = <<Exp> ++ <Exp>>        {left}
+  Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
-	Exp.Not								=	<!<Exp>> {right}
-	Exp.LessThan					= <<Exp> \< <Exp>> {left}
-	Exp.LessThanEqual			=	<<Exp> \<= <Exp>> {left}
-	Exp.GreaterThan				= <<Exp> \> <Exp>> {left}
-	Exp.GreaterThanEqual	=	<<Exp> \>= <Exp>> {left}
-	Exp.Equal 						= <<Exp> == <Exp>> {left}
-	Exp.Inequal 					= <<Exp> != <Exp>> {left}
-	Exp.And								= <<Exp> && <Exp>> {left}
-	Exp.Or								= <<Exp> || <Exp>> {left}
-	Exp.TernaryConditional= <<Exp> ? <Exp> : <Exp>> {right}
+templates // built-in functions
 
-templates //exp (multiplicities)
+  Exp.Min                = <min ( <Exp> )>
+  Exp.Max                = <max ( <Exp> )>
+  Exp.Avg                = <avg ( <Exp> )>
+  Exp.Sum                = <sum ( <Exp> )>
+  Exp.Concat             = <concat ( <Exp> )>
+  Exp.Count              = <count ( <Exp> )>
+  Exp.Conj               = <conj ( <Exp> )>
+  Exp.Disj               = <disj ( <Exp> )>
 
-	Exp.Merge							=	<<Exp> :: <Exp>> {left}
-	Exp.ChoiceLeft				=	<<Exp> \<+ <Exp>> {left}
+templates // references
 
-templates //exp : PrimitiveType, 1
+  Exp.This               = <this>
+  Exp.Ref                = <<ID>>
+  
+templates // literal values
 
-	Exp										= <<LitVal>>
-	LitVal.String 				= <"<STRING>">
-	LitVal.Int			 			= <<INT>>
-	LitVal.True						= <true>
-	LitVal.False					= <false>
-
-templates //exp : EntityType, 0-*
-
-	Exp.NavigateInOut			= <<Exp> \><Placeholder3> <RoleName>]<EntityType>[<RoleName>>
-	Exp.NavigateIn				= <<Exp> \><Placeholder3> <RoleName>]<EntityType>>
-	Exp.NavigateOut				= <<Exp> \><Placeholder3> <EntityType>[<RoleName>>
-	
-	Placeholder3.NavOr		= <>
-
-templates //exp (references)
-
-	Exp.This							= <this>
-	Exp										= <<Identifier>>
-	Identifier.Identifier	= <<ID>>
-	Exp.AttributeName			= <<Exp> . <ID>> {left}
+  Exp                    = <<LitVal>>
+  LitVal.String          = <"<STRING>">
+  LitVal.Int             = <<INT>>
+  LitVal.True            = <true>
+  LitVal.False           = <false>
 
 
-template options
 context-free priorities
 	{ left:
-		Exp.NavigateInOut
-		Exp.NavigateIn
-		Exp.NavigateOut
-	} >	
-	{ left:
-		Exp.AttributeName
+		Exp.MemberAccess
 	} >	
 	{ right:
 		Exp.Not
