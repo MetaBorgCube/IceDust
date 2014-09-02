@@ -121,3 +121,36 @@ rules // predicates over multiplcities
 	lower-one: One() -> <id>
 	lower-one: OneOrMore() -> <id>
 	nullable = lower-zero
+
+rules // check if delete entity calls delete for all its inverses
+	
+	//get entity type
+	//get all inverses
+	//check if for all inverses a cascade of type delete is called
+	nabl-constraint(|ctx):
+		Operation(Delete(), op, _, cascades) -> <fail>
+		with
+			<debug>"nabl-constraint delete all relations";
+			<debug>op;
+			entity := <nabl-create-suburi(|ctx, NablNsEntity())>op;
+			<debug-task(|"entity")>entity;
+			[model-inverses] := <nabl-resolve-all-tasks(|ctx, NablNsInverse(), [])> [entity];
+			<debug-task(|"modinv")>model-inverses;
+			cascade-defs := <map(?Cascade(RoleOrInverse(<nabl-create-collectdefs(|ctx)>), _))> cascades;
+			<debug-task(|"cascad")>cascade-defs;
+			// cascade-inveres := <nabl-create-filter(|ctx, NablNsInverse(),[],[])>cascade-defs;
+			// <debug-task(|"casinv")>cascade-defs
+			// ;
+			diff := <task-create-diff(|ctx)> (cascade-defs, model-inverses);
+			<debug-task(|"diff  ")>diff
+
+rules
+
+	debug-task: a -> <debug>(a,<try(task-get-results)>a)
+		where not(is-list)
+	debug-task: a -> <debug>(a,<map(try(task-get-results))>a)
+		where is-list
+	debug-task(|b): a -> <debug>(b,a,<try(task-get-results)>a)
+		where not(is-list)
+	debug-task(|b): a -> <debug>(b,a,<map(try(task-get-results))>a)
+		where is-list
