@@ -30,8 +30,8 @@ rules // generate omitted role names
 rules // generate omitted operation names
 	
 	desugar: Operation(Create(), None(), a, b) -> Operation(Create(), "create", a, b)
-	desugar: Operation(Update(), None(), a, b) -> Operation(Create(), "update", a, b)
-	desugar: Operation(Delete(), None(), a, b) -> Operation(Create(), "delete", a, b)
+	desugar: Operation(Update(), None(), a, b) -> Operation(Update(), "update", a, b)
+	desugar: Operation(Delete(), None(), a, b) -> Operation(Delete(), "delete", a, b)
 
 rules // generate omitted inverse names
 	

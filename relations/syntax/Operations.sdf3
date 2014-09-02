@@ -20,5 +20,7 @@ templates
 	OperationParams = <(<Param*;separator=",">)>
 	Param = <<ID> <ID>>
 	
-	Cascade.Cascade = <<ID> -\> <ID>>
+	Cascade.Cascade = <<RoleOrInverse> -\> <ID>>
+	
+	RoleOrInverse.RoleOrInverse = <<ID>>
 	

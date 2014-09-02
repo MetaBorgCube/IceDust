@@ -17,6 +17,7 @@ namespaces
 	Inverse
 	Shortcut
 	This
+	Operation
 
 properties
 
@@ -25,6 +26,7 @@ properties
 	multiplicity-inverse of Role      : Multiplicity
 	origin-role					 of Inverse		: Role
 	origin-role2				 of Shortcut	: Role
+	operation-type			 of Operation : OperationType
 	
 binding rules // modules
 
@@ -42,6 +44,7 @@ binding rules // model
 		scopes Attribute
 		scopes Role
 		scopes This
+		scopes Operation
 		implicitly defines This This()
 			of type e-ty
 
@@ -91,6 +94,10 @@ binding rules // model
 			of origin-role2 role1
 			where role2 resolves to Role role2def
 			and role2def has multiplicity-inverse mu2
+
+	Operation(opType, opName, params, cascades):
+		defines Operation opName
+			of operation-type opType
 
 binding rules // data
 
@@ -155,3 +162,16 @@ binding rules // references
 	
 	This() :
 		refers to This This()
+		
+	RoleOrInverse(a):
+	  refers to Role a in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+	otherwise
+	  refers to Inverse a in Entity e-ty
+		where This() resolves to This this
+		and this has type e-ty
+		
+	Cascade(roleOrInverse,op):
+		refers to Operation op in Entity e-ty
+		where roleOrInverse has type e-ty
