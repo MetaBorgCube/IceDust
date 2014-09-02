@@ -27,6 +27,12 @@ rules // generate omitted role names
 
 	desugar: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
 
+rules // generate omitted operation names
+	
+	desugar: Operation(Create(), None(), a, b) -> Operation(Create(), "create", a, b)
+	desugar: Operation(Update(), None(), a, b) -> Operation(Create(), "update", a, b)
+	desugar: Operation(Delete(), None(), a, b) -> Operation(Create(), "delete", a, b)
+
 rules // generate omitted inverse names
 	
 	desugar: Entity(a,entityName,roles) -> Entity(a,entityName,roles')

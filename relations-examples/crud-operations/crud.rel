@@ -5,45 +5,45 @@ model
 	entity Folder{
 		name : String
 		
-		/*
-		create {
+		create{
 			
 		}
-		update {
+		
+		update{
 			
 		}
-		delete {
+		
+		delete{
+			
+		}
+		
+		delete nonRecursiveDelete{
 			asParent -> abort
 			in -> abort
 		}
-		delete nonrecursiveDelete{
-			asParent -> abort
-			in -> delete
-		}
-		delete forceDelete {
+		
+		delete forceDelete{
 			asParent -> forceDelete
-			in -> delete
+			in -> delete			
 		}
-		*/
+		
 	}
 	
 	entity File{
 		name : String
 		
-		/*
 		create (Folder f) {
-			create In{
-				File = this
-				Folder = f
-			}
+			in -> create
 		}
+		
 		update {
 			
 		}
+		
 		delete {
 			
 		}
-		*/
+		
 	}
 
 	relation In{
@@ -52,17 +52,18 @@ model
 		
 		folder.files <-> file.folder
 		
-		/*
-		create {
+		create{
 			// implicit Folder and File
 		}
-		update {
+		
+		update{
 			
 		}
-		delete {
+		
+		delete{
 			file -> delete
 		}
-		*/
+
 	}
 	
 	relation Sub{
@@ -71,20 +72,23 @@ model
 		
 		child.parent <-> parent.children
 		
-		/*
-		create {
+
+		create{
 			// implicit Parent and Child
 		}
-		update {
+		
+		update{
 			
 		}
-		delete {
+		
+		delete{
 			child -> delete
 		}
+		
 		delete forceDelete {
 			child -> forceDelete
 		}
-		*/
+
 	}
 	
 execute

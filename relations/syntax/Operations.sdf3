@@ -1,0 +1,24 @@
+module Operations
+
+imports
+	Common
+	Expressions
+	Types
+	
+templates
+
+	Operation.Operation = <
+		<OperationType> <ID?> <OperationParams?> {
+			<Cascade*;separator="\n">
+		}
+	>
+	
+	OperationType.Create = <create>
+	OperationType.Update = <update>
+	OperationType.Delete = <delete>
+
+	OperationParams = <(<Param*;separator=",">)>
+	Param = <<ID> <ID>>
+	
+	Cascade.Cascade = <<ID> -\> <ID>>
+	

@@ -4,6 +4,7 @@ imports
 	Common
 	Expressions
 	Types
+	Operations
 
 templates // entities
 
@@ -26,6 +27,7 @@ templates // entity members
 	Member											= <<Attribute>>
 	Member											= <<Role>>
 	Member											= <<Shortcut>>
+	Member											= <<Operation>>
 
 	Attribute.Attribute 				= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
 	Derivation.Derivation 			= <= <Exp> <DerivationType>>
