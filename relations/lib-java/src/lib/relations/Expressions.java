@@ -107,8 +107,6 @@ public class Expressions {
 	}
 
 	public static Integer sum(Collection<Integer> c) {
-		if (c.size() == 0)
-			return null;
 		int sum = 0;
 		for (int i : c) {
 			sum += i;
