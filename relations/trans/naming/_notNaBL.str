@@ -130,19 +130,28 @@ rules // check if delete entity calls delete for all its inverses
 	nabl-constraint(|ctx):
 		Operation(Delete(), op, _, cascades) -> <fail>
 		with
-			// <debug>"nabl-constraint delete all relations";
-			// <debug>op;
 			entity := <nabl-create-suburi(|ctx, NablNsEntity())>op;
-			// <debug-task(|"entity")>entity;
 			[model-inverses] := <nabl-resolve-all-tasks(|ctx, NablNsInverse(), [])> [entity];
-			// <debug-task(|"modinv")>model-inverses;
 			cascade-defs := <map(?Cascade(RoleOrInverse(<nabl-create-collectdefs(|ctx)>), _));task-create-combine(|ctx)> cascades;
-			// <debug-task(|"cascad")>cascade-defs;
 			cascade-inverses := <nabl-create-checkdefs(|ctx, NablNsInverse())>cascade-defs;
-			// <debug-task(|"casinv")>cascade-inverses;
 			diff := <task-create-diff(|ctx)> (model-inverses, cascade-inverses);
-			// <debug-task(|"diff  ")>diff;
 			<task-create-error-on-success(|ctx, diff, ["Specify delete cascade for all inverses: ", diff])> op
+
+rules // check if entity create calls create for relations with [1,1] or [1,n)
+	
+	nabl-constraint(|ctx):
+		Operation(Create(), op, _, cascades) -> <fail>
+		with
+			entity := <nabl-create-suburi(|ctx, NablNsEntity())>op;
+			[model-inverses] := <nabl-resolve-all-tasks(|ctx, NablNsInverse(), [])> [entity];
+			cascade-defs := <map(?Cascade(RoleOrInverse(<nabl-create-collectdefs(|ctx)>), _));task-create-combine(|ctx)> cascades;
+			cascade-inverses := <nabl-create-checkdefs(|ctx, NablNsInverse())>cascade-defs;
+			missing-inverses := <task-create-diff(|ctx)> (model-inverses, cascade-inverses);
+			missing-inverses-one := <nabl-create-propconstraint(|ctx, NablProp_multiplicity(), missing-inverses)> One();
+			missing-inverses-oneormore := <nabl-create-propconstraint(|ctx, NablProp_multiplicity(), missing-inverses)> OneOrMore();
+			missing-inverses' := <task-create-combine(|ctx)> [missing-inverses-one,missing-inverses-oneormore];
+			<task-create-error-on-success(|ctx, missing-inverses', ["Specify create cascade for all inverses with multiplicity [1,1] and [1,n): ", missing-inverses'])> op
+
 
 rules
 
