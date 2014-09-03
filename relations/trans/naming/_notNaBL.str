@@ -124,9 +124,6 @@ rules // predicates over multiplcities
 
 rules // check if delete entity calls delete for all its inverses
 	
-	//get entity type
-	//get all inverses
-	//check if for all inverses a cascade of type delete is called
 	nabl-constraint(|ctx):
 		Operation(Delete(), op, _, cascades) -> <fail>
 		with
@@ -151,6 +148,36 @@ rules // check if entity create calls create for relations with [1,1] or [1,n)
 			missing-inverses-oneormore := <nabl-create-propconstraint(|ctx, NablProp_multiplicity(), missing-inverses)> OneOrMore();
 			missing-inverses' := <task-create-combine(|ctx)> [missing-inverses-one,missing-inverses-oneormore];
 			<task-create-error-on-success(|ctx, missing-inverses', ["Specify create cascade for all inverses with multiplicity [1,1] and [1,n): ", missing-inverses'])> op
+
+rules // check if relation create does not violate upper bounds
+	
+	nabl-constraint(|ctx):
+		Operation(Create(), op, _, cascades) -> <fail>
+		with
+			entity := <nabl-create-suburi(|ctx, NablNsEntity())>op;
+			[model-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [entity];
+			cascade-defs := <map(?Cascade(RoleOrInverse(<nabl-create-collectdefs(|ctx)>), _));task-create-combine(|ctx)> cascades;
+			cascade-roles := <nabl-create-checkdefs(|ctx, NablNsRole())>cascade-defs;
+			missing-roles := <task-create-diff(|ctx)> (model-roles, cascade-roles);
+			missing-roles-one := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> One();
+			missing-roles-zeroorone := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> ZeroOrOne();
+			missing-roles' := <task-create-combine(|ctx)> [missing-roles-one,missing-roles-zeroorone];
+			<task-create-error-on-success(|ctx, missing-roles', ["Specify create cascade for all roles with multiplicity [0,1] and [1,1]: ", missing-roles'])> op
+	
+rules // check if relation delete does not violate lower bounds
+
+	nabl-constraint(|ctx):
+		Operation(Delete(), op, _, cascades) -> <fail>
+		with
+			entity := <nabl-create-suburi(|ctx, NablNsEntity())>op;
+			[model-roles] := <nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [entity];
+			cascade-defs := <map(?Cascade(RoleOrInverse(<nabl-create-collectdefs(|ctx)>), _));task-create-combine(|ctx)> cascades;
+			cascade-roles := <nabl-create-checkdefs(|ctx, NablNsRole())>cascade-defs;
+			missing-roles := <task-create-diff(|ctx)> (model-roles, cascade-roles);
+			missing-roles-one := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> One();
+			missing-roles-oneormore := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> OneOrMore();
+			missing-roles' := <task-create-combine(|ctx)> [missing-roles-one,missing-roles-oneormore];
+			<task-create-error-on-success(|ctx, missing-roles', ["Specify create cascade for all roles with multiplicity [1,1] and [1,n): ", missing-roles'])> op
 
 
 rules
