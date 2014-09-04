@@ -2,6 +2,8 @@
 How to possibly reach invalid multiplicities, and how to repair those states.
 
 ## Entity
+On inverses
+
 ### Create
 Invalid multiplicity is *always* reached by:
 
@@ -21,6 +23,8 @@ Invalid multiplicity *might* be reached by:
 No invalid multiplicity reachable
 
 ## Relation
+On roles
+
 ### Create
 Invalid multiplicity *might* be reached by:
 
@@ -51,3 +55,15 @@ Invalid multiplicity *might* be reached by
 	* Or, add another relation
 	* Or, change another relation to have the entity as participant
 	* Or, abort
+
+# Invalid Multiplicity States
+The invalid multiplicity state after blindly performing a create, update or delete consists of a list of:
+
+* Enitity, on Inverse
+	* Too many relations
+	* Too little relations
+	* Role in Relation is not set
+* Relation, on Role
+	* Entity in Role has too many relations
+	* Entity in Role has too little relations
+	* Role not set
