@@ -29,9 +29,10 @@ rules // generate omitted role names
 
 rules // generate omitted operation names
 	
-	desugar: Operation(Create(), None(), a, b) -> Operation(Create(), "create", a, b)
-	desugar: Operation(Update(), None(), a, b) -> Operation(Update(), "update", a, b)
-	desugar: Operation(Delete(), None(), a, b) -> Operation(Delete(), "delete", a, b)
+	desugar: Operation(op-type, None(), a, b) -> Operation(op-type, new-name', a, b)
+		with
+			new-name := <get-constructor;lcfirst>op-type;
+			new-name' := <origin-track-forced(custom-origin(|new-name))>op-type
 
 rules // generate omitted inverse names
 	

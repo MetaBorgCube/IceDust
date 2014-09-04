@@ -177,7 +177,7 @@ rules // check if relation delete does not violate lower bounds
 			missing-roles-one := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> One();
 			missing-roles-oneormore := <nabl-create-propconstraint(|ctx, NablProp_multiplicity-inverse(), missing-roles)> OneOrMore();
 			missing-roles' := <task-create-combine(|ctx)> [missing-roles-one,missing-roles-oneormore];
-			<task-create-error-on-success(|ctx, missing-roles', ["Specify create cascade for all roles with multiplicity [1,1] and [1,n): ", missing-roles'])> op
+			<task-create-error-on-success(|ctx, missing-roles', ["Specify delete cascade for all roles with multiplicity [1,1] and [1,n): ", missing-roles'])> op
 
 
 rules

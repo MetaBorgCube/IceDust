@@ -19,11 +19,13 @@ model
 		
 		delete nonRecursiveDelete{
 			asParent -> abort
+			asChild -> delete
 			in -> abort
 		}
 		
 		delete forceDelete{
 			asParent -> forceDelete
+			asChild -> delete
 			in -> delete			
 		}
 		
@@ -40,7 +42,7 @@ model
 			
 		}
 		
-		delete {
+		delete delete{
 			
 		}
 		
@@ -131,6 +133,7 @@ execute
 	//relation ==> In{Folder=folder1, File={file1,file2}}  //means set or add for folder, set or add for files
 	
 	*/
+	
 	
 	
 	
