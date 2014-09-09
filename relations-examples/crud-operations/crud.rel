@@ -35,7 +35,7 @@ model
 		name : String
 		
 		create (Folder f) {
-			//invalid state: too little times playing role file in relation In
+			//invalid state: too few 'in'
 			in -> create
 		}
 		
@@ -44,7 +44,7 @@ model
 		}
 		
 		delete delete{
-			//invalid state: role file not set in relation In
+			//invalid state: not set 'file' in 'in'
 			in -> delete
 		}
 		
@@ -57,8 +57,8 @@ model
 		folder.files <-> file.folder
 		
 		create{
-			//before setting roles: invalid state: role file and role folder not set
-			//after setting roles: invalid state: entity file playing role file too many times
+			//before setting roles: invalid state: not set 'file' and 'folder'
+			//after setting roles: invalid state: too many 'in' in 'file'
 			file -> create
 		}
 		
@@ -67,7 +67,7 @@ model
 		}
 		
 		delete{
-			//invalid state: entity file playing role file too little times
+			//invalid state: too few 'in' in 'file'
 			file -> delete
 		}
 

@@ -23,4 +23,14 @@ templates
 	Cascade.Cascade = <<RoleOrInverse> -\> <ID>>
 	
 	RoleOrInverse.RoleOrInverse = <<ID>>
-	
+
+	// Cascade.Cascade = <<Violation> -\> <ID>>
+	// 
+	// Violation = <<Possibly?> <ViolationType> <RoleOrInverse>>
+	// Violation = <<Possibly?> <ViolationType> <ID> in <RoleOrInverse>>
+	// 
+	// Possibly.Possibly = <possibly>
+	// 
+	// ViolationType.NotSet  = <not set>
+	// ViolationType.TooFew  = <too few>
+	// ViolationType.TooMany = <too many>
