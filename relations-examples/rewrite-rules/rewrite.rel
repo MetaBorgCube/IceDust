@@ -26,55 +26,56 @@ rules
 	createFile(Folder f):
 		f
 	->
-		f;
-		In i;
-		File f2;
-		f2 in i;
-		f in i
+		f.
+		In i.
+		File f2.
+		f2 in i.
+		f in i.
 
 	deleteFile(File f):
-		f;
-		f in i;
-		i folder f2
+		f.
+		f in i.
+		i folder f2.
 	->
-		f2
+		f2.
 		
 	moveFile(File f, Folder f2):
-		f;
-		f2;
-		f in i;
+		f.
+		f2.
+		f in i.
 		i in folder f1
 	->
-		f in i;
-		i folder f2;
-		f1
+		f in i.
+		i folder f2.
+		f1.
+		f2.
 	
 	//orphans subfolders
 	deleteFolder(Folder f):
-		f;
-		f in i;
-		i file f2;
-		f asParent sub;
-		sub child f3;
-		f asChild sub2;
-		sub2 parent f4
+		f.
+		f in i.
+		i file f2.
+		f asParent sub.
+		sub child f3.
+		f asChild sub2.
+		sub2 parent f4.
 	->
-		f3;
-		f4
+		f3.
+		f4.
 
 	//delete subfolders
 	deleteFolderRecursive(Folder f):
-		f;
-		f in i;
-		i file f2;
-		f asParent sub;
-		sub child f3;
-		f asChild sub2;
-		sub2 parent f4
+		f.
+		f in i.
+		i file f2.
+		f asParent sub.
+		sub child f3.
+		f asChild sub2.
+		sub2 parent f4.
 	->
-		f3;
-		f4
+		f3.
+		f4.
 	with
-		deleteFolderRecursive(f3)
+		deleteFolderRecursive(f3).
 
 */
