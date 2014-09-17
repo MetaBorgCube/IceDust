@@ -35,7 +35,7 @@ rules	// General Java generation rules
   to-java(err):
   	None() -> ""
 
-  to-java(err): Module(_,_,_,_) -> None()
+  to-java(err): Module(_,_,_,_,_) -> None()
   	where
   		<err> "Desugar before generating code."
 	

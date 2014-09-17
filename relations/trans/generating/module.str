@@ -9,7 +9,7 @@ imports
 rules
 
 	to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
+		ModuleDesugared(moduleName, model, r, data, execute) ->
 			compilation-unit |[
 				import lib.relations.*;
 				import java.util.Collection;
@@ -18,11 +18,11 @@ rules
 				~modelJava*
 			]|
 		with
-			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
+			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, r, data, execute);
 			modelJava* := <to-java(err)>model
 
 	main-class-to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
+		ModuleDesugared(moduleName, model, r, data, execute) ->
 			type-dec |[
 				class ~className	
 				{ 

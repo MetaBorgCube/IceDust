@@ -1,0 +1,24 @@
+module Rules
+
+imports
+	Common
+	Expressions
+	Types
+	
+templates
+
+	Rule.Rule = <
+		<ID> <OperationParams?> :
+			<GraphPart*;separator="\n">
+		-\>
+			<GraphPart*;separator="\n">
+	>
+	
+	GraphPart.Node			= <<ID>.>							// node var
+	GraphPart.TypedNode	= <<ID> <ID>.>				// type, node var
+	GraphPart.Edge			= <<ID> <ID> <ID>.>		// node var, role/inverse name, node var
+
+	OperationParams = <(<Param*;separator=",">)>
+	Param = <<ID> <ID>>
+	
+	// 	RoleOrInverse.RoleOrInverse = <<ID>>

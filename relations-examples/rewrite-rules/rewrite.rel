@@ -20,11 +20,11 @@ model
 		Folder ? child  <- asChild
 	}
 	
-/*
+
 rules
 
-	createFile(Folder f):
-		f
+	createFile (Folder f):
+		f.
 	->
 		f.
 		In i.
@@ -43,7 +43,7 @@ rules
 		f.
 		f2.
 		f in i.
-		i in folder f1
+		i folder f1.
 	->
 		f in i.
 		i folder f2.
@@ -63,6 +63,7 @@ rules
 		f3.
 		f4.
 
+/*
 	//delete subfolders
 	deleteFolderRecursive(Folder f):
 		f.
@@ -77,5 +78,5 @@ rules
 		f4.
 	with
 		deleteFolderRecursive(f3).
-
 */
+

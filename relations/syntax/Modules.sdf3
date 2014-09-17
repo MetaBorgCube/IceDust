@@ -3,6 +3,7 @@ module Modules
 imports
 	Common
 	Model
+	Rules
 	Data
 	Execute
 
@@ -13,6 +14,8 @@ templates // modules
 		module <ID>
 		
 		<ModelDef?>
+
+		<RulesDef?>
 		
 		<DataDef?>
 		
@@ -24,6 +27,12 @@ templates // modules
 		model
 		
 		  <Model*;separator="\n\n">
+	>
+
+	RulesDef.RulesDef = <
+		rules
+		
+		  <Rule*;separator="\n\n">
 	>
 	
 	DataDef.DataDef = <

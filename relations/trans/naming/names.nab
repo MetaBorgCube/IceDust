@@ -28,7 +28,7 @@ properties
 	
 binding rules // modules
 
-	ModuleDesugared(m, _, _, _) : 
+	ModuleDesugared(m, _, _, _, _) : 
 		defines Module m
 		scopes Entity
 		scopes Entity2

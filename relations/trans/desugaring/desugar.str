@@ -10,14 +10,14 @@ rules
 	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names;generate-shortcuts;generate-shortcut-types
 
 signature constructors
-	
-	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+
+	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
 
 rules // general
 
 	desugar: Some(a) -> a
 
-	desugar: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
+	desugar: Module(moduleName, model, r, data, execute) -> ModuleDesugared(moduleName, model, r, data, execute)
 
 rules // generate omitted multiplicities
 
@@ -39,8 +39,8 @@ rules // generate omitted inverse names
 
 rules	// custom traversal desugarings
 
-	generate-entity-names: ModuleDesugared(a, b, None(), d)     -> ModuleDesugared(a, b, None(), d)
-	generate-entity-names: ModuleDesugared(a, b, DataDef(c), d) -> ModuleDesugared(a, b, DataDef(<new-name-map(try(generate-entity-name))>c), d)
+	generate-entity-names: ModuleDesugared(a, b, r, None(), d)     -> ModuleDesugared(a, b, r, None(), d)
+	generate-entity-names: ModuleDesugared(a, b, r, DataDef(c), d) -> ModuleDesugared(a, b, r, DataDef(<new-name-map(try(generate-entity-name))>c), d)
 	
 	generate-entity-name: (EntityInstance(EntityRef(e-ty), None(), r, a), history) -> (EntityInstance(EntityRef(e-ty), e, r, a), history')
 		with
@@ -48,8 +48,8 @@ rules	// custom traversal desugarings
 	
 rules
 	
-	generate-shortcut-types: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
-	generate-shortcut-types: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcut-types))>b), c, d)
+	generate-shortcut-types: ModuleDesugared(a, None(), r, c, d)      -> ModuleDesugared(a, None(), r, c, d)
+	generate-shortcut-types: ModuleDesugared(a, ModelDef(b), r, c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcut-types))>b), r, c, d)
 	
 	generate-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
 		where
@@ -74,8 +74,8 @@ rules
 
 rules
 
-	generate-shortcuts: ModuleDesugared(a, None(), c, d)      -> ModuleDesugared(a, None(), c, d)
-	generate-shortcuts: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), c, d)
+	generate-shortcuts: ModuleDesugared(a, None(), r, c, d)      -> ModuleDesugared(a, None(), r, c, d)
+	generate-shortcuts: ModuleDesugared(a, ModelDef(b), r, c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), r, c, d)
 	
 	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
 		where
