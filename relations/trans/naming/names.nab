@@ -17,6 +17,8 @@ namespaces
 	Inverse
 	Shortcut
 	This
+	Rule
+	Variable
 
 properties
 
@@ -33,6 +35,7 @@ binding rules // modules
 		scopes Entity
 		scopes Entity2
 		scopes EntityInstance
+		scopes Rule
 
 binding rules // model
 
@@ -91,6 +94,20 @@ binding rules // model
 			of origin-role2 role1
 			where role2 resolves to Role role2def
 			and role2def has multiplicity-inverse mu2
+
+binding rules // rules
+
+	Rule(rule, params, pre, post):
+		defines Rule rule
+		scopes Variable
+
+	Param(EntityRef(t), v):
+		defines Variable v
+			of type t
+		
+	TypedNode(EntityRef(t), v):
+		defines Variable v
+			of type t
 
 binding rules // data
 
@@ -155,3 +172,10 @@ binding rules // references
 	
 	This() :
 		refers to This This()
+		
+	Node(v):
+		refers to Variable v
+
+	Edge(v1, roleOrInverse, v2):
+		refers to Variable v1
+		refers to Variable v2

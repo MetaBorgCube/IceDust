@@ -4,21 +4,21 @@ imports
 	Common
 	Expressions
 	Types
+	Model
 	
 templates
 
 	Rule.Rule = <
-		<ID> <OperationParams?> :
+		<ID> (<Param*;separator=",">) :
 			<GraphPart*;separator="\n">
 		-\>
 			<GraphPart*;separator="\n">
 	>
-	
-	GraphPart.Node			= <<ID>.>							// node var
-	GraphPart.TypedNode	= <<ID> <ID>.>				// type, node var
-	GraphPart.Edge			= <<ID> <ID> <ID>.>		// node var, role/inverse name, node var
 
-	OperationParams = <(<Param*;separator=",">)>
-	Param = <<ID> <ID>>
+	Param.Param = <<EntityRef> <ID>>
 	
-	// 	RoleOrInverse.RoleOrInverse = <<ID>>
+	GraphPart.Node			= <<ID>.>												// node var
+	GraphPart.TypedNode	= <<EntityRef> <ID>.>						// type, node var
+	GraphPart.Edge			= <<ID> <RoleOrInverse> <ID>.>	// node var, role/inverse name, node var
+	
+	RoleOrInverse.RoleOrInverse = <<ID>>
