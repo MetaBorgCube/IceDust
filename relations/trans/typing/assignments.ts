@@ -31,3 +31,9 @@ type rules // data well-formedness
 		and	val	: val-ty
 		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
 
+type rules // rewrite rules
+
+	Edge(v1, e, v2) :-
+	where v2 : v2-ty
+		and definition of e : e-ty
+		and e-ty == v2-ty else error $[Type mismatch: expected [e-ty] got [v2-ty] in Pattern] on v2

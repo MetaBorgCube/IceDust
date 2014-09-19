@@ -19,6 +19,7 @@ templates
 	
 	GraphPart.Node			= <<ID>.>												// node var
 	GraphPart.TypedNode	= <<EntityRef> <ID>.>						// type, node var
-	GraphPart.Edge			= <<ID> <RoleOrInverse> <ID>.>	// node var, role/inverse name, node var
+	GraphPart.Edge			= <<Var> <ID> <Var>.>	// node var, role/inverse name, node var
 	
-	RoleOrInverse.RoleOrInverse = <<ID>>
+	// RoleOrInverse.RoleOrInverse = <<ID>>
+	Var.Var = <<ID>>

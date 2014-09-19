@@ -36,3 +36,10 @@ type rules // specific references
 	
 	EntityInstanceRef(e) : e-ty
 	where definition of e : e-ty
+
+	Var(a) : a-ty
+	where definition of a : a-ty
+	
+	// RoleOrInverse(a) : a-ty
+	// where definition of a : a-ty
+	

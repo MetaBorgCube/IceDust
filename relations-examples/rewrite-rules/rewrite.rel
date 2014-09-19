@@ -34,14 +34,19 @@ rules
 
 	deleteFile(File f):
 		f.
+		In i.
+		Folder f2.
 		f in i.
 		i folder f2.
 	->
 		f2.
 		
+		
 	moveFile(File f, Folder f2):
 		f.
 		f2.
+		In i.
+		Folder f1.
 		f in i.
 		i folder f1.
 	->
@@ -53,6 +58,12 @@ rules
 	//orphans subfolders
 	deleteFolder(Folder f):
 		f.
+		In i.
+		File f2.
+		Sub sub.
+		Sub sub2.
+		Folder f3.
+		Folder f4.
 		f in i.
 		i file f2.
 		f asParent sub.

@@ -176,6 +176,12 @@ binding rules // references
 	Node(v):
 		refers to Variable v
 
+	Var(v):
+		refers to Variable v
+
 	Edge(v1, roleOrInverse, v2):
-		refers to Variable v1
-		refers to Variable v2
+		refers to Role roleOrInverse in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Inverse roleOrInverse in Entity v1-ty
+		where v1 has type v1-ty
