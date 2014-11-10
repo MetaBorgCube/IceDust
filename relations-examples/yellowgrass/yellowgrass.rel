@@ -1,0 +1,145 @@
+module yellowgrass
+
+model
+
+	entity User{
+		name : String
+		email : String
+		notifications : Boolean
+		password : String
+		url : String
+		tag : String
+	}
+	
+	entity Project{
+		name : String
+		description : String
+		url : String
+		privatee : Boolean // NOTE: private as field name makes generated code fail
+		email : String
+		
+		key : String = name (default)
+	}
+
+	entity Issue{
+		number : Int
+		title : String
+		description : String
+		preview : String
+		open : Boolean
+		email : String
+		
+		nrVotes : Int // = ...
+		reporterName : String = user.name <+ ""
+		
+		hasDueDate : Boolean = false (default)
+		due : Int?
+	}
+	
+	entity Comment{
+		text : String
+		preview : String
+	}
+	
+	entity Question{
+		number : Int
+		title : String
+		urlTitle : String
+		description : String
+		preview : String
+		open : Boolean
+		email : String
+	}
+	
+	entity Answer{
+		text : String
+		preview : String
+	}
+	
+	entity Tag{
+		name : String
+		description : String
+	}
+	
+	entity Attachment{
+		date : Int
+		file : String
+	}
+
+	relation UserProject{
+		User *
+		Project *
+	}
+	
+	relation TagProject{
+		Tag 1
+		Project *
+	}
+	
+	relation TagTree{
+		Tag * parent <- treeParent
+		Tag ? child <- treeChild
+	}
+	
+	relation IssueTags{
+		Tag *
+		Issue *
+	}
+	
+	relation QuestionProject{
+		Project *
+		Question 1
+	}
+	
+	relation QuestionAuthor{
+		User *
+		Question 1
+	}
+	
+	relation QuestionTag{
+		Tag *
+		Question *
+	}
+	
+	relation QuestionAnswer{
+		Question *
+		Answer 1
+	}
+	
+	relation AnswerAuthor{
+		User *
+		Answer 1
+	}
+	
+	relation IssueReporter{
+		Issue ?
+		User *
+	}
+	
+	relation IssueProject{
+		Issue 1
+		Project *
+	}
+	
+	relation IssueAttachment{
+		Issue *
+		Attachment 1
+	}
+	
+	relation IssueComment{
+		Comment 1
+		Issue *
+	}
+	
+	relation CommentAuthor{
+		Comment 1
+		User *
+	}
+
+data
+
+
+
+execute
+
+	"Model Works"
