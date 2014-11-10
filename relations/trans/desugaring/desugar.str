@@ -78,8 +78,8 @@ rules
 	generate-shortcuts: ModuleDesugared(a, ModelDef(b), c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), c, d)
 	
 	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
-		where
-			roles 				:= <filter(role-name);string-sort>members;
+		with
+			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
 			shortcuts			:= <filter(shortcut-roles)>members;
 			shortcuts-all := <join-half>roles;
 			shortcuts-add := <diff>(shortcuts-all, shortcuts);

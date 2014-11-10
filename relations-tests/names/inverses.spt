@@ -45,5 +45,7 @@ test error on duplicate inverse by desugaring [[
 	relation Edge {
 		[[Node]] 1
 		[[Node]] 1
+		
+		node.a <-> node.b
 	}
 ]] 4 errors // only possible by duplicate roles

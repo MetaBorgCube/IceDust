@@ -13,6 +13,8 @@ test Duplicate role fails [[
 	relation Edge{
 		Node * in <- x
 		Node * in
+		
+		in.c <-> in.d
 	}
 ]] 2 errors
 
@@ -41,6 +43,8 @@ test error on duplicate role [[
 	relation Edge {
 		Node 1 [[node]] <- a
 		Node 1 [[node]] <- b
+		
+		node.c <-> node.d
 	}
 ]] 2 errors
 
@@ -49,5 +53,7 @@ test error on duplicate role by desugaring [[
 	relation Edge {
 		[[Node]] 1
 		[[Node]] 1
+		
+		node.c <-> node.d
 	}
 ]] 4 errors // always also results in duplicate inverses
