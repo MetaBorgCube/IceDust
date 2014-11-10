@@ -36,3 +36,18 @@ test Resolve inverse  [[
 	}
 ]] resolve #1 to #2
 
+test error on duplicate role [[
+	entity Node {}
+	relation Edge {
+		Node 1 [[node]] <- a
+		Node 1 [[node]] <- b
+	}
+]] 2 errors
+
+test error on duplicate role by desugaring [[
+	entity Node {}
+	relation Edge {
+		[[Node]] 1
+		[[Node]] 1
+	}
+]] 4 errors // always also results in duplicate inverses
