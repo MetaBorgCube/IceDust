@@ -11,6 +11,10 @@ model
 		tag : String
 	}
 	
+	entity AuthenticationKey{
+		deviceDescription : String
+	}
+	
 	entity Project{
 		name : String
 		description : String
@@ -36,9 +40,18 @@ model
 		due : Int?
 	}
 	
+	entity IssueGhost{
+		title: String
+		description : String
+		email : String
+		alive : Boolean
+	}
+	
 	entity Comment{
 		text : String
 		preview : String
+		
+		moment : Int = event.moment
 	}
 	
 	entity Question{
@@ -59,16 +72,36 @@ model
 	entity Tag{
 		name : String
 		description : String
+		isRelease : Boolean
 	}
 	
 	entity Attachment{
 		date : Int
 		file : String
 	}
-
-	relation UserProject{
-		User *
-		Project *
+	
+	entity Event{
+		moment : Int
+	}
+	
+	entity IssueClose{
+		moment : Int = event.moment
+	}
+	entity IssueReopen{
+		moment : Int = event.moment
+	}
+	entity IssueMoved{
+		moment : Int = event.moment
+	}
+	entity TagAddition{
+		moment : Int = event.moment
+	}
+	entity TagRemoval{
+		moment : Int = event.moment
+	}
+	
+	entity Release{
+		name : String
 	}
 	
 	relation TagProject{
@@ -134,6 +167,104 @@ model
 	relation CommentAuthor{
 		Comment 1
 		User *
+	}
+	
+	relation EventIsAComment{
+		Event ?
+		Comment 1
+	}
+
+	relation EventIsAIssueClose{
+		Event ?
+		IssueClose 1
+	}
+	
+	relation IssueCloseActor{
+		User *
+		IssueClose 1
+	}
+
+	relation EventIsAIssueReopen{
+		Event ?
+		IssueReopen 1
+	}
+	
+	relation IssueReopenActor{
+		User *
+		IssueReopen 1
+	}
+
+	relation EventIsAIssueMoved{
+		Event ?
+		IssueMoved 1
+	}
+	
+	relation IssueMoveActor{
+		IssueMoved 1
+		User *
+	}
+	
+	relation EventIsATagAddition{
+		Event ?
+		TagAddition 1
+	}
+	
+	relation TagAdditionActor{
+		TagAddition 1
+		User *
+	}
+	
+	relation EventIsATagRemoval{
+		Event ?
+		TagRemoval 1
+	}
+	
+	relation TagRemovalActor{
+		TagRemoval 1
+		User *
+	}
+	
+	relation IssueGhostProject{
+		Project *
+		IssueGhost 1
+	}
+	
+	relation IssueGhostTag{
+		Tag *
+		IssueGhost *
+	}
+	
+	relation ProjectFollower{
+		Project *
+		User *
+		project.follower <-> user.following
+	}
+	
+	relation ProjectMember{
+		Project *
+		User *
+		project.member <-> user.memberOf
+	}
+	
+	relation ProjectMemberRequest{
+		Project *
+		User *
+		project.memberRequest <-> user.memberOfRequest
+	}
+
+	relation ReleaseProject{
+		Project *
+		Release 1
+	}
+
+	relation ReleaseIssue{
+		Release *
+		Issue ?
+	}
+	
+	relation UserAuthenticationKey{
+		User *
+		AuthenticationKey 1
 	}
 
 data
