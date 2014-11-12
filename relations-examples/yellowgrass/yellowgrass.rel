@@ -109,9 +109,9 @@ model
 		Project *
 	}
 	
-	relation TagTree{
-		Tag * parent <- treeParent
-		Tag ? child <- treeChild
+	relation TagTag{
+		Tag * hasTag <- hasTagRelation
+		Tag * taggedBy <- taggedByRelation
 	}
 	
 	relation IssueTags{
@@ -164,11 +164,6 @@ model
 		Issue *
 	}
 	
-	relation CommentAuthor{
-		Comment 1
-		User *
-	}
-	
 	relation EventIsAComment{
 		Event ?
 		Comment 1
@@ -179,29 +174,14 @@ model
 		IssueClose 1
 	}
 	
-	relation IssueCloseActor{
-		User *
-		IssueClose 1
-	}
-
 	relation EventIsAIssueReopen{
 		Event ?
 		IssueReopen 1
 	}
 	
-	relation IssueReopenActor{
-		User *
-		IssueReopen 1
-	}
-
 	relation EventIsAIssueMoved{
 		Event ?
 		IssueMoved 1
-	}
-	
-	relation IssueMoveActor{
-		IssueMoved 1
-		User *
 	}
 	
 	relation EventIsATagAddition{
@@ -209,18 +189,13 @@ model
 		TagAddition 1
 	}
 	
-	relation TagAdditionActor{
-		TagAddition 1
-		User *
-	}
-	
 	relation EventIsATagRemoval{
 		Event ?
 		TagRemoval 1
 	}
 	
-	relation TagRemovalActor{
-		TagRemoval 1
+	relation EventActor{
+		Event 1
 		User *
 	}
 	
