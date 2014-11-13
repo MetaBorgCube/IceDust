@@ -216,7 +216,7 @@ model
 	}
 	
 	relation ProjectMember{
-		Project *
+		Project +
 		User *
 		project.member <-> user.memberOf
 	}
