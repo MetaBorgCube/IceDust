@@ -29,22 +29,32 @@ rules // Editor services
 
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
+	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
 		(target, position, ast, path, project-path) -> hoverinfo
 		with
-			if <hover-parent-for>target then
-				target' := <parent-at-position(|position)>ast
+			if Some(a) := target then
+				target' := a
 			else
 				target' := target
 			end;
-			hoverinfo := <get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target'
+			if <hover-parent-for>target' then
+				target'' := <parent-at-position(|position)>ast
+			else
+				target'' := target'
+			end;
+			hoverinfo := <get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target''
 
-	hover-parent-not-for: False() -> False()
-	hover-parent-not-for: True() -> True()
-	hover-parent-for: a -> a
+	hover-parent-for: a -> a // for constructors with no children hover parent
 		where
 			[] := <get-arguments>a;
-			<not(hover-parent-not-for)>a
+			<not(is-string)>a;
+			<not(?False())>a;
+			<not(?True())>a
+	hover-parent-for: a -> a // for strings, hover parent if it is not a reference
+		where
+			<is-string>a;
+			None() := <ref-prop>a
 
 	// FIXME: NaBL should have generated this	
   nabl-get-name : Entity(_, a, _) -> a
