@@ -30,8 +30,24 @@ rules // Editor services
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
 	editor-hover:
-		(target, position, ast, path, project-path) ->
-			<get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target
+		(target, position, ast, path, project-path) -> hoverinfo
+		with
+			if <hover-parent-for>target then
+				target' := <parent-at-position(|position)>ast
+			else
+				target' := target
+			end;
+			hoverinfo := <get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target'
+
+	hover-parent-not-for: False() -> False()
+	hover-parent-not-for: True() -> True()
+	hover-parent-for: a -> a
+		where
+			[] := <get-arguments>a;
+			<not(hover-parent-not-for)>a
+
+	// FIXME: NaBL should have generated this	
+  nabl-get-name : Entity(_, a, _) -> a
 
 	// Gathers the properties for the properties view.
 	editor-properties:

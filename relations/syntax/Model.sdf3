@@ -8,18 +8,12 @@ imports
 templates // entities
 
 	Model.Entity = <
-		entity<EntityType> <ID> {
+		<EntityOrRelation> <ID> {
 			<Member*;separator="\n">
 		}
 	>
-	EntityType.EntityType = <>
-	
-	Model.Entity = <
-		relation<RelationType> <ID> {
-			<Member*;separator="\n">
-		}
-	>
-	RelationType.RelationType = <>
+	EntityOrRelation.EntityType = <entity>
+	EntityOrRelation.RelationType = <relation>
 
 templates // entity members
 
