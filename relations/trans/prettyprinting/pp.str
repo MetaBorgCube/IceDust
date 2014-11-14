@@ -13,6 +13,9 @@ imports
 	Execute.pp.generated
 	Expressions.pp.generated
 	Types.pp.generated
+	
+	include/Relations
+	trans/desugaring/desugar
 
 rules
 	
@@ -40,3 +43,4 @@ rules // needed after desugaring
 			not(None() := x);
 			not(Some(_) := x)
 	
+	prettyprint-Start: ModuleDesugared(a,b,c,d) -> <prettyprint-Start>Module(a,b,c,d)

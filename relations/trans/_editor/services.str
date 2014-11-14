@@ -16,6 +16,7 @@ imports
 	
 	trans/prettyprinting/pp
 	trans/naming/names
+	trans/lib/string
 	
 	include/Relations
 	
@@ -39,11 +40,15 @@ rules // Editor services
 				target' := target
 			end;
 			if <hover-parent-for>target' then
-				target'' := <parent-at-position(|position)>ast
+				if [_] := position then // if first level child parent-at-position fails
+					target'' := ast
+				else
+					target'' := <parent-at-position(|position)>ast
+				end
 			else
 				target'' := target'
 			end;
-			hoverinfo := <get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target''
+			hoverinfo := <get-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path);properties-to-html>target''
 
 	hover-parent-for: a -> a // for constructors with no children hover parent
 		where
