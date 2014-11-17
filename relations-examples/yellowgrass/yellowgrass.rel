@@ -33,7 +33,7 @@ model
 		open : Boolean
 		email : String
 		
-		nrVotes : Int // = ...
+		nrVotes : Int = sum(this.issueTags.isVote2)
 		reporterName : String = user.name <+ ""
 		
 		hasDueDate : Boolean = false (default)
@@ -80,7 +80,11 @@ model
 		file : String
 	}
 	
-	entity Event{
+	relation Event{
+		User * actor
+		Issue *
+		actor.eventIssue <-> issue.eventActor
+		
 		moment : Int
 	}
 	
@@ -90,13 +94,16 @@ model
 	entity IssueReopen{
 		moment : Int = event.moment
 	}
-	entity IssueMoved{
+	relation IssueMoved{
+		Project * target
 		moment : Int = event.moment
 	}
-	entity TagAddition{
+	relation TagAddition{
+		Tag *
 		moment : Int = event.moment
 	}
-	entity TagRemoval{
+	relation TagRemoval{
+		Tag *
 		moment : Int = event.moment
 	}
 	
@@ -117,6 +124,10 @@ model
 	relation IssueTags{
 		Tag *
 		Issue *
+		
+		isVote : Boolean // = "!"+tag.name == event.user.name (however the issue tags are not connect to their creation events...)
+		isVote2: Int = isVote?1:0
+			
 	}
 	
 	relation QuestionProject{
@@ -192,11 +203,6 @@ model
 	relation EventIsATagRemoval{
 		Event ?
 		TagRemoval 1
-	}
-	
-	relation EventActor{
-		Event 1
-		User *
 	}
 	
 	relation IssueGhostProject{
