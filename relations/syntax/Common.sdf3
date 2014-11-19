@@ -33,22 +33,20 @@ lexical restrictions
 
 lexical syntax // literals
 
-	"-"? [0-9]+   -> INT
-	StringChar*   -> STRING
-	~[\"\n]       -> StringChar
-	"\\\""        -> StringChar
-	BackSlashChar -> StringChar
-	"\\"          -> BackSlashChar
-	
+  INT 					= "-"? [0-9]+ 
+  STRING 				= StringChar* 
+  StringChar 		= ~[\"\n] 
+  StringChar 		= "\\\"" 
+  StringChar 		= BackSlashChar 
+  BackSlashChar = "\\" 
+
 lexical syntax // layout
-	
-	[\ \t\n\r] -> LAYOUT
-	
-	[\*]                             -> CommentChar
-	"/*" (~[\*] | CommentChar)* "*/" -> LAYOUT
-	"//" ~[\n\r]* ([\n\r] | EOF)     -> LAYOUT
-	
-	-> EOF
+
+  LAYOUT 				= [\ \t\n\r] 
+  CommentChar 	= [\*] 
+  LAYOUT 				= "/*" ~[\*] | CommentChar* "*/" 
+  LAYOUT 				= "//" ~[\n\r]* [\n\r] | EOF 
+  EOF 					=  
 
 lexical restrictions
 
