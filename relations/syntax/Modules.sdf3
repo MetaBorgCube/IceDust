@@ -33,7 +33,7 @@ context-free syntax // modules
 	RulesDef.RulesDef = <
 		rules
 		
-		  <Rule*;separator="\n\n">
+			<{Rule "\n\n"}*>
 	>
 	
 	DataDef.DataDef = <

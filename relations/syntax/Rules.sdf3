@@ -6,13 +6,13 @@ imports
 	Types
 	Model
 	
-templates
+context-free syntax
 
 	Rule.Rule = <
-		<ID> (<Param*;separator=",">) :
-			<GraphPart*;separator="\n">
+		<ID> (<{Param ","}*>) :
+			<{GraphPart "\n"}*>
 		-\>
-			<GraphPart*;separator="\n">
+			<{GraphPart "\n"}*>
 	>
 
 	Param.Param = <<EntityRef> <ID>>
