@@ -44,3 +44,5 @@ lib-refactoring/*.generated.str
 */*/*/*/*.aterm
 syntax/*.sdf
 /include
+target
+src-gen
