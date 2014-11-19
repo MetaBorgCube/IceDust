@@ -1,0 +1,50 @@
+module compiler
+
+model
+
+	// AST structure
+	entity ASTRoot{}
+	entity ASTClass{name:String}
+	relation A1{ASTRoot * ASTClass 1}
+	entity ASTFunction{name:String type:String}
+	relation A2{ASTClass * ASTFunction 1}
+	entity ASTStatement{}
+	relation A3{ASTFunction * ASTStatement 1}
+	entity ASTStatementReturn{}
+	relation A4{ASTStatement ? ASTStatementReturn 1}
+	
+	entity ASTExpression{}
+	relation A6{ASTStatementReturn 1 parent  ASTExpression ? returnExpression}
+	entity ASTExpressionConstant{value:Int}
+	relation A7{ASTExpression ? ASTExpressionConstant 1}
+	entity ASTExpressionPlus{}
+	relation A8{ASTExpression ? ASTExpressionPlus 1}
+	relation A9{ASTExpression ? leftExpression ASTExpressionPlus 1 parentLeft}
+	relation A10{ASTExpression ? rightExpression ASTExpressionPlus 1 parentRight}
+	entity ASTExpressionMinus{}
+	relation A11{ASTExpression ? ASTExpressionMinus 1}
+	relation A12{ASTExpression ? leftExpression ASTExpressionMinus 1 parentLeft2}
+	relation A13{ASTExpression ? rightExpression ASTExpressionMinus 1 parentRight2}
+	entity ASTExpressionFCall{name:String}
+	relation A14{ASTExpression ? ASTExpressionFCall 1}
+	entity ASTExpressionNew{className:String}
+	relation A15{ASTExpression ? ASTExpressionNew 1}
+	
+	// Name Defs
+	entity NameClass{}
+	relation N1{ASTClass 1 NameClass 1}
+	entity NameFunction{}
+	relation N2{ASTFunction 1 NameFunction 1}
+	relation N3{NameClass * parent NameFunction 1 child}
+	
+	// Name Refs
+	relation R1{NameClass * ASTExpressionNew ?}
+	relation R2{NameFunction * ASTExpressionFCall ?}
+	
+	// Types
+	entity Type{}
+	entity TypePrimitive{TypePrimitive:String}
+	relation T1{Type ? TypePrimitive 1}
+	entity TypeClass{}
+	relation T2{Type ? TypeClass 1}
+	relation T3{TypeClass 1 NameClass 1}
