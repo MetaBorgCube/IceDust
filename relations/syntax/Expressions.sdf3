@@ -5,11 +5,11 @@ imports
 	Data
 	Model
 
-templates // brackets
+context-free syntax // brackets
 
   Exp                    = <(<Exp>)>               {bracket}
 
-templates // operators
+context-free syntax // operators
 
   Exp.MemberAccess       = <<Exp> . <ID>>          {left}
   Exp.Not                = <!<Exp>>                {right}
@@ -33,7 +33,7 @@ templates // operators
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
-templates // built-in functions
+context-free syntax // built-in functions
 
   Exp.Min                = <min ( <Exp> )>
   Exp.Max                = <max ( <Exp> )>
@@ -44,12 +44,12 @@ templates // built-in functions
   Exp.Conj               = <conj ( <Exp> )>
   Exp.Disj               = <disj ( <Exp> )>
 
-templates // references
+context-free syntax // references
 
   Exp.This               = <this>
   Exp.Ref                = <<ID>>
   
-templates // literal values
+context-free syntax // literal values
 
   Exp                    = <<LitVal>>
   LitVal.String          = <"<STRING>">

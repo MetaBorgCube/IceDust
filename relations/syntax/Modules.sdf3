@@ -7,7 +7,7 @@ imports
 	Execute
 
 
-templates // modules
+context-free syntax // modules
 
 	Start.Module = <
 		module <ID>
@@ -23,17 +23,18 @@ templates // modules
 	ModelDef.ModelDef = <
 		model
 		
-		  <Model*;separator="\n\n">
+		  <{Model "\n\n"}*>
+
 	>
 	
 	DataDef.DataDef = <
 		data
 		
-		  <Data*;separator="\n\n">
+			<{Data "\n\n"}*>
 	>
 	
 	Executable.Executable = <
 		execute
 		
-		  <Execute*;separator="\n\n">
+			<{Execute "\n\n"}*>
   >

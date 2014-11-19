@@ -1,6 +1,6 @@
 module Types
 
-templates
+context-free syntax
 
 	PrimitiveType.Boolean	  = <Boolean>
 	PrimitiveType.Int			  = <Int>
