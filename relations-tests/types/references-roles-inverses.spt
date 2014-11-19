@@ -11,6 +11,13 @@ setup Common [[
 		Node 1 one   <- one
 		Node * star  <- star
 		Node + plus  <- plus
+		
+		maybe.a <-> one.b
+		maybe.c <-> star.d
+		maybe.e <-> plus.f
+		one.g <-> star.h
+		one.i <-> plus.j
+		
 	}
 	data
 	Node n{}

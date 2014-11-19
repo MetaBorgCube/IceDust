@@ -5,23 +5,17 @@ imports
 	Expressions
 	Types
 
-templates // entities
+context-free syntax // entities
 
 	Model.Entity = <
-		entity<EntityType> <ID> {
-			<Member*;separator="\n">
+		<EntityOrRelation> <ID> {
+			<{Member "\n"}*>
 		}
 	>
-	EntityType.EntityType = <>
-	
-	Model.Entity = <
-		relation<RelationType> <ID> {
-			<Member*;separator="\n">
-		}
-	>
-	RelationType.RelationType = <>
+	EntityOrRelation.EntityType = <entity>
+	EntityOrRelation.RelationType = <relation>
 
-templates // entity members
+context-free syntax // entity members
 
 	Member											= <<Attribute>>
 	Member											= <<Role>>
@@ -37,7 +31,7 @@ templates // entity members
 
 	Shortcut.Shortcut						= <<RoleRef>.<ID> <ID?> \<-\> <ID?> <RoleRef>.<ID>>
 
-templates // specific references
+context-free syntax // specific references
 	
 	EntityRef.EntityRef 				= <<ID>>
 	AttributeRef.AttributeRef   = <<ID>>

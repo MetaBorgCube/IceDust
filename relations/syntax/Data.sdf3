@@ -5,12 +5,12 @@ imports
 	Model
 	Expressions
 
-templates   // entity instances
+context-free syntax   // entity instances
 
   Data.EntityInstance = <
     <EntityRef> <ID?> {
-	    <RoleValue*; separator="\n">
-	    <AttributeValue*; separator="\n">
+    	<{RoleValue "\n"}*>
+    	<{AttributeValue "\n"}*>
     }
   >
 
@@ -18,6 +18,6 @@ templates   // entity instances
  
   RoleValue.RoleValue = <<RoleRef> : <EntityInstanceRef>>
 
-templates // specific references
+context-free syntax // specific references
 	
 	EntityInstanceRef.EntityInstanceRef = <<ID>>

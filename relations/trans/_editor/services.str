@@ -16,6 +16,7 @@ imports
 	
 	trans/prettyprinting/pp
 	trans/naming/names
+	trans/lib/string
 	
 	include/Relations
 	
@@ -29,9 +30,39 @@ rules // Editor services
 
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
+	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
-		(target, position, ast, path, project-path) ->
-			<get-editor-properties(pp-partial-Relations-string |<language>, project-path);properties-to-html>target
+		(target, position, ast, path, project-path) -> hoverinfo
+		with
+			if Some(a) := target then
+				target' := a
+			else
+				target' := target
+			end;
+			if <hover-parent-for>target' then
+				if [_] := position then // if first level child parent-at-position fails
+					target'' := ast
+				else
+					target'' := <parent-at-position(|position)>ast
+				end
+			else
+				target'' := target'
+			end;
+			hoverinfo := <get-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path);properties-to-html>target''
+
+	hover-parent-for: a -> a // for constructors with no children hover parent
+		where
+			[] := <get-arguments>a;
+			<not(is-string)>a;
+			<not(?False())>a;
+			<not(?True())>a
+	hover-parent-for: a -> a // for strings, hover parent if it is not a reference
+		where
+			<is-string>a;
+			None() := <ref-prop>a
+
+	// FIXME: NaBL should have generated this	
+  nabl-get-name : Entity(_, a, _) -> a
 
 	// Gathers the properties for the properties view.
 	editor-properties:

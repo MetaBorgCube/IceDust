@@ -1,0 +1,257 @@
+module yellowgrass
+
+model
+
+	entity User{
+		name : String
+		email : String
+		notifications : Boolean
+		password : String
+		url : String
+		tag : String
+	}
+	
+	entity AuthenticationKey{
+		deviceDescription : String
+	}
+	
+	entity Project{
+		name : String
+		description : String
+		url : String
+		privatee : Boolean // NOTE: private as field name makes generated code fail
+		email : String
+		
+		key : String = name (default)
+	}
+
+	entity Issue{
+		number : Int
+		title : String
+		description : String
+		preview : String
+		open : Boolean
+		email : String
+		
+		nrVotes : Int = sum(this.issueTags.isVote2)
+		reporterName : String = user.name <+ ""
+		
+		hasDueDate : Boolean = false (default)
+		due : Int?
+	}
+	
+	entity IssueGhost{
+		title: String
+		description : String
+		email : String
+		alive : Boolean
+	}
+	
+	entity Comment{
+		text : String
+		preview : String
+		
+		moment : Int = event.moment
+	}
+	
+	entity Question{
+		number : Int
+		title : String
+		urlTitle : String
+		description : String
+		preview : String
+		open : Boolean
+		email : String
+	}
+	
+	entity Answer{
+		text : String
+		preview : String
+	}
+	
+	entity Tag{
+		name : String
+		description : String
+		isRelease : Boolean
+	}
+	
+	entity Attachment{
+		date : Int
+		file : String
+	}
+	
+	relation Event{
+		User * actor
+		Issue *
+		actor.eventIssue <-> issue.eventActor
+		
+		moment : Int
+	}
+	
+	entity IssueClose{
+		moment : Int = event.moment
+	}
+	entity IssueReopen{
+		moment : Int = event.moment
+	}
+	relation IssueMoved{
+		Project * target
+		moment : Int = event.moment
+	}
+	relation TagAddition{
+		Tag *
+		moment : Int = event.moment
+	}
+	relation TagRemoval{
+		Tag *
+		moment : Int = event.moment
+	}
+	
+	entity Release{
+		name : String
+	}
+	
+	relation TagProject{
+		Tag 1
+		Project *
+	}
+	
+	relation TagTag{
+		Tag * hasTag <- hasTagRelation
+		Tag * taggedBy <- taggedByRelation
+	}
+	
+	relation IssueTags{
+		Tag *
+		Issue *
+		
+		isVote : Boolean // = "!"+tag.name == event.user.name (however the issue tags are not connect to their creation events...)
+		isVote2: Int = isVote?1:0
+			
+	}
+	
+	relation QuestionProject{
+		Project *
+		Question 1
+	}
+	
+	relation QuestionAuthor{
+		User *
+		Question 1
+	}
+	
+	relation QuestionTag{
+		Tag *
+		Question *
+	}
+	
+	relation QuestionAnswer{
+		Question *
+		Answer 1
+	}
+	
+	relation AnswerAuthor{
+		User *
+		Answer 1
+	}
+	
+	relation IssueReporter{
+		Issue ?
+		User *
+	}
+	
+	relation IssueProject{
+		Issue 1
+		Project *
+	}
+	
+	relation IssueAttachment{
+		Issue *
+		Attachment 1
+	}
+	
+	relation IssueComment{
+		Comment 1
+		Issue *
+	}
+	
+	relation EventIsAComment{
+		Event ?
+		Comment 1
+	}
+
+	relation EventIsAIssueClose{
+		Event ?
+		IssueClose 1
+	}
+	
+	relation EventIsAIssueReopen{
+		Event ?
+		IssueReopen 1
+	}
+	
+	relation EventIsAIssueMoved{
+		Event ?
+		IssueMoved 1
+	}
+	
+	relation EventIsATagAddition{
+		Event ?
+		TagAddition 1
+	}
+	
+	relation EventIsATagRemoval{
+		Event ?
+		TagRemoval 1
+	}
+	
+	relation IssueGhostProject{
+		Project *
+		IssueGhost 1
+	}
+	
+	relation IssueGhostTag{
+		Tag *
+		IssueGhost *
+	}
+	
+	relation ProjectFollower{
+		Project *
+		User *
+		project.follower <-> user.following
+	}
+	
+	relation ProjectMember{
+		Project +
+		User *
+		project.member <-> user.memberOf
+	}
+	
+	relation ProjectMemberRequest{
+		Project *
+		User *
+		project.memberRequest <-> user.memberOfRequest
+	}
+
+	relation ReleaseProject{
+		Project *
+		Release 1
+	}
+
+	relation ReleaseIssue{
+		Release *
+		Issue ?
+	}
+	
+	relation UserAuthenticationKey{
+		User *
+		AuthenticationKey 1
+	}
+
+data
+
+
+
+execute
+
+	"Model Works"
