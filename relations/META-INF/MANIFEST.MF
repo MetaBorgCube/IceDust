@@ -3,7 +3,7 @@ Eclipse-RegisterBuddy: org.strategoxt.imp.runtime
 Bundle-SymbolicName: Relations; singleton:=true
 Export-Package: Relations
 Bundle-Name: Relations Plug-in
-Bundle-Version: 0.2.2
+Bundle-Version: 0.2.3
 Require-Bundle:  org.spoofax.jsglr, org.eclipse.ui.workbench.textedito
  r,org.eclipse.core.runtime, org.strategoxt.strj, org.eclipse.jface.te
  xt, org.eclipse.core.resources, org.eclipse.ui, org.eclipse.ui.editor
