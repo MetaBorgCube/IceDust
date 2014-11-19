@@ -1,0 +1,16 @@
+module trans/lib/string
+
+imports
+
+	lib/editor-common.generated
+
+rules 
+	
+	truncate-string(|maxlen): s -> s'
+		with
+			if <gt>(<strlen>s, maxlen) then
+				trunc := <explode-string;split-at(|<dec;dec;dec>maxlen);?(<id>,_);implode-string>s;
+				s':= <conc-strings>(trunc, "...")
+			else
+				s' := s
+			end

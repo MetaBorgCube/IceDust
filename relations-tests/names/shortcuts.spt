@@ -61,3 +61,28 @@ test Resolve invalid role in shortcut fails [[
 		student.abc <-> [[iDoNotExist]].bcd
 	}
 ]] 1 error
+
+test error on duplicate shortcut [[
+	entity Node {}
+	relation Edge {
+		Node 1 a <- c
+		Node 1 b <- d
+		
+		a.[[node]] <-> b.[[node]]
+	}
+]] 2 errors
+
+test error on duplicate shortcut by desugaring [[
+	entity Project{}
+	entity Issue{}
+
+	relation IssueProject{
+		Issue 1
+		Project *
+	}
+	
+	relation ProjectIssue{
+		Issue 1
+		Project *
+	}
+]] 4 errors

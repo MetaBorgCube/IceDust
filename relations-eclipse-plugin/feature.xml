@@ -2,7 +2,7 @@
 <feature
       id="Relations_Language_Plugin"
       label="Relations Language Editor"
-      version="0.2.1">
+      version="0.2.2">
 
    <description url="https://github.com/dcharkes/relations">
       The Relations Language Editor
@@ -29,6 +29,6 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
          id="Relations"
          download-size="0"
          install-size="0"
-         version="0.2.1"/>
+         version="0.2.2"/>
 
 </feature>
