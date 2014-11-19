@@ -1,37 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Relations" default="all">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="all" name="Relations">
    
 		<!-- overwrite the generated file to not generate from sdf3 for speed improvement -->
 		<!-- The files for which the on-save handler is called before building. -->
 		<path id="call-onsave.files">
 			<fileset dir=".">
-				<include name="**/*.nab" />
-				<include name="**/*.ts" />
+				<include name="**/*.nab"/>
+				<include name="**/*.ts"/>
 			</fileset>
 		</path>
 	
     <!-- Key input modules -->
     <property name="sdfmodule" value="Relations"/>
-    <property name="metasdfmodule" value="Stratego-Relations"/>
+    <property name="ppmodule" value="${sdfmodule}-pp"/>
+  <property name="sigmodule" value="${sdfmodule}-sig"/>
+  <property name="metasdfmodule" value="Stratego-Relations"/>
     <property name="esvmodule" value="Relations"/>
     <property name="strmodule" value="relations"/>
 
     <!-- Project directories -->
-    <property name="trans" location="trans"/>
-    <property name="src-gen" location="editor/java"/>
-    <property name="syntax" location="syntax"/>
-    <property name="include" location="include"/>
-    <property name="lib" location="lib"/>
-    <property name="build" location="bin"/>
-    <property name="dist" location="bin/dist"/>
+    <property location="trans" name="trans"/>
+    <property location="editor/java" name="src-gen"/>
+    <property location="src-gen/syntax" name="syntax"/>
+    <property location="include" name="include"/>
+    <property location="lib" name="lib"/>
+    <property location="src-gen" name="sdf-src-gen"/>
+  <property location="${sdf-src-gen}/pp" name="pp"/>
+  <property location="${sdf-src-gen}/signatures" name="signatures"/>
+  <property location="${include}" name="lib-gen"/>
+  <property location="${syntax}" name="syntax.rel" relative="yes"/>
+  <property location="${trans}" name="trans.rel" relative="yes"/>
+  <property location="${include}" name="include.rel" relative="yes"/>
+  <property location="${lib-gen}" name="lib-gen.rel" relative="yes"/>
+  <property location="target/classes" name="build"/>
+    <property location="bin/dist" name="dist"/>
     
     <!-- Imports -->
     <property name="build.sdf.imports" value=""/>
-    <property name="build.stratego.args" value="
-                    --library
-                    -I &quot;${trans}&quot;
-                    -I &quot;${basedir}&quot;
-                    -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm -la stratego-parallel"/>
+    <property name="build.stratego.args" value="                     --library                     -I &quot;${trans}&quot;                     -I &quot;${basedir}&quot;                     -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm -la stratego-parallel"/>
     
     <!-- Optional: external .def and .jar locations
     <property name="externaldef" location="syntax/${sdfmodule}.def"/>
@@ -89,14 +95,17 @@
 	</target> -->
 
     <!-- Environment configuration for command-line builds -->
-    <condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
+    <property name="nativepath" value="${eclipse.spoofaximp.nativeprefix}"/>
+  <condition else="" property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}">
         <isset property="eclipse.spoofaximp.nativeprefix"/>
     </condition>
-    <property name="build.strategoxt.stratego" location="${user.home}/.nix-profile/bin"/>
+    <property location="${user.home}/.nix-profile/bin" name="build.strategoxt.stratego"/>
 		
     <!-- used for building inside of Eclipse -->
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target name="all" depends="spoofaximp.default.jar"/>
+    <target depends="spoofaximp.default.jar" name="all"/>
+<target depends="generate-sources-java" name="generate-sources"/>
+  <target depends="package-java" name="package"/>
 </project>
