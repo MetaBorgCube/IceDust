@@ -68,17 +68,33 @@ rules // unresolved references manual messages
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
+	entity-member-ns: _ -> [NablNsAttribute(),NablNsRole(),NablNsInverse(),NablNsShortcut()]
+
 	nabl-constraint(|ctx):
-		Attribute(a-name, _, _, _) -> <fail>
+		a -> <fail>
+			where
+				name := <nabl-get-name>a;
+				uri := <nabl-uri> name;
+				ns	:= <nabl-uri-namespace> uri;
+				<get-index>(ns, <entity-member-ns>)
+			with
+				<name-nses-conflict(|ctx)><nabl-get-name>a
+	
+	name-nses-conflict(|ctx): a-name -> <id>
 		with
-			role-defs := <nabl-lookup-lexical(|ctx, NablNsRole())> a-name;
+			<map(name-ns-conflict(|ctx, a-name))><entity-member-ns>
+
+	name-ns-conflict(|ctx, a-name): conflict-ns -> <id>
+		with
 			uri := <nabl-uri> a-name;
 			ns	:= <nabl-uri-namespace> uri;
-			uri':= <nabl-uri-parent> uri;
-			parent:= <nabl-uri-name> uri';
-			parent-ns := <nabl-uri-namespace> uri';
-			<task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <pp-ns>ns, " and Role ", a-name, " in ", <pp-ns>parent-ns, " ", parent])> a-name
-
+			if <not(eq)> (conflict-ns, ns) then
+				uri':= <nabl-uri-parent> uri;
+				parent:= <nabl-uri-name> uri';
+				parent-ns := <nabl-uri-namespace> uri';
+				role-defs := <nabl-lookup-lexical(|ctx, conflict-ns)> a-name;
+				<task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <pp-ns>ns, " and ", <pp-ns>conflict-ns, " ", a-name, " in ", <pp-ns>parent-ns, " ", parent])> a-name
+			end
 
 rules // check if entities have all the required attributes and roles assigned
 
