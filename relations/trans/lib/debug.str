@@ -1,0 +1,38 @@
+module trans/lib/debug
+
+imports
+	
+	runtime/task/insert
+	runtime/editor/properties
+	runtime/task/core
+
+rules // debug tasks
+	
+	debug-task = debug-task-s;debug
+
+	debug-task-s: a -> result
+		with
+			a-nr := <try(task-number)> a;
+			a-result := <insert-results-or-delay <+ id> a;
+			a-pp := <pp-uris>a-result;
+			result := $[Task [<to-string>a-nr]: [<to-string;unescape>a-pp]]
+
+	task-number: Result(a) -> a
+	
+	pp-uris = bottomup(try(pp-uri))
+
+rules // debug with prefix
+	
+	debug(|info): a -> <debug>$[[<to-string>info]: [<to-string>a]]
+	
+	debug-task(|info) = debug-task-s;debug(|info)
+
+rules // strings
+
+	to-string: a -> <id>
+		where
+			is-string
+	
+	to-string: a -> <write-to-string>a
+		where
+			not(is-string)

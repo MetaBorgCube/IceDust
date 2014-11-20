@@ -9,7 +9,7 @@ imports
 
 	include/Relations
 	trans/naming/names
-	
+	trans/lib/debug
 
 signature constructors
 	
@@ -65,6 +65,28 @@ rules // unresolved references manual messages
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
+	
+	nabl-constraint(|ctx):
+		Attribute(a-name, _, _, _) -> <fail>
+		with
+			// get attribute uri
+			a-def := <nabl-create-collectdefs(|ctx)> a-name;
+			a-uri := a-def;
+			<debug-task(|"a-uri")> a-uri
+
+			// get entity uri
+			// e-uri := <nabl-lookup-lexical(|ctx, NablNsEntity())> a-uri;
+			// e-uri := <nabl-create-suburi(|ctx, NablNsEntity())> a-uri;
+			// <debug-task(|"e-uri")> e-uri
+
+			// get role, inverse and shortcuts children of entity
+
+			// filter uri's by attribute name
+
+			// if any left, give error
+
 
 rules // check if entities have all the required attributes and roles assigned
 
