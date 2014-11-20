@@ -70,13 +70,34 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 	
 	entity-member-ns: _ -> [NablNsAttribute(),NablNsRole(),NablNsInverse(),NablNsShortcut()]
 
-	nabl-constraint(|ctx):
-		a -> <fail>
-			where
-				name := <nabl-get-name>a;
-				uri := <nabl-uri> name;
-				ns	:= <nabl-uri-namespace> uri;
-				<get-index>(ns, <entity-member-ns>)
+	// nabl-constraint(|ctx):
+	// 	a -> <fail>
+	// 		where
+	// 			name := <nabl-get-name>a;
+	// 			uri := <nabl-uri> name;
+	// 			ns	:= <nabl-uri-namespace> uri;
+	// 			<get-index>(ns, <entity-member-ns>);
+	// 			<debug>a
+	// 		with
+	// 			<name-nses-conflict(|ctx)><nabl-get-name>a
+
+	nabl-constraint(|ctx): Attribute(a,_,_,_) -> <fail>
+			with
+				<name-nses-conflict(|ctx)><nabl-get-name>a
+				
+	nabl-constraint(|ctx): Role(_,_,a,_) -> <fail>
+			with
+				<name-nses-conflict(|ctx)><nabl-get-name>a
+				
+	nabl-constraint(|ctx): Role(_,_,_,a) -> <fail>
+			with
+				<name-nses-conflict(|ctx)><nabl-get-name>a
+				
+	nabl-constraint(|ctx): Shortcut(_,a,_,_,_,_) -> <fail>
+			with
+				<name-nses-conflict(|ctx)><nabl-get-name>a
+				
+	nabl-constraint(|ctx): Shortcut(_,_,_,_,_,a) -> <fail>
 			with
 				<name-nses-conflict(|ctx)><nabl-get-name>a
 	
