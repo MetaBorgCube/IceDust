@@ -71,21 +71,13 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 	nabl-constraint(|ctx):
 		Attribute(a-name, _, _, _) -> <fail>
 		with
-			// get attribute uri
-			a-def := <nabl-create-collectdefs(|ctx)> a-name;
-			a-uri := a-def;
-			<debug-task(|"a-uri")> a-uri
-
-			// get entity uri
-			// e-uri := <nabl-lookup-lexical(|ctx, NablNsEntity())> a-uri;
-			// e-uri := <nabl-create-suburi(|ctx, NablNsEntity())> a-uri;
-			// <debug-task(|"e-uri")> e-uri
-
-			// get role, inverse and shortcuts children of entity
-
-			// filter uri's by attribute name
-
-			// if any left, give error
+			role-defs := <nabl-lookup-lexical(|ctx, NablNsRole())> a-name;
+			uri := <nabl-uri> a-name;
+			ns	:= <nabl-uri-namespace> uri;
+			uri':= <nabl-uri-parent> uri;
+			parent:= <nabl-uri-name> uri';
+			parent-ns := <nabl-uri-namespace> uri';
+			<task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <pp-ns>ns, " and Role ", a-name, " in ", <pp-ns>parent-ns, " ", parent])> a-name
 
 
 rules // check if entities have all the required attributes and roles assigned
