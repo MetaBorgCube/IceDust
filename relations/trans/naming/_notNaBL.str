@@ -73,13 +73,14 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 	// nabl-constraint(|ctx):
 	// 	a -> <fail>
 	// 		where
-	// 			name := <nabl-get-name>a;
-	// 			uri := <nabl-uri> name;
+	// 			<debug>a;
+	// 			uri := <nabl-uri> a; //fails on This() for example, http://yellowgrass.org/issue/NaBL/123
+	// 			<debug>uri;
 	// 			ns	:= <nabl-uri-namespace> uri;
-	// 			<get-index>(ns, <entity-member-ns>);
-	// 			<debug>a
+	// 			<debug>ns;
+	// 			<fetch(?ns)><entity-member-ns>
 	// 		with
-	// 			<name-nses-conflict(|ctx)><nabl-get-name>a
+	// 			<name-nses-conflict(|ctx)>a
 
 	entity-member-constructor:  Attribute(a,_,_,_) -> a
 	entity-member-constructor:  Role(_,_,a,_) -> a
