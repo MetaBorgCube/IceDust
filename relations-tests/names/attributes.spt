@@ -81,6 +81,7 @@ test Resolve attribute from role.attribute [[
 	relation Edge{
 		Node * in  <- in
 		Node * out <- out
+		in.a <-> out.b
 	}
 ]] resolve #2 to #1
 

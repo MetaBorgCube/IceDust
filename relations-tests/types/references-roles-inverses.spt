@@ -17,6 +17,7 @@ setup Common [[
 		maybe.e <-> plus.f
 		one.g <-> star.h
 		one.i <-> plus.j
+		star.k <-> plus.l
 		
 	}
 	data
