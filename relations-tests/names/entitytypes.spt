@@ -25,7 +25,7 @@ test Duplicate relation fails [[
 	}
 ]] 2 errors
 
-test (Wontfix non-unique) Resolve relation member to entity [[
+test (NaBL/122 TODO) Resolve relation member to entity [[
 	entity [[User]]{}
 	entity Book{}
 	relation Owns{
@@ -34,7 +34,7 @@ test (Wontfix non-unique) Resolve relation member to entity [[
 	}
 ]] resolve #2 to #1
 
-test (Wontfix non-unique) Resolve invalid relation member fails [[
+test (NaBL/122 TODO) Resolve invalid relation member fails [[
 	entity User{}
 	entity Book{}
 	relation Owns{
