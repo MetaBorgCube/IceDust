@@ -19,7 +19,11 @@ rules
 			]|
 		with
 			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
-			modelJava* := <to-java(err)>model
+			if ModelDef(_) := model then
+				modelJava* := <to-java(err)>model
+			else
+				modelJava* := []
+			end
 
 	main-class-to-java(err):
 		ModuleDesugared(moduleName, model, data, execute) ->
