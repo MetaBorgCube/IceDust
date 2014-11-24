@@ -68,7 +68,7 @@ rules // unresolved references manual messages
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
-		Role(NaBLHelp(_, e), _, _, _) -> <fail>
+		Role(NaBLHelp(e, _), _, _, _) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
