@@ -7,6 +7,7 @@ imports
 	include/Relations
 	trans/naming/names
 	trans/naming/_notNaBL
+	trans/desugaring/desugar
 	
 	trans/generating/expressions
 	trans/generating/types
@@ -181,7 +182,7 @@ rules
 					}
 				]|
 
-	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-many>multiplicity
 		with
@@ -224,7 +225,7 @@ rules
 				  }
 				]|
 
-	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-one>multiplicity
 		with

@@ -14,6 +14,7 @@ imports
 	
 	lib/runtime/editor/interop
 	
+	trans/desugaring/desugar
 	trans/prettyprinting/pp
 	trans/naming/names
 	trans/lib/string
@@ -60,6 +61,7 @@ rules // Editor services
 		where
 			<is-string>a;
 			None() := <ref-prop>a
+	hover-parent-for: NaBLHelp(_,_) -> <id>
 
 	// FIXME: NaBL should have generated this	
   nabl-get-name : Entity(_, a, _) -> a

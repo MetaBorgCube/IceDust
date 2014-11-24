@@ -10,6 +10,7 @@ imports
 	include/Relations
 	trans/naming/names
 	trans/lib/debug
+	trans/desugaring/desugar
 
 signature constructors
 	
@@ -64,6 +65,13 @@ rules // unresolved references manual messages
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+
+	nabl-constraint(|ctx):
+		Ext(e) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts

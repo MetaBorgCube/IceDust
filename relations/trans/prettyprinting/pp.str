@@ -46,4 +46,5 @@ rules // needed after desugaring
 	prettyprint-Start: ModuleDesugared(a,b,c,d) -> <prettyprint-Start>Module(a,b,c,d)
 
 	prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a
+	prettyprint-ID:      NaBLHelp(a, _) -> <prettyprint-ID>a
 	

@@ -21,6 +21,8 @@ signature constructors
 	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
 	
 	NaBLHelp : RoleRef * ID -> NaBLHelp
+	
+	Ext : ID -> Ext
 
 rules // general
 
