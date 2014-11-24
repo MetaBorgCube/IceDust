@@ -1,0 +1,39 @@
+module trans/desugaring/nablhelp
+
+imports
+	
+	include/Relations
+	trans/desugaring/desugar
+	
+rules
+	
+	nablhelp = bottomup(try(generate-shortcut-types)) // TODO: bottomup try is too much
+
+rules // add types to shortcuts
+	
+	generate-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
+		where
+			role-types := <filter(role-name-and-type)>members;
+			members' := <map(try(add-shortcut-types(|role-types)))> members
+	
+	role-name-and-type: Role(type, _, name, _) -> (name, type)
+	
+	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, RoleRef(role2), f) ->
+																	 Shortcut(NaBLHelp(RoleRef(role1), type1), b, NaBLHelp(RoleRef(role2), type2), f)
+		where
+			type1 := <role-type>(role1, role-types);
+			type2 := <role-type>(role2, role-types)
+		
+	role-type : (role, role-types) -> type
+		where
+			(_, type) := <filter(role-type(|role));first>role-types
+		<+
+				type := ""
+	
+	role-type(|role): (role2, type) -> <id>
+		where
+			<eq>(role, role2)
+
+	first: [a] -> a
+	first: [a|_] -> a
+

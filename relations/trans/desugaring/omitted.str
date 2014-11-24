@@ -1,0 +1,74 @@
+module trans/desugaring/omitted
+
+imports
+	
+	lib/runtime/editor/origins
+	trans/lib/new-name
+	include/Relations
+	trans/desugaring/desugar
+
+rules
+	
+	generate-omitted =
+		bottomup(try(omitted1));
+		bottomup(try(omitted2)) // TODO: just going down until you find a place and then go up should be enough.
+	
+	omitted1 = generate-attr-mult
+	omitted1 = generate-role-name
+	omitted1 = generate-inverse-name
+	omitted1 = generate-entity-names
+	
+	omitted2 = generate-shortcuts // requires omitted1 to be done first
+
+rules // generate omitted multiplicities
+
+	generate-attr-mult: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+
+rules // generate omitted role names
+
+	generate-role-name: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
+
+rules // generate omitted inverse names
+	
+	generate-inverse-name: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
+		with
+			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
+
+	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
+
+	custom-origin(|term) : custom-origin -> term
+
+rules	// generate omitted entity names
+
+	generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name))>c)
+	
+	generate-entity-name: (EntityInstance(EntityRef(e-ty), None(), r, a), history) -> (EntityInstance(EntityRef(e-ty), e, r, a), history')
+		with
+			(e, history') := <new-name>(<lcfirst>e-ty, history)
+	
+rules // generate omitted shortcuts
+
+	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
+		with
+			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
+			shortcuts			:= <filter(shortcut-roles)>members;
+			shortcuts-all := <join-half>roles;
+			shortcuts-add := <diff>(shortcuts-all, shortcuts);
+			members-new		:= <map(create-shortcut)>shortcuts-add;
+			members'			:= <conc>(members,members-new)
+			
+	role-name: Role(_, _, name, _) -> name
+	
+	shortcut-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
+	
+	join-half: [] -> []
+	
+	join-half: [h|t] -> <conc>(r,r2)
+		with
+			r := <join-half> t;
+			r2:= <map(pair-with(|h))>t
+			
+	pair-with(|h): t -> (h,t)
+
+	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, RoleRef(role2), role1)
+
