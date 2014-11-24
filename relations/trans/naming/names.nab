@@ -70,10 +70,7 @@ binding rules // model
 			of origin-role role
 			where This() resolves to This this
 			and this has type e-ty
-		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityRef2 having no attributes etc.)
-
-	Ext(e):
-		refers to Entity2 e
+		refers to Entity2 role-ty2 //triggers unresolved reference errors, but provides no resolving
 
 	Shortcut(NaBLHelp(RoleRef(role1), type1), shortcut1, NaBLHelp(RoleRef(role2), type2), shortcut2):
 		defines non-unique Entity type1

@@ -66,13 +66,15 @@ rules // unresolved references manual messages
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
-
+		  
 	nabl-constraint(|ctx):
-		Ext(e) -> <fail>
+		Role(NaBLHelp(_, e), _, _, _) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
+		  
+		  
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
