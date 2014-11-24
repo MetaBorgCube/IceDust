@@ -268,4 +268,4 @@ rules
 				]|
 
 
-	to-java(err|x_entity): Shortcut(_,_,_,_,_,_) -> []
+	to-java(err|x_entity): Shortcut(_,_,_,_) -> []

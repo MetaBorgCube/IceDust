@@ -12,6 +12,8 @@ rules
 signature constructors
 	
 	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+	
+	NaBLHelp : RoleRef * ID -> NaBLHelp
 
 rules // general
 
@@ -58,19 +60,24 @@ rules
 	
 	role-name-and-type: Role(type, _, name, _) -> (name, type)
 	
-	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, None(), None(), RoleRef(role2), f) ->
-																	 Shortcut(RoleRef(role1), b, type1,  type2,  RoleRef(role2), f)
+	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, RoleRef(role2), f) ->
+																	 Shortcut(NaBLHelp(RoleRef(role1), type1), b, NaBLHelp(RoleRef(role2), type2), f)
 		where
 			type1 := <role-type>(role1, role-types);
 			type2 := <role-type>(role2, role-types)
 		
 	role-type : (role, role-types) -> type
 		where
-			[(_, type)] := <filter(role-type(|role))>role-types
-			
+			(_, type) := <filter(role-type(|role));first>role-types
+		<+
+				type := ""
+	
 	role-type(|role): (role2, type) -> <id>
 		where
 			<eq>(role, role2)
+
+	first: [a] -> a
+	first: [a|_] -> a
 
 rules
 
@@ -88,7 +95,7 @@ rules
 			
 	role-name: Role(_, _, name, _) -> name
 	
-	shortcut-roles: Shortcut(RoleRef(role1), _, _, _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
+	shortcut-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
 	
 	join-half: [] -> []
 	
@@ -99,7 +106,7 @@ rules
 			
 	pair-with(|h): t -> (h,t)
 
-	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, None(), None(), RoleRef(role2), role1)
+	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, RoleRef(role2), role1)
 			
 	
 	
