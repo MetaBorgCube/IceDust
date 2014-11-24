@@ -11,36 +11,36 @@ rules
 	
 	generate-omitted =
 		bottomup(try(omitted1));
-		bottomup(try(omitted2)) // TODO: just going down until you find a place and then go up should be enough.
+		try(sometd(omitted2))
 	
-	omitted1 = generate-attr-mult
-	omitted1 = generate-role-name
-	omitted1 = generate-inverse-name
-	omitted1 = generate-entity-names
+	omitted1 = attr-generate-mult
+	omitted1 = role-generate-name
+	omitted1 = entity-generate-inverse-names
+	omitted1 = datadef-generate-entity-names
 	
-	omitted2 = generate-shortcuts // requires omitted1 to be done first
+	omitted2 = entity-generate-shortcuts // requires omitted1 to be done first
 
 rules // generate omitted multiplicities
 
-	generate-attr-mult: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+	attr-generate-mult: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
 
 rules // generate omitted role names
 
-	generate-role-name: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
+	role-generate-name: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
 
 rules // generate omitted inverse names
 	
-	generate-inverse-name: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
+	entity-generate-inverse-names: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
 		with
-			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
+			roles' := <map(try(generate-inverse-name(|entityName)))>roles
 
-	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
+	generate-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
 
 	custom-origin(|term) : custom-origin -> term
 
 rules	// generate omitted entity names
 
-	generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name))>c)
+	datadef-generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name))>c)
 	
 	generate-entity-name: (EntityInstance(EntityRef(e-ty), None(), r, a), history) -> (EntityInstance(EntityRef(e-ty), e, r, a), history')
 		with
@@ -48,7 +48,7 @@ rules	// generate omitted entity names
 	
 rules // generate omitted shortcuts
 
-	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
+	entity-generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
 		with
 			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
 			shortcuts			:= <filter(shortcut-roles)>members;

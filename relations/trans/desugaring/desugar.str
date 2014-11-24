@@ -24,7 +24,7 @@ signature constructors
 
 rules // general
 
-	desugar-somes = bottomup(try(desugar-some);try(flatten-list))
+	desugar-somes = bottomup(try(desugar-some))
 	desugar-some: Some(a) -> a
 
 	desugar-done: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)

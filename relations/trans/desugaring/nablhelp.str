@@ -7,12 +7,12 @@ imports
 	
 rules
 	
-	nablhelp = bottomup(try(generate-shortcut-types)) // TODO: bottomup try is too much
+	nablhelp = try(sometd(entity-add-shortcut-types))
 
 rules // add types to shortcuts
 	
-	generate-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
-		where
+	entity-add-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
+		with
 			role-types := <filter(role-name-and-type)>members;
 			members' := <map(try(add-shortcut-types(|role-types)))> members
 	
@@ -20,15 +20,15 @@ rules // add types to shortcuts
 	
 	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, RoleRef(role2), f) ->
 																	 Shortcut(NaBLHelp(RoleRef(role1), type1), b, NaBLHelp(RoleRef(role2), type2), f)
-		where
+		with
 			type1 := <role-type>(role1, role-types);
 			type2 := <role-type>(role2, role-types)
 		
 	role-type : (role, role-types) -> type
-		where
+		with
 			(_, type) := <filter(role-type(|role));first>role-types
 		<+
-				type := ""
+			type := ""
 	
 	role-type(|role): (role2, type) -> <id>
 		where
