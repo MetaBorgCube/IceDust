@@ -80,28 +80,17 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 	
 	entity-member-ns: _ -> [NablNsAttribute(),NablNsRole(),NablNsInverse(),NablNsShortcut()]
 
-	// nabl-constraint(|ctx):
-	// 	a -> <fail>
-	// 		where
-	// 			<debug>a;
-	// 			uri := <nabl-uri> a; //fails on This() for example, http://yellowgrass.org/issue/NaBL/123
-	// 			<debug>uri;
-	// 			ns	:= <nabl-uri-namespace> uri;
-	// 			<debug>ns;
-	// 			<fetch(?ns)><entity-member-ns>
-	// 		with
-	// 			<name-nses-conflict(|ctx)>a
-
-	entity-member-constructor:  Attribute(a,_,_,_) -> a
-	entity-member-constructor:  Role(_,_,a,_) -> a
-	entity-member-constructor2: Role(_,_,_,a) -> a
-	entity-member-constructor:  Shortcut(_,a,_,_) -> a
-	entity-member-constructor2: Shortcut(_,_,_,a) -> a
-
-	nabl-constraint(|ctx): a -> <fail>
-		where
-			<name-nses-conflict(|ctx)><entity-member-constructor>a;
-			<name-nses-conflict(|ctx)><entity-member-constructor2>a
+	nabl-constraint(|ctx):
+		a -> <fail>
+			where
+				<is-string>a;                     //on all strings
+				name := <nabl-get-name>a;         //that have an nabl name
+				<not(nabl-has-reference)>name;    //and this name is a def
+				uri := <nabl-uri> name;
+				ns	:= <nabl-uri-namespace> uri;
+				<fetch(?ns)><entity-member-ns>    //and its namespace is one we want to check
+			with
+				<name-nses-conflict(|ctx)>name
 
 	name-nses-conflict(|ctx): a-name -> <id>
 		with
