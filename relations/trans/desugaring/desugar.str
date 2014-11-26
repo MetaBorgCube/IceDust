@@ -2,104 +2,34 @@ module trans/desugaring/desugar
 
 imports
 	include/Relations
-	trans/lib/new-name
+	trans/lib/origin
 	lib/runtime/editor/origins
+	
+	trans/desugaring/nablhelp
+	trans/desugaring/omitted
 	
 rules
 
-	desugar-all = bottomup(try(desugar);try(flatten-list));generate-entity-names;generate-shortcuts;generate-shortcut-types
+	desugar-all =
+		desugar-somes;
+		generate-omitted;
+		nablhelp;
+		desugar-done;
+		warning-on-missing-origin
 
 signature constructors
-
+	
 	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
+	
+	NaBLHelp : RoleRef * ID -> NaBLHelp
+	
+	Ext : ID -> Ext
 
 rules // general
 
-	desugar: Some(a) -> a
+	desugar-somes = bottomup(try(desugar-some))
+	desugar-some: Some(a) -> a
 
-	desugar: Module(moduleName, model, r, data, execute) -> ModuleDesugared(moduleName, model, r, data, execute)
+	desugar-done = origin-track-forced(desugar-done2)
+	desugar-done2: Module(moduleName, model, r, data, execute) -> ModuleDesugared(moduleName, model, r, data, execute)
 
-rules // generate omitted multiplicities
-
-	desugar: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
-
-rules // generate omitted role names
-
-	desugar: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
-
-rules // generate omitted inverse names
-	
-	desugar: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
-		with
-			roles' := <map(try(desugar-inverse-name(|entityName)))>roles
-
-	desugar-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
-
-	custom-origin(|term) : custom-origin -> term
-
-rules	// custom traversal desugarings
-
-	generate-entity-names: ModuleDesugared(a, b, r, None(), d)     -> ModuleDesugared(a, b, r, None(), d)
-	generate-entity-names: ModuleDesugared(a, b, r, DataDef(c), d) -> ModuleDesugared(a, b, r, DataDef(<new-name-map(try(generate-entity-name))>c), d)
-	
-	generate-entity-name: (EntityInstance(EntityRef(e-ty), None(), r, a), history) -> (EntityInstance(EntityRef(e-ty), e, r, a), history')
-		with
-			(e, history') := <new-name>(<lcfirst>e-ty, history)
-	
-rules
-	
-	generate-shortcut-types: ModuleDesugared(a, None(), r, c, d)      -> ModuleDesugared(a, None(), r, c, d)
-	generate-shortcut-types: ModuleDesugared(a, ModelDef(b), r, c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcut-types))>b), r, c, d)
-	
-	generate-shortcut-types: Entity(a,entityName,members) -> Entity(a,entityName,members')
-		where
-			role-types := <filter(role-name-and-type)>members;
-			members' := <map(try(add-shortcut-types(|role-types)))> members
-	
-	role-name-and-type: Role(type, _, name, _) -> (name, type)
-	
-	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, None(), None(), RoleRef(role2), f) ->
-																	 Shortcut(RoleRef(role1), b, type1,  type2,  RoleRef(role2), f)
-		where
-			type1 := <role-type>(role1, role-types);
-			type2 := <role-type>(role2, role-types)
-		
-	role-type : (role, role-types) -> type
-		where
-			[(_, type)] := <filter(role-type(|role))>role-types
-			
-	role-type(|role): (role2, type) -> <id>
-		where
-			<eq>(role, role2)
-
-rules
-
-	generate-shortcuts: ModuleDesugared(a, None(), r, c, d)      -> ModuleDesugared(a, None(), r, c, d)
-	generate-shortcuts: ModuleDesugared(a, ModelDef(b), r, c, d) -> ModuleDesugared(a, ModelDef(<map(try(generate-shortcuts))>b), r, c, d)
-	
-	generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
-		with
-			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
-			shortcuts			:= <filter(shortcut-roles)>members;
-			shortcuts-all := <join-half>roles;
-			shortcuts-add := <diff>(shortcuts-all, shortcuts);
-			members-new		:= <map(create-shortcut)>shortcuts-add;
-			members'			:= <conc>(members,members-new)
-			
-	role-name: Role(_, _, name, _) -> name
-	
-	shortcut-roles: Shortcut(RoleRef(role1), _, _, _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
-	
-	join-half: [] -> []
-	
-	join-half: [h|t] -> <conc>(r,r2)
-		with
-			r := <join-half> t;
-			r2:= <map(pair-with(|h))>t
-			
-	pair-with(|h): t -> (h,t)
-
-	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, None(), None(), RoleRef(role2), role1)
-			
-	
-	

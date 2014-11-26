@@ -10,8 +10,8 @@ setup Common [[
 		value : Int ? = avg( this.children.value ) (default)
 	}
 	relation Tree{
-		Node * parent <- parent
-		Node 1 child  <- child
+		Node * parent <- parentTree
+		Node 1 child  <- childTree
 		
 		child.parent <-> parent.children
 	}

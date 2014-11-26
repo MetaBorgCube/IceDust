@@ -60,12 +60,13 @@ binding rules // model
 			of multiplicity a-mu
 			of derivation-type a-dt
 
-	Role(role-ty, role-mu, role, inverseName) :
+	Role(NaBLHelp(role-ty, role-ty2), role-mu, role, inverseName) :
+		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
 		defines Role role
-			of type role-ty
+			of type role-ty2
 			of multiplicity One()
 			of multiplicity-inverse role-mu
-		defines non-unique Entity role-ty
+		defines non-unique Entity role-ty2
 		  scopes Inverse
 		defines Inverse inverseName
 			of multiplicity role-mu
@@ -73,9 +74,8 @@ binding rules // model
 			of origin-role role
 			where This() resolves to This this
 			and this has type e-ty
-		// refers to Entity2 role-ty               //allows resolving, triggers no unresolved reference errors (it should), breaks the type of role (gets both a def and a use, the use being a EntityRef2 having no attributes etc.)
 
-	Shortcut(RoleRef(role1), shortcut1, type1, type2, RoleRef(role2), shortcut2):
+	Shortcut(NaBLHelp(RoleRef(role1), type1), shortcut1, NaBLHelp(RoleRef(role2), type2), shortcut2):
 		defines non-unique Entity type1
 			scopes Shortcut
 		defines Shortcut shortcut1

@@ -16,6 +16,7 @@ test multiplicity of ref role.attribute ZeroOrOne ZeroOrOne [[
 	relation Edge{
 		Node ? in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
 
@@ -27,6 +28,7 @@ test multiplicity of ref role.attribute ZeroOrOne One [[
 	relation Edge{
 		Node ? in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
 
@@ -39,6 +41,7 @@ test multiplicity of ref role.attribute One ZeroOrOne [[
 	relation Edge{
 		Node 1 in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
 
@@ -50,6 +53,7 @@ test multiplicity of ref role.attribute One One [[
 	relation Edge{
 		Node 1 in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to One
 
@@ -62,6 +66,7 @@ test multiplicity of ref role.attribute ZeroOrMore ZeroOrOne [[
 	relation Edge{
 		Node * in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
 
@@ -73,6 +78,7 @@ test multiplicity of ref role.attribute ZeroOrMore One [[
 	relation Edge{
 		Node * in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
 
@@ -85,6 +91,7 @@ test multiplicity of ref role.attribute OneOrMore ZeroOrOne [[
 	relation Edge{
 		Node + in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
 
@@ -96,5 +103,6 @@ test multiplicity of ref role.attribute OneOrMore One [[
 	relation Edge{
 		Node + in <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-multiplicity to OneOrMore

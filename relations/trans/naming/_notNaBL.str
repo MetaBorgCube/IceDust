@@ -9,7 +9,8 @@ imports
 
 	include/Relations
 	trans/naming/names
-	
+	trans/lib/debug
+	trans/desugaring/desugar
 
 signature constructors
 	
@@ -65,6 +66,47 @@ rules // unresolved references manual messages
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
+		  
+	nabl-constraint(|ctx):
+		Role(NaBLHelp(e, _), _, _, _) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+		  
+		  
+
+rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
+	
+	entity-member-ns: _ -> [NablNsAttribute(),NablNsRole(),NablNsInverse(),NablNsShortcut()]
+
+	nabl-constraint(|ctx):
+		a -> <fail>
+			where
+				<is-string>a;                     //on all strings
+				name := <nabl-get-name>a;         //that have an nabl name
+				<not(nabl-has-reference)>name;    //and this name is a def
+				uri := <nabl-uri> name;
+				ns	:= <nabl-uri-namespace> uri;
+				<fetch(?ns)><entity-member-ns>    //and its namespace is one we want to check
+			with
+				<name-nses-conflict(|ctx)>name
+
+	name-nses-conflict(|ctx): a-name -> <id>
+		with
+			<map(name-ns-conflict(|ctx, a-name))><entity-member-ns>
+
+	name-ns-conflict(|ctx, a-name): conflict-ns -> <id>
+		with
+			uri := <nabl-uri> a-name;
+			ns	:= <nabl-uri-namespace> uri;
+			if <not(eq)> (conflict-ns, ns) then
+				uri':= <nabl-uri-parent> uri;
+				parent:= <nabl-uri-name> uri';
+				parent-ns := <nabl-uri-namespace> uri';
+				role-defs := <nabl-lookup-lexical(|ctx, conflict-ns)> a-name;
+				<task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <pp-ns>ns, " and ", <pp-ns>conflict-ns, " ", a-name, " in ", <pp-ns>parent-ns, " ", parent])> a-name
+			end
 
 	nabl-constraint(|ctx):
 		Node(e) -> <fail>

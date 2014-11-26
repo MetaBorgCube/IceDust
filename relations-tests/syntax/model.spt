@@ -139,7 +139,7 @@ test error on role in relation[[
 
 	model
 		
-		entity Course{}
+		entity Student{}
 		
 		entity Enrollment{
 			[[Student * student <- enrollments]]

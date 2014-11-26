@@ -81,6 +81,7 @@ test Resolve attribute from role.attribute [[
 	relation Edge{
 		Node * in  <- in
 		Node * out <- out
+		in.a <-> out.b
 	}
 ]] resolve #2 to #1
 
@@ -91,6 +92,7 @@ test (TS/1) Resolve invalid role.attribute fails [[
 	relation Edge{
 		Node * in  <- in
 		Node * out <- out
+		in.a <-> out.b
 	}
 ]] 1 error  // http://yellowgrass.org/issue/TS/1
 
