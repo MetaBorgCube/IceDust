@@ -2,7 +2,7 @@ module trans/desugaring/desugar
 
 imports
 	include/Relations
-	trans/lib/new-name
+	trans/lib/origin
 	lib/runtime/editor/origins
 	
 	trans/desugaring/nablhelp
@@ -15,6 +15,7 @@ rules
 		generate-omitted;
 		nablhelp;
 		desugar-done
+		// ;warning-on-missing-origin
 
 signature constructors
 	
@@ -29,5 +30,6 @@ rules // general
 	desugar-somes = bottomup(try(desugar-some))
 	desugar-some: Some(a) -> a
 
-	desugar-done: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
+	desugar-done = origin-track-forced(desugar-done2)
+	desugar-done2: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
 

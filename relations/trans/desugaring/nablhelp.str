@@ -24,8 +24,8 @@ rules // add types to shortcuts (so we can define in those types the shortcuts)
 	
 	role-name-and-type: Role(type, _, name, _) -> (name, type)
 	
-	add-shortcut-types(|role-types): Shortcut(RoleRef(role1), b, RoleRef(role2), f) ->
-																	 Shortcut(NaBLHelp(RoleRef(role1), type1), b, NaBLHelp(RoleRef(role2), type2), f)
+	add-shortcut-types(|role-types): Shortcut(rr1@RoleRef(role1), b, rr2@RoleRef(role2), f) ->
+																	 Shortcut(NaBLHelp(rr1, type1), b, NaBLHelp(rr2, type2), f)
 		with
 			type1 := <role-type>(role1, role-types);
 			type2 := <role-type>(role2, role-types)

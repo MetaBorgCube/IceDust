@@ -3,6 +3,7 @@ module trans/desugaring/omitted
 imports
 	
 	lib/runtime/editor/origins
+	trans/lib/origin
 	trans/lib/new-name
 	include/Relations
 	trans/desugaring/desugar
@@ -34,9 +35,7 @@ rules // generate omitted inverse names
 		with
 			roles' := <map(try(generate-inverse-name(|entityName)))>roles
 
-	generate-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <origin-track-forced(custom-origin(|<lcfirst>entityName))>a)
-
-	custom-origin(|term) : custom-origin -> term
+	generate-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <custom-origin(lcfirst|a)>entityName)
 
 rules	// generate omitted entity names
 
@@ -48,14 +47,15 @@ rules	// generate omitted entity names
 	
 rules // generate omitted shortcuts
 
-	entity-generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members')
+	entity-generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members'')
 		with
 			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
 			shortcuts			:= <filter(shortcut-roles)>members;
 			shortcuts-all := <join-half>roles;
 			shortcuts-add := <diff>(shortcuts-all, shortcuts);
 			members-new		:= <map(create-shortcut)>shortcuts-add;
-			members'			:= <conc>(members,members-new)
+			members'			:= <conc>(members,members-new);
+			members''			:= <custom-origin(|members)>members'
 			
 	role-name: Role(_, _, name, _) -> name
 	
@@ -70,5 +70,8 @@ rules // generate omitted shortcuts
 			
 	pair-with(|h): t -> (h,t)
 
-	create-shortcut: (role1,role2) -> Shortcut(RoleRef(role1), role2, RoleRef(role2), role1)
+	create-shortcut: (role1,role2) -> Shortcut(rr1, role2, rr2, role1)
+		with
+			rr1 := <custom-origin(|role1)>RoleRef(role1);
+			rr2 := <custom-origin(|role2)>RoleRef(role2)
 
