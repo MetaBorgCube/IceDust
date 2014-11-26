@@ -4,6 +4,7 @@ imports
 	
 	lib/editor-common.generated
 	lib/runtime/analysis/-
+	lib/runtime/editor/origins
 	lib/runtime/editor/properties
 	lib/runtime/index/-
 	lib/runtime/task/-
@@ -63,7 +64,12 @@ rules // Debugging builders
 				result:=
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
 					<get-editor-properties(pp-partial-Relations-string|<language>,project-path)>target
-			
+	
+	debug-show-origin:
+		(target, position, ast, path, project-path) -> None()
+			with
+				<origin-debug-all>target
+	
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
 	debug-index-project-resolve = 

@@ -8,8 +8,8 @@ setup Common [[
 	model
 	entity Person{}
 	relation Marriage{
-		Person 1 husband <- husband
-		Person 1 wife    <- wife
+		Person 1 husband <- husbandM
+		Person 1 wife    <- wifeM
 	}
 	relation Counseling{
 		Person * counselor

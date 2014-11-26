@@ -41,6 +41,7 @@ test type of ref role.attribute [[
 	relation Edge{
 		Node 1 in  <- in
 		Node 1 out <- out
+		in.a <-> out.b
 	}
 ]] run get-type to Int
 

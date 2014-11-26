@@ -1,0 +1,35 @@
+module trans/lib/origin
+
+imports
+
+	lib/runtime/editor/origins
+	trans/lib/debug
+
+rules // rewrite terms to have an origin
+	
+	custom-origin(strategy|custom-origin): term -> result
+		with
+			r := <strategy>term;
+			result := <origin-track-forced(custom-origin-internal(|r))>custom-origin
+			
+	custom-origin(|custom-origin): term -> result
+		with
+			result := <origin-track-forced(custom-origin-internal(|term))>custom-origin
+	
+	custom-origin-internal(|term) : custom-origin -> term
+	
+rules // check AST whether every sub term has an origin
+	
+	warning-on-missing-origin: term -> <id>
+		with
+			terms-missing-origin;map(debug(|"Warning: Term missing origin: "))
+	
+	terms-missing-origin = collect-all(not(origin-offset))
+	
+rules // origin for lists
+	
+	origin-offset: list -> (start-offset, end-offset)
+    where
+      <is-list> list;
+     	(start-offset, _) := <Hd; origin-offset> list;
+     	(_, end-offset)   := <last; origin-offset> list
