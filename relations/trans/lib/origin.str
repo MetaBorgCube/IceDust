@@ -25,3 +25,11 @@ rules // check AST whether every sub term has an origin
 			terms-missing-origin;map(debug(|"Warning: Term missing origin: "))
 	
 	terms-missing-origin = collect-all(not(origin-offset))
+	
+rules // origin for lists
+	
+	origin-offset: list -> (start-offset, end-offset)
+    where
+      <is-list> list;
+     	(start-offset, _) := <Hd; origin-offset> list;
+     	(_, end-offset)   := <last; origin-offset> list

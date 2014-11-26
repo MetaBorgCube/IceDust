@@ -39,9 +39,9 @@ rules // generate omitted inverse names
 
 rules	// generate omitted entity names
 
-	datadef-generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name))>c)
+	datadef-generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name));custom-origin(|c)>c)
 	
-	generate-entity-name: (EntityInstance(EntityRef(e-ty), None(), r, a), history) -> (EntityInstance(EntityRef(e-ty), e, r, a), history')
+	generate-entity-name: (ei@EntityInstance(er@EntityRef(e-ty), None(), r, a), history) -> (<custom-origin(|ei)>EntityInstance(er, <custom-origin(|e-ty)>e, r, a), history')
 		with
 			(e, history') := <new-name>(<lcfirst>e-ty, history)
 	

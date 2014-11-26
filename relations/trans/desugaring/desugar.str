@@ -14,8 +14,8 @@ rules
 		desugar-somes;
 		generate-omitted;
 		nablhelp;
-		desugar-done
-		// ;warning-on-missing-origin
+		desugar-done;
+		warning-on-missing-origin
 
 signature constructors
 	
