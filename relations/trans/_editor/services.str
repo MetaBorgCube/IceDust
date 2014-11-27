@@ -33,7 +33,13 @@ rules // Editor services
 	// For references, this rule is invoked using the resolved term.
 	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
-		(target, position, ast, path, project-path) -> hoverinfo
+		(target, position, ast, path, project-path) -> $[[warning][hoverinfo]]
+		with
+			if Def(_) := target then
+				warning := "<b>Warning showing hover info of Definition instead of Use</b><br/><br/>"
+			else
+				warning := ""
+			end
 		with
 			if Some(a) := target then
 				target' := a
