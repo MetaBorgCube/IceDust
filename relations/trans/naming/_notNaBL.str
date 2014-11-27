@@ -8,6 +8,8 @@ imports
 	lib/runtime/types/-
 
 	include/Relations
+	src-gen/signatures/Rules-sig
+	
 	trans/naming/names
 	trans/lib/debug
 	trans/desugaring/desugar
@@ -108,13 +110,13 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 				<task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <pp-ns>ns, " and ", <pp-ns>conflict-ns, " ", a-name, " in ", <pp-ns>parent-ns, " ", parent])> a-name
 			end
 
-// 	nabl-constraint(|ctx):
-// 		Node(e) -> <fail>
-// 		where
-// 		  <has-annotation(?Use(task))> e
-// 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-// 		; <task-create-error-on-failure(|ctx, task, msg)> e
-// 		  
+	nabl-constraint(|ctx):
+		Node(e,_,_) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+		  
 // 	nabl-constraint(|ctx):
 // 		Edge(e, _, _) -> <fail>
 // 		where
@@ -127,14 +129,14 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 // 		where
 // 		  <has-annotation(?Use(task))> e
 // 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-// 		; <task-create-error-on-failure(|ctx, task, msg)> e		
-// 
-// 	nabl-constraint(|ctx):
-// 		Edge(_, e, _) -> <fail>
-// 		where
-// 		  <has-annotation(?Use(task))> e
-// 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role or Inverse"]
-// 		; <task-create-error-on-failure(|ctx, task, msg)> e	
+		; <task-create-error-on-failure(|ctx, task, msg)> e		
+
+	nabl-constraint(|ctx):
+		Edge(_, e, _) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e	
 		  
 rules // check if entities have all the required attributes and roles assigned
 

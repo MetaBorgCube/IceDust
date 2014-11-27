@@ -97,14 +97,31 @@ binding rules // model
 
 binding rules // rules
 
-// 	Rule(rule, params, pre, post):
-// 		defines Rule rule
-// 		scopes Variable
-// 
-// 	Param(EntityRef(t), v):
-// 		defines Variable v
-// 			of type t
-// 		
+	Rule(rule, params, body):
+		defines Rule rule
+		scopes Variable
+
+	//TODO: make 1 binding rule for Params
+	Param(v, EntityRef(t), m):
+		defines Variable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@Int(), m):
+		defines Variable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@String(), m):
+		defines Variable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@Boolean(), m):
+		defines Variable v
+			of type t
+			of multiplicity m
+					
 // 	TypedNode(EntityRef(t), v):
 // 		defines Variable v
 // 			of type t
@@ -140,6 +157,8 @@ binding rules // references
 	  refers to Shortcut x in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
+	otherwise
+		refers to Variable x
 
 	MemberAccess(exp, a) :
 		refers to Attribute a in Entity e-ty
@@ -173,15 +192,18 @@ binding rules // references
 	This() :
 		refers to This This()
 		
-// 	Node(v):
-// 		refers to Variable v
-// 
+	Node(v, t, a):
+		refers to Variable v
+
 // 	Var(v):
 // 		refers to Variable v
-// 
-// 	Edge(v1, roleOrInverse, v2):
-// 		refers to Role roleOrInverse in Entity v1-ty
-// 		where v1 has type v1-ty
-// 	otherwise
-// 		refers to Inverse roleOrInverse in Entity v1-ty
-// 		where v1 has type v1-ty
+
+	Edge(v1, edge, v2):
+		refers to Role edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Inverse edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Shortcut edge in Entity v1-ty
+		where v1 has type v1-ty
