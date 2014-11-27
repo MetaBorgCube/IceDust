@@ -5,7 +5,9 @@ imports
 	lib/runtime/editor/origins
 	trans/lib/origin
 	trans/lib/new-name
+	trans/lib/string
 	include/Relations
+	src-gen/signatures/Rules-sig
 	trans/desugaring/desugar
 
 rules
@@ -18,6 +20,9 @@ rules
 	omitted1 = role-generate-name
 	omitted1 = entity-generate-inverse-names
 	omitted1 = datadef-generate-entity-names
+	omitted1 = param-generate-mult
+	omitted1 = subrule-generate-mult
+	omitted1 = node-move-name-to-type
 	
 	omitted2 = entity-generate-shortcuts // requires omitted1 to be done first
 
@@ -74,4 +79,16 @@ rules // generate omitted shortcuts
 		with
 			rr1 := <custom-origin(|role1)>RoleRef(role1);
 			rr2 := <custom-origin(|role2)>RoleRef(role2)
+
+rules // generate omitted multiplicities
+
+	param-generate-mult: Param(a, b, None()) -> Param(a, b, One())
+
+	subrule-generate-mult: SubRule(None(), a) -> SubRule(One(), a)
+	
+rules // move name to type if capitalized
+	
+	node-move-name-to-type: Node(name, None(), a) -> Node(<origin-track-forced(lcfirst)>name, EntityRef(name), a)
+		where
+			<first-is-upper>name
 

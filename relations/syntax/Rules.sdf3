@@ -46,8 +46,8 @@ context-free syntax
 	EdgeLine = <<Edge>.>
 	
 	Node.Node = <<ID><NodeType?><NodeAttr?>>
-	NodeType.NodeType = <:<EntityRef>>
-	NodeAttr.NodeAttr = <{<{Attr ","}*>}>
+	NodeType = <:<EntityRef>>
+	NodeAttr = <{<{Attr ","}*>}>
 	
 	Attr.Attr = <<ID>=<Exp>>
 

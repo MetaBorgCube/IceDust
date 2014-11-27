@@ -4,7 +4,7 @@ imports
 
 	lib/editor-common.generated
 
-rules 
+rules // truncating
 	
 	truncate-string(|maxlen): s -> s'
 		with
@@ -14,3 +14,7 @@ rules
 			else
 				s' := s
 			end
+
+rules // check casing
+	
+	first-is-upper = explode-string;Hd;is-upper

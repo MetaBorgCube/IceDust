@@ -12,14 +12,16 @@ rules
 
   createIssue (title:String,description:String,p:Project,t:Tag?,u:User?)
       p.
+      ?[p tag t.]
     ->
       ig:IssueGhost{title=title,description=description,alive=true}.
       ig project p.
+      p tag t.
     ?[t. -> ig tag t.]
     ?[
         u.
       ->
-        i:Issue{title=title,description=description}.
+        Issue{title=title,description=description}.
         i project p.
         i reporter u.
       ?[t. -> i tag t.]
@@ -28,3 +30,4 @@ rules
 execute
 
 	"aa"
+	
