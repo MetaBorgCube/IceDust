@@ -97,17 +97,17 @@ binding rules // model
 
 binding rules // rules
 
-	Rule(rule, params, pre, post):
-		defines Rule rule
-		scopes Variable
-
-	Param(EntityRef(t), v):
-		defines Variable v
-			of type t
-		
-	TypedNode(EntityRef(t), v):
-		defines Variable v
-			of type t
+// 	Rule(rule, params, pre, post):
+// 		defines Rule rule
+// 		scopes Variable
+// 
+// 	Param(EntityRef(t), v):
+// 		defines Variable v
+// 			of type t
+// 		
+// 	TypedNode(EntityRef(t), v):
+// 		defines Variable v
+// 			of type t
 
 binding rules // data
 
@@ -173,15 +173,15 @@ binding rules // references
 	This() :
 		refers to This This()
 		
-	Node(v):
-		refers to Variable v
-
-	Var(v):
-		refers to Variable v
-
-	Edge(v1, roleOrInverse, v2):
-		refers to Role roleOrInverse in Entity v1-ty
-		where v1 has type v1-ty
-	otherwise
-		refers to Inverse roleOrInverse in Entity v1-ty
-		where v1 has type v1-ty
+// 	Node(v):
+// 		refers to Variable v
+// 
+// 	Var(v):
+// 		refers to Variable v
+// 
+// 	Edge(v1, roleOrInverse, v2):
+// 		refers to Role roleOrInverse in Entity v1-ty
+// 		where v1 has type v1-ty
+// 	otherwise
+// 		refers to Inverse roleOrInverse in Entity v1-ty
+// 		where v1 has type v1-ty

@@ -9,17 +9,50 @@ imports
 context-free syntax
 
 	Rule.Rule = <
-		<ID> (<{Param ","}*>) :
-			<{GraphPart "\n"}*>
-		-\>
-			<{GraphPart "\n"}*>
+		<ID> (<{Param ","}*>)
+			<RuleBody>
 	>
 
-	Param.Param = <<EntityRef> <ID>>
+	Param.Param = <<ID>:<Type><Multiplicity?>>
+	Type = PrimitiveType
+	Type = EntityRef
 	
-	GraphPart.Node			= <<ID>.>												// node var
-	GraphPart.TypedNode	= <<EntityRef> <ID>.>						// type, node var
-	GraphPart.Edge			= <<Var> <ID> <Var>.>	// node var, role/inverse name, node var
+	RuleBody.RuleBody = <
+			<{LHS "\n"}*>
+		-\>
+			<{RHS "\n"}*>
+		<{SubRule "\n"}*>
+	>
 	
-	// RoleOrInverse.RoleOrInverse = <<ID>>
-	Var.Var = <<ID>>
+	SubRule.SubRule = <
+		<Multiplicity?>[
+			<RuleBody>
+		]
+	>
+	
+	LHS = NodeLine
+	LHS = EdgeLine
+	LHS = SubMatch
+	SubMatch.SubMatch = <
+		<Multiplicity?>[
+			<LHS>
+		]
+	>
+	
+	RHS = NodeLine
+	RHS = EdgeLine
+	
+	NodeLine = <<Node>.>
+	EdgeLine = <<Edge>.>
+	
+	Node.Node = <<ID><NodeType?><NodeAttr?>>
+	NodeType.NodeType = <:<EntityRef>>
+	NodeAttr.NodeAttr = <{<{Attr ","}*>}>
+	
+	Attr.Attr = <<ID>=<Exp>>
+
+	Edge.Edge = <<Node> <ID> <NodeOrEdge>>
+	
+	NodeOrEdge = Node
+	NodeOrEdge = Edge	
+

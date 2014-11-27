@@ -2,77 +2,29 @@ module rewrite
 
 model
 
-	entity File{
-		
-	}
-	
-	entity Folder{
-		
-	}
-	
-	relation In{
-		File 1
-		Folder *
-	}
-	
-	relation Sub{
-		Folder * parent <- asParent
-		Folder ? child  <- asChild
-	}
-	
+	entity Project{}
+	entity Tag{}
+	entity User{}
+	entity Issue{}
+	entity IssueGhost{}
 
 rules
 
-	createFile (Folder f):
-		f.
-	->
-		f.
-		In i.
-		File f2.
-		f2 in i.
-		f in i.
+  createIssue (title:String,description:String,p:Project,t:Tag?,u:User?)
+      p.
+    ->
+      ig:IssueGhost{title=title,description=description,alive=true}.
+      ig project p.
+    ?[t. -> ig tag t.]
+    ?[
+        u.
+      ->
+        i:Issue{title=title,description=description}.
+        i project p.
+        i reporter u.
+      ?[t. -> i tag t.]
+    ]
 
-	deleteFile(File f):
-		f.
-		In i.
-		Folder f2.
-		f in i.
-		i folder f2.
-	->
-		f2.
-		
-		
-	moveFile(File f, Folder f2):
-		f.
-		f2.
-		In i.
-		Folder f1.
-		f in i.
-		i folder f1.
-	->
-		f in i.
-		i folder f2.
-		f1.
-		f2.
-	
-	//orphans subfolders
-	deleteFolder(Folder f):
-		f.
-		In i.
-		File f2.
-		Sub sub.
-		Sub sub2.
-		Folder f3.
-		Folder f4.
-		f in i.
-		i file f2.
-		f asParent sub.
-		sub child f3.
-		f asChild sub2.
-		sub2 parent f4.
-	->
-		f3.
-		f4.
+execute
 
-
-
+	"aa"
