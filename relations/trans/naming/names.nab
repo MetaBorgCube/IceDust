@@ -128,11 +128,10 @@ binding rules // rules
 			of type t
 	
 	// define node with its type from relation
-	Edge(x, e, Node(v, None(), a)):
+	Edge(e, Node(v, None(), a)):
 		defines Variable v
 			of type t //FIXME: type doesnt work
-			where e resolves to Shortcut e2
-			and e2 has type t
+			where e has type t
 
 binding rules // data
 
@@ -206,7 +205,7 @@ binding rules // references
 // 	Var(v):
 // 		refers to Variable v
 
-	Edge(v1, edge, v2):
+	TsHelp(v1, edge):
 		refers to Role edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise

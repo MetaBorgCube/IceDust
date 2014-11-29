@@ -40,7 +40,10 @@ type rules // specific references
 	Node(v, t, a) : v-ty
 	where definition of v : v-ty
 
-	Edge(l, e, r): r-ty
+	TsHelp(l, e) : e-ty
+	where definition of e : e-ty
+
+	Edge(e, r): r-ty
 	where r : r-ty
 
 	// Var(a) : a-ty
