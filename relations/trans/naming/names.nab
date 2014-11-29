@@ -121,10 +121,18 @@ binding rules // rules
 		defines Variable v
 			of type t
 			of multiplicity m
-					
-// 	TypedNode(EntityRef(t), v):
-// 		defines Variable v
-// 			of type t
+
+	// define node with its type from type annotation
+	Node(v, EntityRef(t), a):
+		defines Variable v
+			of type t
+	
+	// define node with its type from relation
+	Edge(x, e, Node(v, None(), a)):
+		defines Variable v
+			of type t //FIXME: type doesnt work
+			where e resolves to Shortcut e2
+			and e2 has type t
 
 binding rules // data
 

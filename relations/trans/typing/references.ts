@@ -40,6 +40,9 @@ type rules // specific references
 	Node(v, t, a) : v-ty
 	where definition of v : v-ty
 
+	Edge(l, e, r): r-ty
+	where r : r-ty
+
 	// Var(a) : a-ty
 	// where definition of a : a-ty
 	
