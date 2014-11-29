@@ -51,7 +51,7 @@ context-free syntax
 	
 	Attr.Attr = <<ID>=<Exp>>
 
-	Edge.Edge = <<Node> <ID> <NodeOrEdge>>
+	Edge.Edge = <<NodeOrEdge> <ID> <Node>>
 	
 	NodeOrEdge = Node
 	NodeOrEdge = Edge	
