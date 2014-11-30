@@ -1,0 +1,40 @@
+module trans/lib/traverse
+
+imports
+
+	trans/lib/origin
+
+rules // apply strategy on a list and carry over a history
+
+	map-fold(map-strategy): ([], fold-base-value) -> ([], fold-base-value)
+
+	map-fold(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
+		with
+			(input-head', fold-value') := <map-strategy>(input-head, fold-value);
+			(input-rest', fold-value'') := <map-fold(map-strategy)>(input-rest, fold-value')
+			
+rules // apply strategy on a tree and carry over a history
+
+	topdown-fold(map-strategy): (x@[], fold-base-value) -> (x, fold-base-value)
+
+	topdown-fold(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
+		with
+			(input-head', fold-value') := <topdown-fold(map-strategy)>(input-head, fold-value);
+			(input-rest', fold-value'') := <topdown-fold(map-strategy)>(input-rest, fold-value')
+
+	topdown-fold(map-strategy): (term, fold-value) -> (term''', fold-value'')
+		where
+			<explode-term>term
+		with
+			(term', fold-value') := <map-strategy>(term, fold-value);
+			(cons, args) := <explode-term>term';
+			(args', fold-value'') := <topdown-fold(map-strategy)>(args, fold-value');
+			term'' := <mkterm>(cons, args');
+			term''' := <custom-origin(|term)>term''
+
+	topdown-fold(map-strategy): (term, fold-value) -> (term', fold-value')
+		where
+			<not(is-list)>term;
+			<not(explode-term)>term
+		with
+			(term', fold-value') := <map-strategy>(term, fold-value)

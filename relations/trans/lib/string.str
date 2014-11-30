@@ -15,6 +15,9 @@ rules // truncating
 				s' := s
 			end
 
-rules // check casing
+rules // casing
 	
 	first-is-upper = explode-string;Hd;is-upper
+	
+	lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
+	lcfirst = string-as-chars(lcfirst-chars)

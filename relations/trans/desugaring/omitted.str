@@ -6,6 +6,7 @@ imports
 	trans/lib/origin
 	trans/lib/new-name
 	trans/lib/string
+	trans/lib/traverse
 	include/Relations
 	src-gen/signatures/Rules-sig
 	trans/desugaring/desugar
@@ -14,7 +15,7 @@ rules
 	
 	generate-omitted =
 		bottomup(try(omitted1));
-		try(sometd(omitted2))
+		bottomup(try(omitted2))
 	
 	omitted1 = attr-generate-mult
 	omitted1 = role-generate-name
@@ -25,6 +26,7 @@ rules
 	omitted1 = node-move-name-to-type
 	
 	omitted2 = entity-generate-shortcuts // requires omitted1 to be done first
+	omitted2 = rule-generate-node-names
 
 rules // generate omitted multiplicities
 
@@ -44,8 +46,11 @@ rules // generate omitted inverse names
 
 rules	// generate omitted entity names
 
-	datadef-generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name));custom-origin(|c)>c)
-	
+	datadef-generate-entity-names: DataDef(c) -> DataDef(c'')
+		with
+			(c', _) := <map-fold(try(generate-entity-name))>(c, []);
+			c'' := <custom-origin(|c)>c'
+
 	generate-entity-name: (ei@EntityInstance(er@EntityRef(e-ty), None(), r, a), history) -> (<custom-origin(|ei)>EntityInstance(er, <custom-origin(|e-ty)>e, r, a), history')
 		with
 			(e, history') := <new-name>(<lcfirst>e-ty, history)
@@ -88,7 +93,18 @@ rules // generate omitted multiplicities
 	
 rules // move name to type if capitalized
 	
-	node-move-name-to-type: Node(name, None(), a) -> Node(<origin-track-forced(lcfirst)>name, EntityRef(name), a)
+	node-move-name-to-type: Node(name, None(), a) -> Node(None(), EntityRef(name), a)
 		where
 			<first-is-upper>name
 
+rules // generate omitted node names
+
+	rule-generate-node-names: Rule(r, p, b) -> Rule(r, p, b'')
+		with
+			(b', _) := <topdown-fold(try(generate-node-name))>(b, []);
+			b'' := <custom-origin(|b)>b'
+
+	generate-node-name: (n@Node(None(), er@EntityRef(n-ty), v), history) -> (<custom-origin(|n)>Node(n-name, er, v), history')
+		with
+			(n-name, history') := <new-name>(<lcfirst>n-ty, history)	
+	

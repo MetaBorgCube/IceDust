@@ -2,7 +2,7 @@ module trans/lib/new-name
 
 imports
 
-	lib/editor-common.generated
+	trans/lib/traverse
 
 rules // alternative implementation of newname, passing the names and counters around
 	
@@ -30,21 +30,6 @@ rules // alternative implementation of newname, passing the names and counters a
 	update-history-prefix(|prefix): (prefix2, count) -> (prefix2, <inc>count)
 		where
 			<eq>(prefix, prefix2)
-
-rules
-	
-	new-name-map(map-strategy): input-list -> output-list
-		with
-			(output-list, _) := <map-fold(map-strategy)>(input-list, [])
-
-rules
-
-	map-fold(map-strategy): ([], fold-base-value) -> ([], fold-base-value)
-
-	map-fold(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
-		with
-			(input-head', fold-value') := <map-strategy>(input-head, fold-value);
-			(input-rest', fold-value'') := <map-fold(map-strategy)>(input-rest, fold-value')
 			
 rules
 	
@@ -55,7 +40,4 @@ rules
 			(name3, history3) := <new-name;debug>("b",history2);
 			(name4, history4) := <new-name;debug>("a",history3)
 
-rules
-	
-	lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
-	lcfirst = string-as-chars(lcfirst-chars)
+

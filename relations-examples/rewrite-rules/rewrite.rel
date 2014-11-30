@@ -9,6 +9,11 @@ model
 	entity IssueGhost{}
 	
 	relation PT{Project * Tag *}
+	relation PG{Project * IssueGhost 1}
+	relation PI{Project * Issue 1}
+	relation IT{Issue * Tag *}
+	relation IR{Issue 1 User * reporter}
+	relation GT{IssueGhost * Tag *}
 
 rules
 
@@ -23,7 +28,7 @@ rules
     ?[
         u.
       ->
-        Issue{title=title,description=description}.
+        i:Issue{title=title,description=description}.
         i project p.
         i reporter u.
       ?[t. -> i tag t.]
