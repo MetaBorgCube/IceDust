@@ -111,7 +111,7 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 			end
 
 	nabl-constraint(|ctx):
-		Node(e,_,_) -> <fail>
+		Node(NaBLHelp(e, Use()),_,_) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]

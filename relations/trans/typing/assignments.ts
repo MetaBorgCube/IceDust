@@ -33,7 +33,10 @@ type rules // data well-formedness
 
 type rules // rewrite rules
 
-	// Edge(v1, e, v2) :-
-	// where v2 : v2-ty
-	// 	and definition of e : e-ty
-	// 	and e-ty == v2-ty else error $[Type mismatch: expected [e-ty] got [v2-ty] in Pattern] on v2
+	Edge(e, n) :-
+	where	e : e-ty
+		and n : n-ty
+		and e-ty == n-ty else error $[Type mismatch: expected [e-ty] got [n-ty] in Edge] on n
+	
+	Node(NaBLHelp(n, Def()), None(), v) :-
+	where "0" == "1" else error $[No Type given for [n]] on n

@@ -123,14 +123,18 @@ binding rules // rules
 			of multiplicity m
 
 	// define node with its type from type annotation
-	Node(v, EntityRef(t), a):
+	Node(NaBLHelp(v, Def()), EntityRef(t), a):
+		defines Variable v
+			of type t
+			
+	Node(NaBLHelp(v, Def()), t@None(), a):
 		defines Variable v
 			of type t
 	
 	// define node with its type from relation
-	Edge(e, Node(v, None(), a)):
+	Edge(e, Node(NaBLHelp(v, DefByRel()), none, a)):
 		defines Variable v
-			of type t //FIXME: type doesnt work
+			of type t
 			where e has type t
 
 binding rules // data
@@ -199,11 +203,8 @@ binding rules // references
 	This() :
 		refers to This This()
 		
-	Node(v, t, a):
+	Node(NaBLHelp(v, Use()), t, a): //use annotations are correct, but editor cmd-click doesn't work
 		refers to Variable v
-
-// 	Var(v):
-// 		refers to Variable v
 
 	TsHelp(v1, edge):
 		refers to Role edge in Entity v1-ty

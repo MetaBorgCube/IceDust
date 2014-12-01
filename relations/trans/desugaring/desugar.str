@@ -24,6 +24,10 @@ signature constructors
 	NaBLHelp : RoleRef * ID -> NaBLHelp
 	
 	Ext : ID -> Ext
+	
+	Def      : DefUse
+	DefByRel : DefUse
+	Use      : DefUse
 
 rules // general
 

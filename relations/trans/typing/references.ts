@@ -37,7 +37,7 @@ type rules // specific references
 	EntityInstanceRef(e) : e-ty
 	where definition of e : e-ty
 
-	Node(v, t, a) : v-ty
+	Node(NaBLHelp(v, defuse), t, a) : v-ty
 	where definition of v : v-ty
 
 	TsHelp(l, e) : e-ty
