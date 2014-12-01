@@ -28,8 +28,8 @@ rules
     ?[
         u.
       ->
-        i:Issue{title=title,description=description}.
-        i project p.
+        p issue i.
+        i{title=title,description=description}.
         i reporter u.
       ?[t. -> i tag t.]
     ]

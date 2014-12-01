@@ -209,9 +209,14 @@ binding rules // references
 	
 	This() :
 		refers to This This()
-		
-	Node(NaBLHelp(v, Use()), t, a): //use annotations are correct, but editor cmd-click doesn't work
+
+	Node(NaBLHelp(v, Use()), none, a):
 		refers to Variable v
+		implicitly defines ThisForAttr This()
+			of type t
+			in a
+		where v resolves to Variable v-def
+		and v-def has type t
 
 	TsHelp(v1, edge):
 		refers to Role edge in Entity v1-ty
