@@ -19,6 +19,7 @@ namespaces
 	This
 	Rule
 	Variable
+	ThisForAttr
 
 properties
 
@@ -126,9 +127,15 @@ binding rules // rules
 	Node(NaBLHelp(v, Def()), EntityRef(t), a):
 		defines Variable v
 			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
 			
 	Node(NaBLHelp(v, Def()), t@None(), a):
 		defines Variable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
 			of type t
 	
 	// define node with its type from relation
@@ -215,3 +222,8 @@ binding rules // references
 	otherwise
 		refers to Shortcut edge in Entity v1-ty
 		where v1 has type v1-ty
+
+	Attr(a, v):
+		refers to Attribute a in Entity e-ty
+		where This() resolves to ThisForAttr this
+		and this has type e-ty

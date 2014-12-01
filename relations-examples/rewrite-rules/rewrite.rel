@@ -5,8 +5,8 @@ model
 	entity Project{}
 	entity Tag{}
 	entity User{}
-	entity Issue{}
-	entity IssueGhost{}
+	entity Issue     {title:String description:String alive:Boolean}
+	entity IssueGhost{title:String description:String alive:Boolean}
 	
 	relation PT{Project * Tag *}
 	relation PG{Project * IssueGhost 1}
@@ -33,6 +33,10 @@ rules
         i reporter u.
       ?[t. -> i tag t.]
     ]
+
+data
+
+	Issue{title="" description="" alive=true}
 
 execute
 

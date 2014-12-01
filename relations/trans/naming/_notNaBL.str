@@ -117,26 +117,20 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
-// 	nabl-constraint(|ctx):
-// 		Edge(e, _, _) -> <fail>
-// 		where
-// 		  <has-annotation(?Use(task))> e
-// 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-// 		; <task-create-error-on-failure(|ctx, task, msg)> e		  
-// 		  
-// 	nabl-constraint(|ctx):
-// 		Edge(_, _, e) -> <fail>
-// 		where
-// 		  <has-annotation(?Use(task))> e
-// 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-		; <task-create-error-on-failure(|ctx, task, msg)> e		
-
 	nabl-constraint(|ctx):
 		Edge(TsHelp(_, e), _) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e	
+
+	nabl-constraint(|ctx):
+		Attr(a, _) -> <fail>
+		where
+		  <has-annotation(?Use(task))> a
+		; msg  := ["Unresolved reference: ", a, " cannot be resolved to a Attribute"]
+		; <task-create-error-on-failure(|ctx, task, msg)> a
+
 		  
 rules // check if entities have all the required attributes and roles assigned
 
