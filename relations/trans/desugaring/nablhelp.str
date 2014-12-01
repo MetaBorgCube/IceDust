@@ -15,7 +15,8 @@ rules
 		nablhelp2;
 		nablhelp3;
 		nablhelp4;
-		nablhelp5
+		nablhelp5;
+		nablhelp6
 	
 	nablhelp1 = try(sometd(entity-add-shortcut-types)) //requires the roles to be untouched
 	nablhelp2 = try(sometd(role-duplicate-name))
@@ -24,6 +25,7 @@ rules
 	nablhelp4 = try(sometd(variable-def-defbyrel)) //requires variables to be def-use
 	
 	nablhelp5 = try(sometd(rule-attr-variable-def-use))
+	nablhelp6 = try(sometd(rule-rhs-attr-variable-use)) //cleans up the previous rule
 
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
@@ -107,3 +109,11 @@ rules
 			end;
 			at'' := <custom-origin(|at)>at'
 
+rules
+	
+	rule-rhs-attr-variable-use: RuleBody(r,l,s) -> RuleBody(r,l'',s)
+		with
+			l' := <try(sometd(attr-variable-use))>l;
+			l'' := <custom-origin(|l)>l'
+	
+	attr-variable-use: Attr(NaBLHelp(a, Bind()), name) -> Attr(NaBLHelp(a, <custom-origin(|a)>Use()), <custom-origin(|name)>Ref(name))
