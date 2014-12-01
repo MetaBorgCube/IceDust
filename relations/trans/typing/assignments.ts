@@ -41,7 +41,7 @@ type rules // rewrite rules
 	Node(NaBLHelp(n, Def()), None(), v) :-
 	where "0" == "1" else error $[No Type given for [n]] on n
 
-	Attr(NaBLHelp(a, Use()), val) :-
+	Attr(NaBLHelp(AttrRef(a), Use()), val) :-
 	where	definition of a : a-ty
 		and	val	: val-ty
 		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Value] on val

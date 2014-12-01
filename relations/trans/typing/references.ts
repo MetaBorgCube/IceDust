@@ -46,8 +46,8 @@ type rules // specific references
 	Edge(e, r): r-ty
 	where r : r-ty
 
-	NaBLHelp(a, Bind()) : a-ty
+	AttrRef(a) : a-ty
 	where definition of a : a-ty
 
-	NaBLHelp(a, Bind()) has multiplicity t
+	AttrRef(a) has multiplicity t
 	where definition of a has multiplicity t

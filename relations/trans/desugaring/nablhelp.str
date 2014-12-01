@@ -96,9 +96,9 @@ rules
 	
 	attr-def-use: (at, history) -> (at'', history')
 		where
-			Attr(a, r@Ref(name)) := at
+			Attr(a, r) := at
 		with
-			if <not(elem)>(name, history) then
+			if Ref(name) := r ; <not(elem)>(name, history) then
 				history' := <conc>(history, [name]);
 				at' := Attr(NaBLHelp(a, <custom-origin(|a)>Bind()), name)
 			else
