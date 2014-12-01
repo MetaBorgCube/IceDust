@@ -2,7 +2,7 @@ module rewrite
 
 model
 
-	entity Project{}
+	entity Project{name:String}
 	entity Tag{}
 	entity User{}
 	entity Issue     {title:String description:String alive:Boolean}
@@ -18,12 +18,13 @@ model
 rules
 
   createIssue (title:String,description:String,p:Project,t:Tag?,u:User?)
-      p.
+      p{name=name}.
       ?[p tag t.]
     ->
       ig:IssueGhost{title=title,description=description,alive=true}.
       ig project p.
       p tag t.
+      p{name=name+"_newIssue"}.
     ?[t. -> ig tag t.]
     ?[
         u.
@@ -41,4 +42,5 @@ data
 execute
 
 	"aa"
+	
 	

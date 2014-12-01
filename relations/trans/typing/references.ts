@@ -46,9 +46,8 @@ type rules // specific references
 	Edge(e, r): r-ty
 	where r : r-ty
 
-	// Var(a) : a-ty
-	// where definition of a : a-ty
-	
-	// RoleOrInverse(a) : a-ty
-	// where definition of a : a-ty
-	
+	NaBLHelp(a, Bind()) : a-ty
+	where definition of a : a-ty
+
+	NaBLHelp(a, Bind()) has multiplicity t
+	where definition of a has multiplicity t

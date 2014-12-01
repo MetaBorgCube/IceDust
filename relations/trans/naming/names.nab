@@ -143,6 +143,14 @@ binding rules // rules
 		defines Variable v
 			of type t
 			where e has type t
+			
+	// define variable from attribute
+	Attr(nh@NaBLHelp(a, Bind()), v):
+		defines Variable v
+			of type t
+			of multiplicity m
+		where nh has type t
+		and nh has multiplicity m
 
 binding rules // data
 
@@ -228,7 +236,12 @@ binding rules // references
 		refers to Shortcut edge in Entity v1-ty
 		where v1 has type v1-ty
 
-	Attr(a, v):
+	Attr(NaBLHelp(a, usedef), v):
+		refers to Attribute a in Entity e-ty
+		where This() resolves to ThisForAttr this
+		and this has type e-ty
+		
+	NaBLHelp(a, Bind()): //this thing has a typing rule, this type rule needs a resolve and thus cannot depend on the rule above (since the rule above matches the parent AST node)
 		refers to Attribute a in Entity e-ty
 		where This() resolves to ThisForAttr this
 		and this has type e-ty

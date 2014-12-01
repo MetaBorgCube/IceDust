@@ -28,6 +28,7 @@ signature constructors
 	Def      : DefUse
 	DefByRel : DefUse
 	Use      : DefUse
+	Bind     : DefUse
 
 rules // general
 
