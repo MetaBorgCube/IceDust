@@ -27,7 +27,10 @@ rules // Editor services
 	editor-resolve:
 		(node, position, ast, path, project-path) -> definition
 		where
-			definition := <analysis-resolve(|<language>, project-path)> node
+			node' := <try(resolve-child)>node;
+			definition := <analysis-resolve(|<language>, project-path)> node'
+	
+	resolve-child: NaBLHelp(name, _) -> name
 
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
