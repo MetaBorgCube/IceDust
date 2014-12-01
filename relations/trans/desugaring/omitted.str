@@ -93,7 +93,7 @@ rules // generate omitted multiplicities
 	
 rules // move name to type if capitalized
 	
-	node-move-name-to-type: Node(name, None(), a) -> Node(None(), EntityRef(name), a)
+	node-move-name-to-type: Node(name, None(), a) -> Node(None(), <custom-origin(|name)>EntityRef(name), a)
 		where
 			<first-is-upper>name
 

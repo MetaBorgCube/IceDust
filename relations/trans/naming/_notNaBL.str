@@ -125,7 +125,7 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 		; <task-create-error-on-failure(|ctx, task, msg)> e	
 
 	nabl-constraint(|ctx):
-		Attr(NaBLHelp(a, _), _) -> <fail>
+		AttrRef(a) -> <fail>
 		where
 		  <has-annotation(?Use(task))> a
 		; msg  := ["Unresolved reference: ", a, " cannot be resolved to a Attribute"]
