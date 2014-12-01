@@ -29,8 +29,7 @@ rules
     ?[
         u.
       ->
-        p issue i.
-        i{title=title,description=description}.
+        p issue i{title=title,description=description}.
         i reporter u.
       ?[t. -> i tag t.]
     ]
@@ -42,5 +41,4 @@ data
 execute
 
 	"aa"
-	
 	

@@ -143,6 +143,9 @@ binding rules // rules
 		defines Variable v
 			of type t
 			where e has type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
 			
 	// define variable from attribute
 	Attr(NaBLHelp(a, Bind()), v):
