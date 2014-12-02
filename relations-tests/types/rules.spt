@@ -43,4 +43,53 @@ test (Spoofax/937) Type of node variable def by type [[
 			s.
 ]] run get-type to "Course"{_} //http://yellowgrass.org/issue/Spoofax/937
 
-//TODO: write more testcases
+test Error on wrong node variable type rel and typed [[
+	enRoll(s:Student)
+			s course [[c:Student]].
+		->
+			s.
+]] 1 error
+
+test Error on wrong node variable type rel and rel [[
+	enRoll(s:Student)
+			s course c.
+			Course student [[c]].
+		->
+			s.
+]] 1 error
+
+test Error on wrong node variable type typed and rel [[
+	enRoll(s:Student)
+			c:Course.
+			Course student [[c]].
+		->
+			s.
+]] 1 error
+
+test No error on correct attribute match [[
+	enRoll(s:Student)
+			s{name="alice"}.
+		->
+			s.
+]] 0 errors
+
+test Error on correct attribute match [[
+	enRoll(s:Student)
+			s{name=[[1]]}.
+		->
+			s.
+]] 1 error
+
+test Type of attribute bind [[
+	enRoll(s:Student)
+			s{name=name}.
+		->
+			s{name=[[name]]}.
+]] run get-type to String()
+
+test (Spoofax/937) Type of attr ref [[
+	enRoll(s:Student)
+			s{[[name]]=name}.
+		->
+			s.
+]] run get-type to String() //http://yellowgrass.org/issue/Spoofax/937
