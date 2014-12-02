@@ -1,0 +1,46 @@
+module types-rules
+
+language Relations
+
+setup Common [[
+	module test
+	model
+		entity Student {name:String}
+		entity Course {}
+	
+		relation Enrollment{
+			Student *
+			Course +
+		}
+	rules
+]]
+
+test Type of parameter  [[
+	enRoll([[s]]:Student)
+			s.
+		->
+			s.
+]] run get-type to "Student"{_}
+
+test (Spoofax/937) Type of parameter ref  [[
+	enRoll(s:Student)
+			[[s]].
+		->
+			s.
+]] run get-type to "Student"{_} //http://yellowgrass.org/issue/Spoofax/937
+
+test (Spoofax/937) Type of node variable def by rel [[
+	enRoll(s:Student)
+			s course [[c]].
+		->
+			s.
+]] run get-type to "Course"{_} //http://yellowgrass.org/issue/Spoofax/937
+
+test (Spoofax/937) Type of node variable def by type [[
+	enRoll(s:Student)
+			[[c]]:Course.
+		->
+			s.
+]] run get-type to "Course"{_} //http://yellowgrass.org/issue/Spoofax/937
+
+//TODO: write more testcases
