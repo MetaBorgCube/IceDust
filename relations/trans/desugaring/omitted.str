@@ -15,7 +15,8 @@ rules
 	
 	generate-omitted =
 		bottomup(try(omitted1));
-		bottomup(try(omitted2))
+		bottomup(try(omitted2));
+		bottomup(try(omitted3))
 	
 	omitted1 = attr-generate-mult
 	omitted1 = role-generate-name
@@ -25,8 +26,10 @@ rules
 	omitted1 = subrule-generate-mult
 	omitted1 = node-move-name-to-type
 	
-	omitted2 = entity-generate-shortcuts // requires omitted1 to be done first
-	omitted2 = rule-generate-node-names
+	omitted2 = entity-generate-shortcuts        // requires role-generate-name
+	omitted2 = rule-generate-node-names         // requires node-move-name-to-type
+	
+	omitted3 = rule-generate-param-node-matches // requires param-generate-mult, matches same as rule-generate-node-names
 
 rules // generate omitted multiplicities
 
@@ -106,5 +109,15 @@ rules // generate omitted node names
 
 	generate-node-name: (n@Node(None(), er@EntityRef(n-ty), v), history) -> (<custom-origin(|n)>Node(n-name, er, v), history')
 		with
-			(n-name, history') := <new-name>(<lcfirst>n-ty, history)	
+			(n-name, history') := <new-name>(<lcfirst>n-ty, history)
+			
+rules // generated omitted param node matches
+	
+	rule-generate-param-node-matches: Rule(r, p, b@RuleBody(lhs,rhs,sub)) -> Rule(r, p, b'')
+		with
+			p-match := <filter(rule-param-one-to-match)>p;
+			b' := RuleBody(<conc>(p-match,lhs),rhs,sub);
+			b'' := <custom-origin(|b)>b'
+	
+	rule-param-one-to-match: Param(name, EntityRef(_), One()) -> <custom-origin(|name)>Node(name, None(), None())
 	
