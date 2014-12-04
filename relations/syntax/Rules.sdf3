@@ -35,7 +35,7 @@ context-free syntax
 	LHS = SubMatch
 	SubMatch.SubMatch = <
 		<Multiplicity?>[
-			<LHS>
+			<{LHS "\n"}*>
 		]
 	>
 	

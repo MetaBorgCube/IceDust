@@ -18,6 +18,7 @@ imports
 	trans/prettyprinting/pp
 	trans/naming/names
 	trans/lib/string
+	trans/analysis/rules
 	
 	include/Relations
 	
@@ -56,7 +57,7 @@ rules // Editor services
     	task-setup(|project-path)
 		with
 			target' := <editor-service-target>x;
-			properties :=	<editor-service-properties(|project-path)>target'
+			properties :=	<editor-service-properties(|project-path);bottomup(try(string-replace(|"\n", "")))>target'
 			
 	// Completes an identifier when the user presses control-space
 	// (the completion identifier in the AST provides additional context information)
@@ -106,7 +107,15 @@ rules // target of editor services
 
 rules // properties for editor services
 	
-	editor-service-properties(|project-path) = get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path)
+	editor-service-properties(|project-path): target -> properties'
+		with
+			properties := <get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path)>target;
+			if lhs := <to-lhs>target then
+				match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>lhs;
+				properties' := <conc>(properties,[("Match", match)])
+			else
+				properties' := properties
+			end
 
 	def-warning: Def(_) -> ("Warning!", "Showing hover info of Definition instead of Use")
 

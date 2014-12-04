@@ -24,7 +24,7 @@ rules
 			p.
     ->
       ig:IssueGhost{title=title,description=description,alive=true}.
-      ig project p.
+      ig project p. //p:=ig.project // ig project> p //todo highlight
     ?[t. -> ig tag t.]
     ?[
         u.
@@ -44,6 +44,7 @@ rules
 			p tag t.
 
 	vote(i:Issue, u:User)
+			u.
 			i project p.
 			?[p tag t{name="!"+u.name}.]
 		->
