@@ -40,6 +40,18 @@ rules
 		->
 			p member u.
 			p tag t.
+			
+	addMemberNormalized(u:User, p:Project)
+		->
+			p member u.
+			p tag t.
+		?[
+				0[p tag Tag{name="!"+u.name}.]
+			->
+				p tag t{name="!"+u.name}.
+		]
+		?[p follower u.->]
+		?[p memberRequester u.->]
 
 	vote(i:Issue, u:User)
 			i project p.
@@ -49,6 +61,40 @@ rules
 			i project p.
 			p tag t.
 			i tag t.
+			
+	voteNormalized(i:Issue, u:User)
+			i project p.
+		->
+			u.
+			i project p.
+		?[
+				p tag t{name="!"+u.name}.
+			->
+				p tag t.
+				i tag t.
+		]
+		?[
+				0[p tag t{name="!"+u.name}.]
+			->
+				p tag t{name="!"+u.name}.
+				i tag t.
+		]
+	
+	delete(i:Issue)
+			i project p.
+			i reporter u.
+			*[i tag t.]
+		->
+			p.
+			u.
+	
+	deleteNormalized(i:Issue)
+			i project p.
+			i reporter u.
+		->
+			p.
+			u.
+		*[i tag t.->]
 
 data
 
@@ -57,4 +103,5 @@ data
 execute
 
 	"aa"
+	
 	

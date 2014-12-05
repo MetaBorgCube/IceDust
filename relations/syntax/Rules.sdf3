@@ -25,7 +25,7 @@ context-free syntax
 	>
 	
 	SubRule.SubRule = <
-		<Multiplicity?>[
+		<MultiplicityZ?>[
 			<RuleBody>
 		]
 	>
@@ -34,7 +34,7 @@ context-free syntax
 	LHS = EdgeLine
 	LHS = SubMatch
 	SubMatch.SubMatch = <
-		<Multiplicity?>[
+		<MultiplicityZ?>[
 			<{LHS "\n"}*>
 		]
 	>

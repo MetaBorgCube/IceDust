@@ -10,3 +10,6 @@ context-free syntax
 	Multiplicity.ZeroOrOne	= <?>
 	Multiplicity.OneOrMore	= <+>
 	Multiplicity.ZeroOrMore	= <*>
+	
+	MultiplicityZ = Multiplicity
+	MultiplicityZ.Zero      = <0>
