@@ -50,3 +50,13 @@ test Error on undefined variable  [[
 			s.
 ]] 1 error
 
+test Resolve lhs var only to lhs var  [[
+	enRoll()
+		->
+			s:Student.
+		?[
+			[[s]]. [[s]] course c. -> c. 
+		]
+]] resolve #2 to #1
+
+
