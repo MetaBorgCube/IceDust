@@ -4,7 +4,9 @@ imports
 
 	include/Relations
 	lib/java/Java
-	lib/runtime/types/query
+	// lib/runtime/types/query
+	lib/types/query
+	
 	trans/naming/names
 	trans/naming/_notNaBL
 

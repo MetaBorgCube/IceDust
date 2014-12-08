@@ -6,6 +6,8 @@ imports
 	trans/desugaring/desugar
 	trans/naming/_notNaBL
 	
+	lib/nabl/-
+	
 namespaces
 	
 	Module

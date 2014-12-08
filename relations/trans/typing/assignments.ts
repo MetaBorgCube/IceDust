@@ -5,6 +5,8 @@ imports
 	include/Relations
 	trans/naming/names
 
+	lib/types/-
+
 type rules // derivations well-formedness
 
 	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-

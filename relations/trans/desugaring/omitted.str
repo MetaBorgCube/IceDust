@@ -2,7 +2,9 @@ module trans/desugaring/omitted
 
 imports
 	
-	lib/runtime/editor/origins
+	// lib/runtime/editor/origins
+	lib/editor/origins
+	
 	trans/lib/origin
 	trans/lib/new-name
 	trans/lib/string

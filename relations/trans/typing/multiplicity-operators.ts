@@ -4,6 +4,8 @@ imports
 
 	include/Relations
 
+	lib/types/-
+
 type rules
 
 	ChoiceLeft(x,y) : x-ty

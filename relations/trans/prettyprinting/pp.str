@@ -3,9 +3,9 @@ module pp
 imports
 
 	libstratego-gpp
-	lib/runtime/tmpl/pp
+	// lib/runtime/tmpl/pp
+	lib/tmpl/pp
 	
-
 	src-gen/pp/Common-pp
 	src-gen/pp/Model-pp
 	src-gen/pp/Modules-pp

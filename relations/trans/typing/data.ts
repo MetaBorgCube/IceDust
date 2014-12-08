@@ -6,6 +6,8 @@ imports
 	trans/naming/names
 	trans/naming/_notNaBL
 
+	lib/types/-
+
 type rules
 
 	AttributeValue(AttributeRef(a), val) :-

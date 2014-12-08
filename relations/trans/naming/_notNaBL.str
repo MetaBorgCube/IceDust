@@ -2,10 +2,14 @@ module _notNaBL
 
 imports
 	lib/editor-common.generated
-	lib/runtime/nabl/-
-	lib/runtime/properties/-
-	lib/runtime/task/-
-	lib/runtime/types/-
+	// lib/runtime/nabl/-
+	// lib/runtime/properties/-
+	// lib/runtime/task/-
+	// lib/runtime/types/-
+	lib/nabl/-
+	lib/properties/-
+	lib/task/-
+	lib/types/-
 
 	include/Relations
 	src-gen/signatures/Rules-sig

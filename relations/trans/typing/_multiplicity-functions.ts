@@ -3,6 +3,8 @@ module typing/_multiplicity-functions
 imports
 
 	include/Relations
+	
+	lib/types/-
 
 type functions
 

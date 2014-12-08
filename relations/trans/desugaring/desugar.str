@@ -3,7 +3,8 @@ module trans/desugaring/desugar
 imports
 	include/Relations
 	trans/lib/origin
-	lib/runtime/editor/origins
+	// lib/runtime/editor/origins
+	lib/editor/origins
 	
 	trans/desugaring/nablhelp
 	trans/desugaring/omitted

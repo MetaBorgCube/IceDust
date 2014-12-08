@@ -4,15 +4,22 @@ imports
 	libstratego-gpp
 	
 	lib/editor-common.generated
-	lib/runtime/editor/properties
-	lib/runtime/analysis/-
-	lib/runtime/types/-
-	lib/runtime/nabl/-
-	lib/runtime/task/-
-	lib/runtime/index/-
-	lib/runtime/properties/-
-	
-	lib/runtime/editor/interop
+	// lib/runtime/editor/properties
+	// lib/runtime/analysis/-
+	// lib/runtime/types/-
+	// lib/runtime/nabl/-
+	// lib/runtime/task/-
+	// lib/runtime/index/-
+	// lib/runtime/properties/-
+	// lib/runtime/editor/interop
+	lib/editor/properties
+	lib/analysis/-
+	lib/types/-
+	lib/nabl/-
+	lib/task/-
+	lib/index/-
+	lib/properties/-
+	lib/editor/interop
 	
 	trans/desugaring/desugar
 	trans/prettyprinting/pp

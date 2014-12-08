@@ -5,6 +5,8 @@ imports
 	include/Relations
 	trans/naming/names
 
+	lib/types/-
+
 type rules // general references
 
 	MemberAccess(expr, member) : member-ty
