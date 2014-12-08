@@ -44,7 +44,6 @@ rules
 	addMemberNormalized(u:User, p:Project)
 		->
 			p member u.
-			p tag t.
 		?[
 				0[p tag Tag{name="!"+u.name}.]
 			->
