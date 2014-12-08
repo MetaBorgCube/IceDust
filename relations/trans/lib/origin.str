@@ -2,7 +2,8 @@ module trans/lib/origin
 
 imports
 
-	lib/runtime/editor/origins
+	// lib/runtime/editor/origins
+	lib/editor/origins
 	trans/lib/debug
 
 rules // rewrite terms to have an origin

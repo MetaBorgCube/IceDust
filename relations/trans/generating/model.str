@@ -3,7 +3,9 @@ module trans/generating/model
 imports
 
 	lib/java/Java
-	lib/runtime/nabl/-
+	// lib/runtime/nabl/-
+	lib/nabl/-
+	
 	include/Relations
 	trans/naming/names
 	trans/naming/_notNaBL

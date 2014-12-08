@@ -2,9 +2,12 @@ module trans/lib/debug
 
 imports
 	
-	runtime/task/insert
-	runtime/editor/properties
-	runtime/task/core
+	// runtime/task/insert
+	// runtime/editor/properties
+	// runtime/task/core	
+	lib/task/insert
+	lib/editor/properties
+	lib/task/core
 
 rules // debug tasks
 	
