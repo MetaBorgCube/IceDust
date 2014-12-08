@@ -66,6 +66,18 @@ test Error on wrong node variable type typed and rel [[
 			s.
 ]] 1 error
 
+test Error on wrong type anotation on node [[
+	enRoll(s:Student)
+			s:[[Course]].
+		->
+]] 1 error
+
+test No error on correct type anotation on node [[
+	enRoll(s:Student)
+			s:Student.
+		->
+]] 0 errors
+
 test No error on correct attribute match [[
 	enRoll(s:Student)
 			s{name="alice"}.

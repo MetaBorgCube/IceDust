@@ -42,6 +42,10 @@ type rules // rewrite rules
 	
 	Node(NaBLHelp(n, Def()), None(), v) :-
 	where "0" == "1" else error $[No Type given for [n]] on n
+	
+	Node(NaBLHelp(n, Use()), EntityRef(e-ty), None()) :-
+	where definition of n : n-ty
+		and n-ty == e-ty else error $[Type mismatch: expected [n-ty] got [e-ty]] on e-ty
 
 	Attr(NaBLHelp(AttrRef(a), Use()), val) :-
 	where	definition of a : a-ty
