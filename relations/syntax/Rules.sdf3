@@ -30,8 +30,7 @@ context-free syntax
 		]
 	>
 	
-	LHS = NodeLine
-	LHS = EdgeLine
+	LHS = NodeOrEdgeLine
 	LHS = SubMatch
 	SubMatch.SubMatch = <
 		<MultiplicityZ?>[
@@ -39,11 +38,9 @@ context-free syntax
 		]
 	>
 	
-	RHS = NodeLine
-	RHS = EdgeLine
+	RHS = NodeOrEdgeLine
 	
-	NodeLine = <<Node>.>
-	EdgeLine = <<Edge>.>
+	NodeOrEdgeLine = <<NodeOrEdge>.>
 	
 	Node.Node = <<ID><NodeType?><NodeAttr?>>
 	NodeType = <:<EntityRef>>
