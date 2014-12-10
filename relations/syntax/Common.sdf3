@@ -20,6 +20,7 @@ lexical syntax // Keywords
 	Keyword = "false"
 	Keyword = "Int"
 	Keyword = "max"
+	Keyword = "match"
 	Keyword = "min"
 	Keyword = "relationship"
 	Keyword = "String"

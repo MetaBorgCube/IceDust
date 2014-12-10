@@ -245,3 +245,11 @@ binding rules // references
 		refers to Attribute a in Entity e-ty
 		where This() resolves to ThisForAttr this
 		and this has type e-ty
+		
+	CallRule(r,args):
+		refers to Rule r
+
+// binding rules
+// 
+// 	SubMatch(a,b): scopes Variable
+// 	SubRule(a,b): scopes Variable
