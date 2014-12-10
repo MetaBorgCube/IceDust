@@ -31,10 +31,11 @@ rules
 				class ~className	
 				{ 
 					public static void main(String[] args)
-					{ 
+					{
 						~dataJava*
 						~executeJava*
 					}
+					~rulesJava*
 				}
 			]|
 		with
@@ -42,6 +43,11 @@ rules
 				dataJava* := <to-java(err)>data
 			else
 				dataJava* := []
+			end;
+			if RulesDef(_) := r then
+				rulesJava* := <to-java(err)>r
+			else
+				rulesJava* := []
 			end;
 			if Executable(_) := execute then
 				executeJava* := <to-java(err)>execute

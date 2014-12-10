@@ -1,0 +1,42 @@
+module trans/generating/rules
+
+imports
+	
+	lib/java/Java
+	// lib/runtime/nabl/-
+	lib/nabl/-
+	
+	include/Relations
+	trans/naming/names
+	trans/naming/_notNaBL
+	trans/desugaring/desugar
+	
+	trans/generating/expressions
+	trans/generating/types
+
+rules
+	
+  to-java(err): RulesDef(r) -> <map(try(to-java(err)))>r
+  
+  to-java(err): Rule(x_name, params, body) -> result
+  	with
+  		params* := <map(to-java-param(err))>params
+		with
+			result :=
+				|[
+ 					public static void x_name(~params*)
+					{ 
+						
+					}
+				]|
+	
+	to-java-param(err): Param(x_name, type, One()) -> result
+		with
+			if EntityRef(x_type) := type then
+				id
+			else
+				x_type := <type-to-java(err)>type
+			end
+		with
+			result := |[x_type x_name]|
+  

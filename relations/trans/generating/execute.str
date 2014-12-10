@@ -9,6 +9,20 @@ imports
 
 rules
 
+	to-java-executable(err): CallRule(x_name, params) -> result
+  	with
+  		exp* := <map(to-java-ex(err))>params
+  	with
+  		result := bstm* |[
+  			{
+	  			x_name(~exp*);
+  			}
+  		]|
+  
+  to-java-ex(err):exp -> exp'
+  	with
+  		(stms*, exp') := <exp-to-java-stm(err|0)>exp
+
   to-java-executable(err): exp -> result
   	with
   		(stms*, exp') := <exp-to-java-stm(err|0)>exp
