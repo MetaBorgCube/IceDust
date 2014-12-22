@@ -14,7 +14,7 @@ context-free syntax // modules
 		module <ID>
 		
 		<ModelDef?>
-
+		
 		<RulesDef?>
 		
 		<DataDef?>
@@ -27,7 +27,7 @@ context-free syntax // modules
 		model
 		
 		  <{Model "\n\n"}*>
-
+		
 	>
 
 	RulesDef.RulesDef = <
