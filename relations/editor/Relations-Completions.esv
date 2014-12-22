@@ -1,14 +1,15 @@
 module Relations-Completions
 
 imports 
-	Common.generated
-	Data.generated
-	Execute.generated
-	Expressions.generated
-	Model
-	Modules.generated
-	Types.generated
-
+	src-gen/completions/Common-esv
+	src-gen/completions/Data-esv
+	src-gen/completions/Execute-esv
+	src-gen/completions/Expressions-esv
+	src-gen/completions/Model-esv
+	src-gen/completions/Modules-esv
+	src-gen/completions/Relations-esv
+	src-gen/completions/Rules-esv
+	src-gen/completions/Types-esv
 
 completions
                                                                    
