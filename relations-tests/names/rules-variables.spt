@@ -55,7 +55,7 @@ test Resolve lhs var only to lhs var  [[
 		->
 			s:Student.
 		?[
-			[[s]]. [[s]] course c. -> c. 
+			[[s]]:Student. [[s]] course c. -> c. 
 		]
 ]] resolve #2 to #1
 

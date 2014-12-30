@@ -4,7 +4,7 @@ imports
 
 	trans/lib/origin
 
-rules // apply strategy on a list and carry over a history
+rules // apply strategy on a list left-to-right and carry over a history
 
 	map-fold(map-strategy): ([], fold-base-value) -> ([], fold-base-value)
 
@@ -13,8 +13,9 @@ rules // apply strategy on a list and carry over a history
 			(input-head', fold-value') := <map-strategy>(input-head, fold-value);
 			(input-rest', fold-value'') := <map-fold(map-strategy)>(input-rest, fold-value')
 			
-rules // apply strategy on a tree and carry over a history
+rules // apply strategy on a tree top-down and carry over a history
 
+	// for lists
 	topdown-fold(map-strategy): (x@[], fold-base-value) -> (x, fold-base-value)
 
 	topdown-fold(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
@@ -22,6 +23,7 @@ rules // apply strategy on a tree and carry over a history
 			(input-head', fold-value') := <topdown-fold(map-strategy)>(input-head, fold-value);
 			(input-rest', fold-value'') := <topdown-fold(map-strategy)>(input-rest, fold-value')
 
+	// for terms
 	topdown-fold(map-strategy): (term, fold-value) -> (term''', fold-value'')
 		where
 			<explode-term>term
@@ -32,7 +34,42 @@ rules // apply strategy on a tree and carry over a history
 			term'' := <mkterm>(cons, args');
 			term''' := <custom-origin(|term)>term''
 
+	// for not(list) not(term)
 	topdown-fold(map-strategy): (term, fold-value) -> (term', fold-value')
+		where
+			<not(is-list)>term;
+			<not(explode-term)>term
+		with
+			(term', fold-value') := <map-strategy>(term, fold-value)
+			
+rules // apply strategy on a tree top-down and carry over a history, dont carry over history for some
+
+	// for lists
+	topdown-fold-cond(map-strategy,no-history): (x@[], fold-base-value) -> (x, fold-base-value)
+
+	topdown-fold-cond(map-strategy,no-history): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
+		with
+			(input-head', fold-value') := <topdown-fold-cond(map-strategy,no-history)>(input-head, fold-value);
+			(input-rest', fold-value'') := <topdown-fold-cond(map-strategy,no-history)>(input-rest, fold-value')
+
+	// for terms
+	topdown-fold-cond(map-strategy,no-history): (term, fold-value) -> (term''', fold-value''')
+		where
+			<explode-term>term
+		with
+			(term', fold-value') := <map-strategy>(term, fold-value);
+			(cons, args) := <explode-term>term';
+			(args', fold-value'') := <topdown-fold-cond(map-strategy,no-history)>(args, fold-value');
+			term'' := <mkterm>(cons, args');
+			term''' := <custom-origin(|term)>term'';
+			if <no-history>term then
+				fold-value''' := fold-value
+			else
+				fold-value''' := fold-value''
+			end
+
+	// for not(list) not(term)
+	topdown-fold-cond(map-strategy,no-history): (term, fold-value) -> (term', fold-value')
 		where
 			<not(is-list)>term;
 			<not(explode-term)>term

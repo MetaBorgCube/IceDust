@@ -38,14 +38,20 @@ type rules // specific references
 	
 	EntityInstanceRef(e) : e-ty
 	where definition of e : e-ty
-
-	Node(NaBLHelp(v, defuse), t, a) : v-ty
+	
+	LHSNode(NaBLHelp(v, defuse), t, a)
++ NHSNode(NaBLHelp(v, defuse), t, a)
++	RHSNode(NaBLHelp(v, defuse), t, a) : v-ty
 	where definition of v : v-ty
 
-	TsHelp(l, e, e-name) : e-ty
+	LHSTsHelp(l, e, e-name) 
++	NHSTsHelp(l, e, e-name) 
++	RHSTsHelp(l, e, e-name) : e-ty
 	where definition of e : e-ty
 
-	Edge(e, r): r-ty
+	LHSEdge(e, r)
++	NHSEdge(e, r)
++	RHSEdge(e, r): r-ty
 	where r : r-ty
 
 	AttrRef(a) : a-ty

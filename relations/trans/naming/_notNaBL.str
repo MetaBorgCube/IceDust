@@ -115,14 +115,38 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 			end
 
 	nabl-constraint(|ctx):
-		Node(NaBLHelp(e, Use()),_,_) -> <fail>
+		LHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+	nabl-constraint(|ctx):
+		NHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e
+	nabl-constraint(|ctx):
+		RHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
-		Edge(TsHelp(_, e, _), _) -> <fail>
+		LHSEdge(LHSTsHelp(_, e, _), _) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e			  
+	nabl-constraint(|ctx):
+		NHSEdge(NHSTsHelp(_, e, _), _) -> <fail>
+		where
+		  <has-annotation(?Use(task))> e
+		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
+		; <task-create-error-on-failure(|ctx, task, msg)> e			  
+	nabl-constraint(|ctx):
+		RHSEdge(RHSTsHelp(_, e, _), _) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]

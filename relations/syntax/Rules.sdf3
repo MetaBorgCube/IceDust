@@ -38,23 +38,51 @@ context-free syntax
 		]
 	>
 	
-	LHSLine = NodeOrEdgeLine
-	NHSLine = NodeOrEdgeLine
-	RHSLine = NodeOrEdgeLine
+// 	LHSLine = NodeOrEdgeLine
+// 	NHSLine = NodeOrEdgeLine
+// 	RHSLine = NodeOrEdgeLine
+// 	
+// 	NodeOrEdgeLine = <<NodeOrEdge>.>
+// 	
+// 	Node.Node = <<ID><NodeType?><NodeAttr?>>
+// 	NodeType = <:<EntityRef>>
+// 	NodeAttr = <{<{Attr ","}*>}>
+// 	
+// 	Attr.Attr = <<AttrRef>=<Exp>>
+// 	AttrRef.AttrRef = <<ID>>
+// 
+// 	Edge.Edge = <<TsHelp> <Node>>
+// 	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeName?>>
+// 	EdgeName = <@<ID>>
+// 	
+// 	NodeOrEdge = Node
+// 	NodeOrEdge = Edge	
 	
-	NodeOrEdgeLine = <<NodeOrEdge>.>
+	LHSLine = <<LHSNodeOrEdge>.>
+	LHSNodeOrEdge = LHSNode
+	LHSNodeOrEdge = LHSEdge	
+	LHSNode.LHSNode = <<ID><NodeType?><NodeAttr?>>
+	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
+	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID> <EdgeName?>>
+
+	NHSLine = <<NHSNodeOrEdge>.>
+	NHSNodeOrEdge = NHSNode
+	NHSNodeOrEdge = NHSEdge	
+	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
+	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
+	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID> <EdgeName?>>
 	
-	Node.Node = <<ID><NodeType?><NodeAttr?>>
+	RHSLine = <<RHSNodeOrEdge>.>
+	RHSNodeOrEdge = RHSNode
+	RHSNodeOrEdge = RHSEdge	
+	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
+	RHSEdge.RHSEdge = <<NHSTsHelp> <NHSNode>>
+	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID> <EdgeName?>>
+
 	NodeType = <:<EntityRef>>
 	NodeAttr = <{<{Attr ","}*>}>
-	
 	Attr.Attr = <<AttrRef>=<Exp>>
 	AttrRef.AttrRef = <<ID>>
-
-	Edge.Edge = <<TsHelp> <Node>>
-	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeName?>>
 	EdgeName = <@<ID>>
 	
-	NodeOrEdge = Node
-	NodeOrEdge = Edge	
 
