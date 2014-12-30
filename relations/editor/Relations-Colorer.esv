@@ -8,8 +8,12 @@ colorer Entity and Role namespaces
   _.EntityRef: 0 64 128 italic bold
   _.RoleRef: 0 64 128 italic
 
-	_.TsHelp: 0 64 128 italic
-	_.Node: 0 0 0
+	_.LHSTsHelp: 0 64 128 italic
+	_.NHSTsHelp: 0 64 128 italic
+	_.RHSTsHelp: 0 64 128 italic
+	_.LHSNode: 0 0 0
+	_.NHSNode: 0 0 0
+	_.RHSNode: 0 0 0
 	
 colorer Multiplicity
 
