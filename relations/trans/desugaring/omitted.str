@@ -115,10 +115,10 @@ rules // generate omitted node names
 			
 rules // generated omitted param node matches
 	
-	rule-generate-param-node-matches: Rule(r, p, b@RuleBody(lhs,rhs,sub)) -> Rule(r, p, b'')
+	rule-generate-param-node-matches: Rule(r, p, b@RuleBody(lhs,nhs,rhs,sub)) -> Rule(r, p, b'')
 		with
 			p-match := <filter(rule-param-one-to-match)>p;
-			b' := RuleBody(<conc>(p-match,lhs),rhs,sub);
+			b' := RuleBody(<conc>(p-match,lhs),nhs,rhs,sub);
 			b'' := <custom-origin(|b)>b'
 	
 	rule-param-one-to-match: Param(name, EntityRef(_), One()) -> <custom-origin(|name)>Node(name, None(), None())

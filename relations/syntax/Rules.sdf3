@@ -18,10 +18,18 @@ context-free syntax
 	Type = EntityRef
 	
 	RuleBody.RuleBody = <
-			<{LHS "\n"}*>
-		-\>
-			<{RHS "\n"}*>
+			<{LHSLine "\n"}*>
+		<NHS?>
+		<RHS?>
 		<{SubRule "\n"}*>
+	>
+	NHS = <
+	not
+		<{NHSLine "\n"}*>
+	>
+	RHS = <
+	-\>
+		<{RHSLine "\n"}*>
 	>
 	
 	SubRule.SubRule = <
@@ -30,15 +38,9 @@ context-free syntax
 		]
 	>
 	
-	LHS = NodeOrEdgeLine
-	LHS = SubMatch
-	SubMatch.SubMatch = <
-		<MultiplicityZ?>[
-			<{LHS "\n"}*>
-		]
-	>
-	
-	RHS = NodeOrEdgeLine
+	LHSLine = NodeOrEdgeLine
+	NHSLine = NodeOrEdgeLine
+	RHSLine = NodeOrEdgeLine
 	
 	NodeOrEdgeLine = <<NodeOrEdge>.>
 	
@@ -49,7 +51,6 @@ context-free syntax
 	Attr.Attr = <<AttrRef>=<Exp>>
 	AttrRef.AttrRef = <<ID>>
 
-	// Edge.Edge = <<NodeOrEdge> <ID> <Node>>
 	Edge.Edge = <<TsHelp> <Node>>
 	TsHelp.TsHelp = <<NodeOrEdge> <ID>>
 	

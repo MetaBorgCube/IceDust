@@ -32,17 +32,17 @@ model
 
 rules
 
-	// ensure reader is subscribed to lender	
-	subscribe(lender:Lender, reader:Reader)
-			?[lender subscriber reader.]
-		->
-			lender subscriber reader.
+	// // ensure reader is subscribed to lender	
+	// subscribe(lender:Lender, reader:Reader)
+	// 		?[lender subscriber reader.]
+	// 	->
+	// 		lender subscriber reader.
 
 	// only subscribe if not subscribed yet	
 	subscribe2(lender:Lender, reader:Reader)
-	->
 	?[
-			0[lender subscriber reader.]
+		not
+			lender subscriber reader.
 		->
 			lender subscriber reader.	
 	]
@@ -52,14 +52,16 @@ rules
 	->
 	?[
 			lender{maxSubscribersReached=false}.
-			0[lender subscriber reader.]
+		not
+			lender subscriber reader.
 		->
 			lender subscriber reader.	
 	]
 
 	// only borrow if nobody else borrowed
 	borrow(book:Book, reader:Reader)
-			0[book borrower other.]
+		not
+			book borrower other.
 		->
 			book borrower reader.
 	

@@ -111,9 +111,9 @@ rules
 
 rules
 	
-	rule-rhs-attr-variable-use: RuleBody(r,l,s) -> RuleBody(r,l'',s)
+	rule-rhs-attr-variable-use: RuleBody(l,n,r,s) -> RuleBody(l,n,r'',s)
 		with
-			l' := <try(sometd(attr-variable-use))>l;
-			l'' := <custom-origin(|l)>l'
+			r' := <try(sometd(attr-variable-use))>r;
+			r'' := <custom-origin(|l)>r'
 	
 	attr-variable-use: Attr(NaBLHelp(a, Bind()), name) -> Attr(NaBLHelp(a, <custom-origin(|a)>Use()), <custom-origin(|name)>Ref(name))
