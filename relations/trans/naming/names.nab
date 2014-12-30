@@ -105,6 +105,8 @@ binding rules // rules
 	Rule(rule, params, body):
 		defines Rule rule
 		scopes LHSVariable
+		scopes NHSVariable
+		scopes RHSVariable
 
 	//TODO: make 1 binding rule for Params
 	Param(v, EntityRef(t), m):
