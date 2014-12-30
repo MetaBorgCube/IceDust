@@ -12,7 +12,7 @@ model
 
   relation Counseling {
     Person * counselor
-    Marriage 1 
+    Marriage 1 counselled
   }
 
 data
@@ -32,7 +32,7 @@ data
   }
 
   Counseling {
-    marriage : marriage
+    counselled : marriage
     counselor : professional
   }
 

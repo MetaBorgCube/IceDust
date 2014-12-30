@@ -70,6 +70,20 @@ rules
 		?[
 				book borrower other. -> other.
 		]
+		
+// 	borrow2a(book:Book, reader:Reader)
+// 			0[book borrower other.]
+// 		->
+// 			book borrower reader.
+// 
+// 	borrow2b(book:Book, reader:Reader)
+// 			book borrower other.
+// 		->
+// 			book borrower reader.
+// 			other.
+// 
+//	borrow2 = borrow2b +> borrow2a	
+			
 	
 	return(book:Book)
 			book borrower reader.
