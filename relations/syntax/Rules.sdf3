@@ -76,7 +76,7 @@ context-free syntax
 	RHSNodeOrEdge = RHSNode
 	RHSNodeOrEdge = RHSEdge	
 	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
-	RHSEdge.RHSEdge = <<NHSTsHelp> <NHSNode>>
+	RHSEdge.RHSEdge = <<RHSTsHelp> <RHSNode>>
 	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID> <EdgeName?>>
 
 	NodeType = <:<EntityRef>>

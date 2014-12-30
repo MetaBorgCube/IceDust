@@ -3,6 +3,7 @@ module trans/naming/names
 imports
 
 	include/Relations
+	src-gen/signatures/Rules-sig
 	trans/desugaring/desugar
 	trans/naming/_notNaBL
 	
@@ -205,6 +206,24 @@ binding rules // rules
 			of multiplicity m
 		where a has type t
 		and a has multiplicity m
+
+	// define variables from edges
+	LHSTsHelp(a, b, NaBLHelp(v, Def())):
+		defines LHSVariable v
+	NHSTsHelp(a, b, NaBLHelp(v, Def())):
+		defines NHSVariable v
+	RHSTsHelp(a, b, NaBLHelp(v, Def())):
+		defines RHSVariable v
+	
+	// LHSEdge(LHSTsHelp(LHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), LHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines LHSVariable v
+	// 		// of type (node1, edge, node2)
+	// NHSEdge(NHSTsHelp(NHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), NHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines NHSVariable v
+	// 		// of type (node1, edge, node2)
+	// RHSEdge(RHSTsHelp(RHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), RHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines RHSVariable v
+	// 		// of type (node1, edge, node2)
 
 binding rules // data
 

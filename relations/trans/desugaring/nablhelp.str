@@ -21,7 +21,7 @@ rules
 	nablhelp1 = try(sometd(entity-add-shortcut-types)) //requires the roles to be untouched
 	nablhelp2 = try(sometd(role-duplicate-name))
 	
-	nablhelp3 = try(sometd(rule-node-variable-def-use))
+	nablhelp3 = try(sometd(rule-variable-def-use))
 	nablhelp4 = try(sometd(variable-def-defbyrel)) //requires variables to be def-use
 	
 	nablhelp5 = try(sometd(rule-attr-variable-def-use))
@@ -62,32 +62,48 @@ rules // duplicate role types (so one can define and one can refer)
 
 rules // figure out which node names are defs and which are uses
 	
-	rule-node-variable-def-use: Rule(n, p, b) -> Rule(n, p, b'')
+	rule-variable-def-use: Rule(n, p, b) -> Rule(n, p, b'')
 		with
 			params := (<map(\Param(n,t,m)->n\)>p, [], []); //(lhs, nhs, rhs) vars
-			(b', _) := <topdown-fold-cond(try(node-variable-def-use),?SubRule(_,_))>(b, params);
+			(b', _) := <topdown-fold-cond(try(variable-def-use),?SubRule(_,_))>(b, params);
 			b'' := <custom-origin(|b)>b'
 
-	node-variable-def-use: (n@LHSNode(name, er, v), history) -> (<custom-origin(|n)>LHSNode(n-name, er, v), history')
+	variable-def-use: (n@LHSNode(name, er, v), history) -> (<custom-origin(|n)>LHSNode(n-name, er, v), history')
 		with
-			(n-name, history') := <lhs-node-def-use>(name, history)	
+			(n-name, history') := <lhs-var-def-use>(name, history)	
 
-	lhs-node-def-use: (name, (history, nhs, rhs)) -> (name', (history', nhs, rhs))
+	variable-def-use: (n@NHSNode(name, er, v), history) -> (<custom-origin(|n)>NHSNode(n-name, er, v), history')
 		with
-			if !(name, history);not(elem) then
-				history' := <conc>(history, [name]);
+			(n-name, history') := <nhs-var-def-use>(name, history)	
+			
+	variable-def-use: (n@RHSNode(name, er, v), history) -> (<custom-origin(|n)>RHSNode(n-name, er, v), history')
+		with
+			(n-name, history') := <rhs-var-def-use>(name, history)
+
+	variable-def-use: (n@LHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>LHSTsHelp(node, e, n-name), history')
+		with
+			(n-name, history') := <lhs-var-def-use>(name, history)
+
+	variable-def-use: (n@NHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>NHSTsHelp(node, e, n-name), history')
+		with
+			(n-name, history') := <nhs-var-def-use>(name, history)
+
+	variable-def-use: (n@RHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>RHSTsHelp(node, e, n-name), history')
+		with
+			(n-name, history') := <rhs-var-def-use>(name, history)
+
+	lhs-var-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs', nhs, rhs))
+		with
+			if !(name, lhs);not(elem) then
+				lhs' := <conc>(lhs, [name]);
 				defuse := Def()
 			else
-				history' := history;
+				lhs' := lhs;
 				defuse := Use()
 			end;
 			name' := NaBLHelp(name, <custom-origin(|name)>defuse)
-
-	node-variable-def-use: (n@NHSNode(name, er, v), history) -> (<custom-origin(|n)>NHSNode(n-name, er, v), history')
-		with
-			(n-name, history') := <nhs-node-def-use>(name, history)	
 			
-	nhs-node-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs', rhs))
+	nhs-var-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs', rhs))
 		with
 			if and(!(name, lhs);not(elem), !(name, nhs);not(elem)) then
 				nhs' := <conc>(nhs, [name]);
@@ -96,13 +112,9 @@ rules // figure out which node names are defs and which are uses
 				nhs' := nhs;
 				defuse := Use()
 			end;
-			name' := NaBLHelp(name, <custom-origin(|name)>defuse)
+			name' := NaBLHelp(name, <custom-origin(|name)>defuse)		
 			
-	node-variable-def-use: (n@RHSNode(name, er, v), history) -> (<custom-origin(|n)>RHSNode(n-name, er, v), history')
-		with
-			(n-name, history') := <rhs-node-def-use>(name, history)
-			
-	rhs-node-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs, rhs'))
+	rhs-var-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs, rhs'))
 		with
 			if and(!(name, lhs);not(elem), !(name, rhs);not(elem)) then
 				rhs' := <conc>(rhs, [name]);
