@@ -21,3 +21,6 @@ rules // casing
 	
 	lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
 	lcfirst = string-as-chars(lcfirst-chars)
+
+	ucfirst-chars: [c|rest] -> [<to-upper>c|rest]
+	ucfirst = string-as-chars(ucfirst-chars)

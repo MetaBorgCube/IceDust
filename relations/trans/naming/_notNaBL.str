@@ -122,7 +122,7 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 		; <task-create-error-on-failure(|ctx, task, msg)> e
 		  
 	nabl-constraint(|ctx):
-		Edge(TsHelp(_, e), _) -> <fail>
+		Edge(TsHelp(_, e, _), _) -> <fail>
 		where
 		  <has-annotation(?Use(task))> e
 		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
