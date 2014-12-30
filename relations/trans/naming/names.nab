@@ -231,14 +231,14 @@ binding rules // references
 		where v resolves to Variable v-def
 		and v-def has type t
 
-	TsHelp(v1, edge-name, edge-ty):
-		refers to Role edge-ty in Entity v1-ty
+	TsHelp(v1, edge, edge-name):
+		refers to Role edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
-		refers to Inverse edge-ty in Entity v1-ty
+		refers to Inverse edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
-		refers to Shortcut edge-ty in Entity v1-ty
+		refers to Shortcut edge in Entity v1-ty
 		where v1 has type v1-ty
 
 	AttrRef(a):

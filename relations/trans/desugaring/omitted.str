@@ -27,13 +27,12 @@ rules
 	omitted1 = param-generate-mult
 	omitted1 = subrule-generate-mult
 	omitted1 = node-move-name-to-type
-	omitted1 = edge-move-name-to-type
 	
 	omitted2 = entity-generate-shortcuts        // requires role-generate-name
 	omitted2 = rule-generate-node-names         // requires node-move-name-to-type
 	
 	omitted3 = rule-generate-param-node-matches // requires param-generate-mult, matches same as rule-generate-node-names
-	omitted3 = edge-generate-name								// requires edge-move-name-to-type and rule-generate-node-names
+	omitted3 = edge-generate-name								// requires rule-generate-node-names
 
 rules // generate omitted multiplicities
 
@@ -104,10 +103,6 @@ rules // move name to type if capitalized
 		where
 			<first-is-upper>name
 			
-rules // move edge name to type if no type
-	
-	edge-move-name-to-type: TsHelp(node, edge-name, None()) -> TsHelp(node, None(), edge-name)
-	
 rules // generate omitted node names
 
 	rule-generate-node-names: Rule(r, p, b) -> Rule(r, p, b'')
@@ -122,8 +117,8 @@ rules // generate omitted node names
 rules // generate omitted edge names
 	
 	edge-generate-name:
-		Edge(                 tsh@TsHelp(n1@Node(n1-name, _, _), None(), e-ty), n2@Node(n2-name, _, _)) ->
-		Edge(<custom-origin(|tsh)>TsHelp(n1,                     e-name, e-ty), n2)
+		Edge(                 tsh@TsHelp(n1@Node(n1-name, _, _), e-ty, None()), n2@Node(n2-name, _, _)) ->
+		Edge(<custom-origin(|tsh)>TsHelp(n1,                     e-ty, e-name), n2)
 			with
 				e-name := <concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name]
 

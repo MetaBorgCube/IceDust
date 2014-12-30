@@ -42,7 +42,7 @@ type rules // specific references
 	Node(NaBLHelp(v, defuse), t, a) : v-ty
 	where definition of v : v-ty
 
-	TsHelp(l, e-name, e) : e-ty
+	TsHelp(l, e, e-name) : e-ty
 	where definition of e : e-ty
 
 	Edge(e, r): r-ty

@@ -52,8 +52,8 @@ context-free syntax
 	AttrRef.AttrRef = <<ID>>
 
 	Edge.Edge = <<TsHelp> <Node>>
-	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeType?>>
-	EdgeType = <:<ID>>
+	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeName?>>
+	EdgeName = <@<ID>>
 	
 	NodeOrEdge = Node
 	NodeOrEdge = Edge	
