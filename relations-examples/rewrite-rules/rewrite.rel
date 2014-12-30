@@ -33,33 +33,34 @@ rules
       ?[t. -> i tag t.]
     ]
 
-	addMember(u:User, p:Project)
-			?[p tag t{name="!"+u.name}.]
-			?[p follower u.]
-			?[p memberRequester u.]
-		->
-			p member u.
-			p tag t.
+	// addMember(u:User, p:Project)
+	// 		?[p tag t{name="!"+u.name}.]
+	// 		?[p follower u.]
+	// 		?[p memberRequester u.]
+	// 	->
+	// 		p member u.
+	// 		p tag t.
 			
 	addMemberNormalized(u:User, p:Project)
 		->
 			p member u.
 		?[
-				0[p tag Tag{name="!"+u.name}.]
+			not
+				p tag Tag{name="!"+u.name}.
 			->
 				p tag t{name="!"+u.name}.
 		]
 		?[p follower u.->]
 		?[p memberRequester u.->]
 
-	vote(i:Issue, u:User)
-			i project p.
-			?[p tag t{name="!"+u.name}.]
-		->
-			u.
-			i project p.
-			p tag t.
-			i tag t.
+	// vote(i:Issue, u:User)
+	// 		i project p.
+	// 		?[p tag t{name="!"+u.name}.]
+	// 	->
+	// 		u.
+	// 		i project p.
+	// 		p tag t.
+	// 		i tag t.
 			
 	voteNormalized(i:Issue, u:User)
 			i project p.
@@ -73,19 +74,20 @@ rules
 				i tag t.
 		]
 		?[
-				0[p tag t{name="!"+u.name}.]
+			not
+				p tag t{name="!"+u.name}.
 			->
 				p tag t{name="!"+u.name}.
 				i tag t.
 		]
 	
-	delete(i:Issue)
-			i project p.
-			i reporter u.
-			*[i tag t.]
-		->
-			p.
-			u.
+	// delete(i:Issue)
+	// 		i project p.
+	// 		i reporter u.
+	// 		*[i tag t.]
+	// 	->
+	// 		p.
+	// 		u.
 	
 	deleteNormalized(i:Issue)
 			i project p.
