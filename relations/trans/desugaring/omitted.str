@@ -11,6 +11,7 @@ imports
 	trans/lib/traverse
 	include/Relations
 	src-gen/signatures/Rules-sig
+	trans/api/model-api
 	trans/api/rules-api
 
 rules
@@ -36,19 +37,25 @@ rules
 
 rules // generate omitted multiplicities
 
-	attr-generate-mult: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+	attr-generate-mult: attr -> attr'
+		where	attr-has-no-mult
+		with attr':= <attr-set-mult(|One())>attr
 
 rules // generate omitted role names
 
-	role-generate-name: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
-
+	role-generate-name: role -> role'
+		where role-has-no-name
+		with role' := <role-set-name(|<role-get-type;origin-track-forced(lcfirst)>role)>role
+			
 rules // generate omitted inverse names
 	
 	entity-generate-inverse-names: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
 		with
 			roles' := <map(try(generate-inverse-name(|entityName)))>roles
 
-	generate-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <custom-origin(lcfirst|a)>entityName)
+	generate-inverse-name(|entityName): role -> role'
+		where role-has-no-inversename
+		with role' := <role-set-inversename(|<custom-origin(lcfirst|<role-get-type>role)>entityName)>role
 
 rules	// generate omitted entity names
 

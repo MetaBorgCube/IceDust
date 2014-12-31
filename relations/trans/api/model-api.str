@@ -1,0 +1,23 @@
+module trans/api/model-api
+
+imports
+
+	src-gen/signatures/Model-sig
+
+rules // query
+	
+	role-get-type: Role(ty, _, _, _) -> ty
+	
+rules // properties
+	
+	attr-has-no-mult: Attribute(_, _, None(), _) -> <id>
+	
+	role-has-no-name: Role(_, _, None(), _) -> <id>
+	role-has-no-inversename: Role(_, _, _, None()) -> <id>
+	
+rules // manipulation
+	
+	attr-set-mult(|mult): Attribute(a, b, _, c) -> Attribute(a, b, mult, c)
+	
+	role-set-name(|name): Role(a, b, None(), c) -> Role(a, b, name, c)
+	role-set-inversename(|inversename): Role(a, b, c, _) -> Role(a, b, c, inversename)
