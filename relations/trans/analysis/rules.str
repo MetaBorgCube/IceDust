@@ -6,21 +6,25 @@ imports
 	trans/desugaring/desugar
 	src-gen/signatures/Rules-sig
 	
-// rules // transform a rule to only the lsh (the match)
-// 	
-// 	to-lhs = rule-to-lhs <+ rulebody-to-lhs <+ subrule-to-lhs
-// 	
-// 	rule-to-lhs: Rule(n,p,b) -> SubMatch(One(),b')
-// 		with
-// 			b' := <rulebody-to-lhs>b
-// 	
-// 	rulebody-to-lhs: x@RuleBody(lhs, rhs, sub) -> lhs'
-// 		with
-// 			sub' := <filter(subrule-to-lhs)>sub;
-// 			lhs' := <conc>(lhs,sub')
-// 			
-// 	subrule-to-lhs: SubRule(mult, body) -> SubMatch(mult,lhs')
-// 		with
-// 			lhs' := <rulebody-to-lhs>body
+rules // transform to only match: drop al rhs
 	
+	to-match = rule-to-match <+ rulebody-to-match <+ subrule-to-match
 	
+	rule-to-match:
+		Rule(name, params, body) ->
+		SubRule(One(), body')
+			with
+				body' := <rulebody-to-match>body
+
+	rulebody-to-match:
+		RuleBody(lhs, nhs, rhs,    sub) ->
+		RuleBody(lhs, nhs, None(), sub')
+			with
+				sub' := <filter(subrule-to-match)>sub
+	
+	subrule-to-match:
+		SubRule(mult, body) ->
+		SubRule(mult, body')
+			with
+				body' := <rulebody-to-match>body
+

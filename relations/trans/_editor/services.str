@@ -117,12 +117,12 @@ rules // properties for editor services
 	editor-service-properties(|project-path): target -> properties'
 		with
 			properties := <get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path)>target;
-			// if lhs := <to-lhs>target then
-			// 	match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>lhs;
-			// 	properties' := <conc>(properties,[("Match", match)])
-			// else
+			if to-match := <to-match>target then
+				match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>to-match;
+				properties' := <conc>(properties,[("Match", match)])
+			else
 				properties' := properties
-			// end
+			end
 
 	def-warning: Def(_) -> ("Warning!", "Showing hover info of Definition instead of Use")
 

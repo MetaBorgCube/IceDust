@@ -63,7 +63,7 @@ context-free syntax
 	LHSNodeOrEdge = LHSEdge	
 	LHSNode.LHSNode = <<ID><NodeType?><NodeAttr?>>
 	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
-	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID> <LHSEdgeName?>>
+	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID><LHSEdgeName?>>
 	LHSEdgeName.LHSEdgeName = <@<ID>>
 
 	NHSLine = <<NHSNodeOrEdge>.>
@@ -71,7 +71,7 @@ context-free syntax
 	NHSNodeOrEdge = NHSEdge	
 	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
 	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
-	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID> <NHSEdgeName?>>
+	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID><NHSEdgeName?>>
 	NHSEdgeName.NHSEdgeName = <@<ID>>
 	
 	RHSLine = <<RHSNodeOrEdge>.>
@@ -79,7 +79,7 @@ context-free syntax
 	RHSNodeOrEdge = RHSEdge	
 	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
 	RHSEdge.RHSEdge = <<RHSTsHelp> <RHSNode>>
-	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID> <RHSEdgeName?>>
+	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID><RHSEdgeName?>>
 	RHSEdgeName.RHSEdgeName = <@<ID>>
 
 	NodeType = <:<EntityRef>>
