@@ -22,7 +22,7 @@ rules
 	nablhelp2 = try(sometd(role-duplicate-name))
 	
 	nablhelp3 = try(sometd(rule-variable-def-use))
-	nablhelp4 = try(sometd(variable-def-defbyrel)) //requires variables to be def-use
+	nablhelp4 = bottomup(try(variable-def-defbyrel)) //requires variables to be def-use (bottomup-try because nesting)
 	
 	nablhelp5 = try(sometd(rule-attr-variable-def-use))
 	nablhelp6 = try(sometd(rule-rhs-attr-variable-use)) //cleans up the previous rule
