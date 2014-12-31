@@ -17,7 +17,7 @@ rules // properties
 	
 rules // manipulation
 	
-	attr-set-mult(|mult): Attribute(a, b, _, c) -> Attribute(a, b, mult, c)
+	attr-set-mult(|mult)                = Attribute(id, id, !mult, id)
 	
-	role-set-name(|name): Role(a, b, _, c) -> Role(a, b, name, c)
-	role-set-inversename(|inversename): Role(a, b, c, _) -> Role(a, b, c, inversename)
+	role-set-name(|name)                = Role(id, id, !name, id)
+	role-set-inversename(|inversename)  = Role(id, id, id, !inversename)
