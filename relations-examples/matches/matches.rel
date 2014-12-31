@@ -10,17 +10,14 @@ rules
 
 	courseStudents(c:Course)
 			c student s.
-		->
 	
 	classmates(s:Student)
 			s course c.
 			c student s2.
-		->
 	
 	x(s:Student)
 			s course c.
 			?[c student s2.]
-		->
 
 data
 
