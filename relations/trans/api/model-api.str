@@ -6,18 +6,18 @@ imports
 
 rules // query
 	
-	role-get-type: Role(ty, _, _, _) -> ty
+	role-get-type           = ?Role(<id>, _, _, _)
 	
 rules // properties
 	
-	attr-has-no-mult: Attribute(_, _, None(), _) -> <id>
+	attr-has-no-mult        = ?Attribute(_, _, None(), _)
 	
-	role-has-no-name: Role(_, _, None(), _) -> <id>
-	role-has-no-inversename: Role(_, _, _, None()) -> <id>
+	role-has-no-name        = ?Role(_, _, None(), _)
+	role-has-no-inversename = ?Role(_, _, _, None())
 	
 rules // manipulation
 	
 	attr-set-mult(|mult): Attribute(a, b, _, c) -> Attribute(a, b, mult, c)
 	
-	role-set-name(|name): Role(a, b, None(), c) -> Role(a, b, name, c)
+	role-set-name(|name): Role(a, b, _, c) -> Role(a, b, name, c)
 	role-set-inversename(|inversename): Role(a, b, c, _) -> Role(a, b, c, inversename)
