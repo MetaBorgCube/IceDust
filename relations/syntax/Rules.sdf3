@@ -63,26 +63,29 @@ context-free syntax
 	LHSNodeOrEdge = LHSEdge	
 	LHSNode.LHSNode = <<ID><NodeType?><NodeAttr?>>
 	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
-	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID> <EdgeName?>>
+	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID> <LHSEdgeName?>>
+	LHSEdgeName.LHSEdgeName = <@<ID>>
 
 	NHSLine = <<NHSNodeOrEdge>.>
 	NHSNodeOrEdge = NHSNode
 	NHSNodeOrEdge = NHSEdge	
 	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
 	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
-	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID> <EdgeName?>>
+	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID> <NHSEdgeName?>>
+	NHSEdgeName.NHSEdgeName = <@<ID>>
 	
 	RHSLine = <<RHSNodeOrEdge>.>
 	RHSNodeOrEdge = RHSNode
 	RHSNodeOrEdge = RHSEdge	
 	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
 	RHSEdge.RHSEdge = <<RHSTsHelp> <RHSNode>>
-	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID> <EdgeName?>>
+	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID> <RHSEdgeName?>>
+	RHSEdgeName.RHSEdgeName = <@<ID>>
 
 	NodeType = <:<EntityRef>>
 	NodeAttr = <{<{Attr ","}*>}>
 	Attr.Attr = <<AttrRef>=<Exp>>
 	AttrRef.AttrRef = <<ID>>
-	EdgeName = <@<ID>>
+
 	
 

@@ -132,17 +132,17 @@ rules // generate omitted edge names
 		LHSEdge(                 tsh@LHSTsHelp(n1@LHSNode(n1-name, _, _), e-ty, None()), n2@LHSNode(n2-name, _, _)) ->
 		LHSEdge(<custom-origin(|tsh)>LHSTsHelp(n1,                        e-ty, e-name), n2)
 			with
-				e-name := <concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name]
+				e-name := <custom-origin(|e-ty)>LHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
 	edge-generate-name:
 		NHSEdge(                 tsh@NHSTsHelp(n1@NHSNode(n1-name, _, _), e-ty, None()), n2@NHSNode(n2-name, _, _)) ->
 		NHSEdge(<custom-origin(|tsh)>NHSTsHelp(n1,                        e-ty, e-name), n2)
 			with
-				e-name := <concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name]
+				e-name := <custom-origin(|e-ty)>NHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
 	edge-generate-name:
 		RHSEdge(                 tsh@RHSTsHelp(n1@RHSNode(n1-name, _, _), e-ty, None()), n2@RHSNode(n2-name, _, _)) ->
 		RHSEdge(<custom-origin(|tsh)>RHSTsHelp(n1,                        e-ty, e-name), n2)
 			with
-				e-name := <concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name]
+				e-name := <custom-origin(|e-ty)>RHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
 
 rules // generated omitted param node matches
 	

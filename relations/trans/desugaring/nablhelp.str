@@ -80,15 +80,15 @@ rules // figure out which node names are defs and which are uses
 		with
 			(n-name, history') := <rhs-var-def-use>(name, history)
 
-	variable-def-use: (n@LHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>LHSTsHelp(node, e, n-name), history')
+	variable-def-use: (n@LHSEdgeName(name), history) -> (<custom-origin(|n)>LHSEdgeName(n-name), history')
 		with
 			(n-name, history') := <lhs-var-def-use>(name, history)
 
-	variable-def-use: (n@NHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>NHSTsHelp(node, e, n-name), history')
+	variable-def-use: (n@NHSEdgeName(name), history) -> (<custom-origin(|n)>NHSEdgeName(n-name), history')
 		with
 			(n-name, history') := <nhs-var-def-use>(name, history)
 
-	variable-def-use: (n@RHSTsHelp(node, e, name), history) -> (<custom-origin(|n)>RHSTsHelp(node, e, n-name), history')
+	variable-def-use: (n@RHSEdgeName(name), history) -> (<custom-origin(|n)>RHSEdgeName(n-name), history')
 		with
 			(n-name, history') := <rhs-var-def-use>(name, history)
 

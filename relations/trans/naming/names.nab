@@ -208,11 +208,11 @@ binding rules // rules
 		and a has multiplicity m
 
 	// define variables from edges
-	LHSTsHelp(a, b, NaBLHelp(v, Def())):
+	LHSTsHelp(a, b, LHSEdgeName(NaBLHelp(v, Def()))):
 		defines LHSVariable v
-	NHSTsHelp(a, b, NaBLHelp(v, Def())):
+	NHSTsHelp(a, b, NHSEdgeName(NaBLHelp(v, Def()))):
 		defines NHSVariable v
-	RHSTsHelp(a, b, NaBLHelp(v, Def())):
+	RHSTsHelp(a, b, RHSEdgeName(NaBLHelp(v, Def()))):
 		defines RHSVariable v
 	
 	// LHSEdge(LHSTsHelp(LHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), LHSNode(NaBLHelp(node2, d), e, f)):
@@ -316,6 +316,17 @@ binding rules // references
 			in a
 		where v resolves to LHSVariable v-def
 		and v-def has type t
+
+	LHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		
+	NHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		otherwise refers to NHSVariable v
+
+	RHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		otherwise refers to RHSVariable v
 
 	LHSTsHelp(v1, Edge, Edge-name):
 		refers to Role Edge in Entity v1-ty
