@@ -11,7 +11,7 @@ imports
 	trans/lib/traverse
 	include/Relations
 	src-gen/signatures/Rules-sig
-	trans/desugaring/desugar
+	trans/api/rules-api
 
 rules
 	
@@ -99,15 +99,14 @@ rules // generate omitted multiplicities
 	
 rules // move name to type if capitalized
 	
-	node-move-name-to-type: LHSNode(name, None(), a) -> LHSNode(None(), <custom-origin(|name)>EntityRef(name), a)
+	node-move-name-to-type: node -> node''
 		where
-			<first-is-upper>name	
-	node-move-name-to-type: NHSNode(name, None(), a) -> NHSNode(None(), <custom-origin(|name)>EntityRef(name), a)
-		where
-			<first-is-upper>name	
-	node-move-name-to-type: RHSNode(name, None(), a) -> RHSNode(None(), <custom-origin(|name)>EntityRef(name), a)
-		where
-			<first-is-upper>name
+			node-has-no-type;
+			node-var := <node-to-varname>node;
+			<first-is-upper>node-var
+		with
+			node' := <node-set-type(|node-var)>node;
+			node'' := <node-set-varname(|None())>node'
 			
 rules // generate omitted node names
 
@@ -116,33 +115,24 @@ rules // generate omitted node names
 			(b', _) := <topdown-fold(try(generate-node-name))>(b, []);
 			b'' := <custom-origin(|b)>b'
 
-	generate-node-name: (n@LHSNode(None(), er@EntityRef(n-ty), v), history) -> (<custom-origin(|n)>LHSNode(n-name, er, v), history')
+	generate-node-name: (node, history) -> (node', history')
+		where
+			<node-has-no-varname>node;
+			node-ty := <node-to-type>node
 		with
-			(n-name, history') := <new-name>(<lcfirst>n-ty, history)
-	generate-node-name: (n@NHSNode(None(), er@EntityRef(n-ty), v), history) -> (<custom-origin(|n)>NHSNode(n-name, er, v), history')
-		with
-			(n-name, history') := <new-name>(<lcfirst>n-ty, history)
-	generate-node-name: (n@RHSNode(None(), er@EntityRef(n-ty), v), history) -> (<custom-origin(|n)>RHSNode(n-name, er, v), history')
-		with
-			(n-name, history') := <new-name>(<lcfirst>n-ty, history)
+			(node-var', history') := <new-name>(<lcfirst>node-ty, history);
+			node' := <node-set-varname(|node-var')>node
 
 rules // generate omitted edge names
-	
-	edge-generate-name:
-		LHSEdge(                 tsh@LHSTsHelp(n1@LHSNode(n1-name, _, _), e-ty, None()), n2@LHSNode(n2-name, _, _)) ->
-		LHSEdge(<custom-origin(|tsh)>LHSTsHelp(n1,                        e-ty, e-name), n2)
-			with
-				e-name := <custom-origin(|e-ty)>LHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
-	edge-generate-name:
-		NHSEdge(                 tsh@NHSTsHelp(n1@NHSNode(n1-name, _, _), e-ty, None()), n2@NHSNode(n2-name, _, _)) ->
-		NHSEdge(<custom-origin(|tsh)>NHSTsHelp(n1,                        e-ty, e-name), n2)
-			with
-				e-name := <custom-origin(|e-ty)>NHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
-	edge-generate-name:
-		RHSEdge(                 tsh@RHSTsHelp(n1@RHSNode(n1-name, _, _), e-ty, None()), n2@RHSNode(n2-name, _, _)) ->
-		RHSEdge(<custom-origin(|tsh)>RHSTsHelp(n1,                        e-ty, e-name), n2)
-			with
-				e-name := <custom-origin(|e-ty)>RHSEdgeName(<concat-strings;custom-origin(|e-ty)> [n1-name, <ucfirst>e-ty, <ucfirst>n2-name])
+
+	edge-generate-name: edge -> edge'
+		where
+			edge-has-no-varname
+		with
+			(node1-var, _, node2-var) := <edge-to-varnames>edge;
+			edge-model := <edge-to-edgemodel>edge;
+			edge-var' := <concat-strings;custom-origin(|edge-model)> [node1-var, <ucfirst>edge-model, <ucfirst>node2-var];
+			edge' := <edge-set-varname(|edge-var')>edge
 
 rules // generated omitted param node matches
 	

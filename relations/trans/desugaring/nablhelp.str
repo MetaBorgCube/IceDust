@@ -3,10 +3,11 @@ module trans/desugaring/nablhelp
 imports
 	
 	include/Relations
-	trans/desugaring/desugar
+	src-gen/signatures/Rules-sig
+	trans/desugaring/constructors
+		
 	trans/lib/traverse
 	trans/lib/origin
-	src-gen/signatures/Rules-sig
 	
 rules
 	

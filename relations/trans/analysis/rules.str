@@ -20,11 +20,31 @@ rules // transform to only match: drop al rhs
 		RuleBody(lhs, nhs, rhs,    sub) ->
 		RuleBody(lhs, nhs, None(), sub')
 			with
-				sub' := <filter(subrule-to-match)>sub
+				sub' := <map(subrule-to-match)>sub
 	
 	subrule-to-match:
 		SubRule(mult, body) ->
 		SubRule(mult, body')
 			with
 				body' := <rulebody-to-match>body
+
+// rules // normalize match: (1) remove all edge chains (2) make all nodes that need to be matched explicit (3) remove all duplicates
+// 	
+// 	rule-to-normalized:
+// 		Rule(name, params, body) ->
+// 		Rule(name, params, body')
+// 			with
+// 				body' := <rulebody-to-normalized>body
+// 
+// 	rulebody-to-normalized:
+// 		RuleBody(lhs, nhs, rhs, sub) ->
+// 		RuleBody(lhs, nhs, rhs, sub')
+// 			with
+// 				sub' := <map(subrule-to-normalized)>sub
+// 	
+// 	subrule-to-normalized:
+// 		SubRule(mult, body) ->
+// 		SubRule(mult, body')
+// 			with
+// 				body' := <rulebody-to-normalized>body
 

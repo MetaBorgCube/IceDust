@@ -2,6 +2,8 @@ module trans/desugaring/desugar
 
 imports
 	include/Relations
+	trans/desugaring/constructors
+	
 	trans/lib/origin
 	// lib/runtime/editor/origins
 	lib/editor/origins
@@ -17,19 +19,6 @@ rules
 		nablhelp;
 		desugar-done;
 		warning-on-missing-origin
-
-signature constructors
-	
-	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
-	
-	NaBLHelp : RoleRef * ID -> NaBLHelp
-	
-	Ext : ID -> Ext
-	
-	Def      : DefUse
-	DefByRel : DefUse
-	Use      : DefUse
-	Bind     : DefUse
 
 rules // general
 
