@@ -10,13 +10,13 @@ imports
 
 rules // query edge and node names (in all stages of desugaring)
 
-	node-to-varname: LHSNode(NaBLHelp(node-var, _), _, _) -> node-var
-	node-to-varname: NHSNode(NaBLHelp(node-var, _), _, _) -> node-var
-	node-to-varname: RHSNode(NaBLHelp(node-var, _), _, _) -> node-var
+	node-to-varname = ?LHSNode(NaBLHelp(<id>, _), _, _)
+	node-to-varname = ?NHSNode(NaBLHelp(<id>, _), _, _)
+	node-to-varname = ?RHSNode(NaBLHelp(<id>, _), _, _)
 
-	node-to-varname: LHSNode(node-var, _, _) -> node-var
-	node-to-varname: NHSNode(node-var, _, _) -> node-var
-	node-to-varname: RHSNode(node-var, _, _) -> node-var
+	node-to-varname = ?LHSNode(<id>, _, _)
+	node-to-varname = ?NHSNode(<id>, _, _)
+	node-to-varname = ?RHSNode(<id>, _, _)
 	
 	node-to-varname: edge -> node2-var
 		where
