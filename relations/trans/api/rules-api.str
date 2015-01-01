@@ -36,45 +36,45 @@ rules // query edge and node names (in all stages of desugaring)
 
 rules // query node and edge model references
 
-	node-to-type: LHSNode(_, EntityRef(node-ty), _) -> node-ty
-	node-to-type: NHSNode(_, EntityRef(node-ty), _) -> node-ty
-	node-to-type: RHSNode(_, EntityRef(node-ty), _) -> node-ty
+	node-to-type = ?LHSNode(_, EntityRef(<id>), _)
+	node-to-type = ?NHSNode(_, EntityRef(<id>), _)
+	node-to-type = ?RHSNode(_, EntityRef(<id>), _)
 
-	edge-to-edgemodel: LHSEdge(LHSTsHelp(_, edge-model, _), _) -> edge-model
-	edge-to-edgemodel: NHSEdge(NHSTsHelp(_, edge-model, _), _) -> edge-model
-	edge-to-edgemodel: RHSEdge(RHSTsHelp(_, edge-model, _), _) -> edge-model
+	edge-to-edgemodel = ?LHSEdge(LHSTsHelp(_, <id>, _), _)
+	edge-to-edgemodel = ?NHSEdge(NHSTsHelp(_, <id>, _), _)
+	edge-to-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _) 
 
 rules // node and edge binary properties
 	
 	node-has-varname = not(node-has-no-varname)
 	
-	node-has-no-varname: LHSNode(None(), _, _) -> <id>
-	node-has-no-varname: NHSNode(None(), _, _) -> <id>
-	node-has-no-varname: RHSNode(None(), _, _) -> <id>
+	node-has-no-varname = ?LHSNode(None(), _, _)
+	node-has-no-varname = ?NHSNode(None(), _, _)
+	node-has-no-varname = ?RHSNode(None(), _, _)
 	
 	node-has-type = not(node-has-no-type)
 	
-	node-has-no-type: LHSNode(_, None(), _) -> <id>
-	node-has-no-type: NHSNode(_, None(), _) -> <id>
-	node-has-no-type: RHSNode(_, None(), _) -> <id>
+	node-has-no-type = ?LHSNode(_, None(), _)
+	node-has-no-type = ?NHSNode(_, None(), _)
+	node-has-no-type = ?RHSNode(_, None(), _)
 	
 	edge-has-varname = not(edge-has-no-varname)
 	
-	edge-has-no-varname: LHSEdge(LHSTsHelp(node1, edge-model, None()), node2) -> <id>	
-	edge-has-no-varname: NHSEdge(NHSTsHelp(node1, edge-model, None()), node2) -> <id>	
-	edge-has-no-varname: RHSEdge(RHSTsHelp(node1, edge-model, None()), node2) -> <id>
+	edge-has-no-varname = ?LHSEdge(LHSTsHelp(node1, edge-model, None()), node2)
+	edge-has-no-varname = ?NHSEdge(NHSTsHelp(node1, edge-model, None()), node2)
+	edge-has-no-varname = ?RHSEdge(RHSTsHelp(node1, edge-model, None()), node2)
 
 rules // node and edge manipulation
 
-	node-set-varname(|node-var'): LHSNode(node-var, a, b) -> LHSNode(node-var', a, b)
-	node-set-varname(|node-var'): NHSNode(node-var, a, b) -> NHSNode(node-var', a, b)
-	node-set-varname(|node-var'): RHSNode(node-var, a, b) -> RHSNode(node-var', a, b)
+	node-set-varname(|node-var') = LHSNode(!node-var', id, id)
+	node-set-varname(|node-var') = NHSNode(!node-var', id, id)
+	node-set-varname(|node-var') = RHSNode(!node-var', id, id)
 	
-	node-set-type(|node-type'): LHSNode(node-name, _, a) -> LHSNode(node-name, <custom-origin(|node-type')>EntityRef(node-type'), a)
-	node-set-type(|node-type'): NHSNode(node-name, _, a) -> NHSNode(node-name, <custom-origin(|node-type')>EntityRef(node-type'), a)
-	node-set-type(|node-type'): RHSNode(node-name, _, a) -> RHSNode(node-name, <custom-origin(|node-type')>EntityRef(node-type'), a)
-	
-	edge-set-varname(|edge-var'): LHSEdge(tsh@LHSTsHelp(node1, edge-model, edge-var), node2) ->	LHSEdge(<custom-origin(|tsh)>LHSTsHelp(node1, edge-model, <custom-origin(|edge-model)>LHSEdgeName(edge-var')), node2)	
-	edge-set-varname(|edge-var'): NHSEdge(tsh@NHSTsHelp(node1, edge-model, edge-var), node2) ->	NHSEdge(<custom-origin(|tsh)>NHSTsHelp(node1, edge-model, <custom-origin(|edge-model)>NHSEdgeName(edge-var')), node2)	
-	edge-set-varname(|edge-var'): RHSEdge(tsh@RHSTsHelp(node1, edge-model, edge-var), node2) ->	RHSEdge(<custom-origin(|tsh)>RHSTsHelp(node1, edge-model, <custom-origin(|edge-model)>RHSEdgeName(edge-var')), node2)
+	node-set-type(|node-type') = LHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
+	node-set-type(|node-type') = NHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
+	node-set-type(|node-type') = RHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
+
+	edge-set-varname(|edge-var') = LHSEdge(keep-origin(LHSTsHelp(id, id, !LHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
+	edge-set-varname(|edge-var') = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
+	edge-set-varname(|edge-var') = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
 

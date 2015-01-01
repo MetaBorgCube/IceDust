@@ -34,3 +34,7 @@ rules // origin for lists
       <is-list> list;
      	(start-offset, _) := <Hd; origin-offset> list;
      	(_, end-offset)   := <last; origin-offset> list
+
+rules //  short alias
+	
+	keep-origin(a) = origin-track-forced(a)
