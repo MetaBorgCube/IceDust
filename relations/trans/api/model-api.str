@@ -4,11 +4,23 @@ imports
 
 	src-gen/signatures/Model-sig
 
+	trans/lib/origin
+
 rules // query
 	
+	entity-get-type = ?Entity(<id>,_,_)
+	entity-get-name = ?Entity(_,<id>,_)
+	entity-get-members = ?Entity(_, _, <id>)
+
 	role-get-type           = ?Role(<id>, _, _, _)
+	role-get-name           = ?Role(_, _, <id>, _)
+	
+	shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1,role2)
+	shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
 	
 rules // properties
+	
+	is-entity = ?Entity(_,_,_)
 	
 	attr-has-no-mult        = ?Attribute(_, _, None(), _)
 	
@@ -16,8 +28,16 @@ rules // properties
 	role-has-no-inversename = ?Role(_, _, _, None())
 	
 rules // manipulation
+
+	entity-set-members(|members) = entity-set-members(!members)
 	
+	entity-set-members(members) = Entity(id, id, members)
+
 	attr-set-mult(|mult)                = Attribute(id, id, !mult, id)
 	
 	role-set-name(|name)                = Role(id, id, !name, id)
 	role-set-inversename(|inversename)  = Role(id, id, id, !inversename)
+
+rules // creation
+	
+	create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)

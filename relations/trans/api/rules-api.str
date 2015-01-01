@@ -8,7 +8,16 @@ imports
 		
 	trans/lib/origin
 
-rules // query edge and node names (in all stages of desugaring)
+rules // query (in all stages of desugaring)
+
+	rule-get-params = ?Rule(_, <id>, _)
+	rule-get-body   = ?Rule(_, _, <id>)
+	
+	param-get-name = ?Param(<id>, _, _)
+	
+	rulebody-get-lhs = ?RuleBody(<id>, _, _, _)
+	rulebody-get-nhs = ?RuleBody(_, <id>, _, _)
+	rulebody-get-rhs = ?RuleBody(_, _, <id>, _)
 
 	node-to-varname = ?LHSNode(NaBLHelp(<id>, _), _, _)
 	node-to-varname = ?NHSNode(NaBLHelp(<id>, _), _, _)
@@ -34,8 +43,6 @@ rules // query edge and node names (in all stages of desugaring)
 	edge-to-varnames: NHSEdge(NHSTsHelp(node1, edge-model, edge-var), node2) -> (<node-to-varname>node1,edge-var,<node-to-varname>node2)
 	edge-to-varnames: RHSEdge(RHSTsHelp(node1, edge-model, edge-var), node2) -> (<node-to-varname>node1,edge-var,<node-to-varname>node2)
 
-rules // query node and edge model references
-
 	node-to-type = ?LHSNode(_, EntityRef(<id>), _)
 	node-to-type = ?NHSNode(_, EntityRef(<id>), _)
 	node-to-type = ?RHSNode(_, EntityRef(<id>), _)
@@ -44,7 +51,15 @@ rules // query node and edge model references
 	edge-to-edgemodel = ?NHSEdge(NHSTsHelp(_, <id>, _), _)
 	edge-to-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _) 
 
-rules // node and edge binary properties
+rules // properties
+	
+	is-rule = ?Rule(_, _, _)
+	
+	param-has-no-mult = param-has-mult(|None())
+	
+	param-has-mult(|mult) = ?Param(_, _, mult) 
+	
+	subrule-has-no-mult = ?SubRule(None(), _)
 	
 	node-has-varname = not(node-has-no-varname)
 	
@@ -64,7 +79,19 @@ rules // node and edge binary properties
 	edge-has-no-varname = ?NHSEdge(NHSTsHelp(node1, edge-model, None()), node2)
 	edge-has-no-varname = ?RHSEdge(RHSTsHelp(node1, edge-model, None()), node2)
 
-rules // node and edge manipulation
+rules // manipulation
+	
+	rule-set-body(|body') = rule-set-body(!body')
+	
+	rule-set-body(body') = Rule(id, id, body')
+	
+	param-set-mult(|mult) = Param(id, id, !mult)
+	
+	rulebody-set-lhs(lhs) = RuleBody(lhs, id, id, id)
+	rulebody-set-nhs(nhs) = RuleBody(id, nhs, id, id)
+	rulebody-set-rhs(rhs) = RuleBody(id, id, rhs, id)
+	
+	subrule-set-mult(|mult) = SubRule(!mult, id)
 
 	node-set-varname(|node-var') = LHSNode(!node-var', id, id)
 	node-set-varname(|node-var') = NHSNode(!node-var', id, id)
@@ -78,3 +105,7 @@ rules // node and edge manipulation
 	edge-set-varname(|edge-var') = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
 	edge-set-varname(|edge-var') = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
 
+rules // creation
+	
+	create-node-lhs(|name) = create-node-lhs(|name,None(),None())
+	create-node-lhs(|name,type,params) = !LHSNode(name, None(), None());custom-origin(|name)

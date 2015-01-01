@@ -9,8 +9,9 @@ imports
 	trans/lib/new-name
 	trans/lib/string
 	trans/lib/traverse
-	include/Relations
-	src-gen/signatures/Rules-sig
+	// include/Relations
+	// src-gen/signatures/Rules-sig
+	src-gen/signatures/Types-sig
 	trans/api/model-api
 	trans/api/rules-api
 
@@ -49,9 +50,9 @@ rules // generate omitted role names
 			
 rules // generate omitted inverse names
 	
-	entity-generate-inverse-names: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
-		with
-			roles' := <map(try(generate-inverse-name(|entityName)))>roles
+	entity-generate-inverse-names:
+		e -> <entity-set-members(map(try(generate-inverse-name(|<entity-get-name>e))))>e
+			where is-entity
 
 	generate-inverse-name(|entityName): role -> role'
 		where role-has-no-inversename
@@ -70,19 +71,18 @@ rules	// generate omitted entity names
 	
 rules // generate omitted shortcuts
 
-	entity-generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members'')
+	entity-generate-shortcuts: e -> <entity-set-members(|members'')>e
+		where
+			is-entity
 		with
-			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
-			shortcuts			:= <filter(shortcut-roles)>members;
+			members				:= <entity-get-members>e;
+			roles 				:= <filter(role-get-name);origin-track-forced(string-sort)>members;
+			shortcuts			:= <filter(shortcut-get-roles-ordered)>members;
 			shortcuts-all := <join-half>roles;
 			shortcuts-add := <diff>(shortcuts-all, shortcuts);
-			members-new		:= <map(create-shortcut)>shortcuts-add;
+			members-new		:= <map(create-shortcut-with-same-name)>shortcuts-add;
 			members'			:= <conc>(members,members-new);
 			members''			:= <custom-origin(|members)>members'
-			
-	role-name: Role(_, _, name, _) -> name
-	
-	shortcut-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
 	
 	join-half: [] -> []
 	
@@ -93,16 +93,16 @@ rules // generate omitted shortcuts
 			
 	pair-with(|h): t -> (h,t)
 
-	create-shortcut: (role1,role2) -> Shortcut(rr1, role2, rr2, role1)
-		with
-			rr1 := <custom-origin(|role1)>RoleRef(role1);
-			rr2 := <custom-origin(|role2)>RoleRef(role2)
+	create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
 
 rules // generate omitted multiplicities
 
-	param-generate-mult: Param(a, b, None()) -> Param(a, b, One())
+	param-generate-mult: p -> <param-set-mult(|One())>p
+		where param-has-no-mult
 
-	subrule-generate-mult: SubRule(None(), a) -> SubRule(One(), a)
+	// subrule-generate-mult: SubRule(None(), a) -> SubRule(One(), a)
+	subrule-generate-mult: s -> <subrule-set-mult(|One())>s
+		where subrule-has-no-mult
 	
 rules // move name to type if capitalized
 	
@@ -117,8 +117,11 @@ rules // move name to type if capitalized
 			
 rules // generate omitted node names
 
-	rule-generate-node-names: Rule(r, p, b) -> Rule(r, p, b'')
+	rule-generate-node-names: r -> <rule-set-body(|b'')>r
+		where
+			is-rule
 		with
+			b := <rule-get-body>r;
 			(b', _) := <topdown-fold(try(generate-node-name))>(b, []);
 			b'' := <custom-origin(|b)>b'
 
@@ -142,12 +145,14 @@ rules // generate omitted edge names
 			edge' := <edge-set-varname(|edge-var')>edge
 
 rules // generated omitted param node matches
-	
-	rule-generate-param-node-matches: Rule(r, p, b@RuleBody(lhs,nhs,rhs,sub)) -> Rule(r, p, b'')
+			
+	rule-generate-param-node-matches: r -> <rule-set-body(rulebody-set-lhs(!lhs'))>r
+		where
+			is-rule
 		with
+			p := <rule-get-params>r;
 			p-match := <filter(rule-param-one-to-match)>p;
-			b' := RuleBody(<conc>(p-match,lhs),nhs,rhs,sub);
-			b'' := <custom-origin(|b)>b'
-	
-	rule-param-one-to-match: Param(name, EntityRef(_), One()) -> <custom-origin(|name)>LHSNode(name, None(), None())
-	
+			lhs' := <conc>(p-match,<rule-get-body;rulebody-get-lhs>r)
+
+	rule-param-one-to-match: p -> <create-node-lhs(|<param-get-name>p)>
+		where param-has-mult(|One())
