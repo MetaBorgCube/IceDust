@@ -1,0 +1,25 @@
+module trans/api/data-api
+
+imports
+
+	src-gen/signatures/Modules-sig
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Model-sig
+		
+	trans/lib/origin
+
+rules // query
+	
+	datadef-get-data = ?DataDef(<id>)
+	
+	entityinstance-get-type = ?EntityInstance(EntityRef(<id>), _, _, _)
+
+rules // properties
+	
+	is-datadef = ?DataDef(_)
+
+rules // manipulate
+	
+	datadef-set-data(|op) = DataDef(!op)
+	
+	entityinstance-set-name(|name) = EntityInstance(id, !name, id, id)

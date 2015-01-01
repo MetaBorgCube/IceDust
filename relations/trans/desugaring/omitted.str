@@ -2,18 +2,15 @@ module trans/desugaring/omitted
 
 imports
 	
-	// lib/runtime/editor/origins
-	lib/editor/origins
-	
 	trans/lib/origin
 	trans/lib/new-name
 	trans/lib/string
 	trans/lib/traverse
-	// include/Relations
-	// src-gen/signatures/Rules-sig
+
 	src-gen/signatures/Types-sig
 	trans/api/model-api
 	trans/api/rules-api
+	trans/api/data-api
 
 rules
 	
@@ -46,7 +43,7 @@ rules // generate omitted role names
 
 	role-generate-name: role -> role'
 		where role-has-no-name
-		with role' := <role-set-name(|<role-get-type;origin-track-forced(lcfirst)>role)>role
+		with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
 			
 rules // generate omitted inverse names
 	
@@ -60,14 +57,17 @@ rules // generate omitted inverse names
 
 rules	// generate omitted entity names
 
-	datadef-generate-entity-names: DataDef(c) -> DataDef(c'')
+	datadef-generate-entity-names: d -> <datadef-set-data(|c'')>d
+		where
+			is-datadef
 		with
+			c := <datadef-get-data>d;
 			(c', _) := <map-fold(try(generate-entity-name))>(c, []);
 			c'' := <custom-origin(|c)>c'
 
-	generate-entity-name: (ei@EntityInstance(er@EntityRef(e-ty), None(), r, a), history) -> (<custom-origin(|ei)>EntityInstance(er, <custom-origin(|e-ty)>e, r, a), history')
+	generate-entity-name: (ei, history) -> (<entityinstance-set-name(|<custom-origin(|<entityinstance-get-type>ei)>e)>ei, history')
 		with
-			(e, history') := <new-name>(<lcfirst>e-ty, history)
+			(e, history') := <new-name>(<entityinstance-get-type;lcfirst>ei, history)
 	
 rules // generate omitted shortcuts
 
@@ -76,7 +76,7 @@ rules // generate omitted shortcuts
 			is-entity
 		with
 			members				:= <entity-get-members>e;
-			roles 				:= <filter(role-get-name);origin-track-forced(string-sort)>members;
+			roles 				:= <filter(role-get-name);keep-origin(string-sort)>members;
 			shortcuts			:= <filter(shortcut-get-roles-ordered)>members;
 			shortcuts-all := <join-half>roles;
 			shortcuts-add := <diff>(shortcuts-all, shortcuts);
