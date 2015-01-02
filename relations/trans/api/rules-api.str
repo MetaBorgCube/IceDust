@@ -59,7 +59,17 @@ rules // properties
 	
 	param-has-mult(|mult) = ?Param(_, _, mult) 
 	
+	is-subrule = ?SubRule(_,_)
+	
 	subrule-has-no-mult = ?SubRule(None(), _)
+	
+	is-node = ?LHSNode(_, _, _)
+	is-node = ?NHSNode(_, _, _)
+	is-node = ?RHSNode(_, _, _)
+	
+	node-is-lhs = ?LHSNode(_, _, _)
+	node-is-nhs = ?NHSNode(_, _, _)
+	node-is-rhs = ?RHSNode(_, _, _)
 	
 	node-has-varname = not(node-has-no-varname)
 	

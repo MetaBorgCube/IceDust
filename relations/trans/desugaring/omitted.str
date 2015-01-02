@@ -65,9 +65,12 @@ rules	// generate omitted entity names
 			(c', _) := <map-fold(try(generate-entity-name))>(c, []);
 			c'' := <custom-origin(|c)>c'
 
-	generate-entity-name: (ei, history) -> (<entityinstance-set-name(|<custom-origin(|<entityinstance-get-type>ei)>e)>ei, history')
+	generate-entity-name: (ei, history) -> (ei', history')
+		where
+			<entityinstance-has-no-name>ei
 		with
-			(e, history') := <new-name>(<entityinstance-get-type;lcfirst>ei, history)
+			(e, history') := <new-name>(<entityinstance-get-type;lcfirst>ei, history);
+			ei' := <entityinstance-set-name(|<custom-origin(|<entityinstance-get-type>ei)>e)>ei
 	
 rules // generate omitted shortcuts
 

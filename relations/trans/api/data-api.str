@@ -18,6 +18,8 @@ rules // properties
 	
 	is-datadef = ?DataDef(_)
 
+	entityinstance-has-no-name = ?EntityInstance(_, None(), _, _)
+
 rules // manipulate
 	
 	datadef-set-data(|op) = DataDef(!op)
