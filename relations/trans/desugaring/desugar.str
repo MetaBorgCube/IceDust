@@ -1,15 +1,15 @@
 module trans/desugaring/desugar
 
-imports
-	include/Relations
+imports // constructors
+	
+	src-gen/signatures/Modules-sig
 	trans/desugaring/constructors
-	
-	trans/lib/origin
-	// lib/runtime/editor/origins
-	lib/editor/origins
-	
+
+imports // functions
+
 	trans/desugaring/nablhelp
 	trans/desugaring/omitted
+	trans/lib/origin
 	
 rules
 
@@ -25,6 +25,6 @@ rules // general
 	desugar-somes = bottomup(try(desugar-some))
 	desugar-some: Some(a) -> a
 
-	desugar-done = origin-track-forced(desugar-done2)
+	desugar-done = keep-origin(desugar-done2)
 	desugar-done2: Module(moduleName, model, r, data, execute) -> ModuleDesugared(moduleName, model, r, data, execute)
 

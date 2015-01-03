@@ -29,6 +29,13 @@ test Resolve variable to value  [[
 			s{name=[[name]]}.	
 ]] resolve #2 to #1
 
+test (TS/1) error on non existing variable [[
+	enRoll2(s:Student)
+			s{name=name}.
+		->
+			s{name=name, name=[[r]]}.		
+]] 1 error // http://yellowgrass.org/issue/TS/1
+
 test Resolve variable to node  [[
 	enRoll(s:Student)
 			s course [[c]].

@@ -4,11 +4,4 @@ signature constructors
 	
 	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
 	
-	NaBLHelp : RoleRef * ID -> NaBLHelp
-	
-	Ext : ID -> Ext
-	
-	Def      : DefUse
-	DefByRel : DefUse
-	Use      : DefUse
-	Bind     : DefUse
+	NaBLHelp : ID * DefUse -> NaBLHelp

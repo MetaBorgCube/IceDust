@@ -1,10 +1,12 @@
 module trans/api/data-api
 
-imports
+imports // constructors
 
-	src-gen/signatures/Modules-sig
 	src-gen/signatures/Data-sig
+	src-gen/signatures/Modules-sig
 	src-gen/signatures/Model-sig
+
+imports // functions
 		
 	trans/lib/origin
 

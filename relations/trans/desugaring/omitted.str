@@ -1,16 +1,18 @@
 module trans/desugaring/omitted
 
-imports
+imports // constructors
+
+	src-gen/signatures/Types-sig
+
+imports // functions
 	
+	trans/api/model-api
+	trans/api/rules-api
+	trans/api/data-api
 	trans/lib/origin
 	trans/lib/new-name
 	trans/lib/string
 	trans/lib/traverse
-
-	src-gen/signatures/Types-sig
-	trans/api/model-api
-	trans/api/rules-api
-	trans/api/data-api
 
 rules
 	
@@ -112,7 +114,7 @@ rules // move name to type if capitalized
 	node-move-name-to-type: node -> node''
 		where
 			node-has-no-type;
-			node-var := <node-to-varname>node;
+			node-var := <node-get-varname>node;
 			<first-is-upper>node-var
 		with
 			node' := <node-set-type(|node-var)>node;
@@ -131,7 +133,7 @@ rules // generate omitted node names
 	generate-node-name: (node, history) -> (node', history')
 		where
 			<node-has-no-varname>node;
-			node-ty := <node-to-type>node
+			node-ty := <node-get-type>node
 		with
 			(node-var', history') := <new-name>(<lcfirst>node-ty, history);
 			node' := <node-set-varname(|node-var')>node
@@ -142,8 +144,8 @@ rules // generate omitted edge names
 		where
 			edge-has-no-varname
 		with
-			(node1-var, _, node2-var) := <edge-to-varnames>edge;
-			edge-model := <edge-to-edgemodel>edge;
+			(node1-var, _, node2-var) := <edge-get-varnames>edge;
+			edge-model := <edge-get-edgemodel>edge;
 			edge-var' := <concat-strings;custom-origin(|edge-model)> [node1-var, <ucfirst>edge-model, <ucfirst>node2-var];
 			edge' := <edge-set-varname(|edge-var')>edge
 

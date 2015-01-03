@@ -1,9 +1,11 @@
 module trans/api/model-api
 
-imports
+imports // constructors
 
 	src-gen/signatures/Model-sig
 	trans/desugaring/constructors
+
+imports // functions
 
 	trans/lib/origin
 
@@ -45,6 +47,8 @@ rules // manipulation
 	role-set-inversename(|inversename)  = Role(id, id, id, !inversename)
 	
 	role-set-type(type)									= Role(type, id, id, id)
+
+	role-dup-type = role-set-type(\a -> NaBLHelp(a, a)\)
 
 rules // creation
 	
