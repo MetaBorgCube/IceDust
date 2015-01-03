@@ -2,22 +2,54 @@ module trans/api/_runtime
 
 imports // generated runtime
 		
-	// runtime/task/insert
-	// runtime/editor/properties
-	// runtime/task/core	
-	// lib/runtime/editor/origins
+	// ...
 
 imports // custom runtime
 	
-	lib/task/insert
-	lib/editor/properties
-	lib/task/core
+	lib/editor/annotations	
 	lib/editor/origins
+	lib/editor/properties
+	lib/nabl/check
+	lib/nabl/constraints
+	lib/nabl/resolve
+	lib/nabl/tasks
+	lib/nabl/uri
+	lib/task/core
+	lib/task/insert
+	lib/task/messages
+	lib/task/tasks
 	
 rules
 	
 	_insert-results-or-delay = insert-results-or-delay
 	
 	_pp-uri = pp-uri
+	_pp-ns = pp-ns
 	
 	_origin-track-forced(x) = origin-track-forced(x)
+
+	_has-annotation(x) = get-annotation(x) //TODO: update to non deprecated calls
+	
+	_nabl-has-reference = nabl-has-reference
+	_nabl-uri-namespace = nabl-uri-namespace
+	_nabl-uri-parent = nabl-uri-parent
+	_nabl-uri-name = nabl-uri-name
+	
+	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+	_nabl-lookup-lexical(|ctx, ns) = nabl-lookup-lexical(|ctx, ns)
+	_nabl-resolve-all-tasks(|ctx, ns, a) = nabl-resolve-all-tasks(|ctx, ns, a)
+	_nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
+	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+	
+	_nabl-uri = nabl-uri
+
+	_task-create-error(|ctx, msg) = task-create-error(|ctx, msg)
+	_task-create-warning(|ctx, msg) = task-create-warning(|ctx, msg)
+	_task-create-error-on-failure(|ctx, task, msg) = task-create-error-on-failure(|ctx, task, msg)
+	_task-create-error-on-success(|ctx, task, msg) = task-create-error-on-success(|ctx, task, msg)
+	
+	_task-create-combine(|ctx) = task-create-combine(|ctx)
+	_task-create-diff(|ctx) = task-create-diff(|ctx)
+	
+	
+	

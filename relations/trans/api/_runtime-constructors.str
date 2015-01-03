@@ -3,4 +3,6 @@ module trans/api/_runtime-constructors
 signature constructors // copy from runtime library
     
 	Result : TaskID -> Result
+	
+  Use          : Result -> Key
     
