@@ -1,13 +1,9 @@
 module trans/lib/debug
 
-imports
+imports // functions
 	
-	// runtime/task/insert
-	// runtime/editor/properties
-	// runtime/task/core	
-	lib/task/insert
-	lib/editor/properties
-	lib/task/core
+	trans/api/_runtime
+	trans/api/_runtime-constructors
 
 rules // debug tasks
 	
@@ -16,13 +12,13 @@ rules // debug tasks
 	debug-task-s: a -> result
 		with
 			a-nr := <try(task-number)> a;
-			a-result := <insert-results-or-delay <+ id> a;
+			a-result := <_insert-results-or-delay <+ id> a;
 			a-pp := <pp-uris>a-result;
 			result := $[Task [<to-string>a-nr]: [<to-string;unescape>a-pp]]
 
 	task-number: Result(a) -> a
 	
-	pp-uris = bottomup(try(pp-uri))
+	pp-uris = bottomup(try(_pp-uri))
 
 rules // debug with prefix
 	

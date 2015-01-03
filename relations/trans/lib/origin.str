@@ -1,9 +1,8 @@
 module trans/lib/origin
 
-imports
+imports // functions
 
-	// lib/runtime/editor/origins
-	lib/editor/origins
+	trans/api/_runtime
 	trans/lib/debug
 
 rules // rewrite terms to have an origin
@@ -11,11 +10,11 @@ rules // rewrite terms to have an origin
 	custom-origin(strategy|custom-origin): term -> result
 		with
 			r := <strategy>term;
-			result := <origin-track-forced(custom-origin-internal(|r))>custom-origin
+			result := <_origin-track-forced(custom-origin-internal(|r))>custom-origin
 			
 	custom-origin(|custom-origin): term -> result
 		with
-			result := <origin-track-forced(custom-origin-internal(|term))>custom-origin
+			result := <_origin-track-forced(custom-origin-internal(|term))>custom-origin
 	
 	custom-origin-internal(|term) : custom-origin -> term
 	
@@ -37,4 +36,4 @@ rules // origin for lists
 
 rules //  short alias
 	
-	keep-origin(a) = origin-track-forced(a)
+	keep-origin(a) = _origin-track-forced(a)

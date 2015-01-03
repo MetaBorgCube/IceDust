@@ -1,9 +1,5 @@
 module trans/lib/new-name
 
-imports
-
-	trans/lib/traverse
-
 rules // alternative implementation of newname, passing the names and counters around
 	
 	new-name: (prefix, history) -> (name, history')

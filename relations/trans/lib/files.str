@@ -1,6 +1,6 @@
 module trans/lib/files
 
-imports
+imports //TODO: remove this import to api
 
 	lib/editor-common.generated
 

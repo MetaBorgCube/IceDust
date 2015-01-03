@@ -1,9 +1,5 @@
 module trans/lib/string
 
-imports
-
-	lib/editor-common.generated
-
 rules // truncating
 	
 	truncate-string(|maxlen): s -> s'
