@@ -25,9 +25,9 @@ rules // query (in all stages of desugaring)
 	rulebody-get-nhs = ?RuleBody(_, <id>, _, _)
 	rulebody-get-rhs = ?RuleBody(_, _, <id>, _)
 	
-	lhs-nhs-rhs = is-lhs;!LHS()
-	lhs-nhs-rhs = is-lhs;!NHS()
-	lhs-nhs-rhs = is-lhs;!RHS()
+	get-hs = is-lhs;!LHS()
+	get-hs = is-nhs;!NHS()
+	get-hs = is-rhs;!RHS()
 
 	node-to-varname = ?LHSNode(NaBLHelp(<id>, _), _, _)
 	node-to-varname = ?NHSNode(NaBLHelp(<id>, _), _, _)
@@ -109,9 +109,9 @@ rules // properties
 	is-edge = ?NHSEdge(_,_)
 	is-edge = ?RHSEdge(_,_)
 	
-	is-lhs = ?LHSEdgeName(_)
-	is-nhs = ?NHSEdgeName(_)
-	is-rhs = ?RHSEdgeName(_)
+	is-lhs = ?LHSEdge(_, _)
+	is-nhs = ?NHSEdge(_, _)
+	is-rhs = ?RHSEdge(_, _)
 	
 	edge-has-varname = not(edge-has-no-varname)
 	
