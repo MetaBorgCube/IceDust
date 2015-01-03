@@ -27,7 +27,11 @@ rules // properties
 	
 	is-entity = ?Entity(_,_,_)
 	
+	entity-is-entitytype = entity-get-type;?EntityType()
+	
 	attr-has-no-mult        = ?Attribute(_, _, None(), _)
+	
+	is-role = ?Role(_, _, _, _)
 	
 	role-has-no-name        = ?Role(_, _, None(), _)
 	role-has-no-inversename = ?Role(_, _, _, None())

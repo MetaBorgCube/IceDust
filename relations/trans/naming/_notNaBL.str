@@ -2,16 +2,20 @@ module _notNaBL
 
 imports // constructors
 
-	include/Relations //TODO: remove
-	src-gen/signatures/Rules-sig
+	// include/Relations //TODO: remove
+	// src-gen/signatures/Rules-sig //TODO: remove
+	src-gen/signatures/Types-sig
 	trans/api/_runtime-constructors
 	trans/api/constructors
-	trans/desugaring/constructors //TODO: remove
+	// trans/desugaring/constructors //TODO: remove
 	trans/naming/names
 	
 imports // functions
 	
 	trans/api/_runtime
+	trans/api/data-api
+	trans/api/model-api
+	trans/api/rules-api
 	
 imports //TODO: move to API
 
@@ -28,57 +32,33 @@ signature constructors //TODO: move
 rules // unresolved references manual messages
 
 	nabl-check-disable-unresolved = id
-
-	nabl-constraint(|ctx):
-		Ref(e) -> <fail>
+	
+	nabl-constraint(|ctx): x -> <fail>
 		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance, Attribute, Role, Inverse or Shortcut"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-
-	nabl-constraint(|ctx):
-		MemberAccess(_, e) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute, Role, Inverse or Shortcut"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-
-	nabl-constraint(|ctx):
-		AttributeRef(e) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Attribute"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-
-	nabl-constraint(|ctx):
-		RoleRef(e) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-
-	nabl-constraint(|ctx):
-		EntityRef(e) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-
-	nabl-constraint(|ctx):
-		EntityInstanceRef(e) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
+			(e, msg) := <unresolved-error>x;
+		  <_has-annotation(?Use(task))>e;
+		  <_task-create-error-on-failure(|ctx, task, msg)> e
 		  
-	nabl-constraint(|ctx):
-		Role(NaBLHelp(e, _), _, _, _) -> <fail>
+	unresolved-error: Ref(e) 							-> (e, ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance, Attribute, Role, Inverse or Shortcut"])
+	unresolved-error: MemberAccess(_, e)	-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute, Role, Inverse or Shortcut"])
+	unresolved-error: AttributeRef(e) 		-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute"])
+	unresolved-error: RoleRef(e) 					-> (e, ["Unresolved reference: ", e, " cannot be resolved to a Role"])
+	unresolved-error: EntityRef(e) 				-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Entity"])
+	unresolved-error: EntityInstanceRef(e)-> (e, ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"])
+	unresolved-error: Role(NaBLHelp(e, _), _, _, _)-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Entity"])
+	unresolved-error: AttrRef(e) 					-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute"])
+	unresolved-error: CallRule(e, _) 			-> (e, ["Unresolved reference: ", e, " cannot be resolved to a Rule"])
+	
+	unresolved-error: n -> (e, ["Unresolved reference: ", e, " cannot be resolved to a Variable"])
 		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to an Entity"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-		  
-		  
+			is-node;
+			e := <node-get-varname>n
+	
+	
+	unresolved-error: n -> (e, ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"])
+		where
+			is-edge;
+			e := <edge-get-edgemodel>n
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
@@ -111,99 +91,55 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 				role-defs := <_nabl-lookup-lexical(|ctx, conflict-ns)> a-name;
 				<_task-create-error-on-success(|ctx, role-defs, ["Conflicting ", <_pp-ns>ns, " and ", <_pp-ns>conflict-ns, " ", a-name, " in ", <_pp-ns>parent-ns, " ", parent])> a-name
 			end
-
-	nabl-constraint(|ctx):
-		LHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-	nabl-constraint(|ctx):
-		NHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-	nabl-constraint(|ctx):
-		RHSNode(NaBLHelp(e, Use()),_,_) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Variable"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e
-		  
-	nabl-constraint(|ctx):
-		LHSEdge(LHSTsHelp(_, e, _), _) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e			  
-	nabl-constraint(|ctx):
-		NHSEdge(NHSTsHelp(_, e, _), _) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e			  
-	nabl-constraint(|ctx):
-		RHSEdge(RHSTsHelp(_, e, _), _) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> e
-		; msg  := ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> e	
-
-	nabl-constraint(|ctx):
-		AttrRef(a) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> a
-		; msg  := ["Unresolved reference: ", a, " cannot be resolved to a Attribute"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> a
-
-	nabl-constraint(|ctx):
-		CallRule(a,_) -> <fail>
-		where
-		  <_has-annotation(?Use(task))> a
-		; msg  := ["Unresolved reference: ", a, " cannot be resolved to a Rule"]
-		; <_task-create-error-on-failure(|ctx, task, msg)> a
 		  
 rules // check if entities have all the required attributes and roles assigned
 
-	nabl-constraint(|ctx):
-		EntityInstance(EntityRef(e-ty), e, _, as) -> <fail>
+	nabl-constraint(|ctx): ei -> <fail>
+		where
+			is-entityinstance
 		with
-			ty-def 		 := <_nabl-create-collectdefs(|ctx)> e-ty;
+			ty-def 		 := <entityinstance-get-type;_nabl-create-collectdefs(|ctx)> ei;
 			[ty-attrs] := <_nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
-			as-defs    := <map(?AttributeValue(AttributeRef(<_nabl-create-collectdefs(|ctx)>), _))> as;	
+			as-defs    := <entityinstance-get-attrvalues;map(attributevalue-get-attr;_nabl-create-collectdefs(|ctx))> ei;	
 			as-attrs   := <_task-create-combine(|ctx)> as-defs ;
 			diff       := <_task-create-diff(|ctx)> (ty-attrs, as-attrs);
 			diff'      := <_nabl-create-propconstraint(|ctx, NablProp_derivation-type(), diff)> Normal();
 			diff''     := <_nabl-create-propconstraint(|ctx, NablProp_multiplicity(), diff')> One();
-			<_task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> e
-			
-	nabl-constraint(|ctx):
-		EntityInstance(EntityRef(e-ty), e, roles, _) -> <fail>
+			<entityinstance-get-name;_task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> ei
+
+	nabl-constraint(|ctx): ei -> <fail>
+		where
+			is-entityinstance
 		with
-			ty-def 		 := <_nabl-create-collectdefs(|ctx)> e-ty;
+			ty-def 		 := <entityinstance-get-type;_nabl-create-collectdefs(|ctx)> ei;
 			[ty-roles] := <_nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
-			as-defs    := <map(?RoleValue(RoleRef(<_nabl-create-collectdefs(|ctx)>), _))> roles;
+			as-defs    := <entityinstance-get-rolevalues;map(rolevalue-get-role;_nabl-create-collectdefs(|ctx))> ei;
 			as-roles   := <_task-create-combine(|ctx)> as-defs ;
 			diff       := <_task-create-diff(|ctx)> (ty-roles, as-roles);
-			<_task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> e
+			<entityinstance-get-name;_task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> ei
 
 rules // check if Entity (not Relation) has no roles
 
-	nabl-constraint(|ctx):
-		Entity(EntityType(), _, attributesAndRoles) -> <fail>
+	nabl-constraint(|ctx):e -> <fail>
+		where
+			is-entity;
+			entity-is-entitytype
 		with
-			<filter(no-role-task(|ctx))> attributesAndRoles
+			entity-get-members;filter(no-role-task(|ctx))
 			
-	no-role-task(|ctx): x@Role(_,_,_,_) -> None()
+	no-role-task(|ctx): r -> None()
+		where
+			is-role
 		with
-			<_task-create-error(|ctx, ["An entity cannot have roles."])> x
+			<_task-create-error(|ctx, ["An entity cannot have roles."])> r
 
 rules // check if Entity names start with a capital
-	
-	nabl-constraint(|ctx):
-		Entity(_, x, _) -> <fail>
+			
+	nabl-constraint(|ctx): e -> <fail>
+		where
+			is-entity
 		with
+			x := <entity-get-name>e;
 			if not(<string-starts-with-capital> x) then
 				<_task-create-warning(|ctx, ["Entity type names must start with a capital."])> x
 			end
