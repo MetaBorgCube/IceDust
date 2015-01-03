@@ -139,17 +139,13 @@ rules // make attributes in matches either Binds or Uses
 				binduse := Bind()
 			else
 				history' := history;
-				// if <not(attr-is-ref)>at then
-				// 	binduse := Bind()
-				// else
-					binduse := Use()
-				// end
+				binduse := Use()
 			end;
 			at' := <attr-set-defuse(|binduse)>at
 
 rules // make attributes in rhs always uses
 	
-	node-rhs-attr-variable-use: n -> <node-set-params(map(try(attr-is-ref;attr-set-defuse(|Use()))))>n
+	node-rhs-attr-variable-use: n -> <node-set-params(map(try(attr-set-defuse(|Use()))))>n
 		where
 			is-node;
 			is-rhs
