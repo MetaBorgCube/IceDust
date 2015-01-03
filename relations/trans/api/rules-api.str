@@ -4,6 +4,7 @@ imports
 
 	src-gen/signatures/Model-sig
 	src-gen/signatures/Rules-sig
+	src-gen/signatures/Expressions-sig
 	trans/desugaring/constructors
 		
 	trans/lib/origin
@@ -71,7 +72,20 @@ rules // query (in all stages of desugaring)
 
 	edge-to-edgemodel = ?LHSEdge(LHSTsHelp(_, <id>, _), _)
 	edge-to-edgemodel = ?NHSEdge(NHSTsHelp(_, <id>, _), _)
-	edge-to-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _) 
+	edge-to-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _)
+	
+	edge-get-node1 = ?LHSEdge(LHSTsHelp(<id>, _, _), _)
+	edge-get-node1 = ?NHSEdge(NHSTsHelp(<id>, _, _), _)
+	edge-get-node1 = ?RHSEdge(RHSTsHelp(<id>, _, _), _)
+	
+	edge-get-node2 = ?LHSEdge(LHSTsHelp(_, _, _), <id>)
+	edge-get-node2 = ?NHSEdge(NHSTsHelp(_, _, _), <id>)
+	edge-get-node2 = ?RHSEdge(RHSTsHelp(_, _, _), <id>)
+	
+	attr-get-name = ?Attr(<id>, _)
+	attr-get-expr = ?Attr(_, <id>)
+	
+	attr-get-expr-ref-name = attr-get-expr;?Ref(<id>)
 
 rules // properties
 	
@@ -105,6 +119,12 @@ rules // properties
 	node-has-no-type = ?NHSNode(_, None(), _)
 	node-has-no-type = ?RHSNode(_, None(), _)
 	
+	node-is-def = node-get-defuse;?Def()
+	
+	node-get-defuse = ?LHSNode(NaBLHelp(_, <id>), _, _)
+	node-get-defuse = ?NHSNode(NaBLHelp(_, <id>), _, _)
+	node-get-defuse = ?RHSNode(NaBLHelp(_, <id>), _, _)
+	
 	is-edge = ?LHSEdge(_,_)
 	is-edge = ?NHSEdge(_,_)
 	is-edge = ?RHSEdge(_,_)
@@ -118,6 +138,10 @@ rules // properties
 	edge-has-no-varname = ?LHSEdge(LHSTsHelp(_, _, None()), _)
 	edge-has-no-varname = ?NHSEdge(NHSTsHelp(_, _, None()), _)
 	edge-has-no-varname = ?RHSEdge(RHSTsHelp(_, _, None()), _)
+	
+	is-attr = ?Attr(_, _)
+	
+	attr-is-ref = attr-get-expr;?Ref(_)
 
 rules // manipulation
 	
@@ -140,10 +164,41 @@ rules // manipulation
 	node-set-type(|node-type') = LHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
 	node-set-type(|node-type') = NHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
 	node-set-type(|node-type') = RHSNode(id, !EntityRef(node-type');custom-origin(|node-type'), id)
+	
+	node-set-params(ps) = LHSNode(id, id, ps)
+	node-set-params(ps) = NHSNode(id, id, ps)
+	node-set-params(ps) = RHSNode(id, id, ps)
+	
+	node-set-defuse(|d) = LHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
+	node-set-defuse(|d) = NHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
+	node-set-defuse(|d) = RHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
 
 	edge-set-varname(|edge-var') = LHSEdge(keep-origin(LHSTsHelp(id, id, !LHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
 	edge-set-varname(|edge-var') = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
 	edge-set-varname(|edge-var') = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(edge-var');custom-origin(|edge-var'))), id)
+	
+	edge-set-node1(|n) = LHSEdge(keep-origin(LHSTsHelp(!n, id, id)), id)
+	edge-set-node1(|n) = NHSEdge(keep-origin(NHSTsHelp(!n, id, id)), id)
+	edge-set-node1(|n) = RHSEdge(keep-origin(RHSTsHelp(!n, id, id)), id)
+	
+	edge-set-node2(|n) = LHSEdge(id, !n)
+	edge-set-node2(|n) = NHSEdge(id, !n)
+	edge-set-node2(|n) = RHSEdge(id, !n)
+	
+	attr-set-name(n) = Attr(n, id)
+	attr-set-expr(|e) = Attr(id, !e)
+	
+	// defuse makes sure there is exactly 1 NaBLHelp constructor, and removes the Ref(_) around varname if it is Bind()
+	attr-set-defuse(|d): Attr(a, v) -> Attr(NaBLHelp(attrref, <custom-origin(|attrref)>d), v')
+		where
+			if NaBLHelp(attrref, _) := a then id else attrref := a end;
+			if <is-string>v then varname := v else Ref(varname) := v end
+		with
+			if Bind() := d then
+				v' := varname
+			else
+				v' := <custom-origin(|varname)>Ref(varname)
+			end
 
 rules // creation
 	

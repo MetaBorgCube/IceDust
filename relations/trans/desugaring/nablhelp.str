@@ -4,9 +4,7 @@ imports
 	
 	trans/api/model-api
 	trans/api/rules-api
-	
-	// include/Relations
-	// src-gen/signatures/Rules-sig
+
 	trans/desugaring/constructors
 		
 	trans/lib/traverse
@@ -29,7 +27,7 @@ rules
 	nablhelp4 = bottomup(try(variable-def-defbyrel)) //requires variables to be def-use (bottomup-try because nesting)
 	
 	nablhelp5 = try(sometd(rule-attr-variable-def-use))
-	nablhelp6 = try(sometd(rule-rhs-attr-variable-use)) //cleans up the previous rule
+	nablhelp6 = try(sometd(node-rhs-attr-variable-use)) //cleans up the previous rule
 
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
@@ -83,88 +81,71 @@ rules // figure out which node names are defs and which are uses
 		where
 			<is-node>n
 		with
-			(n-name, history') := <var-def-use(|<get-hs>n)>(<node-to-varname>n, history)	
+			(n-name, history') := <varname-def-use(|<get-hs>n)>(<node-to-varname>n, history)	
 
 	variable-def-use: (e, history) -> (<edge-set-varname(|n-name)>e, history')
 		where
 			<is-edge>e
 		with
-			(n-name, history') := <var-def-use(|<get-hs>e)>(<edge-get-varname>e, history)
+			(n-name, history') := <varname-def-use(|<get-hs>e)>(<edge-get-varname>e, history)
 
-	var-def-use(|hs): (name, (lhs, nhs, rhs)) -> (name', (lhs', nhs, rhs))
-		where
-			LHS() := hs
+	varname-def-use(|hs): (name, history) -> (name', history')
 		with
-			if !(name, lhs);not(elem) then
-				lhs' := <conc>(lhs, [name]);
+			if and(!(name, <hs-history-get(|LHS())>history);not(elem), !(name, <hs-history-get(|hs)>history);not(elem)) then
+				history' := <hs-history-add(|hs,name)>history;
 				defuse := Def()
-			else
-				lhs' := lhs;
-				defuse := Use()
-			end;
-			name' := <custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>defuse)
-			
-	var-def-use(|hs): (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs', rhs))
-		where
-			NHS() := hs
-		with
-			if and(!(name, lhs);not(elem), !(name, nhs);not(elem)) then
-				nhs' := <conc>(nhs, [name]);
-				defuse := Def()
-			else
-				nhs' := nhs;
-				defuse := Use()
-			end;
-			name' := <custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>defuse)		
-			
-	var-def-use(|hs): (name, (lhs, nhs, rhs)) -> (name', (lhs, nhs, rhs'))
-		where
-			RHS() := hs
-		with
-			if and(!(name, lhs);not(elem), !(name, rhs);not(elem)) then
-				rhs' := <conc>(rhs, [name]);
-				defuse := Def()
-			else
-				rhs' := rhs;
-				defuse := Use()
-			end;
-			name' := <custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>defuse)
-
-rules // if node names are Def and there is a relation change to DefByRel
-	
-	variable-def-defbyrel: LHSEdge(e, n@LHSNode(nh@NaBLHelp(v, Def()), None(), a)) -> 
-	                       LHSEdge(e, <custom-origin(|n)>LHSNode(<custom-origin(|nh)>NaBLHelp(v, DefByRel()), None(), a))
-	variable-def-defbyrel: NHSEdge(e, n@NHSNode(nh@NaBLHelp(v, Def()), None(), a)) -> 
-	                       NHSEdge(e, <custom-origin(|n)>NHSNode(<custom-origin(|nh)>NaBLHelp(v, DefByRel()), None(), a))
-	variable-def-defbyrel: RHSEdge(e, n@RHSNode(nh@NaBLHelp(v, Def()), None(), a)) -> 
-	                       RHSEdge(e, <custom-origin(|n)>RHSNode(<custom-origin(|nh)>NaBLHelp(v, DefByRel()), None(), a))
-
-rules // make attributes in matches either Binds or Uses
-	
-	rule-attr-variable-def-use: Rule(n, p, b) -> Rule(n, p, b'')
-		with
-			params := <map(\Param(n,t,m)->n\)>p;
-			(b', _) := <topdown-fold(try(attr-def-use))>(b, params);
-			b'' := <custom-origin(|b)>b'
-	
-	attr-def-use: (at, history) -> (at'', history')
-		where
-			Attr(a, r) := at
-		with
-			if Ref(name) := r ; <not(elem)>(name, history) then
-				history' := <conc>(history, [name]);
-				at' := Attr(NaBLHelp(a, <custom-origin(|a)>Bind()), name)
 			else
 				history' := history;
-				at' := Attr(NaBLHelp(a, <custom-origin(|a)>Use()), r)
+				defuse := Use()
 			end;
-			at'' := <custom-origin(|at)>at'
+			name' := <custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>defuse)
+
+	hs-history-get(|hs) = where(LHS():=hs);?(<id>, _, _)
+	hs-history-get(|hs) = where(NHS():=hs);?(_, <id>, _)
+	hs-history-get(|hs) = where(RHS():=hs);?(_, _, <id>)
+
+	hs-history-add(|hs, name) = where(LHS():=hs);(list-add(|name), id, id)
+	hs-history-add(|hs, name) = where(NHS():=hs);(id, list-add(|name), id)
+	hs-history-add(|hs, name) = where(RHS():=hs);(id, id, list-add(|name))
+	
+	list-add(|i): a -> [i|a]
+
+rules // if node names are Def and there is a relation change to DefByRel
+
+	variable-def-defbyrel: e -> <edge-set-node2(|n')>e
+		where
+			is-edge;
+			n := <edge-get-node2>e;
+			<node-has-no-type>n;
+			<node-is-def>n
+		with
+			n' := <keep-origin(node-set-defuse(|DefByRel()))>n
+	
+rules // make attributes in matches either Binds or Uses
+	
+	rule-attr-variable-def-use: r -> <rule-set-body(|b')>r
+		where
+			is-rule
+		with
+			param-names := <rule-get-params;map(param-get-name)>r;
+			(b', _) := <topdown-fold(try(attr-def-use))>(<rule-get-body>r, param-names)
+
+	attr-def-use: (at, history) -> (at', history')
+		where
+			<is-attr>at
+		with
+			if name := <attr-get-expr-ref-name>at; <not(elem)>(name, history) then
+				history' := <list-add(|name)> history;
+				binduse := Bind()
+			else
+				history' := history;
+				binduse := Use()
+			end;
+			at' := <attr-set-defuse(|binduse)>at
 
 rules // make attributes in rhs always uses
 	
-	rule-rhs-attr-variable-use: RuleBody(l,n,r,s) -> RuleBody(l,n,r'',s)
-		with
-			r' := <try(sometd(attr-variable-use))>r;
-			r'' := <custom-origin(|l)>r'
-	
-	attr-variable-use: Attr(NaBLHelp(a, Bind()), name) -> Attr(NaBLHelp(a, <custom-origin(|a)>Use()), <custom-origin(|name)>Ref(name))
+	node-rhs-attr-variable-use: n -> <node-set-params(map(try(attr-set-defuse(|Use()))))>n
+		where
+			is-node;
+			is-rhs
