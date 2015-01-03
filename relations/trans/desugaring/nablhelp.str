@@ -114,34 +114,60 @@ rules // figure out which node names are defs and which are uses
 
 	variable-def-use: (n, history) -> (<node-set-varname(|n-name)>n, history')
 		where
-			<node-is-lhs>n
+			<is-node>n;
+			<is-lhs>n
 		with
 			(n-name, history') := <lhs-var-def-use>(<node-to-varname>n, history)
 
 	variable-def-use: (n, history) -> (<node-set-varname(|n-name)>n, history')
 		where
-			<node-is-nhs>n
+			<is-node>n;
+			<is-nhs>n
 		with
 			(n-name, history') := <nhs-var-def-use>(<node-to-varname>n, history)
 
 	variable-def-use: (n, history) -> (<node-set-varname(|n-name)>n, history')
 		where
-			<node-is-rhs>n
+			<is-node>n;
+			<is-rhs>n
 		with
 			(n-name, history') := <rhs-var-def-use>(<node-to-varname>n, history)	
 
+// 	variable-def-use: (n@LHSEdgeName(name), history) -> (<custom-origin(|n)>LHSEdgeName(n-name), history')
+// 		with
+// 			(n-name, history') := <lhs-var-def-use>(name, history)
+// 
+// 	variable-def-use: (n@NHSEdgeName(name), history) -> (<custom-origin(|n)>NHSEdgeName(n-name), history')
+// 		with
+// 			(n-name, history') := <nhs-var-def-use>(name, history)
+// 
+// 	variable-def-use: (n@RHSEdgeName(name), history) -> (<custom-origin(|n)>RHSEdgeName(n-name), history')
+// 		with
+// 			(n-name, history') := <rhs-var-def-use>(name, history)
 
-	variable-def-use: (n@LHSEdgeName(name), history) -> (<custom-origin(|n)>LHSEdgeName(n-name), history')
+	variable-def-use: (e, history) -> (<edge-set-varname(|n-name)>e, history')
+		where
+			<is-edge>e;
+			<is-lhs>e
 		with
-			(n-name, history') := <lhs-var-def-use>(name, history)
+			debug;
+			(n-name, history') := <lhs-var-def-use>(<edge-get-varname>e, history)
 
-	variable-def-use: (n@NHSEdgeName(name), history) -> (<custom-origin(|n)>NHSEdgeName(n-name), history')
+	variable-def-use: (e, history) -> (<edge-set-varname(|n-name)>e, history')
+		where
+			<is-edge>e;
+			<is-nhs>e
 		with
-			(n-name, history') := <nhs-var-def-use>(name, history)
+			debug;
+			(n-name, history') := <nhs-var-def-use>(<edge-get-varname>e, history)
 
-	variable-def-use: (n@RHSEdgeName(name), history) -> (<custom-origin(|n)>RHSEdgeName(n-name), history')
+	variable-def-use: (e, history) -> (<edge-set-varname(|n-name)>e, history')
+		where
+			<is-edge>e;
+			<is-rhs>e
 		with
-			(n-name, history') := <rhs-var-def-use>(name, history)
+			debug;
+			(n-name, history') := <rhs-var-def-use>(<edge-get-varname>e, history)
 
 	lhs-var-def-use: (name, (lhs, nhs, rhs)) -> (name', (lhs', nhs, rhs))
 		with
