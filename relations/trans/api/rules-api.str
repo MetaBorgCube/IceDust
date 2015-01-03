@@ -171,14 +171,10 @@ rules // manipulation
 	node-set-params(ps) = NHSNode(id, id, ps)
 	node-set-params(ps) = RHSNode(id, id, ps)
 	
-	node-set-defuse(|d) = LHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
-	node-set-defuse(|d) = NHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
-	node-set-defuse(|d) = RHSNode(keep-origin(NaBLHelp(id, !d)), id, id)
+	node-set-defuse(|d) = LHSNode(set-nablhelp(|d), id, id)
+	node-set-defuse(|d) = NHSNode(set-nablhelp(|d), id, id)
+	node-set-defuse(|d) = RHSNode(set-nablhelp(|d), id, id)
 	
-	node-set-defuse(|d): LHSNode(name, type, attr) -> LHSNode(<custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>d), type, attr)
-	node-set-defuse(|d): NHSNode(name, type, attr) -> NHSNode(<custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>d), type, attr)
-	node-set-defuse(|d): RHSNode(name, type, attr) -> RHSNode(<custom-origin(|name)>NaBLHelp(name, <custom-origin(|name)>d), type, attr)
-
 	edge-set-varname(|v) = LHSEdge(keep-origin(LHSTsHelp(id, id, !LHSEdgeName(v);custom-origin(|v))), id)
 	edge-set-varname(|v) = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(v);custom-origin(|v))), id)
 	edge-set-varname(|v) = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(v);custom-origin(|v))), id)
@@ -187,8 +183,8 @@ rules // manipulation
 	edge-set-defuse(|d) = NHSEdge(keep-origin(NHSTsHelp(id, id, keep-origin(NHSEdgeName(set-nablhelp(|d))))), id)
 	edge-set-defuse(|d) = RHSEdge(keep-origin(RHSTsHelp(id, id, keep-origin(RHSEdgeName(set-nablhelp(|d))))), id)
 
-	set-nablhelp(|x) = NaBLHelp(id, !x)
-	set-nablhelp(|x) = where(not(?NaBLHelp(_,_)));?a;!NaBLHelp(a, x)
+	set-nablhelp(|x) = NaBLHelp(id, keep-origin(!x))
+	set-nablhelp(|x) = where(not(?NaBLHelp(_,_)));?a;!NaBLHelp(a, <custom-origin(|a)>x)
 
 	edge-set-node1(|n) = LHSEdge(keep-origin(LHSTsHelp(!n, id, id)), id)
 	edge-set-node1(|n) = NHSEdge(keep-origin(NHSTsHelp(!n, id, id)), id)
@@ -202,11 +198,9 @@ rules // manipulation
 	attr-set-expr(|e) = Attr(id, !e)
 	
 	// defuse makes sure there is exactly 1 NaBLHelp constructor, and removes the Ref(_) around varname if it is Bind()
-	attr-set-defuse(|d): at@Attr(a, v) -> Attr(NaBLHelp(attrref, <custom-origin(|attrref)>d), v')
-		where
-			if NaBLHelp(attrref, _) := a then id else attrref := a end;
-			if Ref(varname) := v then id else varname := v end
+	attr-set-defuse(|d): at@Attr(a, v) -> Attr(<set-nablhelp(|d)>a, v')
 		with
+			if Ref(varname) := v then id else varname := v end;
 			if or(Bind() := d, <not(attr-is-ref)>at) then
 				v' := varname
 			else
