@@ -37,28 +37,20 @@ rules // unresolved references manual messages
 		where
 			(e, msg) := <unresolved-error>x;
 		  <_has-annotation(?Use(task))>e;
-		  <_task-create-error-on-failure(|ctx, task, msg)> e
+		  <_task-create-error-on-failure(|ctx, task, ["Unresolved reference: ", e, " cannot be resolved to ", msg])> e
 		  
-	unresolved-error: Ref(e) 							-> (e, ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance, Attribute, Role, Inverse or Shortcut"])
-	unresolved-error: MemberAccess(_, e)	-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute, Role, Inverse or Shortcut"])
-	unresolved-error: AttributeRef(e) 		-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute"])
-	unresolved-error: RoleRef(e) 					-> (e, ["Unresolved reference: ", e, " cannot be resolved to a Role"])
-	unresolved-error: EntityRef(e) 				-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Entity"])
-	unresolved-error: EntityInstanceRef(e)-> (e, ["Unresolved reference: ", e, " cannot be resolved to an EntityInstance"])
-	unresolved-error: Role(NaBLHelp(e, _), _, _, _)-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Entity"])
-	unresolved-error: AttrRef(e) 					-> (e, ["Unresolved reference: ", e, " cannot be resolved to an Attribute"])
-	unresolved-error: CallRule(e, _) 			-> (e, ["Unresolved reference: ", e, " cannot be resolved to a Rule"])
+	unresolved-error: Ref(e) 											-> (e, "an EntityInstance, Attribute, Role, Inverse or Shortcut")
+	unresolved-error: MemberAccess(_, e)					-> (e, "an Attribute, Role, Inverse or Shortcut")
+	unresolved-error: AttributeRef(e) 						-> (e, "an Attribute")
+	unresolved-error: RoleRef(e) 									-> (e, "a Role")
+	unresolved-error: EntityRef(e) 								-> (e, "an Entity")
+	unresolved-error: EntityInstanceRef(e)				-> (e, "an EntityInstance")
+	unresolved-error: Role(NaBLHelp(e, _), _, _,_)-> (e, "an Entity")
+	unresolved-error: AttrRef(e) 									-> (e, "an Attribute")
+	unresolved-error: CallRule(e, _) 							-> (e, "a Rule")
 	
-	unresolved-error: n -> (e, ["Unresolved reference: ", e, " cannot be resolved to a Variable"])
-		where
-			is-node;
-			e := <node-get-varname>n
-	
-	
-	unresolved-error: n -> (e, ["Unresolved reference: ", e, " cannot be resolved to a Role, Inverse or Shortcut"])
-		where
-			is-edge;
-			e := <edge-get-edgemodel>n
+	unresolved-error = where(is-node);?e;!(<node-get-varname>e, "a Variable")
+	unresolved-error = where(is-edge);?e;!(<edge-get-edgemodel>e, "a Role, Inverse or Shortcut")
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
