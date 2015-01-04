@@ -16,6 +16,7 @@ imports // functions
 	trans/api/data-api
 	trans/api/model-api
 	trans/api/rules-api
+	trans/lib/string
 	
 imports //TODO: move to API
 
@@ -35,22 +36,37 @@ rules // unresolved references manual messages
 	
 	nabl-constraint(|ctx): x -> <fail>
 		where
-			(e, msg) := <unresolved-error>x;
+			(e, nses) := <unresolved-error>x;
+			nses-s := <pp-nses-or>nses;
 		  <_has-annotation(?Use(task))>e;
-		  <_task-create-error-on-failure(|ctx, task, ["Unresolved reference: ", e, " cannot be resolved to ", msg])> e
-		  
-	unresolved-error: Ref(e) 											-> (e, "an EntityInstance, Attribute, Role, Inverse or Shortcut")
-	unresolved-error: MemberAccess(_, e)					-> (e, "an Attribute, Role, Inverse or Shortcut")
-	unresolved-error: AttributeRef(e) 						-> (e, "an Attribute")
-	unresolved-error: RoleRef(e) 									-> (e, "a Role")
-	unresolved-error: EntityRef(e) 								-> (e, "an Entity")
-	unresolved-error: EntityInstanceRef(e)				-> (e, "an EntityInstance")
-	unresolved-error: Role(NaBLHelp(e, _), _, _,_)-> (e, "an Entity")
-	unresolved-error: AttrRef(e) 									-> (e, "an Attribute")
-	unresolved-error: CallRule(e, _) 							-> (e, "a Rule")
+		  <_task-create-error-on-failure(|ctx, task, ["Unresolved reference: ", e, " cannot be resolved to ", <string-prep-a-an>nses-s])> e
 	
-	unresolved-error = where(is-node);?e;!(<node-get-varname>e, "a Variable")
-	unresolved-error = where(is-edge);?e;!(<edge-get-edgemodel>e, "a Role, Inverse or Shortcut")
+	pp-nses-or: [] -> ""
+	pp-nses-or: [ns|nses] -> <concat-strings>[ns-s, sep, nses-s]
+		with
+			ns-s := <_pp-ns>ns;
+			nses-s := <pp-nses-or>nses;
+			if <eq>(<length>nses, 0) then
+				sep := ""
+			else if <eq>(<length>nses, 1) then
+				sep := " or "
+			else
+				sep := ", "
+			end end
+		  
+	unresolved-error: Ref(e) 											-> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+	unresolved-error: MemberAccess(_, e)					-> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+	unresolved-error: AttributeRef(e) 						-> (e, [NablNsAttribute()])
+	unresolved-error: RoleRef(e) 									-> (e, [NablNsRole()])
+	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
+	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
+	unresolved-error: Role(NaBLHelp(e, _), _, _,_)-> (e, [NablNsEntity()])
+	unresolved-error: AttrRef(e) 									-> (e, [NablNsAttribute()])
+	unresolved-error: CallRule(e, _) 							-> (e, [NablNsRule()])
+	
+	unresolved-error = where(is-node);?e;!(<node-get-varname>e, 	[NablNsLHSVariable()])
+	unresolved-error = where(is-edge);?e;!(<edge-get-varname>e, 	[NablNsLHSVariable()])
+	unresolved-error = where(is-edge);?e;!(<edge-get-edgemodel>e, [NablNsRole(), NablNsInverse(), NablNsShortcut()])
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
