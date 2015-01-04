@@ -1,0 +1,40 @@
+module trans/lib/nabl-ext
+
+imports // constructors
+	
+	trans/api/_runtime-constructors
+
+imports // functions
+	
+	trans/api/_runtime
+	trans/lib/string
+
+rules // api for unresolved references error messages
+	
+	nabl-constraint(|ctx): x -> <fail>
+		where
+			(e, nses) := <unresolved-error>x;
+			nses-s := <pp-nses-or>nses;
+		  <_has-annotation(?Use(task))>e;
+		  <_task-create-error-on-failure(|ctx, task, ["Unresolved reference: ", e, " cannot be resolved to ", <string-prep-a-an>nses-s])> e
+	
+	pp-nses-or: [] -> ""
+	pp-nses-or: [ns|nses] -> <concat-strings>[ns-s, sep, nses-s]
+		with
+			ns-s := <_pp-ns>ns;
+			nses-s := <pp-nses-or>nses;
+			if <eq>(<length>nses, 0) then
+				sep := ""
+			else if <eq>(<length>nses, 1) then
+				sep := " or "
+			else
+				sep := ", "
+			end end
+	
+	unresolved-error = fail
+
+
+
+
+
+
