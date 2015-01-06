@@ -1,11 +1,21 @@
 module typing/aggregation
 
 imports
+
+	// constructors
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig
 	
-	include/Relations
+	// functions
+	typing/_multiplicity-functions
 	trans/naming/names
 	
-	lib/types/-
+	// use custom runtime libraries  
+  lib/nabl/-
+  lib/task/-
+  lib/types/-
+  lib/properties/-
+  lib/relations/-
 
 type rules
 

@@ -1,11 +1,25 @@
 module typing/assignments
 
 imports
-	
-	include/Relations
-	trans/naming/names
 
-	lib/types/-
+	// constructors
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
+	src-gen/signatures/Types-sig
+	trans/api/constructors
+	trans/desugaring/constructors
+	
+	// functions
+	typing/_multiplicity-functions
+	trans/naming/names
+	
+	// use custom runtime libraries  
+  lib/nabl/-
+  lib/task/-
+  lib/types/-
+  lib/properties/-
+  lib/relations/-
 
 type rules // derivations well-formedness
 

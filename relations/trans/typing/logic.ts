@@ -2,10 +2,21 @@ module typing/logic
 
 imports
 
-	include/Relations
+	// constructors
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig	 
+	trans/api/constructors
+	
+	// functions
+	typing/_multiplicity-functions
 	trans/naming/names
-
-	lib/types/-
+	
+	// use custom runtime libraries  
+  lib/nabl/-
+  lib/task/-
+  lib/types/-
+  lib/properties/-
+  lib/relations/-
 
 type rules
 	

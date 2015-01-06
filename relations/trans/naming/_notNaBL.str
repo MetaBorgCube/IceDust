@@ -8,6 +8,7 @@ imports // constructors
 	src-gen/signatures/Model-sig
 	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
+	trans/api/constructors
 	trans/api/_runtime-constructors
 	trans/naming/names
 	
@@ -17,19 +18,11 @@ imports // functions
 	trans/api/data-api
 	trans/api/model-api
 	trans/api/rules-api
-	trans/lib/nabl-ext //is not called, but calls unresolved-error and ns-conflict-error
+	trans/lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
 	
 imports //TODO: move to API
 
 	lib/editor-common.generated
-
-signature constructors //TODO: move
-	
-	Normal: DerivationType
-
-/**
- *	Note: all these rules should go into NaBL and TS (when NaBL and TS support these)
- */
 
 rules // unresolved references manual messages
 

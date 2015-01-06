@@ -2,9 +2,20 @@ module typing/multiplicity-operators
 
 imports
 
-	include/Relations
-
-	lib/types/-
+	// constructors
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig
+	
+	// functions
+	typing/_multiplicity-functions
+	trans/naming/names
+	
+	// use custom runtime libraries  
+  lib/nabl/-
+  lib/task/-
+  lib/types/-
+  lib/properties/-
+  lib/relations/-
 
 type rules
 
