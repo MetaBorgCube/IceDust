@@ -24,12 +24,21 @@ rules // query
 	role-get-mult           = ?Role(_, <id>, _, _)
 	role-get-name           = ?Role(_, _, <id>, _)
 	role-get-inv            = ?Role(_, _, _, <id>)
-	
+
+	shortcut-get-roles: Shortcut(NaBLHelp(RoleRef(role1),_),_,NaBLHelp(RoleRef(role2),_),_) -> (role1, role2)
 	shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1, role2)
+	shortcut-get-role1 = shortcut-get-roles;Fst
+	shortcut-get-role2 = shortcut-get-roles;Snd
 	shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
 	
 	shortcut-get-shortcuts: Shortcut(_, shortcut1, _, shortcut2) -> (shortcut1, shortcut2)
-	
+	shortcut-get-shortcut1 = shortcut-get-shortcuts;Fst
+	shortcut-get-shortcut2 = shortcut-get-shortcuts;Snd
+
+	shortcut-get-types: Shortcut(NaBLHelp(_,type1),_,NaBLHelp(_,type2),_) -> (type1, type2)
+	shortcut-get-type1 = shortcut-get-types;Fst
+	shortcut-get-type2 = shortcut-get-types;Snd
+
 rules // properties
 	
 	is-entity = ?Entity(_,_,_)

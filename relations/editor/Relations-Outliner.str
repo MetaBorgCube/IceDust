@@ -22,9 +22,9 @@ rules
 	//TODO: call this on desugared, or even analyzed AST @see http://yellowgrass.org/issue/Spoofax/837
   outline: (selected, position, ast, path, project-path) -> result
   	with
-  		result := <desugar-all;_simple-label-outline(to-outline-label);debug> ast
+  		result := <desugar-all;simple-label-outline-multiple(to-outline-label);flatten-list> ast
   
-	to-outline-label : ModuleDesugared(n,_,_,_,_) -> n{"icons/module.png"}
+	// to-outline-label : ModuleDesugared(n,_,_,_,_) -> n{"icons/module.png"}
 	
 	to-outline-label = ?ModelDef(_)   ;keyword-outline-label(|"Model"  {"icons/model.png"})
 	to-outline-label = ?RulesDef(_)   ;keyword-outline-label(|"Rules"  {"icons/page-arrow-white.png"})
@@ -34,16 +34,47 @@ rules
 	to-outline-label = where(is-entity;entity-is-entitytype);      ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/square-red.png"}     ;custom-origin(|<entity-get-name>e)
 	to-outline-label = where(is-entity;not(entity-is-entitytype)); ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/diamond-yellow.png"} ;custom-origin(|<entity-get-name>e)
 	to-outline-label = where(is-attr);                             ?e; !$[[<attr-get-name;pp-o>e] : [<attr-get-type;pp-o>e] [<attr-get-mult;pp-o>e]]{"icons/circle-green.png"}   ;custom-origin(|<attr-get-name>e)
-	to-outline-label = where(is-role);                             ?e; !$[[<role-get-name;pp-o>e] : [<role-get-type;pp-o>e] [<role-get-mult;pp-o>e]]{"icons/triangle-blue.png"}  ;custom-origin(|<role-get-name>e)
   to-outline-label = where(is-rule);                             ?e; !$[[<rule-get-name;pp-o>e] : ([<rule-get-params;pp-paramlist>e])]            {"icons/arrow-blue.png"}     ;custom-origin(|<rule-get-name>e)
 	to-outline-label = where(is-entityinstance);                   ?e; !$[[<entityinstance-get-name;pp-o>e] : [<entityinstance-get-type;pp-o>e]]    {"icons/square-gray.png"}    ;custom-origin(|<entityinstance-get-name>e)
+
+	to-outline-label = where(is-role);?e;
+		![
+			<!$[[<role-get-name;pp-o>e] : [<role-get-type;pp-o>e] [<pp-o>One()]]         {"icons/arrowright-red.gif"};custom-origin(|<role-get-name>e)>,
+			<!$[[<role-get-type;pp-o>e].[<role-get-inv;pp-o>e] : [<role-get-mult;pp-o>e]]{"icons/arrowleft-red.gif"};custom-origin(|<role-get-inv>e)> 
+		]
+		
+	to-outline-label = where(is-shortcut);?e;
+		![
+			<!$[[<shortcut-get-type1;pp-o>e].[<shortcut-get-shortcut1;pp-o>e]]{"icons/arrowleftright-red.gif"};custom-origin(|<shortcut-get-shortcut1>e)>,
+			<!$[[<shortcut-get-type2;pp-o>e].[<shortcut-get-shortcut2;pp-o>e]]{"icons/arrowleftright-red.gif"};custom-origin(|<shortcut-get-shortcut2>e)>
+		]
 
 	pp-paramlist = map(?x;!$[[<param-get-name;pp-o>x] : [<param-get-type;pp-o>x] [<param-get-mult;pp-o>x]])
 
 rules
 	
 	keyword-outline-label(|keyword) = ?term;!keyword;custom-origin(|term);set-origin-length(|<strlen>keyword)
-			
+
+  simple-label-outline-multiple(s1) = collect-om(to-outline-nodes(s1), conc)
+  
+  to-outline-nodes(s1):
+    term -> nodes
+    where
+      label := <s1> term;
+      if <not(is-list)>label then
+      	labels := [label]
+      else
+      	labels := label
+      end;
+      labels' := labels;
+      children := <get-arguments; simple-label-outline-multiple(s1); flatten-list> term;
+      nodes := <map(\x -> Node(x, children)\)>labels'
+
+signature constructors
+  
+  Node: label * children -> Node
+
+
 rules
 	
   pp-o =
