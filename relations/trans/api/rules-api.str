@@ -14,10 +14,13 @@ imports // functions
 
 rules // query (in all stages of desugaring)
 
+	rule-get-name   = ?Rule(<id>, _, _)
 	rule-get-params = ?Rule(_, <id>, _)
 	rule-get-body   = ?Rule(_, _, <id>)
 	
 	param-get-name = ?Param(<id>, _, _)
+	param-get-type = ?Param(_, <id>, _)
+	param-get-mult = ?Param(_, _, <id>)
 	
 	rulebody-get-lhs = ?RuleBody(<id>, _, _, _)
 	rulebody-get-nhs = ?RuleBody(_, <id>, _, _)

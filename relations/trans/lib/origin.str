@@ -37,3 +37,12 @@ rules // origin for lists
 rules //  short alias
 	
 	keep-origin(a) = _origin-track-forced(a)
+
+rules // set the length of an origin
+	
+	set-origin-length(|l): x -> x
+		with
+      (a, b, c, d, e) := <_origin-location-offset>x;
+      e' := <add> (d, <dec>l);
+      <_origin-location-offset-set(|(a, b, c, d, e'))>x
+			

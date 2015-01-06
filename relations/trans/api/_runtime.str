@@ -18,6 +18,7 @@ imports // custom runtime
 	lib/task/insert
 	lib/task/messages
 	lib/task/tasks
+	lib/editor/outline-library
 	
 rules
 	
@@ -27,6 +28,9 @@ rules
 	_pp-ns = pp-ns
 	
 	_origin-track-forced(x) = origin-track-forced(x)
+	_origin-text = origin-text
+	_origin-location-offset = origin-location-offset
+	_origin-location-offset-set(|origin-location-offset) = origin-location-offset-set(|origin-location-offset)
 
 	_has-annotation(x) = get-annotation(x) //TODO: update to non deprecated calls
 	
@@ -51,5 +55,6 @@ rules
 	_task-create-combine(|ctx) = task-create-combine(|ctx)
 	_task-create-diff(|ctx) = task-create-diff(|ctx)
 	
+	_simple-label-outline(to-outline-label) = simple-label-outline(to-outline-label)
 	
 	

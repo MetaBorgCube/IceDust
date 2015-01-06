@@ -15,9 +15,15 @@ rules // query
 	entity-get-name = ?Entity(_,<id>,_)
 	entity-get-members = ?Entity(_, _, <id>)
 
+	attr-get-name = ?Attribute(<id>, _, _, _)
+	attr-get-type = ?Attribute(_, <id>, _, _)
+	attr-get-mult = ?Attribute(_, _, <id>, _)
+
 	role-get-type           = ?Role(NaBLHelp(<id>, _), _, _,_)
 	role-get-type           = ?Role(<id>, _, _, _)
+	role-get-mult           = ?Role(_, <id>, _, _)
 	role-get-name           = ?Role(_, _, <id>, _)
+	role-get-inv            = ?Role(_, _, _, <id>)
 	
 	shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1, role2)
 	shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
@@ -29,6 +35,8 @@ rules // properties
 	is-entity = ?Entity(_,_,_)
 	
 	entity-is-entitytype = entity-get-type;?EntityType()
+	
+	is-attr = ?Attribute(_, _, _, _)
 	
 	attr-has-no-mult        = ?Attribute(_, _, None(), _)
 	
