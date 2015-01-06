@@ -54,78 +54,35 @@ rules // check if there are no name collisions in attributes, roles, inverses an
 		[NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()]
 	]
 		  
-rules // check if entities have all the required attributes and roles assigned
+signature constructors
 
-	/*
-	1. on what: is-entityinstance
-	2. get the def of what: entity-instance-get-type
-	3. what children of the def: NablNsAttribute()
-	4. get the things in the ast: entityinstance-get-attrvalues;map(attributevalue-get-attr)
-	5. filter diff on: NablProp_derivation-type() Normal() and NablProp_multiplicity() One();
-	6. message is on entityinstance-get-name
-	*/
+	EiAttr : Term
+	EiRole : Term
 	
-	contains-all-error-on           = is-entityinstance
-	contains-all-error-def-of       = entityinstance-get-type
-	contains-all-error-def-child-ns = !NablNsAttribute()
-	contains-all-error-ast-children = entityinstance-get-attrvalues;map(attributevalue-get-attr)
-	contains-all-error-filters      = ![
-		(NablProp_derivation-type(), Normal()),
-		(NablProp_multiplicity(), One())
-	]
-	contains-all-error-msg-on       = entityinstance-get-name
-
-	nabl-constraint(|ctx): a -> <fail>
-		where
-			contains-all-error-on
-		with
-			def-child-ns        := <contains-all-error-def-child-ns>;
-			filters             := <contains-all-error-filters>
-		with
-			a-ty                := <contains-all-error-def-of>a;
-			a-ty-def 	          := <_nabl-create-collectdefs(|ctx)> a-ty;
-			[a-ty-def-children] := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def];
-			a-children          := <contains-all-error-ast-children>a;
-			a-children-defs     := <map(_nabl-create-collectdefs(|ctx));_task-create-combine(|ctx)>a-children;
-			diff                := <_task-create-diff(|ctx)> (a-ty-def-children, a-children-defs);
-			diff-filtered       := <filter-propconstraints(|ctx,filters)>diff;
-			a-msg-on            := <contains-all-error-msg-on>a;
-			msg                 := ["Provide all required ", <_pp-ns>def-child-ns, "s: ", diff-filtered];
-			<_task-create-error-on-success(|ctx, diff-filtered, msg)> a-msg-on
-
-	filter-propconstraints(|ctx, filters) = where(!(filters, []);equal);id
-	filter-propconstraints(|ctx, filters): def-list -> def-list-filtered-rec
-		where
-			!(filters, []);not(equal)
-		with
-			[filter|filters-tail] := filters;
-			(nablprop, propvalue) := filter;
-			def-list-filtered     := <_nabl-create-propconstraint(|ctx, nablprop, def-list)> propvalue;
-			def-list-filtered-rec := <filter-propconstraints(|ctx, filters-tail)>def-list-filtered
-
-	// nabl-constraint(|ctx): ei -> <fail>
-	// 	where
-	// 		is-entityinstance
-	// 	with
-	// 		ty-def 		 := <entityinstance-get-type;_nabl-create-collectdefs(|ctx)> ei;
-	// 		[ty-attrs] := <_nabl-resolve-all-tasks(|ctx, NablNsAttribute(), [])> [ty-def];
-	// 		as-defs    := <entityinstance-get-attrvalues;map(attributevalue-get-attr;_nabl-create-collectdefs(|ctx))> ei;	
-	// 		as-attrs   := <_task-create-combine(|ctx)> as-defs ;
-	// 		diff       := <_task-create-diff(|ctx)> (ty-attrs, as-attrs);
-	// 		diff'      := <_nabl-create-propconstraint(|ctx, NablProp_derivation-type(), diff)> Normal();
-	// 		diff''     := <_nabl-create-propconstraint(|ctx, NablProp_multiplicity(), diff')> One();
-	// 		<entityinstance-get-name;_task-create-error-on-success(|ctx, diff'', ["Provide all required attributes: ", diff''])> ei
-
-	nabl-constraint(|ctx): ei -> <fail>
-		where
-			is-entityinstance
-		with
-			ty-def 		 := <entityinstance-get-type;_nabl-create-collectdefs(|ctx)> ei;
-			[ty-roles] := <_nabl-resolve-all-tasks(|ctx, NablNsRole(), [])> [ty-def];
-			as-defs    := <entityinstance-get-rolevalues;map(rolevalue-get-role;_nabl-create-collectdefs(|ctx))> ei;
-			as-roles   := <_task-create-combine(|ctx)> as-defs ;
-			diff       := <_task-create-diff(|ctx)> (ty-roles, as-roles);
-			<entityinstance-get-name;_task-create-error-on-success(|ctx, diff, ["Provide all required roles: ", diff])> ei
+rules // check if entities have all the required attributes and roles assigned
+	
+	contains-all-errors = ![EiAttr(), EiRole()]
+	
+	contains-all-error-on          (|f) = where(EiAttr() := f); is-entityinstance
+	contains-all-error-def-of      (|f) = where(EiAttr() := f); entityinstance-get-type
+	contains-all-error-ast-children(|f) = where(EiAttr() := f); entityinstance-get-attrvalues;map(attributevalue-get-attr)
+	contains-all-error-msg-on      (|f) = where(EiAttr() := f); entityinstance-get-name
+	contains-all-error-filters     (|f) = where(EiAttr() := f); !(
+		NablNsAttribute(),
+		[
+			(NablProp_derivation-type(), Normal()),
+			(NablProp_multiplicity(), One())
+		]
+	)
+	
+	contains-all-error-on          (|f) = where(EiRole() := f); is-entityinstance
+	contains-all-error-def-of      (|f) = where(EiRole() := f); entityinstance-get-type
+	contains-all-error-ast-children(|f) = where(EiRole() := f); entityinstance-get-rolevalues;map(rolevalue-get-role)
+	contains-all-error-msg-on      (|f) = where(EiRole() := f); entityinstance-get-name
+	contains-all-error-filters     (|f) = where(EiRole() := f); !(
+		NablNsRole(),
+		[]
+	)
 
 rules // check if Entity (not Relation) has no roles
 
