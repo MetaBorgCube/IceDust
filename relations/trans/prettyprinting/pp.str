@@ -1,11 +1,13 @@
 module pp
 
-imports
+imports // signatures
+
+	src-gen/signatures/modules-sig
+	trans/desugaring/constructors
+
+imports // functions
 
 	libstratego-gpp
-	// lib/runtime/tmpl/pp
-	lib/tmpl/pp
-	
 	src-gen/pp/Common-pp
 	src-gen/pp/Model-pp
 	src-gen/pp/Modules-pp
@@ -15,10 +17,6 @@ imports
 	src-gen/pp/Expressions-pp
 	src-gen/pp/Types-pp
 	src-gen/pp/Rules-pp
-	
-	include/Relations
-	src-gen/signatures/Rules-sig
-	trans/desugaring/desugar
 
 rules
 	
