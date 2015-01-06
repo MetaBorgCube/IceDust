@@ -9,7 +9,6 @@ imports // constructors
 	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/_runtime-constructors
-	trans/desugaring/constructors
 	trans/naming/names
 	
 imports // functions
@@ -42,10 +41,10 @@ rules // unresolved references manual messages
 	unresolved-error: RoleRef(e) 									-> (e, [NablNsRole()])
 	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
 	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
-	unresolved-error: Role(NaBLHelp(e, _), _, _,_)-> (e, [NablNsEntity()])
 	unresolved-error: AttrRef(e) 									-> (e, [NablNsAttribute()])
 	unresolved-error: CallRule(e, _) 							-> (e, [NablNsRule()])
-	
+
+	unresolved-error = where(is-role);?e;!(<role-get-type>e, 	    [NablNsEntity()])
 	unresolved-error = where(is-node);?e;!(<node-get-varname>e, 	[NablNsLHSVariable()])
 	unresolved-error = where(is-edge);?e;!(<edge-get-varname>e, 	[NablNsLHSVariable()])
 	unresolved-error = where(is-edge);?e;!(<edge-get-edgemodel>e, [NablNsRole(), NablNsInverse(), NablNsShortcut()])

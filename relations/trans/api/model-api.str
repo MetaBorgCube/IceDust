@@ -15,6 +15,7 @@ rules // query
 	entity-get-name = ?Entity(_,<id>,_)
 	entity-get-members = ?Entity(_, _, <id>)
 
+	role-get-type           = ?Role(NaBLHelp(<id>, _), _, _,_)
 	role-get-type           = ?Role(<id>, _, _, _)
 	role-get-name           = ?Role(_, _, <id>, _)
 	
