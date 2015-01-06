@@ -2,12 +2,14 @@ module _notNaBL
 
 imports // constructors
 
-	// include/Relations //TODO: remove
-	// src-gen/signatures/Rules-sig //TODO: remove
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Execute-sig
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/_runtime-constructors
-	trans/api/constructors
-	// trans/desugaring/constructors //TODO: remove
+	trans/desugaring/constructors
 	trans/naming/names
 	
 imports // functions
@@ -61,28 +63,37 @@ signature constructors
 	
 rules // check if entities have all the required attributes and roles assigned
 	
-	contains-all-errors = ![EiAttr(), EiRole()]
+	contains-all-errors = ![
+		ContainsAll(
+			NablNsAttribute(),
+			[
+				(NablProp_derivation-type(), Normal()),
+				(NablProp_multiplicity(), One())
+			],
+			"ei-a1",
+			"ei-a2",
+			"ei-a3",
+			"ei-a4"
+		),
+		ContainsAll(
+			NablNsRole(),
+			[],
+			"ei-r1",
+			"ei-r2",
+			"ei-r3",
+			"ei-r4"
+		)
+	]
 	
-	contains-all-error-on          (|f) = where(EiAttr() := f); is-entityinstance
-	contains-all-error-def-of      (|f) = where(EiAttr() := f); entityinstance-get-type
-	contains-all-error-ast-children(|f) = where(EiAttr() := f); entityinstance-get-attrvalues;map(attributevalue-get-attr)
-	contains-all-error-msg-on      (|f) = where(EiAttr() := f); entityinstance-get-name
-	contains-all-error-filters     (|f) = where(EiAttr() := f); !(
-		NablNsAttribute(),
-		[
-			(NablProp_derivation-type(), Normal()),
-			(NablProp_multiplicity(), One())
-		]
-	)
+	eval(|f) = where("ei-a1":=f); is-entityinstance
+	eval(|f) = where("ei-a2":=f); entityinstance-get-type
+	eval(|f) = where("ei-a3":=f); entityinstance-get-attrvalues;map(attributevalue-get-attr)
+	eval(|f) = where("ei-a4":=f); entityinstance-get-name
 	
-	contains-all-error-on          (|f) = where(EiRole() := f); is-entityinstance
-	contains-all-error-def-of      (|f) = where(EiRole() := f); entityinstance-get-type
-	contains-all-error-ast-children(|f) = where(EiRole() := f); entityinstance-get-rolevalues;map(rolevalue-get-role)
-	contains-all-error-msg-on      (|f) = where(EiRole() := f); entityinstance-get-name
-	contains-all-error-filters     (|f) = where(EiRole() := f); !(
-		NablNsRole(),
-		[]
-	)
+	eval(|f) = where("ei-r1":=f); is-entityinstance
+	eval(|f) = where("ei-r2":=f); entityinstance-get-type
+	eval(|f) = where("ei-r3":=f); entityinstance-get-rolevalues;map(rolevalue-get-role)
+	eval(|f) = where("ei-r4":=f); entityinstance-get-name
 
 rules // check if Entity (not Relation) has no roles
 
@@ -95,7 +106,7 @@ rules // check if Entity names start with a capital
 	nabl-constraint(|ctx) =
 		where(is-entity);
 		entity-get-name;
-		if not(string-starts-with-capital) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end
+		if not(string-starts-with-capital) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
 			
 rules // predicates over multiplcities
 	
