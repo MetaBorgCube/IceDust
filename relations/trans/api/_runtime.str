@@ -6,6 +6,7 @@ imports // generated runtime
 
 imports // custom runtime
 	
+	lib/analysis/legacy
 	lib/editor/annotations	
 	lib/editor/origins
 	lib/editor/properties
@@ -58,6 +59,12 @@ rules
 	_task-create-combine(|ctx) = task-create-combine(|ctx)
 	_task-create-diff(|ctx) = task-create-diff(|ctx)
 	
+	_task-has-failed = task-has-failed
+	_task-get-results = task-get-results
+	
 	_simple-label-outline(to-outline-label) = simple-label-outline(to-outline-label)
 	
-	
+	_analysis-default-editor = analysis-default-editor
+	_analysis-save-default(|language) = analysis-save-default(|language)
+	_analysis-single-default(pre-trans, post-trans, pp-message|language) = analysis-single-default(pre-trans, post-trans, pp-message|language)
+	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) 
