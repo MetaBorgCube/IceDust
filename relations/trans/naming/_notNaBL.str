@@ -111,3 +111,8 @@ rules // predicates over multiplcities
 	lower-one: One() -> <id>
 	lower-one: OneOrMore() -> <id>
 	nullable = lower-zero
+
+rules
+	
+	// FIXME: NaBL should have generated this	
+  nabl-get-name : Entity(_, a, _) -> a

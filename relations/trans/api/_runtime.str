@@ -6,8 +6,10 @@ imports // generated runtime
 
 imports // custom runtime
 	
+	lib/analysis/complete	
 	lib/analysis/debug
 	lib/analysis/legacy
+	lib/analysis/resolve
 	lib/editor/annotations	
 	lib/editor/origins
 	lib/editor/properties
@@ -94,4 +96,13 @@ rules
 	_index-get-all-partitions = index-get-all-partitions
 	_index-get-all-in-partition = index-get-all-in-partition
 	_beautify-indices = beautify-indices
-	 
+	
+	_analysis-resolve(|language, project-path) = analysis-resolve(|language, project-path)
+	
+	_properties-to-html = properties-to-html
+	_not-none = not-none
+	_ref-prop = ref-prop
+	_get-all-editor-properties(language-pp | language, project-path) = get-all-editor-properties(language-pp | language, project-path)
+	
+	_analysis-propose-completions(|language, project-path) = analysis-propose-completions(|language, project-path)
+	
