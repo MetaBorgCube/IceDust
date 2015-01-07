@@ -12,6 +12,7 @@ imports // custom runtime
 	lib/analysis/resolve
 	lib/editor/annotations	
 	lib/editor/origins
+	lib/editor/outline-library
 	lib/editor/properties
 	lib/index/core
 	lib/index/legacy
@@ -19,12 +20,13 @@ imports // custom runtime
 	lib/nabl/constraints
 	lib/nabl/resolve
 	lib/nabl/tasks
+	lib/nabl/query
 	lib/nabl/uri
 	lib/task/core
 	lib/task/insert
 	lib/task/messages
 	lib/task/tasks
-	lib/editor/outline-library
+	lib/types/query
 	
 rules
 	
@@ -56,6 +58,8 @@ rules
 	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
 	
 	_nabl-uri = nabl-uri
+	
+	_get-type = get-type
 
 	_task-create-error(|ctx, msg) = task-create-error(|ctx, msg)
 	_task-create-warning(|ctx, msg) = task-create-warning(|ctx, msg)
@@ -105,4 +109,6 @@ rules
 	_get-all-editor-properties(language-pp | language, project-path) = get-all-editor-properties(language-pp | language, project-path)
 	
 	_analysis-propose-completions(|language, project-path) = analysis-propose-completions(|language, project-path)
+	
+	_nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
 	

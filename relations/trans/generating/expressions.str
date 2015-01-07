@@ -1,9 +1,11 @@
 module trans/generating/expressions
 
-imports
+imports // constructors
 
-	include/Relations
 	lib/java/Java
+	src-gen/signatures/expressions-sig
+
+imports // functions
 
 	trans/generating/expressions-references
 	trans/generating/types

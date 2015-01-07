@@ -1,13 +1,18 @@
 module trans/generating/data
 
-imports
+imports // constructors
 
 	lib/java/Java
-	include/Relations
-	
+	src-gen/signatures/data-sig
+	src-gen/signatures/expressions-sig
+	src-gen/signatures/model-sig
+	src-gen/signatures/modules-sig
+
+imports // functions
+
 	trans/generating/expressions
 	trans/naming/names
-	trans/naming/_notNaBL
+	trans/naming/_notNaBL // TODO move code
 
 rules
 	

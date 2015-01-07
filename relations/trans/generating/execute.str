@@ -1,9 +1,12 @@
 module trans/generating/execute
 
-imports
+imports // constructors
 
 	lib/java/Java
-	include/Relations
+	src-gen/signatures/execute-sig
+	src-gen/signatures/modules-sig
+
+imports // functions
 
 	trans/generating/expressions
 

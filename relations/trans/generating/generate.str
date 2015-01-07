@@ -1,13 +1,12 @@
 module trans/generating/generate
 
-imports
+imports // constructors
 
-	lib/editor-common.generated
-	lib/java/Java
+	src-gen/signatures/modules-sig
+
+imports // functions
+
 	lib/java/pretty-print
-	
-	include/Relations
-
 	trans/generating/data
 	trans/generating/execute
 	trans/generating/model

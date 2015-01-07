@@ -1,10 +1,10 @@
 module trans/generating/module
 
-imports
+imports // constructors
 
 	lib/java/Java
-	include/Relations
-	trans/desugaring/desugar
+	src-gen/signatures/modules-sig	
+	trans/desugaring/constructors
 
 rules
 
