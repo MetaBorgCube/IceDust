@@ -1,19 +1,22 @@
 module trans/_editor/generate
 
-imports
+imports // constructors
+
+	src-gen/signatures/modules-sig
+	trans/api/_runtime-constructors
 	
-	lib/editor-common.generated
-	// lib/runtime/index/-
-	// lib/runtime/task/-
-	lib/index/-
-	lib/task/-
-	
+imports // functions
+
+	trans/_editor/analysis
+	trans/api/_runtime
+	trans/desugaring/desugar
 	trans/generating/generate
 	trans/lib/files
+	trans/prettyprinting/pp
+
+imports // generated
 	
-	include/Relations
-	trans/desugaring/desugar
-	trans/_editor/analysis
+	lib/editor-common.generated
 
 rules // Builders
 	
@@ -53,15 +56,15 @@ rules // Build in steps
 	build(error-handler):
 		(ast, path, project-path, i) -> result
 		with
-			index-setup(|<language>, project-path);
-			task-setup(|project-path);
+			_index-setup(|<language>, project-path);
+			_task-setup(|project-path);
 
 			if Module(_,_,_,_,_) := ast then
 				// log(|Info(),"Phase 0: Analyzing");
 				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
 			else
 				ast' := ast;
-				error* := <task-get-messages(|$[[project-path]/[path]])>
+				error* := <_task-get-messages(|$[[project-path]/[path]])>
 			end;
 			
 			if not([] := error*) then

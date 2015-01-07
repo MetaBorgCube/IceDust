@@ -65,6 +65,7 @@ rules
 	
 	_task-has-failed = task-has-failed
 	_task-get-results = task-get-results
+	_task-get-messages(|partition) = task-get-messages(|partition)
 	
 	_simple-label-outline(to-outline-label) = simple-label-outline(to-outline-label)
 	
