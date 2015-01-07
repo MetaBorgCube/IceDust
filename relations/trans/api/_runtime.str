@@ -6,10 +6,13 @@ imports // generated runtime
 
 imports // custom runtime
 	
+	lib/analysis/debug
 	lib/analysis/legacy
 	lib/editor/annotations	
 	lib/editor/origins
 	lib/editor/properties
+	lib/index/core
+	lib/index/legacy
 	lib/nabl/check
 	lib/nabl/constraints
 	lib/nabl/resolve
@@ -33,6 +36,7 @@ rules
 	_origin-location-offset = origin-location-offset
 	_origin-location-offset-set(|origin-location-offset) = origin-location-offset-set(|origin-location-offset)
 	_origin-debug = origin-debug
+	_origin-debug-all = origin-debug-all
 
 	_has-annotation(x) = get-annotation(x) //TODO: update to non deprecated calls
 	_add-annotation(|a) = add-annotation(|a)
@@ -67,4 +71,26 @@ rules
 	_analysis-default-editor = analysis-default-editor
 	_analysis-save-default(|language) = analysis-save-default(|language)
 	_analysis-single-default(pre-trans, post-trans, pp-message|language) = analysis-single-default(pre-trans, post-trans, pp-message|language)
-	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) 
+	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path)
+	
+	_index-setup(|language, project-path) = index-setup(|language, project-path)
+	_task-setup(|project-path) = task-setup(|project-path)
+	
+	_get-editor-properties(language-pp | language, project-path) =  get-editor-properties(language-pp | language, project-path)
+	
+	_analysis-debug-index-project(|language) = analysis-debug-index-project(|language)
+	_analysis-debug-index-project-resolve(|language) = analysis-debug-index-project-resolve(|language)
+	_analysis-debug-index-partition(|language) = analysis-debug-index-partition(|language)
+	_analysis-debug-index-partition-resolve(|language) = analysis-debug-index-partition-resolve(|language)
+	_analysis-debug-task-project(|language) = analysis-debug-task-project(|language)
+	_analysis-debug-task-partition(|language) = analysis-debug-task-partition(|language)
+	_analysis-debug-task-selection(|language) = analysis-debug-task-selection(|language)
+	_analysis-debug-project(|language) = analysis-debug-project(|language)
+	_analysis-debug-partition(|language) = analysis-debug-partition(|language)
+	_analysis-debug-reanalyze(|language) = analysis-debug-reanalyze(|language)
+	_give-task-results = give-task-results
+	
+	_index-get-all-partitions = index-get-all-partitions
+	_index-get-all-in-partition = index-get-all-in-partition
+	_beautify-indices = beautify-indices
+	 
