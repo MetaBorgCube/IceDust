@@ -66,14 +66,12 @@ rules
       else
       	labels := label
       end;
-      labels' := labels;
       children := <get-arguments; simple-label-outline-multiple(s1); flatten-list> term;
-      nodes := <map(\x -> Node(x, children)\)>labels'
+      nodes := <map(\x -> Node(x, children)\)>labels
 
 signature constructors
   
   Node: label * children -> Node
-
 
 rules
 	

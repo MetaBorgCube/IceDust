@@ -31,8 +31,11 @@ rules
 	_origin-text = origin-text
 	_origin-location-offset = origin-location-offset
 	_origin-location-offset-set(|origin-location-offset) = origin-location-offset-set(|origin-location-offset)
+	_origin-debug = origin-debug
 
 	_has-annotation(x) = get-annotation(x) //TODO: update to non deprecated calls
+	_add-annotation(|a) = add-annotation(|a)
+	_remove-annotations(s) = remove-annotations(s)
 	
 	_nabl-has-reference = nabl-has-reference
 	_nabl-uri-namespace = nabl-uri-namespace

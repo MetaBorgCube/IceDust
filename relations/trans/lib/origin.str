@@ -40,9 +40,11 @@ rules //  short alias
 
 rules // set the length of an origin
 	
-	set-origin-length(|l): x -> x
+	set-origin-length(|l): x -> x'
 		with
       (a, b, c, d, e) := <_origin-location-offset>x;
       e' := <add> (d, <dec>l);
-      <_origin-location-offset-set(|(a, b, c, d, e'))>x
+      <_origin-location-offset-set(|(a, b, c, d, e'))>x;
+      random := <next-random>;
+      x' := <_add-annotation(|random);_remove-annotations(?random)>x //Dirty hack to propagate the origin-location-offset to origin-offset
 			
