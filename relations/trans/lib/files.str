@@ -1,8 +1,8 @@
 module trans/lib/files
 
-imports //TODO: remove this import to api
+imports
 
-	lib/editor-common.generated
+	trans/api/_generated
 
 rules // builders
 	
@@ -23,7 +23,7 @@ rules // builders
 			<delete-file>$[[<dirname>path]/index.project.aterm];
 			<delete-dir>$[[<dirname>path]/lib];
 			<delete-files>(<dirname>$[[project-path]/[path]],"class");
-			<dirname;refresh-workspace-file>$[[project-path]/[path]]
+			<dirname;_refresh-workspace-file>$[[project-path]/[path]]
 
 rules
 
@@ -34,7 +34,7 @@ rules
 			fileDescriptor := <fopen> (fileName, "w");
 			<fputs> (content, fileDescriptor);
 			<fclose> fileDescriptor;
-			<refresh-workspace-file> fileName
+			<_refresh-workspace-file> fileName
 
 rules
 

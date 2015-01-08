@@ -18,11 +18,8 @@ imports // functions
 	trans/api/data-api
 	trans/api/model-api
 	trans/api/rules-api
+	trans/lib/string
 	trans/lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
-	
-imports //TODO: move to API
-
-	lib/editor-common.generated
 
 rules // unresolved references manual messages
 
@@ -98,7 +95,7 @@ rules // check if Entity names start with a capital
 	nabl-constraint(|ctx) =
 		where(is-entity);
 		entity-get-name;
-		if not(string-starts-with-capital) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
+		if not(first-is-upper) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
 			
 rules // predicates over multiplcities
 	

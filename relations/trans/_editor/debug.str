@@ -6,13 +6,10 @@ imports // constructors
 	
 imports // functions
 
+	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
 	trans/prettyprinting/pp
-
-imports // generated
-	
-	lib/editor-common.generated
 	
 rules // Debugging builders
 	
@@ -41,7 +38,7 @@ rules // Debugging builders
 	debug-show-analyzed-resolved:
 		(selected, position, ast, path, project-path) -> (filename, result)
 			where
-	    	language := <language>;
+	    	language := <_language>;
 	    	_index-setup(|language, project-path);
 	    	_task-setup(|project-path)
 			with
@@ -58,13 +55,13 @@ rules // Debugging builders
 	debug-properties:
 		(target, position, ast, path, project-path) -> (filename, result)
 			where
-	    	language := <language>;
+	    	language := <_language>;
 	    	_index-setup(|language, project-path);
 	    	_task-setup(|project-path);
 				filename := <guarantee-extension(|"properties.txt")> path;
 				result:=
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
-					<_get-editor-properties(pp-partial-Relations-string|<language>,project-path)>target
+					<_get-editor-properties(pp-partial-Relations-string|<_language>,project-path)>target
 	
 	debug-show-origin:
 		(target, position, ast, path, project-path) -> None()
@@ -72,13 +69,13 @@ rules // Debugging builders
 				<_origin-debug-all>target
 	
 	debug-index-project =
-		_analysis-debug-index-project(|<language>)
+		_analysis-debug-index-project(|<_language>)
 	debug-index-project-resolve = 
-		_analysis-debug-index-project-resolve(|<language>)
+		_analysis-debug-index-project-resolve(|<_language>)
 	debug-index-project-resolve-ast:
     	(_, _, _, path, project-path) -> (filename, result)
 	    with
-	    	language := <language>;
+	    	language := <_language>;
 	    	_index-setup(|language, project-path);
 	    	_task-setup(|project-path);
 	    	result-ast := <_index-get-all-partitions; map(\f -> (f, <_index-get-all-in-partition> f)\)>;
@@ -86,21 +83,21 @@ rules // Debugging builders
 			  filename := $[[project-path]/[<dirname> path]/index.project.aterm];
 			  result   := result-ast'
 	debug-index-partition =
-		_analysis-debug-index-partition(|<language>)
+		_analysis-debug-index-partition(|<_language>)
 	debug-index-selection-partition =
-		_analysis-debug-index-partition-resolve(|<language>)
+		_analysis-debug-index-partition-resolve(|<_language>)
 
 	debug-task-project =
-		_analysis-debug-task-project(|<language>)
+		_analysis-debug-task-project(|<_language>)
 	debug-task-partition =
-		_analysis-debug-task-partition(|<language>)
+		_analysis-debug-task-partition(|<_language>)
 	debug-task-selection =
-		_analysis-debug-task-selection(|<language>)
+		_analysis-debug-task-selection(|<_language>)
 		
 	debug-project =
-		_analysis-debug-project(|<language>)
+		_analysis-debug-project(|<_language>)
 	debug-partition =
-		_analysis-debug-partition(|<language>)
+		_analysis-debug-partition(|<_language>)
 		
 	debug-reanalyze = 
-		_analysis-debug-reanalyze(|<language>)
+		_analysis-debug-reanalyze(|<_language>)

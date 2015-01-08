@@ -6,25 +6,22 @@ imports // constructors
 	
 imports // functions
 
+	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
 	trans/lib/origin
 	trans/prettyprinting/pp
-
-imports // generated
-
-	lib/editor-common.generated
 	
 rules // Analysis
 	
 	editor-analyze = _analysis-default-editor
 	
 	analysis-single-default-interface = 
-	  _analysis-single-default(desugar-all, id, pp-message-top|<language>)
+	  _analysis-single-default(desugar-all, id, pp-message-top|<_language>)
 	analysis-multiple-default-interface = 
-	  _analysis-multiple-default(parse-file <+ !(), desugar-all, id, pp-message-top|<language>, <project-path>)
+	  _analysis-multiple-default(_parse-file <+ !(), desugar-all, id, pp-message-top|<_language>, <_project-path>)
 	
-	editor-save = _analysis-save-default(|<language>)
+	editor-save = _analysis-save-default(|<_language>)
 
 rules	//@see http://yellowgrass.org/issue/Spoofax/823
 	

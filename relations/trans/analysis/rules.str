@@ -1,10 +1,9 @@
 module trans/analysis/rules
 
-imports
+imports // constructors
 	
-	include/Relations
-	trans/desugaring/desugar
 	src-gen/signatures/Rules-sig
+	src-gen/signatures/Types-sig
 	
 rules // transform to only match: drop al rhs
 	

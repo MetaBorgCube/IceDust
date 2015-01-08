@@ -8,15 +8,12 @@ imports // constructors
 imports // functions
 
 	trans/_editor/analysis
+	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
 	trans/generating/generate
 	trans/lib/files
 	trans/prettyprinting/pp
-
-imports // generated
-	
-	lib/editor-common.generated
 
 rules // Builders
 	
@@ -56,7 +53,7 @@ rules // Build in steps
 	build(error-handler):
 		(ast, path, project-path, i) -> result
 		with
-			_index-setup(|<language>, project-path);
+			_index-setup(|<_language>, project-path);
 			_task-setup(|project-path);
 
 			if Module(_,_,_,_,_) := ast then
@@ -114,17 +111,17 @@ rules // Build in steps
 	
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
-			sourceDir := $[[<plugin-path>]/lib-java/src/lib];
+			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];
 			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir);
-			<dirname;refresh-workspace-file> targetDir
+			<dirname;_refresh-workspace-file> targetDir
 	
 	compile-java-step:
 		(javaFileName, project-path) -> (exitCode, output, classFileName)
 		with
 			(exitCode, output) := <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
-			<dirname;refresh-workspace-file> $[[project-path]/[javaFileName]]
+			<dirname;_refresh-workspace-file> $[[project-path]/[javaFileName]]
 
 	execute-java-step:
 		classFileName -> (exitCode, output)

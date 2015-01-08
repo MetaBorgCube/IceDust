@@ -9,14 +9,11 @@ imports // constructors
 	
 imports // functions
 
+	trans/api/_generated
 	trans/analysis/rules
 	trans/api/_runtime
 	trans/lib/string
 	trans/prettyprinting/pp
-
-imports // generated
-	
-	lib/editor-common.generated
 	
 rules // Editor services
 	
@@ -25,7 +22,7 @@ rules // Editor services
 		(node, position, ast, path, project-path) -> definition
 		where
 			node' := <try(resolve-child)>node;
-			definition := <_analysis-resolve(|<language>, project-path)> node'
+			definition := <_analysis-resolve(|<_language>, project-path)> node'
 	
 	resolve-child: NaBLHelp(name, _) -> name
 
@@ -48,7 +45,7 @@ rules // Editor services
 	editor-properties:
 		x@(target, position, ast, path, project-path) -> properties
 		where
-    	language := <language>;
+    	language := <_language>;
     	_index-setup(|language, project-path);
     	_task-setup(|project-path)
 		with
@@ -60,7 +57,7 @@ rules // Editor services
 	editor-complete:
 		(node, position, ast, path, project-path) -> proposals
 		where
-			proposals := <_analysis-propose-completions(|<language>, project-path)> ast
+			proposals := <_analysis-propose-completions(|<_language>, project-path)> ast
 	
 	// Formats the program using a pretty printer		
   editor-format:
@@ -83,7 +80,7 @@ rules // target of editor services
 				if [_] := position then // if first level child parent-at-position fails
 					target'' := ast
 				else
-					target'' := <parent-at-position(|position)>ast
+					target'' := <_parent-at-position(|position)>ast
 				end
 			else
 				target'' := target'
@@ -105,7 +102,7 @@ rules // properties for editor services
 	
 	editor-service-properties(|project-path): target -> properties'
 		with
-			properties := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path)>target;
+			properties := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<_language>, project-path)>target;
 			if to-match := <to-match>target then
 				match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>to-match;
 				properties' := <conc>(properties,[("Match", match)])
