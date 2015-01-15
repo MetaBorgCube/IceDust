@@ -26,11 +26,19 @@ rules // Analysis
 rules	//@see http://yellowgrass.org/issue/Spoofax/823
 	
 	pp-message-top = keep-origin((id, strip-annos; pp-message))
+	pp-message = pp-uri-list
 	pp-message : Def(uri) -> <_pp-uri>uri
-	pp-message = not(is-list); (is-string <+ pp-result <+ pp-Relations-string <+ (strip-annos; write-to-string))
+	pp-message = not(is-list); (is-string <+ pp-result <+ (strip-annos; write-to-string))
 	pp-message = map(pp-message); concat-strings
-	// pp-message: list -> $[<div>[<map(pp-message); separate-by(|"<br/>"); concat-strings>list]</div>]
-	// 	where is-list
+	
+	pp-uri-list: a -> b
+		where
+			Hd;get-uri
+		with
+			b := <map(get-uri;_nabl-uri-name);separate-by(|", ");concat-strings>a
+	
+	get-uri = ?URI(_,_)
+	get-uri = ?Def(<id>)
 	
 	pp-result:
 	    result@Result(_) -> msg
