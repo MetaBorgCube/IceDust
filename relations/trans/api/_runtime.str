@@ -13,6 +13,7 @@ imports // generated runtime
 	lib/runtime/index/core
 	lib/runtime/index/legacy
 	lib/runtime/nabl/check
+	lib/runtime/nabl/collect
 	lib/runtime/nabl/constraints
 	lib/runtime/nabl/resolve
 	lib/runtime/nabl/tasks
@@ -70,6 +71,8 @@ rules
 	_nabl-uri-namespace = nabl-uri-namespace
 	_nabl-uri-parent = nabl-uri-parent
 	_nabl-uri-name = nabl-uri-name
+	_nabl-sub-uri(|namespace) = nabl-sub-uri(|namespace)
+	_nabl-collect-def = nabl-collect-def
 	
 	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
 	_nabl-lookup-lexical(|ctx, ns) = nabl-lookup-lexical(|ctx, ns)

@@ -1,0 +1,57 @@
+module trans/lib/search
+
+imports
+	
+	trans/api/_runtime
+
+rules // find a definition ast node for a certain URI
+	
+	uri-to-ast(|target-uri) = optimized-search-single(uri-to-ast-continue(|target-uri),uri-to-ast-succeed(|target-uri))
+			
+	uri-to-ast-succeed(|target-uri): ast-node -> ast-node
+		where
+			// <debug(!1)>"uri-to-ast-succeed";
+			// <debug(!2)>target-uri;
+			// <debug(!3)>ast-node;
+			ast-node-uri := <nabl-get-name;_nabl-uri>ast-node;
+			// <debug(!4)>ast-node-uri;
+			<eq>(ast-node-uri, target-uri)
+			// <debug(!5)>""
+			
+	uri-to-ast-continue(|target-uri): a->b
+		where
+			// <debug>"-1";
+			b := <ast-node-has-uri-which-is-prefix-to(|target-uri)>a
+			// <debug>"-2"
+			
+	uri-to-ast-continue(|target-uri): a->a
+		where
+			// <debug>"-6";
+			<not(_nabl-collect-def)>a
+			// <debug>"-7"
+
+	ast-node-has-uri-which-is-prefix-to(|target-uri): ast-node -> <id>
+		where
+			node-uri := <nabl-get-name;_nabl-uri>ast-node;
+			node-uri-ns := <_nabl-uri-namespace>node-uri;
+			target-uri-chopped := <_nabl-sub-uri(|node-uri-ns)>target-uri;
+			<eq>(target-uri-chopped, node-uri)
+	
+	nabl-get-name = fail
+
+rules // optimized search
+	
+	optimized-search-single(continue,succeed): a -> a
+		where
+			succeed
+			
+	optimized-search-single(continue,succeed): a -> result
+		where
+			// <debug>"7";
+			<continue>a;
+			// <debug>"8";
+			arguments := <get-arguments>a;
+			// <debug(!"9")>arguments;
+			result := <getfirst(optimized-search-single(continue,succeed))>arguments
+			// <debug>"0"
+	
