@@ -34,6 +34,6 @@ context-free syntax // entity members
 
 context-free syntax // specific references
 	
-	EntityRef.EntityRef 				= <<ID>>
-	AttributeRef.AttributeRef   = <<ID>>
-	RoleRef.RoleRef							= <<ID>>
+	EntityRef.EntityRef 				= ID
+	AttributeRef.AttributeRef   = ID
+	RoleRef.RoleRef							= ID

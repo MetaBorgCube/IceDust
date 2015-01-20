@@ -1,18 +1,8 @@
 module Relations-Completions
 
-//TODO: enable completions @see http://yellowgrass.org/issue/SDF/78
+imports 
 
-// imports 
-
-	// src-gen/completions/Common-esv
-	// src-gen/completions/Data-esv
-	// src-gen/completions/Execute-esv
-	// src-gen/completions/Expressions-esv
-	// src-gen/completions/Model-esv
-	// src-gen/completions/Modules-esv
-	// src-gen/completions/Relations-esv
-	// src-gen/completions/Rules-esv
-	// src-gen/completions/Types-esv
+	src-gen/completions/Relations-esv
 
 completions
                                                                    
@@ -40,4 +30,7 @@ completions
                                          
   completion proposer                  : editor-complete
                                          
-  // completion trigger                   : ":"
+  completion trigger                   : ":"
+  completion trigger                   : "."
+  
+  
