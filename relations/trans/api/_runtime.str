@@ -2,31 +2,51 @@ module trans/api/_runtime
 
 imports // generated runtime
 		
-	// ...
+	lib/runtime/analysis/complete	
+	lib/runtime/analysis/debug
+	lib/runtime/analysis/legacy
+	lib/runtime/analysis/resolve
+	lib/runtime/editor/annotations	
+	lib/runtime/editor/origins
+	lib/runtime/editor/outline-library
+	lib/runtime/editor/properties
+	lib/runtime/index/core
+	lib/runtime/index/legacy
+	lib/runtime/nabl/check
+	lib/runtime/nabl/constraints
+	lib/runtime/nabl/resolve
+	lib/runtime/nabl/tasks
+	lib/runtime/nabl/query
+	lib/runtime/nabl/uri
+	lib/runtime/task/core
+	lib/runtime/task/insert
+	lib/runtime/task/messages
+	lib/runtime/task/tasks
+	lib/runtime/types/query
 
-imports // custom runtime
-	
-	lib/analysis/complete	
-	lib/analysis/debug
-	lib/analysis/legacy
-	lib/analysis/resolve
-	lib/editor/annotations	
-	lib/editor/origins
-	lib/editor/outline-library
-	lib/editor/properties
-	lib/index/core
-	lib/index/legacy
-	lib/nabl/check
-	lib/nabl/constraints
-	lib/nabl/resolve
-	lib/nabl/tasks
-	lib/nabl/query
-	lib/nabl/uri
-	lib/task/core
-	lib/task/insert
-	lib/task/messages
-	lib/task/tasks
-	lib/types/query
+// imports // custom runtime
+// 	
+// 	lib/analysis/complete	
+// 	lib/analysis/debug
+// 	lib/analysis/legacy
+// 	lib/analysis/resolve
+// 	lib/editor/annotations	
+// 	lib/editor/origins
+// 	lib/editor/outline-library
+// 	lib/editor/properties
+// 	lib/index/core
+// 	lib/index/legacy
+// 	lib/nabl/check
+// 	lib/nabl/constraints
+// 	lib/nabl/resolve
+// 	lib/nabl/tasks
+// 	lib/nabl/query
+// 	lib/nabl/uri
+// 	lib/task/core
+// 	lib/task/insert
+// 	lib/task/messages
+// 	lib/task/tasks
+// 	lib/types/query
 	
 rules
 	

@@ -105,7 +105,8 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target depends="copy-lib-files,link-lib-files,spoofaximp.default.jar" name="all"/>
+		<!-- <target depends="copy-lib-files,link-lib-files,spoofaximp.default.jar" name="all"/> -->
+    <target depends="spoofaximp.default.jar" name="all"/>
 <target depends="generate-sources-java" name="generate-sources"/>
   <target depends="package-java" name="package"/>
 </project>
