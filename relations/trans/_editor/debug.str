@@ -9,6 +9,7 @@ imports // functions
 	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
+	trans/lib/search
 	trans/prettyprinting/pp
 	
 rules // Debugging builders
@@ -101,3 +102,21 @@ rules // Debugging builders
 		
 	debug-reanalyze = 
 		_analysis-debug-reanalyze(|<_language>)
+		
+rules // test builders
+
+  test-optimized-search:
+    (selected, position, ast, path, project-path) -> (filename, result)
+	    with
+	    	language := <_language>;
+	    	_index-setup(|language, project-path);
+	    	_task-setup(|project-path)
+		  with
+	    	ext      := <get-extension> path;
+	      filename := <guarantee-extension(|"search.aterm")> path;
+	      if target-uri:= <_nabl-uri <+ nabl-get-name;_nabl-uri>selected then
+					result := <uri-to-ast(|ast)>target-uri
+				else
+					<debug(!"This doesnt have a uri ")>selected;
+					result := selected
+				end
