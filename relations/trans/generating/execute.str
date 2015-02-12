@@ -1,15 +1,38 @@
 module trans/generating/execute
 
-imports
+imports // constructors
 
 	lib/java/Java
-	include/Relations
+	src-gen/signatures/execute-sig
+	src-gen/signatures/modules-sig
+
+imports // functions
 
 	trans/generating/expressions
 
 rules
 
+	to-java-executable(err): CallRule(x_name, params) -> result
+  	with
+  		(stms*, exp*) := <to-java-execute-params(err|0)>params
+  	with
+  		result := bstm* |[
+  			{
+  				~stms*
+	  			x_name(~exp*);
+  			}
+  		]|
+  		
+  to-java-execute-params(err|i): [] -> ([],[])
+	to-java-execute-params(err|i): [e|es] -> (<conc>(stms,stmss), [exp|exps])
+		with
+			(stms, exp) := <exp-to-java-stm(err|i)>e;
+			j := <add>(i, <length>stms);
+			(stmss, exps) := <to-java-execute-params(err|j)>es
+
   to-java-executable(err): exp -> result
+  	where
+  		not(CallRule(_,_) := exp)
   	with
   		(stms*, exp') := <exp-to-java-stm(err|0)>exp
   	with

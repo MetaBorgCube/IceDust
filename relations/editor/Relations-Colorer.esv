@@ -8,9 +8,17 @@ colorer Entity and Role namespaces
   _.EntityRef: 0 64 128 italic bold
   _.RoleRef: 0 64 128 italic
 
+	_.LHSTsHelp: 0 64 128 italic
+	_.NHSTsHelp: 0 64 128 italic
+	_.RHSTsHelp: 0 64 128 italic
+	_.LHSNode: 0 0 0
+	_.NHSNode: 0 0 0
+	_.RHSNode: 0 0 0
+	
 colorer Multiplicity
 
 	Multiplicity: 160 0 0 bold
+	MultiplicityZ:160 0 0 bold
 
 colorer Primitive types
-	LitVal.String: blue
+	LitVal.String: 0 0 255 

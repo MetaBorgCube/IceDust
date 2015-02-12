@@ -28,11 +28,12 @@ context-free syntax // entity members
 
 	Role.Role										= <<ID> <Multiplicity> <ID?> <Inverse?>>
 	Inverse											= <\<- <ID>>
+	//TODO: test sdf2 version          ID Multiplicity ID? ("<-" ID)? -> Role {"Role"}
 
-		Shortcut.Shortcut						= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
+	Shortcut.Shortcut						= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
 
 context-free syntax // specific references
 	
-	EntityRef.EntityRef 				= <<ID>>
-	AttributeRef.AttributeRef   = <<ID>>
-	RoleRef.RoleRef							= <<ID>>
+	EntityRef.EntityRef 				= ID
+	AttributeRef.AttributeRef   = ID
+	RoleRef.RoleRef							= ID

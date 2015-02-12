@@ -1,10 +1,6 @@
 module trans/lib/string
 
-imports
-
-	lib/editor-common.generated
-
-rules 
+rules // truncating
 	
 	truncate-string(|maxlen): s -> s'
 		with
@@ -14,3 +10,32 @@ rules
 			else
 				s' := s
 			end
+
+rules // casing
+	
+	first-is-upper = explode-string;Hd;is-upper
+	
+	lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
+	lcfirst = string-as-chars(lcfirst-chars)
+
+	ucfirst-chars: [c|rest] -> [<to-upper>c|rest]
+	ucfirst = string-as-chars(ucfirst-chars)
+
+rules // prepend indefinite article
+	
+	string-prep-a-an = where(string-starts-with-vowel);    ?a;!$[an [a]]
+	string-prep-a-an = where(string-starts-with-consonant);?b;!$[a [b]]
+	
+	string-starts-with-vowel =
+		string-starts-with(|"a") <+
+		string-starts-with(|"A") <+
+		string-starts-with(|"e") <+
+		string-starts-with(|"E") <+
+		string-starts-with(|"i") <+
+		string-starts-with(|"I") <+
+		string-starts-with(|"o") <+
+		string-starts-with(|"O") <+
+		string-starts-with(|"u") <+
+		string-starts-with(|"U")
+	
+	string-starts-with-consonant = not(string-starts-with-vowel)

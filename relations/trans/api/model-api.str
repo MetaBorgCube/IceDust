@@ -1,0 +1,79 @@
+module trans/api/model-api
+
+imports // constructors
+
+	src-gen/signatures/Model-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/lib/origin
+
+rules // query
+	
+	entity-get-type = ?Entity(<id>,_,_)
+	entity-get-name = ?Entity(_,<id>,_)
+	entity-get-members = ?Entity(_, _, <id>)
+
+	attr-get-name = ?Attribute(<id>, _, _, _)
+	attr-get-type = ?Attribute(_, <id>, _, _)
+	attr-get-mult = ?Attribute(_, _, <id>, _)
+
+	role-get-type           = ?Role(NaBLHelp(<id>, _), _, _,_)
+	role-get-type           = ?Role(<id>, _, _, _)
+	role-get-mult           = ?Role(_, <id>, _, _)
+	role-get-name           = ?Role(_, _, <id>, _)
+	role-get-inv            = ?Role(_, _, _, <id>)
+
+	shortcut-get-roles: Shortcut(NaBLHelp(RoleRef(role1),_),_,NaBLHelp(RoleRef(role2),_),_) -> (role1, role2)
+	shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1, role2)
+	shortcut-get-role1 = shortcut-get-roles;Fst
+	shortcut-get-role2 = shortcut-get-roles;Snd
+	shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
+	
+	shortcut-get-shortcuts: Shortcut(_, shortcut1, _, shortcut2) -> (shortcut1, shortcut2)
+	shortcut-get-shortcut1 = shortcut-get-shortcuts;Fst
+	shortcut-get-shortcut2 = shortcut-get-shortcuts;Snd
+
+	shortcut-get-types: Shortcut(NaBLHelp(_,type1),_,NaBLHelp(_,type2),_) -> (type1, type2)
+	shortcut-get-type1 = shortcut-get-types;Fst
+	shortcut-get-type2 = shortcut-get-types;Snd
+
+rules // properties
+	
+	is-entity = ?Entity(_,_,_)
+	
+	entity-is-entitytype = entity-get-type;?EntityType()
+	
+	is-attr = ?Attribute(_, _, _, _)
+	
+	attr-has-no-mult        = ?Attribute(_, _, None(), _)
+	
+	is-role = ?Role(_, _, _, _)
+	
+	role-has-no-name        = ?Role(_, _, None(), _)
+	role-has-no-inversename = ?Role(_, _, _, None())
+	
+	is-shortcut = ?Shortcut(_, _, _, _)
+	
+rules // manipulation
+
+	entity-set-members(|members) = entity-set-members(!members)
+	
+	entity-set-members(members) = Entity(id, id, members)
+
+	attr-set-mult(|mult)                = Attribute(id, id, !mult, id)
+	
+	role-set-type(|type)								= role-set-type(!type)
+	role-set-name(|name)                = Role(id, id, !name, id)
+	role-set-inversename(|inversename)  = Role(id, id, id, !inversename)
+	
+	role-set-type(type)									= Role(type, id, id, id)
+
+	role-dup-type = role-set-type(\a -> NaBLHelp(a, a)\)
+
+rules // creation
+	
+	create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)
+	create-shortcut(|role1, type1, shortcut1, role2, type2, shortcut2) = !Shortcut(NaBLHelp(<custom-origin(|role1)>RoleRef(role1), type1), shortcut1, NaBLHelp(<custom-origin(|role2)>RoleRef(role2), type2), shortcut2)
+	

@@ -1,0 +1,12 @@
+module trans/api/_runtime-constructors
+
+signature constructors // copy from runtime library
+    
+	Result : TaskID -> Result
+
+  Def          : URI    -> Key
+  Alias        : URI    -> Key
+  InverseAlias : URI    -> Key
+  Use          : Result -> Key
+  
+  URI          : Language * List(Segment)     -> URI

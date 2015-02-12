@@ -1,8 +1,8 @@
 module trans/lib/origin
 
-imports
+imports // functions
 
-	lib/runtime/editor/origins
+	trans/api/_runtime
 	trans/lib/debug
 
 rules // rewrite terms to have an origin
@@ -10,11 +10,11 @@ rules // rewrite terms to have an origin
 	custom-origin(strategy|custom-origin): term -> result
 		with
 			r := <strategy>term;
-			result := <origin-track-forced(custom-origin-internal(|r))>custom-origin
+			result := <_origin-track-forced(custom-origin-internal(|r))>custom-origin
 			
 	custom-origin(|custom-origin): term -> result
 		with
-			result := <origin-track-forced(custom-origin-internal(|term))>custom-origin
+			result := <_origin-track-forced(custom-origin-internal(|term))>custom-origin
 	
 	custom-origin-internal(|term) : custom-origin -> term
 	
@@ -33,3 +33,18 @@ rules // origin for lists
       <is-list> list;
      	(start-offset, _) := <Hd; origin-offset> list;
      	(_, end-offset)   := <last; origin-offset> list
+
+rules //  short alias
+	
+	keep-origin(a) = _origin-track-forced(a)
+
+rules // set the length of an origin
+	
+	set-origin-length(|l): x -> x'
+		with
+      (a, b, c, d, e) := <_origin-location-offset>x;
+      e' := <add> (d, <dec>l);
+      <_origin-location-offset-set(|(a, b, c, d, e'))>x;
+      random := <next-random>;
+      x' := <_add-annotation(|random);_remove-annotations(?random)>x //Dirty hack to propagate the origin-location-offset to origin-offset
+			

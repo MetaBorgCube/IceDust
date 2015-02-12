@@ -1,0 +1,16 @@
+module trans/api/_generated
+
+imports // generated language file
+		
+	lib/editor-common.generated
+	
+rules
+	
+	_language = language
+	_project-path = project-path
+	_plugin-path = plugin-path
+	
+	_parse-file = parse-file
+	_refresh-workspace-file = refresh-workspace-file
+	
+	_parent-at-position(|position) = parent-at-position(|position)

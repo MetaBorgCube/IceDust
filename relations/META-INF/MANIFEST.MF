@@ -3,13 +3,13 @@ Eclipse-RegisterBuddy: org.strategoxt.imp.runtime
 Bundle-SymbolicName: Relations; singleton:=true
 Export-Package: Relations
 Bundle-Name: Relations Plug-in
-Bundle-Version: 0.2.4
-Require-Bundle:  org.spoofax.jsglr, org.eclipse.ui.workbench.textedito
- r,org.eclipse.core.runtime, org.strategoxt.strj, org.eclipse.jface.te
- xt, org.eclipse.core.resources, org.eclipse.ui, org.eclipse.ui.editor
- s, org.eclipse.imp.runtime, org.strategoxt.imp.runtime, lpg.runtime,o
- rg.spoofax.terms,org.spoofax.interpreter.core,org.spoofax.jsglr,org.s
- poofax.interpreter.externaldeps,org.strategoxt.strj,org.strategoxt.im
+Bundle-Version: 0.2.5
+Require-Bundle:  org.strategoxt.strj,org.spoofax.interpreter.core, org
+ .eclipse.jface.text, org.eclipse.core.resources, org.eclipse.ui,org.s
+ trategoxt.strj,org.spoofax.terms, org.eclipse.ui.editors,org.spoofax.
+ jsglr, org.eclipse.imp.runtime, lpg.runtime, org.spoofax.jsglr, org.e
+ clipse.ui.workbench.texteditor,org.eclipse.core.runtime,org.spoofax.i
+ nterpreter.externaldeps, org.strategoxt.imp.runtime,org.strategoxt.im
  p.runtime
 Bundle-ManifestVersion: 2
 Bundle-Activator: Relations.Activator

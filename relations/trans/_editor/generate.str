@@ -1,17 +1,19 @@
 module trans/_editor/generate
 
-imports
+imports // constructors
+
+	src-gen/signatures/modules-sig
+	trans/api/_runtime-constructors
 	
-	lib/editor-common.generated
-	lib/runtime/index/-
-	lib/runtime/task/-
-	
+imports // functions
+
+	trans/_editor/analysis
+	trans/api/_generated
+	trans/api/_runtime
+	trans/desugaring/desugar
 	trans/generating/generate
 	trans/lib/files
-	
-	include/Relations
-	trans/desugaring/desugar
-	trans/_editor/analysis
+	trans/prettyprinting/pp
 
 rules // Builders
 	
@@ -51,15 +53,15 @@ rules // Build in steps
 	build(error-handler):
 		(ast, path, project-path, i) -> result
 		with
-			index-setup(|<language>, project-path);
-			task-setup(|project-path);
+			_index-setup(|<_language>, project-path);
+			_task-setup(|project-path);
 
 			if Module(_,_,_,_) := ast then
 				// log(|Info(),"Phase 0: Analyzing");
 				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
 			else
 				ast' := ast;
-				error* := <task-get-messages(|$[[project-path]/[path]])>
+				error* := <_task-get-messages(|$[[project-path]/[path]])>
 			end;
 			
 			if not([] := error*) then
@@ -109,17 +111,17 @@ rules // Build in steps
 	
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
-			sourceDir := $[[<plugin-path>]/lib-java/src/lib];
+			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];
 			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir);
-			<dirname;refresh-workspace-file> targetDir
+			<dirname;_refresh-workspace-file> targetDir
 	
 	compile-java-step:
 		(javaFileName, project-path) -> (exitCode, output, classFileName)
 		with
 			(exitCode, output) := <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
 			classFileName := <guarantee-extension(|"class")> javaFileName;
-			<dirname;refresh-workspace-file> $[[project-path]/[javaFileName]]
+			<dirname;_refresh-workspace-file> $[[project-path]/[javaFileName]]
 
 	execute-java-step:
 		classFileName -> (exitCode, output)

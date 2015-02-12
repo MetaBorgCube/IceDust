@@ -1,0 +1,38 @@
+module trans/api/data-api
+
+imports // constructors
+
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Modules-sig
+	src-gen/signatures/Model-sig
+
+imports // functions
+		
+	trans/lib/origin
+
+rules // query
+	
+	datadef-get-data = ?DataDef(<id>)
+	
+	entityinstance-get-type = ?EntityInstance(EntityRef(<id>), _, _, _)
+	entityinstance-get-name = ?EntityInstance(_, <id>, _, _)
+	entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>, _)
+	entityinstance-get-attrvalues = ?EntityInstance(_, _, _, <id>)
+	
+	rolevalue-get-role = ?RoleValue(RoleRef(<id>), _)
+	
+	attributevalue-get-attr = ?AttributeValue(AttributeRef(<id>),_)
+
+rules // properties
+	
+	is-datadef = ?DataDef(_)
+	
+	is-entityinstance = ?EntityInstance(_, _, _, _)
+
+	entityinstance-has-no-name = ?EntityInstance(_, None(), _, _)
+
+rules // manipulate
+	
+	datadef-set-data(|op) = DataDef(!op)
+	
+	entityinstance-set-name(|name) = EntityInstance(id, !name, id, id)

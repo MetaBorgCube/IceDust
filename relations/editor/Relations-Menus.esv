@@ -53,3 +53,4 @@ menus
     action: "Execute Java"         = execute-java
     action: "Cleanup Generated Code" = cleanup-generated-files
 
+		action: "test-optimized-search" = test-optimized-search (openeditor)

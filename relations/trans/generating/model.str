@@ -1,14 +1,18 @@
 module trans/generating/model
 
-imports
+imports // constructors
 
+	trans/api/constructors
 	lib/java/Java
-	lib/runtime/nabl/-
-	include/Relations
+	src-gen/signatures/model-sig
+	src-gen/signatures/modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/api/_runtime
 	trans/naming/names
 	trans/naming/_notNaBL
-	trans/desugaring/desugar
-	
 	trans/generating/expressions
 	trans/generating/types
 
@@ -32,14 +36,14 @@ rules
 		x_class := name;
 		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles
 	with
-		inverses := <nabl-get-child-definitions(|NablNsInverse())> name;
+		inverses := <_nabl-get-child-definitions(|NablNsInverse())> name;
 		origin-roles := <map(get-origin-role)> inverses;
 		participateJava* := <map(to-java-participate(err))> origin-roles;
 		participateJavaInit* := <map(to-java-participate-init(err))> origin-roles
 	
 	to-java-participate(err): roleName -> result
 		with
-			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
 			multiplicity := <get-multiplicity-inverse>roleName
@@ -52,7 +56,7 @@ rules
 
 	to-java-participate-init(err): roleName -> result
 		with
-			relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
 			x_field := $[[relationName]_[roleName]];
 			x_type := relationName;
 			multiplicity := <get-multiplicity-inverse>roleName

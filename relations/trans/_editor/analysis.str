@@ -1,41 +1,50 @@
 module trans/_editor/analysis
 
-imports
+imports // constructors
 	
-	lib/editor-common.generated
-	lib/runtime/analysis/legacy
-	lib/runtime/task/core
-	lib/runtime/editor/properties
-	lib/runtime/nabl/entries
+	trans/api/_runtime-constructors
+	
+imports // functions
 
+	trans/api/_generated
+	trans/api/_runtime
 	trans/desugaring/desugar
+	trans/lib/origin
 	trans/prettyprinting/pp
 	
 rules // Analysis
 	
-	editor-analyze = analysis-default-editor
+	editor-analyze = _analysis-default-editor
 	
 	analysis-single-default-interface = 
-	  analysis-single-default(desugar-all, id, pp-message-top|<language>)
+	  _analysis-single-default(desugar-all, id, pp-message-top|<_language>)
 	analysis-multiple-default-interface = 
-	  analysis-multiple-default(parse-file <+ !(), desugar-all, id, pp-message-top|<language>, <project-path>)
+	  _analysis-multiple-default(_parse-file <+ !(), desugar-all, id, pp-message-top|<_language>, <_project-path>)
 	
-	editor-save = analysis-save-default(|<language>)
+	editor-save = _analysis-save-default(|<_language>)
 
 rules	//@see http://yellowgrass.org/issue/Spoofax/823
 	
-	pp-message-top = origin-track-forced((id, strip-annos; pp-message))
-	pp-message : Def(uri) -> <pp-uri>uri
-	pp-message = not(is-list); (is-string <+ pp-result <+ pp-Relations-string <+ (strip-annos; write-to-string))
+	pp-message-top = keep-origin((id, strip-annos; pp-message))
+	pp-message = pp-uri-list
+	pp-message : Def(uri) -> <_pp-uri>uri
+	pp-message = not(is-list); (is-string <+ pp-result <+ (strip-annos; write-to-string))
 	pp-message = map(pp-message); concat-strings
-	// pp-message: list -> $[<div>[<map(pp-message); separate-by(|"<br/>"); concat-strings>list]</div>]
-	// 	where is-list
+	
+	pp-uri-list: a -> b
+		where
+			Hd;get-uri
+		with
+			b := <map(get-uri;_nabl-uri-name);separate-by(|", ");concat-strings>a
+	
+	get-uri = ?URI(_,_)
+	get-uri = ?Def(<id>)
 	
 	pp-result:
 	    result@Result(_) -> msg
 	    where
-	       if <task-has-failed> result then
+	       if <_task-has-failed> result then
 	         msg := "fail"
 	       else
-	         msg := <task-get-results; map(pp-message); separate-by(|" or "); concat-strings> result
+	         msg := <_task-get-results; map(pp-message); separate-by(|" or "); concat-strings> result
 	       end

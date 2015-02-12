@@ -1,10 +1,24 @@
 module trans/naming/names
 
-imports
+imports // constructors
 
-	include/Relations
-	trans/desugaring/desugar
-	trans/naming/_notNaBL
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Execute-sig
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
+	src-gen/signatures/Types-sig
+	trans/api/constructors
+	trans/desugaring/constructors
+	
+// imports // use custom runtime libraries
+// 
+//   lib/nabl/-
+//   lib/task/-
+//   lib/properties/-
+//   lib/types/-
+//   lib/relations/-
+//   lib/editor/-
 	
 namespaces
 	
@@ -17,6 +31,7 @@ namespaces
 	Inverse
 	Shortcut
 	This
+	ThisForAttr
 
 properties
 
@@ -155,3 +170,5 @@ binding rules // references
 	
 	This() :
 		refers to This This()
+
+

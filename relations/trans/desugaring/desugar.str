@@ -1,12 +1,15 @@
 module trans/desugaring/desugar
 
-imports
-	include/Relations
-	trans/lib/origin
-	lib/runtime/editor/origins
+imports // constructors
 	
+	src-gen/signatures/Modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
 	trans/desugaring/nablhelp
 	trans/desugaring/omitted
+	trans/lib/origin
 	
 rules
 
@@ -17,19 +20,11 @@ rules
 		desugar-done;
 		warning-on-missing-origin
 
-signature constructors
-	
-	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
-	
-	NaBLHelp : RoleRef * ID -> NaBLHelp
-	
-	Ext : ID -> Ext
-
 rules // general
 
 	desugar-somes = bottomup(try(desugar-some))
 	desugar-some: Some(a) -> a
 
-	desugar-done = origin-track-forced(desugar-done2)
+	desugar-done = keep-origin(desugar-done2)
 	desugar-done2: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
 

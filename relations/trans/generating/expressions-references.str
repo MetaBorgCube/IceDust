@@ -1,25 +1,23 @@
 module trans/generating/expressions-references
 
-imports
+imports // constructors
 	
-	lib/runtime/nabl/interface
-	lib/runtime/nabl/uri
-	lib/runtime/types/query
-
-	include/Relations
 	lib/java/Java
+	src-gen/signatures/expressions-sig
+
+imports // functions
 	
+	trans/api/_runtime
 	trans/naming/names
-	trans/generating/expressions
 	trans/generating/types
 
 rules // member access
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
+			NablNsAttribute() := <_nabl-uri;_nabl-uri-namespace>name
 		with
-			x_expType := <get-type>e1;
+			x_expType := <_get-type>e1;
 			x_getter := $[get_[name]];
 			(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
 			refty := <java-type>e;
@@ -34,14 +32,14 @@ rules // member access
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+			NablNsRole() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			x_call := $[[name]_out];
 			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
 			refty := <java-type>e;
 			j := <add>(i, <length>stms*);
 			x_var := $[var[<inc>j]];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> name
 		with
 			stms := bstm* |[
 				~stms*
@@ -51,7 +49,7 @@ rules // member access
 	
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+			NablNsInverse() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			roleName := <get-origin-role>name;
 			x_call := $[[roleName]_in];
@@ -59,7 +57,7 @@ rules // member access
 			refty := <java-type>e;
 			j := <add>(i, <length>stms*);
 			x_var := $[var[<inc>j]];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName
 		with
 			stms := bstm* |[
 				~stms*
@@ -69,7 +67,7 @@ rules // member access
 	
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
+			NablNsShortcut() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			roleName := <get-origin-role>name;
 			roleName2 := <get-origin-role2>name;
@@ -79,7 +77,7 @@ rules // member access
 			refty := <java-type>e;
 			j := <add>(i, <length>stms*);
 			x_var := $[var[<inc>j]];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName
 		with
 			stms := bstm* |[
 				~stms*
@@ -92,11 +90,11 @@ rules // direct references
 
 	exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
 		where
-			NablNsEntityInstance() := <nabl-uri;nabl-uri-namespace>x_entityName
+			NablNsEntityInstance() := <_nabl-uri;_nabl-uri-namespace>x_entityName
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-			NablNsAttribute() := <nabl-uri;nabl-uri-namespace>name
+			NablNsAttribute() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			x_getter := $[get_[name]];
 			refty := <java-type>e;
@@ -109,10 +107,10 @@ rules // direct references
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-			NablNsRole() := <nabl-uri;nabl-uri-namespace>name
+			NablNsRole() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			x_call := $[[name]_out];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> name;
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> name;
 			refty := <java-type>e;
 			x_var := $[var[<inc>i]]
 		with
@@ -123,11 +121,11 @@ rules // direct references
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-			NablNsInverse() := <nabl-uri;nabl-uri-namespace>name
+			NablNsInverse() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			roleName := <get-origin-role>name;
 			x_call := $[[roleName]_in];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
 			refty := <java-type>e;
 			x_var := $[var[<inc>i]]
 		with
@@ -138,13 +136,13 @@ rules // direct references
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-			NablNsShortcut() := <nabl-uri;nabl-uri-namespace>name
+			NablNsShortcut() := <_nabl-uri;_nabl-uri-namespace>name
 		with
 			roleName := <get-origin-role>name;
 			roleName2 := <get-origin-role2>name;
 			x_call := $[[roleName]_in];
 			x_call2 := $[[roleName2]_out];
-			x_relationName := <nabl-uri;nabl-uri-parent;nabl-uri-name> roleName;
+			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
 			refty := <java-type>e;
 			x_var := $[var[<inc>i]]
 		with

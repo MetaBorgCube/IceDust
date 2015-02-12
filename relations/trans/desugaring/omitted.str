@@ -1,65 +1,88 @@
 module trans/desugaring/omitted
 
-imports
+imports // constructors
+
+	src-gen/signatures/Types-sig
+
+imports // functions
 	
-	lib/runtime/editor/origins
+	trans/api/model-api
+	trans/api/rules-api
+	trans/api/data-api
 	trans/lib/origin
 	trans/lib/new-name
-	include/Relations
-	trans/desugaring/desugar
+	trans/lib/string
+	trans/lib/traverse
 
 rules
 	
 	generate-omitted =
 		bottomup(try(omitted1));
-		try(sometd(omitted2))
+		bottomup(try(omitted2))
 	
 	omitted1 = attr-generate-mult
 	omitted1 = role-generate-name
 	omitted1 = entity-generate-inverse-names
 	omitted1 = datadef-generate-entity-names
+	omitted1 = param-generate-mult
+	omitted1 = subrule-generate-mult
+	omitted1 = node-move-name-to-type
 	
-	omitted2 = entity-generate-shortcuts // requires omitted1 to be done first
+	omitted2 = entity-generate-shortcuts        // requires role-generate-name
 
 rules // generate omitted multiplicities
 
-	attr-generate-mult: Attribute(a,b,None(),c) -> Attribute(a,b,One(),c)
+	attr-generate-mult: attr -> attr'
+		where	attr-has-no-mult
+		with attr':= <attr-set-mult(|One())>attr
 
 rules // generate omitted role names
 
-	role-generate-name: Role(e, multiplicity, None(), inverse) -> Role(e, multiplicity, <origin-track-forced(lcfirst)>e, inverse)
-
+	role-generate-name: role -> role'
+		where role-has-no-name
+		with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
+			
 rules // generate omitted inverse names
 	
-	entity-generate-inverse-names: Entity(a,entityName,roles) -> Entity(a,entityName,roles')
-		with
-			roles' := <map(try(generate-inverse-name(|entityName)))>roles
+	entity-generate-inverse-names:
+		e -> <entity-set-members(map(try(generate-inverse-name(|<entity-get-name>e))))>e
+			where is-entity
 
-	generate-inverse-name(|entityName): Role(a, b, c, None()) -> Role(a, b, c, <custom-origin(lcfirst|a)>entityName)
+	generate-inverse-name(|entityName): role -> role'
+		where role-has-no-inversename
+		with role' := <role-set-inversename(|<custom-origin(lcfirst|<role-get-type>role)>entityName)>role
 
 rules	// generate omitted entity names
 
-	datadef-generate-entity-names: DataDef(c) -> DataDef(<new-name-map(try(generate-entity-name));custom-origin(|c)>c)
-	
-	generate-entity-name: (ei@EntityInstance(er@EntityRef(e-ty), None(), r, a), history) -> (<custom-origin(|ei)>EntityInstance(er, <custom-origin(|e-ty)>e, r, a), history')
+	datadef-generate-entity-names: d -> <datadef-set-data(|c'')>d
+		where
+			is-datadef
 		with
-			(e, history') := <new-name>(<lcfirst>e-ty, history)
+			c := <datadef-get-data>d;
+			(c', _) := <map-fold(try(generate-entity-name))>(c, []);
+			c'' := <custom-origin(|c)>c'
+
+	generate-entity-name: (ei, history) -> (ei', history')
+		where
+			<entityinstance-has-no-name>ei
+		with
+			(e, history') := <new-name>(<entityinstance-get-type;lcfirst>ei, history);
+			ei' := <entityinstance-set-name(|<custom-origin(|<entityinstance-get-type>ei)>e)>ei
 	
 rules // generate omitted shortcuts
 
-	entity-generate-shortcuts: Entity(a,entityName,members) -> Entity(a,entityName,members'')
+	entity-generate-shortcuts: e -> <entity-set-members(|members'')>e
+		where
+			is-entity
 		with
-			roles 				:= <filter(role-name);origin-track-forced(string-sort)>members;
-			shortcuts			:= <filter(shortcut-roles)>members;
+			members				:= <entity-get-members>e;
+			roles 				:= <filter(role-get-name);keep-origin(string-sort)>members;
+			shortcuts			:= <filter(shortcut-get-roles-ordered)>members;
 			shortcuts-all := <join-half>roles;
 			shortcuts-add := <diff>(shortcuts-all, shortcuts);
-			members-new		:= <map(create-shortcut)>shortcuts-add;
+			members-new		:= <map(create-shortcut-with-same-name)>shortcuts-add;
 			members'			:= <conc>(members,members-new);
 			members''			:= <custom-origin(|members)>members'
-			
-	role-name: Role(_, _, name, _) -> name
-	
-	shortcut-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> <string-sort;ListToTuple>[role1,role2]
 	
 	join-half: [] -> []
 	
@@ -70,8 +93,24 @@ rules // generate omitted shortcuts
 			
 	pair-with(|h): t -> (h,t)
 
-	create-shortcut: (role1,role2) -> Shortcut(rr1, role2, rr2, role1)
-		with
-			rr1 := <custom-origin(|role1)>RoleRef(role1);
-			rr2 := <custom-origin(|role2)>RoleRef(role2)
+	create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
 
+rules // generate omitted multiplicities
+
+	param-generate-mult: p -> <param-set-mult(|One())>p
+		where param-has-no-mult
+
+	// subrule-generate-mult: SubRule(None(), a) -> SubRule(One(), a)
+	subrule-generate-mult: s -> <subrule-set-mult(|One())>s
+		where subrule-has-no-mult
+	
+rules // move name to type if capitalized
+	
+	node-move-name-to-type: node -> node''
+		where
+			node-has-no-type;
+			node-var := <node-get-varname>node;
+			<first-is-upper>node-var
+		with
+			node' := <node-set-type(|node-var)>node;
+			node'' := <node-set-varname(|None())>node'

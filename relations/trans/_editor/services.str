@@ -1,25 +1,19 @@
 module trans/_editor/services
 
-imports
-	libstratego-gpp
+imports // constructors
+
+	src-gen/signatures/expressions-sig
+	src-gen/signatures/types-sig
+	trans/api/_runtime-constructors
+	trans/desugaring/constructors
 	
-	lib/editor-common.generated
-	lib/runtime/editor/properties
-	lib/runtime/analysis/-
-	lib/runtime/types/-
-	lib/runtime/nabl/-
-	lib/runtime/task/-
-	lib/runtime/index/-
-	lib/runtime/properties/-
-	
-	lib/runtime/editor/interop
-	
-	trans/desugaring/desugar
-	trans/prettyprinting/pp
-	trans/naming/names
+imports // functions
+
+	trans/api/_generated
+	trans/analysis/rules
+	trans/api/_runtime
 	trans/lib/string
-	
-	include/Relations
+	trans/prettyprinting/pp
 	
 rules // Editor services
 	
@@ -27,13 +21,55 @@ rules // Editor services
 	editor-resolve:
 		(node, position, ast, path, project-path) -> definition
 		where
-			definition := <analysis-resolve(|<language>, project-path)> node
+			node' := <try(resolve-child)>node;
+			definition := <_analysis-resolve(|<_language>, project-path)> node'
+	
+	resolve-child: NaBLHelp(name, _) -> name
 
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
 	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
-		(target, position, ast, path, project-path) -> hoverinfo
+		x@(target, position, ast, path, project-path) -> $[[warning][hoverinfo]]
+		with
+			if Def(_) := target then
+				warning := "<b>Warning showing hover info of Definition instead of Use</b><br/><br/>"
+			else
+				warning := ""
+			end
+		with
+			target' := <editor-service-target>x;
+			hoverinfo := <editor-service-properties(|project-path);filter(_not-none);_properties-to-html>target'
+
+	// Gathers the properties for the properties view.
+	editor-properties:
+		x@(target, position, ast, path, project-path) -> properties
+		where
+    	language := <_language>;
+    	_index-setup(|language, project-path);
+    	_task-setup(|project-path)
+		with
+			target' := <editor-service-target>x;
+			properties :=	<editor-service-properties(|project-path);bottomup(try(string-replace(|"\n", "")))>target'
+			
+	// Completes an identifier when the user presses control-space
+	// (the completion identifier in the AST provides additional context information)
+	editor-complete:
+		(node, position, ast, path, project-path) -> proposals
+		where
+			proposals := <_analysis-propose-completions(|<_language>, project-path)> ast
+	
+	// Formats the program using a pretty printer		
+  editor-format:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+    	ext      := <get-extension> path;
+      filename := <guarantee-extension(|$[pp.[ext]])> path;
+      result   := <pp-debug> selected
+   
+rules // target of editor services
+
+	editor-service-target: (target, position, ast, path, project-path) -> target''
 		with
 			if Some(a) := target then
 				target' := a
@@ -44,12 +80,11 @@ rules // Editor services
 				if [_] := position then // if first level child parent-at-position fails
 					target'' := ast
 				else
-					target'' := <parent-at-position(|position)>ast
+					target'' := <_parent-at-position(|position)>ast
 				end
 			else
 				target'' := target'
-			end;
-			hoverinfo := <get-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<language>, project-path);properties-to-html>target''
+			end
 
 	hover-parent-for: a -> a // for constructors with no children hover parent
 		where
@@ -60,34 +95,26 @@ rules // Editor services
 	hover-parent-for: a -> a // for strings, hover parent if it is not a reference
 		where
 			<is-string>a;
-			None() := <ref-prop>a
+			None() := <_ref-prop>a
 	hover-parent-for: NaBLHelp(_,_) -> <id>
 
-	// FIXME: NaBL should have generated this	
-  nabl-get-name : Entity(_, a, _) -> a
+rules // properties for editor services
+	
+	editor-service-properties(|project-path): target -> properties'
+		with
+			properties := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<_language>, project-path)>target;
+			if to-match := <to-match>target then
+				match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>to-match;
+				properties' := <conc>(properties,[("Match", match)])
+			else
+				properties' := properties
+			end
 
-	// Gathers the properties for the properties view.
-	editor-properties:
-		(target, position, ast, path, project-path) ->
-			<get-all-editor-properties(pp-partial-Relations-string |<language>, project-path)>target
-			
+	def-warning: Def(_) -> ("Warning!", "Showing hover info of Definition instead of Use")
+
+rules // formatting for editor services
+
 	pp-property : ZeroOrOne() -> "[0, 1], zero or one, maybe/nullable"
 	pp-property : One() 			-> "[1, 1], exactly one, required"
 	pp-property : ZeroOrMore()-> "[0, n), zero or more, maybe/nullable"
 	pp-property : OneOrMore()	-> "[1, n), one or more, required"
-			
-	// Completes an identifier when the user presses control-space
-	// (the completion identifier in the AST provides additional context information)
-	editor-complete:
-		(node, position, ast, path, project-path) -> proposals
-		where
-			proposals := <analysis-propose-completions(|<language>, project-path)> ast
-	
-	// Formats the program using a pretty printer		
-  editor-format:
-    (selected, position, ast, path, project-path) -> (filename, result)
-    with
-    	ext      := <get-extension> path;
-      filename := <guarantee-extension(|$[pp.[ext]])> path;
-      result   := <pp-debug> selected
-   

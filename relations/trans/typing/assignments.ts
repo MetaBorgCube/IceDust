@@ -1,9 +1,25 @@
 module typing/assignments
 
 imports
+
+	// constructors
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
+	src-gen/signatures/Types-sig
+	trans/api/constructors
+	trans/desugaring/constructors
 	
-	include/Relations
+	// functions
+	typing/_multiplicity-functions
 	trans/naming/names
+	
+	// // use custom runtime libraries  
+ //  lib/nabl/-
+ //  lib/task/-
+ //  lib/types/-
+ //  lib/properties/-
+ //  lib/relations/-
 
 type rules // derivations well-formedness
 
@@ -30,4 +46,7 @@ type rules // data well-formedness
 	where	r		: r-ty
 		and	val	: val-ty
 		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
+
+
+
 

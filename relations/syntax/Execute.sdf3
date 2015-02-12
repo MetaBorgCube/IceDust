@@ -2,7 +2,11 @@ module Execute
 
 imports
 	Expressions
+	Common
 
 context-free syntax
 
-	Execute = <<Exp>>
+	Execute = Exp
+	Execute = CallRule
+	
+	CallRule.CallRule = <match <ID>(<{Exp ","}*>)>

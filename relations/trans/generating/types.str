@@ -1,10 +1,12 @@
 module trans/generating/types
 
-imports
+imports // constructors
 
-	include/Relations
-	lib/java/Java
-	lib/runtime/types/query
+	src-gen/signatures/types-sig
+
+imports // functions
+
+	trans/api/_runtime
 	trans/naming/names
 	trans/naming/_notNaBL
 
@@ -28,7 +30,7 @@ rules // Java-Types
 		where
 			not(is-tuple)
 		with
-			ty := <get-type>name;
+			ty := <_get-type>name;
 			mu := <get-multiplicity>name
 	
 	java-type: (ty, mu) -> type |[x_ty]|

@@ -1,0 +1,137 @@
+module trans/api/_runtime
+
+imports // generated runtime
+		
+	lib/runtime/analysis/complete	
+	lib/runtime/analysis/debug
+	lib/runtime/analysis/legacy
+	lib/runtime/analysis/resolve
+	lib/runtime/editor/annotations	
+	lib/runtime/editor/origins
+	lib/runtime/editor/outline-library
+	lib/runtime/editor/properties
+	lib/runtime/index/core
+	lib/runtime/index/legacy
+	lib/runtime/nabl/check
+	lib/runtime/nabl/collect
+	lib/runtime/nabl/constraints
+	lib/runtime/nabl/resolve
+	lib/runtime/nabl/tasks
+	lib/runtime/nabl/query
+	lib/runtime/nabl/uri
+	lib/runtime/task/core
+	lib/runtime/task/insert
+	lib/runtime/task/messages
+	lib/runtime/task/tasks
+	lib/runtime/types/query
+
+// imports // custom runtime
+// 	
+// 	lib/analysis/complete	
+// 	lib/analysis/debug
+// 	lib/analysis/legacy
+// 	lib/analysis/resolve
+// 	lib/editor/annotations	
+// 	lib/editor/origins
+// 	lib/editor/outline-library
+// 	lib/editor/properties
+// 	lib/index/core
+// 	lib/index/legacy
+// 	lib/nabl/check
+// 	lib/nabl/constraints
+// 	lib/nabl/resolve
+// 	lib/nabl/tasks
+// 	lib/nabl/query
+// 	lib/nabl/uri
+// 	lib/task/core
+// 	lib/task/insert
+// 	lib/task/messages
+// 	lib/task/tasks
+// 	lib/types/query
+	
+rules
+	
+	_insert-results-or-delay = insert-results-or-delay
+	
+	_pp-uri = pp-uri
+	_pp-ns = pp-ns
+	
+	_origin-track-forced(x) = origin-track-forced(x)
+	_origin-text = origin-text
+	_origin-location-offset = origin-location-offset
+	_origin-location-offset-set(|origin-location-offset) = origin-location-offset-set(|origin-location-offset)
+	_origin-debug = origin-debug
+	_origin-debug-all = origin-debug-all
+
+	_has-annotation(x) = get-annotation(x) //TODO: update to non deprecated calls
+	_add-annotation(|a) = add-annotation(|a)
+	_remove-annotations(s) = remove-annotations(s)
+	
+	_nabl-has-reference = nabl-has-reference
+	_nabl-uri-namespace = nabl-uri-namespace
+	_nabl-uri-parent = nabl-uri-parent
+	_nabl-uri-name = nabl-uri-name
+	_nabl-sub-uri(|namespace) = nabl-sub-uri(|namespace)
+	_nabl-collect-def = nabl-collect-def
+	
+	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+	_nabl-lookup-lexical(|ctx, ns) = nabl-lookup-lexical(|ctx, ns)
+	_nabl-resolve-all-tasks(|ctx, ns, a) = nabl-resolve-all-tasks(|ctx, ns, a)
+	_nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
+	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+	
+	_nabl-uri = nabl-uri
+	
+	_get-type = get-type
+
+	_task-create-error(|ctx, msg) = task-create-error(|ctx, msg)
+	_task-create-warning(|ctx, msg) = task-create-warning(|ctx, msg)
+	_task-create-error-on-failure(|ctx, task, msg) = task-create-error-on-failure(|ctx, task, msg)
+	_task-create-error-on-success(|ctx, task, msg) = task-create-error-on-success(|ctx, task, msg)
+	
+	_task-create-combine(|ctx) = task-create-combine(|ctx)
+	_task-create-diff(|ctx) = task-create-diff(|ctx)
+	
+	_task-has-failed = task-has-failed
+	_task-get-results = task-get-results
+	_task-get-messages(|partition) = task-get-messages(|partition)
+	
+	_simple-label-outline(to-outline-label) = simple-label-outline(to-outline-label)
+	
+	_analysis-default-editor = analysis-default-editor
+	_analysis-save-default(|language) = analysis-save-default(|language)
+	_analysis-single-default(pre-trans, post-trans, pp-message|language) = analysis-single-default(pre-trans, post-trans, pp-message|language)
+	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path)
+	
+	_index-setup(|language, project-path) = index-setup(|language, project-path)
+	_task-setup(|project-path) = task-setup(|project-path)
+	
+	_get-editor-properties(language-pp | language, project-path) =  get-editor-properties(language-pp | language, project-path)
+	
+	_analysis-debug-index-project(|language) = analysis-debug-index-project(|language)
+	_analysis-debug-index-project-resolve(|language) = analysis-debug-index-project-resolve(|language)
+	_analysis-debug-index-partition(|language) = analysis-debug-index-partition(|language)
+	_analysis-debug-index-partition-resolve(|language) = analysis-debug-index-partition-resolve(|language)
+	_analysis-debug-task-project(|language) = analysis-debug-task-project(|language)
+	_analysis-debug-task-partition(|language) = analysis-debug-task-partition(|language)
+	_analysis-debug-task-selection(|language) = analysis-debug-task-selection(|language)
+	_analysis-debug-project(|language) = analysis-debug-project(|language)
+	_analysis-debug-partition(|language) = analysis-debug-partition(|language)
+	_analysis-debug-reanalyze(|language) = analysis-debug-reanalyze(|language)
+	_give-task-results = give-task-results
+	
+	_index-get-all-partitions = index-get-all-partitions
+	_index-get-all-in-partition = index-get-all-in-partition
+	_beautify-indices = beautify-indices
+	
+	_analysis-resolve(|language, project-path) = analysis-resolve(|language, project-path)
+	
+	_properties-to-html = properties-to-html
+	_not-none = not-none
+	_ref-prop = ref-prop
+	_get-all-editor-properties(language-pp | language, project-path) = get-all-editor-properties(language-pp | language, project-path)
+	
+	_analysis-propose-completions(|language, project-path) = analysis-propose-completions(|language, project-path)
+	
+	_nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
+	

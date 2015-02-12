@@ -1,10 +1,22 @@
 module typing/data
 
 imports
+
+	// constructors
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Types-sig	 
+	trans/api/constructors
 	
-	include/Relations
+	// functions
 	trans/naming/names
-	trans/naming/_notNaBL
+	
+	// // use custom runtime libraries  
+ //  lib/nabl/-
+ //  lib/task/-
+ //  lib/types/-
+ //  lib/properties/-
+ //  lib/relations/-
 
 type rules
 
