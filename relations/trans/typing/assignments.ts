@@ -47,6 +47,29 @@ type rules // data well-formedness
 		and	val	: val-ty
 		and	r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
 
+type rules // rewrite rules
 
+	LHSEdge(e, n)
++	NHSEdge(e, n)
++	RHSEdge(e, n) :-
+	where	e : e-ty
+		and n : n-ty
+		and e-ty == n-ty else error $[Type mismatch: expected [e-ty] got [n-ty] in Edge] on n
+
+	LHSNode(NaBLHelp(n, Def()), None(), v)
++	NHSNode(NaBLHelp(n, Def()), None(), v)
++	RHSNode(NaBLHelp(n, Def()), None(), v) :-
+	where "0" == "1" else error $[No Type given for [n]] on n
+
+	LHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None())
++	NHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None())
++	RHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None()) :-
+	where definition of n : n-ty
+		and n-ty == e-ty else error $[Type mismatch: expected [n-ty] got [e-ty]] on e-ty
+
+	Attr(NaBLHelp(AttrRef(a), Use()), val) :-
+	where	definition of a : a-ty
+		and	val	: val-ty
+		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Value] on val
 
 

@@ -56,7 +56,7 @@ rules // Build in steps
 			_index-setup(|<_language>, project-path);
 			_task-setup(|project-path);
 
-			if Module(_,_,_,_) := ast then
+			if Module(_,_,_,_,_) := ast then
 				// log(|Info(),"Phase 0: Analyzing");
 				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
 			else

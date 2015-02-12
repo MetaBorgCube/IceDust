@@ -3,6 +3,7 @@ module Modules
 imports
 	Common
 	Model
+	Rules
 	Data
 	Execute
 
@@ -13,6 +14,8 @@ context-free syntax // modules
 		module <ID>
 		
 		<ModelDef?>
+		
+		<RulesDef?>
 		
 		<DataDef?>
 		
@@ -25,6 +28,12 @@ context-free syntax // modules
 		
 		  <{Model "\n\n"}*>
 		
+	>
+
+	RulesDef.RulesDef = <
+		rules
+		
+			<{Rule "\n\n"}*>
 	>
 	
 	DataDef.DataDef = <

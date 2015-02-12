@@ -9,7 +9,7 @@ imports // constructors
 rules
 
 	to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
+		ModuleDesugared(moduleName, model, r, data, execute) ->
 			compilation-unit |[
 				import lib.relations.*;
 				import java.util.Collection;
@@ -18,7 +18,7 @@ rules
 				~modelJava*
 			]|
 		with
-			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
+			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, r, data, execute);
 			if ModelDef(_) := model then
 				modelJava* := <to-java(err)>model
 			else
@@ -26,7 +26,7 @@ rules
 			end
 
 	main-class-to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
+		ModuleDesugared(moduleName, model, r, data, execute) ->
 			type-dec |[
 				class ~className	
 				{ 
@@ -35,6 +35,7 @@ rules
 						~dataJava*
 						~executeJava*
 					}
+					~rulesJava*
 				}
 			]|
 		with
@@ -42,6 +43,11 @@ rules
 				dataJava* := <to-java(err)>data
 			else
 				dataJava* := []
+			end;
+			if RulesDef(_) := r then
+				rulesJava* := <to-java(err)>r
+			else
+				rulesJava* := []
 			end;
 			if Executable(_) := execute then
 				executeJava* := <to-java(err)>execute

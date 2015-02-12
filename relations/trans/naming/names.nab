@@ -7,6 +7,7 @@ imports // constructors
 	src-gen/signatures/Expressions-sig
 	src-gen/signatures/Model-sig
 	src-gen/signatures/Modules-sig
+	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/constructors
 	trans/desugaring/constructors
@@ -31,6 +32,10 @@ namespaces
 	Inverse
 	Shortcut
 	This
+	Rule
+	LHSVariable
+	NHSVariable
+	RHSVariable
 	ThisForAttr
 
 properties
@@ -43,11 +48,12 @@ properties
 	
 binding rules // modules
 
-	ModuleDesugared(m, _, _, _) : 
+	ModuleDesugared(m, _, _, _, _) : 
 		defines Module m
 		scopes Entity
 		scopes Entity2
 		scopes EntityInstance
+		scopes Rule
 
 binding rules // model
 
@@ -107,6 +113,130 @@ binding rules // model
 			where role2 resolves to Role role2def
 			and role2def has multiplicity-inverse mu2
 
+binding rules // rules
+
+	Rule(rule, params, body):
+		defines Rule rule
+		scopes LHSVariable
+		scopes NHSVariable
+		scopes RHSVariable
+
+	//TODO: make 1 binding rule for Params
+	Param(v, EntityRef(t), m):
+		defines LHSVariable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@Int(), m):
+		defines LHSVariable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@String(), m):
+		defines LHSVariable v
+			of type t
+			of multiplicity m
+
+	Param(v, t@Boolean(), m):
+		defines LHSVariable v
+			of type t
+			of multiplicity m
+
+	// define Node with its type from type annotation
+	LHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+		defines LHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with no type
+	LHSNode(NaBLHelp(v, Def()), t@None(), a):
+		defines LHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with its type from relation
+	LHSEdge(e, LHSNode(NaBLHelp(v, DefByRel()), none, a)):
+		defines LHSVariable v
+			of type t
+			where e has type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+
+	// define Node with its type from type annotation
+	NHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+		defines NHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with no type
+	NHSNode(NaBLHelp(v, Def()), t@None(), a):
+		defines NHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with its type from relation
+	NHSEdge(e, NHSNode(NaBLHelp(v, DefByRel()), none, a)):
+		defines NHSVariable v
+			of type t
+			where e has type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+
+	// define Node with its type from type annotation
+	RHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+		defines RHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with no type
+	RHSNode(NaBLHelp(v, Def()), t@None(), a):
+		defines RHSVariable v
+			of type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+	// define Node with its type from relation
+	RHSEdge(e, RHSNode(NaBLHelp(v, DefByRel()), none, a)):
+		defines RHSVariable v
+			of type t
+			where e has type t
+		scopes ThisForAttr
+		implicitly defines ThisForAttr This()
+			of type t
+			
+	// define LHSVariable from attribute
+	Attr(NaBLHelp(a, Bind()), v):
+		defines LHSVariable v
+			of type t
+			of multiplicity m
+		where a has type t
+		and a has multiplicity m
+
+	// define variables from edges
+	LHSTsHelp(a, b, LHSEdgeName(NaBLHelp(v, Def()))):
+		defines LHSVariable v
+	NHSTsHelp(a, b, NHSEdgeName(NaBLHelp(v, Def()))):
+		defines NHSVariable v
+	RHSTsHelp(a, b, RHSEdgeName(NaBLHelp(v, Def()))):
+		defines RHSVariable v
+	
+	// LHSEdge(LHSTsHelp(LHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), LHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines LHSVariable v
+	// 		// of type (node1, edge, node2)
+	// NHSEdge(NHSTsHelp(NHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), NHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines NHSVariable v
+	// 		// of type (node1, edge, node2)
+	// RHSEdge(RHSTsHelp(RHSNode(NaBLHelp(node1, a), b, c), edge, NaBLHelp(v, Def())), RHSNode(NaBLHelp(node2, d), e, f)):
+	// 	defines RHSVariable v
+	// 		// of type (node1, edge, node2)
+
 binding rules // data
 
 	EntityInstance(EntityRef(e-ty), e, _, _) :
@@ -138,6 +268,8 @@ binding rules // references
 	  refers to Shortcut x in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
+	otherwise
+		refers to LHSVariable x
 
 	MemberAccess(exp, a) :
 		refers to Attribute a in Entity e-ty
@@ -170,5 +302,85 @@ binding rules // references
 	
 	This() :
 		refers to This This()
+
+	LHSNode(NaBLHelp(v, Use()), none, a):
+		refers to LHSVariable v
+		implicitly defines ThisForAttr This()
+			of type t
+			in a
+		where v resolves to LHSVariable v-def
+		and v-def has type t
+		
+	NHSNode(NaBLHelp(v, Use()), none, a):
+		refers to LHSVariable v
+		otherwise refers to NHSVariable v
+		implicitly defines ThisForAttr This()
+			of type t
+			in a
+		where v resolves to LHSVariable v-def
+		and v-def has type t
+		
+	RHSNode(NaBLHelp(v, Use()), none, a):
+		refers to LHSVariable v
+		otherwise refers to RHSVariable v
+		implicitly defines ThisForAttr This()
+			of type t
+			in a
+		where v resolves to LHSVariable v-def
+		and v-def has type t
+
+	LHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		
+	NHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		otherwise refers to NHSVariable v
+
+	RHSEdgeName(NaBLHelp(v, Use())):
+		refers to LHSVariable v
+		otherwise refers to RHSVariable v
+
+	LHSTsHelp(v1, Edge, Edge-name):
+		refers to Role Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Inverse Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Shortcut Edge in Entity v1-ty
+		where v1 has type v1-ty
+	NHSTsHelp(v1, Edge, Edge-name):
+		refers to Role Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Inverse Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Shortcut Edge in Entity v1-ty
+		where v1 has type v1-ty
+	RHSTsHelp(v1, Edge, Edge-name):
+		refers to Role Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Inverse Edge in Entity v1-ty
+		where v1 has type v1-ty
+	otherwise
+		refers to Shortcut Edge in Entity v1-ty
+		where v1 has type v1-ty
+
+	AttrRef(a):
+		refers to Attribute a in Entity e-ty
+		where This() resolves to ThisForAttr this
+		and this has type e-ty
+		
+	CallRule(r,args):
+		refers to Rule r
+
+binding rules
+
+	SubRule(a,b):
+		scopes LHSVariable
+		scopes NHSVariable
+		scopes RHSVariable
 
 

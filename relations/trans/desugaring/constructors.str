@@ -2,6 +2,6 @@ module trans/desugaring/constructors
 	
 signature constructors
 	
-	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
 	
 	NaBLHelp : ID * DefUse -> NaBLHelp

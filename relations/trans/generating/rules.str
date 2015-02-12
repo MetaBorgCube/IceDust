@@ -1,0 +1,39 @@
+module trans/generating/rules
+
+imports // constructors
+
+	src-gen/signatures/model-sig
+	src-gen/signatures/modules-sig
+	src-gen/signatures/rules-sig
+	src-gen/signatures/types-sig
+
+imports // functions
+
+	trans/generating/types
+
+rules
+	
+  to-java(err): RulesDef(r) -> <map(try(to-java(err)))>r
+  
+  to-java(err): Rule(x_name, params, body) -> result
+  	with
+  		params* := <map(to-java-param(err))>params
+		with
+			result :=
+				|[
+ 					public static void x_name(~params*)
+					{ 
+						
+					}
+				]|
+	
+	to-java-param(err): Param(x_name, type, One()) -> result
+		with
+			if EntityRef(x_type) := type then
+				id
+			else
+				x_type := <type-to-java(err)>type
+			end
+		with
+			result := |[x_type x_name]|
+  

@@ -1,0 +1,69 @@
+module names-rules-variables
+
+language Relations
+
+setup Common [[
+	module test
+	model
+		entity Student {name:String}
+		entity Course {}
+	
+		relation Enrollment{
+			Student *
+			Course +
+		}
+	rules
+]]
+
+test Resolve variable to parameter  [[
+	enRoll([[s]]:Student)
+			[[s]].
+		->
+			s.
+]] resolve #2 to #1
+
+test Resolve variable to value  [[
+	enRoll(s:Student)
+			s{name=[[name]]}.
+		->
+			s{name=[[name]]}.	
+]] resolve #2 to #1
+
+test (TS/1) error on non existing variable [[
+	enRoll2(s:Student)
+			s{name=name}.
+		->
+			s{name=name, name=[[r]]}.		
+]] 1 error // http://yellowgrass.org/issue/TS/1
+
+test Resolve variable to node  [[
+	enRoll(s:Student)
+			s course [[c]].
+		->
+			[[c]].	
+]] resolve #2 to #1
+
+test Resolve variable to node  [[
+	enRoll(s:Student)
+			[[c]]:Course.
+		->
+			[[c]].	
+]] resolve #2 to #1
+
+test Error on undefined variable  [[
+	enRoll(s:Student)
+			[[k]].
+		->
+			s.
+]] 1 error
+
+test Resolve lhs var only to lhs var  [[
+	enRoll()
+		->
+			s:Student.
+		?[
+			[[s]]:Student. [[s]] course c. -> c. 
+		]
+]] resolve #2 to #1
+
+

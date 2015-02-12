@@ -1,0 +1,91 @@
+module Rules
+
+imports
+	Common
+	Expressions
+	Types
+	Model
+	
+context-free syntax
+
+	Rule.Rule = <
+		<ID> (<{Param ","}*>)
+			<RuleBody>
+	>
+
+	Param.Param = <<ID>:<Type><Multiplicity?>>
+	Type = PrimitiveType
+	Type = EntityRef
+	
+	RuleBody.RuleBody = <
+			<{LHSLine "\n"}*>
+		<NHS?>
+		<RHS?>
+		<{SubRule "\n"}*>
+	>
+	NHS = <
+	not
+		<{NHSLine "\n"}*>
+	>
+	RHS = <
+	-\>
+		<{RHSLine "\n"}*>
+	>
+	
+	SubRule.SubRule = <
+		<Multiplicity?>[
+			<RuleBody>
+		]
+	>
+	
+// 	LHSLine = NodeOrEdgeLine
+// 	NHSLine = NodeOrEdgeLine
+// 	RHSLine = NodeOrEdgeLine
+// 	
+// 	NodeOrEdgeLine = <<NodeOrEdge>.>
+// 	
+// 	Node.Node = <<ID><NodeType?><NodeAttr?>>
+// 	NodeType = <:<EntityRef>>
+// 	NodeAttr = <{<{Attr ","}*>}>
+// 	
+// 	Attr.Attr = <<AttrRef>=<Exp>>
+// 	AttrRef.AttrRef = <<ID>>
+// 
+// 	Edge.Edge = <<TsHelp> <Node>>
+// 	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeName?>>
+// 	EdgeName = <@<ID>>
+// 	
+// 	NodeOrEdge = Node
+// 	NodeOrEdge = Edge	
+	
+	LHSLine = <<LHSNodeOrEdge>.>
+	LHSNodeOrEdge = LHSNode
+	LHSNodeOrEdge = LHSEdge	
+	LHSNode.LHSNode = <<ID><NodeType?><NodeAttr?>>
+	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
+	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID><LHSEdgeName?>>
+	LHSEdgeName.LHSEdgeName = <@<ID>>
+
+	NHSLine = <<NHSNodeOrEdge>.>
+	NHSNodeOrEdge = NHSNode
+	NHSNodeOrEdge = NHSEdge	
+	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
+	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
+	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID><NHSEdgeName?>>
+	NHSEdgeName.NHSEdgeName = <@<ID>>
+	
+	RHSLine = <<RHSNodeOrEdge>.>
+	RHSNodeOrEdge = RHSNode
+	RHSNodeOrEdge = RHSEdge	
+	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
+	RHSEdge.RHSEdge = <<RHSTsHelp> <RHSNode>>
+	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID><RHSEdgeName?>>
+	RHSEdgeName.RHSEdgeName = <@<ID>>
+
+	NodeType = <:<EntityRef>>
+	NodeAttr = <{<{Attr ","}*>}>
+	Attr.Attr = <<AttrRef>=<Exp>>
+	AttrRef.AttrRef = <<ID>>
+
+	
+

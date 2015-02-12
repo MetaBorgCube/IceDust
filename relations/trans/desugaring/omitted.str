@@ -18,7 +18,8 @@ rules
 	
 	generate-omitted =
 		bottomup(try(omitted1));
-		bottomup(try(omitted2))
+		bottomup(try(omitted2));
+		bottomup(try(omitted3))
 	
 	omitted1 = attr-generate-mult
 	omitted1 = role-generate-name
@@ -29,6 +30,10 @@ rules
 	omitted1 = node-move-name-to-type
 	
 	omitted2 = entity-generate-shortcuts        // requires role-generate-name
+	omitted2 = rule-generate-node-names         // requires node-move-name-to-type
+	
+	omitted3 = rule-generate-param-node-matches // requires param-generate-mult, matches same as rule-generate-node-names
+	omitted3 = edge-generate-name								// requires rule-generate-node-names
 
 rules // generate omitted multiplicities
 
@@ -114,3 +119,45 @@ rules // move name to type if capitalized
 		with
 			node' := <node-set-type(|node-var)>node;
 			node'' := <node-set-varname(|None())>node'
+			
+rules // generate omitted node names
+
+	rule-generate-node-names: r -> <rule-set-body(|b'')>r
+		where
+			is-rule
+		with
+			b := <rule-get-body>r;
+			(b', _) := <topdown-fold(try(generate-node-name))>(b, []);
+			b'' := <custom-origin(|b)>b'
+
+	generate-node-name: (node, history) -> (node', history')
+		where
+			<node-has-no-varname>node;
+			node-ty := <node-get-type>node
+		with
+			(node-var', history') := <new-name>(<lcfirst>node-ty, history);
+			node' := <node-set-varname(|node-var')>node
+
+rules // generate omitted edge names
+
+	edge-generate-name: edge -> edge'
+		where
+			edge-has-no-varname
+		with
+			(node1-var, _, node2-var) := <edge-get-varnames>edge;
+			edge-model := <edge-get-edgemodel>edge;
+			edge-var' := <concat-strings;custom-origin(|edge-model)> [node1-var, <ucfirst>edge-model, <ucfirst>node2-var];
+			edge' := <edge-set-varname(|edge-var')>edge
+
+rules // generated omitted param node matches
+			
+	rule-generate-param-node-matches: r -> <rule-set-body(rulebody-set-lhs(!lhs'))>r
+		where
+			is-rule
+		with
+			p := <rule-get-params>r;
+			p-match := <filter(rule-param-one-to-match)>p;
+			lhs' := <conc>(p-match,<rule-get-body;rulebody-get-lhs>r)
+
+	rule-param-one-to-match: p -> <create-node-lhs(|<param-get-name>p)>
+		where param-has-mult(|One())
