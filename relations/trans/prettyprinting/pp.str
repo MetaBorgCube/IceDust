@@ -44,7 +44,7 @@ rules // needed after desugaring
 			not(None() := x);
 			not(Some(_) := x)
 	
-	prettyprint-Start: ModuleDesugared(a,b,c,d,e) -> <prettyprint-Start>Module(a,b,c,d,e)
+	prettyprint-Start: ModuleDesugared(a,b,c,d) -> <prettyprint-Start>Module(a,b,c,d)
 
 	prettyprint-AttrRef: NaBLHelp(a, _) -> <prettyprint-AttrRef>a
 	prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a

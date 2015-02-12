@@ -11,7 +11,6 @@ imports // functions
 	trans/generating/execute
 	trans/generating/model
 	trans/generating/module
-	trans/generating/rules
 
 rules // Builders
 	
@@ -35,7 +34,7 @@ rules	// General Java generation rules
   to-java(err):
   	None() -> ""
 
-  to-java(err): Module(_,_,_,_,_) -> None()
+  to-java(err): Module(_,_,_,_) -> None()
   	where
   		<err> "Desugar before generating code."
 	

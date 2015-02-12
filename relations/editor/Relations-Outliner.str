@@ -27,7 +27,6 @@ rules
 	// to-outline-label : ModuleDesugared(n,_,_,_,_) -> n{"icons/module.png"}
 	
 	to-outline-label = ?ModelDef(_)   ;keyword-outline-label(|"Model"  {"icons/model.png"})
-	to-outline-label = ?RulesDef(_)   ;keyword-outline-label(|"Rules"  {"icons/page-arrow-white.png"})
 	to-outline-label = ?DataDef(_)    ;keyword-outline-label(|"Data"   {"icons/data.png"})
 	to-outline-label = ?Executable(_) ;keyword-outline-label(|"Execute"{"icons/execute.png"})
   

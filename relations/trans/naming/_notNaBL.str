@@ -32,12 +32,8 @@ rules // unresolved references manual messages
 	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
 	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
 	unresolved-error: AttrRef(e) 									-> (e, [NablNsAttribute()])
-	unresolved-error: CallRule(e, _) 							-> (e, [NablNsRule()])
 
 	unresolved-error = where(is-role);?e;!(<role-get-type>e, 	    [NablNsEntity()])
-	unresolved-error = where(is-node);?e;!(<node-get-varname>e, 	[NablNsLHSVariable()])
-	unresolved-error = where(is-edge);?e;!(<edge-get-varname>e, 	[NablNsLHSVariable()])
-	unresolved-error = where(is-edge);?e;!(<edge-get-edgemodel>e, [NablNsRole(), NablNsInverse(), NablNsShortcut()])
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
 	
