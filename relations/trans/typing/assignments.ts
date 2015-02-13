@@ -5,6 +5,7 @@ imports
 	// constructors
 	src-gen/signatures/Data-sig
 	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/constructors
 	trans/desugaring/constructors

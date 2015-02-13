@@ -6,6 +6,7 @@ imports
 	src-gen/signatures/Data-sig
 	src-gen/signatures/Expressions-sig
 	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/constructors
 	trans/desugaring/constructors
@@ -68,3 +69,8 @@ type rules // specific references
 +	RHSEdge(e, r): r-ty
 	where r : r-ty
 
+	AttrRef(a) : a-ty
+	where definition of a : a-ty
+
+	AttrRef(a) has multiplicity t
+	where definition of a has multiplicity t

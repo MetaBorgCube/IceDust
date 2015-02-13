@@ -6,6 +6,7 @@ imports // constructors
 	src-gen/signatures/Execute-sig
 	src-gen/signatures/Expressions-sig
 	src-gen/signatures/Model-sig
+	src-gen/signatures/Rules-sig
 	src-gen/signatures/Types-sig
 	trans/api/constructors
 	trans/api/_runtime-constructors
@@ -16,6 +17,7 @@ imports // functions
 	trans/api/_runtime
 	trans/api/data-api
 	trans/api/model-api
+	trans/api/rules-api
 	trans/lib/string
 	trans/lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
 
