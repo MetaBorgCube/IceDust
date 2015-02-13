@@ -2,13 +2,13 @@
 <project default="all" name="Relations">
    
 		<!-- overwrite the generated file to not generate from sdf3 for speed improvement -->
-		<!-- The files for which the on-save handler is called before building. -->
+		<!-- The files for which the on-save handler is called before building. 
 		<path id="call-onsave.files">
 			<fileset dir=".">
 				<include name="**/*.nab"/>
 				<include name="**/*.ts"/>
 			</fileset>
-		</path>
+		</path>-->
 	
     <!-- Key input modules -->
     <property name="sdfmodule" value="Relations"/>

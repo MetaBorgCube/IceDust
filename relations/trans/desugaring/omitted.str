@@ -7,7 +7,6 @@ imports // constructors
 imports // functions
 	
 	trans/api/model-api
-	trans/api/rules-api
 	trans/api/data-api
 	trans/lib/origin
 	trans/lib/new-name
@@ -24,9 +23,6 @@ rules
 	omitted1 = role-generate-name
 	omitted1 = entity-generate-inverse-names
 	omitted1 = datadef-generate-entity-names
-	omitted1 = param-generate-mult
-	omitted1 = subrule-generate-mult
-	omitted1 = node-move-name-to-type
 	
 	omitted2 = entity-generate-shortcuts        // requires role-generate-name
 
@@ -94,23 +90,3 @@ rules // generate omitted shortcuts
 	pair-with(|h): t -> (h,t)
 
 	create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
-
-rules // generate omitted multiplicities
-
-	param-generate-mult: p -> <param-set-mult(|One())>p
-		where param-has-no-mult
-
-	// subrule-generate-mult: SubRule(None(), a) -> SubRule(One(), a)
-	subrule-generate-mult: s -> <subrule-set-mult(|One())>s
-		where subrule-has-no-mult
-	
-rules // move name to type if capitalized
-	
-	node-move-name-to-type: node -> node''
-		where
-			node-has-no-type;
-			node-var := <node-get-varname>node;
-			<first-is-upper>node-var
-		with
-			node' := <node-set-type(|node-var)>node;
-			node'' := <node-set-varname(|None())>node'

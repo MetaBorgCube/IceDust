@@ -46,3 +46,4 @@ syntax/*.sdf
 /include
 target
 src-gen
+builddeps

@@ -10,7 +10,7 @@ imports // constructors
 imports // functions
 
 	trans/api/_generated
-	trans/analysis/rules
+	// trans/analysis/rules
 	trans/api/_runtime
 	trans/lib/string
 	trans/prettyprinting/pp
@@ -103,12 +103,7 @@ rules // properties for editor services
 	editor-service-properties(|project-path): target -> properties'
 		with
 			properties := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<_language>, project-path)>target;
-			if to-match := <to-match>target then
-				match := <pp-partial-Relations-string <+ map(pp-partial-Relations-string) <+ write-to-string>to-match;
-				properties' := <conc>(properties,[("Match", match)])
-			else
-				properties' := properties
-			end
+			properties' := properties
 
 	def-warning: Def(_) -> ("Warning!", "Showing hover info of Definition instead of Use")
 
