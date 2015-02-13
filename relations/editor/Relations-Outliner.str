@@ -11,7 +11,6 @@ imports // functions
 	trans/api/_runtime
 	trans/api/data-api
 	trans/api/model-api
-	trans/api/rules-api
 	trans/lib/origin
 	trans/desugaring/desugar
 
@@ -33,7 +32,6 @@ rules
 	to-outline-label = where(is-entity;entity-is-entitytype);      ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/square-red.png"}     ;custom-origin(|<entity-get-name>e)
 	to-outline-label = where(is-entity;not(entity-is-entitytype)); ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/diamond-yellow.png"} ;custom-origin(|<entity-get-name>e)
 	to-outline-label = where(is-attr);                             ?e; !$[[<attr-get-name;pp-o>e] : [<attr-get-type;pp-o>e] [<attr-get-mult;pp-o>e]]{"icons/circle-green.png"}   ;custom-origin(|<attr-get-name>e)
-  to-outline-label = where(is-rule);                             ?e; !$[[<rule-get-name;pp-o>e] : ([<rule-get-params;pp-paramlist>e])]            {"icons/arrow-blue.png"}     ;custom-origin(|<rule-get-name>e)
 	to-outline-label = where(is-entityinstance);                   ?e; !$[[<entityinstance-get-name;pp-o>e] : [<entityinstance-get-type;pp-o>e]]    {"icons/square-gray.png"}    ;custom-origin(|<entityinstance-get-name>e)
 
 	to-outline-label = where(is-role);?e;
@@ -47,8 +45,6 @@ rules
 			<!$[[<shortcut-get-type1;pp-o>e].[<shortcut-get-shortcut1;pp-o>e]]{"icons/arrowleftright-red.gif"};custom-origin(|<shortcut-get-shortcut1>e)>,
 			<!$[[<shortcut-get-type2;pp-o>e].[<shortcut-get-shortcut2;pp-o>e]]{"icons/arrowleftright-red.gif"};custom-origin(|<shortcut-get-shortcut2>e)>
 		]
-
-	pp-paramlist = map(?x;!$[[<param-get-name;pp-o>x] : [<param-get-type;pp-o>x] [<param-get-mult;pp-o>x]])
 
 rules
 	

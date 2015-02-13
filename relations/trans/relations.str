@@ -2,7 +2,6 @@ module relations
 
 imports
 
-	trans/_editor/analysis
 	trans/_editor/debug
 	trans/_editor/generate
 	trans/_editor/services
