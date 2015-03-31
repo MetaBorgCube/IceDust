@@ -70,7 +70,8 @@ rules // manipulation
 	
 	role-set-type(type)									= Role(type, id, id, id)
 
-	role-dup-type = role-set-type(\a -> NaBLHelp(a, a)\)
+	role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
+	role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
 
 rules // creation
 	
