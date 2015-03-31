@@ -21,7 +21,7 @@ rules
 	//TODO: call this on desugared, or even analyzed AST @see http://yellowgrass.org/issue/Spoofax/837
   outline: (selected, position, ast, path, project-path) -> result
   	with
-  		result := <desugar-all;simple-label-outline-multiple(to-outline-label);flatten-list> ast
+  		result := <desugar-before-analysis;simple-label-outline-multiple(to-outline-label);flatten-list> ast
   
 	// to-outline-label : ModuleDesugared(n,_,_,_,_) -> n{"icons/module.png"}
 	

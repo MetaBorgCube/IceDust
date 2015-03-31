@@ -6,6 +6,7 @@ imports // constructors
 	
 imports // functions
 
+	trans/_editor/analysis
 	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
@@ -25,7 +26,7 @@ rules // Debugging builders
 	debug-show-desugared:
 		(selected, position, ast, path, project-path) -> (filename, result)
 		with
-			ast'                    := <desugar-all> ast;
+			ast'                    := <desugar-before-analysis> ast;
 			filename := <guarantee-extension(|"desugared.aterm")> path;
 			result   := ast'
 			
@@ -35,7 +36,22 @@ rules // Debugging builders
 		with
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
-			
+	
+	debug-show-analyzed-resolved0:
+		(selected, position, ast, path, project-path) -> (filename, result)
+			where
+	    	language := <_language>;
+	    	_index-setup(|language, project-path);
+	    	_task-setup(|project-path)
+			with
+				ast' := <desugar-before-analysis> ast;
+				(analyzed-ast, error*, warning*, note*) := <_analysis-single-default(id, id, pp-message-top|<_language>)>(ast', path, project-path)
+			with
+				filename := <guarantee-extension(|"analyzed.aterm")> path;
+				ast''		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>analyzed-ast;
+				ast'''	 := <bottomup(try(id{bottomup(try(rm-annotations);try(_pp-uri;string-replace(|"\"","")))}))>ast'';
+				result	 := ast'''
+	
 	debug-show-analyzed-resolved:
 		(selected, position, ast, path, project-path) -> (filename, result)
 			where
@@ -43,11 +59,11 @@ rules // Debugging builders
 	    	_index-setup(|language, project-path);
 	    	_task-setup(|project-path)
 			with
-				filename := <guarantee-extension(|"analyzed.aterm")> path;
+				filename := <guarantee-extension(|"desugared.after.aterm")> path;
 				ast'		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>ast;
 				ast''		 := <bottomup(try(id{bottomup(try(rm-annotations);try(_pp-uri;string-replace(|"\"","")))}))>ast';
 				result	 := ast''
-
+				
 	debug-show-analyzed-resolved2 = debug-show-analyzed-resolved;bottomup(try(no-use-def))
 				
 	no-use-def: a{Use(_)} -> a{}
@@ -64,6 +80,19 @@ rules // Debugging builders
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
 					<_get-editor-properties(pp-partial-Relations-string|<_language>,project-path)>target
 	
+	debug-show-desugared2:
+		(selected, position, ast, path, project-path) -> (filename, result)
+		with
+			filename := <guarantee-extension(|"desugared.after.aterm")> path;
+			ast'     := <bottomup(try(\a{_}->a{}\))>ast;
+			result	 := ast'
+	
+	debug-show-origin2:
+		(selected, position, ast, path, project-path) -> None()
+		with
+			ast' := <desugar-before-analysis> ast;
+			<_origin-debug-all>ast'
+				
 	debug-show-origin:
 		(target, position, ast, path, project-path) -> None()
 			with

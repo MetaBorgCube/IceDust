@@ -13,12 +13,15 @@ imports // functions
 	
 rules
 
-	desugar-all =
+	desugar-before-analysis =
 		desugar-somes;
 		generate-omitted;
 		nablhelp;
 		desugar-done;
 		warning-on-missing-origin
+
+	desugar-after-analysis = 
+		id
 
 rules // general
 
