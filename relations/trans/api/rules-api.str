@@ -206,4 +206,4 @@ rules // manipulation
 rules // creation
 	
 	create-node-lhs(|name) = create-node-lhs(|name,None(),None())
-	create-node-lhs(|name,type,params) = !LHSNode(name, None(), None());custom-origin(|name)
+	create-node-lhs(|name,type,params) = !LHSNode(name, <custom-origin(|name)>None(), <custom-origin(|name)>None());custom-origin(|name)
