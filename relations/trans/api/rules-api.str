@@ -86,7 +86,7 @@ rules // query (in all stages of desugaring)
 	edge-get-node2 = ?NHSEdge(NHSTsHelp(_, _, _), <id>)
 	edge-get-node2 = ?RHSEdge(RHSTsHelp(_, _, _), <id>)
 	
-	attr-get-name = ?Attr(<id>, _)
+	attr-get-name = ?Attr(AttrRef(<id>), _)
 	attr-get-expr = ?Attr(_, <id>)
 	
 	attr-get-expr-ref-name = attr-get-expr;?Ref(<id>)
@@ -197,18 +197,11 @@ rules // manipulation
 	edge-set-node2(|n) = NHSEdge(id, !n)
 	edge-set-node2(|n) = RHSEdge(id, !n)
 	
-	attr-set-name(n) = Attr(n, id)
+	attr-set-name(n) = Attr(keep-origin(AttrRef(n)), id)
 	attr-set-expr(|e) = Attr(id, !e)
 	
-	// defuse makes sure there is exactly 1 NaBLHelp constructor, and removes the Ref(_) around varname if it is Bind()
-	attr-set-defuse(|d): at@Attr(a, v) -> Attr(<set-nablhelp(|d)>a, v')
-		with
-			if Ref(varname) := v then id else varname := v end;
-			if or(Bind() := d, <not(attr-is-ref)>at) then
-				v' := varname
-			else
-				v' := <custom-origin(|varname)>Ref(varname)
-			end
+	attr-to-bindvar: Attr(attrRef, Ref(name)) -> AttrBindVar(attrRef, name)
+	attr-to-not-bindvar: AttrBindVar(attrRef, name) -> Attr(attrRef, <custom-origin(|name)>Ref(name))
 
 rules // creation
 	

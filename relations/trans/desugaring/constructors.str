@@ -5,3 +5,6 @@ signature constructors
 	ModuleDesugared	: ID * ModelDef * RulesDef * DataDef * Executable -> ModuleDesugared
 	
 	NaBLHelp : ID * DefUse -> NaBLHelp
+
+	AttrBindVar : AttrRef * ID -> Attr
+

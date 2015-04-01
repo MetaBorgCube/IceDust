@@ -212,7 +212,7 @@ binding rules // rules
 			of type t
 			
 	// define LHSVariable from attribute
-	Attr(NaBLHelp(a, Bind()), v):
+	AttrBindVar(a, v):
 		defines LHSVariable v
 			of type t
 			of multiplicity m

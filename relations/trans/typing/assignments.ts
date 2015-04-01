@@ -67,7 +67,7 @@ type rules // rewrite rules
 	where definition of n : n-ty
 		and n-ty == e-ty else error $[Type mismatch: expected [n-ty] got [e-ty]] on e-ty
 
-	Attr(NaBLHelp(AttrRef(a), Use()), val) :-
+	Attr(AttrRef(a), val) :-
 	where	definition of a : a-ty
 		and	val	: val-ty
 		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Value] on val

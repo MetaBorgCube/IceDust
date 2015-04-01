@@ -31,7 +31,7 @@ rules
 	nablhelp6 = try(sometd(node-rhs-attr-variable-use)) //cleans up the previous rule
 
 	nablhelp-after = 
-		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse))
+		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse <+ attr-def-use-reverse))
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
 	
@@ -132,19 +132,16 @@ rules // make attributes in matches either Binds or Uses
 	attr-def-use: (at, history) -> (at', history')
 		where
 			<is-attr>at
+		where
+			name := <attr-get-expr-ref-name>at; <not(elem)>(name, history)
 		with
-			if name := <attr-get-expr-ref-name>at; <not(elem)>(name, history) then
-				history' := <list-add(|name)> history;
-				binduse := Bind()
-			else
-				history' := history;
-				binduse := Use()
-			end;
-			at' := <attr-set-defuse(|binduse)>at
+			varName := <attr-get-name>at;
+			history' := <list-add(|name)> history;
+			at' := <attr-to-bindvar>at
 
 rules // make attributes in rhs always uses
 	
-	node-rhs-attr-variable-use: n -> <node-set-params(map(try(attr-set-defuse(|Use()))))>n
+	node-rhs-attr-variable-use: n -> <node-set-params(map(try(attr-to-not-bindvar)))>n
 		where
 			is-node;
 			is-rhs
@@ -159,4 +156,9 @@ rules
 		where(is-shortcut);
 		?s;
 		create-shortcut(|<shortcut-get-role1>s, <shortcut-get-shortcut1>s, <shortcut-get-role1>s, <shortcut-get-shortcut2>s)
+		
+rules
+	
+	attr-def-use-reverse = 
+		attr-to-not-bindvar
 	
