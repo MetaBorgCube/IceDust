@@ -29,3 +29,14 @@ type rules
 	
 	False() : Boolean()
 	False() has multiplicity One()
+
+type rules // literal types
+
+	EntityRef(e) : e-ty
+	where definition of e : e-ty
+	
+	t@Int() : t	
+	t@String() : t	
+	t@Boolean() : t
+	
+	t@None(): t

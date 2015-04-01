@@ -60,23 +60,26 @@ binding rules // model
 	Entity(ent-or-rel, e-ty, _) :
 		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique Entity e-ty
+			of type e-ty
 		scopes Attribute
 		scopes Role
 		scopes This
 		implicitly defines This This()
 			of type e-ty
 
-	Attribute(a, a-ty, a-mu, None()) :
+	Attribute(a, t, a-mu, None()) :
 		defines Attribute a
-			of type a-ty
+			of type t-ty
 			of multiplicity a-mu
 			of derivation-type Normal()
+		where t has type t-ty
 			
-	Attribute(a, a-ty, a-mu, Derivation(_, a-dt)) :
+	Attribute(a, t, a-mu, Derivation(_, a-dt)) :
 		defines Attribute a
-			of type a-ty
+			of type t-ty
 			of multiplicity a-mu
 			of derivation-type a-dt
+		where t has type t-ty
 
 	Role(NaBLHelp(role-ty, role-ty2), role-mu, role, inverseName) :
 		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
@@ -121,41 +124,22 @@ binding rules // rules
 		scopes NHSVariable
 		scopes RHSVariable
 
-	//TODO: make 1 binding rule for Params
-	Param(v, EntityRef(t), m):
+	Param(v, t, m):
 		defines LHSVariable v
-			of type t
+			of type t-ty
 			of multiplicity m
-
-	Param(v, t@Int(), m):
-		defines LHSVariable v
-			of type t
-			of multiplicity m
-
-	Param(v, t@String(), m):
-		defines LHSVariable v
-			of type t
-			of multiplicity m
-
-	Param(v, t@Boolean(), m):
-		defines LHSVariable v
-			of type t
-			of multiplicity m
+		where t has type t-ty
 
 	// define Node with its type from type annotation
-	LHSNodeDefByType(v, EntityRef(t), a):
+	LHSNodeDefByType(v, t, a):
 		defines LHSVariable v
-			of type t
+			of type t-ty
+		where t has type t-ty
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
-			of type t
-	// define Node with no type
-	LHSNodeDefByType(v, t@None(), a):
-		defines LHSVariable v
-			of type t
-		scopes ThisForAttr
-		implicitly defines ThisForAttr This()
-			of type t
+			of type t-ty2
+		where t has type t-ty2
+
 	// define Node with its type from relation
 	LHSEdge(e, LHSNodeDefByRel(v, none, a)):
 		defines LHSVariable v
@@ -166,19 +150,15 @@ binding rules // rules
 			of type t
 
 	// define Node with its type from type annotation
-	NHSNodeDefByType(v, EntityRef(t), a):
+	NHSNodeDefByType(v, t, a):
 		defines NHSVariable v
-			of type t
+			of type t-ty
+		where t has type t-ty
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
-			of type t
-	// define Node with no type
-	NHSNodeDefByType(v, t@None(), a):
-		defines NHSVariable v
-			of type t
-		scopes ThisForAttr
-		implicitly defines ThisForAttr This()
-			of type t
+			of type t-ty2
+		where t has type t-ty2
+		
 	// define Node with its type from relation
 	NHSEdge(e, NHSNodeDefByRel(v, none, a)):
 		defines NHSVariable v
@@ -189,19 +169,15 @@ binding rules // rules
 			of type t
 
 	// define Node with its type from type annotation
-	RHSNodeDefByType(v, EntityRef(t), a):
+	RHSNodeDefByType(v, t, a):
 		defines RHSVariable v
-			of type t
+			of type t-ty
+		where t has type t-ty
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
-			of type t
-	// define Node with no type
-	RHSNodeDefByType(v, t@None(), a):
-		defines RHSVariable v
-			of type t
-		scopes ThisForAttr
-		implicitly defines ThisForAttr This()
-			of type t
+			of type t-ty2
+		where t has type t-ty2
+
 	// define Node with its type from relation
 	RHSEdge(e, RHSNodeDefByRel(v, none, a)):
 		defines RHSVariable v
