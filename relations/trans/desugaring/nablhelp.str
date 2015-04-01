@@ -77,11 +77,13 @@ rules // figure out which node names are defs and which are uses
 			params := (<rule-get-params;map(param-get-name)>r, [], []); //(lhs, nhs, rhs) vars
 			(b', _) := <topdown-fold-cond(try(variable-def-use),is-subrule)>(<rule-get-body>r, params)
 
-	variable-def-use: (n, history) -> (<node-set-defuse(|defuse)>n, history')
+	variable-def-use: (n, history) -> (<node-to-defbytype>n, history')
 		where
 			<is-node>n
 		with
-			(defuse, history') := <varname-def-use(|<get-hs>n)>(<node-get-varname>n, history)	
+			(defuse, history') := <varname-def-use(|<get-hs>n)>(<node-get-varname>n, history)
+		where
+			Def() := defuse	
 
 	variable-def-use: (e, history) -> (<edge-set-defuse(|defuse)>e, history')
 		where
@@ -118,7 +120,7 @@ rules // if node names are Def and there is a relation change to DefByRel
 			<node-has-no-type>n;
 			<node-is-def>n
 		with
-			n' := <keep-origin(node-set-defuse(|DefByRel()))>n
+			n' := <node-to-defbyrel>n
 	
 rules // make attributes in matches either Binds or Uses
 	

@@ -143,21 +143,21 @@ binding rules // rules
 			of multiplicity m
 
 	// define Node with its type from type annotation
-	LHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+	LHSNodeDefByType(v, EntityRef(t), a):
 		defines LHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with no type
-	LHSNode(NaBLHelp(v, Def()), t@None(), a):
+	LHSNodeDefByType(v, t@None(), a):
 		defines LHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with its type from relation
-	LHSEdge(e, LHSNode(NaBLHelp(v, DefByRel()), none, a)):
+	LHSEdge(e, LHSNodeDefByRel(v, none, a)):
 		defines LHSVariable v
 			of type t
 			where e has type t
@@ -166,21 +166,21 @@ binding rules // rules
 			of type t
 
 	// define Node with its type from type annotation
-	NHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+	NHSNodeDefByType(v, EntityRef(t), a):
 		defines NHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with no type
-	NHSNode(NaBLHelp(v, Def()), t@None(), a):
+	NHSNodeDefByType(v, t@None(), a):
 		defines NHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with its type from relation
-	NHSEdge(e, NHSNode(NaBLHelp(v, DefByRel()), none, a)):
+	NHSEdge(e, NHSNodeDefByRel(v, none, a)):
 		defines NHSVariable v
 			of type t
 			where e has type t
@@ -189,21 +189,21 @@ binding rules // rules
 			of type t
 
 	// define Node with its type from type annotation
-	RHSNode(NaBLHelp(v, Def()), EntityRef(t), a):
+	RHSNodeDefByType(v, EntityRef(t), a):
 		defines RHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with no type
-	RHSNode(NaBLHelp(v, Def()), t@None(), a):
+	RHSNodeDefByType(v, t@None(), a):
 		defines RHSVariable v
 			of type t
 		scopes ThisForAttr
 		implicitly defines ThisForAttr This()
 			of type t
 	// define Node with its type from relation
-	RHSEdge(e, RHSNode(NaBLHelp(v, DefByRel()), none, a)):
+	RHSEdge(e, RHSNodeDefByRel(v, none, a)):
 		defines RHSVariable v
 			of type t
 			where e has type t
@@ -303,7 +303,7 @@ binding rules // references
 	This() :
 		refers to This This()
 
-	LHSNode(NaBLHelp(v, Use()), none, a):
+	LHSNode(v, none, a):
 		refers to LHSVariable v
 		implicitly defines ThisForAttr This()
 			of type t
@@ -311,7 +311,7 @@ binding rules // references
 		where v resolves to LHSVariable v-def
 		and v-def has type t
 		
-	NHSNode(NaBLHelp(v, Use()), none, a):
+	NHSNode(v, none, a):
 		refers to LHSVariable v
 		otherwise refers to NHSVariable v
 		implicitly defines ThisForAttr This()
@@ -320,7 +320,7 @@ binding rules // references
 		where v resolves to LHSVariable v-def
 		and v-def has type t
 		
-	RHSNode(NaBLHelp(v, Use()), none, a):
+	RHSNode(v, none, a):
 		refers to LHSVariable v
 		otherwise refers to RHSVariable v
 		implicitly defines ThisForAttr This()

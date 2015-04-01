@@ -56,14 +56,14 @@ type rules // rewrite rules
 		and n : n-ty
 		and e-ty == n-ty else error $[Type mismatch: expected [e-ty] got [n-ty] in Edge] on n
 
-	LHSNode(NaBLHelp(n, Def()), None(), v)
-+	NHSNode(NaBLHelp(n, Def()), None(), v)
-+	RHSNode(NaBLHelp(n, Def()), None(), v) :-
+	LHSNodeDefByType(n, None(), v)
++	NHSNodeDefByType(n, None(), v)
++	RHSNodeDefByType(n, None(), v) :-
 	where "0" == "1" else error $[No Type given for [n]] on n
 
-	LHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None())
-+	NHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None())
-+	RHSNode(NaBLHelp(n, Use()), EntityRef(e-ty), None()) :-
+	LHSNode(n, EntityRef(e-ty), None())
++	NHSNode(n, EntityRef(e-ty), None())
++	RHSNode(n, EntityRef(e-ty), None()) :-
 	where definition of n : n-ty
 		and n-ty == e-ty else error $[Type mismatch: expected [n-ty] got [e-ty]] on e-ty
 

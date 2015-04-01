@@ -7,4 +7,10 @@ signature constructors
 	NaBLHelp : ID * DefUse -> NaBLHelp
 
 	AttrBindVar : AttrRef * ID -> Attr
-
+	
+	LHSNodeDefByType : ID * Option(NodeType) * Option(NodeAttr) -> LHSNode
+	LHSNodeDefByRel  : ID * Option(NodeType) * Option(NodeAttr) -> LHSNode
+	NHSNodeDefByType : ID * Option(NodeType) * Option(NodeAttr) -> NHSNode
+	NHSNodeDefByRel  : ID * Option(NodeType) * Option(NodeAttr) -> NHSNode
+	RHSNodeDefByType : ID * Option(NodeType) * Option(NodeAttr) -> RHSNode
+	RHSNodeDefByRel  : ID * Option(NodeType) * Option(NodeAttr) -> RHSNode
