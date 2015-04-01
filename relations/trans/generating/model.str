@@ -186,7 +186,7 @@ rules
 					}
 				]|
 
-	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-many>multiplicity
 		with
@@ -229,7 +229,7 @@ rules
 				  }
 				]|
 
-	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-one>multiplicity
 		with

@@ -17,9 +17,9 @@ rules // Analysis
 	editor-analyze = _analysis-default-editor
 	
 	analysis-single-default-interface = 
-	  _analysis-single-default(desugar-all, id, pp-message-top|<_language>)
+	  _analysis-single-default(desugar-before-analysis, desugar-after-analysis, pp-message-top|<_language>)
 	analysis-multiple-default-interface = 
-	  _analysis-multiple-default(_parse-file <+ !(), desugar-all, id, pp-message-top|<_language>, <_project-path>)
+	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
 	
 	editor-save = _analysis-save-default(|<_language>)
 
