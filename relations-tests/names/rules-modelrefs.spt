@@ -68,22 +68,22 @@ test Error on nonexisting Attribute in rule [[
 test Resolve Role in rule [[
 	model
 		entity A{}
-		relation B{[[A]] *}
+		relation B{A * [[as]]}
 	
 	rules
 		someRule()
-				b:B [[a]] a.
+				b:B asdf:[[as]] a.
 			->
 ]] resolve #2 to #1
 
 test Resolve Inverse in rule [[
 	model
 		entity A{}
-		relation B{[[A]] *}
+		relation B{A * as <- [[bx]]}
 	
 	rules
 		someRule()
-				a:A [[b]] b.
+				a:A asdf:[[bx]] b.
 			->
 ]] resolve #2 to #1
 
@@ -95,7 +95,7 @@ test Resolve Shortcut in rule [[
 	
 	rules
 		someRule()
-				a:A [[c]] c.
+				a:A asdf:[[c]] c.
 			->
 ]] resolve #2 to #1
 

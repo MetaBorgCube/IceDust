@@ -3,6 +3,7 @@ module trans/_editor/services
 imports // constructors
 
 	src-gen/signatures/expressions-sig
+	src-gen/signatures/rules-sig
 	src-gen/signatures/types-sig
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors
@@ -25,6 +26,12 @@ rules // Editor services
 			definition := <_analysis-resolve(|<_language>, project-path)> node'
 	
 	resolve-child: NaBLHelp(name, _) -> name
+	resolve-child: LHSEdgeName(name, type) -> type
+	resolve-child: NHSEdgeName(name, type) -> type
+	resolve-child: RHSEdgeName(name, type) -> type
+	resolve-child: LHSEdgeNameDef(name, type) -> type
+	resolve-child: NHSEdgeNameDef(name, type) -> type
+	resolve-child: RHSEdgeNameDef(name, type) -> type
 
 	// Returns "hover help" information for a particular node in the editor.
 	// For references, this rule is invoked using the resolved term.
