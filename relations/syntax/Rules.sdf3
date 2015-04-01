@@ -63,25 +63,26 @@ context-free syntax
 	LHSNodeOrEdge = LHSEdge	
 	LHSNode.LHSNode = <<ID><NodeType?><NodeAttr?>>
 	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
-	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <ID><LHSEdgeName?>>
-	LHSEdgeName.LHSEdgeName = <@<ID>>
+	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <LHSEdgeName>>
+	LHSEdgeName.LHSEdgeName = <<EdgeName?><ID>>
 
 	NHSLine = <<NHSNodeOrEdge>.>
 	NHSNodeOrEdge = NHSNode
 	NHSNodeOrEdge = NHSEdge	
 	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
 	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
-	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <ID><NHSEdgeName?>>
-	NHSEdgeName.NHSEdgeName = <@<ID>>
+	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <NHSEdgeName>>
+	NHSEdgeName.NHSEdgeName = <<EdgeName?><ID>>
 	
 	RHSLine = <<RHSNodeOrEdge>.>
 	RHSNodeOrEdge = RHSNode
 	RHSNodeOrEdge = RHSEdge	
 	RHSNode.RHSNode = <<ID><NodeType?><NodeAttr?>>
 	RHSEdge.RHSEdge = <<RHSTsHelp> <RHSNode>>
-	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <ID><RHSEdgeName?>>
-	RHSEdgeName.RHSEdgeName = <@<ID>>
+	RHSTsHelp.RHSTsHelp = <<RHSNodeOrEdge> <RHSEdgeName>>
+	RHSEdgeName.RHSEdgeName = <<EdgeName?><ID>>
 
+	EdgeName = <<ID>:>
 	NodeType = <:<EntityRef>>
 	NodeAttr = <{<{Attr ","}*>}>
 	Attr.Attr = <<AttrRef>=<Exp>>

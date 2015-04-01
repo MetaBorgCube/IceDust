@@ -38,33 +38,41 @@ rules // query (in all stages of desugaring)
 	node-get-varname = ?NHSNode(<id>, _, _)
 	node-get-varname = ?RHSNode(<id>, _, _)
 	
-	node-get-varname: edge -> node2-var
-		where
-			(node1-var, edge-var, node2-var) := <edge-get-varnames>edge
+	// node-get-varname: edge -> node2-var
+	// 	where
+	// 		(node1-var, edge-var, node2-var) := <edge-get-varnames>edge
 
-	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, LHSEdgeName(NaBLHelp(<id>, _))), _)
-	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, NHSEdgeName(NaBLHelp(<id>, _))), _)
-	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, RHSEdgeName(NaBLHelp(<id>, _))), _)
-	
-	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, LHSEdgeName(<id>)), _)
-	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, NHSEdgeName(<id>)), _)
-	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, RHSEdgeName(<id>)), _)
-	
-	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, <id>), _)
-	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, <id>), _)
-	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, <id>), _)
+// 	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, LHSEdgeName(NaBLHelp(<id>, _))), _)
+// 	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, NHSEdgeName(NaBLHelp(<id>, _))), _)
+// 	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, RHSEdgeName(NaBLHelp(<id>, _))), _)
+// 	
+// 	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, LHSEdgeName(<id>)), _)
+// 	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, NHSEdgeName(<id>)), _)
+// 	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, RHSEdgeName(<id>)), _)
+// 	
+// 	edge-get-varname = ?LHSEdge(LHSTsHelp(_, _, <id>), _)
+// 	edge-get-varname = ?NHSEdge(NHSTsHelp(_, _, <id>), _)
+// 	edge-get-varname = ?RHSEdge(RHSTsHelp(_, _, <id>), _)
 
-	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, LHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, NHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, RHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	
-	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, LHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, NHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, RHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	
-	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
-	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+	edge-get-varname = ?LHSEdge(LHSTsHelp(_, LHSEdgeName(<id>, _)), _)
+	edge-get-varname = ?NHSEdge(NHSTsHelp(_, NHSEdgeName(<id>, _)), _)
+	edge-get-varname = ?RHSEdge(RHSTsHelp(_, RHSEdgeName(<id>, _)), _)
+
+	edge-get-varnames: LHSEdge(LHSTsHelp(node1, LHSEdgeName(edge-var, _)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+	edge-get-varnames: NHSEdge(NHSTsHelp(node1, NHSEdgeName(edge-var, _)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+	edge-get-varnames: RHSEdge(RHSTsHelp(node1, RHSEdgeName(edge-var, _)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+
+// 	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, LHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, NHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, RHSEdgeName(NaBLHelp(edge-var, _))), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	
+// 	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, LHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, NHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, RHSEdgeName(edge-var)), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	
+// 	edge-get-varnames: LHSEdge(LHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: NHSEdge(NHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
+// 	edge-get-varnames: RHSEdge(RHSTsHelp(node1, _, edge-var), node2) -> (<node-get-varname>node1,edge-var,<node-get-varname>node2)
 
 	node-get-type = ?LHSNode(_, EntityRef(<id>), _)
 	node-get-type = ?NHSNode(_, EntityRef(<id>), _)
@@ -74,17 +82,25 @@ rules // query (in all stages of desugaring)
 	node-get-params = ?NHSNode(_, _, <id>)
 	node-get-params = ?RHSNode(_, _, <id>)
 
-	edge-get-edgemodel = ?LHSEdge(LHSTsHelp(_, <id>, _), _)
-	edge-get-edgemodel = ?NHSEdge(NHSTsHelp(_, <id>, _), _)
-	edge-get-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _)
+	edge-get-edgemodel = ?LHSEdge(LHSTsHelp(_, LHSEdgeName(_, <id>)), _)
+	edge-get-edgemodel = ?NHSEdge(NHSTsHelp(_, NHSEdgeName(_, <id>)), _)
+	edge-get-edgemodel = ?RHSEdge(RHSTsHelp(_, RHSEdgeName(_, <id>)), _)
+
+	// edge-get-edgemodel = ?LHSEdge(LHSTsHelp(_, <id>, _), _)
+	// edge-get-edgemodel = ?NHSEdge(NHSTsHelp(_, <id>, _), _)
+	// edge-get-edgemodel = ?RHSEdge(RHSTsHelp(_, <id>, _), _)
+	// 
+	// edge-get-node1 = ?LHSEdge(LHSTsHelp(<id>, _, _), _)
+	// edge-get-node1 = ?NHSEdge(NHSTsHelp(<id>, _, _), _)
+	// edge-get-node1 = ?RHSEdge(RHSTsHelp(<id>, _, _), _)
+	// 
+	// edge-get-node2 = ?LHSEdge(LHSTsHelp(_, _, _), <id>)
+	// edge-get-node2 = ?NHSEdge(NHSTsHelp(_, _, _), <id>)
+	// edge-get-node2 = ?RHSEdge(RHSTsHelp(_, _, _), <id>)
 	
-	edge-get-node1 = ?LHSEdge(LHSTsHelp(<id>, _, _), _)
-	edge-get-node1 = ?NHSEdge(NHSTsHelp(<id>, _, _), _)
-	edge-get-node1 = ?RHSEdge(RHSTsHelp(<id>, _, _), _)
-	
-	edge-get-node2 = ?LHSEdge(LHSTsHelp(_, _, _), <id>)
-	edge-get-node2 = ?NHSEdge(NHSTsHelp(_, _, _), <id>)
-	edge-get-node2 = ?RHSEdge(RHSTsHelp(_, _, _), <id>)
+	edge-get-node2 = ?LHSEdge(_, <id>)
+	edge-get-node2 = ?NHSEdge(_, <id>)
+	edge-get-node2 = ?RHSEdge(_, <id>)
 	
 	attr-get-name = ?Attr(AttrRef(<id>), _)
 	attr-get-expr = ?Attr(_, <id>)
@@ -146,9 +162,9 @@ rules // properties
 	
 	edge-has-varname = not(edge-has-no-varname)
 	
-	edge-has-no-varname = ?LHSEdge(LHSTsHelp(_, _, None()), _)
-	edge-has-no-varname = ?NHSEdge(NHSTsHelp(_, _, None()), _)
-	edge-has-no-varname = ?RHSEdge(RHSTsHelp(_, _, None()), _)
+	edge-has-no-varname = ?LHSEdge(LHSTsHelp(_, LHSEdgeName(None(), _)), _)
+	edge-has-no-varname = ?NHSEdge(LHSTsHelp(_, NHSEdgeName(None(), _)), _)
+	edge-has-no-varname = ?RHSEdge(LHSTsHelp(_, RHSEdgeName(None(), _)), _)
 	
 	is-attr = ?Attr(_, _)
 	
@@ -206,24 +222,36 @@ rules // manipulation
 	node-to-not-def: NHSNodeDefByRel(a,b,c) -> NHSNode(a,b,c)
 	node-to-not-def: RHSNodeDefByRel(a,b,c) -> RHSNode(a,b,c)
 	
-	edge-set-varname(|v) = LHSEdge(keep-origin(LHSTsHelp(id, id, !LHSEdgeName(v);custom-origin(|v))), id)
-	edge-set-varname(|v) = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(v);custom-origin(|v))), id)
-	edge-set-varname(|v) = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(v);custom-origin(|v))), id)
-
-	edge-set-defuse(|d) = LHSEdge(keep-origin(LHSTsHelp(id, id, keep-origin(LHSEdgeName(set-nablhelp(|d))))), id)
-	edge-set-defuse(|d) = NHSEdge(keep-origin(NHSTsHelp(id, id, keep-origin(NHSEdgeName(set-nablhelp(|d))))), id)
-	edge-set-defuse(|d) = RHSEdge(keep-origin(RHSTsHelp(id, id, keep-origin(RHSEdgeName(set-nablhelp(|d))))), id)
+	edge-set-varname(|v) = LHSEdge(keep-origin(LHSTsHelp(id, keep-origin(LHSEdgeName(!v, id)))), id)	
+	edge-set-varname(|v) = NHSEdge(keep-origin(NHSTsHelp(id, keep-origin(NHSEdgeName(!v, id)))), id)	
+	edge-set-varname(|v) = RHSEdge(keep-origin(RHSTsHelp(id, keep-origin(RHSEdgeName(!v, id)))), id)
+	
+// 	edge-set-varname(|v) = LHSEdge(keep-origin(LHSTsHelp(id, id, !LHSEdgeName(v);custom-origin(|v))), id)
+// 	edge-set-varname(|v) = NHSEdge(keep-origin(NHSTsHelp(id, id, !NHSEdgeName(v);custom-origin(|v))), id)
+// 	edge-set-varname(|v) = RHSEdge(keep-origin(RHSTsHelp(id, id, !RHSEdgeName(v);custom-origin(|v))), id)
+// 
+// 	edge-set-defuse(|d) = LHSEdge(keep-origin(LHSTsHelp(id, id, keep-origin(LHSEdgeName(set-nablhelp(|d))))), id)
+// 	edge-set-defuse(|d) = NHSEdge(keep-origin(NHSTsHelp(id, id, keep-origin(NHSEdgeName(set-nablhelp(|d))))), id)
+// 	edge-set-defuse(|d) = RHSEdge(keep-origin(RHSTsHelp(id, id, keep-origin(RHSEdgeName(set-nablhelp(|d))))), id)
 
 	set-nablhelp(|x) = NaBLHelp(id, keep-origin(!x))
 	set-nablhelp(|x) = where(not(?NaBLHelp(_,_)));?a;!NaBLHelp(a, <custom-origin(|a)>x)
 
-	edge-set-node1(|n) = LHSEdge(keep-origin(LHSTsHelp(!n, id, id)), id)
-	edge-set-node1(|n) = NHSEdge(keep-origin(NHSTsHelp(!n, id, id)), id)
-	edge-set-node1(|n) = RHSEdge(keep-origin(RHSTsHelp(!n, id, id)), id)
+	// edge-set-node1(|n) = LHSEdge(keep-origin(LHSTsHelp(!n, id, id)), id)
+	// edge-set-node1(|n) = NHSEdge(keep-origin(NHSTsHelp(!n, id, id)), id)
+	// edge-set-node1(|n) = RHSEdge(keep-origin(RHSTsHelp(!n, id, id)), id)
 	
 	edge-set-node2(|n) = LHSEdge(id, !n)
 	edge-set-node2(|n) = NHSEdge(id, !n)
 	edge-set-node2(|n) = RHSEdge(id, !n)
+	
+	edge-to-def = LHSEdge(keep-origin(LHSTsHelp(id, edgename-to-def)), id)
+	edge-to-def = NHSEdge(keep-origin(NHSTsHelp(id, edgename-to-def)), id)
+	edge-to-def = RHSEdge(keep-origin(RHSTsHelp(id, edgename-to-def)), id)
+	
+	edgename-to-def: LHSEdgeName(a, b) -> LHSEdgeNameDef(a, b)
+	edgename-to-def: NHSEdgeName(a, b) -> NHSEdgeNameDef(a, b)
+	edgename-to-def: RHSEdgeName(a, b) -> RHSEdgeNameDef(a, b)
 	
 	attr-set-name(n) = Attr(keep-origin(AttrRef(n)), id)
 	attr-set-expr(|e) = Attr(id, !e)

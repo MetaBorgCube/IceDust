@@ -86,11 +86,13 @@ rules // figure out which node names are defs and which are uses
 		where
 			Def() := defuse	
 
-	variable-def-use: (e, history) -> (<edge-set-defuse(|defuse)>e, history')
+	variable-def-use: (e, history) -> (<edge-to-def>e, history')
 		where
 			<is-edge>e
 		with
 			(defuse, history') := <varname-def-use(|<get-hs>e)>(<edge-get-varname>e, history)
+		where
+			Def() := defuse	
 
 	varname-def-use(|hs): (name, history) -> (defuse, history')
 		with

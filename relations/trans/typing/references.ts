@@ -65,9 +65,12 @@ type rules // specific references
 +	RHSNodeDefByRel(v, t, a) : v-ty
 	where definition of v : v-ty
 
-	LHSTsHelp(l, e, e-name) 
-+	NHSTsHelp(l, e, e-name) 
-+	RHSTsHelp(l, e, e-name) : e-ty
+	LHSTsHelp(l, LHSEdgeName(e-name, e))
++	NHSTsHelp(l, NHSEdgeName(e-name, e))
++	RHSTsHelp(l, RHSEdgeName(e-name, e))
++	LHSTsHelp(l, LHSEdgeNameDef(e-name, e))
++	NHSTsHelp(l, NHSEdgeNameDef(e-name, e))
++	RHSTsHelp(l, RHSEdgeNameDef(e-name, e)): e-ty
 	where definition of e : e-ty
 
 	LHSEdge(e, r)

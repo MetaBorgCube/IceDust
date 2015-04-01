@@ -14,3 +14,7 @@ signature constructors
 	NHSNodeDefByRel  : ID * Option(NodeType) * Option(NodeAttr) -> NHSNode
 	RHSNodeDefByType : ID * Option(NodeType) * Option(NodeAttr) -> RHSNode
 	RHSNodeDefByRel  : ID * Option(NodeType) * Option(NodeAttr) -> RHSNode
+
+	LHSEdgeNameDef : Term * Term -> LHSEdgeName
+	NHSEdgeNameDef : Term * Term -> NHSEdgeName
+	RHSEdgeNameDef : Term * Term -> RHSEdgeName
