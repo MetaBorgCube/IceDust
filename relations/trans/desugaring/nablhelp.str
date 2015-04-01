@@ -31,7 +31,8 @@ rules
 	nablhelp6 = try(sometd(node-rhs-attr-variable-use)) //cleans up the previous rule
 
 	nablhelp-after = 
-		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse <+ attr-def-use-reverse))
+		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse <+ attr-def-use-reverse));
+		try(sometd(variable-def-use-reverse))
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
 	
@@ -163,4 +164,9 @@ rules
 	
 	attr-def-use-reverse = 
 		attr-to-not-bindvar
+
+rules
+	
+	variable-def-use-reverse = 
+		node-to-not-def
 	
