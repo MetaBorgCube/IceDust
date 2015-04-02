@@ -34,7 +34,6 @@ namespaces
 	This
 	Rule
 	LHSVariable
-	NHSVariable
 	RHSVariable
 	ThisForAttr
 
@@ -121,7 +120,6 @@ binding rules // rules
 	Rule(rule, params, body):
 		defines Rule rule
 		scopes LHSVariable
-		scopes NHSVariable
 		scopes RHSVariable
 
 	Param(v, t, m):
@@ -143,25 +141,6 @@ binding rules // rules
 	// define Node with its type from relation
 	LHSEdge(e, LHSNodeDefByRel(v, none, a)):
 		defines LHSVariable v
-			of type t
-			where e has type t
-		scopes ThisForAttr
-		implicitly defines ThisForAttr This()
-			of type t
-
-	// define Node with its type from type annotation
-	NHSNodeDefByType(v, t, a):
-		defines NHSVariable v
-			of type t-ty
-		where t has type t-ty
-		scopes ThisForAttr
-		implicitly defines ThisForAttr This()
-			of type t-ty2
-		where t has type t-ty2
-		
-	// define Node with its type from relation
-	NHSEdge(e, NHSNodeDefByRel(v, none, a)):
-		defines NHSVariable v
 			of type t
 			where e has type t
 		scopes ThisForAttr
@@ -197,7 +176,6 @@ binding rules // rules
 
 	// // define variables from edges
 	LHSEdgeNameDef(v, v-ty): defines LHSVariable v
-	NHSEdgeNameDef(v, v-ty): defines NHSVariable v
 	RHSEdgeNameDef(v, v-ty): defines RHSVariable v
 	
 binding rules // data
@@ -274,15 +252,6 @@ binding rules // references
 		where v resolves to LHSVariable v-def
 		and v-def has type t
 		
-	NHSNode(v, none, a):
-		refers to LHSVariable v
-		otherwise refers to NHSVariable v
-		implicitly defines ThisForAttr This()
-			of type t
-			in a
-		where v resolves to LHSVariable v-def
-		and v-def has type t
-		
 	RHSNode(v, none, a):
 		refers to LHSVariable v
 		otherwise refers to RHSVariable v
@@ -294,10 +263,6 @@ binding rules // references
 
 	LHSEdgeName(v, e-type):
 		refers to LHSVariable v
-
-	NHSEdgeName(v, e-type):
-		refers to LHSVariable v
-		otherwise refers to NHSVariable v
 
 	RHSEdgeName(v, e-type):
 		refers to LHSVariable v
@@ -313,25 +278,6 @@ binding rules // references
 		refers to Shortcut Edge in Entity v1-ty
 		where v1 has type v1-ty
 	LHSTsHelp(v1, LHSEdgeNameDef(Edge-name, Edge)):
-		refers to Role Edge in Entity v1-ty
-		where v1 has type v1-ty
-	otherwise
-		refers to Inverse Edge in Entity v1-ty
-		where v1 has type v1-ty
-	otherwise
-		refers to Shortcut Edge in Entity v1-ty
-		where v1 has type v1-ty
-		
-	NHSTsHelp(v1, NHSEdgeName(Edge-name, Edge)):
-		refers to Role Edge in Entity v1-ty
-		where v1 has type v1-ty
-	otherwise
-		refers to Inverse Edge in Entity v1-ty
-		where v1 has type v1-ty
-	otherwise
-		refers to Shortcut Edge in Entity v1-ty
-		where v1 has type v1-ty		
-	NHSTsHelp(v1, NHSEdgeNameDef(Edge-name, Edge)):
 		refers to Role Edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
@@ -372,7 +318,6 @@ binding rules
 
 	SubRule(a,b):
 		scopes LHSVariable
-		scopes NHSVariable
 		scopes RHSVariable
 
 

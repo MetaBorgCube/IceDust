@@ -105,11 +105,9 @@ rules // figure out which node names are defs and which are uses
 			end
 
 	hs-history-get(|hs) = where(LHS():=hs);?(<id>, _, _)
-	hs-history-get(|hs) = where(NHS():=hs);?(_, <id>, _)
 	hs-history-get(|hs) = where(RHS():=hs);?(_, _, <id>)
 
 	hs-history-add(|hs, name) = where(LHS():=hs);(list-add(|name), id, id)
-	hs-history-add(|hs, name) = where(NHS():=hs);(id, list-add(|name), id)
 	hs-history-add(|hs, name) = where(RHS():=hs);(id, id, list-add(|name))
 	
 	list-add(|i): a -> [i|a]

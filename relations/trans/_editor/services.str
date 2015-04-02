@@ -27,10 +27,8 @@ rules // Editor services
 	
 	resolve-child: NaBLHelp(name, _) -> name
 	resolve-child: LHSEdgeName(name, type) -> type
-	resolve-child: NHSEdgeName(name, type) -> type
 	resolve-child: RHSEdgeName(name, type) -> type
 	resolve-child: LHSEdgeNameDef(name, type) -> type
-	resolve-child: NHSEdgeNameDef(name, type) -> type
 	resolve-child: RHSEdgeNameDef(name, type) -> type
 
 	// Returns "hover help" information for a particular node in the editor.

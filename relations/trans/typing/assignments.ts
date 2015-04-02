@@ -50,19 +50,16 @@ type rules // data well-formedness
 type rules // rewrite rules
 
 	LHSEdge(e, n)
-+	NHSEdge(e, n)
 +	RHSEdge(e, n) :-
 	where	e : e-ty
 		and n : n-ty
 		and e-ty == n-ty else error $[Type mismatch: expected [e-ty] got [n-ty] in Edge] on n
 
 	LHSNodeDefByType(n, None(), v)
-+	NHSNodeDefByType(n, None(), v)
 +	RHSNodeDefByType(n, None(), v) :-
 	where "0" == "1" else error $[No Type given for [n]] on n
 
 	LHSNode(n, EntityRef(e-ty), None())
-+	NHSNode(n, EntityRef(e-ty), None())
 +	RHSNode(n, EntityRef(e-ty), None()) :-
 	where definition of n : n-ty
 		and n-ty == e-ty else error $[Type mismatch: expected [n-ty] got [e-ty]] on e-ty

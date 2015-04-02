@@ -16,8 +16,8 @@ rules // transform to only match: drop al rhs
 				body' := <rulebody-to-match>body
 
 	rulebody-to-match:
-		RuleBody(lhs, nhs, rhs,    sub) ->
-		RuleBody(lhs, nhs, None(), sub')
+		RuleBody(lhs, rhs,    sub) ->
+		RuleBody(lhs, None(), sub')
 			with
 				sub' := <map(subrule-to-match)>sub
 	

@@ -19,13 +19,8 @@ context-free syntax
 	
 	RuleBody.RuleBody = <
 			<{LHSLine "\n"}*>
-		<NHS?>
 		<RHS?>
 		<{SubRule "\n"}*>
-	>
-	NHS = <
-	not
-		<{NHSLine "\n"}*>
 	>
 	RHS = <
 	-\>
@@ -38,26 +33,6 @@ context-free syntax
 		]
 	>
 	
-// 	LHSLine = NodeOrEdgeLine
-// 	NHSLine = NodeOrEdgeLine
-// 	RHSLine = NodeOrEdgeLine
-// 	
-// 	NodeOrEdgeLine = <<NodeOrEdge>.>
-// 	
-// 	Node.Node = <<ID><NodeType?><NodeAttr?>>
-// 	NodeType = <:<EntityRef>>
-// 	NodeAttr = <{<{Attr ","}*>}>
-// 	
-// 	Attr.Attr = <<AttrRef>=<Exp>>
-// 	AttrRef.AttrRef = <<ID>>
-// 
-// 	Edge.Edge = <<TsHelp> <Node>>
-// 	TsHelp.TsHelp = <<NodeOrEdge> <ID> <EdgeName?>>
-// 	EdgeName = <@<ID>>
-// 	
-// 	NodeOrEdge = Node
-// 	NodeOrEdge = Edge	
-	
 	LHSLine = <<LHSNodeOrEdge>.>
 	LHSNodeOrEdge = LHSNode
 	LHSNodeOrEdge = LHSEdge	
@@ -65,14 +40,6 @@ context-free syntax
 	LHSEdge.LHSEdge = <<LHSTsHelp> <LHSNode>>
 	LHSTsHelp.LHSTsHelp = <<LHSNodeOrEdge> <LHSEdgeName>>
 	LHSEdgeName.LHSEdgeName = <<EdgeName?><ID>>
-
-	NHSLine = <<NHSNodeOrEdge>.>
-	NHSNodeOrEdge = NHSNode
-	NHSNodeOrEdge = NHSEdge	
-	NHSNode.NHSNode = <<ID><NodeType?><NodeAttr?>>
-	NHSEdge.NHSEdge = <<NHSTsHelp> <NHSNode>>
-	NHSTsHelp.NHSTsHelp = <<NHSNodeOrEdge> <NHSEdgeName>>
-	NHSEdgeName.NHSEdgeName = <<EdgeName?><ID>>
 	
 	RHSLine = <<RHSNodeOrEdge>.>
 	RHSNodeOrEdge = RHSNode

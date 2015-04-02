@@ -10,7 +10,6 @@ signature constructors // help nabl
 signature constructors // left-, not- and right-handsides
 	
 	LHS: HS
-	NHS: HS
 	RHS: HS
 
 signature constructors
