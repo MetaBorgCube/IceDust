@@ -45,10 +45,9 @@ rules
 		->
 			p member u.
 		?[
-			not
-				p tag Tag{name="!"+u.name}.
 			->
 				p tag t{name="!"+u.name}.
+			0[p tag Tag{name="!"+u.name}.]
 		]
 		?[p follower u.->]
 		?[p memberRequester u.->]
@@ -74,11 +73,10 @@ rules
 				i tag t.
 		]
 		?[
-			not
-				p tag t{name="!"+u.name}.
 			->
 				p tag t{name="!"+u.name}.
 				i tag t.
+			0[p tag t{name="!"+u.name}.]
 		]
 	
 	// delete(i:Issue)

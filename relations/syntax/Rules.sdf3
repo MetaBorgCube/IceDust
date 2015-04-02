@@ -28,7 +28,7 @@ context-free syntax
 	>
 	
 	SubRule.SubRule = <
-		<Multiplicity?>[
+		<MultiplicityZ?>[
 			<RuleBody>
 		]
 	>
