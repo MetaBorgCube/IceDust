@@ -322,7 +322,7 @@ binding rules // references
 		refers to Shortcut Edge in Entity v1-ty
 		where v1 has type v1-ty
 		
-	NHSTsHelp(v1, LHSEdgeName(Edge-name, Edge)):
+	NHSTsHelp(v1, NHSEdgeName(Edge-name, Edge)):
 		refers to Role Edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
@@ -331,7 +331,7 @@ binding rules // references
 	otherwise
 		refers to Shortcut Edge in Entity v1-ty
 		where v1 has type v1-ty		
-	NHSTsHelp(v1, LHSEdgeNameDef(Edge-name, Edge)):
+	NHSTsHelp(v1, NHSEdgeNameDef(Edge-name, Edge)):
 		refers to Role Edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
@@ -341,7 +341,7 @@ binding rules // references
 		refers to Shortcut Edge in Entity v1-ty
 		where v1 has type v1-ty
 		
-	RHSTsHelp(v1, LHSEdgeName(Edge-name, Edge)):
+	RHSTsHelp(v1, RHSEdgeName(Edge-name, Edge)):
 		refers to Role Edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
@@ -350,7 +350,7 @@ binding rules // references
 	otherwise
 		refers to Shortcut Edge in Entity v1-ty
 		where v1 has type v1-ty		
-	RHSTsHelp(v1, LHSEdgeNameDef(Edge-name, Edge)):
+	RHSTsHelp(v1, RHSEdgeNameDef(Edge-name, Edge)):
 		refers to Role Edge in Entity v1-ty
 		where v1 has type v1-ty
 	otherwise
