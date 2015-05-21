@@ -1,0 +1,24 @@
+module trans/generating/webdsl/model
+
+imports // constructors
+
+	trans/api/constructors
+	lib/webdsl/WebDSL
+	src-gen/signatures/model-sig
+	src-gen/signatures/modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	// trans/api/_runtime
+	// trans/naming/names
+	// trans/naming/_notNaBL
+
+rules
+	
+  to-webdsl(err): ModelDef(model) -> <map(try(to-webdsl(err)))>model
+
+  to-webdsl(err): Entity(_, x_name, attributesAndRoles) -> 
+		webdsl |[
+			entity x_name {}
+		]|

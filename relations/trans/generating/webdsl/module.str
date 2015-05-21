@@ -6,13 +6,24 @@ imports // constructors
 	src-gen/signatures/modules-sig	
 	trans/desugaring/constructors
 
+imports // functions
+	
+	trans/generating/webdsl/model
+
 rules
 
 	to-webdsl(err):
-		ModuleDesugared(moduleName, model, data, execute) -> modelWebDSL*
+		ModuleDesugared(x_moduleName, model, data, execute) -> 
+			module |[
+				module x_moduleName
+				
+				section entities
+				
+					def1*
+			]|
 		with
 			if ModelDef(_) := model then
-				modelWebDSL* := <to-webdsl(err)>model
+				def1* := <to-webdsl(err)>model
 			else
-				modelWebDSL* := []
+				def1* := []
 			end
