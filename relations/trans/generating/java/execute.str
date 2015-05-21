@@ -1,4 +1,4 @@
-module trans/generating/execute
+module trans/generating/java/execute
 
 imports // constructors
 
@@ -8,7 +8,7 @@ imports // constructors
 
 imports // functions
 
-	trans/generating/expressions
+	trans/generating/java/expressions
 
 rules
 

@@ -1,4 +1,4 @@
-module trans/generating/model
+module trans/generating/java/model
 
 imports // constructors
 
@@ -13,8 +13,8 @@ imports // functions
 	trans/api/_runtime
 	trans/naming/names
 	trans/naming/_notNaBL
-	trans/generating/expressions
-	trans/generating/types
+	trans/generating/java/expressions
+	trans/generating/java/types
 
 rules
 	

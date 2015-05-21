@@ -1,4 +1,4 @@
-module trans/generating/data
+module trans/generating/java/data
 
 imports // constructors
 
@@ -10,7 +10,7 @@ imports // constructors
 
 imports // functions
 
-	trans/generating/expressions
+	trans/generating/java/expressions
 	trans/naming/names
 	trans/naming/_notNaBL // TODO move code
 

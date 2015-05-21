@@ -11,7 +11,7 @@ imports // functions
 	trans/api/_generated
 	trans/api/_runtime
 	trans/desugaring/desugar
-	trans/generating/generate
+	trans/generating/java/generate
 	trans/lib/files
 	trans/prettyprinting/pp
 

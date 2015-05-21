@@ -1,4 +1,4 @@
-module trans/generating/module
+module trans/generating/java/module
 
 imports // constructors
 
