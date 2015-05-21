@@ -54,6 +54,8 @@ menus
     action: "Generate Java"        = generate-java (openeditor) (realtime) (meta)
     action: "Compile Java"         = compile-java (meta)
     action: "Execute Java"         = execute-java
+    action: "Generate WebDSL"      = generate-webdsl (openeditor) (realtime) (meta)
+
     action: "Cleanup Generated Code" = cleanup-generated-files
 
 		action: "test-optimized-search" = test-optimized-search (openeditor)

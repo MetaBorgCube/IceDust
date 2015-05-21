@@ -12,8 +12,18 @@ imports // functions
 	trans/api/_runtime
 	trans/desugaring/desugar
 	trans/generating/java/generate
+	trans/generating/webdsl/generate
 	trans/lib/files
 	trans/prettyprinting/pp
+
+signature sorts
+	
+	TargetLanguage
+	
+signature constructors
+	
+	Java   : TargetLanguage
+	WebDSL : TargetLanguage
 
 rules // Builders
 	
@@ -22,21 +32,28 @@ rules // Builders
 	generate-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
 		with
-			result := <build(error-handler)>(selected, path, project-path, 1)
+			result := <build(error-handler|Java())>(selected, path, project-path, 1)
 	
 	compile-java       = compile-java(error-handler-editor)
 	compile-java-test  = compile-java(error-handler-tests)
 	compile-java(error-handler):
 		(selected, position, ast, path, project-path) -> None()
 		with
-			<build(error-handler)>(selected, path, project-path, 2)
+			<build(error-handler|Java())>(selected, path, project-path, 2)
 	
 	execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
 	execute-java-test  = execute-java(error-handler-tests)
 	execute-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
 		with
-			result := <build(error-handler)>(selected, path, project-path, 3)
+			result := <build(error-handler|Java())>(selected, path, project-path, 3)
+
+	generate-webdsl      = generate-webdsl(error-handler-editor)
+	generate-webdsl-test = generate-webdsl(error-handler-tests)
+	generate-webdsl(error-handler):
+		(selected, position, ast, path, project-path) -> result
+		with
+			result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -50,7 +67,7 @@ rules // Error handlers (editor: report error, do not fail, tests: fail with err
 
 rules // Build in steps
 	
-	build(error-handler):
+	build(error-handler|lang):
 		(ast, path, project-path, i) -> result
 		with
 			_index-setup(|<_language>, project-path);
@@ -71,35 +88,37 @@ rules // Build in steps
 
 			if <leq>(1, i) then
 				// log(|Info(),"Phase 1: Generating Java Code");
-				(javaFileName, javaCode, error') := <generate-java-step(error-handler)>(ast', path);
-				<copy-java-libraries>(javaFileName, project-path);
-				if <eq>(1, i) then
-					result := (javaFileName, javaCode)
+				if <eq>(lang, Java()) then
+					(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
+					<copy-java-libraries>(targetFileName, project-path)
+				else
+					(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path)
 				end;
-				
-			if not([] := error') then
-				<error-handler>"Fix errors compiling Java. Exiting code compilation.";
-				result := None()
-			else
-				
-			if <leq>(2, i) then
-				// log(|Info(),"Phase 2: Compiling Java Code");
-				<write-file> (javaFileName, javaCode);
-				(exitCode, output, classFileName) := <compile-java-step> (javaFileName, project-path);
-				if <eq>(2, i) then
-					result := None()
+				if <eq>(1, i) then
+					result := (targetFileName, targetCode)
 				end;
 
-			if not(0 := exitCode) then
-				<error-handler>output;
-				<error-handler>"Java compilation failed. Exiting code execution.";
-				result := None()
-			else
-				
+			if <leq>(2, i) then
+				if not([] := error') then
+					<error-handler>"Fix errors compiling Java. Exiting code compilation.";
+					result := None()
+				else
+					// log(|Info(),"Phase 2: Compiling Java Code");
+					<write-file> (targetFileName, targetCode);
+					(exitCode, output, classFileName) := <compile-java-step> (targetFileName, project-path);
+					if <eq>(2, i) then
+						result := None()
+					end;
+
 			if <leq>(3, i) then
-				// log(|Info(),"Phase 3: Executing");
-				(exitCode', output') := <execute-java-step> classFileName;
-				result := output'
+				if not(0 := exitCode) then
+					<error-handler>output;
+					<error-handler>"Java compilation failed. Exiting code execution.";
+					result := None()
+				else
+					// log(|Info(),"Phase 3: Executing");
+					(exitCode', output') := <execute-java-step> classFileName;
+					result := output'
 				
 			end end end end end end
 	
@@ -107,8 +126,9 @@ rules // Build in steps
 		with
 			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
-	generate-java-step(error-handler) = generate-java-code(error-handler)
-	
+	generate-java-step(error-handler)   = generate-java-code(error-handler)
+	generate-webdsl-step(error-handler) = generate-webdsl-code(error-handler)
+
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
 			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];

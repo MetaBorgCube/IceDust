@@ -1,0 +1,18 @@
+module trans/generating/webdsl/module
+
+imports // constructors
+
+	lib/java/Java
+	src-gen/signatures/modules-sig	
+	trans/desugaring/constructors
+
+rules
+
+	to-webdsl(err):
+		ModuleDesugared(moduleName, model, data, execute) -> modelWebDSL*
+		with
+			if ModelDef(_) := model then
+				modelWebDSL* := <to-webdsl(err)>model
+			else
+				modelWebDSL* := []
+			end
