@@ -34,7 +34,7 @@ rules // inverses
 	
 	is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
 
-	inversename-get-rolename = get-origin-role ;map(def-to-name)
+	inversename-get-rolename = get-origin-role
 
 rules // shortcuts
 

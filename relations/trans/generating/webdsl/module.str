@@ -15,8 +15,10 @@ rules
 
 	to-webdsl(err):
 		ModuleDesugared(x_name, _, _, _) -> 
-			module |[
-				module x_name
+			webdsl |[
+				application x_name
+				
+				page root(){}
 				
 				section entities
 				
