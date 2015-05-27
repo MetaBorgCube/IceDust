@@ -6,6 +6,7 @@ imports // constructors
 	lib/webdsl/WebDSL
 	src-gen/signatures/model-sig
 	src-gen/signatures/modules-sig
+	src-gen/signatures/types-sig
 	trans/desugaring/constructors
 
 imports // functions
@@ -20,5 +21,30 @@ rules
 
   to-webdsl(err): Entity(_, x_name, attributesAndRoles) -> 
 		webdsl |[
-			entity x_name {}
+			entity x_name {
+				ebd1*
+			}
 		]|
+	with
+		ebd1* := <map(to-webdsl(err))>attributesAndRoles
+
+	to-webdsl(err): Attribute(x_name, ty, mu, derivation) -> 
+		webdsl |[
+			x_name :: srt1
+		]|
+	with
+		srt1 := <to-webdsl(err)>ty
+
+	to-webdsl(err): Role(x_type, mu, x_name, x_invname) -> 
+		webdsl |[
+			x_name :: x_type
+		]|
+		
+rules		
+	
+	to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
+	to-webdsl(err): Int()     -> webdsl |[ Int ]|		
+	to-webdsl(err): String()  -> webdsl |[ String ]|
+		
+rules
+	
