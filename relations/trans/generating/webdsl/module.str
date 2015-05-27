@@ -3,6 +3,8 @@ module trans/generating/webdsl/module
 imports // constructors
 
 	lib/java/Java
+	lib/webdsl/constructors
+	lib/webdsl/webdsl
 	src-gen/signatures/modules-sig	
 	trans/desugaring/constructors
 
@@ -11,18 +13,38 @@ imports // functions
 	trans/generating/webdsl/model
 	trans/api/module-names-api
 
-rules
+rules // module
 
 	to-webdsl(err):
 		ModuleDesugared(x_name, _, _, _) -> 
 			webdsl |[
 				application x_name
-				
-				page root(){}
-				
+			
 				section entities
 				
 					def1*
+					
+				section CRUD
+				
+					page root(){
+						elem1*
+					}
+					
+					def2*
+				
 			]|
 		with
-			def1* := <modulename-get-entitynames;map(to-webdsl(err))>x_name
+			def1*  := <modulename-get-entitynames;map(to-webdsl(err))>x_name;
+			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
+			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name
+
+rules //crud
+	
+	webdsl-crud: x_name -> DeriveCrud(x_name)
+	
+	webdsl-crud-nav: x_name -> webdsl |[navigate x_manageName(){"x_name"}]|
+		with
+			x_manageName := $[manage[x_name]]
+	
+rules
+	
