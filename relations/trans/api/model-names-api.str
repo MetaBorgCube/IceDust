@@ -1,0 +1,46 @@
+module trans/api/model-names-api
+
+imports // constructors
+
+	src-gen/signatures/Model-sig
+	trans/api/_runtime-constructors
+	trans/desugaring/constructors
+	trans/naming/names
+
+imports // functions
+
+	trans/api/_runtime
+	trans/lib/origin
+	trans/lib/search
+
+rules // entity
+
+	is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
+
+	entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name)
+	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name)
+	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name)
+	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name)
+	
+rules // attributes
+	
+	is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
+	
+rules // roles
+	
+	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
+	
+rules // inverses
+	
+	is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
+
+	inversename-get-rolename = get-origin-role ;map(def-to-name)
+
+rules // shortcuts
+
+rules // helper
+
+	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
+
+rules
+	

@@ -1,0 +1,25 @@
+module trans/api/module-names-api
+
+imports // constructors
+
+	src-gen/signatures/Model-sig
+	trans/api/_runtime-constructors
+	trans/desugaring/constructors
+	trans/naming/names
+
+imports // functions
+
+	trans/api/_runtime
+	trans/lib/origin
+	trans/lib/search
+	
+rules // module
+	
+	modulename-get-entitynames = _nabl-get-child-definitions(|NablNsEntity()) ;make-set ;map(def-to-name)
+
+rules // helper
+
+	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
+
+rules
+	

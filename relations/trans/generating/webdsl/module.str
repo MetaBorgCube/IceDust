@@ -9,21 +9,18 @@ imports // constructors
 imports // functions
 	
 	trans/generating/webdsl/model
+	trans/api/module-names-api
 
 rules
 
 	to-webdsl(err):
-		ModuleDesugared(x_moduleName, model, data, execute) -> 
+		ModuleDesugared(x_name, _, _, _) -> 
 			module |[
-				module x_moduleName
+				module x_name
 				
 				section entities
 				
 					def1*
 			]|
 		with
-			if ModelDef(_) := model then
-				def1* := <to-webdsl(err)>model
-			else
-				def1* := []
-			end
+			def1* := <modulename-get-entitynames;map(to-webdsl(err))>x_name
