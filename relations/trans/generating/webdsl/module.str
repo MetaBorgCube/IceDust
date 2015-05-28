@@ -94,9 +94,10 @@ rules //crud
 	
 	webdsl-crud: x_name -> DeriveCrud(x_name)
 	
-	webdsl-crud-nav: x_name -> webdsl |[navbaritem{navigate x_manageName(){"x_name"}}]|
+	webdsl-crud-nav: x_name -> webdsl |[navbaritem{navigate x_manageName(){$text}}]|
 		with
-			x_manageName := $[manage[x_name]]
+			x_manageName := $[manage[x_name]];
+			$text := Text(x_name)
 	
 rules
 	
