@@ -15,11 +15,13 @@ imports // functions
 	
 rules // module
 	
-	modulename-get-entitynames = _nabl-get-child-definitions(|NablNsEntity()) ;make-set ;map(def-to-name)
+	modulename-get-entitynames = _nabl-get-child-definitions(|NablNsEntity()) ;make-set-ordered ;map(def-to-name)
 
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
+
+	make-set-ordered = reverse;make-set //make-set folds right, reversing the order
 
 rules
 	
