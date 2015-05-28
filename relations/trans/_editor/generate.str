@@ -92,7 +92,8 @@ rules // Build in steps
 					(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
 					<copy-java-libraries>(targetFileName, project-path)
 				else
-					(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path)
+					(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
+					<copy-webdsl-libraries>(targetFileName, project-path)
 				end;
 				if <eq>(1, i) then
 					result := (targetFileName, targetCode)
@@ -133,6 +134,13 @@ rules // Build in steps
 		with
 			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];
 			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
+			<copy-dir>(sourceDir, targetDir);
+			<dirname;_refresh-workspace-file> targetDir
+			
+	copy-webdsl-libraries: (webdslFileName, project-path) -> None()
+		with
+			sourceDir := $[[<_plugin-path>]/lib-webdsl];
+			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
 			<copy-dir>(sourceDir, targetDir);
 			<dirname;_refresh-workspace-file> targetDir
 	

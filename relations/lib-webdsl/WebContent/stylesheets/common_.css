@@ -1,0 +1,127 @@
+
+/* Generic CSS */
+
+html{
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  height:100%;  
+  overflow-y: scroll;	
+}
+body {
+  height:100%;
+  margin: 0;
+  padding: 0;
+}
+textarea { 
+  height : 100px;
+  width : 200px;
+}
+select {
+  width : 200px;
+}
+input[type="text"]{
+  width : 200px;
+}
+input[type="file"]{
+  width : 200px;
+}
+img {
+  border-width: 0px;
+}
+span.highlightcontent {
+  font-weight: bold;
+}
+
+/* input of List */
+.sortable { list-style-type: none; margin: 0; padding: 0; }
+.sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; height: 18px; width: 165px; }
+.sortable li span.ui-icon-arrowthick-2-n-s { position: absolute; margin-left: -1.3em; }
+.sortable li span.ui-icon-close { float: right; }
+
+/* CSS for Example WebDSL Project */
+
+div#pagewrapper {
+  /* positioning */
+  margin: 0 auto -30px; /* negative margin to give footer room */
+  min-height: 100%;
+}
+div#content { 
+  /* positioning */
+  padding: 10px;
+}
+div#header {
+  /* text and colors */
+  background-color: white;
+}
+div#header p {
+  /* positioning */
+  padding: 20px 10px;
+  /* text and colors */
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+div#clear{
+  /* positioning */
+  clear:both;	
+}
+div#push{
+  /* positioning */
+  height: 50px;	
+}
+div#footer {
+  /* positioning */
+  height: 30px; /* same as negative margin-bottom on #pagewrapper */
+  /* text and colors */
+  background-color: #999;
+}
+span#footercontent{
+  /* positioning */
+  display: block;	
+  float: right;
+  line-height: 30px;
+  padding-right: 20px;
+  /* text and colors */
+  text-align: center;
+  font-size: 12px;
+  color: white;
+  font-weight:bold;
+  color:white;
+}
+  span#footercontent a{
+    /* text and colors */
+  text-align: center;
+  font-size: 12px;
+  color: white;
+  font-weight:bold;
+  color:white;
+  text-decoration: none;	
+  }
+div#navbar {
+  /* positioning */
+  width: 100%;
+  height: 30px;
+  /* text and colors */
+  background-color: #999;
+  color: White;
+  font-weight: bold;
+  font-size: 13px;
+}
+span.navbaritem a {
+  /* positioning */
+  display: block;
+  float: left;
+  height: 30px;
+  padding: 0 15px;
+  /* text and colors */
+  line-height: 30px; /* center text vertically, because height==line-height */
+  color: White;
+  background-color: #999; 
+  text-decoration: none;
+}
+span.navbaritem a:hover {
+  /* text and colors */
+  background-color: #333;
+  color: #fff;
+}
