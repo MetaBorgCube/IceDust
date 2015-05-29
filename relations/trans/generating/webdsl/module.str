@@ -2,28 +2,35 @@ module trans/generating/webdsl/module
 
 imports // constructors
 
-	lib/java/Java
 	lib/webdsl/constructors
 	lib/webdsl/webdsl
-	src-gen/signatures/modules-sig	
 	trans/desugaring/constructors
 
 imports // functions
 	
 	trans/generating/webdsl/model
+	trans/generating/webdsl/data
 	trans/api/module-names-api
 
 rules // module
 
 	to-webdsl(err):
-		ModuleDesugared(x_name, _, _, _) -> 
+		ast@ModuleDesugared(x_name, _, _, _) -> 
 			webdsl |[
 				application x_name
 			
-				section entities
+				section model
 				
 					def1*
+				
+				section data
 					
+					init{
+						stat1*
+						stat2*
+						stat3*
+					}
+				
 				section CRUD
 				
 				  page root ( )
@@ -88,7 +95,10 @@ rules // module
 		with
 			def1*  := <modulename-get-entitynames;map(to-webdsl(err))>x_name;
 			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
-			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name
+			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
+			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
+			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
+			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name
 
 rules //crud
 	

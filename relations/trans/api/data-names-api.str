@@ -1,0 +1,21 @@
+module trans/api/data-names-api
+
+imports // constructors
+
+	src-gen/signatures/Model-sig
+	trans/api/_runtime-constructors
+	trans/desugaring/constructors
+	trans/naming/names
+
+imports // functions
+
+	trans/api/_runtime
+	trans/lib/origin
+	trans/lib/search
+
+rules // entity
+
+	is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
+
+rules
+	

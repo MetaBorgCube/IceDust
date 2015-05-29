@@ -6,7 +6,7 @@ imports
 
 rules // find a definition ast node for a certain name (with URI annotated)
 	
-	name-to-ast(|ast) = (_nabl-uri <+ nabl-get-name;_nabl-uri); ?target-uri; !ast; uri-to-ast(|target-uri)
+	name-to-ast(|ast) = (_nabl-uri <+ nabl-get-name;_nabl-uri); uri-to-ast(|ast)
 
 rules // find a definition ast node for a certain URI
 	
