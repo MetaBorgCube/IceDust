@@ -4,6 +4,7 @@ imports // constructors
 
 	src-gen/signatures/Model-sig
 	trans/api/_runtime-constructors
+	trans/api/constructors
 	trans/desugaring/constructors
 	trans/naming/names
 
@@ -25,6 +26,10 @@ rules // entity
 rules // attributes
 	
 	is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
+	
+	attributename-is-derivation = where(get-derivation-type;?Derivation())
+	attributename-is-default    = where(get-derivation-type;?DefaultValue())
+	attributename-is-normal     = where(get-derivation-type;?Normal())
 	
 rules // roles
 	
