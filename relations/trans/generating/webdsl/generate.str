@@ -8,18 +8,19 @@ imports // functions
 
 	lib/webdsl/pp-webdsl
 	trans/generating/webdsl/module
+	lib/WebDSL/WebDSL-parenthesize
 
 rules // Builders
 	
 	generate-webdsl-code(err):
 	    (selected, path) -> (fileName, result, errors)
 	    with
-			fileName   := <guarantee-extension(|"app")> path;
-			webdsl-ast := <to-webdsl(err)> selected;
-			errors     := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
-			webdsl-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
-			result     := <pp-webdsl-to-string> webdsl-ast'
-			//result     := <write-to-string>webdsl-ast'
+			fileName     := <guarantee-extension(|"app")> path;
+			webdsl-ast   := <to-webdsl(err)> selected;
+			errors       := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+			webdsl-ast'  := <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
+			webdsl-ast'' := <parenthesize-WebDSL>webdsl-ast';
+			result       := <pp-webdsl-to-string> webdsl-ast''
 
 rules	// General Java generation rules
 

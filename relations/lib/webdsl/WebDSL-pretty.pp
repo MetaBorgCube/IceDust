@@ -211,6 +211,7 @@
    Not                                -- KW["!"] _1,
    IsA                                -- H hs=1[_1 KW["is"] KW["a"] _2],
    Cast                               -- H[ KW["("] _1 KW["as"] _2 KW[")"] ],
+   Parenthetical                      -- H hs=0 ["(" _1 ")"],
 
     %%access control syntax
    ValidationAnnoLength                         -- KW["length"] KW["("] _1 KW[","] _2 KW[")"],
@@ -705,6 +706,9 @@
    XMLElement.3:iter-star                       -- _1,
    XMLEmptyElement                              -- KW["<"] _1 _2 KW["/>"],
    XMLEmptyElement.2:iter-star                  -- _1,
+   XMLEmptyElementUnclosed                      -- KW["<"] _1 _2 KW[">"],
+   XMLEmptyElementUnclosed.2:iter-star          -- _1,
+   XMLComment                                   -- _1,
 
 %% Search
    SearchableAnno                               -- _1 KW["*"] _2,
