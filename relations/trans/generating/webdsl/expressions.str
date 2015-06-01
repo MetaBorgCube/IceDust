@@ -4,7 +4,8 @@ imports // constructors
 
 	lib/webdsl/constructors
 	lib/webdsl/webdsl
-	src-gen/signatures/data-sig	
+	src-gen/signatures/data-sig
+	src-gen/signatures/expressions-sig	
 	trans/desugaring/constructors
 
 imports // functions
@@ -15,12 +16,37 @@ imports // functions
 
 rules // literals
 	
-  to-webdsl(err): String(str1) -> String(str1)
-  to-webdsl(err): Int(i_1)     -> webdsl:e |[ i_1 ]|
-  to-webdsl(err): True()       -> webdsl:e |[ true ]|
-	to-webdsl(err): False()      -> webdsl:e |[ false ]|
+  to-webdsl(err): String(str1) 		        			  -> String(str1)
+  to-webdsl(err): Int(i_1)     		        			  -> webdsl:e |[ i_1 ]|
+  to-webdsl(err): True()      		        			  -> webdsl:e |[ true ]|
+	to-webdsl(err): False()    			        			  -> webdsl:e |[ false ]|
 
-rules
+rules // math
+
+	to-webdsl(err): Addition(ex1, ex2)			        -> webdsl:e |[ e1 +  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Subtraction(ex1, ex2)		        -> webdsl:e |[ e1 -  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Division(ex1, ex2) 			        -> webdsl:e |[ e1 /  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Modulo(ex1, ex2) 				        -> webdsl:e |[ e1 %  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Multiplication(ex1, ex2)        -> webdsl:e |[ e1 *  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+
+rules // logic
+	 
+	to-webdsl(err): Not(ex1)   							        -> webdsl:e |[ !e1 ]|      with e1:=<to-webdsl(err)>ex1
+	to-webdsl(err): LessThan(ex1, ex2)			        -> webdsl:e |[ e1 <  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): LessThanEqual(ex1, ex2)	        -> webdsl:e |[ e1 <= e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): GreaterThan(ex1, ex2)		        -> webdsl:e |[ e1 >  e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): GreaterThanEqual(ex1, ex2)      -> webdsl:e |[ e1 >= e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Equal(ex1, ex2)					        -> webdsl:e |[ e1 == e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Inequal(ex1, ex2)				        -> webdsl:e |[ e1 != e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): And(ex1, ex2)						        -> webdsl:e |[ e1 && e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): Or(ex1, ex2)						        -> webdsl:e |[ e1 || e2 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+	to-webdsl(err): TernaryConditional(ex1,ex2,ex3) -> webdsl:e |[ if(e1) e2 else e3 ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2; e3:=<to-webdsl(err)>ex3
+
+rules // aggregations
+	
+rules // multiplicities
+
+rules // references
 
 	to-webdsl(err): EntityInstanceRef(x_name) -> webdsl:e |[ x_name ]|
 
