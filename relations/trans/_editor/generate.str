@@ -142,6 +142,7 @@ rules // Build in steps
 			sourceDir := $[[<_plugin-path>]/lib-webdsl];
 			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
 			<copy-dir>(sourceDir, targetDir);
+			<write-file>($[[targetDir]/.saved-but-not-built],"");
 			<dirname;_refresh-workspace-file> targetDir
 	
 	compile-java-step:
