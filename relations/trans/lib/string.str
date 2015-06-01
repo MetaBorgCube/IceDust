@@ -39,3 +39,10 @@ rules // prepend indefinite article
 		string-starts-with(|"U")
 	
 	string-starts-with-consonant = not(string-starts-with-vowel)
+
+rules // sorting (keeping annotations)
+	
+	string-sort-anno      = qsort(string-lt)
+	string-sort-anno-desc = qsort(string-gt)
+	
+rules

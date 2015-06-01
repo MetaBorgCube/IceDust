@@ -13,15 +13,16 @@ imports // functions
 	trans/api/_runtime
 	trans/lib/origin
 	trans/lib/search
+		trans/lib/string
 
 rules // entity
 
 	is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
 
-	entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name)
-	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name)
-	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name)
-	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name)
+	entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
+	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
+	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
+	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
 	
 rules // attributes
 	
