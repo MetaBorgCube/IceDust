@@ -49,7 +49,16 @@ rules // attributes
 		where
 			is-attributename
 		where
-			(attributename-is-derivation <+ attributename-is-default)
+			attributename-is-derivation
+		with
+			srt1 := <to-webdsl(err)><_get-type>x_name;
+			e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
+			
+	to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 (default=e1) ]|
+		where
+			is-attributename
+		where
+			attributename-is-default
 		with
 			srt1 := <to-webdsl(err)><_get-type>x_name;
 			e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
