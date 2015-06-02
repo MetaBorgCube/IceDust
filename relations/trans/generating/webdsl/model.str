@@ -36,7 +36,7 @@ rules // entities
 
 rules // attributes
 
-	to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 ]|
+	to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 (default=null) ]|
 		where
 			is-attributename
 		where
