@@ -16,6 +16,8 @@ imports // functions
 	trans/lib/search
 	trans/naming/names
 	trans/naming/_notNabl
+	trans/generating/webdsl/expressions
+	trans/generating/webdsl/expressions-references
 
 rules // entities
 	

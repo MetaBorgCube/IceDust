@@ -337,6 +337,14 @@ section aggregation expressions
   	}
   	return r;
   }
+  
+  function count(i:Object):Int {
+  	return if(i==null) 0 else 1;
+  }
+  
+  function count(is:[Object]):Int {
+  	return is.length;
+  }
 
 section logic expressions
 

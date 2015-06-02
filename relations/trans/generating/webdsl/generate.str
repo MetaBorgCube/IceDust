@@ -24,6 +24,8 @@ rules // Builders
 
 rules	// General Java generation rules
 
+	to-webdsl(err) = where(is-string);id
+
   to-webdsl(err):
     [_] -> <concat-strings> <map(to-webdsl(err))>
     
