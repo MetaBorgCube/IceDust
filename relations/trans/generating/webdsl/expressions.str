@@ -12,7 +12,85 @@ imports // functions
 	
 	trans/generating/webdsl/model
 	trans/generating/webdsl/data
+	trans/generating/webdsl/types
 	trans/api/module-names-api
+
+rules // math
+
+	webdsl-lib-call: Addition(_, _)					->"plus"
+	webdsl-lib-call: Subtraction(_, _)			->"minus"
+	webdsl-lib-call: Division(_, _) 				->"div"
+	webdsl-lib-call: Modulo(_, _) 					->"mod"
+	webdsl-lib-call: Multiplication(_, _)		->"mul"
+
+rules // logic
+	
+	webdsl-lib-call: Not(_)									->"not"
+	webdsl-lib-call: LessThan(_, _)					->"lt"
+	webdsl-lib-call: LessThanEqual(_, _)		->"lte"
+	webdsl-lib-call: GreaterThan(_, _)			->"gt"
+	webdsl-lib-call: GreaterThanEqual(_,_)	->"gte"
+	webdsl-lib-call: Equal(_, _)						->"eq"
+	webdsl-lib-call: Inequal(_, _)					->"neq"
+	webdsl-lib-call: And(_, _)							->"and"
+	webdsl-lib-call: Or(_, _)								->"or"
+	webdsl-lib-call: TernaryConditional(_,_,_)->"cond"
+
+rules // aggregations
+	
+	webdsl-lib-call: Max(_)									->"max"
+	webdsl-lib-call: Min(_)									->"min"
+	webdsl-lib-call: Avg(_)									->"avg"
+	webdsl-lib-call: Sum(_)									->"sum"
+	webdsl-lib-call: Conj(_)								->"conj"
+	webdsl-lib-call: Disj(_)								->"disj"
+	webdsl-lib-call: Concat(_)							->"concat"
+	webdsl-lib-call: Count(_)								->"count"
+
+rules // multiplicities
+	
+	webdsl-lib-call: Merge(_, _)						->"merge"
+	webdsl-lib-call: ChoiceLeft(_, _)				->"choice"
+	
+	webdsl-lib-call-cast = ?Merge(_, _)
+	webdsl-lib-call-cast = ?ChoiceLeft(_, _)
+
+rules // lib expression calls
+	
+	to-webdsl(err): e -> |[ x_method (e1) ]|
+		where
+			x_method := <webdsl-lib-call>e;
+			[ex1] := <get-arguments>e
+		with
+			e1 := <to-webdsl(err)>ex1	
+
+	to-webdsl(err): e -> |[ x_method (e1, e2) ]|
+		where
+			x_method := <webdsl-lib-call>e;
+			[ex1, ex2] := <get-arguments>e;
+			<not(webdsl-lib-call-cast)>e
+		with
+			e1 := <to-webdsl(err)>ex1;
+			e2 := <to-webdsl(err)>ex2
+		
+	to-webdsl(err): e -> |[ x_method (e1, e2) as srt1 ]|
+		where
+			x_method := <webdsl-lib-call>e;
+			[ex1, ex2] := <get-arguments>e;
+			<webdsl-lib-call-cast>e
+		with
+			e1 := <to-webdsl(err)>ex1;
+			e2 := <to-webdsl(err)>ex2;
+			srt1 := <webdsl-type(err)>e
+			
+	to-webdsl(err): e -> |[ x_method (e1, e2, e3) ]|
+		where
+			x_method := <webdsl-lib-call>e;
+			[ex1, ex2, ex3] := <get-arguments>e
+		with
+			e1 := <to-webdsl(err)>ex1;
+			e2 := <to-webdsl(err)>ex2;
+			e3 := <to-webdsl(err)>ex3
 
 rules // literals
 	
@@ -21,26 +99,26 @@ rules // literals
   to-webdsl(err): True()      		        			  -> webdsl:e |[ true ]|
 	to-webdsl(err): False()    			        			  -> webdsl:e |[ false ]|
 
-rules // math
-
-	to-webdsl(err): Addition(ex1, ex2)			        -> webdsl:e |[ plus (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Subtraction(ex1, ex2)		        -> webdsl:e |[ minus(e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Division(ex1, ex2) 			        -> webdsl:e |[ div  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Modulo(ex1, ex2) 				        -> webdsl:e |[ mod  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Multiplication(ex1, ex2)        -> webdsl:e |[ mul  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-
-rules // logic
-	 
-	to-webdsl(err): Not(ex1)   							        -> webdsl:e |[ not  (e1) ]|     with e1:=<to-webdsl(err)>ex1
-	to-webdsl(err): LessThan(ex1, ex2)			        -> webdsl:e |[ lt   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): LessThanEqual(ex1, ex2)	        -> webdsl:e |[ lte  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): GreaterThan(ex1, ex2)		        -> webdsl:e |[ gt   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): GreaterThanEqual(ex1, ex2)      -> webdsl:e |[ gte  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Equal(ex1, ex2)					        -> webdsl:e |[ eq   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Inequal(ex1, ex2)				        -> webdsl:e |[ neq  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): And(ex1, ex2)						        -> webdsl:e |[ and  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): Or(ex1, ex2)						        -> webdsl:e |[ or   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
-	to-webdsl(err): TernaryConditional(ex1,ex2,ex3) -> webdsl:e |[ cond (e1, e2, e3) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2; e3:=<to-webdsl(err)>ex3
+// rules // math
+// 
+// 	to-webdsl(err): Addition(ex1, ex2)			        -> webdsl:e |[ plus (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Subtraction(ex1, ex2)		        -> webdsl:e |[ minus(e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Division(ex1, ex2) 			        -> webdsl:e |[ div  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Modulo(ex1, ex2) 				        -> webdsl:e |[ mod  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Multiplication(ex1, ex2)        -> webdsl:e |[ mul  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 
+// rules // logic
+// 	 
+// 	to-webdsl(err): Not(ex1)   							        -> webdsl:e |[ not  (e1) ]|     with e1:=<to-webdsl(err)>ex1
+// 	to-webdsl(err): LessThan(ex1, ex2)			        -> webdsl:e |[ lt   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): LessThanEqual(ex1, ex2)	        -> webdsl:e |[ lte  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): GreaterThan(ex1, ex2)		        -> webdsl:e |[ gt   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): GreaterThanEqual(ex1, ex2)      -> webdsl:e |[ gte  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Equal(ex1, ex2)					        -> webdsl:e |[ eq   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Inequal(ex1, ex2)				        -> webdsl:e |[ neq  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): And(ex1, ex2)						        -> webdsl:e |[ and  (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): Or(ex1, ex2)						        -> webdsl:e |[ or   (e1, e2) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2
+// 	to-webdsl(err): TernaryConditional(ex1,ex2,ex3) -> webdsl:e |[ cond (e1, e2, e3) ]| with e1:=<to-webdsl(err)>ex1; e2:=<to-webdsl(err)>ex2; e3:=<to-webdsl(err)>ex3
 
 rules // aggregations
 	
@@ -48,6 +126,7 @@ rules // multiplicities
 
 rules // references
 
+	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_name ]|
 	to-webdsl(err): EntityInstanceRef(x_name) -> webdsl:e |[ x_name ]|
 
 rules

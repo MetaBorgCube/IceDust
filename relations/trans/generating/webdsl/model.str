@@ -6,7 +6,6 @@ imports // constructors
 	lib/webdsl/WebDSL
 	src-gen/signatures/model-sig
 	src-gen/signatures/modules-sig
-	src-gen/signatures/types-sig
 	trans/desugaring/constructors
 
 imports // functions
@@ -91,11 +90,5 @@ rules // inverses
 			x_type := <_get-type>x_name;
 			x_rolename := <inversename-get-rolename>x_name
 
-rules		
-	
-	to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
-	to-webdsl(err): Int()     -> webdsl |[ Int ]|		
-	to-webdsl(err): String()  -> webdsl |[ String ]|
-		
 rules
 	

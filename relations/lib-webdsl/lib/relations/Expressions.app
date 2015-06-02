@@ -11,7 +11,8 @@ section helper functions
   			return is[0];
   		}
   		else{
-  			throw "Expected [0,1] Ints, got: ", is;
+  			return null;
+  			// throw "Expected [0,1] Ints, got: ", is;
   		}
   	}
   }
