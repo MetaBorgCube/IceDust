@@ -30,3 +30,11 @@ rules // webdsl types
 	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;to-webdsl(err);?srt1;!webdsl |[ [srt1] ]|
 
 rules
+
+	type-as-string: String()	-> "String"
+  type-as-string: Int()		  -> "Integer"
+  type-as-string: Boolean() -> "Boolean"
+  type-as-string: _ -> <id>
+  	where is-string
+
+rules

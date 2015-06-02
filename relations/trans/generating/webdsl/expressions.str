@@ -9,11 +9,12 @@ imports // constructors
 	trans/desugaring/constructors
 
 imports // functions
-	
+
+	trans/api/_runtime	
+	trans/api/module-names-api
 	trans/generating/webdsl/model
 	trans/generating/webdsl/data
 	trans/generating/webdsl/types
-	trans/api/module-names-api
 
 rules // math
 
@@ -73,7 +74,7 @@ rules // lib expression calls
 			e1 := <to-webdsl(err)>ex1;
 			e2 := <to-webdsl(err)>ex2
 		
-	to-webdsl(err): e -> |[ x_method (e1, e2) as srt1 ]|
+	to-webdsl(err): e -> |[ x_cast(x_method (e1, e2)) ]|
 		where
 			x_method := <webdsl-lib-call>e;
 			[ex1, ex2] := <get-arguments>e;
@@ -81,7 +82,7 @@ rules // lib expression calls
 		with
 			e1 := <to-webdsl(err)>ex1;
 			e2 := <to-webdsl(err)>ex2;
-			srt1 := <webdsl-type(err)>e
+			x_cast := $[as[<_get-type;type-as-string>e]]
 			
 	to-webdsl(err): e -> |[ x_method (e1, e2, e3) ]|
 		where

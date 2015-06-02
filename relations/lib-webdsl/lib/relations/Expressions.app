@@ -2,19 +2,55 @@ module lib/relations/Expressions
 
 section helper functions
 
-  function getInt(is:[Int]):Int {
-  	if(is.length==0){
-  		return null;
+  // function getInt(is:[Int]):Int {
+  // 	if(is.length==0){
+  // 		return null;
+  // 	}
+  // 	else{
+  // 		if(is.length==1){
+  // 			return is[0];
+  // 		}
+  // 		else{
+  // 			return null;
+  // 			// throw "Expected [0,1] Ints, got: ", is;
+  // 		}
+  // 	}
+  // }
+  
+  function asBoolean(i:Object):Bool{
+  	return i as Bool;
+  }
+  
+  function asBoolean(is:[Object]):[Bool]{
+  	var r : [Bool];
+  	for(i in is){
+  		r.add(i as Bool);
   	}
-  	else{
-  		if(is.length==1){
-  			return is[0];
-  		}
-  		else{
-  			return null;
-  			// throw "Expected [0,1] Ints, got: ", is;
-  		}
+  	return r;
+  }
+  
+  function asInteger(i:Object):Int{
+  	return i as Int;
+  }
+  
+  function asInteger(is:[Object]):[Int]{
+  	var r : [Int];
+  	for(i in is){
+  		r.add(i as Int);
   	}
+  	return r;
+  }
+  
+  function asString(i:Object):String{
+  	return i as String;
+  }
+  
+  function asString(is:[Object]):[String]{
+  	var r : [String];
+  	for(i in is){
+  		r.add(i as String);
+  	}
+  	return r;
   }
 
 section multiplicity expressions : choice (no shortcut evaluation)
