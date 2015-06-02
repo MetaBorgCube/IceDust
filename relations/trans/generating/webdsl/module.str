@@ -18,6 +18,8 @@ rules // module
 		ast@ModuleDesugared(x_name, _, _, _) -> 
 			webdsl |[
 				application x_name
+				
+				imports lib/relations/Expressions
 			
 				section model
 				
