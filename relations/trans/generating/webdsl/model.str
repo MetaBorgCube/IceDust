@@ -83,7 +83,7 @@ rules // inverses
 			x_type := <_get-type>x_name;
 			x_rolename := <inversename-get-rolename>x_name
 	
-	to-webdsl(err): x_name -> webdsl |[ x_name : {x_type} (inverse=x_rolename) ]|
+	to-webdsl(err): x_name -> webdsl |[ x_name : [x_type] (inverse=x_rolename) ]|
 		where
 			is-inversename
 		where
