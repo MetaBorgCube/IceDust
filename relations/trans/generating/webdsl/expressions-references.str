@@ -34,7 +34,7 @@ rules // references : attributes, roles and inverses
 		with
 			e1 := <to-webdsl(err)>ex1 
 	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_name | c : srt1 in e1 ] ]|
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_name | c : srt1 in e1 where c.x_name != null ] ]|
 		where
 			<get-multiplicity;upper-many>ex1;
 			<is-attributename <+ is-rolename <+ is-inversename>x_name
@@ -82,7 +82,7 @@ rules // references : shortcuts
 			x_roleName    := <get-origin-role2>x_name;
 			srt1 := <webdsl-type(err|<_get-type>x_inverseName,One())>
 	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [d.x_roleName | d : srt2 in [c.x_inverseName | c : srt1 in e1 ] ] ]|
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [d.x_roleName | d : srt2 in [c.x_inverseName | c : srt1 in e1 where c.x_inverseName != null ] ] ]|
 		where
 			<get-multiplicity;upper-many>ex1;
 			<is-attributename <+ is-rolename <+ is-inversename>x_name
