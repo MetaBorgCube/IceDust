@@ -342,8 +342,17 @@ section aggregation expressions
   	return if(i==null) 0 else 1;
   }
   
-  function count(is:[Object]):Int {
-  	return is.length;
+  // function count(i:Object):Int {
+  // 	return if(i==null) 0 else 1;
+  // }
+  // 
+  // function count(is:[Object]):Int {
+  // 	return is.length;
+  // }
+  
+  native class lib.relations.Expressions as Expressions{
+  	static count(Object) : Int
+  	static count(List<Object>) : Int
   }
 
 section logic expressions

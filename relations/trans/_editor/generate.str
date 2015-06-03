@@ -143,6 +143,9 @@ rules // Build in steps
 			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
 			<copy-dir>(sourceDir, targetDir);
 			<write-file>($[[targetDir]/.saved-but-not-built],"");
+			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
+			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
+			<copy-dir>(sourceDir2, targetDir2);
 			<dirname;_refresh-workspace-file> targetDir
 	
 	compile-java-step:

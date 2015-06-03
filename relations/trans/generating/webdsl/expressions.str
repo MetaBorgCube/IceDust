@@ -48,7 +48,7 @@ rules // aggregations
 	webdsl-lib-call: Conj(_)								->"conj"
 	webdsl-lib-call: Disj(_)								->"disj"
 	webdsl-lib-call: Concat(_)							->"concat"
-	webdsl-lib-call: Count(_)								->"count"
+	webdsl-lib-call-alt: Count(_)								->"count"
 
 rules // multiplicities
 	
@@ -65,7 +65,15 @@ rules // lib expression calls
 			x_method := <webdsl-lib-call>e;
 			[ex1] := <get-arguments>e
 		with
+			e1 := <to-webdsl(err)>ex1
+			
+	to-webdsl(err): e -> |[ Expressions.x_method (e1) ]|
+		where
+			x_method := <webdsl-lib-call-alt>e;
+			[ex1] := <get-arguments>e
+		with
 			e1 := <to-webdsl(err)>ex1	
+
 
 	to-webdsl(err): e -> |[ x_method (e1, e2) ]|
 		where
