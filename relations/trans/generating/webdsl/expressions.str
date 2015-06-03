@@ -35,7 +35,7 @@ rules // logic
 	webdsl-lib-call: Inequal(_, _)					->"neq"
 	webdsl-lib-call: And(_, _)							->"and"
 	webdsl-lib-call: Or(_, _)								->"or"
-	webdsl-lib-call: TernaryConditional(_,_,_)->"cond"
+	webdsl-lib-call: TernaryConditional(_,_,_)->"conditional"
 	
 	webdsl-lib-call-cast = ?TernaryConditional(_,_,_)
 
@@ -48,7 +48,7 @@ rules // aggregations
 	webdsl-lib-call: Conj(_)								->"conj"
 	webdsl-lib-call: Disj(_)								->"disj"
 	webdsl-lib-call: Concat(_)							->"concat"
-	webdsl-lib-call-alt: Count(_)								->"count"
+	webdsl-lib-call: Count(_)								->"count"
 
 rules // multiplicities
 	
@@ -60,22 +60,14 @@ rules // multiplicities
 
 rules // lib expression calls
 	
-	to-webdsl(err): e -> |[ x_method (e1) ]|
+	to-webdsl(err): e -> |[ Expressions.x_method (e1) ]|
 		where
 			x_method := <webdsl-lib-call>e;
 			[ex1] := <get-arguments>e
 		with
 			e1 := <to-webdsl(err)>ex1
-			
-	to-webdsl(err): e -> |[ Expressions.x_method (e1) ]|
-		where
-			x_method := <webdsl-lib-call-alt>e;
-			[ex1] := <get-arguments>e
-		with
-			e1 := <to-webdsl(err)>ex1	
 
-
-	to-webdsl(err): e -> |[ x_method (e1, e2) ]|
+	to-webdsl(err): e -> |[ Expressions.x_method (e1, e2) ]|
 		where
 			x_method := <webdsl-lib-call>e;
 			[ex1, ex2] := <get-arguments>e;
@@ -83,8 +75,9 @@ rules // lib expression calls
 		with
 			e1 := <to-webdsl(err)>ex1;
 			e2 := <to-webdsl(err)>ex2
-		
-	to-webdsl(err): e -> |[ x_cast(x_method(e1, e2)) ]|
+
+	to-webdsl(err): e -> |[ Expressions.x_method(e1, e2) as srt1 ]|		
+	// to-webdsl(err): e -> |[ x_cast(Expressions.x_method(e1, e2)) ]|
 		where
 			x_method := <webdsl-lib-call>e;
 			[ex1, ex2] := <get-arguments>e;
@@ -92,9 +85,11 @@ rules // lib expression calls
 		with
 			e1 := <to-webdsl(err)>ex1;
 			e2 := <to-webdsl(err)>ex2;
-			x_cast := $[as[<_get-type;type-as-string>e]]
+			// x_cast := $[as[<_get-type;type-as-string>e]]
+			srt1 := <webdsl-type(err)>e
 			
-	to-webdsl(err): e -> |[ x_cast(x_method(e1, e2, e3)) ]|
+	to-webdsl(err): e -> |[ Expressions.x_method(e1, e2, e3) as srt1 ]|
+	// to-webdsl(err): e -> |[ x_cast(Expressions.x_method(e1, e2, e3)) ]|
 		where
 			x_method := <webdsl-lib-call>e;
 			[ex1, ex2, ex3] := <get-arguments>e;
@@ -103,7 +98,8 @@ rules // lib expression calls
 			e1 := <to-webdsl(err)>ex1;
 			e2 := <to-webdsl(err)>ex2;
 			e3 := <to-webdsl(err)>ex3;
-			x_cast := $[as[<_get-type;type-as-string>e]]
+			// x_cast := $[as[<_get-type;type-as-string>e]]
+			srt1 := <webdsl-type(err)>e
 
 rules // literals
 	
