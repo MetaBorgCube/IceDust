@@ -11,32 +11,90 @@ imports // constructors
 
 imports // functions
 
-	trans/api/_runtime	
-	trans/api/module-names-api
-	trans/generating/webdsl/model
-	trans/generating/webdsl/data
+	trans/api/_runtime
+	trans/api/model-names-api
 	trans/generating/webdsl/types
 	trans/naming/names
 	trans/naming/_notNaBL
 
-rules // references
+rules // references : entity instance
+
+	to-webdsl(err): EntityInstanceRef(x_name) -> webdsl:e |[ x_name ]|
+
+rules // references : attributes, roles and inverses
 
 	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_name ]|
-	
-	to-webdsl(err): EntityInstanceRef(x_name) -> webdsl:e |[ x_name ]|
+		where
+			<is-attributename <+ is-rolename <+ is-inversename>x_name
 	
 	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ e1.x_name ]|
 		where
-			<get-multiplicity;upper-one>ex1
+			<get-multiplicity;upper-one>ex1;
+			<is-attributename <+ is-rolename <+ is-inversename>x_name
 		with
 			e1 := <to-webdsl(err)>ex1 
 	
 	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_name | c : srt1 in e1 ] ]|
 		where
-			<get-multiplicity;upper-many>ex1
+			<get-multiplicity;upper-many>ex1;
+			<is-attributename <+ is-rolename <+ is-inversename>x_name
 		with
 			e1 := <to-webdsl(err)>ex1;
 			srt1 := <webdsl-type(err|<_get-type>ex1,One())>
 
-rules
+rules // references : shortcuts
+
+	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_inverseName.x_roleName ]|
+		where
+			<is-shortcutname>x_name;
+			<get-multiplicity;upper-one>x_name
+		with
+			x_inverseName := <get-origin-role;get-inverse>x_name;
+			x_roleName    := <get-origin-role2>x_name
+			
+	to-webdsl(err): Ref(x_name) -> webdsl:e |[ [c.x_roleName | c : srt1 in  x_inverseName ] ]|
+		where
+			<is-shortcutname>x_name;
+			<get-multiplicity;upper-many>x_name
+		with
+			x_inverseName := <get-origin-role;get-inverse>x_name;
+			x_roleName    := <get-origin-role2>x_name;
+			srt1 := <webdsl-type(err|<_get-type>x_inverseName,One())>
+
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ e1.x_inverseName.x_roleName ]|
+		where
+			<get-multiplicity;upper-one>ex1;
+			<get-multiplicity;upper-one>x_name;
+			<is-shortcutname>x_name
+		with
+			e1 := <to-webdsl(err)>ex1;
+			x_inverseName := <get-origin-role;get-inverse>x_name;
+			x_roleName    := <get-origin-role2>x_name
+
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_roleName | c : srt1 in e1.x_inverseName ] ]|
+		where
+			<get-multiplicity;upper-one>ex1;
+			<get-multiplicity;upper-many>x_name;
+			<is-shortcutname>x_name
+		with
+			e1 := <to-webdsl(err)>ex1;
+			x_inverseName := <get-origin-role;get-inverse>x_name;
+			x_roleName    := <get-origin-role2>x_name;
+			srt1 := <webdsl-type(err|<_get-type>x_inverseName,One())>
 	
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [d.x_roleName | d : srt2 in [c.x_inverseName | c : srt1 in e1 ] ] ]|
+		where
+			<get-multiplicity;upper-many>ex1;
+			<is-attributename <+ is-rolename <+ is-inversename>x_name
+		with
+			e1 := <to-webdsl(err)>ex1;
+			srt1 := <webdsl-type(err|<_get-type>ex1,One())>;
+			x_inverseName := <get-origin-role;get-inverse>x_name;
+			x_roleName    := <get-origin-role2>x_name;
+			srt2 := <webdsl-type(err|<_get-type>x_inverseName,One())>
+
+rules // references : this
+
+	to-webdsl(err): This() -> webdsl:e |[this]|
+
+rules

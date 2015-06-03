@@ -44,6 +44,8 @@ rules // inverses
 
 rules // shortcuts
 
+	is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
+
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
