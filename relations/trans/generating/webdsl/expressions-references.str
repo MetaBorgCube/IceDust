@@ -27,7 +27,7 @@ rules // references : attributes, roles and inverses
 		where
 			<is-attributename <+ is-rolename <+ is-inversename>x_name
 	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ e1.x_name ]|
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ if(e1!=null) e1.x_name else null ]|
 		where
 			<get-multiplicity;upper-one>ex1;
 			<is-attributename <+ is-rolename <+ is-inversename>x_name
@@ -44,7 +44,7 @@ rules // references : attributes, roles and inverses
 
 rules // references : shortcuts
 
-	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_inverseName.x_roleName ]|
+	to-webdsl(err): Ref(x_name) -> webdsl:e |[ if(x_inverseName!=null) x_inverseName.x_roleName else null ]|
 		where
 			<is-shortcutname>x_name;
 			<get-multiplicity;upper-one>x_name
