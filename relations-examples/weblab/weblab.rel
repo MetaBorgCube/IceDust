@@ -3,17 +3,22 @@ module weblab
 model
 
   entity Student {
-    name : String  
+    name : String
+    
+    passedCourses : Int = sum(enrollment.pass2)  
   }
 
   entity Course {
+  	name     : String
     avgGrade : Int? = avg( enrollment.grade )
-    passPerc : Int? = 100 * count(enrollment.pass2) / count(enrollment)
+    passPerc : Int? = 100 * sum(enrollment.pass2) / count(enrollment)
   }
 
   relation Enrollment {
     Course * 
     Student *
+    
+    name : String = course.name + " " +student.name
     
     pass  : Boolean = studentAssignment.pass
     pass2 : Int     = pass?1:0
@@ -21,6 +26,8 @@ model
   }
 
   entity Assignment {
+  	name :  String
+  	
     gradeMinimum  : Int = 55 (default)
     gradeWeight   : Int = 1  (default)
     
@@ -33,6 +40,8 @@ model
   relation Submission {
     Student * 
     Assignment * 
+    
+    name : String = student.name + " " + assignment.name
 
     grade        : Int    // between 10 (min) and 100 (max)
     date         : Int?
@@ -58,14 +67,20 @@ model
   relation CourseAssignments {
     Course 1 
     Assignment ?
+    
+    name : String = course.name + " " + assignment.name
   }
   
   relation AssignmentPart {
     Assignment * whole <- wholeAssignment
     Assignment ? part  <- partAssignment
+    
+    name : String = whole.name + " " + part.name
   }
   
   entity StudentAssignment {
+  	name : String? = enrollment.name //+ " " + assignment.name
+  	
     pass            : Boolean = passGrade && passParts
     
     passGrade       : Boolean = grade >= assignment.gradeMinimum <+ false
@@ -101,20 +116,23 @@ model
     StudentAssignment 1 Assignment *
   }
 
-data 
+data
+ 
   Student alice   { name="Alice"   }
   Student bob     { name="Bob"     }
   Student charlie { name="Charlie" }
-  Course compiler { }
 
-  Enrollment enA { student:alice   course:compiler }
-  Enrollment enB { student:bob     course:compiler }
-  Enrollment enC { student:charlie course:compiler }
+  Course compiler { name="Compiler Construction" }
 
-  Assignment comp       { }  Assignment exam       { gradeWeight=2 gradeMinimum=60 }
-  Assignment practical  { gradeWeight=1 gradeMinimum=60 }
-  Assignment practicalA { gradeWeight=2 gradeMinimum=50 deadline=7 }
-  Assignment practicalB { gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20 }
+  Enrollment enA { student:alice   course:compiler  }
+  Enrollment enB { student:bob     course:compiler  }
+  Enrollment enC { student:charlie course:compiler  }
+
+  Assignment comp       { name="root" }
+  Assignment exam       { name="exam"       gradeWeight=2 gradeMinimum=60 }
+  Assignment practical  { name="practical"  gradeWeight=1 gradeMinimum=60 }
+  Assignment practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7 }
+  Assignment practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20 }
 
   CourseAssignments { course:compiler assignment:comp }
 
