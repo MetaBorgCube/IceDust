@@ -19,6 +19,7 @@ imports // generated runtime
 	lib/runtime/nabl/tasks
 	lib/runtime/nabl/query
 	lib/runtime/nabl/uri
+	lib/runtime/properties/query
 	lib/runtime/task/core
 	lib/runtime/task/insert
 	lib/runtime/task/messages
@@ -137,4 +138,6 @@ rules
 	
 	_index-add(|value, source) = index-add(|value, source)
 	_index-clear-source = index-clear-source
+	
+	_get-property(|kind) = get-property(|kind)
 	

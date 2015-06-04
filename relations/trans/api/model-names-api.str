@@ -7,6 +7,7 @@ imports // constructors
 	trans/api/constructors
 	trans/desugaring/constructors
 	trans/naming/names
+	trans/analysis2/constructors
 
 imports // functions
 
@@ -31,6 +32,8 @@ rules // attributes
 	attributename-is-derivation = where(get-derivation-type;?Derivation())
 	attributename-is-default    = where(get-derivation-type;?DefaultValue())
 	attributename-is-normal     = where(get-derivation-type;?Normal())
+	
+	attributename-get-dependson = _get-property(|DependsOn())
 	
 rules // roles
 	
