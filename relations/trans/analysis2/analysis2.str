@@ -28,8 +28,8 @@ rules
 		with
 			attr* := <collect(is-attr)>ast;
 			<map(attr-depends-on)>attr*
-			// ;
-			// <map(attr-get-name;attributename-get-dependson;debug)>attr*
+			;
+			<map(attr-get-name;attributename-get-dependson;debug)>attr*
 	
 	attr-depends-on: attr -> []
 		where
@@ -47,6 +47,12 @@ rules
 	index-store-prop(|kind, name): val -> val
 		with
 			<_index-add(|val, "analysis2")>Prop(<_nabl-uri>name, kind)
+	
+	attributename-get-dependson = index-get-prop(|DependsOn())
+	
+	index-get-prop(|kind): name -> val
+		with
+			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
 
 rules // Path rules
 
