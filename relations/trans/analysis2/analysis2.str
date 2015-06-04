@@ -1,0 +1,78 @@
+module trans/analysis2/analysis2
+
+imports // constructors
+	
+	src-gen/signatures/Expressions-sig
+	trans/api/_runtime-constructors
+	trans/analysis2/constructors
+
+imports // functions
+
+	trans/api/_runtime
+	trans/api/model-api
+	trans/api/model-names-api
+
+rules
+	
+	analysis2 =
+		analysis2-clear-index;
+		collect-attr-depends-on
+
+	analysis2-clear-index: a -> a
+		with
+			<_index-clear-source>"analysis2"
+
+rules
+	
+	collect-attr-depends-on: ast -> ast
+		with
+			attr* := <collect(is-attr)>ast;
+			<map(attr-depends-on)>attr*
+	
+	attr-depends-on: attr -> []
+		where
+			not(attr-get-derivation)
+
+	attr-depends-on: attr -> []
+		where
+			derivation := <attr-get-derivation>attr
+		with
+			attrName   := <attr-get-name>attr;
+			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
+			paths      := <map(pathexpr-to-path)>pathExprs;
+			<map(index-store-prop(|DependsOn(),attrName))>paths
+			
+	index-store-prop(|kind, name): val -> val
+		with
+			<_index-add(|val, "analysis2")>Prop(<_nabl-uri>name, kind)
+
+rules // Path rules
+
+	pathexpr-to-path: This()                   -> Path([])
+	pathexpr-to-path: Ref(name)                -> Path([name])
+	
+	pathexpr-to-path: MemberAccess(expr, name) -> Path([name*,name])
+		where
+			<not(is-shortcutname)>name
+		with
+			<pathexpr-to-path>expr => Path(name*)
+	
+	pathexpr-to-path: MemberAccess(expr, name) -> Path([name*,name1,name2])
+		where
+			<is-shortcutname>name
+		with
+			<pathexpr-to-path>expr => Path(name*);
+			<shortcutname-get-inverseandrolename>name => (name1, name2)
+	
+//shortcutname-get-inverseandrolename
+
+	path-add-start(|name) : Path(name*)        -> Path([name,name*])
+	path-get-start(|name) : Path([name|_])     -> name
+	path-remove-start     : Path([name|name*]) -> Path(name*)
+	
+	path-reverse = Path(reverse;map(try(name-inverse)))
+	
+	name-inverse = rolename-get-inversename
+	name-inverse = inversename-get-rolename
+
+rules

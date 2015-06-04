@@ -13,7 +13,7 @@ imports // functions
 	trans/api/_runtime
 	trans/lib/origin
 	trans/lib/search
-		trans/lib/string
+	trans/lib/string
 
 rules // entity
 
@@ -36,6 +36,8 @@ rules // roles
 	
 	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
 	
+	rolename-get-inversename = get-inverse
+	
 rules // inverses
 	
 	is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
@@ -45,6 +47,13 @@ rules // inverses
 rules // shortcuts
 
 	is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
+	
+	shortcutname-get-rolename1          = get-origin-role
+	shortcutname-get-rolename2          = get-origin-role2
+	
+	shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
+	shortcutname-get-rolename           = shortcutname-get-rolename2
+	shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
 
 rules // helper
 
