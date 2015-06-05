@@ -11,6 +11,7 @@ imports // functions
 	trans/api/_runtime
 	trans/api/model-api
 	trans/api/model-names-api
+	trans/lib/traverse
 
 rules
 	
@@ -28,8 +29,8 @@ rules
 		with
 			attr* := <collect(is-attr)>ast;
 			<map(attr-depends-on)>attr*
-			;
-			<map(attr-get-name;attributename-get-dependson;debug)>attr*
+			// ;
+			// <map(attr-get-name;attributename-get-dependson;debug)>attr*
 	
 	attr-depends-on: attr -> []
 		where
@@ -46,13 +47,18 @@ rules
 			
 	index-store-prop(|kind, name): val -> val
 		with
-			<_index-add(|val, "analysis2")>Prop(<_nabl-uri>name, kind)
+			<_index-add(|<give-all-tasks-results2>val, "analysis2")>Prop(<_nabl-uri>name, kind)
 	
 	attributename-get-dependson = index-get-prop(|DependsOn())
 	
 	index-get-prop(|kind): name -> val
 		with
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
+
+	give-all-tasks-results2 = bottomup-anno(try(_give-task-results2))
+	_give-task-results2 = give-task-results;try(de-list)
+	
+	de-list: [a]->a
 
 rules // Path rules
 
