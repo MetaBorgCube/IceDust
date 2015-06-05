@@ -5,3 +5,4 @@ signature constructors
 	Path      : List(URL)
 
 	DependsOn : DependsOn
+	FlowsTo   : FlowsTo

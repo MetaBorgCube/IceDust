@@ -43,11 +43,19 @@ rules
 			attrName   := <attr-get-name>attr;
 			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
 			paths      := <map(pathexpr-to-path)>pathExprs;
-			<map(index-store-prop(|DependsOn(),attrName))>paths
+			<map(index-store-prop(|DependsOn(),attrName))>paths;
+			invPaths   := <map(path-add-start(|attrName);path-reverse;path-get-all-endings);concat>paths;
+			<map(store-inv-path)>invPaths
+			
+	store-inv-path: path -> path
+		with
+			name  := <path-get-start>path;
+			path' := <path-remove-start>path;
+			<index-store-prop(|FlowsTo(),name)>path'
 			
 	index-store-prop(|kind, name): val -> val
 		with
-			<_index-add(|<give-all-tasks-results2>val, "analysis2")>Prop(<_nabl-uri>name, kind)
+			<_index-add(|<give-all-tasks-results-anno>val, "analysis2")>Prop(<_nabl-uri>name, kind)
 	
 	attributename-get-dependson = index-get-prop(|DependsOn())
 	
@@ -55,15 +63,24 @@ rules
 		with
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
 
-	give-all-tasks-results2 = bottomup-anno(try(_give-task-results2))
-	_give-task-results2 = give-task-results;try(de-list)
+	give-all-tasks-results-anno = bottomup-anno(try(give-task-results-anno))
+	give-task-results-anno = _give-task-results;try(de-list)
 	
 	de-list: [a]->a
 
 rules // Path rules
 
 	pathexpr-to-path: This()                   -> Path([])
+	
 	pathexpr-to-path: Ref(name)                -> Path([name])
+		where
+			<not(is-shortcutname)>name
+			
+	pathexpr-to-path: Ref(name)                -> Path([name1, name2])
+		where
+			<is-shortcutname>name
+		with
+			<shortcutname-get-inverseandrolename>name => (name1, name2)
 	
 	pathexpr-to-path: MemberAccess(expr, name) -> Path([name*,name])
 		where
@@ -81,12 +98,19 @@ rules // Path rules
 //shortcutname-get-inverseandrolename
 
 	path-add-start(|name) : Path(name*)        -> Path([name,name*])
-	path-get-start(|name) : Path([name|_])     -> name
+	path-get-start        : Path([name|_])     -> name
 	path-remove-start     : Path([name|name*]) -> Path(name*)
 	
 	path-reverse = Path(reverse;map(try(name-inverse)))
 	
 	name-inverse = rolename-get-inversename
 	name-inverse = inversename-get-rolename
+
+	path-lenght = Path(length)
+	
+	path-get-all-endings: Path([]) -> []
+	path-get-all-endings: Path([a]) -> []
+	path-get-all-endings: p -> [p|<path-remove-start;path-get-all-endings>p]
+	
 
 rules
