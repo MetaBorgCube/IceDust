@@ -51,7 +51,11 @@ rules
 		with
 			name  := <path-get-start>path;
 			path' := <path-remove-start>path;
-			<index-store-prop(|FlowsTo(),name)>path'
+			if <not(is-inversename)>name then
+				<index-store-prop(|FlowsTo(),name)>path'
+			else
+				<index-store-prop(|FlowsTo(),<inversename-get-rolename>name)>Inv(path')
+			end
 			
 	index-store-prop(|kind, name): val -> val
 		with

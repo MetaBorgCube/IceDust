@@ -4,6 +4,7 @@ imports // constructors
 
 	src-gen/signatures/expressions-sig
 	src-gen/signatures/types-sig
+	trans/analysis2/constructors
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors
 	
@@ -126,3 +127,4 @@ rules // formatting for editor services
 	pp-property : OneOrMore()	-> "[1, n), one or more, required"
 	
 	pp-property : Path(names) -> <concat-strings(|".")>names
+	pp-property : Inv(path)   -> $[(inv) [<pp-property>path]]
