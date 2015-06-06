@@ -60,7 +60,7 @@ rules
 	attributename-get-dependson = index-get-prop(|DependsOn())
 	
 	index-get-prop(|kind): name -> val
-		with
+		where
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
 
 	give-all-tasks-results-anno = bottomup-anno(try(give-task-results-anno))

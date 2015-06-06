@@ -45,4 +45,8 @@ rules // sorting (keeping annotations)
 	string-sort-anno      = qsort(string-lt)
 	string-sort-anno-desc = qsort(string-gt)
 	
+rules // concat with 
+
+	concat-strings(|sep) = separate-by(|sep);concat-strings
+
 rules
