@@ -64,6 +64,7 @@ public class graph_topological_sort_1_0 extends Strategy {
 			}
 		}
 		
+		Collections.reverse(nodes);
 		tarjan();
 		Collections.reverse(sccs); // tarjan algorithm returns a reversed dependency graph
 		
