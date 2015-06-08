@@ -7,3 +7,4 @@ signature constructors
 
 	DependsOn : DependsOn
 	FlowsTo   : FlowsTo
+	TopoSort  : TopoSort

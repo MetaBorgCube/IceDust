@@ -33,6 +33,8 @@ rules // attributes
 	attributename-is-default    = where(get-derivation-type;?DefaultValue())
 	attributename-is-normal     = where(get-derivation-type;?Normal())
 	
+	atttributename-get-entityname = _nabl-uri;_nabl-uri-parent;_nabl-uri-name
+	
 rules // roles
 	
 	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())

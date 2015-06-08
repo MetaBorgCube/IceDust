@@ -12,6 +12,7 @@ imports // functions
 	trans/api/model-api
 	trans/api/model-names-api
 	trans/lib/traverse
+	trans/lib/graph
 
 rules
 	
@@ -28,9 +29,20 @@ rules
 	collect-attr-depends-on: ast -> ast
 		with
 			attr* := <collect(is-attr)>ast;
-			<map(attr-depends-on)>attr*
+			<map(attr-depends-on)>attr*;
+			topsort := <map(attr-get-name);graph-topological-sort(name-get-flowsto-names)>attr*;
+			// <map(map(qualify-name);topdown(rm-annotations);debug)>topsort;
+			<nmap(group-store-topsort|1)>topsort
 			// ;
-			// <map(attr-get-name;attributename-get-dependson;debug)>attr*
+			// <map(attr-get-name;name-get-flowsto-names;debug)>attr*
+	
+	group-store-topsort(|i) = map(name-store-topsort(|i))
+	
+	name-store-topsort(|i) : name -> <index-store-prop(|TopoSort(),name)>i
+	
+	qualify-name: name -> $[[parent].[name]]
+		with
+			parent := <atttributename-get-entityname>name
 	
 	attr-depends-on: attr -> []
 		where
@@ -71,6 +83,9 @@ rules
 	give-task-results-anno = _give-task-results;try(de-list)
 	
 	de-list: [a]->a
+	
+	name-get-flowsto-paths = index-get-prop(|FlowsTo())
+	name-get-flowsto-names = name-get-flowsto-paths;map(path-get-last)
 
 rules // Path rules
 
@@ -104,6 +119,8 @@ rules // Path rules
 	path-add-start(|name) : Path(name*)        -> Path([name,name*])
 	path-get-start        : Path([name|_])     -> name
 	path-remove-start     : Path([name|name*]) -> Path(name*)
+	
+	path-get-last         = ?Path(<last>)
 	
 	path-reverse = Path(reverse;map(try(name-inverse)))
 	
