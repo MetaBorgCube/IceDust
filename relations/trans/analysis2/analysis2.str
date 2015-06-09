@@ -8,11 +8,13 @@ imports // constructors
 
 imports // functions
 
+	trans/analysis2/path
 	trans/api/_runtime
 	trans/api/model-api
 	trans/api/model-names-api
-	trans/lib/traverse
+	trans/lib/nabl-ext
 	trans/lib/graph
+	trans/lib/index
 
 rules
 	
@@ -28,110 +30,31 @@ rules
 	
 	collect-attr-depends-on: ast -> ast
 		with
-			attr* := <collect(is-attr)>ast;
-			<map(attr-depends-on)>attr*;
-			topsort := <map(attr-get-name);graph-topological-sort(name-get-flowsto-names)>attr*;
-			// <map(map(qualify-name);topdown(rm-annotations);debug)>topsort;
+			attrs      := <collect(is-attr)>ast;
+			paths      := <map(attr-depends-on);concat>attrs;
+			<map(path-store-on-origin(|DependsOn()))>paths;
+			invPaths   := <map(path-reverse;path-all-tails);concat>paths;
+			<map(path-store-on-origin(|FlowsTo()))>invPaths;
+			invOrigin* := <map(path-get-origin-name-r);make-set>invPaths;
+			attrName*  := <map(attr-get-name)>attrs;
+			nodes      := [attrName*, invOrigin*];
+			topsort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>nodes;
 			<nmap(group-store-topsort|1)>topsort
-			// ;
-			// <map(attr-get-name;name-get-flowsto-names;debug)>attr*
-	
-	group-store-topsort(|i) = map(name-store-topsort(|i))
-	
-	name-store-topsort(|i) : name -> <index-store-prop(|TopoSort(),name)>i
-	
-	qualify-name: name -> $[[parent].[name]]
-		with
-			parent := <atttributename-get-entityname>name
-	
+
 	attr-depends-on: attr -> []
 		where
 			not(attr-get-derivation)
 
-	attr-depends-on: attr -> []
+	attr-depends-on: attr -> paths
 		where
 			derivation := <attr-get-derivation>attr
 		with
 			attrName   := <attr-get-name>attr;
 			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
-			paths      := <map(pathexpr-to-path)>pathExprs;
-			<map(index-store-prop(|DependsOn(),attrName))>paths;
-			invPaths   := <map(path-add-start(|attrName);path-reverse;path-get-all-endings);concat>paths;
-			<map(store-inv-path)>invPaths
-			
-	store-inv-path: path -> path
-		with
-			name  := <path-get-start>path;
-			path' := <path-remove-start>path;
-			if <not(is-inversename)>name then
-				<index-store-prop(|FlowsTo(),name)>path'
-			else
-				<index-store-prop(|FlowsTo(),<inversename-get-rolename>name)>Inv(path')
-			end
-			
-	index-store-prop(|kind, name): val -> val
-		with
-			<_index-add(|<give-all-tasks-results-anno>val, "analysis2")>Prop(<_nabl-uri>name, kind)
-	
-	attributename-get-dependson = index-get-prop(|DependsOn())
-	
-	index-get-prop(|kind): name -> val
-		where
-			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
+			paths      := <map(expr-to-path(|attrName));give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
 
-	give-all-tasks-results-anno = bottomup-anno(try(give-task-results-anno))
-	give-task-results-anno = _give-task-results;try(de-list)
+	group-store-topsort(|i) = map(name-store-topsort(|i))
 	
-	de-list: [a]->a
-	
-	name-get-flowsto-paths = index-get-prop(|FlowsTo())
-	name-get-flowsto-names = name-get-flowsto-paths;map(path-get-last)
-
-rules // Path rules
-
-	pathexpr-to-path: This()                   -> Path([])
-	
-	pathexpr-to-path: Ref(name)                -> Path([name])
-		where
-			<not(is-shortcutname)>name
-			
-	pathexpr-to-path: Ref(name)                -> Path([name1, name2])
-		where
-			<is-shortcutname>name
-		with
-			<shortcutname-get-inverseandrolename>name => (name1, name2)
-	
-	pathexpr-to-path: MemberAccess(expr, name) -> Path([name*,name])
-		where
-			<not(is-shortcutname)>name
-		with
-			<pathexpr-to-path>expr => Path(name*)
-	
-	pathexpr-to-path: MemberAccess(expr, name) -> Path([name*,name1,name2])
-		where
-			<is-shortcutname>name
-		with
-			<pathexpr-to-path>expr => Path(name*);
-			<shortcutname-get-inverseandrolename>name => (name1, name2)
-	
-//shortcutname-get-inverseandrolename
-
-	path-add-start(|name) : Path(name*)        -> Path([name,name*])
-	path-get-start        : Path([name|_])     -> name
-	path-remove-start     : Path([name|name*]) -> Path(name*)
-	
-	path-get-last         = ?Path(<last>)
-	
-	path-reverse = Path(reverse;map(try(name-inverse)))
-	
-	name-inverse = rolename-get-inversename
-	name-inverse = inversename-get-rolename
-
-	path-lenght = Path(length)
-	
-	path-get-all-endings: Path([]) -> []
-	path-get-all-endings: Path([a]) -> []
-	path-get-all-endings: p -> [p|<path-remove-start;path-get-all-endings>p]
-	
+	name-store-topsort(|i) : name -> <index-store-prop(|TopoSort(),name)>i
 
 rules

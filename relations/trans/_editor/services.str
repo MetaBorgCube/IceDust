@@ -12,6 +12,7 @@ imports // functions
 
 	trans/api/_generated
 	// trans/analysis/rules
+	trans/analysis2/path
 	trans/api/_runtime
 	trans/lib/string
 	trans/prettyprinting/pp
@@ -126,6 +127,7 @@ rules // formatting for editor services
 	pp-property : One() 			-> "[1, 1], exactly one, required"
 	pp-property : ZeroOrMore()-> "[0, n), zero or more, maybe/nullable"
 	pp-property : OneOrMore()	-> "[1, n), one or more, required"
-	
-	pp-property : Path(names) -> <concat-strings(|".")>names
-	pp-property : Inv(path)   -> $[(inv) [<pp-property>path]]
+
+	pp-property = path-pp	
+	// pp-property : Path(names) -> <concat-strings(|".")>names
+	// pp-property : Inv(path)   -> $[(inv) [<pp-property>path]]
