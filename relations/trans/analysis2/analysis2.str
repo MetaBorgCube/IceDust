@@ -12,6 +12,8 @@ imports // functions
 	trans/api/_runtime
 	trans/api/model-api
 	trans/api/model-names-api
+	trans/api/module-api
+	trans/api/module-names-api
 	trans/lib/nabl-ext
 	trans/lib/graph
 	trans/lib/index
@@ -21,7 +23,10 @@ rules
 	
 	analysis2 =
 		analysis2-clear-index;
-		collect-attr-depends-on
+		depends-on-and-flows-to;
+		flows-toposort
+
+rules
 
 	analysis2-clear-index: a -> a
 		with
@@ -29,19 +34,13 @@ rules
 
 rules
 	
-	collect-attr-depends-on: ast -> ast
+	depends-on-and-flows-to: ast -> ast
 		with
 			attrs      := <collect(is-attr)>ast;
 			paths      := <map(attr-depends-on);concat>attrs;
 			<map(path-store-on-origin(|DependsOn()))>paths;
 			invPaths   := <map(path-reverse;path-all-tails);concat>paths;
-			<map(path-store-on-origin(|FlowsTo()))>invPaths;
-			invOrigin* := <map(path-get-origin-name-r);make-set>invPaths;
-			attrName*  := <map(attr-get-name)>attrs;
-			nodes      := [attrName*, invOrigin*];
-			toposort   := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>nodes;
-			numbers    := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
-			<map(index-store-prop(|TopoSort()))>numbers
+			<map(path-store-on-origin(|FlowsTo()))>invPaths
 
 	attr-depends-on: attr -> []
 		where
@@ -55,4 +54,15 @@ rules
 			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
 			paths      := <map(expr-to-path(|attrName));give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
 
+rules
+	
+	flows-toposort: ast -> ast
+		with
+			moduleName  := <module-get-modulename>ast;
+			entityNames := <modulename-get-entitynames>moduleName;
+			graphNames  := <map(concat(entityname-get-attributenames,entityname-get-rolenames));concat>entityNames;
+			toposort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>graphNames;
+			numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+			<map(index-store-prop(|TopoSort()))>numbers
+	
 rules

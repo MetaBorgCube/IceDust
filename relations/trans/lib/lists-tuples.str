@@ -27,3 +27,8 @@ rules // List -> List
 	make-set-ordered = reverse;make-set
 
 rules
+
+	concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
+
+rules
+	
