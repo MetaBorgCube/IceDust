@@ -15,6 +15,7 @@ imports // functions
 	trans/lib/nabl-ext
 	trans/lib/graph
 	trans/lib/index
+	trans/lib/lists-tuples
 
 rules
 	
@@ -38,8 +39,9 @@ rules
 			invOrigin* := <map(path-get-origin-name-r);make-set>invPaths;
 			attrName*  := <map(attr-get-name)>attrs;
 			nodes      := [attrName*, invOrigin*];
-			topsort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>nodes;
-			<nmap(group-store-topsort|1)>topsort
+			toposort   := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>nodes;
+			numbers    := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+			<map(index-store-prop(|TopoSort()))>numbers
 
 	attr-depends-on: attr -> []
 		where
@@ -52,9 +54,5 @@ rules
 			attrName   := <attr-get-name>attr;
 			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
 			paths      := <map(expr-to-path(|attrName));give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
-
-	group-store-topsort(|i) = map(name-store-topsort(|i))
-	
-	name-store-topsort(|i) : name -> <index-store-prop(|TopoSort(),name)>i
 
 rules

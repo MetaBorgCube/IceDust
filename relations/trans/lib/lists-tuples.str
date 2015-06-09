@@ -1,0 +1,29 @@
+module trans/lib/lists-tuples
+
+imports
+
+rules // (|b) a -> (a, b)
+	
+	tuple-with(|b): a -> (a, b)
+
+rules // (|a) b -> (a, b)
+	
+	tuple-with-rev(|a): b -> (a, b)
+
+rules // tuple -> tuple
+
+	tuple-reverse = TupleToList;reverse;ListToTuple
+
+rules // (a * List(b)) -> List((a * b))
+	
+	zip-repeat-1: (a, bs) -> <map(tuple-with-rev(|a))>bs
+
+rules // (List(a) * b) -> List((a * b))
+
+	zip-repeat-2: (as, b) -> <map(tuple-with(|b))>as
+
+rules // List -> List
+	
+	make-set-ordered = reverse;make-set
+
+rules

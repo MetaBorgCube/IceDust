@@ -13,6 +13,7 @@ imports // functions
 	trans/lib/origin
 	trans/lib/search
 	trans/lib/string
+	trans/lib/lists-tuples
 	
 rules // module
 	
@@ -23,8 +24,6 @@ rules // module
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
-
-	make-set-ordered = reverse;make-set //make-set folds right, reversing the order
 
 rules
 	
