@@ -41,7 +41,11 @@ rules // PathExpr -> String
 	pathexpr-get-last         = ?PathExpr(<last>)
 
 	pathexpr-pp : PathExpr(names) -> <concat-strings(|".")>names
+
+rules // Path -> Path or fail
 	
+	pathexpr-isvalid: p@PathExpr(names) -> p where <map(is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname)>names
+
 rules // Expr -> Path
 	
 	expr-to-path(|name): expr -> Path(<name-to-pathorigin>name, <expr-to-pathexpr>expr)
@@ -61,6 +65,10 @@ rules // Path -> Path
 			origin'   := <pathexpr-get-start;name-to-pathorigin>pathexpr
 
 	path-store-on-origin(|property): path -> <index-store-prop(|property, <path-get-origin-name-r>path)>path
+
+rules // Path -> Path or fail
+	
+	path-isvalid: p@Path(_, pathexpr) -> p where <pathexpr-isvalid>pathexpr
 
 rules // Path -> String
 	

@@ -52,7 +52,7 @@ rules
 		with
 			attrName   := <attr-get-name>attr;
 			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
-			paths      := <map(expr-to-path(|attrName));give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
+			paths      := <map(expr-to-path(|attrName));filter(path-isvalid);give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
 
 rules
 	
