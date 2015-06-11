@@ -55,6 +55,7 @@ menus
     action: "Compile Java"         = compile-java (meta)
     action: "Execute Java"         = execute-java
     action: "Generate WebDSL"      = generate-webdsl (openeditor) (realtime) (meta)
+    action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor) (realtime) (meta)
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 

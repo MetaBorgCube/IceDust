@@ -1,0 +1,68 @@
+module trans/generating/webdsl-eager/model
+
+imports // constructors
+
+	trans/api/constructors
+	lib/webdsl/WebDSL
+	src-gen/signatures/model-sig
+	src-gen/signatures/modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/api/_runtime
+	trans/api/model-api
+	trans/api/model-names-api
+	trans/lib/search
+	trans/naming/names
+	trans/naming/_notNabl
+	trans/generating/webdsl/expressions
+	trans/generating/webdsl/expressions-references
+
+rules // entities
+	
+  to-webdsl-eager(err|ast): x_name -> 
+		webdsl |[
+			entity x_name {
+				ebd1*
+				ebd2*
+				ebd3*
+			}
+		]|
+	where
+		is-entityname
+	with
+		ebd1* := <entityname-get-attributenames;map(to-webdsl-eager(err|ast))>x_name;
+		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
+		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name
+
+rules // attributes
+
+	to-webdsl-eager(err|ast): x_name -> webdsl |[ x_name : srt1 (default=null) ]|
+		// where
+		// 	is-attributename
+		// where
+		// 	attributename-is-normal
+		with
+			srt1 := <to-webdsl(err)><_get-type>x_name
+			
+	// to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 := e1 ]|
+	// 	where
+	// 		is-attributename
+	// 	where
+	// 		attributename-is-derivation
+	// 	with
+	// 		srt1 := <to-webdsl(err)><_get-type>x_name;
+	// 		e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
+	// 		
+	// to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 (default=e1) ]|
+	// 	where
+	// 		is-attributename
+	// 	where
+	// 		attributename-is-default
+	// 	with
+	// 		srt1 := <to-webdsl(err)><_get-type>x_name;
+	// 		e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
+
+rules
+	

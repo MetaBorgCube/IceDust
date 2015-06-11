@@ -13,6 +13,7 @@ imports // functions
 	trans/desugaring/desugar
 	trans/generating/java/generate
 	trans/generating/webdsl/generate
+	trans/generating/webdsl-eager/generate
 	trans/lib/files
 	trans/prettyprinting/pp
 
@@ -22,8 +23,9 @@ signature sorts
 	
 signature constructors
 	
-	Java   : TargetLanguage
-	WebDSL : TargetLanguage
+	Java        : TargetLanguage
+	WebDSL      : TargetLanguage
+	WebDSLEager : TargetLanguage
 
 rules // Builders
 	
@@ -54,6 +56,13 @@ rules // Builders
 		(selected, position, ast, path, project-path) -> result
 		with
 			result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
+
+	generate-webdsl-eager      = generate-webdsl-eager(error-handler-editor)
+	generate-webdsl-eager-test = generate-webdsl-eager(error-handler-tests)
+	generate-webdsl-eager(error-handler):
+		(selected, position, ast, path, project-path) -> result
+		with
+			result := <build(error-handler|WebDSLEager())>(selected, path, project-path, 1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -88,12 +97,16 @@ rules // Build in steps
 
 			if <leq>(1, i) then
 				// log(|Info(),"Phase 1: Generating Java Code");
-				if <eq>(lang, Java()) then
-					(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
-					<copy-java-libraries>(targetFileName, project-path)
-				else
-					(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
-					<copy-webdsl-libraries>(targetFileName, project-path)
+				switch !lang
+					case ?Java():
+						(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
+						<copy-java-libraries>(targetFileName, project-path)
+					case ?WebDSL():
+						(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
+						<copy-webdsl-libraries>(targetFileName, project-path)
+					case ?WebDSLEager():
+						(targetFileName, targetCode, error') := <generate-webdsl-eager-step(error-handler)>(ast', path);
+						<copy-webdsl-libraries>(targetFileName, project-path)
 				end;
 				if <eq>(1, i) then
 					result := (targetFileName, targetCode)
@@ -127,8 +140,9 @@ rules // Build in steps
 		with
 			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
-	generate-java-step(error-handler)   = generate-java-code(error-handler)
-	generate-webdsl-step(error-handler) = generate-webdsl-code(error-handler)
+	generate-java-step(error-handler)         = generate-java-code(error-handler)
+	generate-webdsl-step(error-handler)       = generate-webdsl-code(error-handler)
+	generate-webdsl-eager-step(error-handler) = generate-webdsl-eager-code(error-handler)
 
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
