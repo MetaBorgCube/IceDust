@@ -41,6 +41,10 @@ rules // PathExpr -> Expr
 	pathexpr-to-expr: PathExpr([name]) -> Ref(name)
 	pathexpr-to-expr: PathExpr(names)  -> MemberAccess(expr, name) with <split-last>names=>(name*,name); <pathexpr-to-expr>PathExpr(name*) => expr
 
+	pathexpr-to-expr(|subexpr): PathExpr([])     -> subexpr 
+	pathexpr-to-expr(|subexpr): PathExpr([name]) -> MemberAccess(subexpr, name)
+	pathexpr-to-expr(|subexpr): PathExpr(names)  -> MemberAccess(expr,    name) with <split-last>names=>(name*,name); <pathexpr-to-expr>PathExpr(name*) => expr
+
 rules // PathExpr -> String
 
 	pathexpr-get-start        : PathExpr([name|_]) -> name
@@ -58,7 +62,9 @@ rules // Expr -> Path
 
 rules // Path -> Expr
 	
-	path-to-expr = ?Path(_, <pathexpr-to-expr>)
+	path-to-expr           = ?Path(_, <pathexpr-to-expr>)
+	
+	path-to-expr(|subexpr) = ?Path(_, <pathexpr-to-expr(|subexpr)>)
 
 rules // Path -> Path
 	

@@ -25,7 +25,7 @@ rules // references : attributes, roles and inverses
 
 	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_name ]|
 		where
-			<is-attributename <+ is-rolename <+ is-inversename>x_name
+			<not(is-shortcutname)>x_name
 	
 	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ if(e1!=null) e1.x_name else null ]|
 		where

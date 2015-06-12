@@ -72,6 +72,7 @@ rules // roles
     extend function x_set(newValue:srt1){
     	stat1*
     	stat2*
+    	stat3*
     }
 	]|
 		where
@@ -79,11 +80,12 @@ rules // roles
 		where
 			flowsToPaths := <name-get-flowsto-paths;list-not-empty>x_name
 		with
+			newValueExpr := Ref("newValue"){(NablProp_multiplicity(), <get-multiplicity>x_name), (Type(), <_get-type>x_name)};
 			srt1   := <to-webdsl(err)><_get-type>x_name;
 			x_set  := $[set[<ucfirst>x_name]];
-			stat1* := <filter(path-origin-is-inverse);map(                   path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
-			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
-			//TODO: also follow role paths from newValue
+			stat1* := <filter(path-origin-is-inverse);map(                   path-to-expr;               analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
+			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;path-to-expr;               analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
+			stat3* := <filter(path-origin-is-role)   ;map(                   path-to-expr(|newValueExpr);analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
 
 rules // helper
 	
