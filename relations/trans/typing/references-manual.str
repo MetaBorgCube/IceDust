@@ -13,6 +13,11 @@ imports // functions
 
 rules
 	
+	analyse-post-analysis: e -> e
+		where
+			ty := <_get-type>e;
+			mu := <get-multiplicity>e
+	
 	analyse-post-analysis: e@Ref(a) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
 		with
 			ty := <_get-type>a;

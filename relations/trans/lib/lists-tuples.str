@@ -31,9 +31,10 @@ rules // List -> List or fail
 	list-empty     = ?[]
 	list-not-empty = not(?[])
 
-rules // (a->List(b), a->List(b)) a -> List(b)
+rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 
 	concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
 
-rules
+rules // s1:a->b  s2:a->c  a->(a, b)
 	
+	ttuple(s1,s2): t -> (<s1>t, <s2>t)

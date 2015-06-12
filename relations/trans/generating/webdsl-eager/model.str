@@ -64,7 +64,7 @@ rules // attributes
 		with
 			srt1   := <to-webdsl(err)><_get-type>x_name;
 			x_set  := $[set[<ucfirst>x_name]];
-			stat1* := <map(path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
+			stat1* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths
 
 rules // roles
 
@@ -83,10 +83,13 @@ rules // roles
 			newValueExpr := Ref("newValue"){(NablProp_multiplicity(), <get-multiplicity>x_name), (Type(), <_get-type>x_name)};
 			srt1   := <to-webdsl(err)><_get-type>x_name;
 			x_set  := $[set[<ucfirst>x_name]];
-			stat1* := <filter(path-origin-is-inverse);map(                   path-to-expr;               analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
-			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;path-to-expr;               analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
-			stat3* := <filter(path-origin-is-role)   ;map(                   path-to-expr(|newValueExpr);analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
+			stat1* := <filter(path-origin-is-inverse);map(                   ttuple(path-get-last, path-remove-end;path-to-expr;               analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths;
+			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;ttuple(path-get-last, path-remove-end;path-to-expr;               analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths;
+			stat3* := <filter(path-origin-is-role)   ;map(                   ttuple(path-get-last, path-remove-end;path-to-expr(|newValueExpr);analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths
 
 rules // helper
 	
-	webdslexpr-to-webdslstat: e1 -> webdsl|[e1;]|
+	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[log("Attribute " + e2 + " is dirty of " + e1);]|
+		with
+			e1 := <to-webdsl(err)>expr;
+			e2 := String(attrName)
