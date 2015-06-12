@@ -27,14 +27,20 @@ rules // Expr -> PathExpr
 
 rules // PathExpr -> PathExpr
 	
-	pathexpr-no-shortcuts     = PathExpr( (shortcutname-get-inverseandrolename;TupleToList<+MkSingleton);concat )
+	pathexpr-no-shortcuts     = PathExpr( map(shortcutname-get-inverseandrolename;TupleToList<+MkSingleton);concat )
 	
 	pathexpr-reverse          = PathExpr( reverse;map(try(rolename-get-inversename<+inversename-get-rolename)) )
 	
 	pathexpr-add-start(|name) : PathExpr(name*)        -> PathExpr([name,name*])
 	pathexpr-add-end(|name)   : PathExpr(name*)        -> PathExpr([name*,name])
 	pathexpr-tail             : PathExpr([name|name*]) -> PathExpr(name*)
-	
+
+rules // PathExpr -> Expr
+
+	pathexpr-to-expr: PathExpr([])     -> This()  
+	pathexpr-to-expr: PathExpr([name]) -> Ref(name)
+	pathexpr-to-expr: PathExpr(names)  -> MemberAccess(expr, name) with <split-last>names=>(name*,name); <pathexpr-to-expr>PathExpr(name*) => expr
+
 rules // PathExpr -> String
 
 	pathexpr-get-start        : PathExpr([name|_]) -> name
@@ -50,7 +56,13 @@ rules // Expr -> Path
 	
 	expr-to-path(|name): expr -> Path(<name-to-pathorigin>name, <expr-to-pathexpr>expr)
 
+rules // Path -> Expr
+	
+	path-to-expr = ?Path(_, <pathexpr-to-expr>)
+
 rules // Path -> Path
+	
+	path-no-shortcuts = Path(id, pathexpr-no-shortcuts)
 	
 	path-reverse: Path(origin, pathexpr) -> Path(origin', pathexpr')
 		with
@@ -66,9 +78,15 @@ rules // Path -> Path
 
 	path-store-on-origin(|property): path -> <index-store-prop(|property, <path-get-origin-name-r>path)>path
 
+	path-prependorigin: Path(origin, pathexpr) -> Path(origin, <pathexpr-add-start(|<pathorigin-get-name>origin)>pathexpr)
+
 rules // Path -> Path or fail
 	
 	path-isvalid: p@Path(_, pathexpr) -> p where <pathexpr-isvalid>pathexpr
+	
+	path-origin-is-attr    = where(?Path(<pathorigin-is-attr>,_))
+	path-origin-is-role    = where(?Path(<pathorigin-is-role>,_))
+	path-origin-is-inverse = where(?Path(<pathorigin-is-inverse>,_))
 
 rules // Path -> String
 	
@@ -79,7 +97,13 @@ rules // Path -> String
 	path-get-origin-name-r = ?Path(<pathorigin-get-name-r>,_)
 	
 	path-pp: Path(origin, pathexpr) -> $[[<pathorigin-pp>origin] -> [<pathexpr-pp>pathexpr]]
+
+rules // PathOrigin -> PathOrigin or fail
 	
+	pathorigin-is-attr    = ?AttrOrigin(_)
+	pathorigin-is-role    = ?RoleRelationOrigin(_)
+	pathorigin-is-inverse = ?RoleParticipantOrigin(_)
+
 rules // String -> PathOrigin
 	
 	name-to-pathorigin = where(is-attributename);?name;!AttrOrigin(name)

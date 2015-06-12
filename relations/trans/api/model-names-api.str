@@ -15,6 +15,7 @@ imports // functions
 	trans/lib/origin
 	trans/lib/search
 	trans/lib/string
+	trans/lib/index
 
 rules // entity
 
@@ -57,6 +58,10 @@ rules // shortcuts
 	shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
 	shortcutname-get-rolename           = shortcutname-get-rolename2
 	shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
+
+rules // combined
+	
+	name-get-flowsto-paths = index-get-prop(|FlowsTo())
 
 rules // helper
 

@@ -12,3 +12,5 @@ signature constructors // copy from runtime library
   URI          : Language * List(Segment)     -> URI
 
 	Prop         : URI * Property -> Key
+
+	Type         : Type

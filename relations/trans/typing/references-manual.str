@@ -1,0 +1,43 @@
+module trans/typing/references-manual
+
+imports // constructors
+	
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig
+	trans/api/_runtime-constructors
+	trans/naming/names
+
+imports // functions
+	
+	trans/api/_runtime
+
+rules
+	
+	analyse-post-analysis: e@Ref(a) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
+		with
+			ty := <_get-type>a;
+			mu := <get-multiplicity>a
+			
+	analyse-post-analysis: e@MemberAccess(expr, member) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
+		with
+			ty        := <_get-type>member;
+			expr-mu   := <get-multiplicity>expr;
+			member-mu := <get-multiplicity>member;
+			mu        := <cartesian-product>(expr-mu, member-mu)
+
+rules
+	
+	cartesian-product: (x-mu, y-mu) -> mu
+		with
+			if !x-mu;?One() ; !y-mu;?One()                then !One()        ;?mu else
+			if (!x-mu;?ZeroOrOne() <+ !x-mu;?One()) ;
+			   (!y-mu;?ZeroOrOne() <+ !y-mu;?One())       then !ZeroOrOne()  ;?mu else
+			if !x-mu;?ZeroOrMore() <+ !y-mu;?ZeroOrMore() then !ZeroOrMore() ;?mu else
+			if !x-mu;?OneOrMore() ; !y-mu;?ZeroOrOne() <+
+			   !y-mu;?OneOrMore() ; !x-mu;?ZeroOrOne()    then !ZeroOrMore() ;?mu else
+			                                                   !OneOrMore()  ;?mu
+			end
+			end
+			end
+			end
+rules

@@ -10,14 +10,18 @@ imports // constructors
 
 imports // functions
 
+	trans/analysis2/path
 	trans/api/_runtime
 	trans/api/model-api
 	trans/api/model-names-api
 	trans/lib/search
+	trans/lib/string
+	trans/lib/lists-tuples
 	trans/naming/names
 	trans/naming/_notNabl
 	trans/generating/webdsl/expressions
 	trans/generating/webdsl/expressions-references
+	trans/typing/references-manual
 
 rules // entities
 	
@@ -27,6 +31,8 @@ rules // entities
 				ebd1*
 				ebd2*
 				ebd3*
+				ebd4*
+				ebd5*
 			}
 		]|
 	where
@@ -34,35 +40,51 @@ rules // entities
 	with
 		ebd1* := <entityname-get-attributenames;map(to-webdsl-eager(err|ast))>x_name;
 		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
-		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name
+		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
+		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name;
+		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name
 
 rules // attributes
 
 	to-webdsl-eager(err|ast): x_name -> webdsl |[ x_name : srt1 (default=null) ]|
-		// where
-		// 	is-attributename
-		// where
-		// 	attributename-is-normal
+		where
+			is-attributename
 		with
 			srt1 := <to-webdsl(err)><_get-type>x_name
 			
-	// to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 := e1 ]|
-	// 	where
-	// 		is-attributename
-	// 	where
-	// 		attributename-is-derivation
-	// 	with
-	// 		srt1 := <to-webdsl(err)><_get-type>x_name;
-	// 		e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
-	// 		
-	// to-webdsl(err|ast): x_name -> webdsl |[ x_name : srt1 (default=e1) ]|
-	// 	where
-	// 		is-attributename
-	// 	where
-	// 		attributename-is-default
-	// 	with
-	// 		srt1 := <to-webdsl(err)><_get-type>x_name;
-	// 		e1   := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name
+	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
+    extend function x_set(newValue:srt1){
+    	stat1*
+    }
+	]|
+		where
+			is-attributename
+		where
+			flowsToPaths := <name-get-flowsto-paths;list-not-empty>x_name
+		with
+			srt1   := <to-webdsl(err)><_get-type>x_name;
+			x_set  := $[set[<ucfirst>x_name]];
+			stat1* := <map(path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
 
-rules
+rules // roles
+
+	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
+    extend function x_set(newValue:srt1){
+    	stat1*
+    	stat2*
+    }
+	]|
+		where
+			is-rolename
+		where
+			flowsToPaths := <name-get-flowsto-paths;list-not-empty>x_name
+		with
+			srt1   := <to-webdsl(err)><_get-type>x_name;
+			x_set  := $[set[<ucfirst>x_name]];
+			stat1* := <filter(path-origin-is-inverse);map(                   path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths;
+			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;path-to-expr;analyse-post-analysis;to-webdsl(err);webdslexpr-to-webdslstat)>flowsToPaths
+			//TODO: also follow role paths from newValue
+
+rules // helper
 	
+	webdslexpr-to-webdslstat: e1 -> webdsl|[e1;]|
