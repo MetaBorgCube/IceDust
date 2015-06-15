@@ -85,7 +85,7 @@ rules // references : shortcuts
 	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [d.x_roleName | d : srt2 in [c.x_inverseName | c : srt1 in e1 where c.x_inverseName != null ] ] ]|
 		where
 			<get-multiplicity;upper-many>ex1;
-			<is-attributename <+ is-rolename <+ is-inversename>x_name
+			<is-shortcutname>x_name
 		with
 			e1 := <to-webdsl(err)>ex1;
 			srt1 := <webdsl-type(err|<_get-type>ex1,One())>;

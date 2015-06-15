@@ -41,5 +41,5 @@ rules	// General Java generation rules
 	
   to-webdsl(err): a -> a'
   	where
-		  a' := <err>$[No to-webdsl defined for [<get-constructor> a]/[<get-arguments;length> a].]
+		  a' := <err>$[No to-webdsl defined for [<get-constructor> a]/[<get-arguments;length> a] : [<write-to-string>a]]
 

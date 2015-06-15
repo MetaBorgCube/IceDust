@@ -23,10 +23,11 @@ rules
 			ty := <_get-type>a;
 			mu := <get-multiplicity>a
 			
-	analyse-post-analysis: e@MemberAccess(expr, member) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
+	analyse-post-analysis: MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
 		with
+			expr'     := <analyse-post-analysis>expr;
 			ty        := <_get-type>member;
-			expr-mu   := <get-multiplicity>expr;
+			expr-mu   := <get-multiplicity>expr';
 			member-mu := <get-multiplicity>member;
 			mu        := <cartesian-product>(expr-mu, member-mu)
 
