@@ -45,7 +45,7 @@ rules // PathExpr -> Expr
 
 	pathexpr-to-expr(|subexpr): PathExpr([])     -> subexpr 
 	pathexpr-to-expr(|subexpr): PathExpr([name]) -> MemberAccess(subexpr, name)
-	pathexpr-to-expr(|subexpr): PathExpr(names)  -> MemberAccess(expr,    name) with <split-last>names=>(name*,name); <pathexpr-to-expr>PathExpr(name*) => expr
+	pathexpr-to-expr(|subexpr): PathExpr(names)  -> MemberAccess(expr,    name) with <split-last>names=>(name*,name); <pathexpr-to-expr(|subexpr)>PathExpr(name*) => expr
 
 rules // PathExpr -> String
 
