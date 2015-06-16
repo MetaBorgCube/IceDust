@@ -3,7 +3,7 @@ module trans/generating/java/module
 imports // constructors
 
 	lib/java/Java
-	src-gen/signatures/modules-sig	
+	src-gen/signatures/Modules-sig	
 	trans/desugaring/constructors
 
 rules

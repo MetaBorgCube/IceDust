@@ -3,7 +3,7 @@ module trans/generating/java/expressions-references
 imports // constructors
 	
 	lib/java/Java
-	src-gen/signatures/expressions-sig
+	src-gen/signatures/Expressions-sig
 
 imports // functions
 	

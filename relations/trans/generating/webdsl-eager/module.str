@@ -3,7 +3,7 @@ module trans/generating/webdsl-eager/module
 imports // constructors
 
 	lib/webdsl/constructors
-	lib/webdsl/webdsl
+	lib/webdsl/WebDSL
 	trans/desugaring/constructors
 
 imports // functions

@@ -2,8 +2,8 @@ module trans/_editor/services
 
 imports // constructors
 
-	src-gen/signatures/expressions-sig
-	src-gen/signatures/types-sig
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig
 	trans/analysis2/constructors
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors

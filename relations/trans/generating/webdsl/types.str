@@ -3,8 +3,8 @@ module trans/generating/webdsl/types
 imports // constructors
 
 	lib/webdsl/constructors
-	lib/webdsl/webdsl
-	src-gen/signatures/types-sig
+	lib/webdsl/WebDSL
+	src-gen/signatures/Types-sig
 	trans/desugaring/constructors
 
 imports // functions

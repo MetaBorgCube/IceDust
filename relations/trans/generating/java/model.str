@@ -4,8 +4,8 @@ imports // constructors
 
 	trans/api/constructors
 	lib/java/Java
-	src-gen/signatures/model-sig
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
 	trans/desugaring/constructors
 
 imports // functions

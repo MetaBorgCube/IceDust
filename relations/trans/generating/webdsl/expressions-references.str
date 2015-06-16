@@ -3,10 +3,10 @@ module trans/generating/webdsl/expressions-references
 imports // constructors
 
 	lib/webdsl/constructors
-	lib/webdsl/webdsl
-	src-gen/signatures/data-sig
-	src-gen/signatures/expressions-sig	
-	src-gen/signatures/types-sig	
+	lib/webdsl/WebDSL
+	src-gen/signatures/Data-sig
+	src-gen/signatures/Expressions-sig	
+	src-gen/signatures/Types-sig	
 	trans/desugaring/constructors
 
 imports // functions

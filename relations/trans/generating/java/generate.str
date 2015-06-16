@@ -2,7 +2,7 @@ module trans/generating/java/generate
 
 imports // constructors
 
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Modules-sig
 
 imports // functions
 

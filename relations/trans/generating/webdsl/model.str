@@ -4,8 +4,8 @@ imports // constructors
 
 	trans/api/constructors
 	lib/webdsl/WebDSL
-	src-gen/signatures/model-sig
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
 	trans/desugaring/constructors
 
 imports // functions
@@ -15,7 +15,7 @@ imports // functions
 	trans/api/model-names-api
 	trans/lib/search
 	trans/naming/names
-	trans/naming/_notNabl
+	trans/naming/_notNaBL
 	trans/generating/webdsl/expressions
 	trans/generating/webdsl/expressions-references
 

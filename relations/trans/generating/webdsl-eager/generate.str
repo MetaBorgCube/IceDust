@@ -2,7 +2,7 @@ module trans/generating/webdsl-eager/generate
 
 imports // constructors
 
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Modules-sig
 
 imports // functions
 
