@@ -50,7 +50,9 @@ rules // attributes - trigger dirty
 			
 	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
     extend function x_set(newValue:srt1){
-    	stat1*
+    	if(x_name != newValue){
+    		stat1*
+    	}
     }
 	]|
 		where
@@ -66,9 +68,11 @@ rules // roles - trigger dirty
 
 	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
     extend function x_set(newValue:srt1){
-    	stat1*
-    	stat2*
-    	stat3*
+    	if(x_name != newValue){
+	    	stat1*
+	    	stat2*
+	    	stat3*
+    	}
     }
 	]|
 		where
