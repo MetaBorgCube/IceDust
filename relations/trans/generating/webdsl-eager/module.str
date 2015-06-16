@@ -11,6 +11,7 @@ imports // functions
 	trans/generating/webdsl-eager/model
 	trans/generating/webdsl/data
 	trans/api/module-names-api
+	trans/api/model-names-api
 	trans/lib/string
 
 rules // module
@@ -27,6 +28,8 @@ rules // module
 					def1*
 				
 				section derivations
+				
+					def3*
 				
 					function updateDerivations(){
 						log("called updateDervations()");
@@ -107,7 +110,8 @@ rules // module
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
-			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name
+			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name;
+			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;map(attribute-dirty-collection)>x_name
 
 rules //crud
 	
@@ -195,5 +199,10 @@ rules //crud
 			x_manageName := $[manage[x_name]];
 			$text := Text(x_name)
 	
-rules
+rules // derivations
+	
+	attribute-dirty-collection: x_name -> webdsl |[request var x_dirty : {x_entity}]|
+		with
+			x_entity := <attributename-get-entityname>x_name;
+			x_dirty  := $[[x_entity]_[x_name]_dirty]
 	

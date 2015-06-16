@@ -89,7 +89,24 @@ rules // roles - trigger dirty
 
 rules // helper
 	
-	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[log("Attribute " + e2 + " is dirty of " + e1);]|
+	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
+		log("Attribute " + e2 + " is dirty of " + e1);
+		x_dirty.add(e1);
+	]|
+		where
+			<debug;get-multiplicity;debug;upper-one;debug>expr
 		with
-			e1 := <to-webdsl(err)>expr;
-			e2 := String(attrName)
+			e1      := <to-webdsl(err)>expr;
+			e2      := String(attrName);
+			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
+	
+	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
+		log("Attribute " + e2 + " is dirty of " + e1);
+		x_dirty.addAll(e1);
+	]|
+		where
+			<get-multiplicity;upper-many>expr
+		with
+			e1      := <to-webdsl(err)>expr;
+			e2      := String(attrName);
+			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
