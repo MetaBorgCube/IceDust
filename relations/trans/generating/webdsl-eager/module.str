@@ -26,6 +26,12 @@ rules // module
 				
 					def1*
 				
+				section derivations
+				
+					function updateDerivations(){
+						log("called updateDervations()");
+					}
+				
 				section data
 					
 					init{
@@ -124,7 +130,8 @@ rules //crud
           action("Save", save())
         }
         action save() { 
-          temp.save(); 
+          temp.save();
+          updateDerivations();
           return x_manage();
         }
       }
@@ -149,7 +156,8 @@ rules //crud
 		      action("Save", save())
 		    }
 		    action save() { 
-		      arg.save(); 
+		      arg.save();
+		      updateDerivations();
 		      return x_manage();
 		    }
 		  }
