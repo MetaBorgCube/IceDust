@@ -94,7 +94,7 @@ rules // helper
 		x_dirty.add(e1);
 	]|
 		where
-			<debug;get-multiplicity;debug;upper-one;debug>expr
+			<get-multiplicity;upper-one>expr
 		with
 			e1      := <to-webdsl(err)>expr;
 			e2      := String(attrName);

@@ -10,13 +10,14 @@ imports // constructors
 imports // functions
 	
 	trans/api/_runtime
+	trans/lib/annotations
 
 rules
 	
 	analyse-post-analysis(|context): e -> e
 		where
-			ty := <_get-type>e;
-			mu := <get-multiplicity>e
+			<has-annotation(|Type())>e;
+			<has-annotation(|NablProp_multiplicity())>e
 	
 	analyse-post-analysis(|context): e@This() -> e{(NablProp_multiplicity(), One()), (Type(), ty)}
 		with
@@ -27,7 +28,7 @@ rules
 			ty := <_get-type>a;
 			mu := <get-multiplicity>a
 			
-	analyse-post-analysis(|context): MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
+	analyse-post-analysis(|context): e@MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
 		with
 			expr'     := <analyse-post-analysis(|context)>expr;
 			ty        := <_get-type>member;
