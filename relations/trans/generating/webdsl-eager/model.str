@@ -33,42 +33,18 @@ rules // entities
 				ebd1*
 				ebd2*
 				ebd3*
-				// ebd4*
-				// ebd5*
+				ebd4*
+				ebd5*
 			}
 		]|
 	where
 		is-entityname
 	with
-		ebd1* := <entityname-get-attributenames;map(to-webdsl-eager(err|ast))>x_name;
+		ebd1* := <entityname-get-attributenames;map(to-webdsl(err|ast))>x_name;
 		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
 		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
 		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name;
 		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name
-
-rules // attributes
-
-	to-webdsl-eager(err|ast): x_name -> webdsl |[
-		x_name : srt1 (default=null)
-		
-    static function x_getter(entity:x_entity):srt1{
-    	return if (entity!=null) entity.x_name else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-    	var r : [srt1];
-	  	for(entity in entities){
-	  		r.add(entity.x_name);
-	  	}
-	  	return r;
-    }
-	]|
-		where
-			is-attributename
-		with
-			srt1     := <to-webdsl(err)><_get-type>x_name;
-			x_getter := $[get_[x_name]];
-			x_entity := <attributename-get-entityname>x_name
 
 rules // attributes - trigger dirty
 			
