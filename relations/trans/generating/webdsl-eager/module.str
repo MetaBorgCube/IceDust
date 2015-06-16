@@ -11,6 +11,7 @@ imports // functions
 	trans/generating/webdsl-eager/model
 	trans/generating/webdsl/data
 	trans/api/module-names-api
+	trans/lib/string
 
 rules // module
 
@@ -104,7 +105,82 @@ rules // module
 
 rules //crud
 	
-	webdsl-crud: x_name -> DeriveCrud(x_name)
+	webdsl-crud: x_name -> webdsl* |[
+		define page x_create(){
+      //derive createPage from temp
+      main()
+      define body() {
+        var temp := x_name{}
+        header{"Create " output(temp.name) } 
+        form { 
+          <fieldset>
+            <legend>
+              output("Details")
+            </legend>
+            <table>
+              derive editRows from temp
+            </table>
+          </fieldset>      
+          action("Save", save())
+        }
+        action save() { 
+          temp.save(); 
+          return x_manage();
+        }
+      }
+    }
+    define page x_view(arg : x_name){
+      derive viewPage from arg
+    }
+		define page x_edit(arg : x_name){
+		  //derive editPage from arg
+		  main()
+		  define body() {
+		    header{"Edit " output(arg.name) } 
+		    form { 
+		      <fieldset>
+		        <legend>
+		          output("Details")
+		        </legend>
+		        <table>
+		          derive editRows from arg
+		        </table>
+		      </fieldset>  
+		      action("Save", save())
+		    }
+		    action save() { 
+		      arg.save(); 
+		      return x_manage();
+		    }
+		  }
+		}
+		define page x_manage(){
+		  main()
+		  define body(){
+		    navigate(x_create()){ "create" }
+		    <list>
+		      for(elem : x_name){
+		        <li> 
+		          output(elem)
+		          " "
+		          navigate(x_edit(elem)){ "edit" }
+		          " "
+		          form{action("remove",remove(elem))}
+		        </li>
+		      }
+		    </list>
+		    action remove(arg : x_name){
+		      arg.delete();
+		    }
+		  }
+		}
+	]|
+		with
+			x_manage := $[manage[x_name]];
+			x_create := $[create[x_name]];
+			x_edit   := $[edit[x_name]];
+			x_view   := <lcfirst>x_name
+			
 	
 	webdsl-crud-nav: x_name -> webdsl |[navbaritem{navigate x_manageName(){$text}}]|
 		with
