@@ -13,19 +13,23 @@ imports // functions
 
 rules
 	
-	analyse-post-analysis: e -> e
+	analyse-post-analysis(|context): e -> e
 		where
 			ty := <_get-type>e;
 			mu := <get-multiplicity>e
 	
-	analyse-post-analysis: e@Ref(a) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
+	analyse-post-analysis(|context): e@This() -> e{(NablProp_multiplicity(), One()), (Type(), ty)}
+		with
+			ty := context
+	
+	analyse-post-analysis(|context): e@Ref(a) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
 		with
 			ty := <_get-type>a;
 			mu := <get-multiplicity>a
 			
-	analyse-post-analysis: MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
+	analyse-post-analysis(|context): MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
 		with
-			expr'     := <analyse-post-analysis>expr;
+			expr'     := <analyse-post-analysis(|context)>expr;
 			ty        := <_get-type>member;
 			expr-mu   := <get-multiplicity>expr';
 			member-mu := <get-multiplicity>member;

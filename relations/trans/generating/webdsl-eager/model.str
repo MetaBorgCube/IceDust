@@ -21,7 +21,6 @@ imports // functions
 	trans/naming/_notNabl
 	trans/generating/webdsl/expressions
 	trans/generating/webdsl/expressions-references
-	trans/typing/references-manual
 
 rules // entities
 	
@@ -31,8 +30,8 @@ rules // entities
 				ebd1*
 				ebd2*
 				ebd3*
-				ebd4*
-				ebd5*
+				// ebd4*
+				// ebd5*
 			}
 		]|
 	where
@@ -46,11 +45,29 @@ rules // entities
 
 rules // attributes
 
-	to-webdsl-eager(err|ast): x_name -> webdsl |[ x_name : srt1 (default=null) ]|
+	to-webdsl-eager(err|ast): x_name -> webdsl |[
+		x_name : srt1 (default=null)
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return if (entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		r.add(entity.x_name);
+	  	}
+	  	return r;
+    }
+	]|
 		where
 			is-attributename
 		with
-			srt1 := <to-webdsl(err)><_get-type>x_name
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+
+rules // attributes - trigger dirty
 			
 	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
     extend function x_set(newValue:srt1){
@@ -62,11 +79,11 @@ rules // attributes
 		where
 			flowsToPaths := <name-get-flowsto-paths;list-not-empty>x_name
 		with
-			srt1   := <to-webdsl(err)><_get-type>x_name;
+			srt1   := <_get-type;to-webdsl(err)>x_name;
 			x_set  := $[set[<ucfirst>x_name]];
-			stat1* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths
+			stat1* := <map(ttuple(path-get-last, path-remove-end;path-to-expr);flagdirty-webdslstat(err))>flowsToPaths
 
-rules // roles
+rules // roles - trigger dirty
 
 	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[
     extend function x_set(newValue:srt1){
@@ -81,11 +98,11 @@ rules // roles
 			flowsToPaths := <name-get-flowsto-paths;list-not-empty>x_name
 		with
 			newValueExpr := Ref("newValue"){(NablProp_multiplicity(), <get-multiplicity>x_name), (Type(), <_get-type>x_name)};
-			srt1   := <to-webdsl(err)><_get-type>x_name;
+			srt1   := <_get-type;to-webdsl(err)>x_name;
 			x_set  := $[set[<ucfirst>x_name]];
-			stat1* := <filter(path-origin-is-inverse);map(                   ttuple(path-get-last, path-remove-end;path-to-expr;               analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths;
-			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;ttuple(path-get-last, path-remove-end;path-to-expr;               analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths;
-			stat3* := <filter(path-origin-is-role)   ;map(                   ttuple(path-get-last, path-remove-end;path-to-expr(|newValueExpr);analyse-post-analysis);flagdirty-webdslstat(err))>flowsToPaths
+			stat1* := <filter(path-origin-is-inverse);map(                   ttuple(path-get-last, path-remove-end;path-to-expr               );flagdirty-webdslstat(err))>flowsToPaths;
+			stat2* := <filter(path-origin-is-role)   ;map(path-prependorigin;ttuple(path-get-last, path-remove-end;path-to-expr               );flagdirty-webdslstat(err))>flowsToPaths;
+			stat3* := <filter(path-origin-is-role)   ;map(                   ttuple(path-get-last, path-remove-end;path-to-expr(|newValueExpr));flagdirty-webdslstat(err))>flowsToPaths
 
 rules // helper
 	

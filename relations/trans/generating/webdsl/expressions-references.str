@@ -26,72 +26,37 @@ rules // references : attributes, roles and inverses
 	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_name ]|
 		where
 			<not(is-shortcutname)>x_name
-	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ if(e1!=null) e1.x_name else null ]|
+
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt1.x_getter(e1) ]|
 		where
-			<get-multiplicity;upper-one>ex1;
-			<is-attributename <+ is-rolename <+ is-inversename>x_name
+			<not(is-shortcutname)>x_name
 		with
-			e1 := <to-webdsl(err)>ex1 
-	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_name | c : srt1 in e1 where c.x_name != null ] ]|
-		where
-			<get-multiplicity;upper-many>ex1;
-			<is-attributename <+ is-rolename <+ is-inversename>x_name
-		with
-			e1 := <to-webdsl(err)>ex1;
-			srt1 := <webdsl-type(err|<_get-type>ex1,One())>
+			e1       := <to-webdsl(err)>ex1;
+			x_getter := $[get_[x_name]];
+			x_srt1   := <_get-type>ex1
 
 rules // references : shortcuts
 
-	to-webdsl(err): Ref(x_name) -> webdsl:e |[ if(x_inverseName!=null) x_inverseName.x_roleName else null ]|
+	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_srt.x_getter(x_inverseName) ]|
 		where
-			<is-shortcutname>x_name;
-			<get-multiplicity;upper-one>x_name
-		with
-			x_inverseName := <get-origin-role;get-inverse>x_name;
-			x_roleName    := <get-origin-role2>x_name
-			
-	to-webdsl(err): Ref(x_name) -> webdsl:e |[ [c.x_roleName | c : srt1 in  x_inverseName ] ]|
-		where
-			<is-shortcutname>x_name;
-			<get-multiplicity;upper-many>x_name
+			<is-shortcutname>x_name
 		with
 			x_inverseName := <get-origin-role;get-inverse>x_name;
 			x_roleName    := <get-origin-role2>x_name;
-			srt1 := <webdsl-type(err|<_get-type>x_inverseName,One())>
+			x_getter      := $[get_[x_roleName]];
+			x_srt         := <_get-type>x_inverseName
 
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ e1.x_inverseName.x_roleName ]|
+	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt2.x_getter2(x_srt1.x_getter1(e1)) ]|
 		where
-			<get-multiplicity;upper-one>ex1;
-			<get-multiplicity;upper-one>x_name;
-			<is-shortcutname>x_name
-		with
-			e1 := <to-webdsl(err)>ex1;
-			x_inverseName := <get-origin-role;get-inverse>x_name;
-			x_roleName    := <get-origin-role2>x_name
-
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [c.x_roleName | c : srt1 in e1.x_inverseName ] ]|
-		where
-			<get-multiplicity;upper-one>ex1;
-			<get-multiplicity;upper-many>x_name;
 			<is-shortcutname>x_name
 		with
 			e1 := <to-webdsl(err)>ex1;
 			x_inverseName := <get-origin-role;get-inverse>x_name;
 			x_roleName    := <get-origin-role2>x_name;
-			srt1 := <webdsl-type(err|<_get-type>x_inverseName,One())>
-	
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ [d.x_roleName | d : srt2 in [c.x_inverseName | c : srt1 in e1 where c.x_inverseName != null ] ] ]|
-		where
-			<get-multiplicity;upper-many>ex1;
-			<is-shortcutname>x_name
-		with
-			e1 := <to-webdsl(err)>ex1;
-			srt1 := <webdsl-type(err|<_get-type>ex1,One())>;
-			x_inverseName := <get-origin-role;get-inverse>x_name;
-			x_roleName    := <get-origin-role2>x_name;
-			srt2 := <webdsl-type(err|<_get-type>x_inverseName,One())>
+			x_srt1        := <_get-type>ex1;
+			x_getter1     := $[get_[x_inverseName]];
+			x_srt2        := <_get-type>x_inverseName;
+			x_getter2     := $[get_[x_roleName]]
 
 rules // references : this
 
