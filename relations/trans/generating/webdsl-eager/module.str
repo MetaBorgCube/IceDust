@@ -202,7 +202,7 @@ rules //crud
 rules // derivations
 	
 	attribute-dirty-collection: x_name -> webdsl* |[
-		request var x_dirty : {x_entity}
+		request var x_dirty := Set<x_entity>()
 		
 	  init
 	  {

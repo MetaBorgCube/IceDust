@@ -162,8 +162,10 @@ rules // roles - trigger dirty
 rules // helper
 	
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
-		log("Attribute " + e2 + " is dirty of " + e1);
-		x_dirty.add(e1);
+		if(e1 != null){
+			log("Attribute " + e2 + " is dirty of " + e1);
+			x_dirty.add(e1);
+		}
 	]|
 		where
 			<get-multiplicity;upper-one>expr
