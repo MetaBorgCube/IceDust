@@ -206,8 +206,7 @@ rules // derivations
 		
 	  init
 	  {
-	  	var empty : {x_entity};
-	  	x_dirty := empty;
+	  	x_dirty := Set<x_entity>();
 		}
 	]|
 		with
