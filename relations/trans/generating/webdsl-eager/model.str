@@ -46,6 +46,78 @@ rules // entities
 		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name;
 		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name
 
+rules // attributes
+	
+
+	to-webdsl(err|ast): x_name -> webdsl |[
+		x_name : srt1 (default=null)
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return if (entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		r.add(entity.x_name);
+	  	}
+	  	return r;
+    }
+	]|
+		where
+			is-attributename
+		where
+			attributename-is-normal
+		with
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+			
+	to-webdsl(err|ast): x_name -> webdsl |[
+		x_name : srt1 (default=x_calc())
+		
+    function x_calc() : srt1{
+    	return e1;
+    }
+    
+    function x_update() {
+    	x_name := x_calc();
+    }
+    
+    static function x_update(entity : x_entity){
+    	entity.x_update();
+    }
+    
+    static function x_update(entities : {x_entity}){
+    	for(entity in entities){
+    		entity.x_update();
+    	}
+    }
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return entity.x_name;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		r.add(entity.x_name);
+	  	}
+	  	return r;
+    }
+	]|
+		where
+			is-attributename
+		where
+			attributename-is-derivation <+ attributename-is-default
+		with
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			e1       := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name;
+			x_calc   := $[calculate_[x_name]];
+			x_update := $[update_[x_name]]
+
 rules // attributes - trigger dirty
 			
 	to-webdsl-eager-trigger-dirty(err|ast): x_name -> webdsl |[

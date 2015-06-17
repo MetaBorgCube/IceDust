@@ -201,7 +201,15 @@ rules //crud
 	
 rules // derivations
 	
-	attribute-dirty-collection: x_name -> webdsl |[request var x_dirty : {x_entity}]|
+	attribute-dirty-collection: x_name -> webdsl* |[
+		request var x_dirty : {x_entity}
+		
+	  init
+	  {
+	  	var empty : {x_entity};
+	  	x_dirty := empty;
+		}
+	]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
 			x_dirty  := $[[x_entity]_[x_name]_dirty]
