@@ -111,7 +111,7 @@ rules // module
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name;
-			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;map(attribute-dirty-collection)>x_name
+			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name
 
 rules //crud
 	
