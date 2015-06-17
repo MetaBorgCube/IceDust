@@ -30,6 +30,15 @@ rules // module
 				section derivations
 				
 					def3*
+					
+				  init
+				  {
+				    initDirtyCollections();
+				  }
+				  
+				  function initDirtyCollections(){
+				  	Node_totalValue_dirty := Set<Node>();
+				  }
 				
 					function updateDerivations(){
 						log("called updateDervations()");
@@ -54,6 +63,9 @@ rules // module
 				  }
 				  
 					define override main() {
+						init{
+							initDirtyCollections();
+						}
 					  <div id="pagewrapper">
 					    <div id="navbar">
 					      applicationmenu()
@@ -201,13 +213,12 @@ rules //crud
 	
 rules // derivations
 	
-	attribute-dirty-collection: x_name -> webdsl* |[
+	attribute-dirty-collection: x_name -> def* |[
 		request var x_dirty := Set<x_entity>()
 		
-	  init
-	  {
+	  extend function initDirtyCollections(){
 	  	x_dirty := Set<x_entity>();
-		}
+	  }
 	]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
