@@ -62,6 +62,7 @@ rules
 			entityNames := <modulename-get-entitynames>moduleName;
 			graphNames  := <map(concat(entityname-get-attributenames,entityname-get-rolenames));concat>entityNames;
 			toposort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>graphNames;
+			<index-store-prop(|TopoSort(), moduleName)>toposort;
 			numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
 			<map(index-store-prop(|TopoSort()))>numbers
 	

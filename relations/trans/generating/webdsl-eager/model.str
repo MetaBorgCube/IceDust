@@ -93,6 +93,14 @@ rules // attributes
     		entity.x_update();
     	}
     }
+    
+    static function x_dirty () : Set<x_entity> {
+    	return Node_totalValue_dirty;
+    }
+    
+    static function x_clean () {
+    	x_sdirty := Set<x_entity>();
+    }
 		
     static function x_getter(entity:x_entity):srt1{
     	return entity.x_name;
@@ -116,7 +124,10 @@ rules // attributes
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name;
 			x_calc   := $[calculate_[x_name]];
-			x_update := $[update_[x_name]]
+			x_update := $[update_[x_name]];
+			x_sdirty := $[[x_entity]_[x_name]_dirty];
+			x_dirty  := $[[x_name]_dirty];
+			x_clean  := $[[x_name]_dirty_clean]
 
 rules // attributes - trigger dirty
 			

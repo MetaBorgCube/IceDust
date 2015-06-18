@@ -12,6 +12,8 @@ imports // functions
 	trans/generating/webdsl/data
 	trans/api/module-names-api
 	trans/api/model-names-api
+	trans/lib/debug
+	trans/lib/lists-tuples
 	trans/lib/string
 
 rules // module
@@ -37,11 +39,12 @@ rules // module
 				  }
 				  
 				  function initDirtyCollections(){
-				  	Node_totalValue_dirty := Set<Node>();
+
 				  }
 				
 					function updateDerivations(){
 						log("called updateDervations()");
+						stat4*
 					}
 				
 				section data
@@ -123,7 +126,8 @@ rules // module
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name;
-			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name
+			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
+			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name
 
 rules //crud
 	
@@ -223,4 +227,20 @@ rules // derivations
 		with
 			x_entity := <attributename-get-entityname>x_name;
 			x_dirty  := $[[x_entity]_[x_name]_dirty]
+
+rules // List(List(String)) -> Webdsl-stat*
+
+	webdsl-toposort : namess -> result
+		with
+			<debug-pp>namess;
+			namess' := <map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>namess;
+			<debug-pp>namess';
+			result := <map(map(webdsl-update-dirty))>namess'
+	
+	webdsl-update-dirty : x_name -> |[x_entity.x_update(x_entity.x_dirty());]|
+		with
+			x_entity := <attributename-get-entityname>x_name;
+			x_dirty  := $[[x_name]_dirty];
+			x_update := $[update_[x_name]]
+			
 	
