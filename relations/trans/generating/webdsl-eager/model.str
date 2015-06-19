@@ -40,7 +40,7 @@ rules // entities
 	where
 		is-entityname
 	with
-		ebd1* := <entityname-get-attributenames;map(to-webdsl(err|ast))>x_name;
+		ebd1* := <entityname-get-attributenames;map(to-webdsl-eager(err|ast))>x_name;
 		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
 		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
 		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eager-trigger-dirty(err|ast))>x_name;
@@ -49,7 +49,7 @@ rules // entities
 rules // attributes
 	
 
-	to-webdsl(err|ast): x_name -> webdsl |[
+	to-webdsl-eager(err|ast): x_name -> webdsl |[
 		x_name : srt1 (default=null)
 		
     static function x_getter(entity:x_entity):srt1{
@@ -73,7 +73,7 @@ rules // attributes
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name
 			
-	to-webdsl(err|ast): x_name -> webdsl |[
+	to-webdsl-eager(err|ast): x_name -> webdsl |[
 		x_name : srt1 (default=x_calc())
 		
     function x_calc() : srt1{

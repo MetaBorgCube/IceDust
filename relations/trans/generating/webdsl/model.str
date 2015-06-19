@@ -66,13 +66,15 @@ rules // attributes
 		x_name : srt1 := e1
 		
     static function x_getter(entity:x_entity):srt1{
-    	return entity.x_name;
+    	return if(entity!=null) entity.x_name else null;
     }
     
     static function x_getter(entities:[x_entity]):[srt1]{
     	var r : [srt1];
 	  	for(entity in entities){
-	  		r.add(entity.x_name);
+	  		if(entity.x_name!=null){
+	  			r.add(entity.x_name);
+	  		}
 	  	}
 	  	return r;
     }
