@@ -44,6 +44,7 @@ rules // module
 				
 					function updateDerivations(){
 						log("called updateDervations()");
+						var notEmpty : Bool;
 						stat4*
 					}
 				
@@ -53,6 +54,7 @@ rules // module
 						stat1*
 						stat2*
 						stat3*
+						updateDerivations();
 					}
 				
 				section CRUD
@@ -232,15 +234,28 @@ rules // List(List(String)) -> Webdsl-stat*
 
 	webdsl-toposort : namess -> result
 		with
-			<debug-pp>namess;
 			namess' := <map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>namess;
-			<debug-pp>namess';
-			result := <map(map(webdsl-update-dirty))>namess'
+			result  := <map(webdsl-update-group)>namess'
 	
-	webdsl-update-dirty : x_name -> |[x_entity.x_update(x_entity.x_dirty());]|
+	webdsl-update-group : names -> webdsl |[
+		notEmpty := true;
+		while(notEmpty){
+			stat1*
+			notEmpty := false;
+			stat2*
+		}
+	]|
+		with
+			stat1* := <map(webdsl-update-dirty)>names;
+			stat2* := <map(webdsl-has-dirty)>names
+	
+	webdsl-update-dirty : x_name -> |[x_entity.x_update();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
-			x_dirty  := $[[x_name]_dirty];
-			x_update := $[update_[x_name]]
+			x_update := $[[x_name]_update_clean]
 			
+	webdsl-has-dirty : x_name -> |[notEmpty := notEmpty || x_entity.x_dirtyb();]|
+		with
+			x_entity := <attributename-get-entityname>x_name;
+			x_dirtyb := $[[x_name]_has_dirty]
 	

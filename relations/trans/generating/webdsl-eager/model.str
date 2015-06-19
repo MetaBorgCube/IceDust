@@ -95,21 +95,36 @@ rules // attributes
     }
     
     static function x_dirty () : Set<x_entity> {
-    	return Node_totalValue_dirty;
+    	return x_sdirty;
+    }
+    
+    static function x_dirtyb () : Bool {
+    	return x_entity.x_dirty().length!=0;
     }
     
     static function x_clean () {
     	x_sdirty := Set<x_entity>();
     }
+    
+    static function x_updatec () {
+    	var values := x_entity.x_dirty();
+      if(values.length!=0){
+      	log("Updating "+e2+": "+values.length);
+      }
+    	x_entity.x_clean();
+    	x_entity.x_update(values);
+    }
 		
     static function x_getter(entity:x_entity):srt1{
-    	return entity.x_name;
+    	return if(entity!=null) entity.x_name else null;
     }
     
     static function x_getter(entities:[x_entity]):[srt1]{
     	var r : [srt1];
 	  	for(entity in entities){
-	  		r.add(entity.x_name);
+	  		if(entity.x_name!=null){
+	  			r.add(entity.x_name);
+	  		}
 	  	}
 	  	return r;
     }
@@ -127,7 +142,10 @@ rules // attributes
 			x_update := $[update_[x_name]];
 			x_sdirty := $[[x_entity]_[x_name]_dirty];
 			x_dirty  := $[[x_name]_dirty];
-			x_clean  := $[[x_name]_dirty_clean]
+			x_dirtyb := $[[x_name]_has_dirty];
+			x_clean  := $[[x_name]_dirty_clean];
+			x_updatec:= $[[x_name]_update_clean];
+			e2       := String($[[x_entity].[x_name]])
 
 rules // attributes - trigger dirty
 			
