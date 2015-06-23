@@ -34,6 +34,8 @@ rules // List -> List or fail
 rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 
 	concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
+	
+	concat(s1,s2,s3): t -> <concat>[<s1>t, <s2>t, <s3>t]
 
 rules // s1:a->b  s2:a->c  a->(a, b)
 	

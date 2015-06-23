@@ -24,10 +24,6 @@ rules // module
 				section model
 				
 					def1*
-					
-				section derivations
-				
-					function updateDerivations(){}
 				
 				section data
 					

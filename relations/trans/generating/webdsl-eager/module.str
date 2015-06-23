@@ -123,7 +123,7 @@ rules // module
 			]|
 		with
 			def1*  := <modulename-get-entitynames;map(to-webdsl-eager(err|ast))>x_name;
-			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
+			def2*  := <modulename-get-entitynames;map(webdsl-crud-eager)>x_name;
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
@@ -133,7 +133,7 @@ rules // module
 
 rules //crud
 	
-	webdsl-crud: x_name -> webdsl* |[
+	webdsl-crud-eager: x_name -> webdsl* |[
 		define page x_create(){
       //derive createPage from temp
       main()
@@ -146,7 +146,8 @@ rules //crud
               output("Details")
             </legend>
             <table>
-              derive editRows from temp
+            	elem1
+              // derive editRows from temp
             </table>
           </fieldset>      
           action("Save", save())
@@ -172,7 +173,8 @@ rules //crud
 		          output("Details")
 		        </legend>
 		        <table>
-		          derive editRows from arg
+		        	elem2
+		          // derive editRows from arg
 		        </table>
 		      </fieldset>  
 		      action("Save", save())
@@ -209,8 +211,16 @@ rules //crud
 			x_manage := $[manage[x_name]];
 			x_create := $[create[x_name]];
 			x_edit   := $[edit[x_name]];
-			x_view   := <lcfirst>x_name
-			
+			x_view   := <lcfirst>x_name;
+			form-fields := <concat(
+				                entityname-get-attributenames;filter(where(not(attributename-is-derivation))),
+				                entityname-get-rolenames,
+				                entityname-get-inversenames
+			                );map(webdsl-crud-attr)>x_name;
+			elem1    := Derive("editRows", Var("temp"), form-fields);
+			elem2    := Derive("editRows", Var("arg"),  form-fields)
+	
+	webdsl-crud-attr: x_name -> DeriveDefault(x_name)
 	
 	webdsl-crud-nav: x_name -> webdsl |[navbaritem{navigate x_manageName(){$text}}]|
 		with
