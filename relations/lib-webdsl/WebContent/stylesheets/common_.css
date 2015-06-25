@@ -101,7 +101,6 @@ span#footercontent{
 div#navbar {
   /* positioning */
   width: 100%;
-  height: 30px;
   /* text and colors */
   background-color: #999;
   color: White;
@@ -111,8 +110,7 @@ div#navbar {
 }
 span.navbaritem a {
   /* positioning */
-  display: block;
-  float: left;
+  display: inline-block;
   height: 30px;
   padding: 0 15px;
   /* text and colors */
