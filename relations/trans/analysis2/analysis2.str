@@ -23,6 +23,7 @@ rules
 	
 	analysis2 =
 		analysis2-clear-index;
+		store-expressions;
 		depends-on-and-flows-to;
 		flows-toposort
 
@@ -31,6 +32,19 @@ rules
 	analysis2-clear-index: a -> a
 		with
 			<_index-clear-source>"analysis2"
+
+rules
+	
+	store-expressions: ast -> ast
+		with
+			attrs      := <collect(is-attr);filter(where(attr-get-derivation))>ast;
+			<map(attr-store-expr)>attrs
+	
+	attr-store-expr: attr -> attr
+		with
+			derivation := <attr-get-derivation>attr;
+			attrName   := <attr-get-name>attr;
+			<index-store-prop(|AST(), attrName)>derivation
 
 rules
 	

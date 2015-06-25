@@ -95,7 +95,7 @@ rules // module
 				
 			]|
 		with
-			def1*  := <modulename-get-entitynames;map(to-webdsl(err|ast))>x_name;
+			def1*  := <modulename-get-entitynames;map(to-webdsl(err))>x_name;
 			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
