@@ -28,6 +28,30 @@ Note that there is an issue with the pre-packaged plugin. There is no command li
 
 1. Check out this git repo
 2. See the [relations-examples](relations-examples)
+
+### Java backend
+
+Compiling to Java will work always.
+
+### WebDSL backend
+
+Compiling to WebDSL requires you to have the Relations file the same name as the project name (case sensitive) and to be in the root folder of the project:
+
+```
+Demo (project name)
+Demo/Demo.rel (relations file)
+Demo/Demo.app (generated WebDSL file)
+```
+
+And `Demo.rel`:
+
+```
+module Demo
+
+model
+
+  //...
+```
  
 ## Language Documentation
 
