@@ -1,11 +1,11 @@
-module trans/generating/model
+module trans/generating/java/model
 
 imports // constructors
 
 	trans/api/constructors
 	lib/java/Java
-	src-gen/signatures/model-sig
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
 	trans/desugaring/constructors
 
 imports // functions
@@ -13,8 +13,8 @@ imports // functions
 	trans/api/_runtime
 	trans/naming/names
 	trans/naming/_notNaBL
-	trans/generating/expressions
-	trans/generating/types
+	trans/generating/java/expressions
+	trans/generating/java/types
 
 rules
 	
@@ -186,7 +186,7 @@ rules
 					}
 				]|
 
-	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-many>multiplicity
 		with
@@ -229,7 +229,7 @@ rules
 				  }
 				]|
 
-	to-java(err|x_relType): Role(NaBLHelp(x_entityType,_), multiplicity, x_roleName, inverse) -> result
+	to-java(err|x_relType): Role(x_entityType, multiplicity, x_roleName, inverse) -> result
 		where
 			<upper-one>multiplicity
 		with

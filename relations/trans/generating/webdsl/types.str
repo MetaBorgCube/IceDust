@@ -1,0 +1,40 @@
+module trans/generating/webdsl/types
+
+imports // constructors
+
+	lib/webdsl/constructors
+	lib/webdsl/WebDSL
+	src-gen/signatures/Types-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/api/_runtime
+	trans/naming/names
+	trans/naming/_notNaBL
+	
+rules // primitives
+	
+	to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
+	to-webdsl(err): Int()     -> webdsl |[ Int ]|		
+	to-webdsl(err): String()  -> webdsl |[ String ]|
+
+rules // webdsl types
+	
+	webdsl-type(err): name -> <webdsl-type(err|ty, mu)>
+		with
+			ty := <_get-type>name;
+			mu := <get-multiplicity>name
+	
+	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;to-webdsl(err);?srt1;!webdsl |[ srt1   ]|
+	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;to-webdsl(err);?srt1;!webdsl |[ [srt1] ]|
+
+rules
+
+	type-as-string: String()	-> "String"
+  type-as-string: Int()		  -> "Integer"
+  type-as-string: Boolean() -> "Boolean"
+  type-as-string: _ -> <id>
+  	where is-string
+
+rules

@@ -4,6 +4,10 @@ imports
 	
 	trans/api/_runtime
 
+rules // find a definition ast node for a certain name (with URI annotated)
+	
+	name-to-ast(|ast) = (_nabl-uri <+ nabl-get-name;_nabl-uri); uri-to-ast(|ast)
+
 rules // find a definition ast node for a certain URI
 	
 	uri-to-ast(|ast) = ?target-uri;!ast;optimized-search-single(uri-to-ast-continue(|target-uri),uri-to-ast-succeed(|target-uri))

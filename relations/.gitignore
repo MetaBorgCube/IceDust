@@ -47,3 +47,6 @@ syntax/*.sdf
 target
 src-gen
 builddeps
+.dependencies.webdsl
+.saved-but-not-built
+.servletapp

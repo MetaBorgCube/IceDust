@@ -1,14 +1,14 @@
-module trans/generating/execute
+module trans/generating/java/execute
 
 imports // constructors
 
 	lib/java/Java
-	src-gen/signatures/execute-sig
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Execute-sig
+	src-gen/signatures/Modules-sig
 
 imports // functions
 
-	trans/generating/expressions
+	trans/generating/java/expressions
 
 rules
 

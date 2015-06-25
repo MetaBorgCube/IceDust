@@ -2,7 +2,7 @@ module pp
 
 imports // signatures
 
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Modules-sig
 	trans/desugaring/constructors
 
 imports // functions

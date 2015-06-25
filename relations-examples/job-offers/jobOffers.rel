@@ -3,6 +3,7 @@ module jobOffers
 model
   
   entity JobOffer{
+  	name : String = "Untitled" (default)
   	
   	hourlyPay  : Int?
   	monthlyPay : Int?
@@ -21,7 +22,7 @@ model
   	monthlyBruto : Int = (yearlyPay / 12 <+ monthlyPay <+ hourlyPay * 157 <+ 0) * (1000+vacation+thirteenth) / 1000
   	yearlyBruto  : Int = monthlyBruto * 12
   	
-  	hourlyNetto  : Int = yearlyNetto / 365
+  	hourlyNetto  : Int = monthlyNetto / 157
   	monthlyNetto : Int = yearlyNetto / 12
   	yearlyNetto  : Int = yearlyBruto - tax
 
@@ -64,20 +65,21 @@ model
 data
 
   JobOffer sideline{
+  	name = "sideline"
   	hourlyPay = 18
   	vacation = 0
   	thirteenth = 0
   }
   
-  JobOffer phdYear1{ monthlyPay = 2062 }
-  JobOffer phdYear2{ monthlyPay = 2403 }
-  JobOffer phdYear3{ monthlyPay = 2516 }
-  JobOffer phdYear4{ monthlyPay = 2638 }
+  JobOffer phdYear1{ name = "phd1" monthlyPay = 2062 }
+  JobOffer phdYear2{ name = "phd2" monthlyPay = 2403 }
+  JobOffer phdYear3{ name = "phd3" monthlyPay = 2516 }
+  JobOffer phdYear4{ name = "phd4" monthlyPay = 2638 }
   
-  JobOffer secondment { monthlyPay = 2350 thirteenth = 0 leaseCar = 14000 leaseCarPercentage = 14}
+  JobOffer secondment { name = "secondment" monthlyPay = 2350 thirteenth = 0 leaseCar = 14000 leaseCarPercentage = 14}
   
-  JobOffer consultant { monthlyPay = 2650 thirteenth = 0 leaseCar = 17000 leaseCarPercentage = 14}
-  
+  JobOffer consultant { name = "consultant" monthlyPay = 2650 thirteenth = 0 leaseCar = 17000 leaseCarPercentage = 14}
+
 execute
 
   "=== Sideline Job - hourly pay ==="

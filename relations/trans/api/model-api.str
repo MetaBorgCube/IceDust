@@ -15,9 +15,10 @@ rules // query
 	entity-get-name = ?Entity(_,<id>,_)
 	entity-get-members = ?Entity(_, _, <id>)
 
-	attr-get-name = ?Attribute(<id>, _, _, _)
-	attr-get-type = ?Attribute(_, <id>, _, _)
-	attr-get-mult = ?Attribute(_, _, <id>, _)
+	attr-get-name       = ?Attribute(<id>, _, _, _)
+	attr-get-type       = ?Attribute(_, <id>, _, _)
+	attr-get-mult       = ?Attribute(_, _, <id>, _)
+	attr-get-derivation = ?Attribute(_, _, _, Derivation(<id>,_))
 
 	role-get-type           = ?Role(NaBLHelp(<id>, _), _, _,_)
 	role-get-type           = ?Role(<id>, _, _, _)
@@ -70,7 +71,8 @@ rules // manipulation
 	
 	role-set-type(type)									= Role(type, id, id, id)
 
-	role-dup-type = role-set-type(\a -> NaBLHelp(a, a)\)
+	role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
+	role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
 
 rules // creation
 	

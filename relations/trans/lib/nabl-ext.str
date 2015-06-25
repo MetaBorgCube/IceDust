@@ -8,6 +8,7 @@ imports // functions
 	
 	trans/api/_runtime
 	trans/lib/string
+	trans/lib/traverse
 
 rules // api for unresolved references error messages
 	
@@ -113,3 +114,17 @@ rules // api for checking something contains all of def
 			(nablprop, propvalue) := filter;
 			def-list-filtered     := <_nabl-create-propconstraint(|ctx, nablprop, def-list)> propvalue;
 			def-list-filtered-rec := <filter-propconstraints(|ctx, filters-tail)>def-list-filtered
+
+rules // getting results of tasks
+	
+	give-all-tasks-results-anno = bottomup-anno(try(give-task-results-anno))
+	give-task-results-anno = _give-task-results;try(de-list)
+	
+	de-list: [a]->a
+
+rules // replacing uses with defs
+	
+	replace-use-with-defs-anno = bottomup-anno(try(replace-use-with-def))
+	
+	replace-use-with-def : Use(d@Def(_)) -> d
+	replace-use-with-def : Use([d@Def(_)]) -> d

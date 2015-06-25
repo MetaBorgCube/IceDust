@@ -1,15 +1,15 @@
-module trans/generating/expressions-references
+module trans/generating/java/expressions-references
 
 imports // constructors
 	
 	lib/java/Java
-	src-gen/signatures/expressions-sig
+	src-gen/signatures/Expressions-sig
 
 imports // functions
 	
 	trans/api/_runtime
 	trans/naming/names
-	trans/generating/types
+	trans/generating/java/types
 
 rules // member access
 
