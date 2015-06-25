@@ -52,6 +52,10 @@ model
 
   //...
 ```
+
+2. Use `Generation > Generate WebDSL eager` to generate the `.app` file.
+3. And then right click the project `Convert to a WebDSL project`.
+4. Press `Cmd + Alt + B` in the `.app` file to trigger the WebDSL compiler.
  
 ## Language Documentation
 
