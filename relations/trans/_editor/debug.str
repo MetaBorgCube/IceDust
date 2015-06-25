@@ -102,6 +102,16 @@ rules // Debugging builders
 		_analysis-debug-index-project(|<_language>)
 	debug-index-project-resolve = 
 		_analysis-debug-index-project-resolve(|<_language>)
+     
+  ignore-extension: (partition, index) -> (partition, index)
+    where
+      extension := <get-extension>partition;
+      <not(elem)> (extension, <ignore-extensions>)
+      
+  ignore-extension: (partition, index) -> (partition, index)
+    where
+      <not(get-extension)>partition
+	    
 	debug-index-project-resolve-ast:
     	(_, _, _, path, project-path) -> (filename, result)
 	    with

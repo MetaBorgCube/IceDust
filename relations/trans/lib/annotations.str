@@ -1,0 +1,7 @@
+module trans/lib/annotations
+
+imports
+	
+rules
+	
+	has-annotation(|kind) = get-annos;fetch-elem(?(kind, <id>))

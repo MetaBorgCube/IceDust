@@ -75,3 +75,7 @@ rules // apply strategy on a tree top-down and carry over a history, dont carry 
 			<not(explode-term)>term
 		with
 			(term', fold-value') := <map-strategy>(term, fold-value)
+
+rules // bottom up traversal including annotations
+	
+	bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup(s)>a}); s

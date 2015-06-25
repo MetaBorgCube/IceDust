@@ -1,0 +1,12 @@
+module trans/api/module-api
+
+imports // constructors
+	
+	src-gen/signatures/Modules-sig
+	trans/desugaring/constructors
+	
+rules // Module -> String
+
+	module-get-modulename: Module(name, _, _, _) -> name	
+	module-get-modulename: ModuleDesugared(name, _, _, _) -> name
+	

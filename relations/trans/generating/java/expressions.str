@@ -1,14 +1,14 @@
-module trans/generating/expressions
+module trans/generating/java/expressions
 
 imports // constructors
 
 	lib/java/Java
-	src-gen/signatures/expressions-sig
+	src-gen/signatures/Expressions-sig
 
 imports // functions
 
-	trans/generating/expressions-references
-	trans/generating/types
+	trans/generating/java/expressions-references
+	trans/generating/java/types
 
 rules // math
 

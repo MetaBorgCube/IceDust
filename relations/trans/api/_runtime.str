@@ -12,6 +12,7 @@ imports // generated runtime
 	lib/runtime/editor/properties
 	lib/runtime/index/core
 	lib/runtime/index/legacy
+	lib/runtime/index/query
 	lib/runtime/nabl/check
 	lib/runtime/nabl/collect
 	lib/runtime/nabl/constraints
@@ -118,6 +119,7 @@ rules
 	_analysis-debug-project(|language) = analysis-debug-project(|language)
 	_analysis-debug-partition(|language) = analysis-debug-partition(|language)
 	_analysis-debug-reanalyze(|language) = analysis-debug-reanalyze(|language)
+	_give-all-tasks-results = give-all-tasks-results
 	_give-task-results = give-task-results
 	
 	_index-get-all-partitions = index-get-all-partitions
@@ -134,4 +136,9 @@ rules
 	_analysis-propose-completions(|language, project-path) = analysis-propose-completions(|language, project-path)
 	
 	_nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
+	
+	_index-add(|value, source) = index-add(|value, source)
+	_index-get-all-values = index-get-all-values
+	_index-clear-source = index-clear-source
+
 	

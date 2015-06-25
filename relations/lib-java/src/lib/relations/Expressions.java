@@ -243,16 +243,19 @@ public class Expressions {
 	}
 
 	public static <E> Collection<E> conditional(Boolean b, E i, Collection<E> j) {
-		return b == null ? null : b ? toCollection(i) : j;
+		Collection<E> c = emptyCollection();
+		return b == null ? c : b ? toCollection(i) : j;
 	}
 
 	public static <E> Collection<E> conditional(Boolean b, Collection<E> i, E j) {
-		return b == null ? null : b ? i : toCollection(j);
+		Collection<E> c = emptyCollection();
+		return b == null ? c : b ? i : toCollection(j);
 	}
 
 	public static <E> Collection<E> conditional(Boolean b, Collection<E> i,
 			Collection<E> j) {
-		return b == null ? null : b ? i : j;
+		Collection<E> c = emptyCollection();
+		return b == null ? c : b ? i : j;
 	}
 
 }

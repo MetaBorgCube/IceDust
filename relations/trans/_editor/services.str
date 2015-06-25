@@ -2,8 +2,9 @@ module trans/_editor/services
 
 imports // constructors
 
-	src-gen/signatures/expressions-sig
-	src-gen/signatures/types-sig
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Types-sig
+	trans/analysis2/constructors
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors
 	
@@ -11,6 +12,7 @@ imports // functions
 
 	trans/api/_generated
 	// trans/analysis/rules
+	trans/analysis2/path
 	trans/api/_runtime
 	trans/lib/string
 	trans/prettyprinting/pp
@@ -102,8 +104,20 @@ rules // properties for editor services
 	
 	editor-service-properties(|project-path): target -> properties'
 		with
-			properties := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<_language>, project-path)>target;
-			properties' := properties
+			property1* := <_get-all-editor-properties(pp-partial-Relations-string;truncate-string(|200) |<_language>, project-path)>target;
+			property2* := <manual-properties>target;
+			properties' := [property1*,property2*]
+
+	manual-properties : t -> props
+		with
+			t' := <try(nabl-get-name)>t;
+			props :=
+	      <map(\(a,b)->(a,<pp-property>b)\);filter(not-none)>
+	      [
+	        ("Depends on", <index-get-prop(|DependsOn());try(?[];!None()) <+ !None()>t'),
+	        ("Flows to  ", <index-get-prop(|FlowsTo())  ;try(?[];!None()) <+ !None()>t'),
+	        ("TopoSort  ", <index-get-prop(|TopoSort()) ;try(Hd); try(?[];!None()) <+ !None()>t')
+	      ]
 
 	def-warning: Def(_) -> ("Warning!", "Showing hover info of Definition instead of Use")
 
@@ -113,3 +127,7 @@ rules // formatting for editor services
 	pp-property : One() 			-> "[1, 1], exactly one, required"
 	pp-property : ZeroOrMore()-> "[0, n), zero or more, maybe/nullable"
 	pp-property : OneOrMore()	-> "[1, n), one or more, required"
+
+	pp-property = path-pp	
+	// pp-property : Path(names) -> <concat-strings(|".")>names
+	// pp-property : Inv(path)   -> $[(inv) [<pp-property>path]]

@@ -38,6 +38,7 @@ properties
 	derivation-type 		 of Attribute	: DerivationType	//Derivation(), DefaultValue() or Normal()
 	multiplicity				 of Attribute	: Multiplicity
 	multiplicity-inverse of Role      : Multiplicity
+	inverse   					 of Role  		: Inverse
 	origin-role					 of Inverse		: Role
 	origin-role2				 of Shortcut	: Role
 	
@@ -78,6 +79,7 @@ binding rules // model
 			of type role-ty2
 			of multiplicity One()
 			of multiplicity-inverse role-mu
+			of inverse inverseName
 		defines non-unique Entity role-ty2
 		  scopes Inverse
 		defines Inverse inverseName

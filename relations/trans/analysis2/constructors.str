@@ -1,0 +1,10 @@
+module trans/analysis2/constructors
+
+signature constructors
+	
+	Path      : List(URL) -> Path
+	Inv       : Inv(Path) -> Path
+
+	DependsOn : DependsOn
+	FlowsTo   : FlowsTo
+	TopoSort  : TopoSort

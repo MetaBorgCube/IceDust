@@ -1,0 +1,195 @@
+module trans/generating/webdsl/model
+
+imports // constructors
+
+	trans/api/constructors
+	lib/webdsl/WebDSL
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/api/_runtime
+	trans/api/model-api
+	trans/api/model-names-api
+	trans/lib/search
+	trans/naming/names
+	trans/naming/_notNaBL
+	trans/generating/webdsl/expressions
+	trans/generating/webdsl/expressions-references
+
+rules // entities
+	
+  to-webdsl(err|ast): x_name -> 
+		webdsl |[
+			entity x_name {
+				ebd1*
+				ebd2*
+				ebd3*
+			}
+		]|
+	where
+		is-entityname
+	with
+		ebd1* := <entityname-get-attributenames;map(to-webdsl(err|ast))>x_name;
+		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
+		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name
+
+rules // attributes
+
+	to-webdsl(err|ast): x_name -> webdsl |[
+		x_name : srt1 (default=null)
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return if (entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		r.add(entity.x_name);
+	  	}
+	  	return r;
+    }
+	]|
+		where
+			is-attributename
+		where
+			attributename-is-normal
+		with
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+			
+	to-webdsl(err|ast): x_name -> webdsl |[
+		x_name : srt1 := e1
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return if(entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		if(entity.x_name!=null){
+	  			r.add(entity.x_name);
+	  		}
+	  	}
+	  	return r;
+    }
+	]|
+		where
+			is-attributename
+		where
+			attributename-is-derivation
+		with
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			e1       := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+			
+	to-webdsl(err|ast): x_name -> webdsl |[
+		x_name : srt1 (default=e1)
+		
+    static function x_getter(entity:x_entity):srt1{
+    	return entity.x_name;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+    	var r : [srt1];
+	  	for(entity in entities){
+	  		r.add(entity.x_name);
+	  	}
+	  	return r;
+    }
+	]|
+		where
+			is-attributename
+		where
+			attributename-is-default
+		with
+			srt1     := <to-webdsl(err)><_get-type>x_name;
+			e1       := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+
+rules // roles
+
+	to-webdsl(err): x_name -> webdsl |[
+		x_name : x_type
+		
+    static function x_getter(entity:x_entity):x_type{
+    	return if(entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[x_type]{
+    	var r : [x_type];
+    	for(entity in entities){
+    		r.add(entity.x_name);
+    	}
+    	return r;
+    }
+	]|
+		where
+			is-rolename
+		with
+			x_type   := <_get-type>x_name;
+			x_getter := $[get_[x_name]];
+			x_entity := <attributename-get-entityname>x_name
+
+rules // inverses
+	
+	to-webdsl(err): x_name -> webdsl |[
+		x_name : x_type (inverse=x_rolename)
+		
+    static function x_getter(entity:x_entity):x_type{
+    	return if(entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[x_type]{
+    	var r : [x_type];
+    	for(entity in entities){
+    		r.add(entity.x_name);
+    	}
+    	return r;
+    }
+	]|
+		where
+			is-inversename
+		where
+			get-multiplicity;upper-one
+		with
+			x_type     := <_get-type>x_name;
+			x_rolename := <inversename-get-rolename>x_name;
+			x_getter   := $[get_[x_name]];
+			x_entity   := <attributename-get-entityname>x_name
+	
+	to-webdsl(err): x_name -> webdsl |[
+		x_name : [x_type] (inverse=x_rolename)
+		
+    static function x_getter(entity:x_entity):[x_type]{
+    	var empty : [x_type];
+    	return if ( entity != null ) entity.x_name else empty;
+    }
+    
+    static function x_getter(entities:[x_entity]):[x_type]{
+    	var r : [x_type];
+    	for(entity in entities){
+    		r.addAll(entity.x_name);
+    	}
+    	return r;
+    }
+	]|
+		where
+			is-inversename
+		where
+			get-multiplicity;upper-many
+		with
+			x_type     := <_get-type>x_name;
+			x_rolename := <inversename-get-rolename>x_name;
+			x_getter   := $[get_[x_name]];
+			x_entity   := <attributename-get-entityname>x_name
+
+rules
+	

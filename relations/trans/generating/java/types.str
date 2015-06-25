@@ -1,8 +1,8 @@
-module trans/generating/types
+module trans/generating/java/types
 
 imports // constructors
 
-	src-gen/signatures/types-sig
+	src-gen/signatures/Types-sig
 
 imports // functions
 

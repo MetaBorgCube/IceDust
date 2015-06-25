@@ -1,16 +1,16 @@
-module trans/generating/generate
+module trans/generating/java/generate
 
 imports // constructors
 
-	src-gen/signatures/modules-sig
+	src-gen/signatures/Modules-sig
 
 imports // functions
 
 	lib/java/pretty-print
-	trans/generating/data
-	trans/generating/execute
-	trans/generating/model
-	trans/generating/module
+	trans/generating/java/data
+	trans/generating/java/execute
+	trans/generating/java/model
+	trans/generating/java/module
 
 rules // Builders
 	

@@ -1,0 +1,69 @@
+module trans/analysis2/analysis2
+
+imports // constructors
+	
+	src-gen/signatures/Expressions-sig
+	trans/api/_runtime-constructors
+	trans/analysis2/constructors
+
+imports // functions
+
+	trans/analysis2/path
+	trans/api/_runtime
+	trans/api/model-api
+	trans/api/model-names-api
+	trans/api/module-api
+	trans/api/module-names-api
+	trans/lib/nabl-ext
+	trans/lib/graph
+	trans/lib/index
+	trans/lib/lists-tuples
+
+rules
+	
+	analysis2 =
+		analysis2-clear-index;
+		depends-on-and-flows-to;
+		flows-toposort
+
+rules
+
+	analysis2-clear-index: a -> a
+		with
+			<_index-clear-source>"analysis2"
+
+rules
+	
+	depends-on-and-flows-to: ast -> ast
+		with
+			attrs      := <collect(is-attr)>ast;
+			paths      := <map(attr-depends-on);concat>attrs;
+			<map(path-store-on-origin(|DependsOn()))>paths;
+			invPaths   := <map(path-reverse;path-all-tails);concat>paths;
+			<map(path-store-on-origin(|FlowsTo()))>invPaths
+
+	attr-depends-on: attr -> []
+		where
+			not(attr-get-derivation)
+
+	attr-depends-on: attr -> paths
+		where
+			derivation := <attr-get-derivation>attr
+		with
+			attrName   := <attr-get-name>attr;
+			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
+			paths      := <map(expr-to-path(|attrName));filter(path-isvalid);map(path-no-shortcuts);give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
+
+rules
+	
+	flows-toposort: ast -> ast
+		with
+			moduleName  := <module-get-modulename>ast;
+			entityNames := <modulename-get-entitynames>moduleName;
+			graphNames  := <map(concat(entityname-get-attributenames,entityname-get-rolenames));concat>entityNames;
+			toposort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>graphNames;
+			<index-store-prop(|TopoSort(), moduleName)>toposort;
+			numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+			<map(index-store-prop(|TopoSort()))>numbers
+	
+rules

@@ -1,0 +1,45 @@
+module trans/generating/webdsl/generate
+
+imports // constructors
+
+	src-gen/signatures/Modules-sig
+
+imports // functions
+
+	lib/webdsl/pp-webdsl
+	trans/generating/webdsl/module
+	lib/WebDSL/WebDSL-parenthesize
+
+rules // Builders
+	
+	generate-webdsl-code(err):
+	    (selected, path) -> (fileName, result, errors)
+	    with
+			fileName     := <guarantee-extension(|"app")> path;
+			webdsl-ast   := <to-webdsl(err)> selected;
+			errors       := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+			webdsl-ast'  := <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
+			webdsl-ast'' := <parenthesize-WebDSL>webdsl-ast';
+			result       := <pp-webdsl-to-string> webdsl-ast''
+
+rules	// General Java generation rules
+
+	to-webdsl(err) = where(is-string);id
+
+  to-webdsl(err):
+    [_] -> <concat-strings> <map(to-webdsl(err))>
+    
+  to-webdsl(err):
+    () -> ""
+    
+  to-webdsl(err):
+  	None() -> ""
+
+  to-webdsl(err): Module(_,_,_,_) -> None()
+  	where
+  		<err> "Desugar before generating code."
+	
+  to-webdsl(err): a -> a'
+  	where
+		  a' := <err>$[No to-webdsl defined for [<get-constructor> a]/[<get-arguments;length> a] : [<write-to-string>a]]
+

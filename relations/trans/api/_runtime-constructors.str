@@ -10,3 +10,7 @@ signature constructors // copy from runtime library
   Use          : Result -> Key
   
   URI          : Language * List(Segment)     -> URI
+
+	Prop         : URI * Property -> Key
+
+	Type         : Type

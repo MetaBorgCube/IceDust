@@ -4,6 +4,7 @@ imports // functions
 	
 	trans/api/_runtime
 	trans/api/_runtime-constructors
+	trans/lib/traverse
 
 rules // debug tasks
 	
@@ -18,7 +19,7 @@ rules // debug tasks
 
 	task-number: Result(a) -> a
 	
-	pp-uris = bottomup(try(_pp-uri))
+	pp-uris = bottomup-anno(try(_pp-uri))
 
 rules // debug with prefix
 	
@@ -35,3 +36,13 @@ rules // strings
 	to-string: a -> <write-to-string>a
 		where
 			not(is-string)
+
+rules // debug-pp
+	
+	debug-pp: t -> t
+		with
+			pp-uris;debug
+			
+	debug-pp(|info): t -> t
+		with
+			pp-uris;debug(|info)

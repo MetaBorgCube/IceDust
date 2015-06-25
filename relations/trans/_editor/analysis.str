@@ -8,6 +8,7 @@ imports // functions
 
 	trans/api/_generated
 	trans/api/_runtime
+	trans/analysis2/analysis2
 	trans/desugaring/desugar
 	trans/lib/origin
 	trans/prettyprinting/pp
@@ -17,9 +18,9 @@ rules // Analysis
 	editor-analyze = _analysis-default-editor
 	
 	analysis-single-default-interface = 
-	  _analysis-single-default(desugar-before-analysis, desugar-after-analysis, pp-message-top|<_language>)
+	  _analysis-single-default(desugar-before-analysis, desugar-after-analysis;analysis2, pp-message-top|<_language>)
 	analysis-multiple-default-interface = 
-	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
+	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis;analysis2, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
 	
 	editor-save = _analysis-save-default(|<_language>)
 
