@@ -2,10 +2,16 @@
 
 This is a programming language for relational programming; a declarative programming style based on modelling with first class relations.
 
-## Getting the editor (build it with Spoofax)
+## Getting the Editor - Java backend only
 
-1. Get Eclipse 4.4
-2. Install Spoofax 1.3 trough the update site http://download.spoofax.org/update/stable/
+1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
+2. Check out this git repo
+3. Build the editor project in [relations](relations)
+
+## Getting the Editor - Java and WebDSL backend
+
+1. Download any Eclipse
+2. Install WebDSL through the update site http://webdsl.org/update/nightly
 3. Check out this git repo
 4. Build the editor project in [relations](relations)
 
