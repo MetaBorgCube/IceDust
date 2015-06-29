@@ -16,5 +16,7 @@
   
   <modules>
   	<module>relations</module>
+  	<module>relations-eclipse-plugin</module>
+  	<module>update</module>
   </modules>
 </project>
