@@ -2,7 +2,7 @@ module lib/WebDSL/WebDSL-parenthesize
 
 imports
   libstratego-lib
-  lib/WebDSL/WebDSL
+  lib/webdsl/WebDSL
 
 
 strategies
