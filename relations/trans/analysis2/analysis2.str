@@ -10,6 +10,7 @@ imports // functions
 
 	trans/analysis2/path
 	trans/api/_runtime
+	trans/api/data-api
 	trans/api/model-api
 	trans/api/model-names-api
 	trans/api/module-api
@@ -38,13 +39,21 @@ rules
 	store-expressions: ast -> ast
 		with
 			attrs      := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-			<map(attr-store-expr)>attrs
+			<map(attr-store-expr)>attrs;
+			einsts     := <collect(is-entityinstance)>ast;
+			<map(einst-store-expr)>einsts
 	
 	attr-store-expr: attr -> attr
 		with
 			derivation := <attr-get-derivation>attr;
 			attrName   := <attr-get-name>attr;
 			<index-store-prop(|AST(), attrName)>derivation
+	
+	einst-store-expr: einst -> einst
+		with
+			exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
+			name  := <entityinstance-get-name>einst;
+			<index-store-prop(|AST(), name)>exprs
 
 rules
 	

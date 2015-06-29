@@ -21,6 +21,8 @@ rules // module
 	
 	modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;map(def-to-name); string-sort-anno
 
+	is-modulename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsModule())
+
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri

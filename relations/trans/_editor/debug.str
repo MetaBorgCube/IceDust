@@ -106,7 +106,7 @@ rules // Debugging builders
   ignore-extension: (partition, index) -> (partition, index)
     where
       extension := <get-extension>partition;
-      <not(elem)> (extension, <ignore-extensions>)
+      <not(elem)> (extension, <_ignore-extensions>)
       
   ignore-extension: (partition, index) -> (partition, index)
     where

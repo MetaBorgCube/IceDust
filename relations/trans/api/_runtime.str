@@ -141,4 +141,5 @@ rules
 	_index-get-all-values = index-get-all-values
 	_index-clear-source = index-clear-source
 
+	_ignore-extensions = ignore-extensions
 	

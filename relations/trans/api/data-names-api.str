@@ -6,16 +6,20 @@ imports // constructors
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors
 	trans/naming/names
+	trans/analysis2/constructors
 
 imports // functions
 
 	trans/api/_runtime
 	trans/lib/origin
 	trans/lib/search
+	trans/lib/index
 
 rules // entity
 
 	is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
+
+	entityinstancename-get-exprs = index-get-prop(|AST());Hd
 
 rules
 	

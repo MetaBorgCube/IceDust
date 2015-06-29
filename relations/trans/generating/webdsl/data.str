@@ -15,7 +15,7 @@ imports // functions
 
 rules // entity instances
 
-	to-webdsl-1(err|ast): x_name ->
+	to-webdsl-1(err): x_name ->
 		webdsl |[
 			var x_name := srt1 {};
 			stat1*
@@ -26,18 +26,16 @@ rules // entity instances
 			srt1 := <_get-type>x_name;
 			stat1* := []
 
-	to-webdsl-2(err|ast): x_name ->
+	to-webdsl-2(err): x_name ->
 		webdsl |[
 			stat1*
-			stat2*
 		]|
 		where
 			is-entityinstancename
 		with
-			stat1* := <name-to-ast(|ast);entityinstance-get-attrvalues;map(to-webdsl(err|x_name))>x_name;
-			stat2* := <name-to-ast(|ast);entityinstance-get-rolevalues;map(to-webdsl(err|x_name))>x_name
+			stat1* := <entityinstancename-get-exprs;map(to-webdsl(err|x_name))>x_name
 
-	to-webdsl-3(err|ast): x_name ->
+	to-webdsl-3(err): x_name ->
 		webdsl |[
 			x_name.save();
 			stat1*
@@ -57,7 +55,7 @@ rules // entity instance attributes
 			is-attributevalue
 		with
 			x_attrName := <attributevalue-get-attr>av;
-			e1          := <attributevalue-get-value;to-webdsl(err)>av
+			e1         := <attributevalue-get-value;to-webdsl(err)>av
 	
 rules // entity instance roles
 	
