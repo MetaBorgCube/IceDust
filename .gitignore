@@ -44,3 +44,5 @@ lib-refactoring/*.generated.str
 */*/*/*/*.aterm
 syntax/*.sdf
 /include
+update/target
+relations-eclipse-plugin/target
