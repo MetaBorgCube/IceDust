@@ -10,19 +10,19 @@ menus
   menu: "Syntax"                       (openeditor)
     
     action: "Format"                                               = editor-format (realtime) (source)
-    action: "1) Show abstract syntax"                              = debug-show-aterm (realtime) (meta) (source)
-    action: "2) Show desugared-before"                             = debug-show-desugared (realtime) (meta) (source)
-    action: "3) Show analyzed"                                     = debug-show-analyzed-resolved0 (meta) (source)
-    action: "3) Show analyzed (unresolved)"                        = debug-show-analyzed (meta)
-    action: "4) Show desugared-after"                              = debug-show-analyzed-resolved (meta)
-    action: "4) Show desugared-after (no def or use anotations)"   = debug-show-analyzed-resolved2 (meta)
-    action: "4) Show desugared-after (no anotations)"              = debug-show-desugared2 (meta)
-    action: "Debug Origins of 2)"	                                 = debug-show-origin2 (meta) (source)
-    action: "Debug Origins of 4)"	                                 = debug-show-origin (meta)
+    action: "1) Show abstract syntax"                              = debug-show-aterm (realtime)  (source)
+    action: "2) Show desugared-before"                             = debug-show-desugared (realtime)  (source)
+    action: "3) Show analyzed"                                     = debug-show-analyzed-resolved0  (source)
+    action: "3) Show analyzed (unresolved)"                        = debug-show-analyzed 
+    action: "4) Show desugared-after"                              = debug-show-analyzed-resolved 
+    action: "4) Show desugared-after (no def or use anotations)"   = debug-show-analyzed-resolved2 
+    action: "4) Show desugared-after (no anotations)"              = debug-show-desugared2 
+    action: "Debug Origins of 2)"	                                 = debug-show-origin2  (source)
+    action: "Debug Origins of 4)"	                                 = debug-show-origin 
 
 
 
-  menu: "Analysis" (meta)
+  menu: "Analysis" 
     
     action: "Reset and reanalyze"  = debug-reanalyze   
 
@@ -51,11 +51,11 @@ menus
   
   menu: "Generation"
     
-    action: "Generate Java"        = generate-java (openeditor) (realtime) (meta)
-    action: "Compile Java"         = compile-java (meta)
+    action: "Generate Java"        = generate-java (openeditor)
+    action: "Compile Java"         = compile-java 
     action: "Execute Java"         = execute-java
-    action: "Generate WebDSL"      = generate-webdsl (openeditor) (realtime) (meta)
-    action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor) (realtime) (meta)
+    action: "Generate WebDSL"      = generate-webdsl (openeditor)
+    action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor)
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
