@@ -2,27 +2,24 @@
 
 This is a programming language for relational programming; a declarative programming style based on modelling with first class relations.
 
-## Getting the Editor - Java backend only
+## Getting the Editor
 
-1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
+Download from http://buildfarm.metaborg.org/job/relations-eclipsegen/
+
+Known issues:
+
+* Generation > Execute Java does not show any output on the console (Generation > Generate Java and then running the Java program from Eclipse works fine)
+* The WebDSL editor fails to analyze its files when the Relation Language Editor is also installed (building the generated WebDSL files works fine)
+
+## Building the Editor (in Spoofax)
+
+1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/ (Only Java backend)
+   Or get WebDSL+Spoofax from http://buildfarm.metaborg.org/job/webdsl-eclipsegen/ (Works for both Java and WebDSL backend)
 2. Check out this git repo
 3. Build the editor project in [relations](relations)
 
-## Getting the Editor - Java and WebDSL backend
+Building the editor in Spoofax does not have both issues listed for the Download.
 
-1. Download any Eclipse
-2. Install WebDSL through the update site http://webdsl.org/update/nightly
-3. Check out this git repo
-4. Build the editor project in [relations](relations)
-
-<!--
-## Getting the editor (install as Eclipse Plugin) - Has bugs
-
-1. Get Eclipse 4.4
-2. Install the new Relations Editor Plugin. Updatelink:  [http://dl.bintray.com/dcharkes/Relations-Language](http://dl.bintray.com/dcharkes/Relations-Language)
-
-Note that there is an issue with the pre-packaged plugin. There is no command line output displayed ([Issue](http://yellowgrass.org/issue/StrategoXT/899)).
--->
 
 ## Try the examples
 
@@ -31,7 +28,9 @@ Note that there is an issue with the pre-packaged plugin. There is no command li
 
 ### Java backend
 
-Compiling to Java will work always.
+To use the Java backend use Generation > Execute Java (if you built the editor in Spoofax).
+
+Or use Generation > Generate Java and build the generated Java (make sure the Java files are on the classpath and that your eclipse project has the Java nature and Java builder) (if you have downloaded the editor).
 
 ### WebDSL backend
 
