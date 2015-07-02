@@ -59,4 +59,4 @@ menus
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
-		action: "test-optimized-search" = test-optimized-search (openeditor)
+		// action: "test-optimized-search" = test-optimized-search (openeditor)

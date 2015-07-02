@@ -12,6 +12,7 @@ rules // builders
 			<guarantee-extension(|"aterm");delete-file> path;
 			<guarantee-extension(|"analyzed.aterm");delete-file> path;
 			<guarantee-extension(|"desugared.aterm");delete-file> path;
+			<guarantee-extension(|"desugared.after.aterm");delete-file> path;
 			<guarantee-extension(|"partition.analysis");delete-file> path;
 			<guarantee-extension(|"partition.task");delete-file> path;
 			<guarantee-extension(|"partition.index");delete-file> path;
