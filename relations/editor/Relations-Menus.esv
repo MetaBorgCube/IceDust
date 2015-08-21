@@ -56,6 +56,7 @@ menus
     action: "Execute Java"         = execute-java
     action: "Generate WebDSL"      = generate-webdsl (openeditor)
     action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor)
+    action: "Generate WebDSL eventual"= generate-webdsl-eventual (openeditor)
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 

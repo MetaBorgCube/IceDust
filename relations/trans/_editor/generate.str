@@ -14,6 +14,7 @@ imports // functions
 	trans/generating/java/generate
 	trans/generating/webdsl/generate
 	trans/generating/webdsl-eager/generate
+	trans/generating/webdsl-eventual/generate
 	trans/lib/files
 	trans/prettyprinting/pp
 
@@ -23,9 +24,10 @@ signature sorts
 	
 signature constructors
 	
-	Java        : TargetLanguage
-	WebDSL      : TargetLanguage
-	WebDSLEager : TargetLanguage
+	Java           : TargetLanguage
+	WebDSL         : TargetLanguage
+	WebDSLEager    : TargetLanguage
+	WebDSLEventual : TargetLanguage
 
 rules // Builders
 	
@@ -63,6 +65,13 @@ rules // Builders
 		(selected, position, ast, path, project-path) -> result
 		with
 			result := <build(error-handler|WebDSLEager())>(selected, path, project-path, 1)
+
+	generate-webdsl-eventual      = generate-webdsl-eventual(error-handler-editor)
+	generate-webdsl-eventual-test = generate-webdsl-eventual(error-handler-tests)
+	generate-webdsl-eventual(error-handler):
+		(selected, position, ast, path, project-path) -> result
+		with
+			result := <build(error-handler|WebDSLEventual())>(selected, path, project-path, 1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -107,6 +116,9 @@ rules // Build in steps
 					case ?WebDSLEager():
 						(targetFileName, targetCode, error') := <generate-webdsl-eager-step(error-handler)>(ast', path);
 						<copy-webdsl-libraries>(targetFileName, project-path)
+					case ?WebDSLEventual():
+						(targetFileName, targetCode, error') := <generate-webdsl-eventual-step(error-handler)>(ast', path);
+						<copy-webdsl-libraries>(targetFileName, project-path)
 				end;
 				if <eq>(1, i) then
 					result := (targetFileName, targetCode)
@@ -140,9 +152,10 @@ rules // Build in steps
 		with
 			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
-	generate-java-step(error-handler)         = generate-java-code(error-handler)
-	generate-webdsl-step(error-handler)       = generate-webdsl-code(error-handler)
-	generate-webdsl-eager-step(error-handler) = generate-webdsl-eager-code(error-handler)
+	generate-java-step(error-handler)            = generate-java-code(error-handler)
+	generate-webdsl-step(error-handler)          = generate-webdsl-code(error-handler)
+	generate-webdsl-eager-step(error-handler)    = generate-webdsl-eager-code(error-handler)
+	generate-webdsl-eventual-step(error-handler) = generate-webdsl-eventual-code(error-handler)
 
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
