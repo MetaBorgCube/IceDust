@@ -193,7 +193,7 @@ rules // helper
 	
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
 		if(e1 != null){
-			log("Attribute " + e2 + " is dirty of " + e1);
+			// log("Attribute " + e2 + " is dirty of " + e1);
 			x_dirty.add(e1);
 		}
 	]|
@@ -205,7 +205,7 @@ rules // helper
 			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
 	
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
-		log("Attribute " + e2 + " is dirty of " + e1);
+		// log("Attribute " + e2 + " is dirty of " + e1);
 		x_dirty.addAll(e1);
 	]|
 		where
