@@ -35,10 +35,9 @@ rules // module
 				
 				section derivations
 				
-					// native class nativejava.derivations.x_dirty as Helper {
-					// 	static x_get() : Queue
-					// }
-					def4
+					native class nativejava.derivations.x_dirty as Helper {
+						native1*
+					}
 					
 					native class java.util.Queue as Queue{
 						offer(String) : Bool
@@ -148,13 +147,7 @@ rules // module
 			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
 			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name;
 			x_dirty:= $[[x_name]_Dirty];
-			queue* := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
-			def4   := NativeClass(
-								  Qualified(Qualified("nativejava", "derivations"), x_dirty)
-								, NativeClassAlias("Helper")
-								, None()
-								, queue*
-								)
+			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name
 			
 
 rules //crud
@@ -266,7 +259,7 @@ rules // derivations
 			x_entity := <attributename-get-entityname>x_name;
 			x_dirty  := $[[x_entity]_[x_name]_dirty]
 
-	attribute-dirty-queue: x_name -> NativeClassFunction(NativeClassFunctionStatic(), x_get, [], NativeClassFunctionReturn(NativeSimpleType("Queue"))) //static x_get() : Queue
+	attribute-dirty-queue: x_name -> |[static x_get() : Queue]|
 		where
 			<is-attributename>x_name
 		with
