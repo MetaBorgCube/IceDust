@@ -35,7 +35,7 @@ rules // module
 				
 				section derivations
 				
-					native class nativejava.derivations.x_dirty as Helper {
+					native class derivations.x_dirty as Helper {
 						native1*
 					}
 					
