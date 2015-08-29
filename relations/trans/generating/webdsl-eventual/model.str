@@ -195,7 +195,7 @@ rules // helper
 		if(e1 != null){
 			// log("Attribute " + e2 + " is dirty of " + e1);
 			x_dirty.add(e1);
-			//Helper.get_Course_averageGrade_queue().offer(course.id.toString());
+			Helper.x_queue().offer(e1.id.toString());
 		}
 	]|
 		where
@@ -203,16 +203,18 @@ rules // helper
 		with
 			e1      := <to-webdsl(err)>expr;
 			e2      := String(attrName);
-			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
+			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty];
+			x_queue := $[get_[<attributename-get-entityname>attrName]_[attrName]_queue]
 	
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
 		// log("Attribute " + e2 + " is dirty of " + e1);
 		x_dirty.addAll(e1);
-		//Helper.get_Course_averageGrade_queue().offer(course.id.toString()); but then all
+		// Helper.x_queue().offer(e1.id.toString());
 	]|
 		where
 			<get-multiplicity;upper-many>expr
 		with
 			e1      := <to-webdsl(err)>expr;
 			e2      := String(attrName);
-			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
+			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty];
+			x_queue := $[get_[<attributename-get-entityname>attrName]_[attrName]_queue]

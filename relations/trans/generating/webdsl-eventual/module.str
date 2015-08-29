@@ -41,6 +41,8 @@ rules // module
 					
 					native class java.util.Queue as Queue{
 						offer(String) : Bool
+						add(String) : Bool
+						addAll(Set<String>) : Bool
 						poll() : String
 						contains(String) : Bool
 					}
