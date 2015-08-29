@@ -195,6 +195,7 @@ rules // helper
 		if(e1 != null){
 			// log("Attribute " + e2 + " is dirty of " + e1);
 			x_dirty.add(e1);
+			//Helper.get_Course_averageGrade_queue().offer(course.id.toString());
 		}
 	]|
 		where
@@ -207,6 +208,7 @@ rules // helper
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
 		// log("Attribute " + e2 + " is dirty of " + e1);
 		x_dirty.addAll(e1);
+		//Helper.get_Course_averageGrade_queue().offer(course.id.toString()); but then all
 	]|
 		where
 			<get-multiplicity;upper-many>expr
