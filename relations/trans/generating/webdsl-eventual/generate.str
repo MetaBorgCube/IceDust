@@ -18,6 +18,9 @@ rules // documentation
 	 * The central eventual consistent thread empties these queues and computes everything.
 	 * Items may be added during computation, the algorithm will do those first in order to avoid unnecessary computation (note this might lead to starvation during heavy use).
 	 */
+	 
+	 //TODO: make sure `invoke updateDerivations() every 3 seconds` only runs if the previous one finished.
+	 //TODO: make sure the UUIDs of dirty elements are only added after the changes are actually saved to database. 
 
 rules // Builders
 	
