@@ -36,6 +36,8 @@ rules // attributes
 	
 	attributename-get-entityname = _nabl-uri;_nabl-uri-parent;_nabl-uri-name
 	
+	attributename-get-expr = index-get-prop(|AST());Hd
+	
 rules // roles
 	
 	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())

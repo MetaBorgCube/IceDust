@@ -1,4 +1,4 @@
-module trans/generating/webdsl-eager/module
+module trans/generating/webdsl-eventual/module
 
 imports // constructors
 
@@ -9,7 +9,7 @@ imports // constructors
 
 imports // functions
 	
-	trans/generating/webdsl-eager/model
+	trans/generating/webdsl-eventual/model
 	trans/generating/webdsl/data
 	trans/api/module-api
 	trans/api/module-names-api
@@ -21,9 +21,9 @@ imports // functions
 
 rules // module
 
-	to-webdsl-eager(err) = module-get-modulename;to-webdsl-eager(err)
+	to-webdsl-eventual(err) = module-get-modulename;to-webdsl-eventual(err)
 
-	to-webdsl-eager(err): x_name -> 
+	to-webdsl-eventual(err): x_name -> 
 			webdsl |[
 				application x_name
 				
@@ -35,7 +35,20 @@ rules // module
 				
 				section derivations
 				
-					def3*
+					native class derivations.x_dirty as Helper {
+						native1*
+					}
+					
+					native class java.util.Queue as Queue{
+						offer(String) : Bool
+						add(String) : Bool
+						addAll(List<String>) : Bool
+						poll() : String
+						contains(String) : Bool
+						isEmpty() : Bool
+					}
+
+					// def3*
 					
 				  init
 				  {
@@ -51,6 +64,8 @@ rules // module
 						var notEmpty : Bool;
 						stat4*
 					}
+					
+  				invoke updateDerivations() every 3 seconds
 				
 				section data
 					
@@ -58,7 +73,7 @@ rules // module
 						stat1*
 						stat2*
 						stat3*
-						updateDerivations();
+						// updateDerivations();
 					}
 				
 				section CRUD
@@ -128,18 +143,21 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*  := <modulename-get-entitynames;map(to-webdsl-eager(err))>x_name;
-			def2*  := <modulename-get-entitynames;map(webdsl-crud-eager)>x_name;
+			def1*  := <modulename-get-entitynames;map(to-webdsl-eventual(err))>x_name;
+			def2*  := <modulename-get-entitynames;map(webdsl-crud-eventual)>x_name;
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
-			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
-			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name
+			// def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
+			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name;
+			x_dirty:= $[[x_name]_Dirty];
+			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name
+			
 
 rules //crud
 	
-	webdsl-crud-eager: x_name -> webdsl* |[
+	webdsl-crud-eventual: x_name -> webdsl* |[
 		define page x_create(){
       //derive createPage from temp
       main()
@@ -160,7 +178,7 @@ rules //crud
         }
         action save() { 
           temp.save();
-          updateDerivations();
+          // updateDerivations();
           return x_manage();
         }
       }
@@ -187,7 +205,7 @@ rules //crud
 		    }
 		    action save() { 
 		      arg.save();
-		      updateDerivations();
+		      // updateDerivations();
 		      return x_manage();
 		    }
 		  }
@@ -235,16 +253,23 @@ rules //crud
 	
 rules // derivations
 	
-	attribute-dirty-collection: x_name -> def* |[
-		request var x_dirty := Set<x_entity>()
-		
-	  extend function initDirtyCollections(){
-	  	x_dirty := Set<x_entity>();
-	  }
-	]|
+	// attribute-dirty-collection: x_name -> def* |[
+	// 	request var x_dirty := Set<x_entity>()
+	// 	
+	//   extend function initDirtyCollections(){
+	//   	x_dirty := Set<x_entity>();
+	//   }
+	// ]|
+	// 	with
+	// 		x_entity := <attributename-get-entityname>x_name;
+	// 		x_dirty  := $[[x_entity]_[x_name]_dirty]
+
+	attribute-dirty-queue: x_name -> |[static x_get() : Queue]|
+		where
+			<is-attributename>x_name
 		with
 			x_entity := <attributename-get-entityname>x_name;
-			x_dirty  := $[[x_entity]_[x_name]_dirty]
+			x_get    := $[get_[x_entity]_[x_name]_queue]
 
 rules // List(List(String)) -> Webdsl-stat*
 

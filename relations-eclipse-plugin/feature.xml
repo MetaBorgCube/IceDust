@@ -2,17 +2,17 @@
 <feature
       id="Relations_Language_Plugin"
       label="Relations Language Editor"
-      version="0.3.0">
+      version="0.3.1.qualifier">
 
-   <description url="https://github.com/dcharkes/relations">
+   <description url="https://github.com/metaborg/relations">
       The Relations Language Editor
    </description>
 
-   <copyright url="https://github.com/dcharkes/relations">
+   <copyright url="https://github.com/metaborg/relations">
       Copyright (c) Daco Harkes 2014
    </copyright>
 
-   <license url="https://github.com/dcharkes/relations">
+   <license url="https://github.com/metaborg/relations">
       Relations Language License Information
       
 This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +29,6 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
          id="Relations"
          download-size="0"
          install-size="0"
-         version="0.3.0"/>
+         version="0.3.1.qualifier"/>
 
 </feature>

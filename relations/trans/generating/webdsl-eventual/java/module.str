@@ -1,0 +1,51 @@
+module trans/generating/webdsl-eventual/java/module
+
+imports // constructors
+
+	trans/api/constructors
+	lib/java/Java
+
+imports // functions
+
+	trans/api/model-names-api
+	trans/api/module-api
+	trans/api/module-names-api
+
+rules // module (or modulename) -> java compilation-unit
+	
+	to-webdsl-eventual-java(err) = module-get-modulename;to-webdsl-eventual-java(err)
+	
+  to-webdsl-eventual-java(err): x_name -> compilation-unit |[
+		package derivations;
+		
+		import java.util.Queue;
+		import java.util.concurrent.ConcurrentLinkedQueue;
+		
+		public class x_moduleDirty {
+			
+			~def1*
+			
+		}
+	]|
+		where
+			<is-modulename>x_name
+		with
+			x_moduleDirty := $[[x_name]_Dirty];
+			def1*         := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(to-webdsl-eventual-java(err));flatten-list>x_name
+
+rules // attrname -> java declarations
+	
+	to-webdsl-eventual-java(err): x_name -> |[
+		private static Queue<String> x_queue = new ConcurrentLinkedQueue<String>();
+		
+		public static Queue<String> x_get(){
+			return x_queue;
+		}
+	]|
+		where
+			<is-attributename>x_name
+		with
+			x_entity := <attributename-get-entityname>x_name;
+			x_queue  := $[[x_entity]_[x_name]_queue];
+			x_get    := $[get_[x_entity]_[x_name]_queue]
+

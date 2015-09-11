@@ -2,7 +2,7 @@ module include/Java-parenthesize
 
 imports
   libstratego-lib
-  lib/Java/Java
+  lib/java/Java
 
 
 strategies

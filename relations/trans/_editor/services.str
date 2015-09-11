@@ -14,8 +14,10 @@ imports // functions
 	// trans/analysis/rules
 	trans/analysis2/path
 	trans/api/_runtime
+	trans/lib/index
 	trans/lib/string
 	trans/prettyprinting/pp
+	trans/naming/names
 	
 rules // Editor services
 	
@@ -112,7 +114,7 @@ rules // properties for editor services
 		with
 			t' := <try(nabl-get-name)>t;
 			props :=
-	      <map(\(a,b)->(a,<pp-property>b)\);filter(not-none)>
+	      <map(\(a,b)->(a,<pp-property>b)\);filter(_not-none)>
 	      [
 	        ("Depends on", <index-get-prop(|DependsOn());try(?[];!None()) <+ !None()>t'),
 	        ("Flows to  ", <index-get-prop(|FlowsTo())  ;try(?[];!None()) <+ !None()>t'),

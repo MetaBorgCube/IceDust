@@ -15,9 +15,10 @@ imports // functions
 	
 rules // primitives
 	
-	to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
-	to-webdsl(err): Int()     -> webdsl |[ Int ]|		
-	to-webdsl(err): String()  -> webdsl |[ String ]|
+	type-to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
+	type-to-webdsl(err): Int()     -> webdsl |[ Int ]|		
+	type-to-webdsl(err): String()  -> webdsl |[ String ]|
+	type-to-webdsl(err): name      -> name                 where is-string
 
 rules // webdsl types
 	
@@ -26,8 +27,8 @@ rules // webdsl types
 			ty := <_get-type>name;
 			mu := <get-multiplicity>name
 	
-	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;to-webdsl(err);?srt1;!webdsl |[ srt1   ]|
-	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;to-webdsl(err);?srt1;!webdsl |[ [srt1] ]|
+	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;type-to-webdsl(err);?srt1;!webdsl |[ srt1   ]|
+	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;type-to-webdsl(err);?srt1;!webdsl |[ [srt1] ]|
 
 rules
 

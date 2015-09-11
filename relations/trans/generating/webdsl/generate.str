@@ -8,7 +8,7 @@ imports // functions
 
 	lib/webdsl/pp-webdsl
 	trans/generating/webdsl/module
-	lib/WebDSL/WebDSL-parenthesize
+	lib/webdsl/WebDSL-parenthesize
 
 rules // Builders
 	

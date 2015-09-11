@@ -10,12 +10,14 @@ imports // functions
 	
 	trans/generating/webdsl/model
 	trans/generating/webdsl/data
+	trans/api/module-api
 	trans/api/module-names-api
 
 rules // module
 
-	to-webdsl(err):
-		ast@ModuleDesugared(x_name, _, _, _) -> 
+	to-webdsl(err) = module-get-modulename;to-webdsl(err)
+
+	to-webdsl(err): x_name -> 
 			webdsl |[
 				application x_name
 				
@@ -94,13 +96,15 @@ rules // module
 					def2*
 				
 			]|
+		where
+			is-modulename
 		with
-			def1*  := <modulename-get-entitynames;map(to-webdsl(err|ast))>x_name;
+			def1*  := <modulename-get-entitynames;map(to-webdsl(err))>x_name;
 			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
-			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err|ast))>x_name;
-			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err|ast))>x_name;
-			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err|ast))>x_name
+			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
+			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
+			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name
 
 rules //crud
 	

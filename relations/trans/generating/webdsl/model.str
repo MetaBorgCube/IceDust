@@ -18,10 +18,11 @@ imports // functions
 	trans/naming/_notNaBL
 	trans/generating/webdsl/expressions
 	trans/generating/webdsl/expressions-references
+	trans/generating/webdsl/types
 
 rules // entities
 	
-  to-webdsl(err|ast): x_name -> 
+  to-webdsl(err): x_name -> 
 		webdsl |[
 			entity x_name {
 				ebd1*
@@ -32,13 +33,13 @@ rules // entities
 	where
 		is-entityname
 	with
-		ebd1* := <entityname-get-attributenames;map(to-webdsl(err|ast))>x_name;
+		ebd1* := <entityname-get-attributenames;map(to-webdsl(err))>x_name;
 		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
 		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name
 
 rules // attributes
 
-	to-webdsl(err|ast): x_name -> webdsl |[
+	to-webdsl(err): x_name -> webdsl |[
 		x_name : srt1 (default=null)
 		
     static function x_getter(entity:x_entity):srt1{
@@ -58,11 +59,11 @@ rules // attributes
 		where
 			attributename-is-normal
 		with
-			srt1     := <to-webdsl(err)><_get-type>x_name;
+			srt1     := <_get-type;type-to-webdsl(err)>x_name;
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name
 			
-	to-webdsl(err|ast): x_name -> webdsl |[
+	to-webdsl(err): x_name -> webdsl |[
 		x_name : srt1 := e1
 		
     static function x_getter(entity:x_entity):srt1{
@@ -84,12 +85,12 @@ rules // attributes
 		where
 			attributename-is-derivation
 		with
-			srt1     := <to-webdsl(err)><_get-type>x_name;
-			e1       := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name;
+			srt1     := <_get-type;type-to-webdsl(err)>x_name;
+			e1       := <attributename-get-expr;to-webdsl(err)>x_name;
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name
 			
-	to-webdsl(err|ast): x_name -> webdsl |[
+	to-webdsl(err): x_name -> webdsl |[
 		x_name : srt1 (default=e1)
 		
     static function x_getter(entity:x_entity):srt1{
@@ -109,8 +110,8 @@ rules // attributes
 		where
 			attributename-is-default
 		with
-			srt1     := <to-webdsl(err)><_get-type>x_name;
-			e1       := <name-to-ast(|ast);attr-get-derivation;to-webdsl(err)>x_name;
+			srt1     := <_get-type;type-to-webdsl(err)>x_name;
+			e1       := <attributename-get-expr;to-webdsl(err)>x_name;
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name
 
