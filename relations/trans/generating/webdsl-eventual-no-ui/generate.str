@@ -1,0 +1,57 @@
+module trans/generating/webdsl-eventual-no-ui/generate
+
+imports // constructors
+
+	src-gen/signatures/Modules-sig
+
+imports // functions
+
+	lib/webdsl/pp-webdsl
+	trans/generating/webdsl-eventual-no-ui/module
+	lib/webdsl/WebDSL-parenthesize
+
+rules // documentation
+	
+	/*
+	 * Generate a native java java.util.concurrent.ConcurrentLinkedQueue<E> for each type.
+	 * Each normal page request can flag items dirty in these queues.
+	 * The central eventual consistent thread empties these queues and computes everything.
+	 * Items may be added during computation, the algorithm will do those first in order to avoid unnecessary computation (note this might lead to starvation during heavy use).
+	 */
+	 
+	 //TODO: make sure `invoke updateDerivations() every 3 seconds` only runs if the previous one finished.
+	 //TODO: make sure the UUIDs of dirty elements are only added after the changes are actually saved to database. 
+
+rules // Builders
+	
+	generate-webdsl-eventual-no-ui-code(err):
+	    (selected, path) -> (fileName, result, errors)
+	    with
+			fileName     := <guarantee-extension(|"app")> path;
+			webdsl-ast   := <to-webdsl-eventual-no-ui(err)> selected;
+			errors       := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+			webdsl-ast'  := <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
+			webdsl-ast'' := <parenthesize-WebDSL>webdsl-ast';
+			result       := <pp-webdsl-to-string> webdsl-ast''
+
+rules	// General Java generation rules
+
+	to-webdsl-eventual-no-ui(err) = where(is-string);id
+
+  to-webdsl-eventual-no-ui(err):
+    [_] -> <concat-strings> <map(to-webdsl-eventual-no-ui(err))>
+    
+  to-webdsl-eventual-no-ui(err):
+    () -> ""
+    
+  to-webdsl-eventual-no-ui(err):
+  	None() -> ""
+
+  to-webdsl-eventual-no-ui(err): Module(_,_,_,_) -> None()
+  	where
+  		<err> "Desugar before generating code."
+	
+  to-webdsl-eventual-no-ui(err): a -> a'
+  	where
+		  a' := <err>$[No to-webdsl-eventual-no-ui defined for [<get-constructor> a]/[<get-arguments;length> a].]
+

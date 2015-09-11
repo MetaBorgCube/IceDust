@@ -16,6 +16,7 @@ imports // functions
 	trans/generating/webdsl-eager/generate
 	trans/generating/webdsl-eventual/generate
 	trans/generating/webdsl-eventual/java/generate
+	trans/generating/webdsl-eventual-no-ui/generate
 	trans/lib/files
 	trans/prettyprinting/pp
 
@@ -25,10 +26,11 @@ signature sorts
 	
 signature constructors
 	
-	Java           : TargetLanguage
-	WebDSL         : TargetLanguage
-	WebDSLEager    : TargetLanguage
-	WebDSLEventual : TargetLanguage
+	Java               : TargetLanguage
+	WebDSL             : TargetLanguage
+	WebDSLEager        : TargetLanguage
+	WebDSLEventual     : TargetLanguage
+	WebDSLEventualNoUI : TargetLanguage
 
 rules // Builders
 	
@@ -73,6 +75,13 @@ rules // Builders
 		(selected, position, ast, path, project-path) -> result
 		with
 			result := <build(error-handler|WebDSLEventual())>(selected, path, project-path, 1)
+
+	generate-webdsl-eventual-no-ui      = generate-webdsl-eventual-no-ui(error-handler-editor)
+	generate-webdsl-eventual-no-ui-test = generate-webdsl-eventual-no-ui(error-handler-tests)
+	generate-webdsl-eventual-no-ui(error-handler):
+		(selected, position, ast, path, project-path) -> result
+		with
+			result := <build(error-handler|WebDSLEventualNoUI())>(selected, path, project-path, 1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -122,6 +131,11 @@ rules // Build in steps
 						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
 						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
 						<copy-webdsl-libraries>(targetFileName, project-path)
+					case ?WebDSLEventualNoUI():
+						(targetFileName, targetCode, error') := <generate-webdsl-eventual-no-ui-step(error-handler)>(ast', path);
+						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
+						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
+						<copy-webdsl-libraries-no-ui>(targetFileName, project-path)
 				end;
 				if <eq>(1, i) then
 					result := (targetFileName, targetCode)
@@ -159,6 +173,7 @@ rules // Build in steps
 	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)
 	generate-webdsl-eager-step(error-handler)         = generate-webdsl-eager-code(error-handler)
 	generate-webdsl-eventual-step(error-handler)      = generate-webdsl-eventual-code(error-handler)
+	generate-webdsl-eventual-no-ui-step(error-handler)= generate-webdsl-eventual-no-ui-code(error-handler)
 	generate-webdsl-eventual-java-step(error-handler) = generate-webdsl-eventual-java-code(error-handler)
 
 	copy-java-libraries: (javaFileName, project-path) -> None()
@@ -172,6 +187,17 @@ rules // Build in steps
 		with
 			sourceDir := $[[<_plugin-path>]/lib-webdsl];
 			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
+			<copy-dir>(sourceDir, targetDir);
+			<write-file>($[[targetDir]/.saved-but-not-built],"");
+			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
+			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
+			<copy-dir>(sourceDir2, targetDir2);
+			<dirname;_refresh-workspace-file> targetDir			
+			
+	copy-webdsl-libraries-no-ui: (webdslFileName, project-path) -> None()
+		with
+			sourceDir := $[[<_plugin-path>]/lib-webdsl/lib];
+			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir);
 			<write-file>($[[targetDir]/.saved-but-not-built],"");
 			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
