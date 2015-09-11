@@ -1,0 +1,49 @@
+module trans/generating/webdsl-eventual-no-ui/model
+
+imports // constructors
+
+	trans/api/_runtime-constructors
+	trans/api/constructors
+	lib/webdsl/WebDSL
+	src-gen/signatures/Expressions-sig
+	src-gen/signatures/Model-sig
+	src-gen/signatures/Modules-sig
+	trans/desugaring/constructors
+
+imports // functions
+
+	trans/analysis2/path
+	trans/api/_runtime
+	trans/api/model-api
+	trans/api/model-names-api
+	trans/lib/search
+	trans/lib/string
+	trans/lib/lists-tuples
+	trans/naming/names
+	trans/naming/_notNaBL
+	trans/generating/webdsl/expressions
+	trans/generating/webdsl/expressions-references
+	trans/generating/webdsl/model
+	trans/generating/webdsl/types
+	trans/generating/webdsl-eventual/model
+
+rules // entities
+	
+  to-webdsl-eventual-no-ui(err): x_name -> 
+		def |[
+			extend entity x_name {
+				ebd1*
+				ebd2*
+				ebd3*
+				ebd4*
+				ebd5*
+			}
+		]|
+	where
+		is-entityname
+	with
+		ebd1* := <entityname-get-attributenames;map(to-webdsl-eventual(err))>x_name;
+		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
+		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
+		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eventual-trigger-dirty(err))>x_name;
+		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eventual-trigger-dirty(err))>x_name

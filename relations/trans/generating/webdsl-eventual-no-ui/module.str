@@ -9,6 +9,7 @@ imports // constructors
 
 imports // functions
 	
+	trans/generating/webdsl-eventual-no-ui/model
 	trans/generating/webdsl-eventual/model
 	trans/generating/webdsl-eventual/module
 	trans/generating/webdsl/data
@@ -36,7 +37,7 @@ rules // module
 				
 				section derivations
 				
-					native class derivations.x_dirty as Helper {
+					native class derivations.x_dirty as Helper2 {
 						native1*
 					}
 					
@@ -81,7 +82,7 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*  := <modulename-get-entitynames;map(to-webdsl-eventual(err))>x_name;
+			def1*  := <modulename-get-entitynames;map(to-webdsl-eventual-no-ui(err))>x_name;
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
