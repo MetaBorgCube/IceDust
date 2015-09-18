@@ -51,6 +51,7 @@ context-free syntax // literal values
 
   Exp                    = <<LitVal>>
   LitVal.Int             = <<INT>>
+  LitVal.Float           = <<FLOAT>>
   LitVal.True            = <true>
   LitVal.False           = <false>
 

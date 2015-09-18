@@ -12,6 +12,7 @@ imports // functions
 
 	trans/api/_runtime	
 	trans/api/module-names-api
+	trans/generating/java/types
 	trans/generating/webdsl/model
 	trans/generating/webdsl/data
 	trans/generating/webdsl/types
@@ -41,10 +42,10 @@ rules // logic
 
 rules // aggregations
 	
-	webdsl-lib-call: Max(_)									->"max"
-	webdsl-lib-call: Min(_)									->"min"
-	webdsl-lib-call: Avg(_)									->"avg"
-	webdsl-lib-call: Sum(_)									->"sum"
+	webdsl-lib-call-postfix-type: Max(_)		->"max"
+	webdsl-lib-call-postfix-type: Min(_)		->"min"
+	webdsl-lib-call-postfix-type: Avg(_)		->"avg"
+	webdsl-lib-call-postfix-type: Sum(_)		->"sum"
 	webdsl-lib-call: Conj(_)								->"conj"
 	webdsl-lib-call: Disj(_)								->"disj"
 	webdsl-lib-call: Concat(_)							->"concat"
@@ -66,6 +67,14 @@ rules // lib expression calls
 			[ex1] := <get-arguments>e
 		with
 			e1 := <to-webdsl(err)>ex1
+	
+	to-webdsl(err): e -> |[ Expressions.x_methodpostfix (e1) ]|
+		where
+			x_method := <webdsl-lib-call-postfix-type>e;
+			[ex1] := <get-arguments>e
+		with
+			e1 := <to-webdsl(err)>ex1;
+			x_methodpostfix := $[[x_method]_[<_get-type;java-id>e]]
 
 	to-webdsl(err): e -> |[ Expressions.x_method (e1, e2) ]|
 		where
@@ -105,6 +114,7 @@ rules // literals
 	
   to-webdsl(err): String(str1) 		        			  -> String(str1)
   to-webdsl(err): Int(i_1)     		        			  -> webdsl:e |[ i_1 ]|
+  to-webdsl(err): Float(f_1)     		        			-> Float(f_1)//webdsl:e |[ f_1 ]|
   to-webdsl(err): True()      		        			  -> webdsl:e |[ true ]|
 	to-webdsl(err): False()    			        			  -> webdsl:e |[ false ]|
 

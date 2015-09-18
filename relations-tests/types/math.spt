@@ -23,6 +23,8 @@ test type of mult	[[ [[8 * 8]] ]] run get-type to Int
 test type of div	[[ [[4 / 7]] ]] run get-type to Int
 test type of mod	[[ [[8 % 3]] ]] run get-type to Int
 
+test type of plus Float	[[ [[1.1 + 3.1]] ]] run get-type to Float
+
 test type of plus String [[ [["a" + "b"]] ]] run get-type to String
 
 

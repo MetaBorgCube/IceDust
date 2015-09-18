@@ -7,6 +7,7 @@ imports // constructors
 
 imports // functions
 
+	trans/api/_runtime
 	trans/generating/java/expressions-references
 	trans/generating/java/types
 
@@ -33,10 +34,10 @@ rules // logic
 
 rules // aggregations
 	
-	lib-call: Max(_)								->"max"
-	lib-call: Min(_)								->"min"
-	lib-call: Avg(_)								->"avg"
-	lib-call: Sum(_)								->"sum"
+	lib-call-postfix-type: Max(_)		->"max"
+	lib-call-postfix-type: Min(_)		->"min"
+	lib-call-postfix-type: Avg(_)		->"avg"
+	lib-call-postfix-type: Sum(_)		->"sum"
 	lib-call: Conj(_)								->"conj"
 	lib-call: Disj(_)								->"disj"
 	lib-call: Concat(_)							->"concat"
@@ -62,6 +63,23 @@ rules // lib expression calls
 			stms := bstm*|[
 				~exp1s*
 				refty x_var = Expressions.x_method(~exp1j);
+			]|;
+			exp := expr |[x_var]|
+	
+	exp-to-java-stm(err|i): e -> (stms, exp)
+		where
+			x_method := <lib-call-postfix-type>e;
+			[e1] := <get-arguments>e
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			refty := <java-type>e;
+			x_var := $[var[<inc>j]];
+			x_methodpostfix := $[[x_method]_[<_get-type;java-id>e]]
+		with
+			stms := bstm*|[
+				~exp1s*
+				refty x_var = Expressions.x_methodpostfix(~exp1j);
 			]|;
 			exp := expr |[x_var]|
 		
@@ -110,6 +128,7 @@ rules // literals
 	
   exp-to-java-stm(err|i): String(value) 				-> ([], Lit(String([Chars(value)])))
   exp-to-java-stm(err|i): Int(value) 						-> ([], Lit(Deci(value)))
+  exp-to-java-stm(err|i): Float(value)					-> ([], Lit(Float($[[value]f])))
   exp-to-java-stm(err|i): True() 								-> ([], Lit(True()))
   exp-to-java-stm(err|i): False() 							-> ([], Lit(False()))
 

@@ -10,6 +10,7 @@ setup Common [[
 ]]
 
 test type of Literal Int 		[[ [[1]] ]] run get-type to Int
+test type of Literal Float	[[ [[1.4]] ]] run get-type to Float
 test type of literal String [[ [["Asdf"]] ]] run get-type to String
 
 test multiplicity of Literal Int 		[[ [[1]] ]] run get-multiplicity to One

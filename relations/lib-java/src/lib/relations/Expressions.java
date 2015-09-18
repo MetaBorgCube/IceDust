@@ -78,7 +78,15 @@ public class Expressions {
 		return i != null && j != null ? i + j : null;
 	}
 
+	public static Float plus(Float i, Float j) {
+		return i != null && j != null ? i + j : null;
+	}
+
 	public static Integer minus(Integer i, Integer j) {
+		return i != null && j != null ? i - j : null;
+	}
+
+	public static Float minus(Float i, Float j) {
 		return i != null && j != null ? i - j : null;
 	}
 
@@ -86,7 +94,15 @@ public class Expressions {
 		return i != null && j != null ? i * j : null;
 	}
 
+	public static Float mul(Float i, Float j) {
+		return i != null && j != null ? i * j : null;
+	}
+
 	public static Integer mod(Integer i, Integer j) {
+		return i != null && j != null && j != 0 ? i % j : null;
+	}
+
+	public static Float mod(Float i, Float j) {
 		return i != null && j != null && j != 0 ? i % j : null;
 	}
 
@@ -94,9 +110,13 @@ public class Expressions {
 		return i != null && j != null && j != 0 ? i / j : null;
 	}
 
+	public static Float div(Float i, Float j) {
+		return i != null && j != null && j != 0 ? i / j : null;
+	}
+
 	// aggregation expressions
 
-	public static Integer avg(Collection<Integer> c) {
+	public static Integer avg_Integer(Collection<Integer> c) {
 		if (c.size() == 0)
 			return null;
 		int sum = 0;
@@ -105,8 +125,18 @@ public class Expressions {
 		}
 		return sum / c.size();
 	}
+	
+	public static Float avg_Float(Collection<Float> c) {
+		if (c.size() == 0)
+			return null;
+		float sum = 0;
+		for (float i : c) {
+			sum += i;
+		}
+		return sum / c.size();
+	}
 
-	public static Integer sum(Collection<Integer> c) {
+	public static Integer sum_Integer(Collection<Integer> c) {
 		int sum = 0;
 		for (int i : c) {
 			sum += i;
@@ -114,7 +144,15 @@ public class Expressions {
 		return sum;
 	}
 
-	public static Integer max(Collection<Integer> c) {
+	public static Float sum_Float(Collection<Float> c) {
+		float sum = 0;
+		for (float i : c) {
+			sum += i;
+		}
+		return sum;
+	}
+
+	public static Integer max_Integer(Collection<Integer> c) {
 		if (c.size() == 0)
 			return null;
 		int max = Integer.MIN_VALUE;
@@ -124,11 +162,31 @@ public class Expressions {
 		return max;
 	}
 
-	public static Integer min(Collection<Integer> c) {
+	public static Float max_Float(Collection<Float> c) {
+		if (c.size() == 0)
+			return null;
+		float max = Float.MIN_VALUE;
+		for (float i : c) {
+			max = Math.max(max, i);
+		}
+		return max;
+	}
+
+	public static Integer min_Integer(Collection<Integer> c) {
 		if (c.size() == 0)
 			return null;
 		int min = Integer.MAX_VALUE;
 		for (int i : c) {
+			min = Math.min(min, i);
+		}
+		return min;
+	}
+
+	public static Float min_Float(Collection<Float> c) {
+		if (c.size() == 0)
+			return null;
+		float min = Float.MAX_VALUE;
+		for (float i : c) {
 			min = Math.min(min, i);
 		}
 		return min;
@@ -182,7 +240,15 @@ public class Expressions {
 		return i != null && j != null ? i < j : null;
 	}
 
+	public static Boolean lt(Float i, Float j) {
+		return i != null && j != null ? i < j : null;
+	}
+
 	public static Boolean lte(Integer i, Integer j) {
+		return i != null && j != null ? i <= j : null;
+	}
+
+	public static Boolean lte(Float i, Float j) {
 		return i != null && j != null ? i <= j : null;
 	}
 
@@ -190,7 +256,15 @@ public class Expressions {
 		return i != null && j != null ? i > j : null;
 	}
 
+	public static Boolean gt(Float i, Float j) {
+		return i != null && j != null ? i > j : null;
+	}
+
 	public static Boolean gte(Integer i, Integer j) {
+		return i != null && j != null ? i >= j : null;
+	}
+
+	public static Boolean gte(Float i, Float j) {
 		return i != null && j != null ? i >= j : null;
 	}
 

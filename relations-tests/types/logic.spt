@@ -20,6 +20,7 @@ test type of lte	[[ [[1 <= 3]] ]] run get-type to Boolean
 test type of lte	[[ [[3 < 2]] ]] run get-type to Boolean
 test type of gte	[[ [[8 > 8]] ]] run get-type to Boolean
 test type of gt		[[ [[4 >= 7]] ]] run get-type to Boolean
+test type of gt 2	[[ [[4.4 >= 7.7]] ]] run get-type to Boolean
 test type of eq		[[ [[8 == 3]] ]] run get-type to Boolean
 test type of neq	[[ [[8 != 3]] ]] run get-type to Boolean
 test type of not	[[ [[! false]] ]] run get-type to Boolean

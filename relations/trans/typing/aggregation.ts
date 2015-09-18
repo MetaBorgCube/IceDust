@@ -24,7 +24,7 @@ type rules
 + Sum(x)
 +	Avg(x) : x-ty
 	where	x	: x-ty
-		and x-ty == Int() else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
+		and (x-ty == Int() or x-ty == Float()) else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
 
   Conj(x)
 +	Disj(x) : x-ty

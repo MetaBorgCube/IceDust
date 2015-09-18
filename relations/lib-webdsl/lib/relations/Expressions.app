@@ -13,14 +13,23 @@ section java implementations
   	static merge(List<Object>, List<Object>) : List<Object>
   	static plus(String, String) : String
   	static plus(Int, Int) : Int
+  	static plus(Float, Float) : Float
   	static minus(Int, Int) : Int
+  	static minus(Float, Float) : Float
   	static mul(Int, Int) : Int
+  	static mul(Float, Float) : Float
   	static mod(Int, Int) : Int
+  	static mod(Float, Float) : Float
   	static div(Int, Int) : Int
-  	static avg(List<Int>) : Int
-  	static sum(List<Int>) : Int
-  	static max(List<Int>) : Int
-  	static min(List<Int>) : Int
+  	static div(Float, Float) : Float
+  	static avg_Integer(List<Int>) : Int
+  	static avg_Float(List<Float>) : Float
+  	static sum_Integer(List<Int>) : Int
+  	static sum_Float(List<Float>) : Float
+  	static max_Integer(List<Int>) : Int
+  	static max_Float(List<Float>) : Float
+  	static min_Integer(List<Int>) : Int
+  	static min_Float(List<Float>) : Float
   	static conj(List<Bool>) : Bool
   	static disj(List<Bool>) : Bool
   	static concat(List<String>) : String
@@ -28,9 +37,13 @@ section java implementations
   	static count(List<Object>) : Int
   	static not(Bool) : Bool
   	static lt(Int, Int) : Bool
+  	static lt(Float, Float) : Bool
   	static lte(Int, Int) : Bool
+  	static lte(Float, Float) : Bool
   	static gt(Int, Int) : Bool
+  	static gt(Float, Float) : Bool
   	static gte(Int, Int) : Bool
+  	static gte(Float, Float) : Bool
   	static and(Bool, Bool) : Bool
   	static or(Bool, Bool) : Bool
   	static eq(Object, Object) : Bool

@@ -5,6 +5,7 @@ context-free syntax
 	PrimitiveType.Boolean	  = <Boolean>
 	PrimitiveType.Int			  = <Int>
 	PrimitiveType.String	  = <String>
+	PrimitiveType.Float	  	= <Float>
 	
 	Multiplicity.One	 			= <1>
 	Multiplicity.ZeroOrOne	= <?>

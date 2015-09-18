@@ -15,12 +15,14 @@ rules // primitives
 	type-to-java(err): String()	-> "String"
   type-to-java(err): Int()		-> "Integer"
   type-to-java(err): Boolean()-> "Boolean"
+  type-to-java(err): Float()  -> "Float"
 
 rules // Java-Refs
 	
 	java-id: String()	-> "String"
   java-id: Int()		-> "Integer"
   java-id: Boolean()-> "Boolean"
+  java-id: Float()  -> "Float"
   java-id: _ -> <id>
   	where is-string
 

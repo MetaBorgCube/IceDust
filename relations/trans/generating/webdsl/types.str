@@ -17,7 +17,8 @@ rules // primitives
 	
 	type-to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
 	type-to-webdsl(err): Int()     -> webdsl |[ Int ]|		
-	type-to-webdsl(err): String()  -> webdsl |[ String ]|
+	type-to-webdsl(err): String()  -> webdsl |[ String ]|		
+	type-to-webdsl(err): Float()   -> webdsl |[ Float ]|
 	type-to-webdsl(err): name      -> name                 where is-string
 
 rules // webdsl types
@@ -35,6 +36,7 @@ rules
 	type-as-string: String()	-> "String"
   type-as-string: Int()		  -> "Integer"
   type-as-string: Boolean() -> "Boolean"
+  type-as-string: Float()   -> "Float"
   type-as-string: _ -> <id>
   	where is-string
 

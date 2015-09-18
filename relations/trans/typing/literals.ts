@@ -20,6 +20,9 @@ type rules
 
 	Int(x) : Int()
 	Int(x) has multiplicity One()
+
+	Float(x) : Float()
+	Float(x) has multiplicity One()
 	
 	String(x) : String()
 	String(x) has multiplicity One()
