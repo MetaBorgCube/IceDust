@@ -60,7 +60,9 @@ rules // attributes
     static function x_getter(entities:[x_entity]):[srt1]{
     	var r : [srt1];
 	  	for(entity in entities){
-	  		r.add(entity.x_name);
+	  		if(entity.x_name!=null){
+	  			r.add(entity.x_name);
+	  		}
 	  	}
 	  	return r;
     }
