@@ -15,3 +15,5 @@ test type of literal String [[ [["Asdf"]] ]] run get-type to String
 
 test multiplicity of Literal Int 		[[ [[1]] ]] run get-multiplicity to One
 test multiplicity of literal String [[ [["Asdf"]] ]] run get-multiplicity to One
+
+test ordering of Literal Int 		[[ [[1]] ]] run get-ordering to Ordered

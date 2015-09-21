@@ -55,3 +55,12 @@ type rules
 		and (x-mu == ZeroOrOne() or x-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [x-mu] in Math Operation] on x
 		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
 
+	Multiplication(x, y)
++	Addition(x, y)
++	Subtraction(x, y)
++	Division(x, y)
++	Modulo(x, y) has ordering or
+	where	x	has ordering x-or
+		and	y	has ordering  y-or
+		and <or-nav> (x-or, y-or) => or
+		

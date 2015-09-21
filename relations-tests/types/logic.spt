@@ -47,3 +47,6 @@ test multiplicity of ZeroOrOne inline if One One[[ [[x.b ? 4 : 6]] ]] run get-mu
 test multiplicity of One inline if ZeroOrOne One[[ [[false ? x.s : "a"]] ]] run get-multiplicity to ZeroOrOne
 
 test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error
+
+test ordering of not	[[ [[! false]] ]] run get-ordering to Ordered
+test ordering of Ordered gte Ordered	[[ [[8 > 8]] ]] run get-ordering to Ordered

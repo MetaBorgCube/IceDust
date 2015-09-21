@@ -39,3 +39,8 @@ type rules
 		and	y	has multiplicity  y-mu
 		and <mu-merge> (x-mu, y-mu) => mu
 
+	ChoiceLeft(x,y)
++	Merge(x,y) has ordering or
+	where	x	has ordering x-or
+		and	y	has ordering  y-or
+		and <or-nav> (x-or, y-or) => or

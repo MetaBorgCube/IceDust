@@ -81,3 +81,25 @@ type rules
 		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
 		and (z-mu == ZeroOrOne() or z-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [z-mu] in Math Operation] on z
 
+	Not(x) has ordering x-or
+	where x has ordering x-or
+
+	LessThan(x, y)
++	LessThanEqual(x, y)
++	GreaterThan(x, y)
++	GreaterThanEqual(x, y)
++	Equal(x, y)
++	Inequal(x, y)
++	And(x, y)
++	Or(x, y) has ordering or
+	where	x	has ordering x-or
+		and	y	has ordering  y-or
+		and <or-nav> (x-or, y-or) => or
+		
+	TernaryConditional(x, y, z) has ordering or
+	where	x	has ordering x-or
+		and	y	has ordering  y-or
+		and	z	has ordering  z-or
+		and <or-nav> (x-or, y-or) => or2
+		and <or-nav> (or2, z-or) => or
+		

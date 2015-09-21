@@ -95,3 +95,13 @@ test multiplicity of ref entity.attribute ZeroOrOne [[
 	data
 	X x{}
 ]] run get-multiplicity to ZeroOrOne
+
+test ordering of ref entity.attribute Ordered [[
+	model
+	entity X{
+		i : Int ? = [[x.i]]
+	}
+	
+	data
+	X x{}
+]] run get-ordering to Ordered

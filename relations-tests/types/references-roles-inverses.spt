@@ -10,7 +10,7 @@ setup Common [[
 		Node ? maybe <- maybe
 		Node 1 one   <- one
 		Node * star  <- star
-		Node + plus  <- plus
+		Node + (ordered) plus  <- plus
 		
 		maybe.a <-> one.b
 		maybe.c <-> star.d
@@ -52,3 +52,9 @@ test multiplicity of inverse OneOrMore	[[ [[n.plus]] ]]	run get-multiplicity to 
 test multiplicity of inverse role ZeroOrOne 	[[ [[n.maybe.maybe]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of inverse role ZeroOrOne 2	[[ [[n.maybe.star]]  ]] run get-multiplicity to ZeroOrOne
 test multiplicity of inverse role ZeroOrOne 3	[[ [[n.maybe.plus]]  ]] run get-multiplicity to ZeroOrOne
+
+test ordering of role Unordered		[[ [[e.maybe]] ]] run get-ordering to Ordered
+test ordering of role Ordered	  	[[ [[e.plus]] ]]	run get-ordering to Ordered
+
+test ordering of inverse Unordered	[[ [[n.maybe]] ]] run get-ordering to Unordered
+test ordering of inverse Ordered  	[[ [[n.plus]] ]]	run get-ordering to Ordered

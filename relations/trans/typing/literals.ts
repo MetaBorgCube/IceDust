@@ -20,15 +20,20 @@ type rules
 
 	Int(x) : Int()
 	Int(x) has multiplicity One()
+	Int(x) has ordering Ordered()
 
 	Float(x) : Float()
 	Float(x) has multiplicity One()
+	Float(x) has ordering Ordered()
 	
 	String(x) : String()
 	String(x) has multiplicity One()
+	String(x) has ordering Ordered()
 	
 	True() : Boolean()
 	True() has multiplicity One()
+	True() has ordering Ordered()
 	
 	False() : Boolean()
 	False() has multiplicity One()
+	False() has ordering Ordered()

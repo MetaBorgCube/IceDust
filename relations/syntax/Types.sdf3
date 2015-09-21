@@ -12,5 +12,8 @@ context-free syntax
 	Multiplicity.OneOrMore	= <+>
 	Multiplicity.ZeroOrMore	= <*>
 	
-	MultiplicityZ = Multiplicity
+	MultiplicityZ           = Multiplicity
 	MultiplicityZ.Zero      = <0>
+
+	Ordering.Ordered        = <(ordered)>
+	Ordering.Unordered      = <(unordered)>

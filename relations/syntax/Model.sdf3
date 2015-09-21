@@ -26,7 +26,7 @@ context-free syntax // entity members
 	DerivationType.DefaultValue	= <(default)>
 	DerivationType.Derivation		= <>
 
-	Role.Role										= <<ID> <Multiplicity> <ID?> <Inverse?>>
+	Role.Role										= <<ID> <Multiplicity> <Ordering?> <ID?> <Inverse?>>
 	Inverse											= <\<- <ID>>
 	//TODO: test sdf2 version          ID Multiplicity ID? ("<-" ID)? -> Role {"Role"}
 

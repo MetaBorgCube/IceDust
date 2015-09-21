@@ -38,6 +38,8 @@ properties
 	derivation-type 		 of Attribute	: DerivationType	//Derivation(), DefaultValue() or Normal()
 	multiplicity				 of Attribute	: Multiplicity
 	multiplicity-inverse of Role      : Multiplicity
+	ordering             of Role      : Ordering
+	ordering-inverse     of Role      : Ordering
 	inverse   					 of Role  		: Inverse
 	origin-role					 of Inverse		: Role
 	origin-role2				 of Shortcut	: Role
@@ -65,25 +67,30 @@ binding rules // model
 		defines Attribute a
 			of type a-ty
 			of multiplicity a-mu
+			of ordering Ordered()
 			of derivation-type Normal()
 			
 	Attribute(a, a-ty, a-mu, Derivation(_, a-dt)) :
 		defines Attribute a
 			of type a-ty
 			of multiplicity a-mu
+			of ordering Ordered()
 			of derivation-type a-dt
 
-	Role(NaBLHelp(role-ty, role-ty2), role-mu, role, inverseName) :
+	Role(NaBLHelp(role-ty, role-ty2), role-mu, role-ord, role, inverseName) :
 		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
 		defines Role role
 			of type role-ty2
 			of multiplicity One()
 			of multiplicity-inverse role-mu
+			of ordering Ordered()
+			of ordering-inverse role-ord
 			of inverse inverseName
 		defines non-unique Entity role-ty2
 		  scopes Inverse
 		defines Inverse inverseName
 			of multiplicity role-mu
+			of ordering role-ord
 			of type e-ty
 			of origin-role role
 			where This() resolves to This this
@@ -95,19 +102,23 @@ binding rules // model
 		defines Shortcut shortcut1
 			of type type2
 			of multiplicity mu1
+			of ordering or1
 			of origin-role role1
 			of origin-role2 role2
 			where role1 resolves to Role role1def
 			and role1def has multiplicity-inverse mu1
+			and role1def has ordering-inverse or1
 		defines non-unique Entity type2
 			scopes Shortcut
 		defines Shortcut shortcut2
 			of type type1
 			of multiplicity mu2
+			of ordering or2
 			of origin-role role2
 			of origin-role2 role1
 			where role2 resolves to Role role2def
 			and role2def has multiplicity-inverse mu2
+			and role2def has ordering-inverse or2
 
 binding rules // data
 
@@ -115,10 +126,12 @@ binding rules // data
 		defines EntityInstance e
 			of type e-ty
 			of multiplicity One()
+			of ordering Ordered()
 		scopes This
 		implicitly defines This This()
 			of type e-ty
 			of multiplicity One()
+			of ordering Ordered()
 
 binding rules // references
 

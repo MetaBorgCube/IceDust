@@ -24,6 +24,7 @@ rules
 	omitted1 = entity-generate-inverse-names
 	omitted1 = datadef-generate-entity-names
 	
+	omitted2 = role-generate-ord                // matches same as role-generate-name
 	omitted2 = entity-generate-shortcuts        // requires role-generate-name
 
 rules // generate omitted multiplicities
@@ -37,6 +38,12 @@ rules // generate omitted role names
 	role-generate-name: role -> role'
 		where role-has-no-name
 		with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
+
+rules // generate omitted role orderings
+
+	role-generate-ord: role -> role'
+		where role-has-no-ord
+		with role' := <role-set-ord(|Unordered())>role
 			
 rules // generate omitted inverse names
 	

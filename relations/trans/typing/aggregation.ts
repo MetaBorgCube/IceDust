@@ -50,3 +50,12 @@ type rules
 
 	Sum(x)
 +	Count(x) has multiplicity One()
+
+	Min(x)
++	Max(x)
++	Avg(x)
++ Conj(x)
++ Disj(x)
++ Concat(x)
++	Sum(x)
++	Count(x) has ordering Ordered()

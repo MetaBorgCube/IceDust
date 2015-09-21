@@ -8,6 +8,9 @@ setup Common [[
 	entity X{
 		i : Int ?
 	}
+	relation Y{
+		X *
+	}
 	data
 	X x{
 		i=9
@@ -36,3 +39,8 @@ test mul OneOrMore	merge ZeroOrOne	[[ [[(3++2) 		++ x.i]] 				]] run get-multipl
 test mul OneOrMore	merge One				[[ [[(3++2) 		++ 3]] 					]] run get-multiplicity to OneOrMore
 test mul OneOrMore	merge ZeroOrMore[[ [[(3++2) 		++ (x.i++x.i)]]	]] run get-multiplicity to OneOrMore
 test mul OneOrMore	merge OneOrMore	[[ [[(3++2) 		++ (3++2)]] 		]] run get-multiplicity to OneOrMore
+
+test ord Ordered	 merge Ordered	  [[ [[x.i 				++ x.i]] 				]] run get-ordering to Ordered
+test ord Ordered	 merge Unordered  [[ [[x.i 				++ x.y.x.i]] 		]] run get-ordering to Unordered
+test ord Unordered merge Unordered  [[ [[x.y.x.i		++ x.y.x.i]] 		]] run get-ordering to Unordered
+test ord Unordered merge Ordered    [[ [[x.y.x.i		++ x.i]]    		]] run get-ordering to Unordered

@@ -49,3 +49,5 @@ test multiplicity of ZeroOrOne minus One				[[ [[x.i - 5]] ]] run get-multiplici
 test multiplicity of ZeroOrOne mult ZeroOrOne		[[ [[x.i * x.i]] ]] run get-multiplicity to ZeroOrOne
 
 test error on One plus OneOrMore [[ 1 + [[(2 ++ 3)]] ]] 1 error
+
+test ordering of Ordered mult Ordered	[[ [[8 * 8]] ]] run get-ordering to Ordered
