@@ -192,6 +192,37 @@ rules // inverses
 			is-inversename
 		where
 			get-multiplicity;upper-many
+		where
+			get-ordering;ordered
+		with
+			x_type     := <_get-type>x_name;
+			x_rolename := <inversename-get-rolename>x_name;
+			x_getter   := $[get_[x_name]];
+			x_entity   := <attributename-get-entityname>x_name
+	
+	to-webdsl(err): x_name -> webdsl |[
+		x_name : {x_type} (inverse=x_rolename)
+		
+    static function x_getter(entity:x_entity):[x_type]{
+    	var r : [x_type];
+    	r.addAll(entity.x_name);
+    	return r;
+    }
+    
+    static function x_getter(entities:[x_entity]):[x_type]{
+    	var r : [x_type];
+    	for(entity in entities){
+    		r.addAll(entity.x_name);
+    	}
+    	return r;
+    }
+	]|
+		where
+			is-inversename
+		where
+			get-multiplicity;upper-many
+		where
+			get-ordering;unordered
 		with
 			x_type     := <_get-type>x_name;
 			x_rolename := <inversename-get-rolename>x_name;

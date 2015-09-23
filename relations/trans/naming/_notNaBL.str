@@ -102,6 +102,11 @@ rules // predicates over multiplcities
 	lower-one: OneOrMore() -> <id>
 	nullable = lower-zero
 
+rules // predicates over ordering
+	
+	ordered: Ordered() -> <id>
+	unordered: Unordered() -> <id>
+
 rules
 	
 	// FIXME: NaBL should have generated this	
