@@ -122,7 +122,7 @@ rules // attributes
 rules // roles
 
 	to-webdsl(err): x_name -> webdsl |[
-		x_name : x_type
+		x_name : x_type (inverse=x_inversename)
 		
     static function x_getter(entity:x_entity):x_type{
     	return if(entity!=null) entity.x_name else null;
@@ -141,12 +141,13 @@ rules // roles
 		with
 			x_type   := <_get-type>x_name;
 			x_getter := $[get_[x_name]];
-			x_entity := <attributename-get-entityname>x_name
+			x_entity := <attributename-get-entityname>x_name;
+			x_inversename := <rolename-get-inversename>x_name
 
 rules // inverses
 	
 	to-webdsl(err): x_name -> webdsl |[
-		x_name : x_type (inverse=x_rolename)
+		x_name : x_type //(inverse=x_rolename)
 		
     static function x_getter(entity:x_entity):x_type{
     	return if(entity!=null) entity.x_name else null;
@@ -168,7 +169,7 @@ rules // inverses
 			get-multiplicity;upper-one
 		with
 			x_type     := <_get-type>x_name;
-			x_rolename := <inversename-get-rolename>x_name;
+			// x_rolename := <inversename-get-rolename>x_name;
 			x_getter   := $[get_[x_name]];
 			x_entity   := <attributename-get-entityname>x_name
 	
@@ -201,7 +202,7 @@ rules // inverses
 			x_entity   := <attributename-get-entityname>x_name
 	
 	to-webdsl(err): x_name -> webdsl |[
-		x_name : {x_type} (inverse=x_rolename)
+		x_name : {x_type} //(inverse=x_rolename)
 		
     static function x_getter(entity:x_entity):[x_type]{
     	var r : [x_type];
@@ -225,7 +226,7 @@ rules // inverses
 			get-ordering;unordered
 		with
 			x_type     := <_get-type>x_name;
-			x_rolename := <inversename-get-rolename>x_name;
+			// x_rolename := <inversename-get-rolename>x_name;
 			x_getter   := $[get_[x_name]];
 			x_entity   := <attributename-get-entityname>x_name
 
