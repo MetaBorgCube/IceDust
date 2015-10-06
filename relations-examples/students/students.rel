@@ -8,15 +8,17 @@ model
 	
 	entity Course {
 		name         : String
-		averageGrade : Int? = avg(enrollment.grade)
+		averageGrade : Float? = avg(enrollment.grade)
+		passPerc     : Int = 100 * sum(enrollment.passI)/count(enrollment) <+ 0
 	}
 	
 	relation Enrollment {
 		Student *
 		Course  *
 		
-		grade      : Int?
-		pass       : Boolean = grade >= 6 <+ false
+		grade      : Float?
+		pass       : Boolean = grade >= 5.5 <+ false
+		passI      : Int = pass?1:0
 	}
 	
 data
@@ -27,8 +29,8 @@ data
 
   Course  math { name="Mathematics" }
 
-  Enrollment { student:alice   course:math grade=9 }
-  Enrollment { student:bob     course:math grade=5 }
+  Enrollment { student:alice   course:math grade=9.0 }
+  Enrollment { student:bob     course:math grade=5.0 }
   Enrollment { student:charlie course:math }
   
 execute
@@ -39,6 +41,10 @@ execute
   ""
   "The average grade at Mathematics:"
   math.averageGrade
+  
+  ""
+  "The pass percentage at Mathematics:"
+  math.passPerc
   
 	""
 	"Bob's classmates (including self):"
