@@ -60,7 +60,7 @@ rules // module
 				  }
 				
 					function updateDerivations(){
-						log("called updateDervations()");
+						// log("called updateDervations()");
 						var notEmpty : Bool;
 						stat4*
 					}
