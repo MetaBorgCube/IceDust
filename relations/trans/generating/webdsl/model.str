@@ -96,7 +96,7 @@ rules // attributes
 		x_name : srt1 (default=e1)
 		
     static function x_getter(entity:x_entity):srt1{
-    	return entity.x_name;
+    	return if(entity!=null) entity.x_name else null;
     }
     
     static function x_getter(entities:[x_entity]):[srt1]{
@@ -206,7 +206,9 @@ rules // inverses
 		
     static function x_getter(entity:x_entity):[x_type]{
     	var r : [x_type];
-    	r.addAll(entity.x_name);
+    	if(entity!=null){
+    		r.addAll(entity.x_name);
+    	}
     	return r;
     }
     
