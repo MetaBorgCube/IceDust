@@ -118,5 +118,12 @@ rules // literals
   to-webdsl(err): True()      		        			  -> webdsl:e |[ true ]|
 	to-webdsl(err): False()    			        			  -> webdsl:e |[ false ]|
 
+rules // casts
+	
+	to-webdsl(err): Cast(ex1, ex1-ty) -> |[ Expressions.x_method(e1) ]|
+		with
+			e1 := <to-webdsl(err)>ex1;
+			x_method := $[as[<java-id>ex1-ty]]
+
 rules
 	

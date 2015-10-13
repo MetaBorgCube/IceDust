@@ -12,12 +12,15 @@ lexical restrictions
 lexical syntax // Keywords
 
 	Keyword = "avg"
+	Keyword = "as"
+	Keyword = "Boolean"
 	Keyword = "concat"
 	Keyword = "conj"
 	Keyword = "count"
 	Keyword = "disj"
 	Keyword = "entity"
 	Keyword = "false"
+	Keyword = "Float"
 	Keyword = "Int"
 	Keyword = "max"
 	Keyword = "match"

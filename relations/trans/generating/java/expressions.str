@@ -132,6 +132,22 @@ rules // literals
   exp-to-java-stm(err|i): True() 								-> ([], Lit(True()))
   exp-to-java-stm(err|i): False() 							-> ([], Lit(False()))
 
+rules // casts
+	
+	exp-to-java-stm(err|i): e@Cast(e1, e1-ty) -> (stms, exp)
+		with
+			(exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+			j := <add>(i, <length>exp1s*);
+			refty := <java-type>e;
+			x_var := $[var[<inc>j]];
+			x_method := $[as[<java-id>e1-ty]]
+		with
+			stms := bstm*|[
+				~exp1s*
+				refty x_var = Expressions.x_method(~exp1j);
+			]|;
+			exp := expr |[x_var]|
+
 rules
 
   exp-to-java-stm(err|i): a -> (a', a')

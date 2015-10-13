@@ -64,3 +64,5 @@ test Identifier						[[u]] parse succeeds
 test Identifier.attribute [[u.name]] parse succeeds
 test inverse.role.inverse.attribute	[[u.userPost.post.user.name]] parse succeeds
 
+test Cast	[[5.0 as Int]] parse succeeds
+test Cast2[[5 as Float]] parse succeeds

@@ -58,6 +58,12 @@ section java implementations
   	static conditional(Bool, Object, List<Object>) : Object
   	static conditional(Bool, List<Object>, Object) : Object
   	static conditional(Bool, List<Object>, List<Object>) : Object
+    static asFloat(Int) : Float
+    static asFloat(List<Int> ) : List<Float>
+    static asInteger(Float) : Int
+    static asInteger(List<Float>) : List<Int> 
+    static asString(Object) : String
+    static asString(List<Object>) : List<String>
   }
 
 // section helper functions

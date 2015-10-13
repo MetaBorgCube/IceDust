@@ -2,6 +2,7 @@ module Expressions
 
 imports
 	Common
+	Types
 
 context-free syntax // brackets
 
@@ -11,6 +12,8 @@ context-free syntax // operators
 
   Exp.MemberAccess       = <<Exp> . <ID>>          {left}
   Exp.Not                = <!<Exp>>                {right}
+  
+  Exp.Cast               = <<Exp> as <PrimitiveType>> {right}
 
   Exp.Multiplication     = <<Exp> * <Exp>>         {left}
   Exp.Division           = <<Exp> / <Exp>>         {left}
@@ -65,6 +68,9 @@ context-free priorities
 	} >	
 	{ right:
 		Exp.Not
+	} >
+	{ right:
+		Exp.Cast
 	} >
 	{ left:
 		Exp.Multiplication

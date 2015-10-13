@@ -125,7 +125,7 @@ public class Expressions {
 		}
 		return sum / c.size();
 	}
-	
+
 	public static Float avg_Float(Collection<Float> c) {
 		if (c.size() == 0)
 			return null;
@@ -211,7 +211,7 @@ public class Expressions {
 		}
 		return disj;
 	}
-	
+
 	public static String concat(Collection<String> c) {
 		if (c.size() == 0)
 			return null;
@@ -330,6 +330,44 @@ public class Expressions {
 			Collection<E> j) {
 		Collection<E> c = emptyCollection();
 		return b == null ? c : b ? i : j;
+	}
+
+	// cast expressions
+
+	public static Float asFloat(Integer i) {
+		return i == null ? null : (float) i;
+	}
+
+	public static Collection<Float> asFloat(Collection<Integer> is) {
+		Collection<Float> c = emptyCollection();
+		for (int i : is) {
+			c.add((float) i);
+		}
+		return c;
+	}
+
+	public static Integer asInteger(Float i) {
+		return i == null ? null : (int) (float) i;
+	}
+
+	public static Collection<Integer> asInteger(Collection<Float> is) {
+		Collection<Integer> c = emptyCollection();
+		for (float i : is) {
+			c.add((int) i);
+		}
+		return c;
+	}
+
+	public static String asString(Object i) {
+		return i == null ? null : i.toString();
+	}
+
+	public static Collection<String> asString(Collection<Object> is) {
+		Collection<String> c = emptyCollection();
+		for (Object i : is) {
+			c.add(i.toString());
+		}
+		return c;
 	}
 
 }
