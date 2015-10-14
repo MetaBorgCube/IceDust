@@ -25,10 +25,17 @@ type rules
 		and (x-ty == Int() or x-ty == Float() or x-ty == String()) else error  $[Type mismatch: expected Int or String got [x-ty] in Addition] on x
 		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Addition] on y
 		
+	Subtraction(x, y) : ty
+	where	x	: x-ty
+		and	y	: y-ty
+		and	(x-ty == Int() or x-ty == Float() or x-ty == Datetime()) else error $[Type mismatch: expected Int, String or Datetime got [x-ty] in Math Operation] on x
+		and	x-ty == y-ty else error $[Type mismatch: expected Int got [y-ty] in Math Operation] on y
+		and ((x-ty == Int() or x-ty == Float()) and x-ty => ty or
+		     (x-ty == Datetime() and               Int() => ty))
+		
 	Multiplication(x, y)
 +	Division(x, y)
-+	Modulo(x, y)
-+	Subtraction(x, y) : y-ty
++	Modulo(x, y) : y-ty
 	where	x	: x-ty
 		and	y	: y-ty
 		and	(x-ty == Int() or x-ty == Float()) else error $[Type mismatch: expected Int got [x-ty] in Math Operation] on x

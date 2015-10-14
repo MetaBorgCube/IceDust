@@ -1,0 +1,17 @@
+module generate-expressions-Datetime
+
+language Relations
+
+setup Common [[
+	module ExpressionsDatetime
+
+	execute
+		
+		(2015-1-1 0:00:00 - 2014-12-31 0:00:00) / 3600
+]]
+
+test Expressions Logic generate-java [[ ]] build generate-java-test
+
+test Expressions Logic compile-java [[ ]] build compile-java-test
+
+test Expressions Math execute-java [[ ]] build execute-java-test to "24"

@@ -131,6 +131,7 @@ rules // literals
   exp-to-java-stm(err|i): Float(value)					-> ([], Lit(Float($[[value]f])))
   exp-to-java-stm(err|i): True() 								-> ([], Lit(True()))
   exp-to-java-stm(err|i): False() 							-> ([], Lit(False()))
+  exp-to-java-stm(err|i): Datetime(value)				-> ([], expr |[Expressions.parseDatetime(e1)]|) with e1 := Lit(String([Chars(value)]))
 
 rules // casts
 	

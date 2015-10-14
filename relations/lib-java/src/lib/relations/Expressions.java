@@ -1,7 +1,10 @@
 package lib.relations;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 public class Expressions {
 
@@ -88,6 +91,11 @@ public class Expressions {
 
 	public static Float minus(Float i, Float j) {
 		return i != null && j != null ? i - j : null;
+	}
+
+	public static Integer minus(Date i, Date j) {
+		return i != null && j != null ? (int) ((i.getTime() - j.getTime()) / 1000)
+				: null;
 	}
 
 	public static Integer mul(Integer i, Integer j) {
@@ -244,12 +252,20 @@ public class Expressions {
 		return i != null && j != null ? i < j : null;
 	}
 
+	public static Boolean lt(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) < 0 : null;
+	}
+
 	public static Boolean lte(Integer i, Integer j) {
 		return i != null && j != null ? i <= j : null;
 	}
 
 	public static Boolean lte(Float i, Float j) {
 		return i != null && j != null ? i <= j : null;
+	}
+
+	public static Boolean lte(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) <= 0 : null;
 	}
 
 	public static Boolean gt(Integer i, Integer j) {
@@ -260,12 +276,20 @@ public class Expressions {
 		return i != null && j != null ? i > j : null;
 	}
 
+	public static Boolean gt(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) > 0 : null;
+	}
+
 	public static Boolean gte(Integer i, Integer j) {
 		return i != null && j != null ? i >= j : null;
 	}
 
 	public static Boolean gte(Float i, Float j) {
 		return i != null && j != null ? i >= j : null;
+	}
+
+	public static Boolean gte(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) >= 0 : null;
 	}
 
 	public static Boolean and(Boolean i, Boolean j) {
@@ -368,6 +392,16 @@ public class Expressions {
 			c.add(i.toString());
 		}
 		return c;
+	}
+
+	// literals
+
+	public static Date parseDatetime(String s) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd H:mm:ss").parse(s);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 }

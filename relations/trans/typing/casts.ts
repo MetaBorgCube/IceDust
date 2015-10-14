@@ -35,7 +35,11 @@ type rules // derivations well-formedness
 	  
 	x@Cast(e, Boolean()) : Boolean()
 	where e : e-ty
-	  and True() == False() else error $[Cast to Boolean not supported] on x
+	  and True() == False() else error $[Cast to Boolean not supported] on x	 
+	   
+	x@Cast(e, Datetime()) : Datetime()
+	where e : e-ty
+	  and True() == False() else error $[Cast to Datetime not supported] on x
 
 	Cast(e, cast-ty) has multiplicity e-mu
 	where e has multiplicity e-mu
