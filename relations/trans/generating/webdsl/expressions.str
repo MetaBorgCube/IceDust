@@ -117,6 +117,7 @@ rules // literals
   to-webdsl(err): Float(f_1)     		        			-> Float(f_1)//webdsl:e |[ f_1 ]|
   to-webdsl(err): True()      		        			  -> webdsl:e |[ true ]|
 	to-webdsl(err): False()    			        			  -> webdsl:e |[ false ]|
+	to-webdsl(err): Datetime(str1)			            -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
 
 rules // casts
 	
