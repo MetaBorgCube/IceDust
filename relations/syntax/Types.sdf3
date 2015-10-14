@@ -3,9 +3,10 @@ module Types
 context-free syntax
 
 	PrimitiveType.Boolean	  = <Boolean>
+	PrimitiveType.Float	  	= <Float>
+	PrimitiveType.Datetime 	= <Datetime>
 	PrimitiveType.Int			  = <Int>
 	PrimitiveType.String	  = <String>
-	PrimitiveType.Float	  	= <Float>
 	
 	Multiplicity.One	 			= <1>
 	Multiplicity.ZeroOrOne	= <?>

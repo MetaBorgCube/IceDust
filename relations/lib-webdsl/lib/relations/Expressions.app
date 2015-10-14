@@ -16,6 +16,7 @@ section java implementations
   	static plus(Float, Float) : Float
   	static minus(Int, Int) : Int
   	static minus(Float, Float) : Float
+  	static minus(DateTime, DateTime) : Int
   	static mul(Int, Int) : Int
   	static mul(Float, Float) : Float
   	static mod(Int, Int) : Int
@@ -38,12 +39,16 @@ section java implementations
   	static not(Bool) : Bool
   	static lt(Int, Int) : Bool
   	static lt(Float, Float) : Bool
+  	static lt(DateTime, DateTime) : Bool
   	static lte(Int, Int) : Bool
   	static lte(Float, Float) : Bool
+  	static lte(DateTime, DateTime) : Bool
   	static gt(Int, Int) : Bool
   	static gt(Float, Float) : Bool
+  	static gt(DateTime, DateTime) : Bool
   	static gte(Int, Int) : Bool
   	static gte(Float, Float) : Bool
+  	static gte(DateTime, DateTime) : Bool
   	static and(Bool, Bool) : Bool
   	static or(Bool, Bool) : Bool
   	static eq(Object, Object) : Bool
@@ -58,6 +63,13 @@ section java implementations
   	static conditional(Bool, Object, List<Object>) : Object
   	static conditional(Bool, List<Object>, Object) : Object
   	static conditional(Bool, List<Object>, List<Object>) : Object
+    static asFloat(Int) : Float
+    static asFloat(List<Int> ) : List<Float>
+    static asInteger(Float) : Int
+    static asInteger(List<Float>) : List<Int> 
+    static asString(Object) : String
+    static asString(List<Object>) : List<String>
+    static parseDatetime(String):DateTime
   }
 
 // section helper functions

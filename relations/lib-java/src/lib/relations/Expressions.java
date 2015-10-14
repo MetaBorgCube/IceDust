@@ -1,7 +1,10 @@
 package lib.relations;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 public class Expressions {
 
@@ -90,6 +93,11 @@ public class Expressions {
 		return i != null && j != null ? i - j : null;
 	}
 
+	public static Integer minus(Date i, Date j) {
+		return i != null && j != null ? (int) ((i.getTime() - j.getTime()) / 1000)
+				: null;
+	}
+
 	public static Integer mul(Integer i, Integer j) {
 		return i != null && j != null ? i * j : null;
 	}
@@ -125,7 +133,7 @@ public class Expressions {
 		}
 		return sum / c.size();
 	}
-	
+
 	public static Float avg_Float(Collection<Float> c) {
 		if (c.size() == 0)
 			return null;
@@ -211,7 +219,7 @@ public class Expressions {
 		}
 		return disj;
 	}
-	
+
 	public static String concat(Collection<String> c) {
 		if (c.size() == 0)
 			return null;
@@ -244,12 +252,20 @@ public class Expressions {
 		return i != null && j != null ? i < j : null;
 	}
 
+	public static Boolean lt(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) < 0 : null;
+	}
+
 	public static Boolean lte(Integer i, Integer j) {
 		return i != null && j != null ? i <= j : null;
 	}
 
 	public static Boolean lte(Float i, Float j) {
 		return i != null && j != null ? i <= j : null;
+	}
+
+	public static Boolean lte(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) <= 0 : null;
 	}
 
 	public static Boolean gt(Integer i, Integer j) {
@@ -260,12 +276,20 @@ public class Expressions {
 		return i != null && j != null ? i > j : null;
 	}
 
+	public static Boolean gt(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) > 0 : null;
+	}
+
 	public static Boolean gte(Integer i, Integer j) {
 		return i != null && j != null ? i >= j : null;
 	}
 
 	public static Boolean gte(Float i, Float j) {
 		return i != null && j != null ? i >= j : null;
+	}
+
+	public static Boolean gte(Date i, Date j) {
+		return i != null && j != null ? i.compareTo(j) >= 0 : null;
 	}
 
 	public static Boolean and(Boolean i, Boolean j) {
@@ -330,6 +354,54 @@ public class Expressions {
 			Collection<E> j) {
 		Collection<E> c = emptyCollection();
 		return b == null ? c : b ? i : j;
+	}
+
+	// cast expressions
+
+	public static Float asFloat(Integer i) {
+		return i == null ? null : (float) i;
+	}
+
+	public static Collection<Float> asFloat(Collection<Integer> is) {
+		Collection<Float> c = emptyCollection();
+		for (int i : is) {
+			c.add((float) i);
+		}
+		return c;
+	}
+
+	public static Integer asInteger(Float i) {
+		return i == null ? null : (int) (float) i;
+	}
+
+	public static Collection<Integer> asInteger(Collection<Float> is) {
+		Collection<Integer> c = emptyCollection();
+		for (float i : is) {
+			c.add((int) i);
+		}
+		return c;
+	}
+
+	public static String asString(Object i) {
+		return i == null ? null : i.toString();
+	}
+
+	public static Collection<String> asString(Collection<Object> is) {
+		Collection<String> c = emptyCollection();
+		for (Object i : is) {
+			c.add(i.toString());
+		}
+		return c;
+	}
+
+	// literals
+
+	public static Date parseDatetime(String s) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd H:mm:ss").parse(s);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 }

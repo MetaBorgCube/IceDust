@@ -37,3 +37,7 @@ type rules
 	False() : Boolean()
 	False() has multiplicity One()
 	False() has ordering Ordered()
+	
+	Datetime(x) : Datetime()
+	Datetime(x) has multiplicity One()
+	Datetime(x) has ordering Ordered()

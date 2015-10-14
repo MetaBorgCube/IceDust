@@ -16,6 +16,7 @@ rules // primitives
   type-to-java(err): Int()		-> "Integer"
   type-to-java(err): Boolean()-> "Boolean"
   type-to-java(err): Float()  -> "Float"
+  type-to-java(err): Datetime()->"Date"
 
 rules // Java-Refs
 	
@@ -23,6 +24,7 @@ rules // Java-Refs
   java-id: Int()		-> "Integer"
   java-id: Boolean()-> "Boolean"
   java-id: Float()  -> "Float"
+  java-id: Datetime()->"Date"
   java-id: _ -> <id>
   	where is-string
 

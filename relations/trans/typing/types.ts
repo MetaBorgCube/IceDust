@@ -4,6 +4,7 @@ imports
 
 	trans/typing/aggregation.generated
 	trans/typing/assignments.generated
+	trans/typing/casts.generated
 	trans/typing/data.generated
 	trans/typing/literals.generated
 	trans/typing/logic.generated

@@ -64,6 +64,18 @@ public class ExpressionsTest {
 		assertEquals(null, Expressions.div(null, 2));
 		assertEquals(null, Expressions.div(6, null));
 		assertEquals(null, Expressions.div(6, 0));
+	}	
+	
+	@Test
+	public void testCast() {
+		assertEquals("3", Expressions.asString(3));
+		assertEquals(3.0f, Expressions.asFloat(3).floatValue(),0.000001f);
+		assertEquals(3, Expressions.asInteger(3.0f).intValue());
+	}	
+	
+	@Test
+	public void testDatetime() {
+		assertEquals(3600, Expressions.minus(Expressions.parseDatetime("2015-1-1 9:45:00"), Expressions.parseDatetime("2015-1-1 8:45:00")).intValue());
 	}
 
 }
