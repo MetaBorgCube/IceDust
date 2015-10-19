@@ -56,6 +56,9 @@ rules // module
 				  }
 				
 					function updateDerivations(){
+						if(!getUpdatesEnabled()){
+				  		return;
+				  	}
 						// log("called updateDervations()");
 						var notEmpty : Bool;
 						stat4*
