@@ -11,6 +11,7 @@ section pages
   page flagalldirty() {
     title{ "WebLab All Flag Dirty" }
   	init{
+  		log("Flag all dirty");
   		flagAllDirty();
   		return root();
   	}
