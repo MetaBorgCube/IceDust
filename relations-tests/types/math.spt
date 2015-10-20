@@ -42,6 +42,10 @@ test multiplicity of One div One	[[ [[4 / 7]] ]] run get-multiplicity to One
 test multiplicity of One mod One	[[ [[8 % 3]] ]] run get-multiplicity to One
 test multiplicity of One div One 2[[ [[4 / 0]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One mod One 2[[ [[8 % 0]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One div One 3[[ [[4.0 / 7.0]] ]] run get-multiplicity to One
+test multiplicity of One mod One 3[[ [[8.0 % 3.0]] ]] run get-multiplicity to One
+test multiplicity of One div One 4[[ [[4.0 / 0.0]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One mod One 4[[ [[8.0 % 0.0]] ]] run get-multiplicity to ZeroOrOne
 
 test multiplicity of One plus ZeroOrOne					[[ [[1 + x.i]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One plus ZeroOrOne String	[[ [["s" + x.s]] ]] run get-multiplicity to ZeroOrOne

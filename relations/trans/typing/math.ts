@@ -55,10 +55,13 @@ type rules
 	where	x	has multiplicity x-mu
 		and	y	has multiplicity y-mu
 		and <cartesian-product> (x-mu, y-mu) => mu1
-		and	((not y => Int(j) or y => Int(i) and i == "0") // might be division by zero
+		and	((not (y => Int(j) or y => Float(j2)) or y => Int(i) and i == "0" or y => Float(f) and f == "0.0") // might be division by zero
 					and <lowerbound-zero> mu1 => mu
 			 or	y => Int(k) and (not k == "0")                 // divided by a constant not zero
-					and mu1 => mu)
+					and mu1 => mu
+			 or y => Float(l) and (not l == "0.0")             // divided by a constant not zero TODO: also catch 0.00 00.00 etc
+			 		and mu1 => mu
+				)
 		and (x-mu == ZeroOrOne() or x-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [x-mu] in Math Operation] on x
 		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
 
