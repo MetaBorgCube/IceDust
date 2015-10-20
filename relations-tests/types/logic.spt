@@ -28,6 +28,7 @@ test type of not	[[ [[! false]] ]] run get-type to Boolean
 test type of eq	String [[ [["a" == "b"]] ]] run get-type to Boolean
 
 test type of inline if [[ [[true?6:3]] ]] run get-type to Int
+test type of inline if 2 [[ [[if(true) 6 else 3]] ]] run get-type to Int
 test type of inline if String [[ [[true?"a":"b"]] ]] run get-type to String
 test type of inline if Boolean [[ [[true?false:false]] ]] run get-type to Boolean
 

@@ -29,7 +29,8 @@ context-free syntax // operators
   Exp.Inequal            = <<Exp> != <Exp>>        {left}
   Exp.And                = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> || <Exp>>        {left}
-  Exp.TernaryConditional = <<Exp> ? <Exp> : <Exp>> {right}
+  Exp.TernaryConditional = <if(<Exp>) <Exp> else <Exp>> {right}
+	Exp.TernaryConditional2= <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
@@ -101,6 +102,7 @@ context-free priorities
 	} >
 	{ right:
 		Exp.TernaryConditional
+		Exp.TernaryConditional2
 	} >
 	{ left:
 		Exp.Merge

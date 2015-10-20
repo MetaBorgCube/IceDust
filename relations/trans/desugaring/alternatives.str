@@ -1,0 +1,14 @@
+module trans/desugaring/alternatives
+
+imports // constructors
+	
+	src-gen/signatures/Expressions-sig
+
+rules
+	
+	desugar-alternatives = topdown(try(desugar-alternative))
+	
+	desugar-alternative: TernaryConditional2(a,b,c) -> TernaryConditional(a,b,c)
+
+rules
+	

@@ -7,6 +7,7 @@ imports // constructors
 
 imports // functions
 
+	trans/desugaring/alternatives
 	trans/desugaring/nablhelp
 	trans/desugaring/omitted
 	trans/lib/origin
@@ -15,6 +16,7 @@ rules
 
 	desugar-before-analysis =
 		desugar-somes;
+		desugar-alternatives;
 		generate-omitted;
 		nablhelp-before;
 		desugar-done;
