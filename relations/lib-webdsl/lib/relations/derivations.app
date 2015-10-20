@@ -13,6 +13,7 @@ section pages
   	init{
   		log("Flag all dirty");
   		flagAllDirty();
+  		log("Flag all dirty done");
   		return root();
   	}
   }
