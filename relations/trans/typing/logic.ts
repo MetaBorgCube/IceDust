@@ -75,11 +75,8 @@ type rules
 	where x	has multiplicity x-mu
 		and	y	has multiplicity y-mu
 		and z	has multiplicity z-mu
-		and <cartesian-product> (x-mu, y-mu) => mu1
-		and <cartesian-product> (z-mu, mu1) => mu
-		and (x-mu == ZeroOrOne() or x-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [x-mu] in Math Operation] on x
-		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
-		and (z-mu == ZeroOrOne() or z-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [z-mu] in Math Operation] on z
+		and <cartesian-product> (z-mu, y-mu) => mu
+		and (x-mu == One()) else error $[Multiplicity mismatch: expected One got [x-mu] in Conditional] on x
 
 	Not(x) has ordering x-or
 	where x has ordering x-or

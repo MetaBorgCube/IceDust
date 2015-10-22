@@ -48,8 +48,9 @@ test multiplicity of One inline if One One[[ [[true?4:5]] ]] run get-multiplicit
 
 test multiplicity of One and ZeroOrOne					[[ [[true && x.b]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One eq ZeroOrOne 					[[ [["s" == x.s]] ]] run get-multiplicity to ZeroOrOne
-test multiplicity of ZeroOrOne inline if One One[[ [[x.b ? 4 : 6]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One inline if ZeroOrOne One[[ [[false ? x.s : "a"]] ]] run get-multiplicity to ZeroOrOne
+
+test error on ZeroOrOne inline if One One[[ [[x.b]] ? 4 : 6]] 1 error
 
 test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error
 
