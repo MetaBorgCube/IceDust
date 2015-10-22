@@ -29,11 +29,46 @@ context-free syntax // operators
   Exp.Inequal            = <<Exp> != <Exp>>        {left}
   Exp.And                = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> || <Exp>>        {left}
-  Exp.TernaryConditional = <if(<Exp>) <Exp> else <Exp>> {right}
 	Exp.TernaryConditional2= <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
+
+  Exp.TernaryConditional = <
+  	if(<Exp>)
+  		<Exp>
+  	else
+  		<Exp>
+  > {right}
+  
+ 	Exp.TernaryConditional3 = <
+  	switch {
+  	  case <Exp> =\> <Exp>
+  	  <Case>
+  	}
+  >
+ 	Exp.TernaryConditional3 = <
+  	switch {
+  	  case <Exp> =\> <Exp>
+  		default =\> <Exp>
+  	}
+  >
+  Case.TernaryConditional3 = <
+  	case <Exp> =\> <Exp>
+  	<Case>
+  >
+  Case.TernaryConditional3 = <
+  	case <Exp> =\> <Exp>
+  	default =\> <Exp>
+  >
+  	
+  // Exp.Switch = <
+  // 	switch {
+  // 		<{Case "\n"}*>
+  // 	}
+  // >
+  // Case.Case              = <case <Exp> =\> <Exp>>
+  // Case.Default           = <default =\> <Exp>>
 
 context-free syntax // built-in functions
 
