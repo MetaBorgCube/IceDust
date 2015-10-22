@@ -13,6 +13,8 @@ rules
 	
 	desugar-alternative: And2(a,b) -> And(a,b)
 	desugar-alternative: Or2 (a,b) -> Or (a,b)
+	
+	desugar-alternative: Not2(a) -> Not(a)
 
 rules
 	

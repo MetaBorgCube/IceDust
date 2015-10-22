@@ -26,6 +26,7 @@ test type of gt 2	[[ [[4.4 >= 7.7]] ]] run get-type to Boolean
 test type of eq		[[ [[8 == 3]] ]] run get-type to Boolean
 test type of neq	[[ [[8 != 3]] ]] run get-type to Boolean
 test type of not	[[ [[! false]] ]] run get-type to Boolean
+test type of not2 [[ [[not false]] ]] run get-type to Boolean
 
 test type of eq	String [[ [["a" == "b"]] ]] run get-type to Boolean
 

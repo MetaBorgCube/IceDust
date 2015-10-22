@@ -11,7 +11,8 @@ context-free syntax // brackets
 context-free syntax // operators
 
   Exp.MemberAccess       = <<Exp> . <ID>>          {left}
-  Exp.Not                = <!<Exp>>                {right}
+  Exp.Not                = <not <Exp>>             {right}
+  Exp.Not2               = <!<Exp>>                {right}
   
   Exp.Cast               = <<Exp> as <PrimitiveType>> {left}
 
@@ -108,6 +109,7 @@ context-free priorities
 	} >	
 	{ right:
 		Exp.Not
+		Exp.Not2
 	} >
 	{ left:
 		Exp.Cast
