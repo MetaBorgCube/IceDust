@@ -10,6 +10,9 @@ rules
 	
 	desugar-alternative: TernaryConditional2(a,b,c) -> TernaryConditional(a,b,c)
 	desugar-alternative: TernaryConditional3(a,b,c) -> TernaryConditional(a,b,c)
+	
+	desugar-alternative: And2(a,b) -> And(a,b)
+	desugar-alternative: Or2 (a,b) -> Or (a,b)
 
 rules
 	

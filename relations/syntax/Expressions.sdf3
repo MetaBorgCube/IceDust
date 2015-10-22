@@ -27,8 +27,10 @@ context-free syntax // operators
   Exp.GreaterThanEqual   = <<Exp> \>= <Exp>>       {left}
   Exp.Equal              = <<Exp> == <Exp>>        {left}
   Exp.Inequal            = <<Exp> != <Exp>>        {left}
-  Exp.And                = <<Exp> && <Exp>>        {left}
-  Exp.Or                 = <<Exp> || <Exp>>        {left}
+  Exp.And                = <<Exp> and <Exp>>       {left}
+  Exp.And2               = <<Exp> && <Exp>>        {left}
+  Exp.Or                 = <<Exp> or <Exp>>        {left}
+  Exp.Or2                = <<Exp> || <Exp>>        {left}
 	Exp.TernaryConditional2= <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
@@ -131,9 +133,11 @@ context-free priorities
 	} >
 	{ left:
 		Exp.And
+		Exp.And2
 	} >
 	{ left:
 		Exp.Or
+		Exp.Or2
 	} >
 	{ right:
 		Exp.TernaryConditional

@@ -15,7 +15,9 @@ setup Common [[
 ]]
 
 test type of and	[[ [[true && false]] ]] run get-type to Boolean
+test type of and2 [[ [[true and false]] ]] run get-type to Boolean
 test type of or		[[ [[true || false]] ]] run get-type to Boolean
+test type of or 2	[[ [[true or false]] ]] run get-type to Boolean
 test type of lte	[[ [[1 <= 3]] ]] run get-type to Boolean
 test type of lte	[[ [[3 < 2]] ]] run get-type to Boolean
 test type of gte	[[ [[8 > 8]] ]] run get-type to Boolean
