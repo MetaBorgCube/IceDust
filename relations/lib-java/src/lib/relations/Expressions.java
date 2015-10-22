@@ -201,8 +201,6 @@ public class Expressions {
 	}
 
 	public static Boolean conj(Collection<Boolean> b) {
-		if (b.size() == 0)
-			return null;
 		boolean conj = true;
 		for (boolean v : b) {
 			conj = conj && v;
@@ -211,8 +209,6 @@ public class Expressions {
 	}
 
 	public static Boolean disj(Collection<Boolean> b) {
-		if (b.size() == 0)
-			return null;
 		boolean disj = false;
 		for (boolean v : b) {
 			disj = disj || v;

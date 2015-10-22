@@ -37,19 +37,21 @@ type rules
 
 	Count(x) : Int()
 
-
 	Min(x)
 +	Max(x)
-+	Avg(x)
-+ Conj(x)
-+ Disj(x)
-+ Concat(x) has multiplicity mu
++	Avg(x) has multiplicity mu
 	where x has multiplicity x-mu
 		and <upperbound-one> (x-mu) => mu
-		and (x-mu == ZeroOrMore() or x-mu == OneOrMore())	else error "Expected multiplicity of higher than One" on x
+		and (x-mu == ZeroOrMore() or x-mu == OneOrMore())	else error "Expected multiplicity of higher than One" on x //should be a warning, not an error
 
-	Sum(x)
-+	Count(x) has multiplicity One()
+  Conj(x)
++ Disj(x)
++ Concat(x)
++	Sum(x) has multiplicity One()
+	where x has multiplicity x-mu
+		and (x-mu == ZeroOrMore() or x-mu == OneOrMore())	else error "Expected multiplicity of higher than One" on x //should be a warning, not an error
+	
+	Count(x) has multiplicity One()
 
 	Min(x)
 +	Max(x)

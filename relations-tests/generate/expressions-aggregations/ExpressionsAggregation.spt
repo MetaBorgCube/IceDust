@@ -7,7 +7,11 @@ setup Common [[
 	
 	model
 	entity X {
-		val : Int = max( 2 ++ 5 ++ 3)
+		noVal : Boolean?
+		val : Int = if(!disj(noVal++noVal)and conj(noVal++noVal)) //disj(no value)=false, conj(no value)=true
+		              max( 2 ++ 5 ++ 3)
+		            else
+		              1
 	}
 	
 	data
