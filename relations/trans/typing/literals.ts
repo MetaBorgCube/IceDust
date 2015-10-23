@@ -41,3 +41,7 @@ type rules
 	Datetime(x) : Datetime()
 	Datetime(x) has multiplicity One()
 	Datetime(x) has ordering Ordered()
+	
+	NoValue() : NoValue()
+	NoValue() has multiplicity ZeroOrOne()
+	NoValue() has ordering Ordered()

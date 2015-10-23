@@ -23,11 +23,11 @@ type rules // derivations well-formedness
 
 	Cast(e, Int()) : Int()
 	where e : e-ty
-	  and e-ty == Float() else error $[Type mismatch: expected Float got [e-ty] in Cast to Int] on e
+	  and (e-ty == Float() or e-ty == NoValue()) else error $[Type mismatch: expected Float got [e-ty] in Cast to Int] on e
 	  
 	Cast(e, Float()) : Float()
 	where e : e-ty
-	  and e-ty == Int() else error $[Type mismatch: expected Int got [e-ty] in Cast to Float] on e
+	  and (e-ty == Int() or e-ty == NoValue()) else error $[Type mismatch: expected Int got [e-ty] in Cast to Float] on e
 	  
 	Cast(e, String()) : String()
 	where e : e-ty
@@ -35,11 +35,11 @@ type rules // derivations well-formedness
 	  
 	x@Cast(e, Boolean()) : Boolean()
 	where e : e-ty
-	  and True() == False() else error $[Cast to Boolean not supported] on x	 
+	  and e-ty == NoValue() else error $[Cast to Boolean not supported] on x	 
 	   
 	x@Cast(e, Datetime()) : Datetime()
 	where e : e-ty
-	  and True() == False() else error $[Cast to Datetime not supported] on x
+	  and e-ty == NoValue() else error $[Cast to Datetime not supported] on x
 
 	Cast(e, cast-ty) has multiplicity e-mu
 	where e has multiplicity e-mu

@@ -6,7 +6,7 @@ setup Common [[
 	module ExpressionsCast
 	
 	execute
-		5.0 as String + " " + true as String + " " + 5 as String
+		concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
 ]]
 
 test Expressions Logic generate-java [[ ]] build generate-java-test

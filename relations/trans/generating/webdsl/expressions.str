@@ -121,6 +121,8 @@ rules // literals
 
 rules // casts
 	
+	to-webdsl(err): Cast(NoValue() , ex1-ty) -> |[ null as x ]| where x := <type-as-string>ex1-ty
+	
 	to-webdsl(err): Cast(ex1, ex1-ty) -> |[ Expressions.x_method(e1) ]|
 		with
 			e1 := <to-webdsl(err)>ex1;

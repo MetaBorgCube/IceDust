@@ -11,8 +11,9 @@ lexical restrictions
 
 lexical syntax // Keywords
 
-	Keyword = "avg"
-	Keyword = "as"
+  Keyword = "and"
+  Keyword = "as"
+  Keyword = "avg"
 	Keyword = "Boolean"
 	Keyword = "concat"
 	Keyword = "conj"
@@ -26,11 +27,14 @@ lexical syntax // Keywords
 	Keyword = "max"
 	Keyword = "match"
 	Keyword = "min"
+  Keyword = "no"
+  Keyword = "not"
+  Keyword = "or"
 	Keyword = "relationship"
 	Keyword = "String"
 	Keyword = "sum"
 	Keyword = "this"
-	Keyword = "true"
+  Keyword = "true"
 
 lexical restrictions
 
