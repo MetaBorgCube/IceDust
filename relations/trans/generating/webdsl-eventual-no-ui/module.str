@@ -51,9 +51,13 @@ rules // module
 						isEmpty() : Bool
 					}
 
-				  function flagAllDirty(){
-				  	stat5*
-				  }
+          function flagAllDirty(){
+            stat5*
+          }
+
+          function flagDirty(entity:String, attribute:String){
+            stat6*
+          }
 				
 					function updateDerivations(){
 						if(!getUpdatesEnabled()){
@@ -86,13 +90,27 @@ rules // module
 			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name;
 			x_dirty:= $[[x_name]_Dirty];
 			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
-			stat5*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name
+      stat5*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name;
+      stat6*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagdirty)>x_name
 			
 rules
-	
-	attribute-flagalldirty: x_name -> |[Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);]|
-		with
-			x_entity := <attributename-get-entityname>x_name;
-			x_queue  := $[get_[x_entity]_[x_name]_queue]
+  
+  attribute-flagalldirty: x_name -> |[
+    Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+  ]|
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_queue  := $[get_[x_entity]_[x_name]_queue]
+        
+  attribute-flagdirty: x_name -> |[
+    if(entity==e1 && attribute==e2){
+      Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+    }
+  ]|
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_queue  := $[get_[x_entity]_[x_name]_queue];
+      e1       := String(x_entity);
+      e2       := String(x_name)
 			
 
