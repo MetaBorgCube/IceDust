@@ -5,11 +5,14 @@ imports // constructors
 	src-gen/signatures/Model-sig
 	trans/api/_runtime-constructors
 	trans/desugaring/constructors
+  trans/analysis2/constructors
 	trans/naming/names
 
 imports // functions
 
 	trans/api/_runtime
+	trans/api/model-names-api
+	trans/lib/index
 	trans/lib/origin
 	trans/lib/search
 	trans/lib/string
@@ -20,6 +23,12 @@ rules // module
 	modulename-get-entitynames = _nabl-get-child-definitions(|NablNsEntity()) ;make-set-ordered ;map(def-to-name); string-sort-anno
 	
 	modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;map(def-to-name); string-sort-anno
+	
+	// string -> [string]
+	modulename-get-attributenames = modulename-get-entitynames;map(entityname-get-attributenames);flatten-list
+	
+	// string -> [[string]]
+	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 
 	is-modulename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsModule())
 

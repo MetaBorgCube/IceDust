@@ -4,7 +4,6 @@ imports // constructors
 
 	lib/webdsl/constructors
 	lib/webdsl/WebDSL
-	trans/analysis2/constructors
 	trans/desugaring/constructors
 
 imports // functions
@@ -19,7 +18,6 @@ imports // functions
 	trans/lib/debug
 	trans/lib/lists-tuples
 	trans/lib/string
-	trans/lib/index
 
 rules // module
 
@@ -87,11 +85,11 @@ rules // module
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
-			stat4* := <index-get-prop(|TopoSort());Hd;webdsl-toposort>x_name;
+			stat4* := <modulename-get-attributenames-topo;webdsl-toposort>x_name;
 			x_dirty:= $[[x_name]_Dirty];
-			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
-      stat5*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name;
-      stat6*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagdirty)>x_name
+			native1*:= <modulename-get-attributenames;                  filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
+      stat5*  := <modulename-get-attributenames-topo;flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name;
+      stat6*  := <modulename-get-attributenames;                  filter(where(not(attributename-is-normal)));map(attribute-flagdirty)>x_name
 			
 rules
   
