@@ -6,18 +6,18 @@ model
 	entity Course {name:String}
 	relation Enrollment{Student * Course *}
 
-rules
-
-	courseStudents(c:Course)
-			c student s.
-	
-	classmates(s:Student)
-			s course c.
-			c student s2.
-	
-	x(s:Student)
-			s course c.
-			?[c student s2.]
+// rules
+// 
+// 	courseStudents(c:Course)
+// 			c student s.
+// 	
+// 	classmates(s:Student)
+// 			s course c.
+// 			c student s2.
+// 	
+// 	x(s:Student)
+// 			s course c.
+// 			?[c student s2.]
 
 data
 

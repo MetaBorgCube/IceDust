@@ -18,84 +18,84 @@ model
 	relation ProjectMemberRequest{Project * memberRequested User * memberRequester }
 	relation ProjectMember{Project * User * project.member <-> user.member }
 
-rules
-
-  createIssue (title:String,description:String,p:Project,t:Tag?,u:User?)
-    ->
-      ig:IssueGhost{title=title,description=description,alive=true}.
-      ig project p. //p:=ig.project // ig project> p
-    ?[t. -> ig tag t.]
-    ?[
-        u.
-      ->
-        p issue i{title=title,description=description}.
-        i reporter u.
-      ?[t. -> i tag t.]
-    ]
-
-	// addMember(u:User, p:Project)
-	// 		?[p tag t{name="!"+u.name}.]
-	// 		?[p follower u.]
-	// 		?[p memberRequester u.]
-	// 	->
-	// 		p member u.
-	// 		p tag t.
-			
-	addMemberNormalized(u:User, p:Project)
-		->
-			p member u.
-		?[
-			not
-				p tag Tag{name="!"+u.name}.
-			->
-				p tag t{name="!"+u.name}.
-		]
-		?[p follower u.->]
-		?[p memberRequester u.->]
-
-	// vote(i:Issue, u:User)
-	// 		i project p.
-	// 		?[p tag t{name="!"+u.name}.]
-	// 	->
-	// 		u.
-	// 		i project p.
-	// 		p tag t.
-	// 		i tag t.
-			
-	voteNormalized(i:Issue, u:User)
-			i project p.
-		->
-			u.
-			i project p.
-		?[
-				p tag t{name="!"+u.name}.
-			->
-				p tag t.
-				i tag t.
-		]
-		?[
-			not
-				p tag t{name="!"+u.name}.
-			->
-				p tag t{name="!"+u.name}.
-				i tag t.
-		]
-	
-	// delete(i:Issue)
-	// 		i project p.
-	// 		i reporter u.
-	// 		*[i tag t.]
-	// 	->
-	// 		p.
-	// 		u.
-	
-	deleteNormalized(i:Issue)
-			i project p.
-			i reporter u.
-		->
-			p.
-			u.
-		*[i tag t.->]
+// rules
+// 
+//   createIssue (title:String,description:String,p:Project,t:Tag?,u:User?)
+//     ->
+//       ig:IssueGhost{title=title,description=description,alive=true}.
+//       ig project p. //p:=ig.project // ig project> p
+//     ?[t. -> ig tag t.]
+//     ?[
+//         u.
+//       ->
+//         p issue i{title=title,description=description}.
+//         i reporter u.
+//       ?[t. -> i tag t.]
+//     ]
+// 
+// 	// addMember(u:User, p:Project)
+// 	// 		?[p tag t{name="!"+u.name}.]
+// 	// 		?[p follower u.]
+// 	// 		?[p memberRequester u.]
+// 	// 	->
+// 	// 		p member u.
+// 	// 		p tag t.
+// 			
+// 	addMemberNormalized(u:User, p:Project)
+// 		->
+// 			p member u.
+// 		?[
+// 			not
+// 				p tag Tag{name="!"+u.name}.
+// 			->
+// 				p tag t{name="!"+u.name}.
+// 		]
+// 		?[p follower u.->]
+// 		?[p memberRequester u.->]
+// 
+// 	// vote(i:Issue, u:User)
+// 	// 		i project p.
+// 	// 		?[p tag t{name="!"+u.name}.]
+// 	// 	->
+// 	// 		u.
+// 	// 		i project p.
+// 	// 		p tag t.
+// 	// 		i tag t.
+// 			
+// 	voteNormalized(i:Issue, u:User)
+// 			i project p.
+// 		->
+// 			u.
+// 			i project p.
+// 		?[
+// 				p tag t{name="!"+u.name}.
+// 			->
+// 				p tag t.
+// 				i tag t.
+// 		]
+// 		?[
+// 			not
+// 				p tag t{name="!"+u.name}.
+// 			->
+// 				p tag t{name="!"+u.name}.
+// 				i tag t.
+// 		]
+// 	
+// 	// delete(i:Issue)
+// 	// 		i project p.
+// 	// 		i reporter u.
+// 	// 		*[i tag t.]
+// 	// 	->
+// 	// 		p.
+// 	// 		u.
+// 	
+// 	deleteNormalized(i:Issue)
+// 			i project p.
+// 			i reporter u.
+// 		->
+// 			p.
+// 			u.
+// 		*[i tag t.->]
 
 data
 
