@@ -30,7 +30,8 @@ rules	//@see http://yellowgrass.org/issue/Spoofax/823
 	pp-message = pp-uri-list
 	pp-message : Def(uri) -> <_pp-uri>uri
 	pp-message = not(is-list); (is-string <+ pp-result <+ (strip-annos; write-to-string))
-	pp-message = map(pp-message); concat-strings
+	pp-message = map(pp-preprocess(fail);pp-message); concat-strings
+	pp-preprocess(cascaded) = [] < cascaded + try(\[a] -> a\) //prevent some cascading error messages hack from http://yellowgrass.org/issue/TS/1
 	
 	pp-uri-list: a -> b
 		where
