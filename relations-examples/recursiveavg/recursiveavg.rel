@@ -3,14 +3,14 @@ module recursiveavg
 model
 
   entity Node {
-    value : Int ? = avg ( this.dominates.value ) (default)
+    value : Int ? = avg ( this.children.value ) (default)
   }
 
-  relation Dominates {
-    Node * parent <- p
-    Node 1 child  <- c
+  relation Tree {
+    Node * parent <- asParent
+    Node 1 child  <- asChild
     
-    parent.dominates <-> child.dominatedBy
+    parent.children <-> child.parent
   }
 
 data
@@ -26,12 +26,12 @@ data
     value = 4
   }
 
-  Dominates {
+  Tree {
     parent : root
     child : n1
   }
 
-  Dominates {
+  Tree {
     parent : root
     child : n2
   }
