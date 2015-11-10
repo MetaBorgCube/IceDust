@@ -3,14 +3,12 @@ module recursiveavg
 model
 
   entity Node {
-    value : Int ? = avg ( this.children.value ) (default)
+    value : Int ? = avg ( this.child.value ) (default)
   }
 
   relation Tree {
-    Node * parent <- asParent
-    Node 1 child  <- asChild
-    
-    parent.children <-> child.parent
+    Node * parent
+    Node 1 child
   }
 
 data
