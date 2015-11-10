@@ -40,3 +40,9 @@ rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 rules // s1:a->b  s2:a->c  a->(a, b)
 	
 	ttuple(s1,s2): t -> (<s1>t, <s2>t)
+
+rules // List -> List
+  
+  list-duplicates : [] -> []
+  list-duplicates : [h|tail] -> [h|<list-duplicates>tail] where <elem>     (h,tail)
+  list-duplicates : [h|tail] ->    <list-duplicates>tail  where <not(elem)>(h,tail)

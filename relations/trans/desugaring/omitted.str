@@ -11,7 +11,8 @@ imports // functions
 	trans/lib/origin
 	trans/lib/new-name
 	trans/lib/string
-	trans/lib/traverse
+  trans/lib/traverse
+  trans/lib/lists-tuples
 
 rules
 	
@@ -48,12 +49,20 @@ rules // generate omitted role orderings
 rules // generate omitted inverse names
 	
 	entity-generate-inverse-names:
-		e -> <entity-set-members(map(try(generate-inverse-name(|<entity-get-name>e))))>e
+		e -> <entity-set-members(map(try(generate-inverse-name(|<entity-get-name>e, <entity-duplicate-role-types>e))))>e
 			where is-entity
 
-	generate-inverse-name(|entityName): role -> role'
+	generate-inverse-name(|entityName, dupRoleTypes): role -> role'
 		where role-has-no-inversename
-		with role' := <role-set-inversename(|<custom-origin(lcfirst|<role-get-type>role)>entityName)>role
+		where <not(elem)>(<role-get-type>role, dupRoleTypes)
+		with role' := <role-set-inversename(|<custom-origin(|<role-get-type>role)><lcfirst>entityName)>role
+		
+  generate-inverse-name(|entityName, dupRoleTypes): role -> role'
+    where role-has-no-inversename
+    where <elem>(<role-get-type>role, dupRoleTypes)
+    with role' := <role-set-inversename(|<custom-origin(|<role-get-type>role)>$[[<lcfirst>entityName]As[<role-get-name;ucfirst>role]])>role
+    
+  entity-duplicate-role-types = entity-get-members;filter(is-role);map(role-get-type);list-duplicates;make-set
 
 rules	// generate omitted entity names
 
