@@ -26,6 +26,7 @@ rules // module
 				application x_name
 				
 				imports lib/relations/Expressions
+        imports lib/relations/eventually-consistent
 			
 				section model
 				
@@ -45,6 +46,14 @@ rules // module
 						contains(String) : Bool
 						isEmpty() : Bool
 					}
+
+          function flagAllDirty(){
+            stat5*
+          }
+
+          function flagDirty(entity:String, attribute:String){
+            stat6*
+          }
 
 					// def3*
 					
@@ -153,7 +162,9 @@ rules // module
 			// def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
 			stat4* := <modulename-get-attributenames-topo;webdsl-toposort>x_name;
 			x_dirty:= $[[x_name]_Dirty];
-			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name
+			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
+      stat5*  := <modulename-get-attributenames-topo;flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name;
+      stat6*  := <modulename-get-attributenames;                  filter(where(not(attributename-is-normal)));map(attribute-flagdirty)>x_name
 			
 
 rules //crud
@@ -300,4 +311,24 @@ rules // List(List(String)) -> Webdsl-stat*
 		with
 			x_entity := <attributename-get-entityname>x_name;
 			x_dirtyb := $[[x_name]_has_dirty]
-	
+
+rules //flag dirty manually
+  
+  attribute-flagalldirty: x_name -> |[
+    Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+  ]|
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_queue  := $[get_[x_entity]_[x_name]_queue]
+        
+  attribute-flagdirty: x_name -> |[
+    if(entity==e1 && attribute==e2){
+      Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+    }
+  ]|
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_queue  := $[get_[x_entity]_[x_name]_queue];
+      e1       := String(x_entity);
+      e2       := String(x_name)
+

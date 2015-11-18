@@ -1,16 +1,9 @@
-module lib/relations/derivations
-
-access control rules
-
-  rule page flagalldirty() { true }
-  rule page flagdirty(entity:String, attribute:String) { true }
-  rule page enableupdates() { true }
-  rule page disableupdates() { true }
+module lib/relations/eventually-consistent
 
 section pages
 
   page flagalldirty() {
-    title{ "WebLab Flag All Dirty" }
+    title{ "Eventually Consistent Derived Values - Flag All Dirty" }
     init{
       log("Flag all dirty");
       flagAllDirty();
@@ -20,7 +13,7 @@ section pages
   }
   
   page flagdirty(entity:String, attribute:String) {
-    title{ "WebLab Flag Dirty" }
+    title{ "Eventually Consistent Derived Values - Flag Dirty" }
     init{
       log("Flag dirty " + entity + "." + attribute);
       flagDirty(entity, attribute);
@@ -30,7 +23,7 @@ section pages
   }
 
   page enableupdates() {
-    title{ "WebLab Enable Updates" }
+    title{ "Eventually Consistent Derived Values - Enable Updates" }
     init{
       enableUpdates();
       return root();
@@ -38,7 +31,7 @@ section pages
   }
 
   page disableupdates() {
-    title{ "WebLab Disable Updates" }
+    title{ "Eventually Consistent Derived Values - Disable Updates" }
     init{
       disableUpdates();
       return root();
