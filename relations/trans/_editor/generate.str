@@ -192,7 +192,7 @@ rules // Build in steps
 			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
 			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
 			<copy-dir>(sourceDir2, targetDir2);
-			<dirname;_refresh-workspace-file> targetDir			
+			<_refresh-workspace-file> targetDir
 			
 	copy-webdsl-libraries-no-ui: (webdslFileName, project-path) -> None()
 		with
