@@ -71,18 +71,33 @@ rules // attributes: normal
 		where
 			attributename-is-normal
 		with
-			srt1     := <_get-type;type-to-webdsl(err)>x_name;
-			x_getter := $[get_[x_name]];
-			x_entity := <attributename-get-entityname>x_name
+      x_entity           := <attributename-get-entityname>x_name;
+      x_getter           := $[get_[x_name]];
+      srt1               := <_get-type;type-to-webdsl(err)>x_name
 
 rules // attributes: default
 
 	to-webdsl-eventual(err): x_name -> webdsl |[
 		x_name    : srt1 (default=null) //no default, because the default instantiates in WebDSL and then is not updated anymore
 		x_default : srt1 (default=x_calc())
-		
+    
     function x_calc() : srt1{
-    	return e1;
+      return e1;
+    }
+    
+    static function x_getter(entity:x_entity):srt1{
+      return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+      var r : [srt1];
+      for(entity in entities){
+        var v := x_entity.x_getter(entity);
+        if(v!=null){
+          r.add(v);
+        }
+      }
+      return r;
     }
     
     function x_update() {
@@ -119,21 +134,6 @@ rules // attributes: default
     static function x_hasDirty () : Bool {
     	return !DirtyCollections.x_queue().isEmpty();
     }
-		
-    static function x_getter(entity:x_entity):srt1{
-    	return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-    	var r : [srt1];
-	  	for(entity in entities){
-        var v := x_entity.x_getter(entity);
-        if(v!=null){
-          r.add(v);
-        }
-	  	}
-	  	return r;
-    }
 	]|
 		where
 			is-attributename
@@ -158,9 +158,23 @@ rules // attributes: derivation
 
 	to-webdsl-eventual(err): x_name -> webdsl |[
 		x_name : srt1 (default=x_calc()) //add a default, so that WebDSL instantiates the derived value (note this value may be wrong if other values are not up to date yet, but then it will be dirty flagged again)
-		
+    
     function x_calc() : srt1{
-    	return e1;
+      return e1;
+    }
+    
+    static function x_getter(entity:x_entity):srt1{
+      return if(entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+      var r : [srt1];
+      for(entity in entities){
+        if(entity.x_name!=null){
+          r.add(entity.x_name);
+        }
+      }
+      return r;
     }
     
     function x_update() {
@@ -196,20 +210,6 @@ rules // attributes: derivation
     
     static function x_hasDirty () : Bool {
     	return !DirtyCollections.x_queue().isEmpty();
-    }
-		
-    static function x_getter(entity:x_entity):srt1{
-    	return if(entity!=null) entity.x_name else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-    	var r : [srt1];
-	  	for(entity in entities){
-	  		if(entity.x_name!=null){
-	  			r.add(entity.x_name);
-	  		}
-	  	}
-	  	return r;
     }
 	]|
 		where

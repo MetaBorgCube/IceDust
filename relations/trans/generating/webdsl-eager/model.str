@@ -71,9 +71,9 @@ rules // attributes: normal
 		where
 			attributename-is-normal
 		with
-			srt1     := <_get-type;type-to-webdsl(err)>x_name;
-			x_getter := $[get_[x_name]];
-			x_entity := <attributename-get-entityname>x_name
+      x_entity           := <attributename-get-entityname>x_name;
+      x_getter           := $[get_[x_name]];
+      srt1               := <_get-type;type-to-webdsl(err)>x_name
 
 rules // attributes: default
 
@@ -83,6 +83,21 @@ rules // attributes: default
     
     function x_calc() : srt1{
       return e1;
+    }
+    
+    static function x_getter(entity:x_entity):srt1{
+      return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+      var r : [srt1];
+      for(entity in entities){
+        var v := x_entity.x_getter(entity);
+        if(v!=null){
+          r.add(v);
+        }
+      }
+      return r;
     }
     
     function x_update() {
@@ -112,21 +127,6 @@ rules // attributes: default
     static function x_hasDirty () : Bool {
       return x_dirtyCollection.length!=0;
     }
-    
-    static function x_getter(entity:x_entity):srt1{
-      return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-      var r : [srt1];
-      for(entity in entities){
-        var v := x_entity.x_getter(entity);
-        if(v!=null){
-          r.add(v);
-        }
-      }
-      return r;
-    }
   ]|
     where
       is-attributename
@@ -155,6 +155,20 @@ rules // attributes: derivation
       return e1;
     }
     
+    static function x_getter(entity:x_entity):srt1{
+      return if(entity!=null) entity.x_name else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+      var r : [srt1];
+      for(entity in entities){
+        if(entity.x_name!=null){
+          r.add(entity.x_name);
+        }
+      }
+      return r;
+    }
+    
     function x_update() {
       x_name := x_calc();
     }
@@ -181,20 +195,6 @@ rules // attributes: derivation
     
     static function x_hasDirty () : Bool {
       return x_dirtyCollection.length!=0;
-    }
-    
-    static function x_getter(entity:x_entity):srt1{
-      return if(entity!=null) entity.x_name else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-      var r : [srt1];
-      for(entity in entities){
-        if(entity.x_name!=null){
-          r.add(entity.x_name);
-        }
-      }
-      return r;
     }
   ]|
     where
