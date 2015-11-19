@@ -89,10 +89,6 @@ rules // attributes: default
       x_default := x_calc();
     }
     
-    static function x_update(entity : x_entity){
-      entity.x_update();
-    }
-    
     static function x_update(entities : {x_entity}){
       for(entity in entities){
         entity.x_update();
@@ -165,10 +161,6 @@ rules // attributes: derivation
     
     function x_update() {
       x_name := x_calc();
-    }
-    
-    static function x_update(entity : x_entity){
-      entity.x_update();
     }
     
     static function x_update(entities : {x_entity}){
