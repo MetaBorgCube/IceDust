@@ -131,9 +131,10 @@ rules // attributes: default
     static function x_getter(entities:[x_entity]):[srt1]{
     	var r : [srt1];
 	  	for(entity in entities){
-	  		if(entity.x_name!=null){
-	  			r.add(entity.x_name);
-	  		}
+        var v := x_entity.x_getter(entity);
+        if(v!=null){
+          r.add(v);
+        }
 	  	}
 	  	return r;
     }

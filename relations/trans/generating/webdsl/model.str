@@ -78,7 +78,6 @@ rules // attributes: default
     static function x_getter(entities:[x_entity]):[srt1]{
       var r : [srt1];
       for(entity in entities){
-        // var v := if(entity.x_name) entity.x_name else entity.x_default;
         var v := x_entity.x_getter(entity);
         if(v!=null){
           r.add(v);
