@@ -37,7 +37,7 @@ rules // entities
 		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
 		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name
 
-rules // attributes
+rules // attributes: normal
 
 	to-webdsl(err): x_name -> webdsl |[
 		x_name : srt1 (default=null)
@@ -64,7 +64,42 @@ rules // attributes
 			srt1     := <_get-type;type-to-webdsl(err)>x_name;
 			x_getter := $[get_[x_name]];
 			x_entity := <attributename-get-entityname>x_name
-			
+
+rules // attributes: default
+
+  to-webdsl(err): x_name -> webdsl |[
+    x_name : srt1 (default=null)
+    x_default : srt1 := e1
+    
+    static function x_getter(entity:x_entity):srt1{
+      return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
+    }
+    
+    static function x_getter(entities:[x_entity]):[srt1]{
+      var r : [srt1];
+      for(entity in entities){
+        // var v := if(entity.x_name) entity.x_name else entity.x_default;
+        var v := x_entity.x_getter(entity);
+        if(v!=null){
+          r.add(v);
+        }
+      }
+      return r;
+    }
+  ]|
+    where
+      is-attributename
+    where
+      attributename-is-default
+    with
+      srt1     := <_get-type;type-to-webdsl(err)>x_name;
+      e1       := <attributename-get-expr;to-webdsl(err)>x_name;
+      x_getter := $[get_[x_name]];
+      x_entity := <attributename-get-entityname>x_name;
+      x_default:= $[[x_name]Default]
+
+rules // attributes: derivation
+
 	to-webdsl(err): x_name -> webdsl |[
 		x_name : srt1 := e1
 		
@@ -86,33 +121,6 @@ rules // attributes
 			is-attributename
 		where
 			attributename-is-derivation
-		with
-			srt1     := <_get-type;type-to-webdsl(err)>x_name;
-			e1       := <attributename-get-expr;to-webdsl(err)>x_name;
-			x_getter := $[get_[x_name]];
-			x_entity := <attributename-get-entityname>x_name
-			
-	to-webdsl(err): x_name -> webdsl |[
-		x_name : srt1 (default=e1)
-		
-    static function x_getter(entity:x_entity):srt1{
-    	return if(entity!=null) entity.x_name else null;
-    }
-    
-    static function x_getter(entities:[x_entity]):[srt1]{
-    	var r : [srt1];
-	  	for(entity in entities){
-	  		if(entity.x_name!=null){
-	  			r.add(entity.x_name);
-	  		}
-	  	}
-	  	return r;
-    }
-	]|
-		where
-			is-attributename
-		where
-			attributename-is-default
 		with
 			srt1     := <_get-type;type-to-webdsl(err)>x_name;
 			e1       := <attributename-get-expr;to-webdsl(err)>x_name;
