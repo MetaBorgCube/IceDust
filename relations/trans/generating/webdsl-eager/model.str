@@ -78,8 +78,8 @@ rules // attributes: normal
 rules // attributes: default
 
   to-webdsl-eager(err): x_name -> webdsl |[
-    x_name : srt1 (default=null)
-    x_default : srt1
+    x_name    : srt1 (default=null)
+    x_default : srt1 (default=x_calc())
     
     function x_calc() : srt1{
       return e1;

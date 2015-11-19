@@ -78,8 +78,8 @@ rules // attributes: normal
 rules // attributes: default
 
 	to-webdsl-eventual(err): x_name -> webdsl |[
-		x_name : srt1 //no default, because the default instantiates in WebDSL and then is not updated anymore
-		x_default : srt1
+		x_name    : srt1 (default=null) //no default, because the default instantiates in WebDSL and then is not updated anymore
+		x_default : srt1 (default=x_calc())
 		
     function x_calc() : srt1{
     	return e1;
