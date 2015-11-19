@@ -37,7 +37,7 @@ rules // module
 				
 				section derivations
 				
-					native class derivations.x_dirty as Helper2 {
+					native class derivations.x_dirty as DirtyCollections {
 						native1*
 					}
 

@@ -35,7 +35,7 @@ rules // module
 				
 				section derivations
 				
-					native class derivations.x_dirty as Helper2 {
+					native class derivations.x_dirty as DirtyCollections {
 						native1*
 					}
 
@@ -239,7 +239,7 @@ rules // List(List(String)) -> Webdsl-stat*
 rules //flag dirty manually
   
   attribute-flagalldirty: x_name -> |[
-    Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+    DirtyCollections.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
   ]|
     with
       x_entity := <attributename-get-entityname>x_name;
@@ -247,7 +247,7 @@ rules //flag dirty manually
         
   attribute-flagdirty: x_name -> |[
     if(entity==e1 && attribute==e2){
-      Helper2.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
+      DirtyCollections.x_queue().addAll([a.id.toString() | a:x_entity in (from x_entity)]);
     }
   ]|
     with

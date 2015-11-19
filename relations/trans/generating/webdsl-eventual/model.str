@@ -101,7 +101,7 @@ rules // attributes: default
     
     static function x_dirty ( ) : Set<x_entity>
     {
-    	var queue := Helper2.x_queue();
+    	var queue := DirtyCollections.x_queue();
     	var values : Set<x_entity>;
     	while(!queue.isEmpty()){
 	  		var v : x_entity := loadEntity(e3, UUIDFromString(queue.poll() as String)) as x_entity;
@@ -113,7 +113,7 @@ rules // attributes: default
     }
     
     static function x_dirtyb () : Bool {
-    	return !Helper2.x_queue().isEmpty();
+    	return !DirtyCollections.x_queue().isEmpty();
     }
     
     static function x_updatec () {
@@ -183,7 +183,7 @@ rules // attributes: derivation
     
     static function x_dirty ( ) : Set<x_entity>
     {
-    	var queue := Helper2.x_queue();
+    	var queue := DirtyCollections.x_queue();
     	var values : Set<x_entity>;
     	while(!queue.isEmpty()){
 	  		var v : x_entity := loadEntity(e3, UUIDFromString(queue.poll() as String)) as x_entity;
@@ -195,7 +195,7 @@ rules // attributes: derivation
     }
     
     static function x_dirtyb () : Bool {
-    	return !Helper2.x_queue().isEmpty();
+    	return !DirtyCollections.x_queue().isEmpty();
     }
     
     static function x_updatec () {
@@ -313,7 +313,7 @@ rules // helper
 		if(e1 != null){
 			// log("Attribute " + e2 + " is dirty of " + e1);
 			// x_dirty.add(e1);
-			Helper2.x_queue().offer(e1.id.toString());
+			DirtyCollections.x_queue().offer(e1.id.toString());
 		}
 	]|
 		where
@@ -327,7 +327,7 @@ rules // helper
 	flagdirty-webdslstat-eventual(err): (attrName, expr) -> webdsl |[
 		// log("Attribute " + e2 + " is dirty of " + e1);
 		// x_dirty.addAll(e1);
-		Helper2.x_queue().addAll([v.id.toString()|v : x_entity in e1]);
+		DirtyCollections.x_queue().addAll([v.id.toString()|v : x_entity in e1]);
 	]|
 		where
 			<get-multiplicity;upper-many>expr
