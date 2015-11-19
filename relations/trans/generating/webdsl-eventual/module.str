@@ -37,15 +37,6 @@ rules // module
 					native class derivations.x_dirty as Helper2 {
 						native1*
 					}
-					
-					native class java.util.Queue as Queue{
-						offer(String) : Bool
-						add(String) : Bool
-						addAll(List<String>) : Bool
-						poll() : String
-						contains(String) : Bool
-						isEmpty() : Bool
-					}
 
           function flagAllDirty(){
             stat5*
@@ -54,11 +45,8 @@ rules // module
           function flagDirty(entity:String, attribute:String){
             stat6*
           }
-
-					// def3*
 					
-				  init
-				  {
+				  init{
 				    initDirtyCollections();
 				  }
 				  
@@ -70,7 +58,6 @@ rules // module
 						if(!getUpdatesEnabled()){
 				  		return;
 				  	}
-						// log("called updateDervations()");
 						var notEmpty : Bool;
 						stat4*
 					}
@@ -83,7 +70,6 @@ rules // module
 						stat1*
 						stat2*
 						stat3*
-						// updateDerivations();
 					}
 				
 				section CRUD

@@ -58,3 +58,14 @@ section pages
     static getUpdatesEnabled( ): Bool
     static setUpdatesEnabled( Bool ): Void
   }
+
+section queue
+
+  native class java.util.Queue as Queue{
+    offer(String) : Bool
+    add(String) : Bool
+    addAll(List<String>) : Bool
+    poll() : String
+    contains(String) : Bool
+    isEmpty() : Bool
+  }
