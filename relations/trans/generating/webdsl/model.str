@@ -95,7 +95,7 @@ rules // attributes: default
       e1       := <attributename-get-expr;to-webdsl(err)>x_name;
       x_getter := $[get_[x_name]];
       x_entity := <attributename-get-entityname>x_name;
-      x_default:= $[[x_name]Default]
+      x_default:= $[[x_name]_Default]
 
 rules // attributes: derivation
 
