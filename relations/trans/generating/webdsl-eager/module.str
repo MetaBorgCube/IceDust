@@ -210,7 +210,7 @@ rules // List(List(String)) -> Webdsl-stat*
 	webdsl-update-dirty : x_name -> |[x_entity.x_update();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
-			x_update := $[[x_name]_update_clean]
+			x_update := $[[x_name]_update_all]
 			
 	webdsl-has-dirty : x_name -> |[notEmpty := notEmpty || x_entity.x_dirtyb();]|
 		with

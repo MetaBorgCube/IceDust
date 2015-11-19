@@ -95,25 +95,22 @@ rules // attributes: default
       }
     }
     
-    static function x_dirty () : Set<x_entity> {
-      return x_sdirty;
-    }
-    
-    static function x_dirtyb () : Bool {
-      return x_entity.x_dirty().length!=0;
-    }
-    
-    static function x_clean () {
-      x_sdirty := Set<x_entity>();
-    }
-    
-    static function x_updatec () {
-      var values := x_entity.x_dirty();
+    static function x_updateAll () {
+      var values := x_entity.x_getAndEmptyDirty();
       if(values.length!=0){
         log("Updating "+e2+": "+values.length);
       }
-      x_entity.x_clean();
       x_entity.x_update(values);
+    }
+    
+    static function x_getAndEmptyDirty () : Set<x_entity> {
+      var values := x_dirtyCollection;
+      x_dirtyCollection := Set<x_entity>();
+      return values;
+    }
+    
+    static function x_hasDirty () : Bool {
+      return x_dirtyCollection.length!=0;
     }
     
     static function x_getter(entity:x_entity):srt1{
@@ -136,19 +133,18 @@ rules // attributes: default
     where
       attributename-is-default
     with
-      srt1     := <_get-type;type-to-webdsl(err)>x_name;
-      e1       := <attributename-get-expr;to-webdsl(err)>x_name;
-      x_getter := $[get_[x_name]];
-      x_entity := <attributename-get-entityname>x_name;
-      x_calc   := $[calculate_[x_name]];
-      x_update := $[update_[x_name]];
-      x_sdirty := $[[x_entity]_[x_name]_dirty];
-      x_dirty  := $[[x_name]_dirty];
-      x_dirtyb := $[[x_name]_has_dirty];
-      x_clean  := $[[x_name]_dirty_clean];
-      x_updatec:= $[[x_name]_update_clean];
-      e2       := String($[[x_entity].[x_name]]);
-      x_default:= $[[x_name]_Default]
+      x_entity           := <attributename-get-entityname>x_name;
+      x_getter           := $[get_[x_name]];
+      x_calc             := $[calculate_[x_name]];
+      x_update           := $[update_[x_name]];
+      x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
+      x_updateAll        := $[[x_name]_update_all];
+      x_hasDirty         := $[[x_name]_has_dirty];
+      x_default          := $[[x_name]_Default];
+      x_dirtyCollection  := $[[x_entity]_[x_name]_dirty];
+      srt1               := <_get-type;type-to-webdsl(err)>x_name;
+      e1                 := <attributename-get-expr;to-webdsl(err)>x_name;
+      e2                 := String($[[x_entity].[x_name]])
 
 rules // attributes: derivation
 
@@ -169,25 +165,22 @@ rules // attributes: derivation
       }
     }
     
-    static function x_dirty () : Set<x_entity> {
-      return x_sdirty;
-    }
-    
-    static function x_dirtyb () : Bool {
-      return x_entity.x_dirty().length!=0;
-    }
-    
-    static function x_clean () {
-      x_sdirty := Set<x_entity>();
-    }
-    
-    static function x_updatec () {
-      var values := x_entity.x_dirty();
+    static function x_updateAll () {
+      var values := x_entity.x_getAndEmptyDirty();
       if(values.length!=0){
         log("Updating "+e2+": "+values.length);
       }
-      x_entity.x_clean();
       x_entity.x_update(values);
+    }
+    
+    static function x_getAndEmptyDirty () : Set<x_entity> {
+      var values := x_dirtyCollection;
+      x_dirtyCollection := Set<x_entity>();
+      return values;
+    }
+    
+    static function x_hasDirty () : Bool {
+      return x_dirtyCollection.length!=0;
     }
     
     static function x_getter(entity:x_entity):srt1{
@@ -209,18 +202,17 @@ rules // attributes: derivation
     where
       attributename-is-derivation
     with
-      srt1     := <_get-type;type-to-webdsl(err)>x_name;
-      e1       := <attributename-get-expr;to-webdsl(err)>x_name;
-      x_getter := $[get_[x_name]];
-      x_entity := <attributename-get-entityname>x_name;
-      x_calc   := $[calculate_[x_name]];
-      x_update := $[update_[x_name]];
-      x_sdirty := $[[x_entity]_[x_name]_dirty];
-      x_dirty  := $[[x_name]_dirty];
-      x_dirtyb := $[[x_name]_has_dirty];
-      x_clean  := $[[x_name]_dirty_clean];
-      x_updatec:= $[[x_name]_update_clean];
-      e2       := String($[[x_entity].[x_name]])
+      x_entity           := <attributename-get-entityname>x_name;
+      x_getter           := $[get_[x_name]];
+      x_calc             := $[calculate_[x_name]];
+      x_update           := $[update_[x_name]];
+      x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
+      x_updateAll        := $[[x_name]_update_all];
+      x_hasDirty         := $[[x_name]_has_dirty];
+      x_dirtyCollection  := $[[x_entity]_[x_name]_dirty];
+      srt1               := <_get-type;type-to-webdsl(err)>x_name;
+      e1                 := <attributename-get-expr;to-webdsl(err)>x_name;
+      e2                 := String($[[x_entity].[x_name]])
 
 rules // attributes - trigger dirty
 			
