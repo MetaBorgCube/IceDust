@@ -52,18 +52,12 @@ rules // attributes: normal
 	to-webdsl-eager(err): x_name -> webdsl |[
 		x_name : srt1 (default=null)
 		
-    static function x_getter(entity:x_entity):srt1{
-    	return if (entity!=null) entity.x_name else null;
+    static function x_getter(en: x_entity) : srt1 {
+      return if(en == null) null as srt1 else en.x_name;
     }
     
-    static function x_getter(entities:[x_entity]):[srt1]{
-    	var r : [srt1];
-	  	for(entity in entities){
-	  		if(entity.x_name!=null){
-	  			r.add(entity.x_name);
-	  		}
-	  	}
-	  	return r;
+    static function x_getter(entities : [x_entity]) : [srt1] {
+      return [x_entity.x_getter(en) | en : x_entity in entities where x_entity.x_getter(en) != null];
     }
 	]|
 		where
@@ -85,37 +79,26 @@ rules // attributes: default
       return e1;
     }
     
-    static function x_getter(entity:x_entity):srt1{
-      return if(entity!=null) if(entity.x_name!=null) entity.x_name else entity.x_default else null;
+    static function x_getter(en : x_entity) : srt1 {
+      return if(en == null) null as srt1 else if(en.x_name == null) en.x_default else en.x_name;
     }
     
-    static function x_getter(entities:[x_entity]):[srt1]{
-      var r : [srt1];
-      for(entity in entities){
-        var v := x_entity.x_getter(entity);
-        if(v!=null){
-          r.add(v);
-        }
-      }
-      return r;
+    static function x_getter(entities : [x_entity]) : [srt1] {
+      return [x_entity.x_getter(en) | en : x_entity in entities where x_entity.x_getter(en) != null];
     }
     
     function x_update() {
       x_default := x_calc();
     }
     
-    static function x_update(entities : {x_entity}){
-      for(entity in entities){
-        entity.x_update();
-      }
-    }
-    
     static function x_updateAll () {
-      var values := x_entity.x_getAndEmptyDirty();
-      if(values.length!=0){
-        log("Updating "+e2+": "+values.length);
+      var entities := x_entity.x_getAndEmptyDirty();
+      if(entities.length != 0){
+        log("Updating " + e2 + ": " + entities.length);
       }
-      x_entity.x_update(values);
+      for(en in entities){
+        en.x_update();
+      }
     }
     
     static function x_getAndEmptyDirty () : Set<x_entity> {
@@ -155,36 +138,26 @@ rules // attributes: derivation
       return e1;
     }
     
-    static function x_getter(entity:x_entity):srt1{
-      return if(entity!=null) entity.x_name else null;
+    static function x_getter(en : x_entity) : srt1 {
+      return if(en == null) null as srt1 else en.x_name;
     }
     
-    static function x_getter(entities:[x_entity]):[srt1]{
-      var r : [srt1];
-      for(entity in entities){
-        if(entity.x_name!=null){
-          r.add(entity.x_name);
-        }
-      }
-      return r;
+    static function x_getter(entities : [x_entity]) : [srt1] {
+      return [x_entity.x_getter(en) | en : x_entity in entities where x_entity.x_getter(en) != null];
     }
     
     function x_update() {
       x_name := x_calc();
     }
     
-    static function x_update(entities : {x_entity}){
-      for(entity in entities){
-        entity.x_update();
-      }
-    }
-    
     static function x_updateAll () {
-      var values := x_entity.x_getAndEmptyDirty();
-      if(values.length!=0){
-        log("Updating "+e2+": "+values.length);
+      var entities := x_entity.x_getAndEmptyDirty();
+      if(entities.length != 0){
+        log("Updating " + e2 + ": " + entities.length);
       }
-      x_entity.x_update(values);
+      for(en in entities){
+        en.x_update();
+      }
     }
     
     static function x_getAndEmptyDirty () : Set<x_entity> {
