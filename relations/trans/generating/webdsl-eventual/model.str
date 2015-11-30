@@ -91,8 +91,8 @@ rules // attributes: default
     	x_default := x_calc();
     }
     
-    static function x_updateAll () {
-      var entities := x_entity.x_getAndEmptyDirty();
+    static function x_updateAllAsync () {
+      var entities := x_entity.x_getAndEmptyDirtyAsync();
       if(entities.length != 0){
         log("Updating " + e2 + ": " + entities.length);
       }
@@ -101,21 +101,40 @@ rules // attributes: default
       }
     }
     
-    static function x_getAndEmptyDirty ( ) : Set<x_entity>
-    {
-    	var queue := DirtyCollections.x_queue();
-    	var values : Set<x_entity>;
-    	while(!queue.isEmpty()){
-	  		var v : x_entity := loadEntity(e3, UUIDFromString(queue.poll() as String)) as x_entity;
-	  		if(v != null){
-	  			values.add(v);
-	  		}
-	  	}
+    static function x_getAndEmptyDirty () : Set<x_entity> {
+      var values := x_dirtyCollection;
+      x_dirtyCollection := Set<x_entity>();
       return values;
     }
     
-    static function x_hasDirty () : Bool {
-    	return !DirtyCollections.x_queue().isEmpty();
+    static function x_getAndEmptyDirtyAsync ( ) : Set<x_entity>
+    {
+      var queue := DirtyCollections.x_queue();
+      var values : Set<x_entity>;
+      while(!queue.isEmpty()){
+        var v : x_entity := loadEntity(e3, UUIDFromString(queue.poll() as String)) as x_entity;
+        if(v != null){
+          values.add(v);
+        }
+      }
+      return values;
+    }
+    
+    static function x_hasDirtyAsync () : Bool {
+      return !DirtyCollections.x_queue().isEmpty();
+    }
+    
+    static function x_flagDirty(en : x_entity) {
+      x_entity.x_flagDirty([en]);
+    }
+    
+    static function x_flagDirty(entities : [x_entity]) {
+      x_dirtyCollection.addAll(entities);
+    }
+    
+    static function x_flagDirtyAsync() {
+      var dirty := x_entity.x_getAndEmptyDirty();
+      DirtyCollections.x_queue().addAll([v.id.toString()|v : x_entity in dirty]);
     }
 	]|
 		where
@@ -123,19 +142,23 @@ rules // attributes: default
 		where
 			attributename-is-default
 		with
-      x_entity           := <attributename-get-entityname>x_name;
-      x_getter           := $[get_[x_name]];
-      x_calc             := $[calculate_[x_name]];
-      x_update           := $[update_[x_name]];
-      x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
-      x_updateAll        := $[[x_name]_update_all];
-      x_hasDirty         := $[[x_name]_has_dirty];
-      x_default          := $[[x_name]_Default];
-      x_queue            := $[get_[x_entity]_[x_name]_queue];
-      srt1               := <_get-type;type-to-webdsl(err)>x_name;
-      e1                 := <attributename-get-expr;to-webdsl(err)>x_name;
-      e2                 := String($[[x_entity].[x_name]]);
-      e3                 := String(x_entity)
+      x_entity                := <attributename-get-entityname>x_name;
+      x_getter                := $[get_[x_name]];
+      x_calc                  := $[calculate_[x_name]];
+      x_update                := $[update_[x_name]];
+      x_getAndEmptyDirty      := $[get_and_empty_[x_name]_dirty];
+      x_getAndEmptyDirtyAsync := $[get_and_empty_[x_name]_dirty_async];
+      x_updateAllAsync        := $[[x_name]_update_all_async];
+      x_hasDirtyAsync         := $[[x_name]_has_dirty_async];
+      x_flagDirty             := $[[x_name]_flag_dirty];
+      x_flagDirtyAsync        := $[[x_name]_flag_dirty_async];
+      x_default               := $[[x_name]_Default];
+      x_dirtyCollection       := $[[x_entity]_[x_name]_dirty];
+      x_queue                 := $[get_[x_entity]_[x_name]_queue];
+      srt1                    := <_get-type;type-to-webdsl(err)>x_name;
+      e1                      := <attributename-get-expr;to-webdsl(err)>x_name;
+      e2                      := String($[[x_entity].[x_name]]);
+      e3                      := String(x_entity)
 
 rules // attributes: derivation
 
@@ -158,8 +181,8 @@ rules // attributes: derivation
     	x_name := x_calc();
     }
     
-    static function x_updateAll () {
-      var entities := x_entity.x_getAndEmptyDirty();
+    static function x_updateAllAsync () {
+      var entities := x_entity.x_getAndEmptyDirtyAsync();
       if(entities.length != 0){
         log("Updating " + e2 + ": " + entities.length);
       }
@@ -168,7 +191,13 @@ rules // attributes: derivation
       }
     }
     
-    static function x_getAndEmptyDirty ( ) : Set<x_entity>
+    static function x_getAndEmptyDirty () : Set<x_entity> {
+      var values := x_dirtyCollection;
+      x_dirtyCollection := Set<x_entity>();
+      return values;
+    }
+    
+    static function x_getAndEmptyDirtyAsync ( ) : Set<x_entity>
     {
     	var queue := DirtyCollections.x_queue();
     	var values : Set<x_entity>;
@@ -181,8 +210,21 @@ rules // attributes: derivation
       return values;
     }
     
-    static function x_hasDirty () : Bool {
+    static function x_hasDirtyAsync () : Bool {
     	return !DirtyCollections.x_queue().isEmpty();
+    }
+    
+    static function x_flagDirty(en : x_entity) {
+      x_entity.x_flagDirty([en]);
+    }
+    
+    static function x_flagDirty(entities : [x_entity]) {
+      x_dirtyCollection.addAll(entities);
+    }
+    
+    static function x_flagDirtyAsync() {
+      var dirty := x_entity.x_getAndEmptyDirty();
+      DirtyCollections.x_queue().addAll([v.id.toString()|v : x_entity in dirty]);
     }
 	]|
 		where
@@ -190,18 +232,22 @@ rules // attributes: derivation
 		where
 			attributename-is-derivation
 		with
-      x_entity           := <attributename-get-entityname>x_name;
-      x_getter           := $[get_[x_name]];
-      x_calc             := $[calculate_[x_name]];
-      x_update           := $[update_[x_name]];
-      x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
-      x_updateAll        := $[[x_name]_update_all];
-      x_hasDirty         := $[[x_name]_has_dirty];
-      x_queue            := $[get_[x_entity]_[x_name]_queue];
-      srt1               := <_get-type;type-to-webdsl(err)>x_name;
-      e1                 := <attributename-get-expr;to-webdsl(err)>x_name;
-      e2                 := String($[[x_entity].[x_name]]);
-      e3                 := String(x_entity)
+      x_entity                := <attributename-get-entityname>x_name;
+      x_getter                := $[get_[x_name]];
+      x_calc                  := $[calculate_[x_name]];
+      x_update                := $[update_[x_name]];
+      x_getAndEmptyDirty      := $[get_and_empty_[x_name]_dirty];
+      x_getAndEmptyDirtyAsync := $[get_and_empty_[x_name]_dirty_async];
+      x_updateAllAsync        := $[[x_name]_update_all_async];
+      x_hasDirtyAsync         := $[[x_name]_has_dirty_async];
+      x_flagDirty             := $[[x_name]_flag_dirty];
+      x_flagDirtyAsync        := $[[x_name]_flag_dirty_async];
+      x_dirtyCollection       := $[[x_entity]_[x_name]_dirty];
+      x_queue                 := $[get_[x_entity]_[x_name]_queue];
+      srt1                    := <_get-type;type-to-webdsl(err)>x_name;
+      e1                      := <attributename-get-expr;to-webdsl(err)>x_name;
+      e2                      := String($[[x_entity].[x_name]]);
+      e3                     := String(x_entity)
 
 rules // attributes - trigger dirty
 			
@@ -272,32 +318,15 @@ rules // roles - trigger dirty
 			stat3* := <filter(path-origin-is-role)   ;map(                   ttuple(path-get-last, path-remove-end;path-to-expr(|newValueExpr));flagdirty-webdslstat-eventual(err))>flowsToPaths
 
 rules // helper
-	
-	flagdirty-webdslstat-eventual(err): (attrName, expr) -> webdsl |[
-		if(e1 != null){
-			// log("Attribute " + e2 + " is dirty of " + e1);
-			// x_dirty.add(e1);
-			DirtyCollections.x_queue().offer(e1.id.toString());
-		}
-	]|
-		where
-			<get-multiplicity;upper-one>expr
-		with
-			e1      := <to-webdsl(err)>expr;
-			e2      := String(attrName);
-			// x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty];
-			x_queue := $[get_[<attributename-get-entityname>attrName]_[attrName]_queue]
-	
-	flagdirty-webdslstat-eventual(err): (attrName, expr) -> webdsl |[
-		// log("Attribute " + e2 + " is dirty of " + e1);
-		// x_dirty.addAll(e1);
-		DirtyCollections.x_queue().addAll([v.id.toString()|v : x_entity in e1]);
-	]|
-		where
-			<get-multiplicity;upper-many>expr
-		with
-			e1      := <to-webdsl(err)>expr;
-			e2      := String(attrName);
-			x_entity:= <attributename-get-entityname>attrName;
-			// x_dirty := $[[x_entity]_[attrName]_dirty];
-			x_queue := $[get_[x_entity]_[attrName]_queue]
+			
+  flagdirty-webdslstat-eventual(err): (attrName, expr) -> webdsl |[
+    if(e1 != null){
+      // log("Attribute " + e2 + " is dirty of " + e1);
+      x_entity.x_flagDirty(e1);
+    }
+  ]|
+    with
+      e1          := <to-webdsl(err)>expr;
+      e2          := String(attrName);
+      x_entity    := <attributename-get-entityname>attrName;
+      x_flagDirty := $[[attrName]_flag_dirty]

@@ -110,6 +110,15 @@ rules // attributes: default
     static function x_hasDirty () : Bool {
       return x_dirtyCollection.length!=0;
     }
+    
+    static function x_flagDirty(en : x_entity) {
+      x_entity.x_flagDirty([en]);
+    }
+    
+    static function x_flagDirty(entities : [x_entity]) {
+      x_dirtyCollection.addAll(entities);
+    }
+    
   ]|
     where
       is-attributename
@@ -123,6 +132,7 @@ rules // attributes: default
       x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
       x_updateAll        := $[[x_name]_update_all];
       x_hasDirty         := $[[x_name]_has_dirty];
+      x_flagDirty        := $[[x_name]_flag_dirty];
       x_default          := $[[x_name]_Default];
       x_dirtyCollection  := $[[x_entity]_[x_name]_dirty];
       srt1               := <_get-type;type-to-webdsl(err)>x_name;
@@ -169,6 +179,14 @@ rules // attributes: derivation
     static function x_hasDirty () : Bool {
       return x_dirtyCollection.length!=0;
     }
+    
+    static function x_flagDirty(en : x_entity) {
+      x_entity.x_flagDirty([en]);
+    }
+    
+    static function x_flagDirty(entities : [x_entity]) {
+      x_dirtyCollection.addAll(entities);
+    }
   ]|
     where
       is-attributename
@@ -182,6 +200,7 @@ rules // attributes: derivation
       x_getAndEmptyDirty := $[get_and_empty_[x_name]_dirty];
       x_updateAll        := $[[x_name]_update_all];
       x_hasDirty         := $[[x_name]_has_dirty];
+      x_flagDirty        := $[[x_name]_flag_dirty];
       x_dirtyCollection  := $[[x_entity]_[x_name]_dirty];
       srt1               := <_get-type;type-to-webdsl(err)>x_name;
       e1                 := <attributename-get-expr;to-webdsl(err)>x_name;
@@ -260,23 +279,11 @@ rules // helper
 	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
 		if(e1 != null){
 			// log("Attribute " + e2 + " is dirty of " + e1);
-			x_dirty.add(e1);
+			x_entity.x_flagDirty(e1);
 		}
 	]|
-		where
-			<get-multiplicity;upper-one>expr
 		with
-			e1      := <to-webdsl(err)>expr;
-			e2      := String(attrName);
-			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
-	
-	flagdirty-webdslstat(err): (attrName, expr) -> webdsl |[
-		// log("Attribute " + e2 + " is dirty of " + e1);
-		x_dirty.addAll(e1);
-	]|
-		where
-			<get-multiplicity;upper-many>expr
-		with
-			e1      := <to-webdsl(err)>expr;
-			e2      := String(attrName);
-			x_dirty := $[[<attributename-get-entityname>attrName]_[attrName]_dirty]
+			e1          := <to-webdsl(err)>expr;
+			e2          := String(attrName);
+      x_entity    := <attributename-get-entityname>attrName;
+      x_flagDirty := $[[attrName]_flag_dirty]

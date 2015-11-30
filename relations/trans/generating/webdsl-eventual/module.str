@@ -35,6 +35,16 @@ rules // module
 				
 				section derivations
 				
+          def3*
+          
+          init{
+            initDirtyCollections();
+          }
+          
+          function initDirtyCollections(){
+
+          }
+				
 					native class derivations.x_dirty as DirtyCollections {
 						native1*
 					}
@@ -46,11 +56,16 @@ rules // module
           function flagDirty(entity:String, attribute:String){
             stat6*
           }
+          
+          function flagDirtyAsync() {
+            //propagate changes to worker thread: flagDirtyAsync
+          }
 				
 					function updateDerivations(){
 						if(!getUpdatesEnabled()){
 				  		return;
 				  	}
+				  	flagDirtyAsync();
 						var notEmpty : Bool;
 						stat4*
 					}
@@ -83,7 +98,7 @@ rules // module
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
-			// def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
+			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
 			stat4* := <modulename-get-attributenames-topo;webdsl-toposort>x_name;
 			x_dirty:= $[[x_name]_Dirty];
 			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
@@ -189,16 +204,21 @@ rules //crud
 	
 rules // derivations
 	
-	// attribute-dirty-collection: x_name -> def* |[
-	// 	request var x_dirty := Set<x_entity>()
-	// 	
-	//   extend function initDirtyCollections(){
-	//   	x_dirty := Set<x_entity>();
-	//   }
-	// ]|
-	// 	with
-	// 		x_entity := <attributename-get-entityname>x_name;
-	// 		x_dirty  := $[[x_entity]_[x_name]_dirty]
+	attribute-dirty-collection: x_name -> def* |[
+		request var x_dirty := Set<x_entity>()
+		
+	  extend function initDirtyCollections() {
+	  	x_dirty := Set<x_entity>();
+	  }
+	  
+	  extend function flagDirtyAsync() {
+	    x_entity.x_flagDirtyAsync();
+	  }
+	]|
+		with
+			x_entity         := <attributename-get-entityname>x_name;
+			x_dirty          := $[[x_entity]_[x_name]_dirty];
+      x_flagDirtyAsync := $[[x_name]_flag_dirty_async]
 
 	attribute-dirty-queue: x_name -> |[static x_get() : Queue]|
 		where
@@ -218,6 +238,7 @@ rules // List(List(String)) -> Webdsl-stat*
 		notEmpty := true;
 		while(notEmpty){
 			stat1*
+			flagDirtyAsync();
 			notEmpty := false;
 			stat2*
 		}
@@ -226,15 +247,15 @@ rules // List(List(String)) -> Webdsl-stat*
 			stat1* := <map(webdsl-update-dirty)>names;
 			stat2* := <map(webdsl-has-dirty)>names
 	
-	webdsl-update-dirty : x_name -> |[x_entity.x_update();]|
+	webdsl-update-dirty : x_name -> |[x_entity.x_updateAllAsync();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
-			x_update := $[[x_name]_update_all]
+      x_updateAllAsync   := $[[x_name]_update_all_async]
 			
-	webdsl-has-dirty : x_name -> |[notEmpty := notEmpty || x_entity.x_dirtyb();]|
+	webdsl-has-dirty : x_name -> |[notEmpty := notEmpty || x_entity.x_hasDirtyAsync();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
-			x_dirtyb := $[[x_name]_has_dirty]
+      x_hasDirtyAsync    := $[[x_name]_has_dirty_async]
 
 rules //flag dirty manually
   
