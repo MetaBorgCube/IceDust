@@ -22,36 +22,44 @@ type rules
 	
 	Not(x) : x-ty
 	where x : x-ty
-		and x-ty == Boolean() else error $[Type mismatch: expected Boolean got [x-ty] in Not] on x
+		and (x-ty == Boolean() or x-ty <sub: Boolean())
+		    else error $[Type mismatch: expected Boolean got [x-ty] in Not] on x
 	
 	LessThan(x, y)
 +	LessThanEqual(x, y)
 +	GreaterThan(x, y)
 +	GreaterThanEqual(x, y) : Boolean()
 	where	x	: x-ty
-		and (x-ty == Int() or x-ty == Float() or x-ty == String() or x-ty == Datetime()) else error $[Type mismatch: expected Int or String got [x-ty] in Comparison] on x
-		and	y	: y-ty
-		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
+    and y : y-ty
+		and (x-ty == Int() or x-ty == Float() or x-ty == String() or x-ty == Datetime())
+		    else error $[Type mismatch: expected Int, Float, String or Datetime got [x-ty] in Comparison] on x
+    and <least-upper-bound>(x-ty, y-ty) => lup-ty
+		    else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
 
 	Equal(x, y)
 +	Inequal(x, y) : Boolean()
 	where	x	: x-ty
 		and	y	: y-ty
-		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
+    and <least-upper-bound>(x-ty, y-ty) => lup-ty
+        else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
 
 	And(x, y)
 +	Or(x, y) : y-ty
 	where	x	: x-ty
 		and	y	: y-ty
-		and	x-ty == Boolean() else error $[Type mismatch: expected Boolean got [x-ty] in Logic Operation] on x
-		and	y-ty == Boolean() else error $[Type mismatch: expected Boolean got [y-ty] in Logic Operation] on y
+    and (x-ty == Boolean() or x-ty <sub: Boolean())
+        else error $[Type mismatch: expected Boolean got [x-ty] in Logic Operation] on x
+    and (y-ty == Boolean() or y-ty <sub: Boolean())
+        else error $[Type mismatch: eypected Boolean got [y-ty] in Logic Operation] on y
 	
-	TernaryConditional(x, y, z) : y-ty
+	TernaryConditional(x, y, z) : ty
 	where x : x-ty
 		and y : y-ty
 		and z : z-ty
-		and x-ty == Boolean() else error $[Type mismatch: expected Boolean got [x-ty] in Contional] on x
-		and y-ty == z-ty else error $[Type mismatch: expected [y-ty] got [z-ty] in Conditional] on z
+		and (x-ty == Boolean() or x-ty <sub: Boolean())
+		    else error $[Type mismatch: expected Boolean got [x-ty] in Contional] on x
+    and <least-upper-bound>(y-ty, z-ty) => ty
+        else error $[Type mismatch: expected [y-ty] got [z-ty] in Contional] on z
 
 
 	Not(x) has multiplicity x-mu

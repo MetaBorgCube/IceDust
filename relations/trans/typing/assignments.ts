@@ -24,7 +24,8 @@ type rules // derivations well-formedness
 
 	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e	: e-ty
-		and	e-ty == a-ty else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
+		and	(e-ty == a-ty or e-ty <sub: a-ty) 
+		    else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
 			
 	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
 	where	e has multiplicity e-mu

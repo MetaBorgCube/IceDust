@@ -20,29 +20,35 @@ imports
 
 type rules
 
-  Addition(x, y) : t
+  Addition(x, y) : ty
   where x : x-ty
     and y : y-ty
     and (x-ty == Int() or x-ty == Float() or x-ty == String() or x-ty == NoValue())
         else error  $[Type mismatch: expected Int, Float or String got [x-ty] in Addition] on x
-    and <least-upper-bound>(x-ty, y-ty) => t
+    and <least-upper-bound>(x-ty, y-ty) => ty
         else error $[Type mismatch: expected [x-ty] got [y-ty] in Addition] on y
 		
 	Subtraction(x, y) : ty
 	where	x	: x-ty
 		and	y	: y-ty
-		and	(x-ty == Int() or x-ty == Float() or x-ty == Datetime()) else error $[Type mismatch: expected Int, String or Datetime got [x-ty] in Math Operation] on x
-		and	x-ty == y-ty else error $[Type mismatch: expected Int got [y-ty] in Math Operation] on y
-		and ((x-ty == Int() or x-ty == Float()) and x-ty => ty or
-		     (x-ty == Datetime() and               Int() => ty))
+		and	(x-ty == Int() or x-ty == Float() or x-ty == Datetime() or x-ty == NoValue())
+		    else error $[Type mismatch: expected Int, Float or Datetime got [x-ty] in Subtraction] on x
+    and <least-upper-bound>(x-ty, y-ty) => lup-ty
+        else error $[Type mismatch: expected [x-ty] got [y-ty] in Subtraction] on y
+    and (
+          lup-ty == Datetime() and Int() => ty or
+          lup-ty => ty
+        )
 		
 	Multiplication(x, y)
 +	Division(x, y)
-+	Modulo(x, y) : y-ty
++	Modulo(x, y) : ty
 	where	x	: x-ty
 		and	y	: y-ty
-		and	(x-ty == Int() or x-ty == Float()) else error $[Type mismatch: expected Int got [x-ty] in Math Operation] on x
-		and	x-ty == y-ty else error $[Type mismatch: expected Int got [y-ty] in Math Operation] on y
+		and	(x-ty == Int() or x-ty == Float() or x-ty == NoValue())
+		    else error $[Type mismatch: expected Int or Float got [x-ty] in Math Operation] on x
+    and <least-upper-bound>(x-ty, y-ty) => ty
+        else error $[Type mismatch: expected [x-ty] got [y-ty] in Subtraction] on y
 		
 	Multiplication(x, y)
 +	Addition(x, y)

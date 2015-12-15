@@ -24,12 +24,14 @@ type rules
 + Sum(x)
 +	Avg(x) : x-ty
 	where	x	: x-ty
-		and (x-ty == Int() or x-ty == Float()) else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
+		and (x-ty == Int() or x-ty == Float() or x-ty == NoValue())
+		    else error $[Type mismatch: expected Int got [x-ty] in Aggregation] on x
 
   Conj(x)
 +	Disj(x) : x-ty
 	where	x	: x-ty
-		and x-ty == Boolean() else error $[Type mismatch: expected Boolean got [x-ty] in Aggregation] on x
+		and (x-ty == Boolean() or x-ty == NoValue()) 
+		    else error $[Type mismatch: expected Boolean got [x-ty] in Aggregation] on x
 
 	Concat(x) : x-ty
 	where x : x-ty
