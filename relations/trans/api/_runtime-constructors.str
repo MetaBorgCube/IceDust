@@ -14,3 +14,5 @@ signature constructors // copy from runtime library
 	Prop         : URI * Property -> Key
 
 	Type         : Type
+	
+  Rewrite      : ID * Result -> Instruction

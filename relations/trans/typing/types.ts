@@ -11,6 +11,8 @@ imports
 	trans/typing/math.generated
 	trans/typing/multiplicity-operators.generated
 	trans/typing/references.generated
-	trans/typing/_multiplicity-functions.generated
+  trans/typing/_multiplicity-functions.generated
+  trans/typing/_subtyping.generated
+  trans/typing/_subtyping-manual
 
 	// lib/types/-

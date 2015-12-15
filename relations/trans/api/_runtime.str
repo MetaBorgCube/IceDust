@@ -20,7 +20,9 @@ imports // generated runtime
 	lib/runtime/nabl/tasks
 	lib/runtime/nabl/query
 	lib/runtime/nabl/uri
+	lib/runtime/relations/tasks
 	lib/runtime/task/core
+	lib/runtime/task/create
 	lib/runtime/task/insert
 	lib/runtime/task/messages
 	lib/runtime/task/tasks
@@ -142,4 +144,10 @@ rules
 	_index-clear-source = index-clear-source
 
 	_ignore-extensions = ignore-extensions
+	
+	_relation-create-lookup(|ctx, rel) = relation-create-lookup(|ctx, rel)
+	_new-task(|partition, type, storage-type) = new-task(|partition, type, storage-type)
+	_task-combinator-type = task-combinator-type
+	_task-auto-storage = task-auto-storage
+	
 	

@@ -7,7 +7,8 @@ imports
 	src-gen/signatures/Types-sig
 	
 	// functions
-	typing/_multiplicity-functions
+  typing/_multiplicity-functions
+  typing/_subtyping
 	trans/naming/names
 	
 	// // use custom runtime libraries  
@@ -18,12 +19,14 @@ imports
  //  lib/relations/-
 
 type rules
-	
-	Addition(x, y) : y-ty
-	where	x	: x-ty
-		and	y	: y-ty
-		and (x-ty == Int() or x-ty == Float() or x-ty == String()) else error  $[Type mismatch: expected Int or String got [x-ty] in Addition] on x
-		and	x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Addition] on y
+
+  Addition(x, y) : t
+  where x : x-ty
+    and y : y-ty
+    and (x-ty == Int() or x-ty == Float() or x-ty == String() or x-ty == NoValue())
+        else error  $[Type mismatch: expected Int, Float or String got [x-ty] in Addition] on x
+    and <least-upper-bound>(x-ty, y-ty) => t
+        else error $[Type mismatch: expected [x-ty] got [y-ty] in Addition] on y
 		
 	Subtraction(x, y) : ty
 	where	x	: x-ty
