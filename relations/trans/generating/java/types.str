@@ -2,49 +2,58 @@ module trans/generating/java/types
 
 imports // constructors
 
-	src-gen/signatures/Types-sig
+  src-gen/signatures/Types-sig
+  src-gen/signatures/Expressions-sig
 
 imports // functions
 
-	trans/api/_runtime
-	trans/naming/names
-	trans/naming/_notNaBL
+  trans/api/_runtime
+  trans/naming/names
+  trans/naming/_notNaBL
 
 rules // primitives
-	
-	type-to-java(err): String()	-> "String"
-  type-to-java(err): Int()		-> "Integer"
-  type-to-java(err): Boolean()-> "Boolean"
-  type-to-java(err): Float()  -> "Float"
-  type-to-java(err): Datetime()->"Date"
+  
+  type-to-java(err): String()    -> "String"
+  type-to-java(err): Int()      -> "Integer"
+  type-to-java(err): Boolean()  -> "Boolean"
+  type-to-java(err): Float()    -> "Float"
+  type-to-java(err): Datetime() -> "Date"
+  type-to-java(err): NoValue()  -> "NullType"
 
 rules // Java-Refs
-	
-	java-id: String()	-> "String"
-  java-id: Int()		-> "Integer"
-  java-id: Boolean()-> "Boolean"
-  java-id: Float()  -> "Float"
-  java-id: Datetime()->"Date"
-  java-id: _ -> <id>
-  	where is-string
+  
+  java-id: String()    -> "String"
+  java-id: Int()      -> "Integer"
+  java-id: Boolean()  -> "Boolean"
+  java-id: Float()    -> "Float"
+  java-id: Datetime() -> "Date"
+  java-id: NoValue()  -> "NullType"
+  java-id: _          -> <id>  where is-string
 
 rules // Java-Types
-	
-	java-type: name -> <java-type>(ty, mu)
-		where
-			not(is-tuple)
-		with
-			ty := <_get-type>name;
-			mu := <get-multiplicity>name
-	
-	java-type: (ty, mu) -> type |[x_ty]|
-		where
-			<upper-one>mu
-		with
-			x_ty := <java-id>ty
+  
+  java-type: name -> <java-type>(ty, mu)
+    where
+      not(is-tuple)
+    with
+      ty := <_get-type>name;
+      mu := <get-multiplicity>name
+  
+  java-type: (ty, mu) -> type |[x_ty]|
+    where
+      <upper-one>mu
+    with
+      x_ty := <java-id>ty
 
-	java-type: (ty, mu) -> type |[Collection<x_ty>]|
-		where
-			<upper-many>mu
-		with
-			x_ty := <java-id>ty
+  java-type: (ty, mu) -> type |[Collection<x_ty>]|
+    where
+      <upper-many>mu
+    with
+      x_ty := <java-id>ty
+
+rules // Multiplicity Upper Bounds
+  
+  java-id: ZeroOrOne()  -> "One"
+  java-id: One()        -> "One"
+  java-id: ZeroOrMore() -> "Many"
+  java-id: OneOrMore()  -> "Many" 

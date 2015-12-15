@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import javax.lang.model.type.NullType;
 
 public class Expressions {
 
@@ -23,23 +24,23 @@ public class Expressions {
 
 	// multiplicity expressions
 
-	public static <E> E choice(E e1, E e2) {
+	public static <E> E choice_One_One(E e1, E e2) {
 		return e1 != null ? e1 : e2;
 	}
 
-	public static <E> Collection<E> choice(E e1, Collection<E> e2) {
+	public static <E> Collection<E> choice_One_Many(E e1, Collection<E> e2) {
 		return e1 != null ? toCollection(e1) : e2;
 	}
 
-	public static <E> Collection<E> choice(Collection<E> e1, E e2) {
+	public static <E> Collection<E> choice_Many_One(Collection<E> e1, E e2) {
 		return e1.size() > 0 ? e1 : e2 != null ? toCollection(e2) : e1;
 	}
 
-	public static <E> Collection<E> choice(Collection<E> e1, Collection<E> e2) {
+	public static <E> Collection<E> choice_Many_Many(Collection<E> e1, Collection<E> e2) {
 		return e1.size() > 0 ? e1 : e2;
 	}
 
-	public static <E> Collection<E> merge(E e1, E e2) {
+	public static <E> Collection<E> merge_One_One(E e1, E e2) {
 		Collection<E> c = emptyCollection();
 		if (e1 != null)
 			c.add(e1);
@@ -48,7 +49,7 @@ public class Expressions {
 		return c;
 	}
 
-	public static <E> Collection<E> merge(E e1, Collection<E> e2) {
+	public static <E> Collection<E> merge_One_Many(E e1, Collection<E> e2) {
 		Collection<E> c = emptyCollection();
 		if (e1 != null)
 			c.add(e1);
@@ -56,7 +57,7 @@ public class Expressions {
 		return c;
 	}
 
-	public static <E> Collection<E> merge(Collection<E> e1, E e2) {
+	public static <E> Collection<E> merge_Many_One(Collection<E> e1, E e2) {
 		Collection<E> c = emptyCollection();
 		c.addAll(e1);
 		if (e2 != null)
@@ -64,7 +65,7 @@ public class Expressions {
 		return c;
 	}
 
-	public static <E> Collection<E> merge(Collection<E> e1, Collection<E> e2) {
+	public static <E> Collection<E> merge_Many_Many(Collection<E> e1, Collection<E> e2) {
 		Collection<E> c = emptyCollection();
 		c.addAll(e1);
 		c.addAll(e2);
@@ -73,57 +74,177 @@ public class Expressions {
 
 	// math expressions
 
-	public static String plus(String i, String j) {
+	public static NullType plus_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static String plus_String(NullType i, String j) {
+		return null;
+	}
+	
+	public static String plus_String(String i, NullType j) {
+		return null;
+	}
+	
+	public static Integer plus_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer plus_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float plus_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float plus_Float(Float i, NullType j) {
+		return null;
+	}
+	
+	public static String plus_String(String i, String j) {
 		return i != null && j != null ? i + j : null;
 	}
 
-	public static Integer plus(Integer i, Integer j) {
+	public static Integer plus_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i + j : null;
 	}
 
-	public static Float plus(Float i, Float j) {
+	public static Float plus_Float(Float i, Float j) {
 		return i != null && j != null ? i + j : null;
 	}
+	
+	public static NullType minus_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Integer minus_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer minus_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float minus_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float minus_Float(Float i, NullType j) {
+		return null;
+	}
 
-	public static Integer minus(Integer i, Integer j) {
+	public static Integer minus_Date(NullType i, Date j) {
+		return null;
+	}
+
+	public static Integer minus_Date(Date i, NullType j) {
+		return null;
+	}
+
+	public static Integer minus_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i - j : null;
 	}
 
-	public static Float minus(Float i, Float j) {
+	public static Float minus_Float(Float i, Float j) {
 		return i != null && j != null ? i - j : null;
 	}
 
-	public static Integer minus(Date i, Date j) {
+	public static Integer minus_Date(Date i, Date j) {
 		return i != null && j != null ? (int) ((i.getTime() - j.getTime()) / 1000)
 				: null;
 	}
+	
+	public static NullType mul_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Integer mul_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer mul_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float mul_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float mul_Float(Float i, NullType j) {
+		return null;
+	}
 
-	public static Integer mul(Integer i, Integer j) {
+	public static Integer mul_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i * j : null;
 	}
 
-	public static Float mul(Float i, Float j) {
+	public static Float mul_Float(Float i, Float j) {
 		return i != null && j != null ? i * j : null;
 	}
+	
+	public static NullType mod_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Integer mod_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer mod_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float mod_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float mod_Float(Float i, NullType j) {
+		return null;
+	}
 
-	public static Integer mod(Integer i, Integer j) {
+	public static Integer mod_Integer(Integer i, Integer j) {
 		return i != null && j != null && j != 0 ? i % j : null;
 	}
 
-	public static Float mod(Float i, Float j) {
+	public static Float mod_Float(Float i, Float j) {
 		return i != null && j != null && j != 0 ? i % j : null;
 	}
+	
+	public static NullType div_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Integer div_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer div_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float div_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float div_Float(Float i, NullType j) {
+		return null;
+	}
 
-	public static Integer div(Integer i, Integer j) {
+	public static Integer div_Integer(Integer i, Integer j) {
 		return i != null && j != null && j != 0 ? i / j : null;
 	}
 
-	public static Float div(Float i, Float j) {
+	public static Float div_Float(Float i, Float j) {
 		return i != null && j != null && j != 0 ? i / j : null;
 	}
 
 	// aggregation expressions
 
+	public static NullType avg_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
 	public static Integer avg_Integer(Collection<Integer> c) {
 		if (c.size() == 0)
 			return null;
@@ -144,6 +265,10 @@ public class Expressions {
 		return sum / c.size();
 	}
 
+	public static NullType sum_NullType(NullType i, NullType j) {
+		return null;
+	}
+
 	public static Integer sum_Integer(Collection<Integer> c) {
 		int sum = 0;
 		for (int i : c) {
@@ -160,6 +285,10 @@ public class Expressions {
 		return sum;
 	}
 
+	public static NullType max_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
 	public static Integer max_Integer(Collection<Integer> c) {
 		if (c.size() == 0)
 			return null;
@@ -178,6 +307,10 @@ public class Expressions {
 			max = Math.max(max, i);
 		}
 		return max;
+	}
+
+	public static NullType min_NullType(NullType i, NullType j) {
+		return null;
 	}
 
 	public static Integer min_Integer(Collection<Integer> c) {
@@ -236,58 +369,74 @@ public class Expressions {
 
 	// logic expressions
 
-	public static Boolean not(Boolean e) {
+	public static Boolean not_Boolean(Boolean e) {
 		return e == null ? null : !e;
 	}
 
-	public static Boolean lt(Integer i, Integer j) {
+	public static NullType lt_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Boolean lt_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i < j : null;
 	}
 
-	public static Boolean lt(Float i, Float j) {
+	public static Boolean lt_Float(Float i, Float j) {
 		return i != null && j != null ? i < j : null;
 	}
 
-	public static Boolean lt(Date i, Date j) {
+	public static Boolean lt_Date(Date i, Date j) {
 		return i != null && j != null ? i.compareTo(j) < 0 : null;
 	}
 
-	public static Boolean lte(Integer i, Integer j) {
+	public static NullType lte_NullType(NullType i, NullType j) {
+		return null;
+	}
+
+	public static Boolean lte_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i <= j : null;
 	}
 
-	public static Boolean lte(Float i, Float j) {
+	public static Boolean lte_Float(Float i, Float j) {
 		return i != null && j != null ? i <= j : null;
 	}
 
-	public static Boolean lte(Date i, Date j) {
+	public static Boolean lte_Date(Date i, Date j) {
 		return i != null && j != null ? i.compareTo(j) <= 0 : null;
 	}
 
-	public static Boolean gt(Integer i, Integer j) {
+	public static NullType gt_NullType(NullType i, NullType j) {
+		return null;
+	}
+
+	public static Boolean gt_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i > j : null;
 	}
 
-	public static Boolean gt(Float i, Float j) {
+	public static Boolean gt_Float(Float i, Float j) {
 		return i != null && j != null ? i > j : null;
 	}
 
-	public static Boolean gt(Date i, Date j) {
+	public static Boolean gt_Date(Date i, Date j) {
 		return i != null && j != null ? i.compareTo(j) > 0 : null;
 	}
 
-	public static Boolean gte(Integer i, Integer j) {
+	public static NullType gte_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Boolean gte_Integer(Integer i, Integer j) {
 		return i != null && j != null ? i >= j : null;
 	}
 
-	public static Boolean gte(Float i, Float j) {
+	public static Boolean gte_Float(Float i, Float j) {
 		return i != null && j != null ? i >= j : null;
 	}
 
-	public static Boolean gte(Date i, Date j) {
+	public static Boolean gte_Date(Date i, Date j) {
 		return i != null && j != null ? i.compareTo(j) >= 0 : null;
 	}
-
+	
 	public static Boolean and(Boolean i, Boolean j) {
 		return i != null && j != null ? i && j : null;
 	}
@@ -298,56 +447,55 @@ public class Expressions {
 
 	// logic expressions : equality
 
-	public static <E> Boolean eq(E i, E j) {
+	public static <E> Boolean eq_One_One(E i, E j) {
 		return i == null || j == null ? null : i.equals(j);
 	}
 
-	public static <E> Boolean eq(E i, Collection<E> j) {
+	public static <E> Boolean eq_One_Many(E i, Collection<E> j) {
 		return i == null || j.size() == 0 ? null : toCollection(i).equals(j);
 	}
 
-	public static <E> Boolean eq(Collection<E> i, E j) {
+	public static <E> Boolean eq_Many_One(Collection<E> i, E j) {
 		return i.size() == 0 || j == null ? null : toCollection(j).equals(i);
 	}
 
-	public static <E> Boolean eq(Collection<E> i, Collection<E> j) {
+	public static <E> Boolean eq_Many_Many(Collection<E> i, Collection<E> j) {
 		return i.size() == 0 || j.size() == 0 ? null : i.equals(j);
 	}
 
-	public static <E> Boolean neq(E i, E j) {
+	public static <E> Boolean neq_One_One(E i, E j) {
 		return i == null || j == null ? null : !i.equals(j);
 	}
 
-	public static <E> Boolean neq(E i, Collection<E> j) {
+	public static <E> Boolean neq_One_Many(E i, Collection<E> j) {
 		return i == null || j.size() == 0 ? null : !toCollection(i).equals(j);
 	}
 
-	public static <E> Boolean neq(Collection<E> i, E j) {
+	public static <E> Boolean neq_Many_One(Collection<E> i, E j) {
 		return i.size() == 0 || j == null ? null : !toCollection(j).equals(i);
 	}
 
-	public static <E> Boolean neq(Collection<E> i, Collection<E> j) {
+	public static <E> Boolean neq_Many_Many(Collection<E> i, Collection<E> j) {
 		return i.size() == 0 || j.size() == 0 ? null : !i.equals(j);
 	}
 
 	// logic expressions : conditional
 
-	public static <E> E conditional(Boolean b, E i, E j) {
+	public static <E> E conditional_One_One_One(Boolean b, E i, E j) {
 		return b == null ? null : b ? i : j;
 	}
 
-	public static <E> Collection<E> conditional(Boolean b, E i, Collection<E> j) {
+	public static <E> Collection<E> conditional_One_One_Many(Boolean b, E i, Collection<E> j) {
 		Collection<E> c = emptyCollection();
 		return b == null ? c : b ? toCollection(i) : j;
 	}
 
-	public static <E> Collection<E> conditional(Boolean b, Collection<E> i, E j) {
+	public static <E> Collection<E> conditional_One_Many_One(Boolean b, Collection<E> i, E j) {
 		Collection<E> c = emptyCollection();
 		return b == null ? c : b ? i : toCollection(j);
 	}
 
-	public static <E> Collection<E> conditional(Boolean b, Collection<E> i,
-			Collection<E> j) {
+	public static <E> Collection<E> conditional_One_Many_Many(Boolean b, Collection<E> i, Collection<E> j) {
 		Collection<E> c = emptyCollection();
 		return b == null ? c : b ? i : j;
 	}

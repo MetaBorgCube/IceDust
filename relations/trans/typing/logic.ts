@@ -20,7 +20,7 @@ imports
 
 type rules
 	
-	Not(x) : x-ty
+	Not(x) : Boolean()
 	where x : x-ty
 		and (x-ty == Boolean() or x-ty <sub: Boolean())
 		    else error $[Type mismatch: expected Boolean got [x-ty] in Not] on x
@@ -44,7 +44,7 @@ type rules
         else error $[Type mismatch: expected [x-ty] got [y-ty] in Comparison] on y
 
 	And(x, y)
-+	Or(x, y) : y-ty
++	Or(x, y) : Boolean()
 	where	x	: x-ty
 		and	y	: y-ty
     and (x-ty == Boolean() or x-ty <sub: Boolean())
