@@ -21,8 +21,10 @@ section java implementations
     static mul_Float(Float, Float) : Float
     static mod_Integer(Int, Int) : Int
     static mod_Float(Float, Float) : Float
-    static div_Integer(Int, Int) : Int
+    static div_Integer(Int, Int) : Float
     static div_Float(Float, Float) : Float
+    static floordiv_Integer(Int, Int) : Int
+    static floordiv_Float(Float, Float) : Float
     static avg_Integer(List<Int>) : Int
     static avg_Float(List<Float>) : Float
     static sum_Integer(List<Int>) : Int

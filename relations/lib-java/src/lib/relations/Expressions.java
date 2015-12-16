@@ -231,12 +231,40 @@ public class Expressions {
 		return null;
 	}
 
-	public static Integer div_Integer(Integer i, Integer j) {
-		return i != null && j != null && j != 0 ? i / j : null;
+	public static Float div_Integer(Integer i, Integer j) {
+		return i != null && j != null && j != 0 ? (float)i / (float)j : null;
 	}
 
 	public static Float div_Float(Float i, Float j) {
 		return i != null && j != null && j != 0 ? i / j : null;
+	}
+	
+	public static NullType floordiv_NullType(NullType i, NullType j) {
+		return null;
+	}
+	
+	public static Integer floordiv_Integer(NullType i, Integer j) {
+		return null;
+	}
+	
+	public static Integer floordiv_Integer(Integer i, NullType j) {
+		return null;
+	}	
+	
+	public static Float floordiv_Float(NullType i, Float j) {
+		return null;
+	}
+	
+	public static Float floordiv_Float(Float i, NullType j) {
+		return null;
+	}
+	
+	public static Integer floordiv_Integer(Integer i, Integer j) {
+		return i != null && j != null && j != 0 ? i / j : null;
+	}
+
+	public static Float floordiv_Float(Float i, Float j) {
+		return i != null && j != null && j != 0 ? (float)Math.floor(i / j) : null;
 	}
 
 	// aggregation expressions

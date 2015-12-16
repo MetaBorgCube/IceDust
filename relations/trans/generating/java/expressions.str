@@ -17,6 +17,7 @@ rules // math
   lib-call-postfix-type:     Addition(_, _)         ->"plus"
   lib-call-postfix-type:     Subtraction(_, _)      ->"minus"
   lib-call-postfix-type:     Division(_, _)         ->"div"
+  lib-call-postfix-type:     FloorDivision(_, _)    ->"floordiv"
   lib-call-postfix-type:     Modulo(_, _)           ->"mod"
   lib-call-postfix-type:     Multiplication(_, _)   ->"mul"
 

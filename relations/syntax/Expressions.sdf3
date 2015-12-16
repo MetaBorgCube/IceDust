@@ -18,6 +18,7 @@ context-free syntax // operators
 
   Exp.Multiplication     = <<Exp> * <Exp>>         {left}
   Exp.Division           = <<Exp> / <Exp>>         {left}
+  Exp.FloorDivision      = <<Exp> /. <Exp>>        {left}
   Exp.Modulo             = <<Exp> % <Exp>>         {left}
   Exp.Addition           = <<Exp> + <Exp>>         {left}
   Exp.Subtraction        = <<Exp> - <Exp>>         {left}
@@ -117,7 +118,8 @@ context-free priorities
 	} >
 	{ left:
 		Exp.Multiplication
-		Exp.Division
+    Exp.Division
+    Exp.FloorDivision
 		Exp.Modulo
 	} >
 	{ left:

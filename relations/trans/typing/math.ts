@@ -39,14 +39,22 @@ type rules
           lup-ty == Datetime() and Int() => ty or
           lup-ty => ty
         )
-		
-	Multiplication(x, y)
-+	Division(x, y)
-+	Modulo(x, y) : ty
-	where	x	: x-ty
-		and	y	: y-ty
-		and	(x-ty == Int() or x-ty == Float() or x-ty == NoValue())
-		    else error $[Type mismatch: expected Int or Float got [x-ty] in Math Operation] on x
+    
+  Division(x, y) : Float() // note: division Int -> Int -> Float has loss of precision
+  where x : x-ty
+    and y : y-ty
+    and (x-ty == Int() or x-ty == Float() or x-ty == NoValue())
+        else error $[Type mismatch: expected Int or Float got [x-ty] in Math Operation] on x
+    and <least-upper-bound>(x-ty, y-ty) => ty
+        else error $[Type mismatch: expected [x-ty] got [y-ty] in Subtraction] on y   
+        
+  Multiplication(x, y)
++ FloorDivision(x, y)
++ Modulo(x, y) : ty
+  where x : x-ty
+    and y : y-ty
+    and (x-ty == Int() or x-ty == Float() or x-ty == NoValue())
+        else error $[Type mismatch: expected Int or Float got [x-ty] in Math Operation] on x
     and <least-upper-bound>(x-ty, y-ty) => ty
         else error $[Type mismatch: expected [x-ty] got [y-ty] in Subtraction] on y
 		
@@ -60,6 +68,7 @@ type rules
 		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
 
 	Division(x, y)
++ FloorDivision(x, y)
 +	Modulo(x, y) has multiplicity mu
 	where	x	has multiplicity x-mu
 		and	y	has multiplicity y-mu
@@ -78,6 +87,7 @@ type rules
 +	Addition(x, y)
 +	Subtraction(x, y)
 +	Division(x, y)
++ FloorDivision(x, y)
 +	Modulo(x, y) has ordering or
 	where	x	has ordering x-or
 		and	y	has ordering  y-or
