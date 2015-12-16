@@ -98,8 +98,8 @@ rules // module
 			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
 			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
 			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
-			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
-			stat4* := <modulename-get-attributenames-topo;webdsl-toposort>x_name;
+			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection-eventual)>x_name;
+			stat4* := <modulename-get-attributenames-topo;webdsl-toposort-eventual>x_name;
 			x_dirty:= $[[x_name]_Dirty];
 			native1*:= <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-queue)>x_name;
       stat5*  := <modulename-get-attributenames-topo;flatten-list;filter(where(not(attributename-is-normal)));map(attribute-flagalldirty)>x_name;
@@ -204,7 +204,7 @@ rules //crud
 	
 rules // derivations
 	
-	attribute-dirty-collection: x_name -> def* |[
+	attribute-dirty-collection-eventual: x_name -> def* |[
 		request var x_dirty := Set<x_entity>()
 		
 	  extend function initDirtyCollections() {
@@ -229,12 +229,12 @@ rules // derivations
 
 rules // List(List(String)) -> Webdsl-stat*
 
-	webdsl-toposort : namess -> result
+	webdsl-toposort-eventual : namess -> result
 		with
 			namess' := <map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>namess;
-			result  := <map(webdsl-update-group)>namess'
+			result  := <map(webdsl-update-group-eventual)>namess'
 	
-	webdsl-update-group : names -> webdsl |[
+	webdsl-update-group-eventual : names -> webdsl |[
 		notEmpty := true;
 		while(notEmpty){
 			stat1*
@@ -244,15 +244,15 @@ rules // List(List(String)) -> Webdsl-stat*
 		}
 	]|
 		with
-			stat1* := <map(webdsl-update-dirty)>names;
-			stat2* := <map(webdsl-has-dirty)>names
+			stat1* := <map(webdsl-update-dirty-eventual)>names;
+			stat2* := <map(webdsl-has-dirty-eventual)>names
 	
-	webdsl-update-dirty : x_name -> |[x_entity.x_updateAllAsync();]|
+	webdsl-update-dirty-eventual : x_name -> |[x_entity.x_updateAllAsync();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
       x_updateAllAsync   := $[[x_name]_update_all_async]
 			
-	webdsl-has-dirty : x_name -> |[notEmpty := notEmpty || x_entity.x_hasDirtyAsync();]|
+	webdsl-has-dirty-eventual : x_name -> |[notEmpty := notEmpty || x_entity.x_hasDirtyAsync();]|
 		with
 			x_entity := <attributename-get-entityname>x_name;
       x_hasDirtyAsync    := $[[x_name]_has_dirty_async]
