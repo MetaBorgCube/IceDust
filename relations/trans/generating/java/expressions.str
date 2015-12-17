@@ -8,50 +8,13 @@ imports // constructors
 imports // functions
 
   trans/api/_runtime
+  trans/generating/_ir/expressions
   trans/generating/java/expressions-references
   trans/generating/java/types
   trans/lib/lists-tuples
   trans/lib/string
   trans/lib/traverse
   trans/naming/names
-
-rules // math
-
-  lib-call-postfix-type:     Addition(_, _)         ->"plus"
-  lib-call-postfix-type:     Subtraction(_, _)      ->"minus"
-  lib-call-postfix-type:     Division(_, _)         ->"div"
-  lib-call-postfix-type:     FloorDivision(_, _)    ->"floordiv"
-  lib-call-postfix-type:     Modulo(_, _)           ->"mod"
-  lib-call-postfix-type:     Multiplication(_, _)   ->"mul"
-
-rules // logic
-  
-  lib-call-postfix-type:     Not(_)                 ->"not"
-  lib-call-postfix-type:     LessThan(_, _)         ->"lt"
-  lib-call-postfix-type:     LessThanEqual(_, _)    ->"lte"
-  lib-call-postfix-type:     GreaterThan(_, _)      ->"gt"
-  lib-call-postfix-type:     GreaterThanEqual(_,_)  ->"gte"
-  lib-call-postfix-mults:    Equal(_, _)            ->"eq"
-  lib-call-postfix-mults:    Inequal(_, _)          ->"neq"
-  lib-call:                  And(_, _)              ->"and"
-  lib-call:                  Or(_, _)               ->"or"
-  lib-call-postfix-mults:    TernaryConditional(_,_,_) ->"conditional"
-
-rules // aggregations
-  
-  lib-call-postfix-type:     Max(_)                 ->"max"
-  lib-call-postfix-type:     Min(_)                 ->"min"
-  lib-call-postfix-type:     Avg(_)                 ->"avg"
-  lib-call-postfix-type:     Sum(_)                 ->"sum"
-  lib-call:                  Conj(_)                ->"conj"
-  lib-call:                  Disj(_)                ->"disj"
-  lib-call:                  Concat(_)              ->"concat"
-  lib-call:                  Count(_)               ->"count"
-
-rules // multiplicities
-  
-  lib-call-postfix-mults:    Merge(_, _)            ->"merge"
-  lib-call-postfix-mults:    ChoiceLeft(_, _)       ->"choice"
 
 rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
   
@@ -64,7 +27,7 @@ rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
       expr |[x_var]|
     )
   where
-    lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call
+    lib-call
   with
     arg*                    := <get-arguments>e;
     (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
@@ -80,37 +43,6 @@ rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
       (stms, exp) := <exp-to-java-stm(err|i)>e;
       i' := <add>(i, <length>stms)
 
-rules // rel-expr -> String
-  
-  lib-method-name: e -> x_methodpostfix
-    with
-      x_method        := <lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call>e;
-	    arg-type*       := <method-type-postfix>e;
-	    arg-mult*       := <method-mult-postfix>e;
-	    x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
-
-rules // rel-expr -> List(String)
-
-  method-type-postfix: e -> []
-    where <not(lib-call-postfix-type)>e
-
-  method-type-postfix: e -> [arg-type]
-    with
-      arg* := <get-arguments>e;
-      if <not(eq)>(<lFst;_get-type>arg*, NoValue()) <+ not(lSnd) then //if first is not NoValue or there is no second, TODO: move to type system
-        arg-type := <lFst;_get-type;java-id>arg*
-      else
-        arg-type := <lSnd;_get-type;java-id>arg*
-      end
-  
-  method-mult-postfix: e -> []
-    where <not(lib-call-postfix-mults)>e
-    
-  method-mult-postfix: e -> arg-mult*
-    with
-      arg* := <get-arguments>e;
-      arg-mult* := <map(get-multiplicity;java-id)>arg*
-  
 rules // literals
   
   exp-to-java-stm(err|i): String(value)         -> ([], Lit(String([Chars(value)])))

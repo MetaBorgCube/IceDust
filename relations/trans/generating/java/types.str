@@ -13,7 +13,7 @@ imports // functions
 
 rules // primitives
   
-  type-to-java(err): String()    -> "String"
+  type-to-java(err): String()   -> "String"
   type-to-java(err): Int()      -> "Integer"
   type-to-java(err): Boolean()  -> "Boolean"
   type-to-java(err): Float()    -> "Float"
@@ -22,7 +22,7 @@ rules // primitives
 
 rules // Java-Refs
   
-  java-id: String()    -> "String"
+  java-id: String()   -> "String"
   java-id: Int()      -> "Integer"
   java-id: Boolean()  -> "Boolean"
   java-id: Float()    -> "Float"
@@ -50,10 +50,3 @@ rules // Java-Types
       <upper-many>mu
     with
       x_ty := <java-id>ty
-
-rules // Multiplicity Upper Bounds
-  
-  java-id: ZeroOrOne()  -> "One"
-  java-id: One()        -> "One"
-  java-id: ZeroOrMore() -> "Many"
-  java-id: OneOrMore()  -> "Many" 
