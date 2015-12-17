@@ -64,16 +64,14 @@ rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
       expr |[x_var]|
     )
   where
-    x_method                := <lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call>e
+    lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call
   with
     arg*                    := <get-arguments>e;
     (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
     (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
     refty                   := <java-type>e;
     x_var                   := $[var[<inc>l]];
-    arg-type*               := <method-type-postfix>e;
-    arg-mult*               := <method-mult-postfix>e;
-    x_methodpostfix         := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
+    x_methodpostfix         := <lib-method-name>e
 
 rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
 
@@ -81,6 +79,15 @@ rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
     with
       (stms, exp) := <exp-to-java-stm(err|i)>e;
       i' := <add>(i, <length>stms)
+
+rules // rel-expr -> String
+  
+  lib-method-name: e -> x_methodpostfix
+    with
+      x_method        := <lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call>e;
+	    arg-type*       := <method-type-postfix>e;
+	    arg-mult*       := <method-mult-postfix>e;
+	    x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
 
 rules // rel-expr -> List(String)
 
