@@ -71,21 +71,9 @@ rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
     (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
     refty                   := <java-type>e;
     x_var                   := $[var[<inc>l]];
-    if <lib-call-postfix-type>e then
-      if <not(eq)>(<lFst;_get-type>arg*, NoValue()) <+ not(lSnd) then //if first is not NoValue or there is no second, TODO: move to type system
-        arg-type* := [<lFst;_get-type;java-id>arg*]
-      else
-        arg-type* := [<lSnd;_get-type;java-id>arg*]
-      end
-    else
-      arg-type* := []
-    end;
-    if <lib-call-postfix-mults>e then
-      arg-mult* := <map(get-multiplicity;java-id)>arg*
-    else
-      arg-mult* := []
-    end;
-    x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
+    arg-type*               := <method-type-postfix>e;
+    arg-mult*               := <method-mult-postfix>e;
+    x_methodpostfix         := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
 
 rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
 
@@ -93,6 +81,28 @@ rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
     with
       (stms, exp) := <exp-to-java-stm(err|i)>e;
       i' := <add>(i, <length>stms)
+
+rules // rel-expr -> List(String)
+
+  method-type-postfix: e -> []
+    where <not(lib-call-postfix-type)>e
+
+  method-type-postfix: e -> [arg-type]
+    with
+      arg* := <get-arguments>e;
+      if <not(eq)>(<lFst;_get-type>arg*, NoValue()) <+ not(lSnd) then //if first is not NoValue or there is no second, TODO: move to type system
+        arg-type := <lFst;_get-type;java-id>arg*
+      else
+        arg-type := <lSnd;_get-type;java-id>arg*
+      end
+  
+  method-mult-postfix: e -> []
+    where <not(lib-call-postfix-mults)>e
+    
+  method-mult-postfix: e -> arg-mult*
+    with
+      arg* := <get-arguments>e;
+      arg-mult* := <map(get-multiplicity;java-id)>arg*
   
 rules // literals
   
