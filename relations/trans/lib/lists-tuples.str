@@ -46,3 +46,9 @@ rules // List -> List
   list-duplicates : [] -> []
   list-duplicates : [h|tail] -> [h|<list-duplicates>tail] where <elem>     (h,tail)
   list-duplicates : [h|tail] ->    <list-duplicates>tail  where <not(elem)>(h,tail)
+
+rules // List(a) -> a
+  
+  lFst:   [x | xs] -> x
+  lSnd:   [x, y | xs] -> y
+  lThird: [x, y, z | xs] -> z

@@ -10,6 +10,9 @@ imports // functions
   trans/api/_runtime
   trans/generating/java/expressions-references
   trans/generating/java/types
+  trans/lib/lists-tuples
+  trans/lib/string
+  trans/lib/traverse
   trans/naming/names
 
 rules // math
@@ -50,133 +53,53 @@ rules // multiplicities
   lib-call-postfix-mults:    Merge(_, _)            ->"merge"
   lib-call-postfix-mults:    ChoiceLeft(_, _)       ->"choice"
 
-rules // lib expression calls  
-      
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call>e;
-      [e1] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>j]]
-    with
-      stms := bstm*|[
-        ~exp1s*
-        refty x_var = Expressions.x_method(~exp1j);
-      ]|;
-      exp := expr |[x_var]|
+rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
   
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call-postfix-type>e;
-      [e1] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>j]];
-      x_methodpostfix := $[[x_method]_[<_get-type;java-id>e1]]
-    with
-      stms := bstm*|[
-        ~exp1s*
-        refty x_var = Expressions.x_methodpostfix(~exp1j);
-      ]|;
-      exp := expr |[x_var]|
-    
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call>e;
-      [e1, e2] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      (exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
-      k := <add>(j, <length>exp2s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>k]]
-    with
-      stms := bstm*|[
-        ~exp1s*
-        ~exp2s*
-        refty x_var = Expressions.x_method(~exp1j, ~exp2j);
-      ]|;
-      exp := expr |[x_var]|
-    
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call-postfix-type>e;
-      [e1, e2] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      (exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
-      k := <add>(j, <length>exp2s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>k]];
-      if <not(eq)>(<_get-type>e1, NoValue()) then
-        x_methodpostfix := $[[x_method]_[<_get-type;java-id>e1]]
+  exp-to-java-stm(err|i): e ->
+    (
+      bstm*|[
+        ~args-stms*
+        refty x_var = Expressions.x_methodpostfix(~arg-exps*);
+      ]|,
+      expr |[x_var]|
+    )
+  where
+    x_method                := <lib-call-postfix-mults <+ lib-call-postfix-type <+ lib-call>e
+  with
+    arg*                    := <get-arguments>e;
+    (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
+    (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
+    refty                   := <java-type>e;
+    x_var                   := $[var[<inc>l]];
+    if <lib-call-postfix-type>e then
+      if <not(eq)>(<lFst;_get-type>arg*, NoValue()) <+ not(lSnd) then //if first is not NoValue or there is no second, TODO: move to type system
+        arg-type* := [<lFst;_get-type;java-id>arg*]
       else
-        x_methodpostfix := $[[x_method]_[<_get-type;java-id>e2]]
+        arg-type* := [<lSnd;_get-type;java-id>arg*]
       end
-    with
-      stms := bstm*|[
-        ~exp1s*
-        ~exp2s*
-        refty x_var = Expressions.x_methodpostfix(~exp1j, ~exp2j);
-      ]|;
-      exp := expr |[x_var]|
-    
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call-postfix-mults>e;
-      [e1, e2] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      (exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
-      k := <add>(j, <length>exp2s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>k]];
-      x_methodpostfix := $[[x_method]_[<get-multiplicity;java-id>e1]_[<get-multiplicity;java-id>e2]]
-    with
-      stms := bstm*|[
-        ~exp1s*
-        ~exp2s*
-        refty x_var = Expressions.x_methodpostfix(~exp1j, ~exp2j);
-      ]|;
-      exp := expr |[x_var]|
-  
-  exp-to-java-stm(err|i): e -> (stms, exp)
-    where
-      x_method := <lib-call-postfix-mults>e;
-      [e1, e2, e3] := <get-arguments>e
-    with
-      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
-      j := <add>(i, <length>exp1s*);
-      (exp2s*, exp2j) := <exp-to-java-stm(err|j)>e2;
-      k := <add>(j, <length>exp2s*);
-      (exp3s*, exp3j) := <exp-to-java-stm(err|k)>e3;
-      l := <add>(k, <length>exp3s*);
-      refty := <java-type>e;
-      x_var := $[var[<inc>l]];
-      x_methodpostfix := $[[x_method]_[<get-multiplicity;java-id>e1]_[<get-multiplicity;java-id>e2]_[<get-multiplicity;java-id>e3]]
-    with
-      stms := bstm*|[
-        ~exp1s*
-        ~exp2s*
-        ~exp3s*
-        refty x_var = Expressions.x_methodpostfix(~exp1j, ~exp2j, ~exp3j);
-      ]|;
-      exp := expr |[x_var]|
+    else
+      arg-type* := []
+    end;
+    if <lib-call-postfix-mults>e then
+      arg-mult* := <map(get-multiplicity;java-id)>arg*
+    else
+      arg-mult* := []
+    end;
+    x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
 
+rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
+
+  arg-to-java-stm(err) : (e, i) -> ((stms, exp), i')
+    with
+      (stms, exp) := <exp-to-java-stm(err|i)>e;
+      i' := <add>(i, <length>stms)
+  
 rules // literals
   
   exp-to-java-stm(err|i): String(value)         -> ([], Lit(String([Chars(value)])))
-  exp-to-java-stm(err|i): Int(value)             -> ([], Lit(Deci(value)))
+  exp-to-java-stm(err|i): Int(value)            -> ([], Lit(Deci(value)))
   exp-to-java-stm(err|i): Float(value)          -> ([], Lit(Float($[[value]f])))
-  exp-to-java-stm(err|i): True()                 -> ([], Lit(True()))
+  exp-to-java-stm(err|i): True()                -> ([], Lit(True()))
   exp-to-java-stm(err|i): False()               -> ([], Lit(False()))
   exp-to-java-stm(err|i): Datetime(value)       -> ([], expr |[Expressions.parseDatetime(e1)]|) with e1 := Lit(String([Chars(value)]))
   exp-to-java-stm(err|i): NoValue()             -> ([], expr |[null]|)
