@@ -1,21 +1,21 @@
-module trans/generating/webdsl-eventual/module
+module generating/webdsl-eventual/module
 
 imports // constructors
 
-	lib/webdsl/constructors
-	lib/webdsl/WebDSL
-	trans/desugaring/constructors
+	webdsl/constructors
+	webdsl/WebDSL
+	desugaring/constructors
 
 imports // functions
 	
-	trans/generating/webdsl-eventual/model
-	trans/generating/webdsl/data
-	trans/api/module-api
-	trans/api/module-names-api
-	trans/api/model-names-api
-	trans/lib/debug
-	trans/lib/lists-tuples
-	trans/lib/string
+	generating/webdsl-eventual/model
+	generating/webdsl/data
+	api/module-api
+	api/module-names-api
+	api/model-names-api
+	lib/debug
+	lib/lists-tuples
+	lib/string
 
 rules // module
 
@@ -25,9 +25,9 @@ rules // module
 			webdsl |[
 				application x_name
 				
-				imports lib/relations/crud-ui
-				imports lib/relations/Expressions
-        imports lib/relations/eventually-consistent
+				imports relations/crud-ui
+				imports relations/Expressions
+        imports relations/eventually-consistent
 			
 				section model
 				

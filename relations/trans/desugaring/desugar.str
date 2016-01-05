@@ -1,16 +1,16 @@
-module trans/desugaring/desugar
+module desugaring/desugar
 
 imports // constructors
 	
-	src-gen/signatures/Modules-sig
-	trans/desugaring/constructors
+	signatures/Modules-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/desugaring/alternatives
-	trans/desugaring/nablhelp
-	trans/desugaring/omitted
-	trans/lib/origin
+	desugaring/alternatives
+	desugaring/nablhelp
+	desugaring/omitted
+	lib/origin
 	
 rules
 

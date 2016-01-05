@@ -1,20 +1,20 @@
-module trans/generating/java/expressions
+module generating/java/expressions
 
 imports // constructors
 
-  lib/java/Java
-  src-gen/signatures/Expressions-sig
+  java/Java
+  signatures/Expressions-sig
 
 imports // functions
 
-  trans/api/_runtime
-  trans/generating/_ir/expressions
-  trans/generating/java/expressions-references
-  trans/generating/java/types
-  trans/lib/lists-tuples
-  trans/lib/string
-  trans/lib/traverse
-  trans/naming/names
+  api/_runtime
+  generating/_ir/expressions
+  generating/java/expressions-references
+  generating/java/types
+  lib/lists-tuples
+  lib/string
+  lib/traverse
+   names/naming/names
 
 rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
   

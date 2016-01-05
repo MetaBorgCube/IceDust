@@ -1,9 +1,9 @@
-module trans/lib/origin
+module origin
 
 imports // functions
 
-	trans/api/_runtime
-	trans/lib/debug
+	api/_runtime
+	lib/debug
 
 rules // rewrite terms to have an origin
 	

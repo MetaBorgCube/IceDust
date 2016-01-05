@@ -1,14 +1,14 @@
-module trans/desugaring/nablhelp
+module desugaring/nablhelp
 
 imports // constructors
 	
-	trans/api/constructors
+	api/constructors
 
 imports // functions
 
-	trans/api/model-api
-	trans/lib/traverse
-	trans/lib/origin
+	api/model-api
+	lib/traverse
+	lib/origin
 	
 rules
 	

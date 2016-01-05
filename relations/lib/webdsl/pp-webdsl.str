@@ -2,8 +2,8 @@ module org/webdsl/dsl/syntax/pp-webdsl
 
 imports
   libstratego-gpp
-	lib/webdsl/WebDSL
-	lib/webdsl/pp-hql
+	webdsl/WebDSL
+	webdsl/pp-hql
 
 strategies
 // 
@@ -62,7 +62,7 @@ strategies
 
   webdsl-pp-table =
     WebDslPpTable
-    <+ tbl := <import-term(lib/webdsl/WebDSL-pretty.pp.af)>
+    <+ tbl := <import-term(webdsl/WebDSL-pretty.pp.af)>
        ; rules( WebDslPpTable := tbl )
        ; !tbl
 

@@ -1,4 +1,4 @@
-module typing/aggregation
+module typing/literals
 
 imports
 
@@ -7,7 +7,7 @@ imports
 	src-gen/signatures/Types-sig
 	
 	// functions
-	trans/naming/names
+  names/naming/names
 	
 	// // use custom runtime libraries  
  //  lib/nabl/-

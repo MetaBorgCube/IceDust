@@ -1,24 +1,24 @@
-module trans/generating/webdsl/model
+module generating/webdsl/model
 
 imports // constructors
 
-	trans/api/constructors
-	lib/webdsl/WebDSL
-	src-gen/signatures/Model-sig
-	src-gen/signatures/Modules-sig
-	trans/desugaring/constructors
+	api/constructors
+	webdsl/WebDSL
+	signatures/Model-sig
+	signatures/Modules-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/model-api
-	trans/api/model-names-api
-	trans/lib/search
-	trans/naming/names
-	trans/naming/_notNaBL
-	trans/generating/webdsl/expressions
-	trans/generating/webdsl/expressions-references
-	trans/generating/webdsl/types
+	api/_runtime
+	api/model-api
+	api/model-names-api
+	lib/search
+  names/naming/names
+	naming/_notNaBL
+	generating/webdsl/expressions
+	generating/webdsl/expressions-references
+	generating/webdsl/types
 
 rules // entities
 	

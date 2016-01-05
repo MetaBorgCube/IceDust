@@ -1,4 +1,4 @@
-module lib/java/pp/helpers
+module java/pp/helpers
 strategies
 
 /**

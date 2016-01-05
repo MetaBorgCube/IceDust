@@ -1,21 +1,21 @@
-module trans/generating/webdsl/expressions-references
+module generating/webdsl/expressions-references
 
 imports // constructors
 
-	lib/webdsl/constructors
-	lib/webdsl/WebDSL
-	src-gen/signatures/Data-sig
-	src-gen/signatures/Expressions-sig	
-	src-gen/signatures/Types-sig	
-	trans/desugaring/constructors
+	webdsl/constructors
+	webdsl/WebDSL
+	signatures/Data-sig
+	signatures/Expressions-sig	
+	signatures/Types-sig	
+	desugaring/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/model-names-api
-	trans/generating/webdsl/types
-	trans/naming/names
-	trans/naming/_notNaBL
+	api/_runtime
+	api/model-names-api
+	generating/webdsl/types
+  names/naming/names
+	naming/_notNaBL
 
 rules // references : entity instance
 

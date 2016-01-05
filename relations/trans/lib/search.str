@@ -1,8 +1,8 @@
-module trans/lib/search
+module search
 
 imports
 	
-	trans/api/_runtime
+	api/_runtime
 
 rules // find a definition ast node for a certain name (with URI annotated)
 	

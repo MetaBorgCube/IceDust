@@ -1,4 +1,4 @@
-module trans/desugaring/constructors
+module desugaring/constructors
 	
 signature constructors
 	

@@ -1,19 +1,19 @@
-module trans/api/data-names-api
+module api/data-names-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/api/_runtime-constructors
-	trans/desugaring/constructors
-	trans/naming/names
-	trans/analysis2/constructors
+	signatures/Model-sig
+	api/_runtime-constructors
+	desugaring/constructors
+  names/naming/names
+	analysis2/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/lib/origin
-	trans/lib/search
-	trans/lib/index
+	api/_runtime
+	lib/origin
+	lib/search
+	lib/index
 
 rules // entity
 

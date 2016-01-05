@@ -1,8 +1,8 @@
-module trans/lib/files
+module files
 
 imports
 
-	trans/api/_generated
+	api/_generated
 
 rules // builders
 	

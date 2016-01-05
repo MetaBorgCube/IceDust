@@ -1,24 +1,24 @@
-module trans/analysis2/analysis2
+module analysis2/analysis2
 
 imports // constructors
 	
-	src-gen/signatures/Expressions-sig
-	trans/api/_runtime-constructors
-	trans/analysis2/constructors
+	signatures/Expressions-sig
+	api/_runtime-constructors
+	analysis2/constructors
 
 imports // functions
 
-	trans/analysis2/path
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/model-api
-	trans/api/model-names-api
-	trans/api/module-api
-	trans/api/module-names-api
-	trans/lib/nabl-ext
-	trans/lib/graph
-	trans/lib/index
-	trans/lib/lists-tuples
+	analysis2/path
+	api/_runtime
+	api/data-api
+	api/model-api
+	api/model-names-api
+	api/module-api
+	api/module-names-api
+	lib/nabl-ext
+	lib/graph
+	lib/index
+	lib/lists-tuples
 
 rules
 	

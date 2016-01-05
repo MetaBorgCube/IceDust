@@ -1,8 +1,8 @@
-module trans/api/_generated
+module api/_generated
 
 imports // generated language file
 		
-	lib/editor-common.generated
+	editor-common.generated
 	
 rules
 	

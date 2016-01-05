@@ -1,8 +1,8 @@
-module trans/lib/traverse
+module traverse
 
 imports
 
-	trans/lib/origin
+	lib/origin
 
 rules // apply strategy on a list left-to-right and carry over a history
 

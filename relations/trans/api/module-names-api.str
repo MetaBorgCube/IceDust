@@ -1,22 +1,22 @@
-module trans/api/module-names-api
+module api/module-names-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/api/_runtime-constructors
-	trans/desugaring/constructors
-  trans/analysis2/constructors
-	trans/naming/names
+	signatures/Model-sig
+	api/_runtime-constructors
+	desugaring/constructors
+  analysis2/constructors
+  names/naming/names
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/model-names-api
-	trans/lib/index
-	trans/lib/origin
-	trans/lib/search
-	trans/lib/string
-	trans/lib/lists-tuples
+	api/_runtime
+	api/model-names-api
+	lib/index
+	lib/origin
+	lib/search
+	lib/string
+	lib/lists-tuples
 	
 rules // module
 	

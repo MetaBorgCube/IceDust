@@ -1,4 +1,4 @@
-module trans/analysis2/constructors
+module analysis2/constructors
 
 signature constructors
 	

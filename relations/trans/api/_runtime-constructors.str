@@ -1,4 +1,4 @@
-module trans/api/_runtime-constructors
+module api/_runtime-constructors
 
 signature constructors // copy from runtime library
     

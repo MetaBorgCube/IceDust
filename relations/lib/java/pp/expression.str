@@ -1,4 +1,4 @@
-module lib/java/pp/expression
+module java/pp/expression
 
 strategies
 

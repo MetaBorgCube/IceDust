@@ -1,17 +1,17 @@
-module trans/generating/webdsl/types
+module generating/webdsl/types
 
 imports // constructors
 
-	lib/webdsl/constructors
-	lib/webdsl/WebDSL
-	src-gen/signatures/Types-sig
-	trans/desugaring/constructors
+	webdsl/constructors
+	webdsl/WebDSL
+	signatures/Types-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/naming/names
-	trans/naming/_notNaBL
+	api/_runtime
+  names/naming/names
+	naming/_notNaBL
 	
 rules // primitives
 	

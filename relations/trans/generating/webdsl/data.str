@@ -1,17 +1,17 @@
-module trans/generating/webdsl/data
+module generating/webdsl/data
 
 imports // constructors
 
-	trans/api/constructors
-	lib/webdsl/WebDSL
+	api/constructors
+	webdsl/WebDSL
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/data-names-api
-	trans/lib/search
-	trans/generating/webdsl/expressions
+	api/_runtime
+	api/data-api
+	api/data-names-api
+	lib/search
+	generating/webdsl/expressions
 
 rules // entity instances
 

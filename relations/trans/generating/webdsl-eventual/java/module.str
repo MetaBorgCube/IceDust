@@ -1,15 +1,15 @@
-module trans/generating/webdsl-eventual/java/module
+module generating/webdsl-eventual/java/module
 
 imports // constructors
 
-	trans/api/constructors
-	lib/java/Java
+	api/constructors
+	java/Java
 
 imports // functions
 
-	trans/api/model-names-api
-	trans/api/module-api
-	trans/api/module-names-api
+	api/model-names-api
+	api/module-api
+	api/module-names-api
 
 rules // module (or modulename) -> java compilation-unit
 	

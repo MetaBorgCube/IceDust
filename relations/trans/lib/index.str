@@ -1,12 +1,12 @@
-module trans/lib/index
+module index
 
 imports // constructors
 	
-	trans/api/_runtime-constructors
+	api/_runtime-constructors
 
 imports // functions
 
-	trans/api/_runtime
+	api/_runtime
 
 rules
 

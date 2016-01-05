@@ -1,14 +1,14 @@
-module trans/generating/webdsl-eventual/generate
+module generating/webdsl-eventual/generate
 
 imports // constructors
 
-	src-gen/signatures/Modules-sig
+	signatures/Modules-sig
 
 imports // functions
 
-	lib/webdsl/pp-webdsl
-	trans/generating/webdsl-eventual/module
-	lib/webdsl/WebDSL-parenthesize
+	webdsl/pp-webdsl
+	generating/webdsl-eventual/module
+	webdsl/WebDSL-parenthesize
 
 rules // documentation
 	

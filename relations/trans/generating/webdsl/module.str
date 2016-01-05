@@ -1,17 +1,17 @@
-module trans/generating/webdsl/module
+module generating/webdsl/module
 
 imports // constructors
 
-	lib/webdsl/constructors
-	lib/webdsl/WebDSL
-	trans/desugaring/constructors
+	webdsl/constructors
+	webdsl/WebDSL
+	desugaring/constructors
 
 imports // functions
 	
-	trans/generating/webdsl/model
-	trans/generating/webdsl/data
-	trans/api/module-api
-	trans/api/module-names-api
+	generating/webdsl/model
+	generating/webdsl/data
+	api/module-api
+	api/module-names-api
 
 rules // module
 
@@ -21,8 +21,8 @@ rules // module
 			webdsl |[
 				application x_name
 				
-        imports lib/relations/crud-ui
-        imports lib/relations/Expressions
+        imports relations/crud-ui
+        imports relations/Expressions
 			
 				section model
 				

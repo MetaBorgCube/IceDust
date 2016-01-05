@@ -1,13 +1,13 @@
-module trans/api/model-api
+module api/model-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/desugaring/constructors
+	signatures/Model-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/lib/origin
+	lib/origin
 
 rules // query
 	

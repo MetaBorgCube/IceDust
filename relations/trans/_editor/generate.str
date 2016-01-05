@@ -1,24 +1,24 @@
-module trans/_editor/generate
+module _editor/generate
 
 imports // constructors
 
-	src-gen/signatures/Modules-sig
-	trans/api/_runtime-constructors
+	signatures/Modules-sig
+	api/_runtime-constructors
 	
 imports // functions
 
-	trans/_editor/analysis
-	trans/api/_generated
-	trans/api/_runtime
-	trans/desugaring/desugar
-	trans/generating/java/generate
-	trans/generating/webdsl/generate
-	trans/generating/webdsl-eager/generate
-	trans/generating/webdsl-eventual/generate
-	trans/generating/webdsl-eventual/java/generate
-	trans/generating/webdsl-eventual-no-ui/generate
-	trans/lib/files
-	trans/prettyprinting/pp
+	_editor/analysis
+	api/_generated
+	api/_runtime
+	desugaring/desugar
+	generating/java/generate
+	generating/webdsl/generate
+	generating/webdsl-eager/generate
+	generating/webdsl-eventual/generate
+	generating/webdsl-eventual/java/generate
+	generating/webdsl-eventual-no-ui/generate
+	lib/files
+	prettyprinting/pp
 
 signature sorts
 	
@@ -98,12 +98,13 @@ rules // Build in steps
 	build(error-handler|lang):
 		(ast, path, project-path, i) -> result
 		with
-			_index-setup(|<_language>, project-path);
-			_task-setup(|project-path);
+//			_index-setup(|<_language>, project-path);
+//			_task-setup(|project-path);
 
 			if Module(_,_,_,_) := ast then
 				// log(|Info(),"Phase 0: Analyzing");
-				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
+        <error-handler>"Error, code not analyzed."
+//				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
 			else
 				ast' := ast;
 				error* := <_task-get-messages(|$[[project-path]/[path]])>
@@ -165,9 +166,9 @@ rules // Build in steps
 				
 			end end end end end end
 	
-	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
-		with
-			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
+//	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
+//		with
+//			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
 	
 	generate-java-step(error-handler)                 = generate-java-code(error-handler)
 	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)

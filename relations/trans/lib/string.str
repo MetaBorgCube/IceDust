@@ -1,4 +1,4 @@
-module trans/lib/string
+module string
 
 rules // truncating
 	

@@ -1,15 +1,15 @@
-module trans/generating/java/types
+module generating/java/types
 
 imports // constructors
 
-  src-gen/signatures/Types-sig
-  src-gen/signatures/Expressions-sig
+  signatures/Types-sig
+  signatures/Expressions-sig
 
 imports // functions
 
-  trans/api/_runtime
-  trans/naming/names
-  trans/naming/_notNaBL
+  api/_runtime
+   names/naming/names
+  naming/_notNaBL
 
 rules // primitives
   

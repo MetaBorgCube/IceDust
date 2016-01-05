@@ -2,15 +2,15 @@ module typing/types
 
 imports
 
-  trans/typing/aggregation.generated
-  trans/typing/assignments.generated
-  trans/typing/casts.generated
-  trans/typing/data.generated
-  trans/typing/literals.generated
-  trans/typing/logic.generated
-  trans/typing/math.generated
-  trans/typing/multiplicity-operators.generated
-  trans/typing/references.generated
-  trans/typing/_multiplicity-functions.generated
-  trans/typing/_subtyping.generated
+  types/typing/aggregation
+  types/typing/assignments
+  types/typing/casts
+  types/typing/data
+  types/typing/literals
+  types/typing/logic
+  types/typing/math
+  types/typing/multiplicity-operators
+  types/typing/references
+  types/typing/_multiplicity-functions
+  types/typing/_subtyping
   trans/typing/_subtyping-manual

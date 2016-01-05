@@ -9,7 +9,7 @@ imports
 	trans/api/constructors
 	
 	// functions
-	trans/naming/names
+  names/naming/names
 	
 	// // use custom runtime libraries  
  //  lib/nabl/-

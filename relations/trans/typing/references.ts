@@ -13,7 +13,7 @@ imports
 	// functions
 	typing/_multiplicity-functions
 	typing/_ordering-functions
-	trans/naming/names
+  names/naming/names
 	
 	// // use custom runtime libraries  
  //  lib/nabl/-

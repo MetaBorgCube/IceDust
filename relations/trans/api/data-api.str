@@ -1,14 +1,14 @@
-module trans/api/data-api
+module api/data-api
 
 imports // constructors
 
-	src-gen/signatures/Data-sig
-	src-gen/signatures/Modules-sig
-	src-gen/signatures/Model-sig
+	signatures/Data-sig
+	signatures/Modules-sig
+	signatures/Model-sig
 
 imports // functions
 		
-	trans/lib/origin
+	lib/origin
 
 rules // query
 	

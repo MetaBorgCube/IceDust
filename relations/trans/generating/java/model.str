@@ -1,20 +1,20 @@
-module trans/generating/java/model
+module generating/java/model
 
 imports // constructors
 
-	trans/api/constructors
-	lib/java/Java
-	src-gen/signatures/Model-sig
-	src-gen/signatures/Modules-sig
-	trans/desugaring/constructors
+	api/constructors
+	java/Java
+	signatures/Model-sig
+	signatures/Modules-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/naming/names
-	trans/naming/_notNaBL
-	trans/generating/java/expressions
-	trans/generating/java/types
+	api/_runtime
+  names/naming/names
+	naming/_notNaBL
+	generating/java/expressions
+	generating/java/types
 
 rules
 	

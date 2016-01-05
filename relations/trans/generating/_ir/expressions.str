@@ -1,18 +1,18 @@
-module trans/generating/_ir/expressions
+module generating/_ir/expressions
 
 imports // constructors
 
-  lib/java/Java
-  src-gen/signatures/Expressions-sig
-  src-gen/signatures/Types-sig
+  java/Java
+  signatures/Expressions-sig
+  signatures/Types-sig
 
 imports // functions
 
-  trans/api/_runtime
-  trans/lib/lists-tuples
-  trans/lib/string
-  trans/lib/traverse
-  trans/naming/names
+  api/_runtime
+  lib/lists-tuples
+  lib/string
+  lib/traverse
+   names/naming/names
 
 rules // math
 

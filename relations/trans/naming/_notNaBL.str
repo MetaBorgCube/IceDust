@@ -2,22 +2,22 @@ module _notNaBL
 
 imports // constructors
 
-	src-gen/signatures/Data-sig
-	src-gen/signatures/Execute-sig
-	src-gen/signatures/Expressions-sig
-	src-gen/signatures/Model-sig
-	src-gen/signatures/Types-sig
-	trans/api/constructors
-	trans/api/_runtime-constructors
-	trans/naming/names
+	signatures/Data-sig
+	signatures/Execute-sig
+	signatures/Expressions-sig
+	signatures/Model-sig
+	signatures/Types-sig
+	api/constructors
+	api/_runtime-constructors
+  names/naming/names
 	
 imports // functions
 	
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/model-api
-	trans/lib/string
-	trans/lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
+	api/_runtime
+	api/data-api
+	api/model-api
+	lib/string
+	lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
 
 rules // unresolved references manual messages
 

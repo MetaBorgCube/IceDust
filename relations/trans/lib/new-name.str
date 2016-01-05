@@ -1,4 +1,4 @@
-module trans/lib/new-name
+module new-name
 
 rules // alternative implementation of newname, passing the names and counters around
 	

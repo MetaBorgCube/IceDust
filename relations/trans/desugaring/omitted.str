@@ -1,18 +1,18 @@
-module trans/desugaring/omitted
+module desugaring/omitted
 
 imports // constructors
 
-	src-gen/signatures/Types-sig
+	signatures/Types-sig
 
 imports // functions
 	
-	trans/api/model-api
-	trans/api/data-api
-	trans/lib/origin
-	trans/lib/new-name
-	trans/lib/string
-  trans/lib/traverse
-  trans/lib/lists-tuples
+	api/model-api
+	api/data-api
+	lib/origin
+	lib/new-name
+	lib/string
+    lib/traverse
+    lib/lists-tuples
 
 rules
 	

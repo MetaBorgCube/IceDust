@@ -1,22 +1,22 @@
-module trans/generating/webdsl/expressions
+module generating/webdsl/expressions
 
 imports // constructors
 
-  lib/webdsl/constructors
-  lib/webdsl/WebDSL
-  src-gen/signatures/Data-sig
-  src-gen/signatures/Expressions-sig  
-  trans/desugaring/constructors
+  webdsl/constructors
+  webdsl/WebDSL
+  signatures/Data-sig
+  signatures/Expressions-sig  
+  desugaring/constructors
 
 imports // functions
 
-  trans/api/_runtime  
-  trans/api/module-names-api
-  trans/generating/_ir/expressions
-  trans/generating/webdsl/model
-  trans/generating/webdsl/data
-  trans/generating/webdsl/types
-  trans/naming/names
+  api/_runtime  
+  api/module-names-api
+  generating/_ir/expressions
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+   names/naming/names
 
 rules // WebDSL specific: no generics, explicit casts
   

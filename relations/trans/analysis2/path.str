@@ -1,16 +1,16 @@
-module trans/analysis2/path
+module analysis2/path
 
 imports // constructors
 	
-	src-gen/signatures/Expressions-sig
-	// trans/analysis2/constructors
+	signatures/Expressions-sig
+	// analysis2/constructors
 
 imports // functions
 
-	trans/api/model-names-api
-	trans/lib/string
-	trans/lib/index
-	trans/typing/references-manual
+	api/model-names-api
+	lib/string
+	lib/index
+	typing/references-manual
 
 signature constructors
 	

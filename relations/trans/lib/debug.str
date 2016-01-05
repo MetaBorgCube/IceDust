@@ -1,10 +1,10 @@
-module trans/lib/debug
+module debug
 
 imports // functions
 	
-	trans/api/_runtime
-	trans/api/_runtime-constructors
-	trans/lib/traverse
+	api/_runtime
+	api/_runtime-constructors
+	lib/traverse
 
 rules // debug tasks
 	

@@ -1,4 +1,4 @@
-module trans/lib/annotations
+module annotations
 
 imports
 	
