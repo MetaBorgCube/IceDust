@@ -60,7 +60,7 @@
 				<version>${metaborg-version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<format>jar</format>
+					<format>ctree</format>
 				</configuration>
 			</plugin>
 		</plugins>
