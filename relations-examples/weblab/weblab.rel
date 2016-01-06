@@ -11,7 +11,7 @@ model
   entity Course {
   	name     : String
     avgGrade : Int? = avg( enrollment.grade )
-    passPerc : Int? = 100 * sum(enrollment.pass2) / count(enrollment)
+    passPerc : Int? = 100 * sum(enrollment.pass2) /. count(enrollment)
   }
 
   relation Enrollment {
@@ -47,7 +47,7 @@ model
     date         : Int?
     extension    : Int? = assignment.extension (default)
     
-    gradePanelty : Int? = assignment.penalty*lateDays/assignment.extensionDays
+    gradePanelty : Int? = assignment.penalty*lateDays/.assignment.extensionDays
     gradeReal    : Int? = onTime      ? grade :
                           onExtension ? grade - gradePanelty :
                           noValue
@@ -92,7 +92,7 @@ model
     
     gradeSubmission : Int? = submission.gradeReal
     gradeParts      : Int? = count(part)==count(part.grade)
-                             ? sum ( part.gradeWeighted ) / 
+                             ? sum ( part.gradeWeighted ) /. 
                                sum ( assignment.part.gradeWeight )
                              : noValue
     

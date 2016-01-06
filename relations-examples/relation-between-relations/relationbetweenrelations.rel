@@ -6,7 +6,7 @@ model
   }
 
   relation Marriage {
-    Person 1 husband
+    Person 1 husband <- marriage
     Person 1 wife    <- marriage2
   }
 

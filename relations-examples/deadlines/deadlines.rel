@@ -9,8 +9,8 @@ model
 		onTime        : Boolean = submitted <= deadline <+ false
 		late          : Boolean = submitted >  deadline <+ false
 		extensionUsed : Float? = (submitted - deadline) as Float / (extension - deadline) as Float
-		hoursEarly    : Int? = (deadline - submitted) / 3600
-		hoursLate     : Int? = (submitted - deadline) / 3600
+		hoursEarly    : Int? = (deadline - submitted) /. 3600
+		hoursLate     : Int? = (submitted - deadline) /. 3600
 	}
 
 data

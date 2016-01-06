@@ -9,7 +9,7 @@ model
 	entity Course {
 		name         : String
 		averageGrade : Float? = avg(enrollment.grade)
-		passPerc     : Int = 100 * sum(enrollment.passI)/count(enrollment) <+ 0
+		passPerc     : Int = 100 * sum(enrollment.passI)/.count(enrollment) <+ 0
 	}
 	
 	relation Enrollment {

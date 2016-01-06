@@ -4,7 +4,7 @@ model
 
   entity AvgNode {
     weight : Int ?
-    value  : Int = valueWeightedChildren / weightChildren <+ 0
+    value  : Int = valueWeightedChildren /. weightChildren <+ 0
     
     valueWeighted : Int = (weight<+0) * value
     
