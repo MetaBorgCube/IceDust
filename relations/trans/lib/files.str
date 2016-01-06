@@ -102,3 +102,13 @@ rules
 	copy-dir(|source, target): file -> None()
 		with
 			<copy-dir>($[[source]/[file]], $[[target]/[file]])
+
+rules
+
+  component-path = prim("language_components");filter(language-component-artifactId(|"Relations"));Hd;?(_,_,_,path);!path
+  
+  language-component-artifactId(|is-artifactId): (groupId, artifactId, version, location) -> <id>
+    where
+      <eq>(artifactId, is-artifactId)
+
+rules

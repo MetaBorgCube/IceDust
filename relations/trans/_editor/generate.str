@@ -98,13 +98,8 @@ rules // Build in steps
 	build(error-handler|lang):
 		(ast, path, project-path, i) -> result
 		with
-//			_index-setup(|<_language>, project-path);
-//			_task-setup(|project-path);
-
 			if Module(_,_,_,_) := ast then
-				// log(|Info(),"Phase 0: Analyzing");
         <error-handler>"Error, code not analyzed."
-//				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
 			else
 				ast' := ast;
 				error* := <_task-get-messages(|$[[project-path]/[path]])>
@@ -179,7 +174,7 @@ rules // Build in steps
 
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with
-			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];
+			sourceDir := $[[<component-path>]/lib-java/src/lib];
 			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir);
 			<dirname;_refresh-workspace-file> targetDir
