@@ -62,7 +62,7 @@ strategies
 
   webdsl-pp-table =
     WebDslPpTable
-    <+ tbl := <import-term(webdsl/WebDSL-pretty.pp.af)>
+    <+ tbl := <import-term(lib/webdsl/WebDSL-pretty.pp.af)>
        ; rules( WebDslPpTable := tbl )
        ; !tbl
 

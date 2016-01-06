@@ -44,6 +44,6 @@ strategies
     
   hql-pp-table =
     HqlPpTable
-    <+ tbl := <import-term(webdsl/HQL-pretty.pp.af)>
+    <+ tbl := <import-term(lib/webdsl/HQL-pretty.pp.af)>
        ; rules( HqlPpTable := tbl )
        ; !tbl

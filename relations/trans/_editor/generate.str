@@ -181,22 +181,22 @@ rules // Build in steps
 			
 	copy-webdsl-libraries: (webdslFileName, project-path) -> None()
 		with
-			sourceDir := $[[<_plugin-path>]/lib-webdsl];
+			sourceDir := $[[<component-path>]/lib-webdsl];
 			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
 			<copy-dir>(sourceDir, targetDir);
 			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
+			sourceDir2 := $[[<component-path>]/lib-java/src];
 			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
 			<copy-dir>(sourceDir2, targetDir2);
 			<_refresh-workspace-file> targetDir
 			
 	copy-webdsl-libraries-no-ui: (webdslFileName, project-path) -> None()
 		with
-			sourceDir := $[[<_plugin-path>]/lib-webdsl/lib];
+			sourceDir := $[[<component-path>]/lib-webdsl/lib];
 			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]/lib];
 			<copy-dir>(sourceDir, targetDir);
 			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
+			sourceDir2 := $[[<component-path>]/lib-java/src];
 			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
 			<copy-dir>(sourceDir2, targetDir2);
 			<dirname;_refresh-workspace-file> targetDir

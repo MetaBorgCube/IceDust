@@ -8,7 +8,6 @@ rules
 	
 	_language = language
 	_project-path = project-path
-	_plugin-path = plugin-path
 	
 	_parse-file = parse-file
 	_refresh-workspace-file = refresh-workspace-file
