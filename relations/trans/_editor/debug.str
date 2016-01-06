@@ -37,21 +37,25 @@ rules // Debugging builders
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
 	
-//	debug-show-analyzed-resolved0:
-//		(selected, position, ast, path, project-path) -> (filename, result)
-//			where
-//	    	language := <_language>
-////	    	;
-////	    	_index-setup(|language, project-path);
-////	    	_task-setup(|project-path)
-//			with
-//				ast' := <desugar-before-analysis> ast;
-//				(analyzed-ast, error*, warning*, note*) := <_analysis-single-default(id, id, pp-message-top|<_language>)>(ast', path, project-path)
-//			with
-//				filename := <guarantee-extension(|"analyzed.aterm")> path;
-//				ast''		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>analyzed-ast;
-//				ast'''	 := <bottomup(try(id{bottomup(try(rm-annotations);try(_pp-uri;string-replace(|"\"","")))}))>ast'';
-//				result	 := ast'''
+	debug-show-analyzed-resolved0:
+		(selected, position, ast, path, project-path) -> (filename, result)
+			where
+	    	language := <_language>
+			with
+			  <_analyze-all(desugar-before-analysis, id, pp-message-top|language)>[File(path, ast, -1.0)] =>
+  				Result(
+            post-trans-result*
+          , messages-only-result*
+          , affected-source*
+          , debug-result
+          , TimeResult(parse-time, pre-trans-time, collect-time, evaluate-time, post-trans-time, -1.0, -1.0)
+          );
+        [FileResult(source, initial-ast, analyzed-ast, error*, warning*, note*)] := post-trans-result*
+			with
+				filename := <guarantee-extension(|"analyzed.aterm")> path;
+				ast''		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>analyzed-ast;
+				ast'''	 := <bottomup(try(id{bottomup(try(rm-annotations);try(_pp-uri;string-replace(|"\"","")))}))>ast'';
+				result	 := ast'''
 	
 	debug-show-analyzed-resolved:
 		(selected, position, ast, path, project-path) -> (filename, result)

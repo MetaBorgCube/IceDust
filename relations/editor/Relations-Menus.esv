@@ -12,7 +12,7 @@ menus
     action: "Format"                                               = editor-format (realtime) (source)
     action: "1) Show abstract syntax"                              = debug-show-aterm (realtime)  (source)
     action: "2) Show desugared-before"                             = debug-show-desugared (realtime)  (source)
-//    action: "3) Show analyzed"                                     = debug-show-analyzed-resolved0  (source)
+    action: "3) Show analyzed"                                     = debug-show-analyzed-resolved0  (source)
     action: "3) Show analyzed (unresolved)"                        = debug-show-analyzed 
     action: "4) Show desugared-after"                              = debug-show-analyzed-resolved 
     action: "4) Show desugared-after (no def or use anotations)"   = debug-show-analyzed-resolved2 
