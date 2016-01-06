@@ -10,6 +10,7 @@ imports // functions
 	api/_generated
 	api/_runtime
 	desugaring/desugar
+	lib/index
 	lib/search
 	prettyprinting/pp
 	
@@ -42,7 +43,8 @@ rules // Debugging builders
 			where
 	    	language := <_language>
 			with
-			  <_analyze-all(desugar-before-analysis, id, pp-message-top|language)>[File(path, ast, -1.0)] =>
+			  partition-path := <index-partition-path>(project-path, path);
+			  <_analyze-all(desugar-before-analysis, id, pp-message-top|language)>[File(partition-path, ast, -1.0)] =>
   				Result(
             post-trans-result*
           , messages-only-result*

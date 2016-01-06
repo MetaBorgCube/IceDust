@@ -1,4 +1,4 @@
-module index
+module lib/index
 
 imports // constructors
 	
@@ -19,5 +19,12 @@ rules
 	index-get-prop(|kind): name -> val
 		where
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
+
+rules
+
+  index-partition-path: (project-path, file-path) -> result
+    with
+      project := <base-filename> project-path;
+      result  := $[eclipse:///[project]/[file-path]]
 
 rules
