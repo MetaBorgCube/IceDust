@@ -35,6 +35,8 @@ rules // Editor services
 	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
 		x@(target, position, ast, path, project-path) -> $[[warning][hoverinfo]]
+		where
+		  <not(hover-parent-for)>target
 		with
 			if Def(_) := target then
 				warning := "<b>Warning showing hover info of Definition instead of Use</b><br/><br/>"
@@ -74,21 +76,12 @@ rules // Editor services
    
 rules // target of editor services
 
-	editor-service-target: (target, position, ast, path, project-path) -> target''
+	editor-service-target: (target, position, ast, path, project-path) -> target'
 		with
 			if Some(a) := target then
 				target' := a
 			else
 				target' := target
-			end;
-			if <hover-parent-for>target' then
-				if [_] := position then // if first level child parent-at-position fails
-					target'' := ast
-				else
-					target'' := <_parent-at-position(|position)>ast
-				end
-			else
-				target'' := target'
 			end
 
 	hover-parent-for: a -> a // for constructors with no children hover parent
