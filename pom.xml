@@ -4,19 +4,17 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>relations-build</artifactId>
-  <version>0.3.0-SNAPHSHOT</version>
+  <version>0.3.1-SNAPHSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
-    <artifactId>org.metaborg.maven.parent</artifactId>
-    <version>1.4.0</version>
+    <artifactId>parent.language</artifactId>
+    <version>1.5.0-SNAPSHOT</version>
     <relativePath/>
   </parent>
   
   <modules>
   	<module>relations</module>
-  	<module>relations-eclipse-plugin</module>
-  	<module>update</module>
   </modules>
 </project>
