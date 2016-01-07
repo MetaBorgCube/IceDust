@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>Relations</artifactId>
+  <version>0.3.1-SNAPSHOT</version>
 	<name>Relations</name>
-	<version>0.3.1-SNAPSHOT</version>
 	<packaging>spoofax-language</packaging>
 
 	<parent>
 		<groupId>org.metaborg</groupId>
 		<artifactId>parent.language</artifactId>
 		<version>1.5.0-SNAPSHOT</version>
-		<relativePath />
 	</parent>
 
 	<dependencies>
@@ -67,6 +68,10 @@
 						<pardonedLanguage>NameBindingLanguage</pardonedLanguage>
 						<pardonedLanguage>TypeSystemLanguage</pardonedLanguage>
 					</pardonedLanguages>
+          <sdfArgs combine.children="append">
+          </sdfArgs>
+          <strategoArgs combine.children="append">
+          </strategoArgs>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -117,5 +122,4 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
 </project>
