@@ -1,4 +1,4 @@
-package Relations.strategies;
+package relations.strategies;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package Relations.strategies;
+package relations.strategies;
 
 import org.strategoxt.lang.JavaInteropRegisterer;
 import org.strategoxt.lang.Strategy;

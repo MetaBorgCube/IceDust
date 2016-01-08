@@ -1,4 +1,4 @@
-package Relations.strategies;
+package relations.strategies;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
