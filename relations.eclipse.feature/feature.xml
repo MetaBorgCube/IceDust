@@ -19,6 +19,12 @@ This software is distributed in the hope that it will be useful, but WITHOUT ANY
 Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (LGPL). Runtime components related to the IMP, EMF and GMF libraries are licensed under the Eclipse Public License (EPL).
    </license>
 
+   <includes
+         id="org.metaborg.spoofax.eclipse.feature"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
    <plugin
          id="relations.eclipse"
          download-size="0"
