@@ -17,7 +17,7 @@
   <modules>
     <module>relations</module>
     <module>Relations.eclipse</module>
-<!--    <module>relations-eclipse-plugin</module>-->
+    <module>relations-eclipse-plugin</module>
 <!--    <module>update</module>-->
   </modules>
   
