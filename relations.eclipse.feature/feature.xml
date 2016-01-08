@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="Relations_Language_Plugin"
+      id="relations.eclipse.feature"
       label="Relations Language Editor"
       version="0.3.1.qualifier">
 
@@ -20,7 +20,7 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
    </license>
 
    <plugin
-         id="Relations.eclipse"
+         id="relations.eclipse"
          download-size="0"
          install-size="0"
          version="0.3.1.qualifier"/>

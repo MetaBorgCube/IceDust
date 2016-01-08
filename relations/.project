@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Relations</name>
+	<name>relations</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 		<buildCommand>
 			<name>org.metaborg.spoofax.eclipse.meta.builder.generatesources</name>
 			<triggers>clean,full,</triggers>
@@ -35,6 +30,11 @@
 		<buildCommand>
 			<name>org.metaborg.spoofax.eclipse.meta.builder.postjava</name>
 			<triggers>clean,full,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
