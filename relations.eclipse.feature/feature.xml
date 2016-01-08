@@ -25,6 +25,12 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
          optional="true"
          search-location="both"/>
 
+   <includes
+         id="org.metaborg.spoofax.eclipse.meta.feature"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
    <plugin
          id="relations.eclipse"
          download-size="0"
