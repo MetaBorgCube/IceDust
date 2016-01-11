@@ -81,6 +81,9 @@
         <directory>./</directory>
         <includes>
           <include>lib-java/**/*</include>
+          <include>lib-webdsl/**/*</include>
+          <include>lib/webdsl/HQL-pretty.pp.af</include>
+          <include>lib/webdsl/WebDSL-pretty.pp.af</include>
         </includes>
       </resource>
     </resources>
