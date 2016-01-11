@@ -76,6 +76,14 @@
         </configuration>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>./</directory>
+        <includes>
+          <include>lib-java/**/*</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 
   <repositories>
