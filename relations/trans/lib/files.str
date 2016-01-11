@@ -98,6 +98,13 @@ rules
 			<file-exists> source
 		with
 			<copy-file> (source, target)
+			
+  copy-dir: (source, target) -> None()
+    where
+      <not(isdir <+ file-exists)> source
+    with
+      <debug> $[copy-dir failed, source is not a file or folder. source: [source]];
+      fail
 
 	copy-dir(|source, target): file -> None()
 		with
@@ -105,7 +112,7 @@ rules
 
 rules
 
-  component-path = prim("language_components");filter(language-component-artifactId(|"Relations"));Hd;?(_,_,_,path);!path
+  component-path = with(prim("language_components");filter(language-component-artifactId(|"relations"));Hd;?(_,_,_,path));!path
   
   language-component-artifactId(|is-artifactId): (groupId, artifactId, version, location) -> <id>
     where
