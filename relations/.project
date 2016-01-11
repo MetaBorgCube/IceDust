@@ -6,6 +6,11 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.metaborg.spoofax.eclipse.meta.builder.generatesources</name>
 			<triggers>clean,full,</triggers>
 			<arguments>
@@ -30,11 +35,6 @@
 		<buildCommand>
 			<name>org.metaborg.spoofax.eclipse.meta.builder.postjava</name>
 			<triggers>clean,full,</triggers>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
