@@ -25,4 +25,4 @@ test Expressions Aggregation generate-java [[ ]] build generate-java-test
 
 test Expressions Aggregation compile-java [[ ]] build compile-java-test
 
-test Expressions Aggregation execute-java [[ ]] build execute-java-test to "5"
+test Expressions Aggregation execute-java [[ ]] build execute-java-test to "5" // http://yellowgrass.org/issue/SPTWithCore/3

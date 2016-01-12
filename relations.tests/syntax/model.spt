@@ -144,4 +144,4 @@ test error on role in relation[[
 		entity Enrollment{
 			[[Student * student <- enrollments]]
 		}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7

@@ -49,3 +49,5 @@ test Disambiguate member access over merge [[
 
 test Disambiguate large expression [[5 * 8 - 5 <+ 3 ++ 0 * 9]] parse to [[((5*8)-5) <+ (3++(0*9))]]
 test Disambiguate large expression 2 [["a"+"b"+"c"+"d"+"e"]] parse to [[((("a"+"b")+"c")+"d")+"e"]]
+
+// http://yellowgrass.org/issue/SPTWithCore/1

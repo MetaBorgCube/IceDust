@@ -39,4 +39,4 @@ test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-t
 
 test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
 
-test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3"
+test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3" // http://yellowgrass.org/issue/SPTWithCore/3

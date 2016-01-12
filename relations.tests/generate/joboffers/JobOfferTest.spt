@@ -94,4 +94,4 @@ execute
 
 // test Job Offers compile-java [[ ]] build compile-java-test
 
-test Job Offers execute-java [[ ]] build execute-java-test to "1996"
+test Job Offers execute-java [[ ]] build execute-java-test to "1996" // http://yellowgrass.org/issue/SPTWithCore/3

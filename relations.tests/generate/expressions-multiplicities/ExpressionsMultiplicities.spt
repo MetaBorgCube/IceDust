@@ -23,4 +23,4 @@ test Expressions Multiplicities generate-java [[ ]] build generate-java-test
 
 test Expressions Multiplicities compile-java [[ ]] build compile-java-test
 
-test Expressions Multiplicities execute-java [[ ]] build execute-java-test to "[5]"
+test Expressions Multiplicities execute-java [[ ]] build execute-java-test to "[5]" // http://yellowgrass.org/issue/SPTWithCore/3

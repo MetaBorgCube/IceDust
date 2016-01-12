@@ -19,7 +19,7 @@ test error on assign attribute String to Int [[
 		i=[["a"]]
 		s="a"
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on assign attribute Int to String [[
 	model
@@ -33,7 +33,7 @@ test error on assign attribute Int to String [[
 		i=3
 		s=[[4]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on assign role wrong entityType [[
 	model
@@ -49,21 +49,21 @@ test error on assign role wrong entityType [[
 		in:x
 		out:[[e]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on derivation assign wrong Int to String [[
 	model
 	entity X{
 		i : Int = [["a"]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on derivation assign wrong String to Int [[
 	model
 	entity X{
 		i : Int = [["a"]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 
 test error on derivation assign wrong ZeroOrOne to One [[
@@ -72,7 +72,7 @@ test error on derivation assign wrong ZeroOrOne to One [[
 		i : Int = [[j]]
 		j : Int ?
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test no error on derivation assign One to One [[
 	model
@@ -87,14 +87,14 @@ test error on derivation assign wrong ZeroOrMore to One [[
 		i : Int = [[(j ++ j)]]
 		j : Int ?
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on derivation assign wrong OneOrMore to One [[
 	model
 	entity X{
 		i : Int = [[(1 ++ 2)]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test no error on derivation assign One to ZeroOrOne [[
 	model
@@ -117,12 +117,12 @@ test error on derivation assign wrong ZeroOrMore to ZeroOrOne [[
 		i : Int ? = [[(j ++ j)]]
 		j : Int ?
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on derivation assign wrong OneOrMore to ZeroOrOne [[
 	model
 	entity X{
 		i : Int ? = [[(1 ++ 2)]]
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 

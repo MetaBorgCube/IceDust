@@ -34,7 +34,7 @@ test Resolve invalid shortcut fails [[
 		
 		student.courses <-> course.students
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 
 
@@ -60,7 +60,7 @@ test Resolve invalid role in shortcut fails [[
 		
 		student.abc <-> [[iDoNotExist]].bcd
 	}
-]] 1 error
+]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on duplicate shortcut [[
 	entity Node {}
@@ -70,7 +70,7 @@ test error on duplicate shortcut [[
 		
 		a.[[node]] <-> b.[[node]]
 	}
-]] 2 errors
+]] 2 errors // http://yellowgrass.org/issue/SPTWithCore/7
 
 test error on duplicate shortcut by desugaring [[
 	entity Project{}

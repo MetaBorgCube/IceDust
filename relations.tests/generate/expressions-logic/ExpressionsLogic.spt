@@ -21,4 +21,4 @@ test Expressions Logic generate-java [[ ]] build generate-java-test
 
 test Expressions Logic compile-java [[ ]] build compile-java-test
 
-test Expressions Math execute-java [[ ]] build execute-java-test to "5"
+test Expressions Math execute-java [[ ]] build execute-java-test to "5" // http://yellowgrass.org/issue/SPTWithCore/3
