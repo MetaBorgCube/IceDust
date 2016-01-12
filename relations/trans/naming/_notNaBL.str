@@ -111,3 +111,9 @@ rules
 	
 	// FIXME: NaBL should have generated this	
   nabl-get-name : Entity(_, a, _) -> a
+  
+rules // disable messages for duplicate This (inside duplicate entities)
+      
+  nabl-check-disable-duplicate(|uri, ns):  name -> name
+    where
+      <eq>(ns, NablNsThis())
