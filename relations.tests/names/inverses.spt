@@ -30,7 +30,7 @@ test Resolve invalid inverse fails [[
 		Student * student <- enrollments
 		Course  + course  <- enrollments
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test error on duplicate inverse [[
 	entity Node {}
@@ -38,7 +38,7 @@ test error on duplicate inverse [[
 		Node 1 a <- [[edge]]
 		Node 1 b <- [[edge]]
 	}
-]] 2 errors // http://yellowgrass.org/issue/SPTWithCore/7
+]] 2 errors
 
 test error on duplicate inverse by desugaring [[
 	entity Node {}
@@ -48,4 +48,4 @@ test error on duplicate inverse by desugaring [[
 		
 		node.a <-> node.b
 	}
-]] 4 errors // only possible by duplicate roles // http://yellowgrass.org/issue/SPTWithCore/7
+]] 4 errors // only possible by duplicate roles

@@ -24,7 +24,7 @@ test Resolve invalid Identifier fails [[
 	entity User {
 		name : String = [[x]]
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test Resolve attribute from this.attribute [[
 	entity User {
@@ -36,7 +36,7 @@ test Resolve invalid this.attribute fails [[
 	entity User {
 		name : String = this.[[x]]
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test Resolve attribute from entity.attribute [[
 	entity Node {
@@ -72,7 +72,7 @@ test Resolve entity.invalid attribute fails [[
 	}
 	execute
 	n.[[notin]]
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test Resolve attribute from role.attribute [[
 	entity Node {
