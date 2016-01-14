@@ -212,4 +212,4 @@ execute
 
 // test Weblab compile-java [[ ]] build compile-java-test
 
-test Weblab execute-java [[ ]] build execute-java-test to "77" // http://yellowgrass.org/issue/SPTWithCore/3
+test Weblab execute-java [[ ]] build execute-java-test to "77"

@@ -33,12 +33,23 @@ rules
 
 	write-file: (fileName, content) -> (fileName, content)
 		where
+//		  <debug>"write-file";
+//		  <debug>fileName;
+//		  <debug>content;
+//		  <debug>"/write-file";
 			<dirname;ensure-dir> fileName
 		where
 			fileDescriptor := <fopen> (fileName, "w");
 			<fputs> (content, fileDescriptor);
 			<fclose> fileDescriptor;
 			<_refresh-workspace-file> fileName
+			
+  write-file: (fileName, content) -> (fileName, content)
+    where
+      <not(fopen)> (fileName, "w")
+    with
+      <debug> $[write-file failed, could not open file: [fileName]];
+      fail
 
 rules
 

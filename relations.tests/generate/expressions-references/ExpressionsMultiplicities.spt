@@ -23,4 +23,4 @@ test Expressions References generate-java [[ ]] build generate-java-test
 
 test Expressions References compile-java [[ ]] build compile-java-test
 
-test Expressions References execute-java [[ ]] build execute-java-test to "5" // http://yellowgrass.org/issue/SPTWithCore/3
+test Expressions References execute-java [[ ]] build execute-java-test to "5"
