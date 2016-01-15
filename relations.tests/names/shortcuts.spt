@@ -43,14 +43,14 @@ test Resolve role in shortcut [[
 	}
 	
 	relation Enrollment{
-		Student * [[student]]
-		Course  +
+		Student * [[student]] <- y
+		Course  + course <- x
 		
 		student.abc <-> [[student]].bcd
 	}
 ]] resolve #2 to #1
 
-test Resolve invalid role in shortcut fails [[
+test (SPTWithCore/7) Resolve invalid role in shortcut fails [[
 	entity Student{
 	}
 	
@@ -60,7 +60,7 @@ test Resolve invalid role in shortcut fails [[
 		
 		student.abc <-> [[iDoNotExist]].bcd
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test error on duplicate shortcut [[
 	entity Node {}
@@ -70,7 +70,7 @@ test error on duplicate shortcut [[
 		
 		a.[[node]] <-> b.[[node]]
 	}
-]] 2 errors // http://yellowgrass.org/issue/SPTWithCore/7
+]] 2 errors
 
 test error on duplicate shortcut by desugaring [[
 	entity Project{}

@@ -36,10 +36,10 @@ test type of inline if 3 [[ [[switch{ case true => 6 case false => 4 default => 
 test type of inline if String [[ [[true?"a":"b"]] ]] run get-type to String
 test type of inline if Boolean [[ [[true?false:false]] ]] run get-type to Boolean
 
-test error on Boolean and Int  [[ true && [[3]] ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
-test error on String gt Int [[ "b" > [[4]] ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
-test (TS/6) error on String inline if[[ [["a"]] ? 3 : 4 ]] 1 error // http://yellowgrass.org/issue/TS/6 // http://yellowgrass.org/issue/SPTWithCore/7
-test error on inline if String Int [[ true ? "a" : [[4]] ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+test error on Boolean and Int  [[ true && [[3]] ]] 1 error
+test error on String gt Int [[ "b" > [[4]] ]] 1 error
+test (TS/6) error on String inline if[[ [["a"]] ? 3 : [[4]] ]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/6
+test error on inline if String Int [[ true ? "a" : [[4]] ]] 1 error
 
 
 test multiplicity of One gte One	[[ [[8 > 8]] ]] run get-multiplicity to One
@@ -50,9 +50,9 @@ test multiplicity of One and ZeroOrOne					[[ [[true && x.b]] ]] run get-multipl
 test multiplicity of One eq ZeroOrOne 					[[ [["s" == x.s]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of One inline if ZeroOrOne One[[ [[false ? x.s : "a"]] ]] run get-multiplicity to ZeroOrOne
 
-test error on ZeroOrOne inline if One One[[ [[x.b]] ? 4 : 6]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+test (SPTWithCore/16) error on ZeroOrOne inline if One One[[ [[x.b]] ? 4 : 6]] 1 error // http://yellowgrass.org/issue/SPTWithCore/16
 
-test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+test (SPTWithCore/16) error on One and OneOrMore [[ true && (false ++ false) ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/16
 
 test ordering of not	[[ [[! false]] ]] run get-ordering to Ordered
 test ordering of Ordered gte Ordered	[[ [[8 > 8]] ]] run get-ordering to Ordered

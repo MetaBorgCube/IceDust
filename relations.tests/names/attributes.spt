@@ -20,9 +20,9 @@ test Resolve attribute from Identifier [[
 	}
 ]] resolve #2 to #1
 
-test (TS/1) Resolve invalid Identifier fails [[
+test Resolve invalid Identifier fails [[
 	entity User {
-		name : String = x
+		name : String = [[x]]
 	}
 ]] 1 error
 
@@ -32,11 +32,11 @@ test Resolve attribute from this.attribute [[
 	}
 ]] resolve #2 to #1
 
-test (TS/1) Resolve invalid this.attribute fails [[
+test Resolve invalid this.attribute fails [[
 	entity User {
 		name : String = this.[[x]]
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test Resolve attribute from entity.attribute [[
 	entity Node {
@@ -50,13 +50,13 @@ test Resolve attribute from entity.attribute [[
 
 test (TS/1) Resolve invalid entity.attribute fails [[
 	entity Node {
-		name : String = [[n2]].name (default)
+		name : String = n2.name (default)
 	}
 	data
 	Node n{
 		name = "a"
 	}
-]] 1 error // http://yellowgrass.org/issue/TS/1
+]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/1
 
 test Resolve entity.invalid attribute fails [[
 	entity Node {
@@ -72,7 +72,7 @@ test Resolve entity.invalid attribute fails [[
 	}
 	execute
 	n.[[notin]]
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test Resolve attribute from role.attribute [[
 	entity Node {
@@ -87,12 +87,12 @@ test Resolve attribute from role.attribute [[
 
 test (TS/1) Resolve invalid role.attribute fails [[
 	entity Node {
-		name : String = concat(this.in.out.[[x]]) <+ ""
+		name : String = concat(this.in.out.x) <+ ""
 	}
 	relation Edge{
 		Node * in  <- in
 		Node * out <- out
 		in.a <-> out.b
 	}
-]] 1 error  // http://yellowgrass.org/issue/TS/1
+]] 2 errors // 1 error  // http://yellowgrass.org/issue/TS/1
 

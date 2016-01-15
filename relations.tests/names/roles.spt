@@ -48,7 +48,7 @@ test error on duplicate role [[
 		
 		node.c <-> node.d
 	}
-]] 2 errors // http://yellowgrass.org/issue/SPTWithCore/7
+]] 2 errors
 
 test error on duplicate role by desugaring [[
 	entity Node {}
@@ -58,4 +58,4 @@ test error on duplicate role by desugaring [[
 		
 		node.c <-> node.d
 	}
-]] 4 errors // always also results in duplicate inverses // http://yellowgrass.org/issue/SPTWithCore/7
+]] 4 errors // always also results in duplicate inverses
