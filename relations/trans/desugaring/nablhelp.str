@@ -66,7 +66,7 @@ rules
 	shortcut-add-type-reverse =
 		where(is-shortcut);
 		?s;
-		create-shortcut(|<shortcut-get-role1>s, <shortcut-get-shortcut1>s, <shortcut-get-role1>s, <shortcut-get-shortcut2>s)
+		create-shortcut(|<shortcut-get-role1>s, <shortcut-get-shortcut1>s, <shortcut-get-role2>s, <shortcut-get-shortcut2>s)
 	
 	
 	

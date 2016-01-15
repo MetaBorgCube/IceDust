@@ -48,7 +48,7 @@ test Resolve role in shortcut [[
 		
 		student.abc <-> [[student]].bcd
 	}
-]] resolve #2 to #1 // really broken, also in editor, TODO: fix
+]] resolve #2 to #1
 
 test (SPTWithCore/7) Resolve invalid role in shortcut fails [[
 	entity Student{
@@ -60,7 +60,7 @@ test (SPTWithCore/7) Resolve invalid role in shortcut fails [[
 		
 		student.abc <-> [[iDoNotExist]].bcd
 	}
-]] 1 error // http://yellowgrass.org/issue/SPTWithCore/7
+]] 1 error
 
 test error on duplicate shortcut [[
 	entity Node {}
