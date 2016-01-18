@@ -15,6 +15,14 @@ context-free syntax // entities
 	EntityOrRelation.EntityType = <entity>
 	EntityOrRelation.RelationType = <relation>
 
+context-free syntax // shortcut relations
+
+  Model.ShortcutRelation = [
+    relation [ID].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID].[ID] {
+      [{Attribute "\n"}*]
+    }
+  ]
+
 context-free syntax // entity members
 
 	Member											= <<Attribute>>
