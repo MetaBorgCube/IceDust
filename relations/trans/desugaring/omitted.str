@@ -118,12 +118,12 @@ rules
 rules
 
   shortcutrel-to-rel:
-    scr@ShortcutRelation(e1, s1, m1, o1, m2, o2, e2, s2, attrs) ->
+    scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, attrs) ->
     <custom-origin(|scr)>Entity(
       <custom-origin(|e1)>RelationType()
     , relname
-    , [ <custom-origin(|e1)>Role(e1, m2, o2, s1, invname1)
-      , <custom-origin(|e2)>Role(e2, m1, o1, s2, invname2)
+    , [ <custom-origin(|e2)>Role(e1, m1, o1, s2, invname2)
+      , <custom-origin(|e1)>Role(e2, m2, o2, s1, invname1)
       , <custom-origin(|e1)>Shortcut(<custom-origin(|s1)>RoleRef(s1), s2, <custom-origin(|s2)>RoleRef(s2), s1)
       | attrs
       ]

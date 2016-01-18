@@ -14,10 +14,10 @@ rules // query
 	
 	datadef-get-data = ?DataDef(<id>)
 	
-	entityinstance-get-type = ?EntityInstance(EntityRef(<id>), _, _, _)
-	entityinstance-get-name = ?EntityInstance(_, <id>, _, _)
-	entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>, _)
-	entityinstance-get-attrvalues = ?EntityInstance(_, _, _, <id>)
+	entityinstance-get-type = ?EntityInstance(_, EntityRef(<id>), _)
+	entityinstance-get-name = ?EntityInstance(<id>, _, _)
+	entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>)
+	entityinstance-get-attrvalues = ?EntityInstance(_, _, <id>)
 	
 	rolevalue-get-role       = ?RoleValue(RoleRef(<id>), _)
 	rolevalue-get-value      = ?RoleValue(_, <id>)
@@ -29,15 +29,15 @@ rules // properties
 	
 	is-datadef = ?DataDef(_)
 	
-	is-entityinstance = ?EntityInstance(_, _, _, _)
+	is-entityinstance = ?EntityInstance(_, _, _)
 	
 	is-attributevalue = ?AttributeValue(_,_)
 	is-rolevalue      = ?RoleValue(_, _)
 
-	entityinstance-has-no-name = ?EntityInstance(_, None(), _, _)
+	entityinstance-has-no-name = ?EntityInstance(None(), _, _)
 
 rules // manipulate
 	
 	datadef-set-data(|op) = DataDef(!op)
 	
-	entityinstance-set-name(|name) = EntityInstance(id, !name, id, id)
+	entityinstance-set-name(|name) = EntityInstance(!name, id, id)

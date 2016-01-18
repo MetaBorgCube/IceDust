@@ -18,21 +18,21 @@ rules
 	
   to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
 
-	to-java(err): EntityInstance(
-									EntityRef(x_type)
-								, x_name
-								, roleValues
-								, attributeValues
-								)
-  -> 
- 	|[
-    x_type x_name = new x_type();
-    ~attributeValuesJava*
-    ~roleValuesJava*
- 	]|
-	with
-		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
-		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
+//	to-java(err): EntityInstance(
+//									EntityRef(x_type)
+//								, x_name
+//								, roleValues
+//								, attributeValues
+//								)
+//  -> 
+// 	|[
+//    x_type x_name = new x_type();
+//    ~attributeValuesJava*
+//    ~roleValuesJava*
+// 	]|
+//	with
+//		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
+//		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
 
   to-java(err|x_name) : AttributeValue(AttributeRef(attributeName), attributeValue) ->
 		stm |[

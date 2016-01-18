@@ -57,10 +57,30 @@ type rules // specific references
 
 	RoleRef(r) : r-ty
 	where definition of r : r-ty
-	
-	AttributeRef(a) : a-ty
-	where definition of a : a-ty
-	
-	EntityInstanceRef(e) : e-ty
-	where definition of e : e-ty
+  
+  AttributeRef(a) : a-ty
+  where definition of a : a-ty
+  
+  MemberRef(m) : m-ty
+  where definition of m : m-ty
+  
+  MemberRef(m) has multiplicity m-mu
+  where definition of m has multiplicity m-mu
+  
+  MemberRef(m) has ordering m-or
+  where definition of m has ordering m-or
+  
+  EntityInstanceRef(e) : e-ty
+  where definition of e : e-ty
+  
+  EntityInstanceRef(e) has multiplicity One()
+  
+  EntityInstanceRef(e) has ordering Ordered()
+  
+  EntityRef(e) : e-ty
+  where definition of e : e-ty
+  
+  EntityRef(e) has multiplicity One()
+  
+  EntityRef(e) has ordering Ordered()
 

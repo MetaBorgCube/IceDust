@@ -26,7 +26,8 @@ rules // unresolved references manual messages
 	unresolved-error: Ref(e) 											-> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
 	unresolved-error: MemberAccess(_, e)					-> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
 	unresolved-error: AttributeRef(e) 						-> (e, [NablNsAttribute()])
-	unresolved-error: RoleRef(e) 									-> (e, [NablNsRole()])
+  unresolved-error: RoleRef(e)                  -> (e, [NablNsRole()])
+  unresolved-error: MemberRef(e)                -> (e, [NablNsAttribute(),NablNsShortcut()])
 	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
 	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
 
@@ -46,25 +47,25 @@ signature constructors
 rules // check if entities have all the required attributes and roles assigned
 	
 	contains-all-errors = ![
-		ContainsAll(
-			NablNsAttribute(),
-			[
-				(NablProp_derivation-type(), Normal()),
-				(NablProp_multiplicity(), One())
-			],
-			"ei-a1",
-			"ei-a2",
-			"ei-a3",
-			"ei-a4"
-		),
-		ContainsAll(
-			NablNsRole(),
-			[],
-			"ei-r1",
-			"ei-r2",
-			"ei-r3",
-			"ei-r4"
-		)
+//		ContainsAll(
+//			NablNsAttribute(),
+//			[
+//				(NablProp_derivation-type(), Normal()),
+//				(NablProp_multiplicity(), One())
+//			],
+//			"ei-a1",
+//			"ei-a2",
+//			"ei-a3",
+//			"ei-a4"
+//		),
+//		ContainsAll(
+//			NablNsRole(),
+//			[],
+//			"ei-r1",
+//			"ei-r2",
+//			"ei-r3",
+//			"ei-r4"
+//		)
 	]
 	
 	eval(|f) = where("ei-a1":=f); is-entityinstance

@@ -122,7 +122,8 @@ binding rules // model
 
 binding rules // data
 
-	EntityInstance(EntityRef(e-ty), e, _, _) :
+//  EntityInstance(EntityRef(e-ty), e, _, _) :
+	EntityInstance(e, EntityRef(e-ty), _) :
 		defines EntityInstance e
 			of type e-ty
 			of multiplicity One()
@@ -169,16 +170,25 @@ binding rules // references
 
 	EntityRef(e) :
 		refers to Entity e
-	
-	AttributeRef(a):
-		refers to Attribute a in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
+  
+  AttributeRef(a):
+    refers to Attribute a in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 	
 	RoleRef(r):
 		refers to Role r in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
+
+  MemberRef(m):
+    refers to Attribute m in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
+  otherwise
+    refers to Shortcut m in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 
 	EntityInstanceRef(e) :
 		refers to EntityInstance e

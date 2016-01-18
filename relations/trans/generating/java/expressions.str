@@ -45,7 +45,7 @@ rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
 
 rules // literals
   
-  exp-to-java-stm(err|i): String(value)         -> ([], Lit(String([Chars(value)])))
+  exp-to-java-stm(err|i): LitString(value)      -> ([], Lit(String([Chars(value)])))
   exp-to-java-stm(err|i): Int(value)            -> ([], Lit(Deci(value)))
   exp-to-java-stm(err|i): Float(value)          -> ([], Lit(Float($[[value]f])))
   exp-to-java-stm(err|i): True()                -> ([], Lit(True()))

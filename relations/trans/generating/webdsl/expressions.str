@@ -50,7 +50,7 @@ rules // lib expression calls
   
 rules // literals
   
-  to-webdsl(err): String(str1)                    -> String(str1)
+  to-webdsl(err): LitString(str1)                 -> String(str1)
   to-webdsl(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
   to-webdsl(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
   to-webdsl(err): True()                          -> webdsl:e |[ true ]|
