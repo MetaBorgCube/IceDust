@@ -45,6 +45,27 @@ test error on omitting only on required attribute[[
 	[[x]] : X {}
 ]] 1 error
 
+test no error on omitting derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {}
+]] 0 errors
+
+// TODO: implement
+//test error on omitting derived attribute[[
+//  model
+//  entity X{
+//    i : Int = 5
+//  }
+//  data
+//  x : X {
+//    [[i]] = 5900
+//  }
+//]] 1 error
+
 //test no error on not omitting role in relation[[
 //	model
 //	entity Node{}
