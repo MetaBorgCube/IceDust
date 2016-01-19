@@ -22,18 +22,15 @@ setup Common [[
 ]]
 
 test Blog data [[
-	User alice{
+	alice : User{
 		name = "Alice"
 	}
-	User bob{
+	bob : User{
 		name = "Bob"
-	}
-	Post p1{
-		title="First Post"
-		body="Some text"
-	}
-	UserPost up1{
-		User:alice
-		Post:p1
+		post = 
+      p1 : Post{
+        title="First Post"
+        body="Some text"
+      }
 	}
 ]] parse succeeds

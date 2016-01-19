@@ -12,7 +12,7 @@ setup Common [[
 		X *
 	}
 	data
-	X x{
+	x : X {
 		i=3
 	}
 	execute

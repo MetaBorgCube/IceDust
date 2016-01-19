@@ -14,7 +14,7 @@ test type of ref entity this [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=8
 	}
 ]] run get-type to "X"{_}
@@ -26,7 +26,7 @@ test type of ref entity Identifier [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=6
 	}
 ]] run get-type to "X"{_}
@@ -39,7 +39,7 @@ test multiplicity of ref this [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=8
 	}
 ]] run get-multiplicity to One
@@ -51,7 +51,7 @@ test multiplicity of ref entity Identifier [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=5
 	}
 ]] run get-multiplicity to One
@@ -64,7 +64,7 @@ test ordering of ref this [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=8
 	}
 ]] run get-ordering to Ordered
@@ -76,7 +76,7 @@ test ordering of ref entity Identifier [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=5
 	}
 ]] run get-ordering to Ordered

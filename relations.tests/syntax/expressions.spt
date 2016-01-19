@@ -19,7 +19,7 @@ setup Common [[
 	}
 	
 	data
-	User u{}
+	u : User{}
 	
 	execute
 ]]

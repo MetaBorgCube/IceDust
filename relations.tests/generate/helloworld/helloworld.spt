@@ -11,7 +11,7 @@ setup Common [[
 	}
 	
 	data
-	Message hello{
+	hello : Message {
 		text="Hello World!"
 	}
 	

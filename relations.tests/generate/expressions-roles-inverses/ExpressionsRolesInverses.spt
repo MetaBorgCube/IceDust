@@ -16,27 +16,29 @@ setup Common [[
 		Marriage 1 
 	}
 	
-	data
-	Person man{}
-	Person woman{}
-	Marriage marriage{
-		husband:man
-		wife:woman
-	}
-	Person professional{}
-	Counseling c{
-		marriage:marriage
-		counselor:professional
-	}
-	
-	execute
-	man.husband
-	marriage.husband
-	marriage.counseling
-	man.husband.wife
-	man.husband.counseling
-	man.husband.counseling.counselor
+//	data
+//	Person man{}
+//	Person woman{}
+//	Marriage marriage{
+//		husband:man
+//		wife:woman
+//	}
+//	Person professional{}
+//	Counseling c{
+//		marriage:marriage
+//		counselor:professional
+//	}
+//	
+//	execute
+//	man.husband
+//	marriage.husband
+//	marriage.counseling
+//	man.husband.wife
+//	man.husband.counseling
+//	man.husband.counseling.counselor
 ]]
+
+// data section currently does not support relations between relations
 
 test Expressions Roles Inverses generate-java [[ ]] build generate-java-test
 

@@ -69,20 +69,20 @@ model
   
 data
 
-  JobOffer sideline{
+  sideline : JobOffer {
   	hourlyPay = 18
   	vacation = 0
   	thirteenth = 0
   }
   
-  JobOffer phdYear1{ monthlyPay = 2062 }
-  JobOffer phdYear2{ monthlyPay = 2403 }
-  JobOffer phdYear3{ monthlyPay = 2516 }
-  JobOffer phdYear4{ monthlyPay = 2638 }
+  phdYear1 : JobOffer { monthlyPay = 2062 }
+  phdYear2 : JobOffer { monthlyPay = 2403 }
+  phdYear3 : JobOffer { monthlyPay = 2516 }
+  phdYear4 : JobOffer { monthlyPay = 2638 }
   
-  JobOffer secondment { monthlyPay = 2350 thirteenth = 0 leaseCar = 14000 leaseCarPercentage = 14}
+  secondment : JobOffer { monthlyPay = 2350 thirteenth = 0 leaseCar = 14000 leaseCarPercentage = 14}
   
-  JobOffer consultant { monthlyPay = 2650 thirteenth = 0 leaseCar = 17000 leaseCarPercentage = 14}
+  consultant : JobOffer { monthlyPay = 2650 thirteenth = 0 leaseCar = 17000 leaseCarPercentage = 14}
   
 execute
 

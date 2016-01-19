@@ -47,17 +47,17 @@ signature constructors
 rules // check if entities have all the required attributes and roles assigned
 	
 	contains-all-errors = ![
-//		ContainsAll(
-//			NablNsAttribute(),
-//			[
-//				(NablProp_derivation-type(), Normal()),
-//				(NablProp_multiplicity(), One())
-//			],
-//			"ei-a1",
-//			"ei-a2",
-//			"ei-a3",
-//			"ei-a4"
-//		),
+		ContainsAll(
+			NablNsAttribute(),
+			[
+				(NablProp_derivation-type(), Normal()),
+				(NablProp_multiplicity(), One())
+			],
+			"ei-a1",
+			"ei-a2",
+			"ei-a3",
+			"ei-a4"
+		)
 //		ContainsAll(
 //			NablNsRole(),
 //			[],
@@ -70,7 +70,7 @@ rules // check if entities have all the required attributes and roles assigned
 	
 	eval(|f) = where("ei-a1":=f); is-entityinstance
 	eval(|f) = where("ei-a2":=f); entityinstance-get-type
-	eval(|f) = where("ei-a3":=f); entityinstance-get-attrvalues;map(attributevalue-get-attr)
+	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-member)
 	eval(|f) = where("ei-a4":=f); entityinstance-get-name
 	
 	eval(|f) = where("ei-r1":=f); is-entityinstance

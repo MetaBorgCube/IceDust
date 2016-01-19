@@ -19,7 +19,7 @@ test Resolve to shortcut [[
   
   data
   
-    Node node1{}
+    node1 : Node {}
     
   execute
   
@@ -39,7 +39,7 @@ test Resolve invalid role in shortcut fails [[
   
   data
   
-    Node node1{}
+    node1 : Node {}
     
   execute
   
