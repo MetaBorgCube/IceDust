@@ -78,7 +78,7 @@ type rules // specific references
   EntityInstanceRef(e) has ordering Ordered()
   
   EntityRef(e) : e-ty
-  where definition of e : e-ty
+  where definition of e => e-ty
   
   EntityRef(e) has multiplicity One()
   

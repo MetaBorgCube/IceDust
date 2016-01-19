@@ -10,13 +10,11 @@ context-free syntax   // entity instances
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID><TyEntityRef?> {
+    <ID> : <EntityRef> {
       <{MemberValue "\n"}*>
     }
   >
-  
-  TyEntityRef = < : <EntityRef>>
-  
+
   MemberValue.MemberValue = <
     <MemberRef> = <Value>
   >
@@ -24,7 +22,7 @@ context-free syntax   // entity instances
   Value.Comma = <
     <Value>,
     <Value>
-  >
+  > {left}
   Value = LitVal
   Value = EntityInstanceRef
   Value = EntityInstance

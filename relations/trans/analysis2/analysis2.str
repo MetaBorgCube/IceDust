@@ -40,7 +40,7 @@ rules
 		with
 			attrs      := <collect(is-attr);filter(where(attr-get-derivation))>ast;
 			<map(attr-store-expr)>attrs;
-			einsts     := <collect(is-entityinstance)>ast;
+			einsts     := <collect-all(is-entityinstance)>ast;
 			<map(einst-store-expr)>einsts
 	
 	attr-store-expr: attr -> attr
@@ -52,8 +52,9 @@ rules
 	einst-store-expr: einst -> einst
 		with
 			exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
+			exprs':= <try(sometd(entityinstance-to-entityinstanceref))>exprs;
 			name  := <entityinstance-get-name>einst;
-			<index-store-prop(|AST(), name)>exprs
+			<map(index-store-prop(|AST(), name))>exprs'
 
 rules
 	

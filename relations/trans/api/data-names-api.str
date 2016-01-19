@@ -20,6 +20,7 @@ rules // entity
 	is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
 
 	entityinstancename-get-exprs = index-get-prop(|AST());Hd
+	entityinstancename-get-membervalues = index-get-prop(|AST())
 
 rules
 	

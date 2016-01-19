@@ -2,7 +2,8 @@ module desugaring/omitted
 
 imports // constructors
 
-	signatures/Types-sig
+  signatures/Model-sig
+  signatures/Types-sig
 
 imports // functions
 	

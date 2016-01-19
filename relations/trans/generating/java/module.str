@@ -6,6 +6,10 @@ imports // constructors
 	signatures/Modules-sig	
 	desugaring/constructors
 
+imports // functions
+
+  generating/java/data
+
 rules
 
 	to-java(err):
@@ -41,7 +45,7 @@ rules
 			]|
 		with
 			if DataDef(_) := data then
-				dataJava* := <to-java(err)>data
+				dataJava* := <data-to-java(err)>moduleName
 			else
 				dataJava* := []
 			end;

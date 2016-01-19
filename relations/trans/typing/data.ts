@@ -27,7 +27,7 @@ type rules
 type rules
 
   EntityInstance(ei, e, mem) : e-ty
-  where e : e-ty
+  where definition of ei : e-ty
   
   EntityInstance(ei, e, mem) has multiplicity One()
   

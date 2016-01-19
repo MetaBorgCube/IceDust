@@ -41,3 +41,7 @@ rules // manipulate
 	datadef-set-data(|op) = DataDef(!op)
 	
 	entityinstance-set-name(|name) = EntityInstance(!name, id, id)
+	
+rules // representations    
+  
+  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members) -> EntityInstanceRef(ei)

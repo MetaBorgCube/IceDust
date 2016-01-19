@@ -10,13 +10,87 @@ imports // constructors
 
 imports // functions
 
+  api/data-names-api
+  api/model-names-api
+  api/module-names-api
 	generating/java/expressions
   names/naming/names
 	naming/_notNaBL // TODO move code
 
 rules
+  
+  to-java(err): DataDef(defs) -> []
+      
+  data-to-java(err): moduleName -> [result1*, result2*]
+    with
+      eiNames := <modulename-get-entityinstancenames>moduleName;
+      result1* := <map(ei-to-java-stm(err))>eiNames;
+      result2* := <map(ei-to-java-stms2(err));flatten-list>eiNames
+
+  ei-to-java-stm(err): x_eiName -> result
+    with
+      x_type := <get-type>x_eiName;
+      result := |[
+        x_type x_eiName = new x_type();
+      ]|
+
+  ei-to-java-stms2(err): eiName -> result
+    with
+      memberValues := <entityinstancename-get-membervalues>eiName;
+      result := <map(membervalue-to-java-stms(err|eiName));flatten-list>memberValues
+      
+  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(memberName), valueAst) -> result
+    where
+      <is-attributename>memberName
+    with
+      x_setter := $[set_[memberName]];
+      (_, attributeValueJava) := <exp-to-java-stm(err|0)>valueAst;
+      result := java:block-stm* |[
+        x_eiName.x_setter(~attributeValueJava);
+      ]|    
+          
+  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
+    where
+      <is-shortcutname>shortcutName
+    with
+      valueNames := <collect-all(eirefname)>valueAst;
+      result := <map(shortcut-to-javastms(err|x_eiName,shortcutName));flatten-list>valueNames
+
+  eirefname: EntityInstanceRef(name) -> name
+  
+  shortcut-to-javastms(err|x_eiName,shortcutName): x_eiName2 -> [result1*,result2,result3]
+    with
+      x_roleName1 := <shortcutname-get-rolename1>shortcutName;
+      x_roleName2 := <shortcutname-get-rolename2>shortcutName;
+      x_relationType := <attributename-get-entityname>x_roleName1;
+      x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]];
+      x_relationTypeRoleName1 := $[[x_relationType]_[x_roleName1]];
+      x_relationTypeRoleName2 := $[[x_relationType]_[x_roleName2]];
+      result1* := java:block-stm* |[
+        x_relationType x_relationObject = new x_relationType();
+        x_relationObject.x_roleName1 = x_eiName;
+        x_relationObject.x_roleName2 = x_eiName2;
+      ]|;
+      if <get-multiplicity-inverse;upper-one>x_roleName1 then
+        result2 := java:block-stm |[
+          x_eiName.x_relationTypeRoleName1 = x_relationObject; // only if to-one
+        ]|
+      else
+        result2 := java:block-stm |[
+          x_eiName.x_relationTypeRoleName1.add(x_relationObject); // only if to-many
+        ]|
+      end;
+      if <get-multiplicity-inverse;upper-one>x_roleName2 then
+        result3 := java:block-stm |[
+          x_eiName2.x_relationTypeRoleName2 = x_relationObject; // only if to-one
+        ]|
+      else
+        result3 := java:block-stm |[
+          x_eiName2.x_relationTypeRoleName2.add(x_relationObject); // only if to-many
+        ]|
+      end
 	
-  to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
+//  to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
 
 //	to-java(err): EntityInstance(
 //									EntityRef(x_type)
