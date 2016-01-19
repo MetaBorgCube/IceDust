@@ -17,31 +17,33 @@ model
 
 data
 
-  Person man {
-  }
+// relations between relations not supported in current data section as relation objects do not have an accessible id.
 
-  Person woman {
-  }
-
-  Marriage marriage {
-    husband : man
-    wife : woman
-  }
-
-  Person professional {
-  }
-
-  Counseling {
-    counselled : marriage
-    counselor : professional
-  }
+//  Person man {
+//  }
+//
+//  Person woman {
+//  }
+//
+//  Marriage marriage {
+//    husband : man
+//    wife : woman
+//  }
+//
+//  Person professional {
+//  }
+//
+//  Counseling {
+//    counselled : marriage
+//    counselor : professional
+//  }
 
 execute
 
-  man.marriage // get the marriage
-
-  man.marriage.wife // get his wife
-
-  man.marriage.counseling // go from the man to his marriage to the counseling of this marriage
-
-  man.marriage.counseling.counselor // and then get the counselor of this marriage
+//  man.marriage // get the marriage
+//
+//  man.marriage.wife // get his wife
+//
+//  man.marriage.counseling // go from the man to his marriage to the counseling of this marriage
+//
+//  man.marriage.counseling.counselor // and then get the counselor of this marriage

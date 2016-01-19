@@ -23,32 +23,34 @@ model
 
 data
 
-  Supplier s {}
+// tenary relations not supported in current data section
 
-  Part p {}
-
-  Project pr {}
-
-  Supply x {
-    supplier : s
-    part : p
-    project : pr
-    amount = 10
-  }
-
-  Supply y {
-    supplier : s
-    part : p
-    project : pr
-    amount = 42
-  }
+//  Supplier s {}
+//
+//  Part p {}
+//
+//  Project pr {}
+//
+//  Supply x {
+//    supplier : s
+//    part : p
+//    project : pr
+//    amount = 10
+//  }
+//
+//  Supply y {
+//    supplier : s
+//    part : p
+//    project : pr
+//    amount = 42
+//  }
 
 execute
 
-  p.supply // this part participates in two supply relations
-
-  p.supply . amount // and these two have both an amount
-
-  p.supply.supplier // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
-
-  p.supply.project // and to the same project -> 1 project, set based navigation
+//  p.supply // this part participates in two supply relations
+//
+//  p.supply . amount // and these two have both an amount
+//
+//  p.supply.supplier // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
+//
+//  p.supply.project // and to the same project -> 1 project, set based navigation

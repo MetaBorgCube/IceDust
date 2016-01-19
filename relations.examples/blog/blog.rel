@@ -18,26 +18,10 @@ model
 
 data
 
-  User me {
-  }
-
-  Post p1 {
-    title = "First post"
-  }
-
-  Post p2 {
-    title = "Second post"
-    body = "Some text"
-  }
-
-  Author {
-    user : me
-    post : p1
-  }
-
-  Author {
-    user : me
-    post : p2
+  me : User {
+    post =
+      p1 : Post {title = "First post"},
+      p2 : Post {title = "Second post" body = "Some text"}
   }
 
 execute

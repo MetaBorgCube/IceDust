@@ -12,7 +12,7 @@ model
 
 data
 
-  User me {
+  me : User {
     name = "My name"
     nameWithDefault2 = "Override default"
   }

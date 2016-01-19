@@ -23,15 +23,16 @@ model
 	
 data
 
-  Student alice   { name="Alice" }
-  Student bob     { name="Bob" }
-  Student charlie { name="Charlie" }
+  alice   : Student { name="Alice" }
+  bob     : Student { name="Bob" }
+  charlie : Student { name="Charlie" }
 
-  Course  math { name="Mathematics" }
+  math : Course {
+    name="Mathematics"
+    student = alice, bob, charlie
+  }
 
-  Enrollment { student:alice   course:math grade=9.0 }
-  Enrollment { student:bob     course:math grade=5.0 }
-  Enrollment { student:charlie course:math }
+// attributes on relations currently not supported in the data section
   
 execute
 
