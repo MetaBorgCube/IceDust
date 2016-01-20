@@ -26,8 +26,14 @@ context-free syntax   // entity instances
     <Value>
   > {left}
   Value = LitVal
-  Value = EntityInstanceRef
-  Value = EntityInstance
+  Value = EntityInstanceWrapper
+  
+  EntityInstanceWrapper.EntityInstanceWrapper = <<RelationInstance?><EntityInstanceValue>>
+  
+  EntityInstanceValue = EntityInstanceRef
+  EntityInstanceValue = EntityInstance
+  
+  RelationInstance.RelationInstance = [<[EntityInstanceValue]> ]
   
   AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  
