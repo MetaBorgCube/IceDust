@@ -43,6 +43,7 @@ signature constructors
 
 	EiAttr : Term
 	EiRole : Term
+	MemberType : Term
 	
 rules // check if entities have all the required attributes and roles assigned
 	

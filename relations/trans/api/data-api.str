@@ -14,7 +14,8 @@ rules // query
 	
 	datadef-get-data = ?DataDef(<id>)
 	
-	entityinstance-get-type = ?EntityInstance(_, EntityRef(<id>), _)
+  entityinstance-get-type = ?EntityInstance(_, EntityRef(<id>), _)
+  entityinstance-get-type = ?EntityInstance(_, <id>, _) // no type in concrete syntax (type inferred)
 	entityinstance-get-name = ?EntityInstance(<id>, _, _)
 	entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>)
 	entityinstance-get-attrvalues = ?EntityInstance(_, _, <id>)

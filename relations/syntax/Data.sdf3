@@ -10,10 +10,12 @@ context-free syntax   // entity instances
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID> : <EntityRef> {
+    <ID><EntityInstanceType?> {
       <{MemberValue "\n"}*>
     }
   >
+
+  EntityInstanceType = < : <EntityRef>>
 
   MemberValue.MemberValue = <
     <MemberRef> = <Value>
