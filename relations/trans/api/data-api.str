@@ -38,6 +38,8 @@ rules // properties
 	is-attributevalue = ?AttributeValue(_,_)
 	is-rolevalue      = ?RoleValue(_, _)
 
+  is-membervalue = ?MemberValue(_,_)
+
 	entityinstance-has-no-name = ?EntityInstance(None(), _, _)
 
 rules // manipulate

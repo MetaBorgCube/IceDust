@@ -44,17 +44,16 @@ test no error on omitting derived attribute[[
   x : X {}
 ]] 0 errors
 
-//TODO: implement
-//test error on supplying derived attribute[[
-//  model
-//  entity X{
-//    i : Int = 5
-//  }
-//  data
-//  x : X {
-//    [[i]] = 5900
-//  }
-//]] 1 error
+test error on supplying derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {
+    [[i]] = 5900
+  }
+]] 1 error
 
 test error on omitting required attribute[[
   model
