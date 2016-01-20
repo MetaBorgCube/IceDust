@@ -53,21 +53,33 @@ rules
     where
       <is-shortcutname>shortcutName
     with
-      valueNames := <collect-all(eirefname)>valueAst;
+      valueNames := <collect-all(eiwrefnames)>valueAst;
       result := <map(shortcut-to-javastms(err|x_eiName,shortcutName));flatten-list>valueNames
 
   eirefname: EntityInstanceRef(name) -> name
+  eiwrefnames: EntityInstanceWrapper(RelationInstance(EntityInstanceRef(relname)), EntityInstanceRef(name)) -> (relname,name)
+  eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
   
-  shortcut-to-javastms(err|x_eiName,shortcutName): x_eiName2 -> [result1*,result2,result3]
+  shortcut-to-javastms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*,result2,result3]
     with
       x_roleName1 := <shortcutname-get-rolename1>shortcutName;
       x_roleName2 := <shortcutname-get-rolename2>shortcutName;
       x_relationType := <attributename-get-entityname>x_roleName1;
-      x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]];
       x_relationTypeRoleName1 := $[[x_relationType]_[x_roleName1]];
       x_relationTypeRoleName2 := $[[x_relationType]_[x_roleName2]];
+      if(None() := relName) then
+        x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
+      else
+        x_relationObject := relName
+      end;
+      if(None() := relName) then
+        result0* := java:block-stm* |[
+          x_relationType x_relationObject = new x_relationType();
+        ]|
+      else
+        result0* := []
+      end;
       result1* := java:block-stm* |[
-        x_relationType x_relationObject = new x_relationType();
         x_relationObject.x_roleName1 = x_eiName;
         x_relationObject.x_roleName2 = x_eiName2;
       ]|;
