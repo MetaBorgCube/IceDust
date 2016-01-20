@@ -87,14 +87,13 @@ rules // api for checking something contains all of def
 				def-child-ns, 
 				filters,
 				f-on,
-//				f-def-of,
 				f-ast-children,
 				f-msg-on
 			) := f
 		where
 			<eval(|f-on)>a
 		with
-      a-ty                    := <get-or-create-property-task(|ctx, Type())>a;
+      a-ty                    := <_get-or-create-property-task(|ctx, Type())>a;
 			a-ty-def 	              := <_nabl-create-collectdefs(|ctx)> a-ty;
 			[a-ty-def-children]     := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def];
 			a-children              := <eval(|f-ast-children)>a;

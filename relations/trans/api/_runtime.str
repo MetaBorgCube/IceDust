@@ -84,6 +84,8 @@ rules
 	_nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
 	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
 	
+	_get-or-create-property-task(|ctx, prop) = get-or-create-property-task(|ctx, prop)
+	
 	_nabl-uri = nabl-uri
 	
 	_get-type = get-type
