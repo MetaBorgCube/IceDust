@@ -91,10 +91,10 @@ binding rules // model
 		defines Inverse inverseName
 			of multiplicity role-mu
 			of ordering role-ord
-			of type e-ty
+			of type this-ty
 			of origin-role role
 			where This() resolves to This this
-			and this has type e-ty
+			and this has type this-ty
 
 	Shortcut(NaBLHelp(RoleRef(role1), type1), shortcut1, NaBLHelp(RoleRef(role2), type2), shortcut2):
 		defines non-unique Entity type1
