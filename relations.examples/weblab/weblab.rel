@@ -68,11 +68,8 @@ model
     name : String = course.name + " " + assignment.name
   }
   
-  relation AssignmentPart {
-    Assignment * whole <- wholeAssignment
-    Assignment ? part  <- partAssignment
-    
-    name : String = whole.name + " " + part.name
+  relation Assignment.whole ? <-> * Assignment.parts {
+    name : String = whole.name + " " + parts.name
   }
   
   entity StudentAssignment {
@@ -90,7 +87,7 @@ model
     gradeSubmission : Int? = submission.gradeReal
     gradeParts      : Int? = count(parts)==count(parts.grade)
                              ? sum ( parts.gradeWeighted ) /. 
-                               sum ( assignment.part.gradeWeight )
+                               sum ( assignment.parts.gradeWeight )
                              : noValue
     
     noValue : Int?
@@ -106,120 +103,103 @@ model
 
 data
 
-  alice   : Student { name="Alice"   }
-  bob     : Student { name="Bob"     }
-  charlie : Student { name="Charlie" }
-  
-  compiler : Course { name="Compiler Construction" }
-
-  // current data section does not support relation attributes yet
-
-//  Enrollment enA { student:alice   course:compiler  }
-//  Enrollment enB { student:bob     course:compiler  }
-//  Enrollment enC { student:charlie course:compiler  }
-//
-//  Assignment comp       { name="root" }
-//  Assignment exam       { name="exam"       gradeWeight=2 gradeMinimum=60 }
-//  Assignment practical  { name="practical"  gradeWeight=1 gradeMinimum=60 }
-//  Assignment practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7 }
-//  Assignment practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20 }
-//
-//  CourseAssignments { course:compiler assignment:comp }
-//
-//  AssignmentPart { whole:comp      part:exam       }
-//  AssignmentPart { whole:comp      part:practical  }
-//  AssignmentPart { whole:practical part:practicalA }
-//  AssignmentPart { whole:practical part:practicalB }
-//
-//  Submission sa1 { student:alice   assignment:practicalA grade=50  date=7  }
-//  Submission sa2 { student:alice   assignment:practicalB grade=90  date=13 }
-//  Submission sa3 { student:alice   assignment:exam       grade=60          }
-//  Submission sb1 { student:bob     assignment:practicalA grade=50  date=7  }
-//  Submission sb2 { student:bob     assignment:practicalB grade=60  date=10 }
-//  Submission sb3 { student:bob     assignment:exam       grade=100         }
-//  Submission sc1 { student:charlie assignment:practicalA grade=88  date=7  }
-//  Submission sc2 { student:charlie assignment:practicalB grade=76  date=15 }
-//  Submission sc3 { student:charlie assignment:exam       grade=98          }
-//  
-//  // these entities and relations should be derived
-//  StudentAssignment aComp   { }
-//  StudentAssignment aExam   { }
-//  StudentAssignment aPract  { }
-//  StudentAssignment aPractA { }
-//  StudentAssignment aPractB { }
-//  StudentAssignment bComp   { }
-//  StudentAssignment bExam   { }
-//  StudentAssignment bPract  { }
-//  StudentAssignment bPractA { }
-//  StudentAssignment bPractB { }
-//  StudentAssignment cComp   { }
-//  StudentAssignment cExam   { }
-//  StudentAssignment cPract  { }
-//  StudentAssignment cPractA { }
-//  StudentAssignment cPractB { }
-//  
-//  StudentAssignmentPart { whole:aComp  part:aExam   }
-//  StudentAssignmentPart { whole:aComp  part:aPract  }
-//  StudentAssignmentPart { whole:aPract part:aPractA }
-//  StudentAssignmentPart { whole:aPract part:aPractB }
-//  StudentAssignmentPart { whole:bComp  part:bExam   }
-//  StudentAssignmentPart { whole:bComp  part:bPract  }
-//  StudentAssignmentPart { whole:bPract part:bPractA }
-//  StudentAssignmentPart { whole:bPract part:bPractB }
-//  StudentAssignmentPart { whole:cComp  part:cExam   }
-//  StudentAssignmentPart { whole:cComp  part:cPract  }
-//  StudentAssignmentPart { whole:cPract part:cPractA }
-//  StudentAssignmentPart { whole:cPract part:cPractB }
-//
-//  SA_E { studentAssignment:aComp   enrollment:enA }
-//  SA_E { studentAssignment:bComp   enrollment:enB }
-//  SA_E { studentAssignment:cComp   enrollment:enC }
-//
-//  SA_S { studentAssignment:aPractA submission:sa1 }
-//  SA_S { studentAssignment:aPractB submission:sa2 }
-//  SA_S { studentAssignment:aExam   submission:sa3 }
-//  SA_S { studentAssignment:bPractA submission:sb1 }
-//  SA_S { studentAssignment:bPractB submission:sb2 }  
-//  SA_S { studentAssignment:bExam   submission:sb3 }
-//  SA_S { studentAssignment:cPractA submission:sc1 }
-//  SA_S { studentAssignment:cPractB submission:sc2 }
-//  SA_S { studentAssignment:cExam   submission:sc3 }
-//  
-//  SA_A { studentAssignment:aComp   assignment:comp       }
-//  SA_A { studentAssignment:aExam   assignment:exam       }
-//  SA_A { studentAssignment:aPract  assignment:practical  }
-//  SA_A { studentAssignment:aPractA assignment:practicalA }
-//  SA_A { studentAssignment:aPractB assignment:practicalB }
-//  SA_A { studentAssignment:bComp   assignment:comp       }
-//  SA_A { studentAssignment:bExam   assignment:exam       }
-//  SA_A { studentAssignment:bPract  assignment:practical  }
-//  SA_A { studentAssignment:bPractA assignment:practicalA }
-//  SA_A { studentAssignment:bPractB assignment:practicalB }
-//  SA_A { studentAssignment:cComp   assignment:comp       }
-//  SA_A { studentAssignment:cExam   assignment:exam       }
-//  SA_A { studentAssignment:cPract  assignment:practical  }
-//  SA_A { studentAssignment:cPractA assignment:practicalA }
-//  SA_A { studentAssignment:cPractB assignment:practicalB }
+  compiler : Course {
+    name = "Compiler Construction"
+    student =
+      < enA : Enrollment { } >
+      alice : Student {
+        name = "Alice"
+      },
+      < enB : Enrollment { } >
+      bob : Student {
+        name = "Bob"
+      },
+      < enC : Enrollment {  } >
+      charlie : Student {
+        name = "Charlie"
+      }
+    assignment = 
+      comp {
+        name = "root"
+        parts =
+          exam       { name="exam"       gradeWeight=2 gradeMinimum=60
+            student =
+              <sa3:Submission{grade=60 }>alice,
+              <sb3:Submission{grade=100}>bob,
+              <sc3:Submission{grade=98 }>charlie
+            studentAssignments = aExam, bExam, cExam
+          },
+          practical  { name="practical"  gradeWeight=1 gradeMinimum=60
+            parts =
+              practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7
+                student =
+                  <sa1:Submission{grade=50  date=7 }>alice,
+                  <sb1:Submission{grade=50  date=7 }>bob,
+                  <sc1:Submission{grade=88  date=7 }>charlie
+                studentAssignments = aPractA, bPractA, cPractA
+              },
+              practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20
+                student =
+                  <sa2:Submission{grade=90  date=13 }>alice,
+                  <sb2:Submission{grade=60  date=10 }>bob,
+                  <sc2:Submission{grade=76  date=15 }>charlie
+                studentAssignments = aPractB, bPractB, cPractB
+              }
+            studentAssignments = aPract, bPract, cPract
+          }
+        studentAssignments =
+          aComp {
+            enrollment = enA 
+            parts = 
+              aExam { submission = sa3 },
+              aPract {
+                parts =
+                  aPractA { submission = sa1 },
+                  aPractB { submission = sa2 }
+              }
+          },
+          bComp {
+            enrollment = enB 
+            parts = 
+              bExam { submission = sb3 },
+              bPract {
+                parts =
+                  bPractA { submission = sb1 },
+                  bPractB { submission = sb2 }
+              }
+          },
+          cComp {
+            enrollment = enC 
+            parts = 
+              cExam { submission = sc3 },
+              cPract {
+                parts =
+                  cPractA { submission = sc1 },
+                  cPractB { submission = sc2 }
+              }
+          }
+      }
+  } 
 
 execute
 
-//  "Alice's compiler pass & grade:"
-//  enA.pass
-//  enA.grade
-//  
-//  ""
-//  "Bob's compiler pass & grade:"
-//  enB.pass
-//  enB.grade
-//
-//  ""
-//  "Charlie's compiler pass & grade:"
-//  enC.pass
-//  enC.grade
-//
-//  ""
-//  "The average of all student grades:"
-//  compiler.avgGrade
-//  "Pass percentage:"
-//  compiler.passPerc
+  "Alice's compiler pass & grade:"
+  enA.pass
+  enA.grade
+  
+  ""
+  "Bob's compiler pass & grade:"
+  enB.pass
+  enB.grade
+
+  ""
+  "Charlie's compiler pass & grade:"
+  enC.pass
+  enC.grade
+
+  ""
+  "The average of all student grades:"
+  compiler.avgGrade
+  "Pass percentage:"
+  compiler.passPerc
   

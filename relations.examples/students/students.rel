@@ -23,13 +23,21 @@ model
 	
 data
 
-  alice   : Student { name="Alice" }
-  bob     : Student { name="Bob" }
-  charlie : Student { name="Charlie" }
-
   math : Course {
     name="Mathematics"
-    student = alice, bob, charlie
+    student =
+      < enrollmentAlice : Enrollment { grade = 9.0 } >
+      alice : Student {
+        name = "Alice"
+      },
+      < enrollmentBob : Enrollment { grade = 5.0 } >
+      bob : Student {
+        name = "Bob"
+      },
+      < enrollmentCharlie : Enrollment {  } >
+      charlie : Student {
+        name = "Charlie"
+      }
   }
 
 // attributes on relations currently not supported in the data section

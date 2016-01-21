@@ -200,7 +200,8 @@ rules
 		
 				  public static Collection<x_relType> x_in(x_entityType in)
 				  { 
-				    return in == null ? null : in.x_relRole;
+				    Collection<x_relType> empty = Expressions.emptyCollection();
+				    return in == null ? empty : in.x_relRole;
 				  }
 		
 				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
