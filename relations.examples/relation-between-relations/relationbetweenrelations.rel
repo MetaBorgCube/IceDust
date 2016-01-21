@@ -18,8 +18,6 @@ model
 
 data
 
-// relations between relations not supported in current data section as relation objects do not have an accessible id.
-
   man : Person {
     name = "Bob"
     wife =

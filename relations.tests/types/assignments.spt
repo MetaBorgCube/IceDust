@@ -35,7 +35,7 @@ test error on assign attribute Int to String [[
 	}
 ]] 1 error
 
-// current data section does not allow assigning to roles specificly
+//TODO: current data section does not allow assigning to roles specificly
 //test error on assign role wrong entityType [[
 //	model
 //	entity Node{}
