@@ -21,20 +21,20 @@ rules
   
   to-java(err): DataDef(defs) -> []
       
-  data-to-java(err): moduleName -> [result1*, result2*]
+  data-modulename-to-java-stms(err): moduleName -> [result1*, result2*]
     with
       eiNames := <modulename-get-entityinstancenames>moduleName;
-      result1* := <map(ei-to-java-stm(err))>eiNames;
-      result2* := <map(ei-to-java-stms2(err));flatten-list>eiNames
+      result1* := <map(entityinstancename-to-java-stm(err))>eiNames;
+      result2* := <map(entityinstancename-to-java-stms2(err));flatten-list>eiNames
 
-  ei-to-java-stm(err): x_eiName -> result
+  entityinstancename-to-java-stm(err): x_eiName -> result
     with
       x_type := <get-type>x_eiName;
       result := |[
         x_type x_eiName = new x_type();
       ]|
 
-  ei-to-java-stms2(err): eiName -> result
+  entityinstancename-to-java-stms2(err): eiName -> result
     with
       memberValues := <entityinstancename-get-membervalues>eiName;
       result := <map(membervalue-to-java-stms(err|eiName));flatten-list>memberValues
@@ -54,13 +54,13 @@ rules
       <is-shortcutname>shortcutName
     with
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(shortcut-to-javastms(err|x_eiName,shortcutName));flatten-list>valueNames
+      result := <map(data-shortcutname-to-java-stms(err|x_eiName,shortcutName));flatten-list>valueNames
 
   eirefname: EntityInstanceRef(name) -> name
   eiwrefnames: EntityInstanceWrapper(RelationInstance(EntityInstanceRef(relname)), EntityInstanceRef(name)) -> (relname,name)
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
   
-  shortcut-to-javastms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*,result2,result3]
+  data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*,result2,result3]
     with
       x_roleName1 := <shortcutname-get-rolename1>shortcutName;
       x_roleName2 := <shortcutname-get-rolename2>shortcutName;

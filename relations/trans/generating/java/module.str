@@ -8,7 +8,9 @@ imports // constructors
 
 imports // functions
 
+  api/module-names-api
   generating/java/data
+  generating/java/model
 
 rules
 
@@ -26,7 +28,7 @@ rules
 		with
 			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
 			if ModelDef(_) := model then
-				modelJava* := <to-java(err)>model
+			  modelJava*  := <modulename-get-entitynames;map(model-entityname-to-java-typedec(err))>moduleName
 			else
 				modelJava* := []
 			end
@@ -44,11 +46,7 @@ rules
 				}
 			]|
 		with
-			if DataDef(_) := data then
-				dataJava* := <data-to-java(err)>moduleName
-			else
-				dataJava* := []
-			end;
+			dataJava* := <data-modulename-to-java-stms(err)>moduleName;
 			if Executable(_) := execute then
 				executeJava* := <to-java(err)>execute
 			else

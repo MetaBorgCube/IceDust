@@ -11,267 +11,304 @@ imports // constructors
 imports // functions
 
 	api/_runtime
+  api/model-names-api
   names/naming/names
 	naming/_notNaBL
 	generating/java/expressions
 	generating/java/types
 
 rules
-	
-  to-java(err): ModelDef(model) -> <map(try(to-java(err)))>model
 
-  to-java(err): Entity(_, name, attributesAndRoles) -> 
-		type-dec |[
-			class x_class
-			{
-				public x_class()
-				{
-					~participateJavaInit*
-				}
-				~attributesAndRolesJava*
-				~participateJava*
-			}
-		]|
-	with
-		x_class := name;
-		attributesAndRolesJava* := <map(to-java(err|name));concat>attributesAndRoles
-	with
-		inverses := <_nabl-get-child-definitions(|NablNsInverse())> name;
-		origin-roles := <map(get-origin-role)> inverses;
-		participateJava* := <map(to-java-participate(err))> origin-roles;
-		participateJavaInit* := <map(to-java-participate-init(err))> origin-roles
-	
-	to-java-participate(err): roleName -> result
-		with
-			relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
-			x_field := $[[relationName]_[roleName]];
-			x_type := relationName;
-			multiplicity := <get-multiplicity-inverse>roleName
-		with
-			if <upper-one> multiplicity then
-				result := |[ public x_type x_field; ]|
-			else
-				result := |[ public Collection<x_type> x_field; ]|
-			end
+  model-entityname-to-java-typedec(err): x_name -> result
+    where
+      is-entityname
+    with
+      attributesJava*   := <entityname-get-attributenames;map(model-attributename-to-java-classbodydecs(err));flatten-list>x_name;
+      rolesJava*        := <entityname-get-rolenames     ;map(model-rolename-to-java-classbodydecs(err)     );flatten-list>x_name;
+      inversesJava*     := <entityname-get-inversenames  ;map(model-inversename-to-java-classbodydec(err)   )             >x_name;
+      initInversesJava* := <entityname-get-inversenames  ;map(model-init-inversename-to-java-stm(err)       )             >x_name
+    with
+      result := type-dec |[
+        class x_name
+        {
+          public x_name()
+          {
+            ~initInversesJava*
+          }
+          ~attributesJava*
+          ~rolesJava*
+          ~inversesJava*
+        }
+      ]|
 
-	to-java-participate-init(err): roleName -> result
-		with
-			relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
-			x_field := $[[relationName]_[roleName]];
-			x_type := relationName;
-			multiplicity := <get-multiplicity-inverse>roleName
-		with
-			if <upper-one> multiplicity then
-				result := |[ x_field = null; ]|
-			else
-				result := |[ x_field = Expressions.emptyCollection(); ]|
-			end
+rules
 
-	to-java(err|x_entity): Attribute(x_name, type, multiplicity, derivation) -> result
-		where
-			Normal() := <get-derivation-type>x_name
-		with
-			x_type := <type-to-java(err)>type;
-			x_getter := $[get_[x_name]];
-			x_setter := $[set_[x_name]]
-		with
-			result :=
-				|[
-					private x_type x_name;
-					
-					public void x_setter(x_type x_name)
-					{ 
-						this.x_name = x_name;
-					}
-					
-				  public x_type x_getter()
-				  { 
-				    return x_name;
-				  }
-				  
-					public static x_type x_getter(x_entity c)
-					{ 
-						return c == null ? null : c.x_getter();
-					}
-				  
-					public static Collection<x_type> x_getter(Collection<x_entity> c)
-					{ 
-						Collection<x_type> result = Expressions.emptyCollection();
-						for(x_entity n : c)
-						{ 
-							x_type v = n.x_getter();
-							if(v != null)
-								result.add(v);
-						}
-						return result;
-					}
-				]|
+  model-attributename-to-java-classbodydecs(err): x_name -> result
+    where
+      is-attributename
+    where
+      attributename-is-normal
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_type   := <_get-type;type-to-java(err)>x_name;
+      x_getter := $[get_[x_name]];
+      x_setter := $[set_[x_name]]
+    with
+      result :=
+        class-body-dec* |[
+          private x_type x_name;
+          
+          public void x_setter(x_type x_name)
+          { 
+            this.x_name = x_name;
+          }
+          
+          public x_type x_getter()
+          { 
+            return x_name;
+          }
+          
+          public static x_type x_getter(x_entity c)
+          { 
+            return c == null ? null : c.x_getter();
+          }
+          
+          public static Collection<x_type> x_getter(Collection<x_entity> c)
+          { 
+            Collection<x_type> result = Expressions.emptyCollection();
+            for(x_entity n : c)
+            { 
+              x_type v = n.x_getter();
+              if(v != null)
+                result.add(v);
+            }
+            return result;
+          }
+        ]|
+        
+  model-attributename-to-java-classbodydecs(err): x_name -> result
+    where
+      is-attributename
+    where
+      attributename-is-default
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_type   := <_get-type;type-to-java(err)>x_name;
+      x_getter := $[get_[x_name]];
+      x_setter := $[set_[x_name]];
+      (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_name
+    with
+      result :=
+        class-body-dec* |[
+          private x_type x_name;
+          
+          public void x_setter(x_type x_name)
+          { 
+            this.x_name = x_name;
+          }
+          
+          public x_type x_getter()
+          { 
+            if(x_name != null)
+              return x_name;
+            ~stms*
+            return ~exp;
+          }
+          
+          public static x_type x_getter(x_entity c)
+          { 
+            return c == null ? null : c.x_getter();
+          }
+          
+          public static Collection<x_type> x_getter(Collection<x_entity> c)
+          { 
+            Collection<x_type> result = Expressions.emptyCollection();
+            for(x_entity n : c)
+            { 
+              x_type v = n.x_getter();
+              if(v != null)
+                result.add(v);
+            }
+            return result;
+          }
+        ]|
+        
+  model-attributename-to-java-classbodydecs(err): x_name -> result
+    where
+      is-attributename
+    where
+      attributename-is-derivation
+    with
+      x_entity := <attributename-get-entityname>x_name;
+      x_type   := <_get-type;type-to-java(err)>x_name;
+      x_getter := $[get_[x_name]];
+      x_setter := $[set_[x_name]];
+      (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_name
+    with
+      result :=
+        class-body-dec* |[
+          public x_type x_getter()
+          { 
+            ~stms*
+            return ~exp;
+          }
+          
+          public static x_type x_getter(x_entity c)
+          { 
+            return c == null ? null : c.x_getter();
+          }
+          
+          public static Collection<x_type> x_getter(Collection<x_entity> c)
+          { 
+            Collection<x_type> result = Expressions.emptyCollection();
+            for(x_entity n : c)
+            { 
+              x_type v = n.x_getter();
+              if(v != null)
+                result.add(v);
+            }
+            return result;
+          }
+        ]|
 
-	to-java(err|x_entity): Attribute(x_name, type, _, Derivation(derivationExpr, _)) -> result
-		where
-			DefaultValue() := <get-derivation-type>x_name
-		with
-			x_type := <type-to-java(err)>type;
-			x_getter := $[get_[x_name]];
-			x_setter := $[set_[x_name]];
-			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
-		with
-			result :=
-				|[
-					private x_type x_name;
-					
-					public void x_setter(x_type x_name)
-					{ 
-						this.x_name = x_name;
-					}
-					
-				  public x_type x_getter()
-				  { 
-				  	if(x_name != null)
-				  		return x_name;
-				  	~stms*
-		  			return ~exp;
-				  }
-				  
-					public static x_type x_getter(x_entity c)
-					{ 
-						return c == null ? null : c.x_getter();
-					}
-				  
-					public static Collection<x_type> x_getter(Collection<x_entity> c)
-					{ 
-						Collection<x_type> result = Expressions.emptyCollection();
-						for(x_entity n : c)
-						{ 
-							x_type v = n.x_getter();
-							if(v != null)
-								result.add(v);
-						}
-						return result;
-					}
-				]|
-				
-	to-java(err|x_entity): Attribute(x_name, type, _, Derivation(derivationExpr, _)) -> result
-		where
-			Derivation() := <get-derivation-type>x_name
-		with
-			x_type := <type-to-java(err)>type;
-			x_getter := $[get_[x_name]];
-			x_setter := $[set_[x_name]];
-			(stms*, exp) := <exp-to-java-stm(err|0)>derivationExpr
-		with
-			result :=
-				|[
-				  public x_type x_getter()
-				  { 
-				  	~stms*
-		  			return ~exp;
-				  }
-				  
-					public static x_type x_getter(x_entity c)
-					{ 
-						return c == null ? null : c.x_getter();
-					}
-				  
-					public static Collection<x_type> x_getter(Collection<x_entity> c)
-					{ 
-						Collection<x_type> result = Expressions.emptyCollection();
-						for(x_entity n : c)
-						{ 
-							x_type v = n.x_getter();
-							if(v != null)
-								result.add(v);
-						}
-						return result;
-					}
-				]|
+rules
 
-	to-java(err|x_relType): Role(x_entityType, multiplicity, _, x_roleName, inverse) -> result
-		where
-			<upper-many>multiplicity
-		with
-			x_in := $[[x_roleName]_in];
-			x_out := $[[x_roleName]_out];
-			x_relRole := $[[x_relType]_[x_roleName]]
-		with
-			result :=
-				|[
-				  public x_entityType x_roleName;
-		
-				  public static Collection<x_relType> x_in(x_entityType in)
-				  { 
-				    Collection<x_relType> empty = Expressions.emptyCollection();
-				    return in == null ? empty : in.x_relRole;
-				  }
-		
-				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
-				  { 
-				    Collection<x_relType> result = Expressions.emptyCollection();
-				    for(x_entityType elem : in)
-				    { 
-				      result.addAll(elem.x_relRole);
-				    }
-				    return result;
-				  }
-				
-				  public static x_entityType x_out(x_relType out)
-				  { 
-				    return out == null ? null : out.x_roleName;
-				  }
-				
-				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
-				  { 
-				    Collection<x_entityType> result = Expressions.emptyCollection();
-				    for(x_relType u : out)
-				    { 
-				      result.add(u.x_roleName);
-				    }
-				    return result;
-				  }
-				]|
+  model-rolename-to-java-classbodydecs(err): x_roleName -> result
+    where
+      is-rolename
+    where
+      get-multiplicity-inverse;upper-many
+    with
+      x_inverseName := <rolename-get-inversename>x_roleName;
+      x_entityType  := <attributename-get-entityname>x_inverseName;
+      x_relType     := <attributename-get-entityname>x_roleName;
+      x_getter      := $[get_[x_roleName]];
+      x_in          := $[[x_roleName]_in];
+      x_out         := $[[x_roleName]_out];
+      x_relRole     := $[[x_relType]_[x_roleName]]
+    with
+      result :=
+        class-body-dec* |[
+          public x_entityType x_roleName;
+    
+          public static Collection<x_relType> x_in(x_entityType in)
+          { 
+            Collection<x_relType> empty = Expressions.emptyCollection();
+            return in == null ? empty : in.x_relRole;
+          }
+    
+          public static Collection<x_relType> x_in(Collection<x_entityType> in)
+          { 
+            Collection<x_relType> result = Expressions.emptyCollection();
+            for(x_entityType elem : in)
+            { 
+              result.addAll(elem.x_relRole);
+            }
+            return result;
+          }
+        
+          public static x_entityType x_out(x_relType out)
+          { 
+            return out == null ? null : out.x_roleName;
+          }
+        
+          public static Collection<x_entityType> x_out(Collection<x_relType> out)
+          { 
+            Collection<x_entityType> result = Expressions.emptyCollection();
+            for(x_relType u : out)
+            { 
+              result.add(u.x_roleName);
+            }
+            return result;
+          }
+        ]|
+        
+  model-rolename-to-java-classbodydecs(err): x_roleName -> result
+    where
+      is-rolename
+    where
+      get-multiplicity-inverse;upper-one
+    with
+      x_inverseName := <rolename-get-inversename>x_roleName;
+      x_entityType  := <attributename-get-entityname>x_inverseName;
+      x_relType     := <attributename-get-entityname>x_roleName;
+      x_getter      := $[get_[x_roleName]];
+      x_in          := $[[x_roleName]_in];
+      x_out         := $[[x_roleName]_out];
+      x_relRole     := $[[x_relType]_[x_roleName]]
+    with
+      result :=
+        class-body-dec* |[
+          public x_entityType x_roleName;
+    
+          public static x_relType x_in(x_entityType in)
+          { 
+            return in.x_relRole;
+          }
+    
+          public static Collection<x_relType> x_in(Collection<x_entityType> in)
+          { 
+            Collection<x_relType> result = Expressions.emptyCollection();
+            for(x_entityType elem : in)
+            { 
+              result.add(elem.x_relRole);
+            }
+            return result;
+          }
+        
+          public static x_entityType x_out(x_relType out)
+          { 
+            return out == null ? null : out.x_roleName;
+          }
+        
+          public static Collection<x_entityType> x_out(Collection<x_relType> out)
+          { 
+            Collection<x_entityType> result = Expressions.emptyCollection();
+            for(x_relType u : out)
+            { 
+              result.add(u.x_roleName);
+            }
+            return result;
+          }
+        ]|
 
-	to-java(err|x_relType): Role(x_entityType, multiplicity, _, x_roleName, inverse) -> result
-		where
-			<upper-one>multiplicity
-		with
-			x_in := $[[x_roleName]_in];
-			x_out := $[[x_roleName]_out];
-			x_relRole := $[[x_relType]_[x_roleName]]
-		with
-			result :=
-				|[
-				  public x_entityType x_roleName;
-		
-				  public static x_relType x_in(x_entityType in)
-				  { 
-				    return in.x_relRole;
-				  }
-		
-				  public static Collection<x_relType> x_in(Collection<x_entityType> in)
-				  { 
-				    Collection<x_relType> result = Expressions.emptyCollection();
-				    for(x_entityType elem : in)
-				    { 
-				      result.add(elem.x_relRole);
-				    }
-				    return result;
-				  }
-				
-				  public static x_entityType x_out(x_relType out)
-				  { 
-				    return out == null ? null : out.x_roleName;
-				  }
-				
-				  public static Collection<x_entityType> x_out(Collection<x_relType> out)
-				  { 
-				    Collection<x_entityType> result = Expressions.emptyCollection();
-				    for(x_relType u : out)
-				    { 
-				      result.add(u.x_roleName);
-				    }
-				    return result;
-				  }
-				]|
+rules
 
+  model-inversename-to-java-classbodydec(err): inversename -> result
+    where
+      is-inversename
+    with
+      roleName     := <inversename-get-rolename>inversename;
+      relationName := <attributename-get-entityname>roleName;
+      x_field      := $[[relationName]_[roleName]];
+      x_type       := relationName;
+      multiplicity := <get-multiplicity-inverse>roleName
+    with
+      if <get-multiplicity;upper-one> inversename then
+        result := class-body-dec |[
+          public x_type x_field;
+        ]|
+      else
+        result := class-body-dec |[
+          public Collection<x_type> x_field;
+        ]|
+      end
 
-	to-java(err|x_entity): Shortcut(_,_,_,_) -> []
+rules
+
+  model-init-inversename-to-java-stm(err): inversename -> result
+    with
+      roleName     := <inversename-get-rolename>inversename;
+      relationName := <attributename-get-entityname>roleName;
+      x_field      := $[[relationName]_[roleName]];
+      x_type       := relationName
+    with
+      if <get-multiplicity;upper-one> inversename then
+        result := java:block-stm |[
+          x_field = null;
+        ]|
+      else
+        result := java:block-stm |[
+          x_field = Expressions.emptyCollection();
+        ]|
+      end
