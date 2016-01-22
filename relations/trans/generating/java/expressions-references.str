@@ -8,6 +8,8 @@ imports // constructors
 imports // functions
 	
 	api/_runtime
+  api/data-names-api
+  api/model-names-api
   names/naming/names
 	generating/java/types
 
@@ -15,7 +17,7 @@ rules // member access
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			NablNsAttribute() := <_nabl-uri;_nabl-uri-namespace>name
+			<is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_expType := <_get-type>e1;
 			x_getter := $[get_[name]];
@@ -30,71 +32,15 @@ rules // member access
 			]|;
 			exp := expr |[x_var]|
 
-	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
-		where
-			NablNsRole() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			x_call := $[[name]_out];
-			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
-			refty := <java-type>e;
-			j := <add>(i, <length>stms*);
-			x_var := $[var[<inc>j]];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> name
-		with
-			stms := bstm* |[
-				~stms*
-				refty x_var = x_relationName.x_call(~prevJava);
-			]|;
-			exp := expr |[x_var]|
-	
-	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
-		where
-			NablNsInverse() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			roleName := <get-origin-role>name;
-			x_call := $[[roleName]_in];
-			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
-			refty := <java-type>e;
-			j := <add>(i, <length>stms*);
-			x_var := $[var[<inc>j]];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName
-		with
-			stms := bstm* |[
-				~stms*
-				refty x_var = x_relationName.x_call(~prevJava);
-			]|;
-			exp := expr |[x_var]|
-	
-	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
-		where
-			NablNsShortcut() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			roleName := <get-origin-role>name;
-			roleName2 := <get-origin-role2>name;
-			x_call := $[[roleName]_in];
-			x_call2 := $[[roleName2]_out];
-			(stms*, prevJava) := <exp-to-java-stm(err|i)>e1;
-			refty := <java-type>e;
-			j := <add>(i, <length>stms*);
-			x_var := $[var[<inc>j]];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName
-		with
-			stms := bstm* |[
-				~stms*
-				refty x_var = x_relationName.x_call2(x_relationName.x_call(~prevJava));
-			]|;
-			exp := expr |[x_var]|
-
-
 rules // direct references
 
 	exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
 		where
-			NablNsEntityInstance() := <_nabl-uri;_nabl-uri-namespace>x_entityName
+			<is-entityinstancename>x_entityName
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-			NablNsAttribute() := <_nabl-uri;_nabl-uri-namespace>name
+      <is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_getter := $[get_[name]];
 			refty := <java-type>e;
@@ -105,50 +51,5 @@ rules // direct references
 			]|;
 			exp := expr |[x_var]|
 				 
-	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
-		where
-			NablNsRole() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			x_call := $[[name]_out];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> name;
-			refty := <java-type>e;
-			x_var := $[var[<inc>i]]
-		with
-			stms := bstm* |[
-				refty x_var = x_relationName.x_call(this);
-			]|;
-			exp := expr |[x_var]|
-				 
-	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
-		where
-			NablNsInverse() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			roleName := <get-origin-role>name;
-			x_call := $[[roleName]_in];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
-			refty := <java-type>e;
-			x_var := $[var[<inc>i]]
-		with
-			stms := bstm* |[
-				refty x_var = x_relationName.x_call(this);
-			]|;
-			exp := expr |[x_var]|
-				 
-	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
-		where
-			NablNsShortcut() := <_nabl-uri;_nabl-uri-namespace>name
-		with
-			roleName := <get-origin-role>name;
-			roleName2 := <get-origin-role2>name;
-			x_call := $[[roleName]_in];
-			x_call2 := $[[roleName2]_out];
-			x_relationName := <_nabl-uri;_nabl-uri-parent;_nabl-uri-name> roleName;
-			refty := <java-type>e;
-			x_var := $[var[<inc>i]]
-		with
-			stms := bstm* |[
-				refty x_var = x_relationName.x_call2(x_relationName.x_call(this));
-			]|;
-			exp := expr |[x_var]|
 			
 	exp-to-java-stm(err|i): This() -> ([], |[this]|)

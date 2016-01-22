@@ -67,11 +67,17 @@ rules
 
   data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*,result2,result3]
     with
-      x_roleName1 := <shortcutname-get-rolename1>shortcutName;
-      x_roleName2 := <shortcutname-get-rolename2>shortcutName;
+      x_roleName1    := <shortcutname-get-rolename1>shortcutName;
+      x_roleName2    := <shortcutname-get-rolename2>shortcutName;
       x_relationType := <attributename-get-entityname>x_roleName1;
-      x_relationTypeRoleName1 := $[[x_relationType]_[x_roleName1]];
-      x_relationTypeRoleName2 := $[[x_relationType]_[x_roleName2]];
+      x_inverseName1 := <rolename-get-inversename>x_roleName1;
+      x_inverseName2 := <rolename-get-inversename>x_roleName2;
+      x_set01        := $[set_[x_roleName1]];
+      x_set02        := $[set_[x_roleName2]];
+      x_set1         := $[set_[x_inverseName1]];
+      x_set2         := $[set_[x_inverseName2]];
+      x_add1         := $[add_[x_inverseName1]];
+      x_add2         := $[add_[x_inverseName2]];
       if(None() := relName) then
         x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
       else
@@ -85,24 +91,24 @@ rules
         result0* := []
       end;
       result1* := java:block-stm* |[
-        x_relationObject.x_roleName1 = x_eiName;
-        x_relationObject.x_roleName2 = x_eiName2;
+        x_relationObject.x_set01(x_eiName);
+        x_relationObject.x_set02(x_eiName2);
       ]|;
       if <get-multiplicity-inverse;upper-one>x_roleName1 then
         result2 := java:block-stm |[
-          x_eiName.x_relationTypeRoleName1 = x_relationObject; // only if to-one
+          x_eiName.x_set1(x_relationObject); // only if to-one
         ]|
       else
         result2 := java:block-stm |[
-          x_eiName.x_relationTypeRoleName1.add(x_relationObject); // only if to-many
+          x_eiName.x_add1(x_relationObject);  // only if to-many
         ]|
       end;
       if <get-multiplicity-inverse;upper-one>x_roleName2 then
         result3 := java:block-stm |[
-          x_eiName2.x_relationTypeRoleName2 = x_relationObject; // only if to-one
+          x_eiName2.x_set2(x_relationObject); // only if to-one
         ]|
       else
         result3 := java:block-stm |[
-          x_eiName2.x_relationTypeRoleName2.add(x_relationObject); // only if to-many
+          x_eiName2.x_add2(x_relationObject);  // only if to-many
         ]|
       end
