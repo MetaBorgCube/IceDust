@@ -11,6 +11,7 @@ imports // functions
 	analysis2/path
 	api/_runtime
 	api/data-api
+  api/execute-api
 	api/model-api
 	api/model-names-api
 	api/module-api
@@ -38,23 +39,30 @@ rules
 	
 	store-expressions: ast -> ast
 		with
-			attrs      := <collect(is-attr);filter(where(attr-get-derivation))>ast;
+			attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
 			<map(attr-store-expr)>attrs;
-			einsts     := <collect-all(is-entityinstance)>ast;
-			<map(einst-store-expr)>einsts
+			einsts := <collect-all(is-entityinstance)>ast;
+			<map(einst-store-expr)>einsts;
+      <module-store-expr>ast
 	
 	attr-store-expr: attr -> attr
 		with
 			derivation := <attr-get-derivation>attr;
 			attrName   := <attr-get-name>attr;
 			<index-store-prop(|AST(), attrName)>derivation
-	
-	einst-store-expr: einst -> einst
-		with
-			exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
-			exprs':= <try(sometd(entityinstance-to-entityinstanceref))>exprs;
-			name  := <entityinstance-get-name>einst;
-			<map(index-store-prop(|AST(), name))>exprs'
+  
+  einst-store-expr: einst -> einst
+    with
+      exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
+      exprs':= <try(sometd(entityinstance-to-entityinstanceref))>exprs;
+      name  := <entityinstance-get-name>einst;
+      <map(index-store-prop(|AST(), name))>exprs'
+  
+  module-store-expr: mod -> mod
+    with
+      exprs := <collect-all(is-execute);map(execute-get-exprs);flatten-list>mod;
+      name  := <module-get-modulename>mod;
+      <index-store-prop(|AST(), name)>exprs
 
 rules
 	

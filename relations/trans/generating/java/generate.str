@@ -6,6 +6,7 @@ imports // constructors
 
 imports // functions
 
+  api/module-api
 	java/pretty-print
 	generating/java/data
 	generating/java/execute
@@ -18,7 +19,7 @@ rules // Builders
 	    (selected, path) -> (fileName, result, errors)
 	    with
 			fileName := <guarantee-extension(|"java")> path;
-			java-ast := <to-java(err)> selected;
+			java-ast := <module-get-modulename;modulename-to-java-compilationunit(err)>selected;
 			errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
 			java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
 			result   := <pp-java-string> java-ast'

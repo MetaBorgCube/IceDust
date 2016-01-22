@@ -34,6 +34,8 @@ rules // module
 
   modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;make-set-ordered ;map(def-to-name); string-sort-anno
 
+  modulename-get-exprs = index-get-prop(|AST());flatten-list
+
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri

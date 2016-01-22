@@ -10,47 +10,34 @@ imports // functions
 
   api/module-names-api
   generating/java/data
+  generating/java/execute
   generating/java/model
 
 rules
 
-	to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
-			compilation-unit |[
-				import lib.relations.*;
-				import java.util.Collection;
-				import java.util.Date;
+  modulename-to-java-compilationunit(err): x_moduleName -> result
+    where
+      is-modulename
+    with
+      modelJava*   := <modulename-get-entitynames;map(model-entityname-to-java-typedec(err))>x_moduleName;
+      dataJava*    := <data-modulename-to-java-stms(err)>x_moduleName;
+      executeJava* := <modulename-get-exprs;map(execute-expr-to-java-stm(err))>x_moduleName
+    with
+      result := compilation-unit |[
+        import lib.relations.*;
+        import java.util.Collection;
+        import java.util.Date;
         import javax.lang.model.type.NullType;
-				
-				~mainClass
-				~modelJava*
-			]|
-		with
-			mainClass := <main-class-to-java(err)>ModuleDesugared(moduleName, model, data, execute);
-			if ModelDef(_) := model then
-			  modelJava*  := <modulename-get-entitynames;map(model-entityname-to-java-typedec(err))>moduleName
-			else
-				modelJava* := []
-			end
-
-	main-class-to-java(err):
-		ModuleDesugared(moduleName, model, data, execute) ->
-			type-dec |[
-				class ~className	
-				{ 
-					public static void main(String[] args)
-					{
-						~dataJava*
-						~executeJava*
-					}
-				}
-			]|
-		with
-			dataJava* := <data-modulename-to-java-stms(err)>moduleName;
-			if Executable(_) := execute then
-				executeJava* := <to-java(err)>execute
-			else
-				executeJava* := []
-			end;
-			className := Id(moduleName)
+        
+        class x_moduleName  
+        { 
+          public static void main(String[] args)
+          {
+            ~dataJava*
+            ~executeJava*
+          }
+        }
+        
+        ~modelJava*
+      ]|
 		
