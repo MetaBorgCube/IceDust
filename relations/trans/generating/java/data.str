@@ -65,7 +65,7 @@ rules
 
 rules
 
-  data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*,result2,result3]
+  data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
     with
       x_roleName1    := <shortcutname-get-rolename1>shortcutName;
       x_roleName2    := <shortcutname-get-rolename2>shortcutName;
@@ -93,22 +93,23 @@ rules
       result1* := java:block-stm* |[
         x_relationObject.x_set01(x_eiName);
         x_relationObject.x_set02(x_eiName2);
-      ]|;
-      if <get-multiplicity-inverse;upper-one>x_roleName1 then
-        result2 := java:block-stm |[
-          x_eiName.x_set1(x_relationObject); // only if to-one
-        ]|
-      else
-        result2 := java:block-stm |[
-          x_eiName.x_add1(x_relationObject);  // only if to-many
-        ]|
-      end;
-      if <get-multiplicity-inverse;upper-one>x_roleName2 then
-        result3 := java:block-stm |[
-          x_eiName2.x_set2(x_relationObject); // only if to-one
-        ]|
-      else
-        result3 := java:block-stm |[
-          x_eiName2.x_add2(x_relationObject);  // only if to-many
-        ]|
-      end
+      ]|
+//      ;
+//      if <get-multiplicity-inverse;upper-one>x_roleName1 then
+//        result2 := java:block-stm |[
+//          x_eiName.x_set1(x_relationObject); // only if to-one
+//        ]|
+//      else
+//        result2 := java:block-stm |[
+//          x_eiName.x_add1(x_relationObject);  // only if to-many
+//        ]|
+//      end;
+//      if <get-multiplicity-inverse;upper-one>x_roleName2 then
+//        result3 := java:block-stm |[
+//          x_eiName2.x_set2(x_relationObject); // only if to-one
+//        ]|
+//      else
+//        result3 := java:block-stm |[
+//          x_eiName2.x_add2(x_relationObject);  // only if to-many
+//        ]|
+//      end

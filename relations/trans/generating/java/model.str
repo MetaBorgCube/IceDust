@@ -178,10 +178,13 @@ rules
   model-rolename-to-java-classbodydecs(err): x_roleName -> result
     where
       is-rolename
+    where
+      get-multiplicity-inverse;upper-one
     with
       x_inverseName := <rolename-get-inversename>x_roleName;
       x_entityType  := <attributename-get-entityname>x_inverseName;
       x_relType     := <attributename-get-entityname>x_roleName;
+      x_setinv      := $[_set_[x_inverseName]];
       x_setter      := $[set_[x_roleName]];
       x_getter      := $[get_[x_roleName]];
       x_in          := $[[x_roleName]_in];
@@ -193,6 +196,64 @@ rules
         
         public void x_setter(x_entityType en)
         { 
+          if(x_roleName != null){
+            x_roleName.x_setinv(null);
+          }
+          if(en != null){
+            en.x_setinv(this);
+          }
+          this.x_roleName = en;
+        }
+      
+        public x_entityType x_getter()
+        { 
+          return this.x_roleName;
+        }
+      
+        public static x_entityType x_getter(x_relType en)
+        { 
+          return en == null ? null : en.x_roleName;
+        }
+      
+        public static Collection<x_entityType> x_getter(Collection<x_relType> ens)
+        { 
+          Collection<x_entityType> result = Expressions.emptyCollection();
+          for(x_relType en : ens)
+          { 
+            result.add(en.x_roleName);
+          }
+          return result;
+        }
+      ]|
+      
+  model-rolename-to-java-classbodydecs(err): x_roleName -> result
+    where
+      is-rolename
+    where
+      get-multiplicity-inverse;upper-many
+    with
+      x_inverseName := <rolename-get-inversename>x_roleName;
+      x_entityType  := <attributename-get-entityname>x_inverseName;
+      x_relType     := <attributename-get-entityname>x_roleName;
+      x_invadd      := $[_add_[x_inverseName]];
+      x_invremove   := $[_remove_[x_inverseName]];
+      x_setter      := $[set_[x_roleName]];
+      x_getter      := $[get_[x_roleName]];
+      x_in          := $[[x_roleName]_in];
+      x_out         := $[[x_roleName]_out];
+      x_relRole     := $[[x_relType]_[x_roleName]]
+    with
+      result := class-body-dec* |[
+        private x_entityType x_roleName;
+        
+        public void x_setter(x_entityType en)
+        { 
+          if(x_roleName != null){
+            x_roleName.x_invremove(this);
+          }
+          if(en != null){
+            en.x_invadd(this);
+          }
           this.x_roleName = en;
         }
       
@@ -229,12 +290,24 @@ rules
       x_entityType := <attributename-get-entityname>x_inverseName;
       x_relType    := <attributename-get-entityname>roleName;
       x_setter     := $[set_[x_inverseName]];
+      x_setpriv    := $[_set_[x_inverseName]];
+      x_setrole    := $[set_[roleName]];
       x_getter     := $[get_[x_inverseName]]
     with
       result := class-body-dec* |[
         public x_relType x_inverseName;
         
         public void x_setter(x_relType en)
+        { 
+          if(en != null){
+            en.x_setrole(this);
+          }
+          if(x_inverseName != null){
+            x_inverseName.x_setrole(null);
+          }
+        }
+        
+        protected void x_setpriv(x_relType en)
         { 
           this.x_inverseName = en;
         }
@@ -271,17 +344,30 @@ rules
       x_relType    := <attributename-get-entityname>roleName;
       x_add        := $[add_[x_inverseName]];
       x_remove     := $[remove_[x_inverseName]];
+      x_addpriv    := $[_add_[x_inverseName]];
+      x_removepriv := $[_remove_[x_inverseName]];
+      x_setrole    := $[set_[roleName]];
       x_getter     := $[get_[x_inverseName]]
     with
       result := class-body-dec* |[
         private Collection<x_relType> x_inverseName;
         
-        public void x_add(x_relType en)
+        protected void x_add(x_relType en)
+        { 
+          en.x_setrole(this);
+        }
+        
+        protected void x_remove(x_relType en)
+        { 
+          en.x_setrole(null);
+        }
+        
+        protected void x_addpriv(x_relType en)
         { 
           this.x_inverseName.add(en);
         }
         
-        public void x_remove(x_relType en)
+        protected void x_removepriv(x_relType en)
         { 
           this.x_inverseName.remove(en);
         }
