@@ -31,6 +31,12 @@ signature constructors
 	WebDSLEager        : TargetLanguage
 	WebDSLEventual     : TargetLanguage
 	WebDSLEventualNoUI : TargetLanguage
+	
+	ImplStrategy : CompilerOptions
+	
+	CalcOnRead           : ImplStrategy
+	CalcOnWrite          : ImplStrategy
+	EventuallyConsistent : ImplStrategy
 
 rules // Builders
 	
@@ -38,22 +44,31 @@ rules // Builders
 	generate-java-test = generate-java(error-handler-tests)
 	generate-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|Java())>(selected, path, project-path, 1)
+  		with
+  		  clear-index2;
+  		  moduleName := <module-get-modulename>selected;
+  		  <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
+  			result := <build(error-handler|Java())>(selected, path, project-path, 1)
 	
 	compile-java       = compile-java(error-handler-editor)
 	compile-java-test  = compile-java(error-handler-tests)
 	compile-java(error-handler):
 		(selected, position, ast, path, project-path) -> None()
-		with
-			<build(error-handler|Java())>(selected, path, project-path, 2)
+  		with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
+  			<build(error-handler|Java())>(selected, path, project-path, 2)
 	
 	execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
 	execute-java-test  = execute-java(error-handler-tests)
 	execute-java(error-handler):
 		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|Java())>(selected, path, project-path, 3)
+  		with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
+  			result := <build(error-handler|Java())>(selected, path, project-path, 3)
 
 	generate-webdsl      = generate-webdsl(error-handler-editor)
 	generate-webdsl-test = generate-webdsl(error-handler-tests)

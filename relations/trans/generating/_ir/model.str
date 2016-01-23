@@ -1,0 +1,23 @@
+module generating/_ir/model
+
+imports
+
+  api/model-names-api
+
+rules // generic names
+
+  name-get:            name -> $[get_[name]]
+  name-set:            name -> $[set_[name]]
+  name-set-private:    name -> $[_set_[name]]
+  name-add:            name -> $[add_[name]]
+  name-remove:         name -> $[remove_[name]]
+  name-add-private:    name -> $[_add_[name]]
+  name-remove-private: name -> $[_remove_[name]]
+  name-calculate:      name -> $[calculate_[name]]
+
+rules // role names
+  
+  rolename-entitynamerolename: rolename -> $[[entityname]_[rolename]]
+    with
+      entityname := <attributename-get-entityname>rolename
+  
