@@ -46,26 +46,26 @@ rules
 
 rules
 
-  model-attributename-to-java-classbodydecs(err): x_name -> [result1*,result2*,result3*]
+  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result1*,result2*,result3*]
     where
       is-attributename
     with
-      x_entity := <attributename-get-entityname>x_name;
-      x_type   := <_get-type;type-to-java(err)>x_name;
-      x_getter := <name-get>x_name;
-      x_setter := <name-set>x_name
+      x_entityName    := <attributename-get-entityname>x_attributeName;
+      x_attributeType := <_get-type;type-to-java(err)>x_attributeName;
+      x_getAttribute  := <name-get>x_attributeName;
+      x_setAttribute  := <name-set>x_attributeName
     with
       if attributename-is-default <+ attributename-is-derivation then
-        (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_name
+        (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_attributeName
       end
     with
       if attributename-is-normal <+ attributename-is-default then
         result1* := class-body-dec* |[
-          private x_type x_name;
+          private x_attributeType x_attributeName;
           
-          public void x_setter(x_type x_name)
+          public void x_setAttribute(x_attributeType x_attributeName)
           { 
-            this.x_name = x_name;
+            this.x_attributeName = x_attributeName;
           }
         ]|
       else
@@ -74,24 +74,24 @@ rules
     with
       if attributename-is-normal then
         result2* := class-body-dec* |[
-          public x_type x_getter()
+          public x_attributeType x_getAttribute()
           { 
-            return x_name;
+            return x_attributeName;
           }
         ]|
       else if attributename-is-default then
         result2* := class-body-dec* |[
-          public x_type x_getter()
+          public x_attributeType x_getAttribute()
           { 
-            if(x_name != null)
-              return x_name;
+            if(x_attributeName != null)
+              return x_attributeName;
             ~stms*
             return ~exp;
           }
         ]|
       else
         result2* := class-body-dec* |[
-          public x_type x_getter()
+          public x_attributeType x_getAttribute()
           { 
             ~stms*
             return ~exp;
@@ -100,17 +100,17 @@ rules
       end end
     with
       result3* := class-body-dec* |[
-        public static x_type x_getter(x_entity c)
+        public static x_attributeType x_getAttribute(x_entityName c)
         { 
-          return c == null ? null : c.x_getter();
+          return c == null ? null : c.x_getAttribute();
         }
         
-        public static Collection<x_type> x_getter(Collection<x_entity> c)
+        public static Collection<x_attributeType> x_getAttribute(Collection<x_entityName> c)
         { 
-          Collection<x_type> result = Expressions.emptyCollection();
-          for(x_entity n : c)
+          Collection<x_attributeType> result = Expressions.emptyCollection();
+          for(x_entityName n : c)
           { 
-            x_type v = n.x_getter();
+            x_attributeType v = n.x_getAttribute();
             if(v != null)
               result.add(v);
           }
@@ -124,33 +124,32 @@ rules
     where
       is-rolename
     with
-      x_inverseName := <rolename-get-inversename>x_roleName;
-      x_entityType  := <attributename-get-entityname>x_inverseName;
-      x_relType     := <attributename-get-entityname>x_roleName;
-      x_setinv      := <name-set-private>x_inverseName;
-      x_getter      := <name-get>x_roleName;
-      x_setter      := <name-set>x_roleName;
-      x_relRole     := <rolename-entitynamerolename>x_roleName;
-      x_invadd      := <name-add-private>x_inverseName;
-      x_invremove   := <name-remove-private>x_inverseName
+      x_inverseName          := <rolename-get-inversename>x_roleName;
+      x_entityName           := <attributename-get-entityname>x_inverseName;
+      x_relationName         := <attributename-get-entityname>x_roleName;
+      x_setInversePrivate    := <name-set-private>x_inverseName;
+      x_getRole              := <name-get>x_roleName;
+      x_setRole              := <name-set>x_roleName;
+      x_addInversePrivate    := <name-add-private>x_inverseName;
+      x_removeInversePrivate := <name-remove-private>x_inverseName
     with
       result1* := class-body-dec* |[
-        private x_entityType x_roleName;
+        private x_entityName x_roleName;
       
-        public x_entityType x_getter()
+        public x_entityName x_getRole()
         { 
           return this.x_roleName;
         }
       
-        public static x_entityType x_getter(x_relType en)
+        public static x_entityName x_getRole(x_relationName en)
         { 
           return en == null ? null : en.x_roleName;
         }
       
-        public static Collection<x_entityType> x_getter(Collection<x_relType> ens)
+        public static Collection<x_entityName> x_getRole(Collection<x_relationName> ens)
         { 
-          Collection<x_entityType> result = Expressions.emptyCollection();
-          for(x_relType en : ens)
+          Collection<x_entityName> result = Expressions.emptyCollection();
+          for(x_relationName en : ens)
           { 
             result.add(en.x_roleName);
           }
@@ -160,26 +159,26 @@ rules
     with
       if get-multiplicity-inverse;upper-one then
         result2* := class-body-dec* |[
-          public void x_setter(x_entityType en)
+          public void x_setRole(x_entityName en)
           { 
             if(x_roleName != null){
-              x_roleName.x_setinv(null);
+              x_roleName.x_setInversePrivate(null);
             }
             if(en != null){
-              en.x_setinv(this);
+              en.x_setInversePrivate(this);
             }
             this.x_roleName = en;
           }
         ]|
       else
         result2* := class-body-dec* |[
-          public void x_setter(x_entityType en)
+          public void x_setRole(x_entityName en)
           { 
             if(x_roleName != null){
-              x_roleName.x_invremove(this);
+              x_roleName.x_removeInversePrivate(this);
             }
             if(en != null){
-              en.x_invadd(this);
+              en.x_addInversePrivate(this);
             }
             this.x_roleName = en;
           }
@@ -192,51 +191,51 @@ rules
     where
       is-inversename
     with
-      roleName     := <inversename-get-rolename>x_inverseName;
-      x_entityType := <attributename-get-entityname>x_inverseName;
-      x_relType    := <attributename-get-entityname>roleName;
-      x_setter     := <name-set>x_inverseName;
-      x_setpriv    := <name-set-private>x_inverseName;
-      x_setrole    := <name-set>roleName;
-      x_getter     := <name-get>x_inverseName;
-      x_add        := <name-add>x_inverseName;
-      x_remove     := <name-remove>x_inverseName;
-      x_addpriv    := <name-add-private>x_inverseName;
-      x_removepriv := <name-remove-private>x_inverseName
+      x_roleName             := <inversename-get-rolename>x_inverseName;
+      x_entityName           := <attributename-get-entityname>x_inverseName;
+      x_relationName         := <attributename-get-entityname>x_roleName;
+      x_getInverse           := <name-get>x_inverseName;
+      x_setInverse           := <name-set>x_inverseName;
+      x_setInversePrivate    := <name-set-private>x_inverseName;
+      x_setRole              := <name-set>x_roleName;
+      x_addInverse           := <name-add>x_inverseName;
+      x_addInversePrivate    := <name-add-private>x_inverseName;
+      x_removeInverse        := <name-remove>x_inverseName;
+      x_removeInversePrivate := <name-remove-private>x_inverseName
     with
       if get-multiplicity;upper-one then
         result := class-body-dec* |[
-          public x_relType x_inverseName;
+          public x_relationName x_inverseName;
           
-          public void x_setter(x_relType en)
+          public void x_setInverse(x_relationName en)
           { 
             if(en != null){
-              en.x_setrole(this);
+              en.x_setRole(this);
             }
             if(x_inverseName != null){
-              x_inverseName.x_setrole(null);
+              x_inverseName.x_setRole(null);
             }
           }
           
-          protected void x_setpriv(x_relType en)
+          protected void x_setInversePrivate(x_relationName en)
           { 
             this.x_inverseName = en;
           }
           
-          public x_relType x_getter()
+          public x_relationName x_getInverse()
           { 
             return this.x_inverseName;
           }
         
-          public static x_relType x_getter(x_entityType en)
+          public static x_relationName x_getInverse(x_entityName en)
           { 
             return en == null ? null : en.x_inverseName;
           }
         
-          public static Collection<x_relType> x_getter(Collection<x_entityType> ens)
+          public static Collection<x_relationName> x_getInverse(Collection<x_entityName> ens)
           { 
-            Collection<x_relType> result = Expressions.emptyCollection();
-            for(x_entityType en : ens)
+            Collection<x_relationName> result = Expressions.emptyCollection();
+            for(x_entityName en : ens)
             { 
               result.add(en.x_inverseName);
             }
@@ -245,43 +244,43 @@ rules
         ]|
       else
         result := class-body-dec* |[
-          private Collection<x_relType> x_inverseName;
+          private Collection<x_relationName> x_inverseName;
           
-          protected void x_add(x_relType en)
+          protected void x_addInverse(x_relationName en)
           { 
-            en.x_setrole(this);
+            en.x_setRole(this);
           }
           
-          protected void x_remove(x_relType en)
+          protected void x_removeInverse(x_relationName en)
           { 
-            en.x_setrole(null);
+            en.x_setRole(null);
           }
           
-          protected void x_addpriv(x_relType en)
+          protected void x_addInversePrivate(x_relationName en)
           { 
             this.x_inverseName.add(en);
           }
           
-          protected void x_removepriv(x_relType en)
+          protected void x_removeInversePrivate(x_relationName en)
           { 
             this.x_inverseName.remove(en);
           }
           
-          public Collection<x_relType> x_getter()
+          public Collection<x_relationName> x_getInverse()
           { 
             return this.x_inverseName;
           }
         
-          public static Collection<x_relType> x_getter(x_entityType en)
+          public static Collection<x_relationName> x_getInverse(x_entityName en)
           {
-            Collection<x_relType> empty = Expressions.emptyCollection();
+            Collection<x_relationName> empty = Expressions.emptyCollection();
             return en == null ? empty : en.x_inverseName;
           }
         
-          public static Collection<x_relType> x_getter(Collection<x_entityType> ens)
+          public static Collection<x_relationName> x_getInverse(Collection<x_entityName> ens)
           { 
-            Collection<x_relType> result = Expressions.emptyCollection();
-            for(x_entityType en : ens)
+            Collection<x_relationName> result = Expressions.emptyCollection();
+            for(x_entityName en : ens)
             { 
               result.addAll(en.x_inverseName);
             }
@@ -296,55 +295,55 @@ rules
     where
       is-shortcutname
     with
-      x_entityType   := <attributename-get-entityname>x_shortcutName;
-      x_type         := <_get-type>x_shortcutName;
-      x_inverseName  := <shortcutname-get-inversename>x_shortcutName;
-      x_roleName     := <shortcutname-get-rolename>x_shortcutName;
-      x_relationType := <attributename-get-entityname>x_roleName;
-      x_getter       := <name-get>x_shortcutName;
-      x_invgetter    := <name-get>x_inverseName;
-      x_rolegetter   := <name-get>x_roleName
+      x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
+      x_targetEntityName := <_get-type>x_shortcutName;
+      x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
+      x_roleName         := <shortcutname-get-rolename>x_shortcutName;
+      x_relationName     := <attributename-get-entityname>x_roleName;
+      x_getShortcut      := <name-get>x_shortcutName;
+      x_getInverse       := <name-get>x_inverseName;
+      x_getRole          := <name-get>x_roleName
     with
       if get-multiplicity;upper-one then
         result := class-body-dec* |[
-          public x_type x_getter()
+          public x_targetEntityName x_getShortcut()
           { 
-            return x_relationType.x_rolegetter(this.x_invgetter());
+            return x_relationName.x_getRole(this.x_getInverse());
           }
         
-          public static x_type x_getter(x_entityType en)
+          public static x_targetEntityName x_getShortcut(x_sourceEntityName en)
           { 
-            return en == null ? null : x_relationType.x_rolegetter(en.x_invgetter());
+            return en == null ? null : x_relationName.x_getRole(en.x_getInverse());
           }
         
-          public static Collection<x_type> x_getter(Collection<x_entityType> ens)
+          public static Collection<x_targetEntityName> x_getShortcut(Collection<x_sourceEntityName> ens)
           { 
-            Collection<x_type> result = Expressions.emptyCollection();
-            for(x_entityType en : ens)
+            Collection<x_targetEntityName> result = Expressions.emptyCollection();
+            for(x_sourceEntityName en : ens)
             { 
-              result.add(x_relationType.x_rolegetter(en.x_invgetter()));
+              result.add(x_relationName.x_getRole(en.x_getInverse()));
             }
             return result;
           }
         ]|
       else
         result := class-body-dec* |[
-          public Collection<x_type> x_getter()
+          public Collection<x_targetEntityName> x_getShortcut()
           { 
-            return x_relationType.x_rolegetter(this.x_invgetter());
+            return x_relationName.x_getRole(this.x_getInverse());
           }
         
-          public static Collection<x_type> x_getter(x_entityType en)
+          public static Collection<x_targetEntityName> x_getShortcut(x_sourceEntityName en)
           { 
-            return en == null ? null : x_relationType.x_rolegetter(en.x_invgetter());
+            return en == null ? null : x_relationName.x_getRole(en.x_getInverse());
           }
         
-          public static Collection<x_type> x_getter(Collection<x_entityType> ens)
+          public static Collection<x_targetEntityName> x_getShortcut(Collection<x_sourceEntityName> ens)
           { 
-            Collection<x_type> result = Expressions.emptyCollection();
-            for(x_entityType en : ens)
+            Collection<x_targetEntityName> result = Expressions.emptyCollection();
+            for(x_sourceEntityName en : ens)
             { 
-              result.addAll(x_relationType.x_rolegetter(en.x_invgetter()));
+              result.addAll(x_relationName.x_getRole(en.x_getInverse()));
             }
             return result;
           }
