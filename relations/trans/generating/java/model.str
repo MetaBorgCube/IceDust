@@ -46,14 +46,21 @@ rules
 
 rules
 
-  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result1*,result2*,result3*]
+  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result1*,result-calculate*,result-cache*,result-get*,result3*]
     where
       is-attributename
     with
-      x_entityName    := <attributename-get-entityname>x_attributeName;
-      x_attributeType := <_get-type;type-to-java(err)>x_attributeName;
-      x_getAttribute  := <name-get>x_attributeName;
-      x_setAttribute  := <name-set>x_attributeName
+      x_entityName                := <attributename-get-entityname>x_attributeName;
+      x_attributeType             := <_get-type;type-to-java(err)>x_attributeName;
+      x_getAttribute              := <name-get>x_attributeName;
+      x_setAttribute              := <name-set>x_attributeName;
+      x_calculateAttribute        := <name-calculate>x_attributeName;
+      x_attributeCache            := <name-cache>x_attributeName;
+      x_updateAttributeCache      := <name-update-cache>x_attributeName;
+      x_dirtyAttribute            := <name-dirty>x_attributeName;
+      x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
+      x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
+      x_moduleName                := <entityname-get-modulename>x_entityName
     with
       if attributename-is-default <+ attributename-is-derivation then
         (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_attributeName
@@ -72,32 +79,86 @@ rules
         result1* := []
       end
     with
-      if attributename-is-normal then
-        result2* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
+      if attributename-is-default <+ attributename-is-derivation then
+        result-calculate* := class-body-dec* |[
+          public x_attributeType x_calculateAttribute()
           { 
-            return x_attributeName;
-          }
-        ]|
-      else if attributename-is-default then
-        result2* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            if(x_attributeName != null)
-              return x_attributeName;
             ~stms*
             return ~exp;
           }
         ]|
       else
-        result2* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            ~stms*
-            return ~exp;
+        result-calculate* := []
+      end
+    with
+      if (attributename-is-default <+ attributename-is-derivation); attributename-is-calconwrite then
+        result-cache* := class-body-dec* |[
+          private x_attributeType x_attributeCache;
+          
+          public void x_updateAttributeCache()
+          {
+            this.x_attributeCache = x_calculateAttribute();
+          }
+          
+          private static Collection<x_entityName> x_dirtyAttribute = Expressions.emptyCollection();
+          
+          public static Collection<x_entityName> x_getAndEmptyDirtyAttribute()
+          {
+            Collection<x_entityName> values = x_dirtyAttribute;
+            x_dirtyAttribute = Expressions.emptyCollection();
+            return values;
+          }
+          
+          private static void x_updateAllAttributeCache(){
+            for(x_entityName en : x_getAndEmptyDirtyAttribute()){
+              en.x_updateAttributeCache();
+            }
           }
         ]|
-      end end
+      else
+        result-cache* := []
+      end
+    with
+      if attributename-is-normal then
+        result-get* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_attributeName;
+          }
+        ]|
+      else if attributename-is-default; attributename-is-calconread then
+        result-get* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            if(x_attributeName != null)
+              return x_attributeName;
+            return x_calculateAttribute();
+          }
+        ]|
+      else if attributename-is-default; attributename-is-calconwrite then
+        result-get* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            if(x_attributeName != null)
+              return x_attributeName;
+            return x_attributeCache;
+          }
+        ]|
+      else if attributename-is-derivation; attributename-is-calconread then
+        result-get* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_calculateAttribute();
+          }
+        ]|
+      else
+        result-get* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_attributeCache;
+          }
+        ]|
+      end end end end
     with
       result3* := class-body-dec* |[
         public static x_attributeType x_getAttribute(x_entityName c)

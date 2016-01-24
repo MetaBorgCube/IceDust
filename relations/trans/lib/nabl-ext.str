@@ -127,3 +127,8 @@ rules // replacing uses with defs
 	
 	replace-use-with-def : Use(d@Def(_)) -> d
 	replace-use-with-def : Use([d@Def(_)]) -> d
+
+rules // string{uri} funcs
+
+  nabl-name-parent = _nabl-uri;_nabl-uri-parent;?uri;_nabl-uri-name;?name;!name{Def(uri)}
+	

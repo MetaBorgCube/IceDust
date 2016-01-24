@@ -39,16 +39,26 @@ signature constructors
 	EventuallyConsistent : ImplStrategy
 
 rules // Builders
-	
-	generate-java      = generate-java(error-handler-editor)
-	generate-java-test = generate-java(error-handler-tests)
-	generate-java(error-handler):
-		(selected, position, ast, path, project-path) -> result
-  		with
-  		  clear-index2;
-  		  moduleName := <module-get-modulename>selected;
-  		  <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-  			result := <build(error-handler|Java())>(selected, path, project-path, 1)
+  
+  generate-java      = generate-java(error-handler-editor)
+  generate-java-test = generate-java(error-handler-tests)
+  generate-java(error-handler):
+    (selected, position, ast, path, project-path) -> result
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
+        result := <build(error-handler|Java())>(selected, path, project-path, 1)
+  
+  generate-java-incr      = generate-java-incr(error-handler-editor)
+  generate-java-incr-test = generate-java-incr(error-handler-tests)
+  generate-java-incr(error-handler):
+    (selected, position, ast, path, project-path) -> result
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
+        result := <build(error-handler|Java())>(selected, path, project-path, 1)
 	
 	compile-java       = compile-java(error-handler-editor)
 	compile-java-test  = compile-java(error-handler-tests)

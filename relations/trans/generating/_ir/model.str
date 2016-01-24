@@ -6,14 +6,19 @@ imports
 
 rules // generic names
 
-  name-get:            name -> $[get_[name]]
-  name-set:            name -> $[set_[name]]
-  name-set-private:    name -> $[_set_[name]]
-  name-add:            name -> $[add_[name]]
-  name-remove:         name -> $[remove_[name]]
-  name-add-private:    name -> $[_add_[name]]
-  name-remove-private: name -> $[_remove_[name]]
-  name-calculate:      name -> $[calculate_[name]]
+  name-get:              name -> $[get_[name]]
+  name-set:              name -> $[set_[name]]
+  name-set-private:      name -> $[_set_[name]]
+  name-add:              name -> $[add_[name]]
+  name-remove:           name -> $[remove_[name]]
+  name-add-private:      name -> $[_add_[name]]
+  name-remove-private:   name -> $[_remove_[name]]
+  name-calculate:        name -> $[calculate_[name]]
+  name-cache:            name -> $[cache_[name]]
+  name-update-cache:     name -> $[update_[name]_cache]
+  name-dirty:            name -> $[dirty_[name]]
+  name-getandemptydirty: name -> $[get_and_empty_dirty_[name]]
+  name-updateallcache:   name -> $[update_all_[name]_cache]
 
 rules // role names
   

@@ -12,10 +12,12 @@ imports // constructors
 imports // functions
 
 	api/_runtime
+	api/module-names-api
 	lib/origin
 	lib/search
 	lib/string
-	lib/index
+  lib/index
+  lib/nabl-ext
 
 rules // entity
 
@@ -26,6 +28,12 @@ rules // entity
 	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
 	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
 	
+	entityname-get-modulename = nabl-name-parent
+	
+  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
+  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
+  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
+	
 rules // attributes
 	
 	is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
@@ -34,9 +42,13 @@ rules // attributes
 	attributename-is-default    = where(get-derivation-type;?DefaultValue())
 	attributename-is-normal     = where(get-derivation-type;?Normal())
 	
-	attributename-get-entityname = _nabl-uri;_nabl-uri-parent;_nabl-uri-name
+	attributename-get-entityname = nabl-name-parent
 	
 	attributename-get-expr = index-get-prop(|AST());Hd
+	
+  attributename-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
+  attributename-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
+  attributename-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
 	
 rules // roles
 	

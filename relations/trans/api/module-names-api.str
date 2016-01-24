@@ -36,6 +36,12 @@ rules // module
 
   modulename-get-exprs = index-get-prop(|AST());flatten-list
 
+  modulename-get-implstr = get-property(|ImplStrategy())
+  
+  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
+  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
+  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
+
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
