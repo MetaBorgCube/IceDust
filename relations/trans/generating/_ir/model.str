@@ -19,6 +19,9 @@ rules // generic names
   name-dirty:            name -> $[dirty_[name]]
   name-getandemptydirty: name -> $[get_and_empty_dirty_[name]]
   name-updateallcache:   name -> $[update_all_[name]_cache]
+  name-hasdirty:         name -> $[has_dirty_[name]]
+  name-flagdirty:        name -> $[flag_dirty_[name]]
+  name-dirtyflagflowsto: name -> $[dirty_flag_flowsto_[name]]
 
 rules // role names
   

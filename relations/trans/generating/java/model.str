@@ -10,6 +10,7 @@ imports // constructors
 
 imports // functions
 
+  analysis2/path
 	api/_runtime
   api/model-names-api
   names/naming/names
@@ -46,7 +47,7 @@ rules
 
 rules
 
-  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result1*,result-calculate*,result-cache*,result-get*,result3*]
+  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result-field*,result-setter*,result-calculate*,result-cache*,result-flow*,result-get*,result3*]
     where
       is-attributename
     with
@@ -60,35 +61,69 @@ rules
       x_dirtyAttribute            := <name-dirty>x_attributeName;
       x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
       x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
+      x_hasDirty                  := <name-hasdirty>x_attributeName;
+      x_flagDirty                 := <name-flagdirty>x_attributeName;
+      x_dirtyFlagFlowsto          := <name-dirtyflagflowsto>x_attributeName;
       x_moduleName                := <entityname-get-modulename>x_entityName
     with
       if attributename-is-default <+ attributename-is-derivation then
-        (stms*, exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_attributeName
+        (calculate-stms*, calculate-exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_attributeName
+      end
+    with
+      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+        flowsto-stms* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
       end
     with
       if attributename-is-normal <+ attributename-is-default then
-        result1* := class-body-dec* |[
+        result-field* := class-body-dec* |[
           private x_attributeType x_attributeName;
-          
+        ]|
+      else
+        result-field* := []
+      end
+    with
+      if (attributename-is-normal <+ attributename-is-default); attributename-is-calconread then
+        result-setter* := class-body-dec* |[
           public void x_setAttribute(x_attributeType x_attributeName)
           { 
             this.x_attributeName = x_attributeName;
           }
         ]|
+      else if (attributename-is-normal <+ attributename-is-default); attributename-is-calconwrite then
+        result-setter* := class-body-dec* |[
+          public void x_setAttribute(x_attributeType newValue)
+          { 
+            if(this.x_getAttribute() != newValue){ // compare with getAttribute to compare to default-value behavior
+              x_dirtyFlagFlowsto();
+            }
+            this.x_attributeName = newValue; // assign always, because we might have compared to default-value
+          }
+        ]|
       else
-        result1* := []
-      end
+        result-setter* := []
+      end end
     with
       if attributename-is-default <+ attributename-is-derivation then
         result-calculate* := class-body-dec* |[
           public x_attributeType x_calculateAttribute()
           { 
-            ~stms*
-            return ~exp;
+            ~calculate-stms*
+            return ~calculate-exp;
           }
         ]|
       else
         result-calculate* := []
+      end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := class-body-dec* |[
+          public void x_dirtyFlagFlowsto()
+          {
+            ~flowsto-stms*
+          }
+        ]|
+      else
+        result-flow* := []
       end
     with
       if (attributename-is-default <+ attributename-is-derivation); attributename-is-calconwrite then
@@ -97,22 +132,42 @@ rules
           
           public void x_updateAttributeCache()
           {
-            this.x_attributeCache = x_calculateAttribute();
-          }
-          
-          private static Collection<x_entityName> x_dirtyAttribute = Expressions.emptyCollection();
-          
-          public static Collection<x_entityName> x_getAndEmptyDirtyAttribute()
-          {
-            Collection<x_entityName> values = x_dirtyAttribute;
-            x_dirtyAttribute = Expressions.emptyCollection();
-            return values;
+            x_attributeType oldValue = x_getAttribute(); // use getter to get default-value behavior
+            this.x_attributeCache = x_calculateAttribute(); // update the cache (which might be an unused default)
+            if(oldValue != x_getAttribute()){
+              x_dirtyFlagFlowsto();
+            }
           }
           
           private static void x_updateAllAttributeCache(){
             for(x_entityName en : x_getAndEmptyDirtyAttribute()){
               en.x_updateAttributeCache();
             }
+          }
+          
+          private static Collection<x_entityName> x_dirtyAttribute = Expressions.emptyCollection();
+          
+          public static void x_flagDirty(x_entityName en)
+          {
+            if(en != null)
+              x_dirtyAttribute.add(en);
+          }
+          
+          public static void x_flagDirty(Collection<x_entityName> ens)
+          {
+            x_dirtyAttribute.addAll(ens);
+          }
+          
+          public static boolean x_hasDirty()
+          {
+            return !x_dirtyAttribute.isEmpty();
+          }
+          
+          public static Collection<x_entityName> x_getAndEmptyDirtyAttribute()
+          {
+            Collection<x_entityName> values = x_dirtyAttribute;
+            x_dirtyAttribute = Expressions.emptyCollection();
+            return values;
           }
         ]|
       else
@@ -181,7 +236,21 @@ rules
 
 rules
 
-  model-rolename-to-java-classbodydecs(err): x_roleName -> [result1*,result2*]
+  model-path-to-java-stm(err): (x_attributeName, (stms*, expr)) -> result
+    with
+      x_entityName := <attributename-get-entityname>x_attributeName;
+      x_flagDirty  := <name-flagdirty>x_attributeName
+    with
+      result := bstm |[
+        {
+          ~stms*
+          x_entityName.x_flagDirty(~expr);
+        }
+      ]|
+
+rules
+
+  model-rolename-to-java-classbodydecs(err): x_roleName -> [result1*,result2*,result-flow*]
     where
       is-rolename
     with
@@ -192,7 +261,12 @@ rules
       x_getRole              := <name-get>x_roleName;
       x_setRole              := <name-set>x_roleName;
       x_addInversePrivate    := <name-add-private>x_inverseName;
-      x_removeInversePrivate := <name-remove-private>x_inverseName
+      x_removeInversePrivate := <name-remove-private>x_inverseName;
+      x_dirtyFlagFlowsto     := <name-dirtyflagflowsto>x_roleName
+    with
+      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+        flowsto-stms* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
+      end
     with
       result1* := class-body-dec* |[
         private x_entityName x_roleName;
@@ -245,6 +319,17 @@ rules
           }
         ]|
       end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := class-body-dec* |[
+          public void x_dirtyFlagFlowsto()
+          {
+            ~flowsto-stms*
+          }
+        ]|
+      else
+        result-flow* := []
+      end
 
 rules
 
@@ -262,7 +347,12 @@ rules
       x_addInverse           := <name-add>x_inverseName;
       x_addInversePrivate    := <name-add-private>x_inverseName;
       x_removeInverse        := <name-remove>x_inverseName;
-      x_removeInversePrivate := <name-remove-private>x_inverseName
+      x_removeInversePrivate := <name-remove-private>x_inverseName;
+      x_dirtyFlagFlowsto     := <name-dirtyflagflowsto>x_inverseName
+    with
+      if !x_roleName;attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+        flowsto-stms* := <filter(path-origin-is-role);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
+      end
     with
       if get-multiplicity;upper-one then
         result := class-body-dec* |[
@@ -348,6 +438,17 @@ rules
             return result;
           }
         ]|
+      end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := class-body-dec* |[
+          public void x_dirtyFlagFlowsto()
+          {
+            ~flowsto-stms*
+          }
+        ]|
+      else
+        result-flow* := []
       end
 
 rules
