@@ -91,7 +91,9 @@ binding rules // model
 		  scopes Inverse
 		defines Inverse inverseName
 			of multiplicity role-mu
+      of multiplicity-inverse One()
 			of ordering role-ord
+      of ordering-inverse Ordered()
 			of type this-ty
 			of origin-role role
 			where This() resolves to This this
