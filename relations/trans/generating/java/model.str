@@ -133,19 +133,25 @@ rules
           public void x_updateAttributeCache()
           {
             x_attributeType oldValue = x_getAttribute(); // use getter to get default-value behavior
+            System.out.println(x_attributeCache);
             this.x_attributeCache = x_calculateAttribute(); // update the cache (which might be an unused default)
+            System.out.println(x_attributeCache);
             if(oldValue != x_getAttribute()){
               x_dirtyFlagFlowsto();
             }
           }
           
-          private static void x_updateAllAttributeCache(){
-            for(x_entityName en : x_getAndEmptyDirtyAttribute()){
+          protected static void x_updateAllAttributeCache(){
+            Collection<x_entityName> ens = x_getAndEmptyDirtyAttribute();
+            if(ens.size()>0){
+              System.out.println(ens.size() + " " + ens.iterator().next().getClass());
+            }
+            for(x_entityName en : ens){
               en.x_updateAttributeCache();
             }
           }
           
-          private static Collection<x_entityName> x_dirtyAttribute = Expressions.emptyCollection();
+          private static Collection<x_entityName> x_dirtyAttribute = new HashSet<x_entityName>();
           
           public static void x_flagDirty(x_entityName en)
           {
@@ -166,7 +172,7 @@ rules
           public static Collection<x_entityName> x_getAndEmptyDirtyAttribute()
           {
             Collection<x_entityName> values = x_dirtyAttribute;
-            x_dirtyAttribute = Expressions.emptyCollection();
+            x_dirtyAttribute = new HashSet<x_entityName>();
             return values;
           }
         ]|
@@ -250,7 +256,7 @@ rules
 
 rules
 
-  model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> [result1*,result2*]
+  model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> [result1*,result-set*,result2*,result-flow*]
     where
       is-rolename <+ is-inversename
     with
@@ -268,11 +274,16 @@ rules
       x_setInversePrivate    := <name-set-private>x_inverseName;
       x_addInversePrivate    := <name-add-private>x_inverseName;
       x_removeInversePrivate := <name-remove-private>x_inverseName;
-      x_dirtyFlagFlowsto     := <name-dirtyflagflowsto>x_roleName
-//    with
-//      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
-//        flowsto-stms* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
-//      end
+      x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName
+    with
+      if attributename-is-calconwrite then
+        if is-attributename; name-get-flowsto-paths;?flowsto-paths then
+          flowsto-stms* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
+        else
+          name-get-inversename; name-get-flowsto-paths;?flowsto-paths;
+          flowsto-stms* := <filter(path-origin-is-role);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
+        end
+      end
     with
       if get-multiplicity;upper-one then
         result1* := class-body-dec* |[
@@ -293,14 +304,10 @@ rules
             Collection<x_inverseEntityName> result = Expressions.emptyCollection();
             for(x_roleEntityName en : ens)
             { 
-              result.add(en.x_roleName);
+              if(en.x_roleName != null)
+                result.add(en.x_roleName);
             }
             return result;
-          }
-          
-          protected void x_setRolePrivate(x_inverseEntityName en)
-          { 
-            this.x_roleName = en;
           }
         ]|
       else
@@ -326,18 +333,63 @@ rules
             }
             return result;
           }
-          
+        ]|
+      end
+    with
+      if attributename-is-calconread; get-multiplicity;upper-one then
+        result-set* := class-body-dec* |[
+          protected void x_setRolePrivate(x_inverseEntityName en)
+          { 
+            if(this.x_roleName != en){
+              this.x_roleName = en;
+            }
+          }
+        ]|
+      else if attributename-is-calconwrite; get-multiplicity;upper-one then
+        result-set* := class-body-dec* |[
+          protected void x_setRolePrivate(x_inverseEntityName en)
+          { 
+            if(this.x_roleName != en){
+              this.x_roleName = en;
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+        ]|
+      else if attributename-is-calconread; get-multiplicity;upper-many then
+        result-set* := class-body-dec* |[
           protected void x_addRolePrivate(x_inverseEntityName en)
           { 
-            this.x_roleName.add(en);
+            if(en != null){
+              this.x_roleName.add(en);
+            }
           }
           
           protected void x_removeRolePrivate(x_inverseEntityName en)
           { 
-            this.x_roleName.remove(en);
+            if(en != null){
+              this.x_roleName.remove(en);
+            }
           }
         ]|
-      end
+      else // calconwrite many
+        result-set* := class-body-dec* |[
+          protected void x_addRolePrivate(x_inverseEntityName en)
+          { 
+            if(en != null){
+              this.x_roleName.add(en);
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+          
+          protected void x_removeRolePrivate(x_inverseEntityName en)
+          { 
+            if(en != null){
+              this.x_roleName.remove(en);
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+        ]|
+      end end end
     with
       if get-multiplicity;upper-one; !x_roleName;get-multiplicity-inverse;upper-one then
         result2* := class-body-dec* |[
@@ -394,17 +446,17 @@ rules
           }
         ]|
       end end end
-//    with
-//      if attributename-is-calconwrite then
-//        result-flow* := class-body-dec* |[
-//          public void x_dirtyFlagFlowsto()
-//          {
-//            ~flowsto-stms*
-//          }
-//        ]|
-//      else
-//        result-flow* := []
-//      end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := class-body-dec* |[
+          public void x_dirtyFlagFlowstoRole()
+          {
+            ~flowsto-stms*
+          }
+        ]|
+      else
+        result-flow* := []
+      end
 
 rules
 
@@ -438,7 +490,9 @@ rules
             Collection<x_targetEntityName> result = Expressions.emptyCollection();
             for(x_sourceEntityName en : ens)
             { 
-              result.add(x_relationName.x_getRole(en.x_getInverse()));
+              x_targetEntityName v = x_relationName.x_getRole(en.x_getInverse());
+              if(v != null)
+                result.add(v);
             }
             return result;
           }

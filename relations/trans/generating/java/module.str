@@ -9,6 +9,7 @@ imports // constructors
 imports // functions
 
   api/module-names-api
+  generating/_ir/model
   generating/java/data
   generating/java/execute
   generating/java/model
@@ -21,12 +22,14 @@ rules
     with
       modelJava*   := <modulename-get-entitynames;map(model-entityname-to-java-typedec(err))>x_moduleName;
       dataJava*    := <data-modulename-to-java-stms(err)>x_moduleName;
-      executeJava* := <modulename-get-exprs;map(execute-expr-to-java-stm(err))>x_moduleName
+      executeJava* := <modulename-get-exprs;map(execute-expr-to-java-stm(err))>x_moduleName;
+      cacheJava*   := <cache-modulename-to-java-stms>x_moduleName
     with
       result := compilation-unit |[
         import lib.relations.*;
         import java.util.Collection;
         import java.util.Date;
+        import java.util.HashSet;
         import javax.lang.model.type.NullType;
         
         class x_moduleName  
@@ -34,10 +37,59 @@ rules
           public static void main(String[] args)
           {
             ~dataJava*
+            ~cacheJava*
             ~executeJava*
           }
         }
         
         ~modelJava*
       ]|
-		
+
+rules
+  
+  cache-modulename-to-java-stms: x_moduleName -> result
+    with
+      namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
+      update-stms* := <map(cache-attributenames-to-java-stms);flatten-list>namess
+    with
+      if modulename-is-calconwrite then
+        result := bstm* |[
+          boolean notEmpty;
+          ~update-stms*
+        ]|
+      else
+        result := []
+      end
+      
+  cache-attributenames-to-java-stms: attributeNames -> result
+    with
+      update-stms* := <map(cache-attributename-to-java-stm-update)>attributeNames;
+      empty-stms*  := <map(cache-attributename-to-java-stm-empty)>attributeNames
+    with
+      result := bstm* |[
+        notEmpty = true;
+        while(notEmpty){
+          notEmpty = false;
+          ~update-stms*
+          ~empty-stms*
+        }
+      ]|
+      
+  cache-attributename-to-java-stm-update: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_updateAllAttributeCache := <name-updateallcache>x_attributeName
+    with
+      result := bstm |[
+        x_entityName.x_updateAllAttributeCache();
+      ]|
+      
+  cache-attributename-to-java-stm-empty: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_hasDirty                := <name-hasdirty>x_attributeName
+    with
+      result := bstm |[
+        notEmpty = notEmpty || x_entityName.x_hasDirty();
+      ]|
+  
