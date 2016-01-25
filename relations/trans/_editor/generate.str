@@ -59,26 +59,46 @@ rules // Builders
         moduleName := <module-get-modulename>selected;
         <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
         result := <build(error-handler|Java())>(selected, path, project-path, 1)
-	
-	compile-java       = compile-java(error-handler-editor)
-	compile-java-test  = compile-java(error-handler-tests)
-	compile-java(error-handler):
-		(selected, position, ast, path, project-path) -> None()
-  		with
+  
+  compile-java       = compile-java(error-handler-editor)
+  compile-java-test  = compile-java(error-handler-tests)
+  compile-java(error-handler):
+    (selected, position, ast, path, project-path) -> None()
+      with
         clear-index2;
         moduleName := <module-get-modulename>selected;
         <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-  			<build(error-handler|Java())>(selected, path, project-path, 2)
-	
-	execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
-	execute-java-test  = execute-java(error-handler-tests)
-	execute-java(error-handler):
-		(selected, position, ast, path, project-path) -> result
-  		with
+        <build(error-handler|Java())>(selected, path, project-path, 2)
+  
+  compile-java-incr       = compile-java-incr(error-handler-editor)
+  compile-java-incr-test  = compile-java-incr(error-handler-tests)
+  compile-java-incr(error-handler):
+    (selected, position, ast, path, project-path) -> None()
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
+        <build(error-handler|Java())>(selected, path, project-path, 2)
+  
+  execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
+  execute-java-test  = execute-java(error-handler-tests)
+  execute-java(error-handler):
+    (selected, position, ast, path, project-path) -> result
+      with
         clear-index2;
         moduleName := <module-get-modulename>selected;
         <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-  			result := <build(error-handler|Java())>(selected, path, project-path, 3)
+        result := <build(error-handler|Java())>(selected, path, project-path, 3)
+  
+  execute-java-incr       = execute-java-incr(error-handler-editor);echo;\ _ -> None() \
+  execute-java-incr-test  = execute-java-incr(error-handler-tests)
+  execute-java-incr(error-handler):
+    (selected, position, ast, path, project-path) -> result
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
+        result := <build(error-handler|Java())>(selected, path, project-path, 3)
 
 	generate-webdsl      = generate-webdsl(error-handler-editor)
 	generate-webdsl-test = generate-webdsl(error-handler-tests)

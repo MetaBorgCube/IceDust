@@ -24,3 +24,5 @@ test Hello World generate-java [[ ]] build generate-java-test
 test Hello World compile-java [[ ]] build compile-java-test
 
 test Hello World execute-java [[ ]] build execute-java-test to "Hello World!"
+
+test Hello World execute-java-incr [[ ]] build execute-java-incr-test to "Hello World!"

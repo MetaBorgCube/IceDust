@@ -29,14 +29,14 @@ rules
       rolesJava*        := <entityname-get-rolenames     ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_name;
       inversesJava*     := <entityname-get-inversenames  ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_name;
       shortcutsJava*    := <entityname-get-shortcutnames ;map(model-shortcutname-to-java-classbodydecs(err)     );flatten-list>x_name;
-      initInversesJava* := <entityname-get-inversenames  ;map(model-init-inversename-to-java-stm(err)           )             >x_name
+      initCachesJava*   := <entityname-get-attributenames;map(model-init-attributename-to-java-stms(err)        );flatten-list>x_name
     with
       result := type-dec |[
         class x_name
         {
           public x_name()
           {
-            ~initInversesJava*
+            ~initCachesJava*
           }
           ~attributesJava*
           ~rolesJava*
@@ -133,9 +133,7 @@ rules
           public void x_updateAttributeCache()
           {
             x_attributeType oldValue = x_getAttribute(); // use getter to get default-value behavior
-            System.out.println(x_attributeCache);
             this.x_attributeCache = x_calculateAttribute(); // update the cache (which might be an unused default)
-            System.out.println(x_attributeCache);
             if(oldValue != x_getAttribute()){
               x_dirtyFlagFlowsto();
             }
@@ -143,9 +141,6 @@ rules
           
           protected static void x_updateAllAttributeCache(){
             Collection<x_entityName> ens = x_getAndEmptyDirtyAttribute();
-            if(ens.size()>0){
-              System.out.println(ens.size() + " " + ens.iterator().next().getClass());
-            }
             for(x_entityName en : ens){
               en.x_updateAttributeCache();
             }
@@ -312,7 +307,7 @@ rules
         ]|
       else
         result1* := class-body-dec* |[
-          private Collection<x_inverseEntityName> x_roleName;
+          private Collection<x_inverseEntityName> x_roleName = Expressions.emptyCollection();
         
           public Collection<x_inverseEntityName> x_getRole()
           { 
@@ -321,7 +316,8 @@ rules
         
           public static Collection<x_inverseEntityName> x_getRole(x_roleEntityName en)
           { 
-            return en == null ? null : en.x_roleName;
+            Collection<x_inverseEntityName> empty = Expressions.emptyCollection();
+            return en == null ? empty : en.x_roleName;
           }
         
           public static Collection<x_inverseEntityName> x_getRole(Collection<x_roleEntityName> ens)
@@ -523,14 +519,15 @@ rules
 
 rules
 
-  model-init-inversename-to-java-stm(err): x_inverseName -> result
+  model-init-attributename-to-java-stms(err): x_attributeName -> result
     with
-      if <get-multiplicity;upper-one> x_inverseName then
-        result := java:block-stm |[
-          x_inverseName = null;
+      x_entityName                := <attributename-get-entityname>x_attributeName;
+      x_flagDirty                 := <name-flagdirty>x_attributeName
+    with
+      if (attributename-is-default <+ attributename-is-derivation); attributename-is-calconwrite then
+        result := bstm* |[
+          x_entityName.x_flagDirty(this);
         ]|
       else
-        result := java:block-stm |[
-          x_inverseName = Expressions.emptyCollection();
-        ]|
+        result := []
       end

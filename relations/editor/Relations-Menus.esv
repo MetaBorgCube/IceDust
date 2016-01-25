@@ -55,6 +55,8 @@ menus
     action: "Compile Java"         = compile-java 
     action: "Execute Java"         = execute-java
     action: "Generate Java Cached" = generate-java-incr (openeditor)
+    action: "Compile Java Cached"  = compile-java-incr
+    action: "Execute Java Cached"  = execute-java-incr
     action: "Generate WebDSL"      = generate-webdsl (openeditor)
     action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor)
     action: "Generate WebDSL eventual"= generate-webdsl-eventual (openeditor)
