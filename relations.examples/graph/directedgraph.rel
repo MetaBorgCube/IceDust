@@ -12,8 +12,8 @@ model
 data
 
   a : Node {
-    to = b : Node {
-      to = c : Node {
+    to = b {
+      to = c {
         to = a
       }
     }
