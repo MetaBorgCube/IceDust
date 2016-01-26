@@ -21,20 +21,20 @@ imports // functions
 
 rules
 
-  model-entityname-to-java-typedec(err): x_name -> result
+  model-entityname-to-java-typedec(err): x_entityName -> result
     where
       is-entityname
     with
-      attributesJava*   := <entityname-get-attributenames;map(model-attributename-to-java-classbodydecs(err)    );flatten-list>x_name;
-      rolesJava*        := <entityname-get-rolenames     ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_name;
-      inversesJava*     := <entityname-get-inversenames  ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_name;
-      shortcutsJava*    := <entityname-get-shortcutnames ;map(model-shortcutname-to-java-classbodydecs(err)     );flatten-list>x_name;
-      initCachesJava*   := <entityname-get-attributenames;map(model-init-attributename-to-java-stms(err)        );flatten-list>x_name
+      attributesJava*   := <entityname-get-attributenames;map(model-attributename-to-java-classbodydecs(err)    );flatten-list>x_entityName;
+      rolesJava*        := <entityname-get-rolenames     ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_entityName;
+      inversesJava*     := <entityname-get-inversenames  ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_entityName;
+      shortcutsJava*    := <entityname-get-shortcutnames ;map(model-shortcutname-to-java-classbodydecs(err)     );flatten-list>x_entityName;
+      initCachesJava*   := <entityname-get-attributenames;map(model-init-attributename-to-java-stms(err)        );flatten-list>x_entityName
     with
       result := type-dec |[
-        class x_name
+        class x_entityName
         {
-          public x_name()
+          public x_entityName()
           {
             ~initCachesJava*
           }

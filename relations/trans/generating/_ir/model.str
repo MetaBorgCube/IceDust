@@ -22,6 +22,7 @@ rules // generic names
   name-hasdirty:         name -> $[has_dirty_[name]]
   name-flagdirty:        name -> $[flag_dirty_[name]]
   name-dirtyflagflowsto: name -> $[dirty_flag_flowsto_[name]]
+  name-default:          name -> $[default_[name]]
 
 rules // role names
   

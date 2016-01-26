@@ -15,14 +15,12 @@ imports // functions
 
 rules // module
 
-	to-webdsl(err) = module-get-modulename;to-webdsl(err)
-
-	to-webdsl(err): x_name -> 
+	modulename-to-webdsl-application(err): x_moduleName -> 
 			webdsl |[
-				application x_name
+				application x_moduleName
 				
-        imports relations/crud-ui
-        imports relations/Expressions
+        imports lib/relations/crud-ui
+        imports lib/relations/Expressions
 			
 				section model
 				
@@ -31,9 +29,9 @@ rules // module
 				section data
 					
 					init{
-						stat1*
-						stat2*
-						stat3*
+//						stat1*
+//						stat2*
+//						stat3*
 					}
 				
 				section ui
@@ -48,21 +46,25 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*  := <modulename-get-entitynames;map(to-webdsl(err))>x_name;
-			def2*  := <modulename-get-entitynames;map(webdsl-crud)>x_name;
-			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
-			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
-			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
-			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name
+			def1*  := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
+			def2*  := <modulename-get-entitynames;map(entityname-to-webdsl-def)>x_moduleName;
+			elem1* := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName
+//			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_moduleName;
+//			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_moduleName;
+//			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_moduleName
 
 rules //crud
 	
-	webdsl-crud: x_name -> DeriveCrud(x_name)
+	entityname-to-webdsl-def: x_entityName -> DeriveCrud(x_entityName)
 	
-	webdsl-crud-nav: x_name -> webdsl |[navbaritem{navigate x_manageName(){$text}}]|
+	entityname-to-webdsl-elem: x_entityName -> result
 		with
-			x_manageName := $[manage[x_name]];
-			$text := Text(x_name)
+			x_manageName := $[manage[x_entityName]];
+			$text := Text(x_entityName)
+		with
+		  result := elem |[
+		    navbaritem{navigate x_manageName(){$text}}
+		  ]|
 	
 rules
 	
