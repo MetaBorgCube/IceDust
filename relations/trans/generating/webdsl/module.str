@@ -29,15 +29,13 @@ rules // module
 				section data
 					
 					init{
-//						stat1*
-//						stat2*
-//						stat3*
+            stat_data*
 					}
 				
 				section ui
 				
 					define applicationmenu() {
-						elem1*
+						elem_menu*
 					}
 					
 					def2*
@@ -46,12 +44,10 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*  := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def2*  := <modulename-get-entitynames;map(entityname-to-webdsl-def)>x_moduleName;
-			elem1* := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName
-//			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_moduleName;
-//			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_moduleName;
-//			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_moduleName
+			def1*      := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
+			def2*      := <modulename-get-entitynames;map(entityname-to-webdsl-def)>x_moduleName;
+			elem_menu* := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
+			stat_data* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 
 rules //crud
 	

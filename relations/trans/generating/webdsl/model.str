@@ -29,13 +29,15 @@ rules // entities
   	with
   		ebd1* := <entityname-get-attributenames;map(model-attributename-to-webdsl-ebds(err)    );flatten-list>x_entityName;
   		ebd2* := <entityname-get-rolenames;     map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-  		ebd3* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName
+  		ebd3* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
+  		ebd4* := <entityname-get-shortcutnames; map(model-shortcutname-to-webdsl-ebds(err))     ;flatten-list>x_entityName
   	with
   	 result := def |[
         entity x_entityName {
           ebd1*
           ebd2*
           ebd3*
+          ebd4*
         }
       ]|
 

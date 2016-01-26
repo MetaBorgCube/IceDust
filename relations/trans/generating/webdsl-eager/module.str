@@ -52,9 +52,9 @@ rules // module
 				section data
 					
 					init{
-						stat1*
-						stat2*
-						stat3*
+//						stat1*
+//						stat2*
+//						stat3*
 						updateDerivations();
 					}
 				
@@ -73,9 +73,9 @@ rules // module
 			def1*  := <modulename-get-entitynames;map(to-webdsl-eager(err))>x_name;
 			def2*  := <modulename-get-entitynames;map(webdsl-crud-eager)>x_name;
 			elem1* := <modulename-get-entitynames;map(webdsl-crud-nav)>x_name;
-			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
-			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
-			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
+//			stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
+//			stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
+//			stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
 			def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection)>x_name;
 			stat4* := <modulename-get-attributenames-topo;webdsl-toposort>x_name
 

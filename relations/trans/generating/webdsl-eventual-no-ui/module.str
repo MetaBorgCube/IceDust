@@ -77,9 +77,9 @@ rules // module
         section data
           
           init{
-            stat1*
-            stat2*
-            stat3*
+//            stat1*
+//            stat2*
+//            stat3*
           }
         
       ]|
@@ -87,9 +87,9 @@ rules // module
       is-modulename
     with
       def1*  := <modulename-get-entitynames;map(to-webdsl-eventual-no-ui(err))>x_name;
-      stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
-      stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
-      stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
+//      stat1* := <modulename-get-entityinstancenames;map(to-webdsl-1(err))>x_name;
+//      stat2* := <modulename-get-entityinstancenames;map(to-webdsl-2(err))>x_name;
+//      stat3* := <modulename-get-entityinstancenames;map(to-webdsl-3(err))>x_name;
       def3*  := <modulename-get-entitynames;map(entityname-get-attributenames);flatten-list;filter(where(not(attributename-is-normal)));map(attribute-dirty-collection-eventual)>x_name;
       stat4* := <modulename-get-attributenames-topo;webdsl-toposort-eventual>x_name;
       x_dirty:= $[[x_name]_Dirty];

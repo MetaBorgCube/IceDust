@@ -13,37 +13,93 @@ imports // functions
 	lib/search
 	generating/webdsl/expressions
 
+rules
+
+  data-modulename-to-webdsl-stms(err): moduleName -> result
+    with
+      eiNames          := <modulename-get-entityinstancenames>moduleName;
+      stat_objects*    := <map(entityinstancename-to-webdsl-stm(err))>eiNames;
+      stat_membervals* := <map(entityinstancename-to-webdsl-stms2(err));flatten-list>eiNames;
+      stat_saves*      := <map(entityinstancename-to-webdsl-stm3(err))>eiNames
+    with
+      result := webdsl |[
+        stat_objects*
+        stat_membervals*
+        stat_saves*
+      ]|
+
 rules // entity instances
 
-	to-webdsl-1(err): x_name ->
-		webdsl |[
-			var x_name := srt1 {};
-			stat1*
-		]|
-		where
-			is-entityinstancename
+	entityinstancename-to-webdsl-stm(err): x_eiName -> result
 		with
-			srt1 := <_get-type>x_name;
-			stat1* := []
+			srt1 := <_get-type>x_eiName
+		with
+      result := stat |[
+        var x_eiName := srt1 {};
+      ]|
+			
+  entityinstancename-to-webdsl-stms2(err): eiName -> result
+    with
+      memberValues := <entityinstancename-get-membervalues>eiName;
+      result := <map(membervalue-to-webdsl-stms(err|eiName));flatten-list>memberValues
 
-	to-webdsl-2(err): x_name ->
-		webdsl |[
-			stat1*
-		]|
-		where
-			is-entityinstancename
-		with
-			stat1* := <entityinstancename-get-exprs;map(to-webdsl(err|x_name))>x_name
 
-	to-webdsl-3(err): x_name ->
-		webdsl |[
-			x_name.save();
-			stat1*
-		]|
+	entityinstancename-to-webdsl-stm3(err): x_eiName -> result
 		where
 			is-entityinstancename
-		with
-			stat1* := []
+    with
+      result := stat |[
+        x_eiName.save();
+      ]|
+      
+rules
+
+  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(x_memberName), valueAst) -> result
+    where
+      <is-attributename>x_memberName
+    with
+      e_value := <to-webdsl(err)>valueAst
+    with
+      result := stat |[
+        x_eiName.x_memberName := e_value;
+      ]|    
+          
+  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
+    where
+      <is-shortcutname>shortcutName
+    with
+      valueNames := <collect-all(eiwrefnames)>valueAst;
+      result := <map(data-shortcutname-to-webdsl-stms(err|x_eiName,shortcutName));flatten-list>valueNames
+
+rules
+
+  eirefname: EntityInstanceRef(name) -> name
+  eiwrefnames: EntityInstanceWrapper(RelationInstance(EntityInstanceRef(relname)), EntityInstanceRef(name)) -> (relname,name)
+  eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
+
+rules
+
+  data-shortcutname-to-webdsl-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
+    with
+      x_roleName1    := <shortcutname-get-rolename1>shortcutName;
+      x_roleName2    := <shortcutname-get-rolename2>shortcutName;
+      x_relationType := <attributename-get-entityname>x_roleName1;
+      if(None() := relName) then
+        x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
+      else
+        x_relationObject := relName
+      end;
+      if(None() := relName) then
+        result0* := [stat |[
+          var x_relationObject := x_relationType{};
+        ]|]
+      else
+        result0* := []
+      end;
+      result1* := webdsl |[
+        x_relationObject.x_roleName1 := x_eiName;
+        x_relationObject.x_roleName2 := x_eiName2;
+      ]|
 
 rules // entity instance attributes
 	
