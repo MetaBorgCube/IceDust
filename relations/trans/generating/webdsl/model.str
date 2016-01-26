@@ -43,7 +43,7 @@ rules // entities
 
 rules
 
-  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-defaultfield*,result-calculate*,result*]
+  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-get,result-calculate*,result-get2*,result-cache*]
     where
       is-attributename
     with
@@ -54,7 +54,7 @@ rules
       x_calculateAttribute        := <name-calculate>x_attributeName;
       x_attributeCache            := <name-cache>x_attributeName;
       x_updateAttributeCache      := <name-update-cache>x_attributeName;
-      x_dirtyAttribute            := <name-dirty>x_attributeName;
+      x_dirtyAttribute            := <attributename-entityname-dirty>x_attributeName;
       x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
       x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
       x_hasDirty                  := <name-hasdirty>x_attributeName;
@@ -77,21 +77,31 @@ rules
         ]|
       end
     with
-      if attributename-is-default then
-        result-defaultfield* := webdsl |[
-          x_attributeDefault : srt_attributeType := x_calculateAttribute()
-          
+      if attributename-is-default; attributename-is-calconread then
+        result-get := webdsl |[
           function x_getAttribute() : srt_attributeType {
-            return if(this.x_attributeName != null) this.x_attributeName else this.x_attributeDefault;
+            return if(this.x_attributeName != null) this.x_attributeName else this.x_calculateAttribute();
           }
         ]|
-      else
-        result-defaultfield* := [webdsl |[
+      else if attributename-is-default; attributename-is-calconwrite then
+        result-get := webdsl |[
+          function x_getAttribute() : srt_attributeType {
+            return if(this.x_attributeName != null) this.x_attributeName else this.x_attributeCache;
+          }
+        ]|
+      else if attributename-is-normal <+ ( attributename-is-derivation; attributename-is-calconread ) then
+        result-get := [webdsl |[
           function x_getAttribute() : srt_attributeType {
             return this.x_attributeName;
           }
         ]|]
-      end
+      else // derivation; calconwrite
+        result-get := [webdsl |[
+          function x_getAttribute() : srt_attributeType {
+            return this.x_attributeCache;
+          }
+        ]|]
+      end end end
     with
       if attributename-is-default <+ attributename-is-derivation then
         result-calculate* := [webdsl |[
@@ -103,7 +113,7 @@ rules
         result-calculate* := []
       end
     with
-      result* := webdsl |[          
+      result-get2* := webdsl |[          
         static function x_getAttribute(en: x_entityName) : srt_attributeType {
           return if(en == null) null as srt_attributeType else en.x_getAttribute();
         }
@@ -112,6 +122,63 @@ rules
           return [en.x_getAttribute() | en : x_entityName in entities where en.x_getAttribute() != null];
         }
       ]|
+    with
+      if (attributename-is-default <+ attributename-is-derivation); attributename-is-calconwrite then
+        result-cache* := webdsl |[
+          x_attributeCache : srt_attributeType (default=x_calculateAttribute())
+          
+          function x_updateAttributeCache(){
+            x_attributeCache := x_calculateAttribute();
+          }
+          
+          static function x_updateAllAttributeCache () {
+            var entities := x_entityName.x_getAndEmptyDirtyAttribute();
+//            if(entities.length != 0){
+//              log("Updating " + e2 + ": " + entities.length);
+//            }
+            for(en in entities){
+              en.x_updateAttributeCache();
+            }
+          }
+          
+          static function x_getAndEmptyDirtyAttribute() : Set<x_entityName> {
+            var values := x_dirtyAttribute;
+            x_dirtyAttribute := Set<x_entityName>();
+            return values;
+          }
+    
+          static function x_hasDirty () : Bool {
+            return x_dirtyAttribute.length!=0;
+          }
+                
+          static function x_flagDirty(en : x_entityName) {
+            if(en != null){
+              x_dirtyAttribute.add(en);
+            }
+          }
+          
+          static function x_flagDirty(ens : [x_entityName]) {
+            x_dirtyAttribute.addAll(ens);
+          }
+          
+        ]|
+      else
+        result-cache* := []
+      end
+//    with
+//      if attributename-is-calconwrite then
+//        result-flow* := webdsl |[          
+//          static function x_getAttribute(en: x_entityName) : srt_attributeType {
+//            return if(en == null) null as srt_attributeType else en.x_getAttribute();
+//          }
+//          
+//          static function x_getAttribute(entities : [x_entityName]) : [srt_attributeType] {
+//            return [en.x_getAttribute() | en : x_entityName in entities where en.x_getAttribute() != null];
+//          }
+//      ]|
+//      else
+//        result-flow* := []
+//      end
 
 rules
 

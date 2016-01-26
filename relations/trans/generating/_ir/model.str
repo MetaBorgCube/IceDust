@@ -24,9 +24,13 @@ rules // generic names
   name-dirtyflagflowsto: name -> $[dirty_flag_flowsto_[name]]
   name-default:          name -> $[default_[name]]
 
-rules // role names
+rules // prefixed names
   
   rolename-entitynamerolename: rolename -> $[[entityname]_[rolename]]
     with
       entityname := <attributename-get-entityname>rolename
+
+  attributename-entityname-dirty: attributename -> $[[entityname]_[attributename]_dirty]
+    with
+      entityname := <attributename-get-entityname>attributename
   

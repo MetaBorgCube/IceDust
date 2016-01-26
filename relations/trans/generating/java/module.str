@@ -37,7 +37,7 @@ rules
           public static void main(String[] args)
           {
             ~dataJava*
-            ~cacheJava*
+            ~cacheJava* // empty if calc-on-read
             ~executeJava*
           }
         }

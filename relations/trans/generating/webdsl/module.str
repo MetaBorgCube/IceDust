@@ -7,40 +7,16 @@ imports // constructors
 	desugaring/constructors
 
 imports // functions
-	
-	generating/webdsl/model
+  
+  generating/_ir/model 
+  generating/webdsl/model
 	generating/webdsl/data
 	api/module-api
 	api/module-names-api
 
 rules // module
 
-	modulename-to-webdsl-application(err): x_moduleName -> 
-			webdsl |[
-				application x_moduleName
-				
-        imports lib/relations/crud-ui
-        imports lib/relations/Expressions
-			
-				section model
-				
-					def1*
-				
-				section data
-					
-					init{
-            stat_data*
-					}
-				
-				section ui
-				
-					define applicationmenu() {
-						elem_menu*
-					}
-					
-					def2*
-				
-			]|
+	modulename-to-webdsl-application(err): x_moduleName -> result
 		where
 			is-modulename
 		with
@@ -48,6 +24,60 @@ rules // module
 			def2*      := <modulename-get-entitynames;map(entityname-to-webdsl-def)>x_moduleName;
 			elem_menu* := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
 			stat_data* := <data-modulename-to-webdsl-stms(err)>x_moduleName
+		with
+		  if modulename-is-calconwrite then
+		    def3* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName
+		  end
+    with
+      if modulename-is-calconwrite then	 
+  	    sec1* := [webdsl |[
+          section derivations
+          
+            def3*
+            
+            init{
+              initDirtyCollections();
+            }
+            
+            function initDirtyCollections(){
+  
+            }
+            
+            function updateDerivations(){
+              var notEmpty : Bool;
+//              stat4*
+            }
+        ]|]
+      else
+        sec1* := []
+      end
+	  with
+      result := webdsl |[
+        application x_moduleName
+        
+        imports lib/relations/crud-ui
+        imports lib/relations/Expressions
+      
+        section model
+        
+          def1*
+        
+        sec1*
+        
+        section data
+          
+          init{
+            stat_data*
+          }
+        
+        section ui
+        
+          define applicationmenu() {
+            elem_menu*
+          }
+          
+          def2*
+      ]|
 
 rules //crud
 	
@@ -62,5 +92,18 @@ rules //crud
 		    navbaritem{navigate x_manageName(){$text}}
 		  ]|
 	
-rules
+rules // derivations
+  
+  attributename-to-webdsl-defs: x_attributeName -> result
+    with
+      x_entityName := <attributename-get-entityname>x_attributeName;
+      x_dirty      := <attributename-entityname-dirty>x_attributeName
+    with
+      result := def* |[
+        request var x_dirty := Set<x_entityName>()
+        
+        extend function initDirtyCollections(){
+          x_dirty := Set<x_entityName>();
+        }
+      ]|
 	

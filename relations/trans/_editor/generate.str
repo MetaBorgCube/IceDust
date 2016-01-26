@@ -104,22 +104,31 @@ rules // Builders
 	generate-webdsl-test = generate-webdsl(error-handler-tests)
 	generate-webdsl(error-handler):
 		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
+		  	result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
 
 	generate-webdsl-eager      = generate-webdsl-eager(error-handler-editor)
 	generate-webdsl-eager-test = generate-webdsl-eager(error-handler-tests)
 	generate-webdsl-eager(error-handler):
 		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEager())>(selected, path, project-path, 1)
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
+			  result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
 
 	generate-webdsl-eventual      = generate-webdsl-eventual(error-handler-editor)
 	generate-webdsl-eventual-test = generate-webdsl-eventual(error-handler-tests)
 	generate-webdsl-eventual(error-handler):
 		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEventual())>(selected, path, project-path, 1)
+      with
+        clear-index2;
+        moduleName := <module-get-modulename>selected;
+        <index-store-prop2(|ImplStrategy(), moduleName)>EventuallyConsistent();
+        result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
 
 	generate-webdsl-eventual-no-ui      = generate-webdsl-eventual-no-ui(error-handler-editor)
 	generate-webdsl-eventual-no-ui-test = generate-webdsl-eventual-no-ui(error-handler-tests)
