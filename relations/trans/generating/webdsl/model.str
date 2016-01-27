@@ -10,6 +10,7 @@ imports // constructors
 
 imports // functions
 
+  analysis2/path
 	api/_runtime
 	api/model-api
 	api/model-names-api
@@ -43,7 +44,7 @@ rules // entities
 
 rules
 
-  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-get,result-calculate*,result-get2*,result-cache*]
+  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-get,result-calculate*,result-get2*,result-cache*,result-flow*,result-trigger*]
     where
       is-attributename
     with
@@ -61,10 +62,17 @@ rules
       x_flagDirty                 := <name-flagdirty>x_attributeName;
       x_dirtyFlagFlowsto          := <name-dirtyflagflowsto>x_attributeName;
       x_attributeDefault          := <name-default>x_attributeName;
-      x_moduleName                := <entityname-get-modulename>x_entityName
+      x_setAttributeTrigger       := <name-set-trigger>x_attributeName;
+      x_setAttributeCacheTrigger  := <name-set-cache-trigger>x_attributeName;
+      x_moduleName                := <entityname-get-modulename>x_entityName;
+      e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]])
     with
       if attributename-is-default <+ attributename-is-derivation then
         e_calculate := <attributename-get-expr;to-webdsl(err)>x_attributeName
+      end
+    with
+      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+        stat_flowsTo* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
       end
     with
       if attributename-is-normal <+ attributename-is-default then
@@ -133,9 +141,9 @@ rules
           
           static function x_updateAllAttributeCache () {
             var entities := x_entityName.x_getAndEmptyDirtyAttribute();
-//            if(entities.length != 0){
-//              log("Updating " + e2 + ": " + entities.length);
-//            }
+            if(entities.length != 0){
+              log("Updating " + e_entityNameAttributeName + ": " + entities.length);
+            }
             for(en in entities){
               en.x_updateAttributeCache();
             }
@@ -165,24 +173,64 @@ rules
       else
         result-cache* := []
       end
-//    with
-//      if attributename-is-calconwrite then
-//        result-flow* := webdsl |[          
-//          static function x_getAttribute(en: x_entityName) : srt_attributeType {
-//            return if(en == null) null as srt_attributeType else en.x_getAttribute();
-//          }
-//          
-//          static function x_getAttribute(entities : [x_entityName]) : [srt_attributeType] {
-//            return [en.x_getAttribute() | en : x_entityName in entities where en.x_getAttribute() != null];
-//          }
-//      ]|
-//      else
-//        result-flow* := []
-//      end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := [webdsl |[          
+          function x_dirtyFlagFlowsto() {
+            stat_flowsTo*
+          }
+        ]|]
+      else
+        result-flow* := []
+      end
+    with
+      if attributename-is-normal; attributename-is-calconwrite then
+        result-trigger* := [webdsl |[
+          extend function x_setAttributeTrigger(newValue : srt_attributeType){
+            if(x_getAttribute() != newValue){
+              x_dirtyFlagFlowsto();
+            }
+          }
+        ]|]
+      else if attributename-is-default; attributename-is-calconwrite then
+        result-trigger* := webdsl |[
+          extend function x_setAttributeTrigger(newValue : srt_attributeType){
+            if(x_getAttribute() != newValue){ // use getter to get default-value behavior
+              x_dirtyFlagFlowsto();
+            }
+          }
+          extend function x_setAttributeCacheTrigger(newValue : srt_attributeType){
+            if(x_attributeName == null && x_getAttribute() != newValue){ // update is cached value changes and user value is null
+              x_dirtyFlagFlowsto();
+            }
+          }
+        ]|
+      else if attributename-is-derivation; attributename-is-calconwrite then
+        result-trigger* := [webdsl |[
+          extend function x_setAttributeCacheTrigger(newValue : srt_attributeType){
+            if(x_getAttribute() != newValue){ // dirty flag if cached value changes
+              x_dirtyFlagFlowsto();
+            }
+          }
+        ]|]
+      else
+        result-trigger* := []
+      end end end
 
 rules
 
-  model-roleOrInversename-to-webdsl-ebds(err): x_roleName -> [result-field,result-get*]
+  model-path-to-webdsl-stm(err): (x_attributeName, e_path) -> result
+    with
+      x_entityName := <attributename-get-entityname>x_attributeName;
+      x_flagDirty  := <name-flagdirty>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_flagDirty(e_path);
+      ]|
+
+rules
+
+  model-roleOrInversename-to-webdsl-ebds(err): x_roleName -> [result-field,result-get*,result-flow*,result-trigger*]
     where
       is-rolename <+ is-inversename
     with
@@ -200,7 +248,19 @@ rules
       x_setInversePrivate    := <name-set-private>x_inverseName;
       x_addInversePrivate    := <name-add-private>x_inverseName;
       x_removeInversePrivate := <name-remove-private>x_inverseName;
-      x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName
+      x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName;
+      x_setRoleTrigger       := <name-set-trigger>x_roleName;
+      x_addRoleTrigger       := <name-add-trigger>x_setRoleTrigger;
+      x_removeRoleTrigger    := <name-remove-trigger>x_setRoleTrigger
+    with
+      if attributename-is-calconwrite then
+        if is-attributename; name-get-flowsto-paths;?flowsto-paths then
+          stat_flowsTo* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
+        else
+          name-get-inversename; name-get-flowsto-paths;?flowsto-paths;
+          stat_flowsTo* := <filter(path-origin-is-role);map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
+        end
+      end
     with
       if is-rolename then
         result-field := webdsl |[
@@ -254,6 +314,42 @@ rules
           }
         ]|
       end
+    with
+      if attributename-is-calconwrite then
+        result-flow* := [webdsl |[
+          function x_dirtyFlagFlowstoRole(){
+            stat_flowsTo*
+          }
+        ]|]
+      else
+        result-flow* := []
+      end
+    with
+      if attributename-is-calconwrite; get-multiplicity;upper-one then
+        result-trigger* := [webdsl |[
+          function x_setRoleTrigger(newValue : x_inverseEntityName){
+            if(newValue != x_getRole()){
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+        ]|]
+      else if attributename-is-calconwrite; get-multiplicity;upper-many then
+        result-trigger* := webdsl |[
+          function x_addRoleTrigger(en : x_inverseEntityName){
+            if(en != null){
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+          
+          function x_removeRoleTrigger(en : x_inverseEntityName){
+            if(en != null){
+              x_dirtyFlagFlowstoRole();
+            }
+          }
+        ]|
+      else
+        result-trigger* := []
+      end end
 
 rules
 

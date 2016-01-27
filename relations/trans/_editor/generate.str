@@ -13,7 +13,6 @@ imports // functions
 	desugaring/desugar
 	generating/java/generate
 	generating/webdsl/generate
-	generating/webdsl-eager/generate
 	generating/webdsl-eventual/generate
 	generating/webdsl-eventual/java/generate
 	generating/webdsl-eventual-no-ui/generate
@@ -181,9 +180,6 @@ rules // Build in steps
 					case ?WebDSL():
 						(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
 						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEager():
-						(targetFileName, targetCode, error') := <generate-webdsl-eager-step(error-handler)>(ast', path);
-						<copy-webdsl-libraries>(targetFileName, project-path)
 					case ?WebDSLEventual():
 						(targetFileName, targetCode, error') := <generate-webdsl-eventual-step(error-handler)>(ast', path);
 						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
@@ -233,7 +229,6 @@ rules // Build in steps
 	
 	generate-java-step(error-handler)                 = generate-java-code(error-handler)
 	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)
-	generate-webdsl-eager-step(error-handler)         = generate-webdsl-eager-code(error-handler)
 	generate-webdsl-eventual-step(error-handler)      = generate-webdsl-eventual-code(error-handler)
 	generate-webdsl-eventual-no-ui-step(error-handler)= generate-webdsl-eventual-no-ui-code(error-handler)
 	generate-webdsl-eventual-java-step(error-handler) = generate-webdsl-eventual-java-code(error-handler)

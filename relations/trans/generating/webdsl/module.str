@@ -20,13 +20,19 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*      := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def2*      := <modulename-get-entitynames;map(entityname-to-webdsl-def)>x_moduleName;
-			elem_menu* := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
-			stat_data* := <data-modulename-to-webdsl-stms(err)>x_moduleName
+			def1*          := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
+			def2*          := <modulename-get-entitynames;map(entityname-to-webdsl-defs);flatten-list>x_moduleName;
+			elem_menu*     := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
+			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 		with
 		  if modulename-is-calconwrite then
-		    def3* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName
+		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName;
+		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName;
+		    stat_initdcoll*  := [webdsl |[initDirtyCollections();]|];
+		    stat_initupdate* := [webdsl |[updateDerivations();]|]
+		  else
+        stat_initdcoll*  := [];
+        stat_initupdate* := []
 		  end
     with
       if modulename-is-calconwrite then	 
@@ -35,19 +41,14 @@ rules // module
           
             def3*
             
-            init{
-              initDirtyCollections();
-            }
-            
             function initDirtyCollections(){
   
             }
             
             function updateDerivations(){
-              var notEmpty : Bool;
-//              stat4*
+              stat_cach*
             }
-        ]|]
+          ]|]
       else
         sec1* := []
       end
@@ -67,7 +68,9 @@ rules // module
         section data
           
           init{
-            stat_data*
+            stat_initdcoll*
+            stat_initdata*
+            stat_initupdate*
           }
         
         section ui
@@ -81,7 +84,101 @@ rules // module
 
 rules //crud
 	
-	entityname-to-webdsl-def: x_entityName -> DeriveCrud(x_entityName)
+  entityname-to-webdsl-defs: x_entityName -> result
+    with
+      x_manageEntity := <name-manage>x_entityName;
+      x_createEntity := <name-create>x_entityName;
+      x_editEntity   := <name-edit>x_entityName;
+      x_viewEntity   := <lcfirst>x_entityName;
+      form-fields :=
+        <concat(
+          entityname-get-attributenames;filter(where(not(attributename-is-derivation))),
+          entityname-get-rolenames,
+          entityname-get-inversenames
+        );map(attributename-to-webdsl)>x_entityName;
+      elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
+      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
+    with
+      if entityname-is-calconread then
+        result := [DeriveCrud(x_entityName)]
+      else
+        result := def* |[
+          define page x_createEntity(){
+            //derive createPage from temp
+            main()
+            define body() {
+              var temp := x_entityName{}
+              header{"Create " output(temp.name) } 
+              form { 
+                <fieldset>
+                  <legend>
+                    output("Details")
+                  </legend>
+                  <table>
+                    elem_deriveEditRowsTemp
+                    // derive editRows from temp
+                  </table>
+                </fieldset>      
+                action("Save", save())
+              }
+              action save() { 
+                temp.save();
+                updateDerivations();
+                return x_manageEntity();
+              }
+            }
+          }
+          define page x_viewEntity(arg : x_entityName){
+            derive viewPage from arg
+          }
+          define page x_editEntity(arg : x_entityName){
+            //derive editPage from arg
+            main()
+            define body() {
+              header{"Edit " output(arg.name) } 
+              form { 
+                <fieldset>
+                  <legend>
+                    output("Details")
+                  </legend>
+                  <table>
+                    elem_deriveEditRowsArg
+                    // derive editRows from arg
+                  </table>
+                </fieldset>  
+                action("Save", save())
+              }
+              action save() { 
+                arg.save();
+                updateDerivations();
+                return x_manageEntity();
+              }
+            }
+          }
+          define page x_manageEntity(){
+            main()
+            define body(){
+              navigate(x_createEntity()){ "create" }
+              <list>
+                for(elem : x_entityName){
+                  <li> 
+                    output(elem)
+                    " "
+                    navigate(x_editEntity(elem)){ "edit" }
+                    " "
+                    form{action("remove",remove(elem))}
+                  </li>
+                }
+              </list>
+              action remove(arg : x_entityName){
+                arg.delete();
+              }
+            }
+          }
+        ]|
+      end
+	
+  attributename-to-webdsl: x_name -> DeriveDefault(x_name)
 	
 	entityname-to-webdsl-elem: x_entityName -> result
 		with
@@ -106,4 +203,51 @@ rules // derivations
           x_dirty := Set<x_entityName>();
         }
       ]|
-	
+
+rules
+  
+  cache-modulename-to-webdsl-stms: x_moduleName -> result
+    with
+      namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
+      stat_updat* := <map(cache-attributenames-to-webdsl-stms);flatten-list>namess
+    with
+      if modulename-is-calconwrite then
+        result := webdsl |[
+          var notEmpty : Bool;
+          stat_updat*
+        ]|
+      else
+        result := []
+      end
+      
+  cache-attributenames-to-webdsl-stms: attributeNames -> result
+    with
+      stat_updat* := <map(cache-attributename-to-webdsl-stm-update)>attributeNames;
+      stat_empty* := <map(cache-attributename-to-webdsl-stm-empty)>attributeNames
+    with
+      result := webdsl |[
+        notEmpty := true;
+        while(notEmpty){
+          stat_updat*
+          notEmpty := false;
+          stat_empty*
+        }
+      ]|
+      
+  cache-attributename-to-webdsl-stm-update: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_updateAllAttributeCache := <name-updateallcache>x_attributeName
+    with
+      result := webdsl |[
+        x_entityName.x_updateAllAttributeCache();
+      ]|
+      
+  cache-attributename-to-webdsl-stm-empty: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_hasDirty                := <name-hasdirty>x_attributeName
+    with
+      result := webdsl |[
+        notEmpty := notEmpty || x_entityName.x_hasDirty();
+      ]|
