@@ -71,7 +71,7 @@ rules
         e_calculate := <attributename-get-expr;to-webdsl(err)>x_attributeName
       end
     with
-      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); name-get-flowsto-paths;?flowsto-paths then
         stat_flowsTo* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
       end
     with
@@ -91,7 +91,7 @@ rules
             return if(this.x_attributeName != null) this.x_attributeName else this.x_calculateAttribute();
           }
         ]|
-      else if attributename-is-default; attributename-is-calconwrite then
+      else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-get := webdsl |[
           function x_getAttribute() : srt_attributeType {
             return if(this.x_attributeName != null) this.x_attributeName else this.x_attributeCache;
@@ -131,7 +131,7 @@ rules
         }
       ]|
     with
-      if (attributename-is-default <+ attributename-is-derivation); attributename-is-calconwrite then
+      if (attributename-is-default <+ attributename-is-derivation); (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-cache* := webdsl |[
           x_attributeCache : srt_attributeType (default=x_calculateAttribute())
           
@@ -174,7 +174,7 @@ rules
         result-cache* := []
       end
     with
-      if attributename-is-calconwrite then
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-flow* := [webdsl |[          
           function x_dirtyFlagFlowsto() {
             stat_flowsTo*
@@ -184,7 +184,7 @@ rules
         result-flow* := []
       end
     with
-      if attributename-is-normal; attributename-is-calconwrite then
+      if attributename-is-normal; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-trigger* := [webdsl |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){
@@ -192,7 +192,7 @@ rules
             }
           }
         ]|]
-      else if attributename-is-default; attributename-is-calconwrite then
+      else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-trigger* := webdsl |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // use getter to get default-value behavior
@@ -205,7 +205,7 @@ rules
             }
           }
         ]|
-      else if attributename-is-derivation; attributename-is-calconwrite then
+      else if attributename-is-derivation; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-trigger* := [webdsl |[
           extend function x_setAttributeCacheTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // dirty flag if cached value changes
@@ -253,7 +253,7 @@ rules
       x_addRoleTrigger       := <name-add-trigger>x_setRoleTrigger;
       x_removeRoleTrigger    := <name-remove-trigger>x_setRoleTrigger
     with
-      if attributename-is-calconwrite then
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         if is-attributename; name-get-flowsto-paths;?flowsto-paths then
           stat_flowsTo* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
         else
@@ -315,7 +315,7 @@ rules
         ]|
       end
     with
-      if attributename-is-calconwrite then
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
         result-flow* := [webdsl |[
           function x_dirtyFlagFlowstoRole(){
             stat_flowsTo*
@@ -325,7 +325,7 @@ rules
         result-flow* := []
       end
     with
-      if attributename-is-calconwrite; get-multiplicity;upper-one then
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-one then
         result-trigger* := [webdsl |[
           function x_setRoleTrigger(newValue : x_inverseEntityName){
             if(newValue != x_getRole()){
@@ -333,7 +333,7 @@ rules
             }
           }
         ]|]
-      else if attributename-is-calconwrite; get-multiplicity;upper-many then
+      else if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-many then
         result-trigger* := webdsl |[
           function x_addRoleTrigger(en : x_inverseEntityName){
             if(en != null){

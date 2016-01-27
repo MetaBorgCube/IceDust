@@ -11,8 +11,11 @@ imports // functions
   generating/_ir/model 
   generating/webdsl/model
 	generating/webdsl/data
+  api/model-names-api
 	api/module-api
-	api/module-names-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
 
 rules // module
 
@@ -25,19 +28,29 @@ rules // module
 			elem_menu*     := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
 			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 		with
-		  if modulename-is-calconwrite then
+		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
 		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName;
 		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName;
-		    stat_initdcoll*  := [webdsl |[initDirtyCollections();]|];
-		    stat_initupdate* := [webdsl |[updateDerivations();]|]
+		    stat_initdcoll*  := [webdsl |[initDirtyCollections();]|]
 		  else
-        stat_initdcoll*  := [];
-        stat_initupdate* := []
+        stat_initdcoll*  := []
 		  end
+		with
+		  if modulename-is-calconwrite then
+		    stat_initupdate* := [webdsl |[updateDerivations();]|]
+		  else if modulename-is-eventuallyconsistent then
+		    stat_initupdate* := [webdsl |[flagDirtyAsync();]|]
+		  else
+        stat_initupdate* := []
+		  end end
     with
-      if modulename-is-calconwrite then	 
-  	    sec1* := [webdsl |[
-          section derivations
+      if modulename-is-eventuallyconsistent then
+        stat_flagasync* := []
+      end
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then  
+        sec1* := [webdsl |[
+          section caches and dirty flags
           
             def3*
             
@@ -48,9 +61,21 @@ rules // module
             function updateDerivations(){
               stat_cach*
             }
-          ]|]
+        ]|]
       else
         sec1* := []
+      end
+    with
+      if modulename-is-eventuallyconsistent then
+        sec2* := [webdsl |[
+          section async dirty flags
+            
+            function flagDirtyAsync(){
+              stat_flagasync*
+            }
+        ]|]
+      else
+        sec2* := []
       end
 	  with
       result := webdsl |[
@@ -63,7 +88,9 @@ rules // module
         
           def1*
         
-        sec1*
+        sec1* // caches and dirty flags
+        
+        sec2* // async dirty flags
         
         section data
           
@@ -99,6 +126,14 @@ rules //crud
       elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
     with
+      if entityname-is-calconwrite then
+        stat_updateDerivations* := [stat |[
+          updateDerivations();
+        ]|]
+      else
+        stat_updateDerivations* := []
+      end
+    with
       if entityname-is-calconread then
         result := [DeriveCrud(x_entityName)]
       else
@@ -123,7 +158,7 @@ rules //crud
               }
               action save() { 
                 temp.save();
-                updateDerivations();
+                stat_updateDerivations*
                 return x_manageEntity();
               }
             }
@@ -150,7 +185,7 @@ rules //crud
               }
               action save() { 
                 arg.save();
-                updateDerivations();
+                stat_updateDerivations*
                 return x_manageEntity();
               }
             }
@@ -211,7 +246,7 @@ rules
       namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
       stat_updat* := <map(cache-attributenames-to-webdsl-stms);flatten-list>namess
     with
-      if modulename-is-calconwrite then
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
         result := webdsl |[
           var notEmpty : Bool;
           stat_updat*
