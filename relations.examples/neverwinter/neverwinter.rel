@@ -36,29 +36,29 @@ model
     
     // armor class, hit points and total item level
     armorClass           : Int = sum(items.armorClass)
-    maximumHitPoints     : Int = sum(items.maximumHitPoints)
+    maximumHitPoints     : Int = sum(items.maximumHitPoints)     + sum(boons.maximumHitPoints)
     totalItemLevel       : Int = sum(items.itemLevel)
     
     // ratings
-    power                : Int = sum(items.power)
-    criticalStrike       : Int = sum(items.criticalStrike)
-    armorPenetration     : Int = sum(items.armorPenetration)
-    recovery             : Int = sum(items.recovery)
-    actionPointGain      : Int = sum(items.actionPointGain)
-    combatAdvantageBonus : Int = sum(items.combatAdvantageBonus)
-    controlBonus         : Int = sum(items.controlBonus)
-    defense              : Int = sum(items.defense)
-    deflect              : Int = sum(items.deflect)
-    regeneration         : Int = sum(items.regeneration)
-    lifeSteal            : Int = sum(items.lifeSteal)
-    tenacity             : Int = sum(items.tenacity)
-    staminaGain          : Int = sum(items.staminaGain)
-    incomingHealingBonus : Int = sum(items.incomingHealingBonus)
-    aoeResist            : Int = sum(items.aoeResist)
-    controlResist        : Int = sum(items.controlResist)
-    movement             : Int = sum(items.movement)
-    companionInfluence   : Int = sum(items.companionInfluence)
-    goldGain             : Int = sum(items.goldGain)
+    power                : Int = sum(items.power)                + sum(boons.power)
+    criticalStrike       : Int = sum(items.criticalStrike)       + sum(boons.criticalStrike)
+    armorPenetration     : Int = sum(items.armorPenetration)     + sum(boons.armorPenetration)
+    recovery             : Int = sum(items.recovery)             + sum(boons.recovery)
+    actionPointGain      : Int = sum(items.actionPointGain)      + sum(boons.actionPointGain)
+    combatAdvantageBonus : Int = sum(items.combatAdvantageBonus) + sum(boons.combatAdvantageBonus)
+    controlBonus         : Int = sum(items.controlBonus)         + sum(boons.controlBonus)
+    defense              : Int = sum(items.defense)              + sum(boons.defense)
+    deflect              : Int = sum(items.deflect)              + sum(boons.deflect)
+    regeneration         : Int = sum(items.regeneration)         + sum(boons.regeneration)
+    lifeSteal            : Int = sum(items.lifeSteal)            + sum(boons.lifeSteal)
+    tenacity             : Int = sum(items.tenacity)             + sum(boons.tenacity)
+    staminaGain          : Int = sum(items.staminaGain)          + sum(boons.staminaGain)
+    incomingHealingBonus : Int = sum(items.incomingHealingBonus) + sum(boons.incomingHealingBonus)
+    aoeResist            : Int = sum(items.aoeResist)            + sum(boons.aoeResist)
+    controlResist        : Int = sum(items.controlResist)        + sum(boons.controlResist)
+    movement             : Int = sum(items.movement)             + sum(boons.movement)
+    companionInfluence   : Int = sum(items.companionInfluence)   + sum(boons.companionInfluence)
+    goldGain             : Int = sum(items.goldGain)             + sum(boons.goldGain)
     
     // stats
   }
@@ -122,7 +122,7 @@ model
     maximumHitPoints     : Int = item.maximumHitPoints     + sum(enchantments.maximumHitPoints)
     
     // ratings
-    power                : Int = item.strength             + sum(enchantments.strength)
+    power                : Int = item.power                + sum(enchantments.power)
     criticalStrike       : Int = item.criticalStrike       + sum(enchantments.criticalStrike)
     armorPenetration     : Int = item.armorPenetration     + sum(enchantments.armorPenetration)
     recovery             : Int = item.recovery             + sum(enchantments.recovery)
@@ -148,6 +148,58 @@ model
   relation ItemInstance.enchantments * <-> * ItemInstance.enchants {}
   
   relation Character.items * <-> 1 ItemInstance.character {}
+
+  entity Boon {
+//    name : String
+    
+    // hit points
+    maximumHitPoints     : Int = 0 (default)
+    
+    // ratings
+    power                : Int = 0 (default)
+    criticalStrike       : Int = 0 (default)
+    armorPenetration     : Int = 0 (default)
+    recovery             : Int = 0 (default)
+    actionPointGain      : Int = 0 (default)
+    combatAdvantageBonus : Int = 0 (default)
+    controlBonus         : Int = 0 (default)
+    defense              : Int = 0 (default)
+    deflect              : Int = 0 (default)
+    regeneration         : Int = 0 (default)
+    lifeSteal            : Int = 0 (default)
+    tenacity             : Int = 0 (default)
+    staminaGain          : Int = 0 (default)
+    incomingHealingBonus : Int = 0 (default)
+    aoeResist            : Int = 0 (default)
+    controlResist        : Int = 0 (default)
+    movement             : Int = 0 (default)
+    companionInfluence   : Int = 0 (default)
+    goldGain             : Int = 0 (default)
+    
+    // stats
+    criticalChance                : Float = 0.0 (default)
+    criticalSeverity              : Float = 0.0 (default)
+    resistanceIgnored             : Float = 0.0 (default)
+    rechargeSpeedIncrease         : Float = 0.0 (default)
+    actionPointGainStat           : Float = 0.0 (default)
+    damageResistance              : Float = 0.0 (default)
+    deflectionChance              : Float = 0.0 (default)
+    deflectionSeverity            : Float = 0.0 (default)
+    healthRegeneration            : Float = 0.0 (default)
+    bonusIncomingHealing          : Float = 0.0 (default)
+    lifeStealChance               : Float = 0.0 (default)
+    lifeStealSeverity             : Float = 0.0 (default)
+    damageResistancePvP           : Float = 0.0 (default)
+    armorPenetrationResistancePvP : Float = 0.0 (default)
+    criticalStrikeResistancePvP   : Float = 0.0 (default)
+    controlResistancePvP          : Float = 0.0 (default)
+    xpBonus                       : Float = 0.0 (default)
+    goldBonus                     : Float = 0.0 (default)
+    gloryBonus                    : Float = 0.0 (default)
+    runSpeedBonus                 : Float = 0.0 (default)
+  }
+
+  relation Character.boons * <-> * Boon.characters {}
 
 data
 
@@ -317,6 +369,74 @@ data
     itemLevel = 35
     actionPointGain = 100
   }
+  
+  darkFeyWarden            : Boon { defense = 400 }
+  darkFeyHunter            : Boon { power = 400 }
+  feyElusiveness           : Boon { deflect = 400 }
+  feyPrecision             : Boon { criticalStrike = 400 }
+  feywildsFirtitude        : Boon { maximumHitPoints = 1600 }
+  elvenHaste               : Boon { actionPointGainStat = 0.03 }
+  elvenTranquility         : Boon {}
+  elvenFerocity            : Boon {}
+  elvenResolve             : Boon {}
+  feyThistle               : Boon {}
+  elvishFury               : Boon {}
+  redcapBrew               : Boon {}
+  
+  reliquaryKeepersStrength : Boon { power = 250 movement = 250 }
+  conjurersGambit          : Boon { criticalStrike = 250 movement = 250 }
+  evokersThirst            : Boon { lifeSteal = 400 }
+  illusoryRegeneration     : Boon { regeneration = 400 }
+  illusionShimmer          : Boon { deflectionChance = 0.03 }
+  forbiddenPiercing        : Boon { resistanceIgnored = 0.03 }
+  enragedRegrowth          : Boon {}
+  shadowtouch              : Boon {} 
+  augmentedThayanBastion   : Boon {}
+  rampagingMadness         : Boon {}
+  endlessConsumption       : Boon {}
+  burningGuidance          : Boon {}
+  
+  weatheringTheStorm       : Boon { aoeResist = 400 }
+  encroachingTactics       : Boon { combatAdvantageBonus = 400 }
+  appreciationOfWarmth     : Boon { incomingHealingBonus = 400 }
+  refreshingChill          : Boon { staminaGain = 400 }
+  rapidThaw                : Boon { recovery = 400 }
+  sleetSkills              : Boon { criticalSeverity = 0.02 }
+  coldShoulder             : Boon {}
+  coolResolve              : Boon {}
+  avalanche                : Boon {}
+  tousingWarmth            : Boon {}
+  wintersBounty            : Boon {}
+  sharedSurvival           : Boon {}
+  
+  dragonheart              : Boon { maximumHitPoints = 1600 }
+  dragonsClaws             : Boon { power = 400 }
+  dragonsShadow            : Boon { deflect = 400 }
+  dragonsGaze              : Boon { criticalStrike = 400 }
+  dragonsDefense           : Boon { defense = 400 }
+  draconicArmorbreaker     : Boon { armorPenetration = 400 }
+  dragonsGreed             : Boon { lifeSteal = 400 }
+  dragonsBlood             : Boon { regeneration = 400 }
+  dragonsThirst            : Boon { lifeStealChance = 0.04 }      // rank 1, advertised as 3% but gives 4%
+  dragonsRevival           : Boon { bonusIncomingHealing = 0.10 } // rank 1
+  dragonsFury              : Boon { criticalSeverity = 0.05 }     // rank 1
+  dragonsGrip              : Boon {}                              // rank 1, "Grants 10% increased Control Strength." -> stat?
+
+  primordialVitality       : Boon { defense = 400 maximumHitPoints = 1600 }
+  primordialMight          : Boon { power = 400 maximumHitPoints = 1600 }
+  primordialRegenesis      : Boon { lifeSteal = 400 maximumHitPoints = 1600 }
+  primordialFocus          : Boon { criticalStrike = 400 maximumHitPoints = 1600 }
+  drowMeditation           : Boon { regeneration = 1200 }
+  drowAmbushTactics        : Boon {} // "Combat Advantage damage bonus is increased by 10%." -> stat?
+  dwarvenFooting           : Boon {} // "Control Effects will now have a 5% shorter duration when applied to you." -> stat?
+  dwarvenStamina           : Boon {} // "You now regain Stamina 5% faster." -> stat?
+  demonicDomination        : Boon {}
+  abyssalTenacity          : Boon {}
+  demonSlayer              : Boon {}
+  abyssalStrikes           : Boon {}
+
+  guildArmorPenetrationRank8 : Boon { armorPenetration = 6000 }
+  guildLifeStealRank8        : Boon { lifeSteal = 6400 }
 
   // characters
   controlWizard : Character {
@@ -331,6 +451,34 @@ data
     raceCharisma = 2
     levelIntelligence = 5
     levelCharisma = 5
+    boons =
+      darkFeyHunter,
+      feyPrecision,
+      feywildsFirtitude,
+      elvenFerocity,
+      elvenResolve,
+      reliquaryKeepersStrength,
+      evokersThirst,
+      illusionShimmer,
+      shadowtouch,
+      endlessConsumption,
+      encroachingTactics,
+      refreshingChill,
+      sleetSkills,
+      coolResolve,
+      wintersBounty,
+      dragonheart,
+      dragonsGaze,
+      dragonsDefense,
+      dragonsGreed,
+      dragonsThirst,
+      dragonsFury,
+      primordialMight,
+      primordialRegenesis,
+      drowAmbushTactics,
+      dwarvenStamina,
+      guildArmorPenetrationRank8,
+      guildLifeStealRank8
     items =
       helm {
         item = elementalDragonflightAssaultCap
@@ -340,6 +488,14 @@ data
           },
           reinforce1 {
             item = majorCriticalStrikeArmorKit
+          },
+          setBonus1 {
+            item = dummyItem2 {
+              name = "Dragon Flight Set Bonus"
+              itemLevel = 0
+              maximumHitPoints = 2000
+              power = 500
+            }
           }
       },
       chest {
@@ -380,6 +536,14 @@ data
           },
           enhancement2 {
             item = perfectVorpalEnchantment
+          },
+          setBonus2 {
+            item = dummyItem3 {
+              name = "Twisted Set Bonus"
+              itemLevel = 0
+              power = 2080   // initial 13 offensive stacks of 160
+              defense = 1920 // initial 12 defenseive stacks of 160
+            }
           }
       },
       offHand {
@@ -393,6 +557,13 @@ data
           e7 {
             item = savageEnchantmentRank12Defense
             rank = 12
+          },
+          artifactStatIncrease {
+            item = dummyItem {
+              name = "Artifact Stat Increase"
+              itemLevel = 0
+              combatAdvantageBonus = 366
+            }
           }
       },
       boots {
