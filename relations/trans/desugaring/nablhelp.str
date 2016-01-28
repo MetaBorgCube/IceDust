@@ -47,7 +47,7 @@ rules // add types to shortcuts (so we can define in those types the shortcuts)
 		with
 			(_, type) := <filter(role-type(|role));Hd>role-types
 		<+
-			type := ""
+			type := <custom-origin(|role)>""
 	
 	role-type(|role): (role2, type) -> <id>
 		where

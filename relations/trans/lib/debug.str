@@ -23,7 +23,9 @@ rules // debug tasks
 
 rules // debug with prefix
 	
-	debug(|info): a -> <debug>$[[<to-string>info]: [<to-string>a]]
+	debug(|info): a -> a
+	  with
+	    <debug>$[[<to-string>info]: [<to-string>a]]
 	
 	debug-task(|info) = debug-task-s;debug(|info)
 
