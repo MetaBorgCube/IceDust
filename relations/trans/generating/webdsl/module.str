@@ -45,7 +45,9 @@ rules // module
 		  end end
     with
       if modulename-is-eventuallyconsistent then
-        stat_flagasync* := []
+        stat_flagasync*    := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-stat)>x_moduleName;
+        stat_receiveasync* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-stat2)>x_moduleName;
+        native1*           := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-native)>x_moduleName
       end
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then  
@@ -58,6 +60,7 @@ rules // module
   
             }
             
+            // calconwrite: call before flush to db
             function updateDerivations(){
               stat_cach*
             }
@@ -70,8 +73,33 @@ rules // module
         sec2* := [webdsl |[
           section async dirty flags
             
+            extend function afterTransactionCompletion(){
+              flagDirtyAsync();
+            }
+            
             function flagDirtyAsync(){
               stat_flagasync*
+            }
+            
+            function updateDerivationsAsync(){
+              initDirtyCollections();
+              stat_receiveasync*
+              updateDerivations();
+            }
+            
+            invoke updateDerivationsAsync() every 3 seconds
+            
+            native class derivations.DirtyCollections as DirtyCollections {
+              native1*
+            }
+            
+            native class java.util.Queue as Queue{
+              offer(String) : Bool
+              add(String) : Bool
+              addAll(List<String>) : Bool
+              poll() : String
+              contains(String) : Bool
+              isEmpty() : Bool
             }
         ]|]
       else
@@ -107,6 +135,16 @@ rules // module
           }
           
           def2*
+        
+        section hibernate hooks
+        
+          function beforeTransactionCompletion(){
+          
+          }
+          
+          function afterTransactionCompletion(){
+          
+          }
       ]|
 
 rules //crud
@@ -237,6 +275,32 @@ rules // derivations
         extend function initDirtyCollections(){
           x_dirty := Set<x_entityName>();
         }
+      ]|
+      
+  attributename-to-webdsl-stat: x_attributeName -> result
+    with
+      x_entityName                := <attributename-get-entityname>x_attributeName;
+      x_flagAttributeDirtyAsync   := <name-flagdirtyasync>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_flagAttributeDirtyAsync();
+      ]|
+      
+  attributename-to-webdsl-stat2: x_attributeName -> result
+    with
+      x_entityName                := <attributename-get-entityname>x_attributeName;
+      x_receiveAttributeDirtyAsync:= <name-receivedirtyasync>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_receiveAttributeDirtyAsync();
+      ]|
+      
+  attributename-to-webdsl-native: x_attributeName -> result
+    with
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+    with
+      result := |[
+        static x_attributeGetQueue() : Queue
       ]|
 
 rules

@@ -10,11 +10,12 @@ imports // functions
 	_editor/analysis
 	api/_generated
 	api/_runtime
+  api/module-api
+  api/module-names-api
 	desugaring/desugar
 	generating/java/generate
-	generating/webdsl/generate
-	generating/webdsl-eventual/generate
-	generating/webdsl-eventual/java/generate
+  generating/webdsl/generate
+  generating/webdsl/java/generate
 	generating/webdsl-eventual-no-ui/generate
 	lib/files
 	prettyprinting/pp
@@ -163,7 +164,8 @@ rules // Build in steps
         <error-handler>"Error, code not analyzed."
 			else
 				ast' := ast;
-				error* := <_task-get-messages(|$[[project-path]/[path]])>
+        project := <base-filename>project-path;
+        error* := <_task-get-messages(|$[eclipse:///[project]/[path]])>
 			end;
 			
 			if not([] := error*) then
@@ -179,17 +181,11 @@ rules // Build in steps
 						<copy-java-libraries>(targetFileName, project-path)
 					case ?WebDSL():
 						(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
-						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEventual():
-						(targetFileName, targetCode, error') := <generate-webdsl-eventual-step(error-handler)>(ast', path);
-						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
-						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
-						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEventualNoUI():
-						(targetFileName, targetCode, error') := <generate-webdsl-eventual-no-ui-step(error-handler)>(ast', path);
-						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
-						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
-						<copy-webdsl-libraries-no-ui>(targetFileName, project-path)
+						<copy-webdsl-libraries>(targetFileName, project-path);
+            if <module-get-modulename;modulename-is-eventuallyconsistent>ast' then
+              (targetFileName2,targetCode2,error2'):= <generate-webdsl-java-step(error-handler)>(ast', path);
+              <write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2)
+            end
 				end;
 				if <eq>(1, i) then
 					result := (targetFileName, targetCode)
@@ -229,9 +225,8 @@ rules // Build in steps
 	
 	generate-java-step(error-handler)                 = generate-java-code(error-handler)
 	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)
-	generate-webdsl-eventual-step(error-handler)      = generate-webdsl-eventual-code(error-handler)
+	generate-webdsl-java-step(error-handler)          = generate-webdsl-java-code(error-handler)
 	generate-webdsl-eventual-no-ui-step(error-handler)= generate-webdsl-eventual-no-ui-code(error-handler)
-	generate-webdsl-eventual-java-step(error-handler) = generate-webdsl-eventual-java-code(error-handler)
 
 	copy-java-libraries: (javaFileName, project-path) -> None()
 		with

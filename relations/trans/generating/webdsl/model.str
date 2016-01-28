@@ -44,7 +44,7 @@ rules // entities
 
 rules
 
-  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-get,result-calculate*,result-get2*,result-cache*,result-flow*,result-trigger*]
+  model-attributename-to-webdsl-ebds(err): x_attributeName -> [result-field,result-get,result-calculate*,result-get2*,result-cache*,result-flow*,result-trigger*,result-async*]
     where
       is-attributename
     with
@@ -59,13 +59,17 @@ rules
       x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
       x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
       x_hasDirty                  := <name-hasdirty>x_attributeName;
-      x_flagDirty                 := <name-flagdirty>x_attributeName;
+      x_flagAttributeDirty        := <name-flagdirty>x_attributeName;
       x_dirtyFlagFlowsto          := <name-dirtyflagflowsto>x_attributeName;
       x_attributeDefault          := <name-default>x_attributeName;
       x_setAttributeTrigger       := <name-set-trigger>x_attributeName;
       x_setAttributeCacheTrigger  := <name-set-cache-trigger>x_attributeName;
+      x_flagAttributeDirtyAsync   := <name-flagdirtyasync>x_attributeName;
+      x_receiveAttributeDirtyAsync:= <name-receivedirtyasync>x_attributeName;
+      x_attributeGetQueue         := <attributename-entityname-getqueue>x_attributeName;
       x_moduleName                := <entityname-get-modulename>x_entityName;
-      e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]])
+      e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
+      e_entityName                := String(x_entityName)
     with
       if attributename-is-default <+ attributename-is-derivation then
         e_calculate := <attributename-get-expr;to-webdsl(err)>x_attributeName
@@ -159,16 +163,15 @@ rules
             return x_dirtyAttribute.length!=0;
           }
                 
-          static function x_flagDirty(en : x_entityName) {
+          static function x_flagAttributeDirty(en : x_entityName) {
             if(en != null){
               x_dirtyAttribute.add(en);
             }
           }
           
-          static function x_flagDirty(ens : [x_entityName]) {
+          static function x_flagAttributeDirty(ens : [x_entityName]) {
             x_dirtyAttribute.addAll(ens);
           }
-          
         ]|
       else
         result-cache* := []
@@ -216,6 +219,29 @@ rules
       else
         result-trigger* := []
       end end end
+    with
+      if (attributename-is-default <+ attributename-is-derivation); attributename-is-eventuallyconsistent then
+        result-async* := webdsl |[
+          static function x_flagAttributeDirtyAsync() {
+            var dirtyValues := x_entityName.x_getAndEmptyDirtyAttribute();
+            DirtyCollections.x_attributeGetQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
+          }
+
+          static function x_receiveAttributeDirtyAsync() {
+            var queue := DirtyCollections.x_attributeGetQueue();
+            var dirtyValues : Set<x_entityName>;
+            while(!queue.isEmpty()){
+              var v : x_entityName := loadEntity(e_entityName, UUIDFromString(queue.poll() as String)) as x_entityName;
+              if(v != null){
+                dirtyValues.add(v);
+              }
+            }
+            x_entityName.x_flagAttributeDirty(dirtyValues.list());
+          }
+        ]|
+      else
+        result-async* := []
+      end
 
 rules
 

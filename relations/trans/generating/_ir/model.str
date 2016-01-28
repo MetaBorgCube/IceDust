@@ -31,6 +31,8 @@ rules // generic names
   name-manage:             name -> $[manage[<ucfirst>name]]
   name-create:             name -> $[create[<ucfirst>name]]
   name-edit:               name -> $[edit[<ucfirst>name]]
+  name-flagdirtyasync:     name -> $[flag_dirty_async_[name]]
+  name-receivedirtyasync:  name -> $[receive_dirty_async_[name]]
 
 rules // prefixed names
   
@@ -39,6 +41,14 @@ rules // prefixed names
       entityname := <attributename-get-entityname>rolename
 
   attributename-entityname-dirty: attributename -> $[[entityname]_[attributename]_dirty]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-getqueue: attributename -> $[get_[entityname]_[attributename]_queue]
+    with
+      entityname := <attributename-get-entityname>attributename
+      
+  attributename-entityname-queue: attributename -> $[[entityname]_[attributename]_queue]
     with
       entityname := <attributename-get-entityname>attributename
   

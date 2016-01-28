@@ -1,0 +1,53 @@
+module generating/webdsl-eventual/java/module
+
+imports // constructors
+
+	api/constructors
+	java/Java
+
+imports // functions
+
+	api/model-names-api
+	api/module-api
+	api/module-names-api
+	generating/_ir/model
+
+rules // module (or modulename) -> java compilation-unit
+	
+  modulename-to-java-compilationunit2(err): x_moduleName -> result
+		where
+			is-modulename
+		where
+		  modulename-is-eventuallyconsistent
+		with
+			decs* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-java-classbodydecs(err));flatten-list>x_moduleName
+	  with
+      result := compilation-unit |[
+        package derivations;
+        
+        import java.util.Queue;
+        import java.util.concurrent.ConcurrentLinkedQueue;
+        
+        public class DirtyCollections {
+          
+          ~decs*
+          
+        }
+      ]|
+
+rules // attrname -> java declarations
+	
+	attributename-to-java-classbodydecs(err): x_attributeName -> result
+		where
+			<is-attributename>x_attributeName
+		with
+			x_attributeQueue    := <attributename-entityname-queue>x_attributeName;
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+  	with
+    	result := class-body-dec* |[
+        private static Queue<String> x_attributeQueue = new ConcurrentLinkedQueue<String>();
+        
+        public static Queue<String> x_attributeGetQueue(){
+          return x_attributeQueue;
+        }
+      ]|
