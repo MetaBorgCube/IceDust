@@ -15,11 +15,9 @@ imports // functions
 
 rules // Builders
 	
-	generate-java-code(err):
-	    (selected, path) -> (fileName, result, errors)
-	    with
-			fileName := <guarantee-extension(|"java")> path;
-			java-ast := <module-get-modulename;modulename-to-java-compilationunit(err)>selected;
+	generate-java-code(err): moduleName -> (result, errors)
+	  with
+			java-ast := <modulename-to-java-compilationunit(err)>moduleName;
 			errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
 			java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
 			result   := <pp-java-string> java-ast'

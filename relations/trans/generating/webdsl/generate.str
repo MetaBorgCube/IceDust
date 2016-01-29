@@ -13,10 +13,9 @@ imports // functions
 
 rules // Builders
 	
-	generate-webdsl-code(err): (selected, path) -> (fileName, result, errors)
+	generate-webdsl-code(err): moduleName -> (result, errors)
 	  with
-			fileName     := <guarantee-extension(|"app")> path;
-			webdsl-ast   := <module-get-modulename;modulename-to-webdsl-application(err)> selected;
+			webdsl-ast   := <modulename-to-webdsl-application(err)> moduleName;
 			errors       := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
 			webdsl-ast'  := <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
 			webdsl-ast'' := <parenthesize-WebDSL>webdsl-ast';

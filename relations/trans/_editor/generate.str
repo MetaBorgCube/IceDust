@@ -2,300 +2,145 @@ module _editor/generate
 
 imports // constructors
 
-	signatures/Modules-sig
-	api/_runtime-constructors
-	
+  signatures/Modules-sig
+  api/_runtime-constructors
+  
 imports // functions
 
-	_editor/analysis
-	api/_generated
-	api/_runtime
+  _editor/analysis
+  api/_generated
+  api/_runtime
   api/module-api
   api/module-names-api
-	desugaring/desugar
-	generating/java/generate
+  desugaring/desugar
+  generating/_ir/paths
+  generating/java/generate
   generating/webdsl/generate
   generating/webdsl/java/generate
-	generating/webdsl-eventual-no-ui/generate
-	lib/files
-	prettyprinting/pp
+  generating/webdsl-eventual-no-ui/generate
+  lib/files
+  lib/call-external
+  prettyprinting/pp
 
 signature sorts
-	
-	TargetLanguage
-	
+  
+  TargetLanguage
+  
 signature constructors
-	
-	Java               : TargetLanguage
-	WebDSL             : TargetLanguage
-	WebDSLEager        : TargetLanguage
-	WebDSLEventual     : TargetLanguage
-	WebDSLEventualNoUI : TargetLanguage
-	
-	ImplStrategy : CompilerOptions
-	
-	CalcOnRead           : ImplStrategy
-	CalcOnWrite          : ImplStrategy
-	EventuallyConsistent : ImplStrategy
+  
+  Java               : TargetLanguage
+  WebDSL             : TargetLanguage
+  WebDSLEager        : TargetLanguage
+  WebDSLEventual     : TargetLanguage
+  WebDSLEventualNoUI : TargetLanguage
+  
+  ImplStrategy : CompilerOptions
+  
+  CalcOnRead           : ImplStrategy
+  CalcOnWrite          : ImplStrategy
+  EventuallyConsistent : ImplStrategy
 
 rules // Builders
   
-  generate-java      = generate-java(error-handler-editor)
-  generate-java-test = generate-java(error-handler-tests)
-  generate-java(error-handler):
-    (selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-        result := <build(error-handler|Java())>(selected, path, project-path, 1)
-  
-  generate-java-incr      = generate-java-incr(error-handler-editor)
-  generate-java-incr-test = generate-java-incr(error-handler-tests)
-  generate-java-incr(error-handler):
-    (selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
-        result := <build(error-handler|Java())>(selected, path, project-path, 1)
-  
-  compile-java       = compile-java(error-handler-editor)
-  compile-java-test  = compile-java(error-handler-tests)
-  compile-java(error-handler):
-    (selected, position, ast, path, project-path) -> None()
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-        <build(error-handler|Java())>(selected, path, project-path, 2)
-  
-  compile-java-incr       = compile-java-incr(error-handler-editor)
-  compile-java-incr-test  = compile-java-incr(error-handler-tests)
-  compile-java-incr(error-handler):
-    (selected, position, ast, path, project-path) -> None()
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
-        <build(error-handler|Java())>(selected, path, project-path, 2)
-  
-  execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
-  execute-java-test  = execute-java(error-handler-tests)
-  execute-java(error-handler):
-    (selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-        result := <build(error-handler|Java())>(selected, path, project-path, 3)
-  
-  execute-java-incr       = execute-java-incr(error-handler-editor);echo;\ _ -> None() \
-  execute-java-incr-test  = execute-java-incr(error-handler-tests)
-  execute-java-incr(error-handler):
-    (selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
-        result := <build(error-handler|Java())>(selected, path, project-path, 3)
+  generate-java                       = build(error-handler-editor|Java(),CalcOnRead(),1)
+  generate-java-test                  = build(error-handler-tests |Java(),CalcOnRead(),1)
+  compile-java                        = build(error-handler-editor|Java(),CalcOnRead(),2)
+  compile-java-test                   = build(error-handler-tests |Java(),CalcOnRead(),2)
+  execute-java                        = build(error-handler-editor|Java(),CalcOnRead(),3);debug
+  execute-java-test                   = build(error-handler-tests |Java(),CalcOnRead(),3)
+  generate-java-incr                  = build(error-handler-editor|Java(),CalcOnWrite(),1)
+  generate-java-incr-test             = build(error-handler-tests |Java(),CalcOnWrite(),1)
+  compile-java-incr                   = build(error-handler-editor|Java(),CalcOnWrite(),2)
+  compile-java-incr-test              = build(error-handler-tests |Java(),CalcOnWrite(),2)
+  execute-java-incr                   = build(error-handler-editor|Java(),CalcOnWrite(),3);debug
+  execute-java-incr-test              = build(error-handler-tests |Java(),CalcOnWrite(),3)
 
-	generate-webdsl      = generate-webdsl(error-handler-editor)
-	generate-webdsl-test = generate-webdsl(error-handler-tests)
-	generate-webdsl(error-handler):
-		(selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnRead();
-		  	result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
-
-	generate-webdsl-eager      = generate-webdsl-eager(error-handler-editor)
-	generate-webdsl-eager-test = generate-webdsl-eager(error-handler-tests)
-	generate-webdsl-eager(error-handler):
-		(selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>CalcOnWrite();
-			  result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
-
-	generate-webdsl-eventual      = generate-webdsl-eventual(error-handler-editor)
-	generate-webdsl-eventual-test = generate-webdsl-eventual(error-handler-tests)
-	generate-webdsl-eventual(error-handler):
-		(selected, position, ast, path, project-path) -> result
-      with
-        clear-index2;
-        moduleName := <module-get-modulename>selected;
-        <index-store-prop2(|ImplStrategy(), moduleName)>EventuallyConsistent();
-        result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
-
-	generate-webdsl-eventual-no-ui      = generate-webdsl-eventual-no-ui(error-handler-editor)
-	generate-webdsl-eventual-no-ui-test = generate-webdsl-eventual-no-ui(error-handler-tests)
-	generate-webdsl-eventual-no-ui(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEventualNoUI())>(selected, path, project-path, 1)
+  generate-webdsl                     = build(error-handler-editor|WebDSL(),CalcOnRead(),1)
+  generate-webdsl-test                = build(error-handler-tests |WebDSL(),CalcOnRead(),1)
+  generate-webdsl-eager               = build(error-handler-editor|WebDSL(),CalcOnWrite(),1)
+  generate-webdsl-eager-test          = build(error-handler-tests |WebDSL(),CalcOnWrite(),1)
+  generate-webdsl-eventual            = build(error-handler-editor|WebDSL(),EventuallyConsistent(),1)
+  generate-webdsl-eventual-test       = build(error-handler-tests |WebDSL(),EventuallyConsistent(),1)
+  generate-webdsl-eventual-no-ui      = build(error-handler-editor|WebDSL(),EventuallyConsistent(),1)
+  generate-webdsl-eventual-no-ui-test = build(error-handler-tests |WebDSL(),EventuallyConsistent(),1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
-	error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
-		with
-			err-msg(|msg)
+  error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
+    with
+      err-msg(|msg)
 
-	error-handler-tests : msg -> None()
-		with
-			with(fail|msg)
+  error-handler-tests : msg -> None()
+    with
+      with(fail|msg)
 
 rules // Build in steps
-	
-	build(error-handler|lang):
-		(ast, path, project-path-wrong, i) -> result
-		with
-//		  <debug>"build";
-//		  <debug>ast;
-//		  <debug>path;
-//		  <debug>project-path-wrong;
-//		  <debug>i;
-//		  <debug><_project-path>;
-//      <debug>"/build";
-      project-path := <_project-path>;
-			if Module(_,_,_,_) := ast then
-        <error-handler>"Error, code not analyzed."
-			else
-				ast' := ast;
-        project := <base-filename>project-path;
-        error* := <_task-get-messages(|$[eclipse:///[project]/[path]])>
-			end;
-			
-			if not([] := error*) then
-				<error-handler>"Fix errors before generating code. Exiting code generation.";
-				result := None()
-			else
-//      <debug>"build1";
-			if <leq>(1, i) then
-				// log(|Info(),"Phase 1: Generating Java Code");
-				switch !lang
-					case ?Java():
-						(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
-						<copy-java-libraries>(targetFileName, project-path)
-					case ?WebDSL():
-						(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
-						<copy-webdsl-libraries>(targetFileName, project-path);
-            if <module-get-modulename;modulename-is-eventuallyconsistent>ast' then
-              (targetFileName2,targetCode2,error2'):= <generate-webdsl-java-step(error-handler)>(ast', path);
-              <write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2)
+
+  build(error-handler|lang, implstr, phase): (selected, position, ast, path, project-path-wrong) -> result
+    with
+      moduleName  := <module-get-modulename>selected;
+      result      := <build(error-handler|lang, implstr, phase, moduleName, path)>
+
+  build(error-handler|lang, implstr, phase, moduleName, relativePath): _ -> result
+    with
+      fullPath    := <full-path(|relativePath)>;
+      eclipsePath := <eclipse-path>relativePath
+    with
+      clear-index2;
+      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
+      error* := <_task-get-messages(|eclipsePath)>
+    with
+      if not([] := error*) then
+        <error-handler>"Fix errors before generating code. Exiting code generation.";
+        result := None()
+      else
+        // phase 1: generate files
+        switch !lang
+          case ?Java():
+            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
+            targetFileName := <java-generated-path(|relativePath)>;
+            java-library-paths(|fullPath);copy-dir
+          case ?WebDSL():
+            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+            targetFileName := <webdsl-generated-path(|relativePath)>;
+            webdsl-library-paths(|fullPath);copy-dir;
+            webdsl-java-library-paths(|fullPath);copy-dir;
+            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+            if <modulename-is-eventuallyconsistent>moduleName then
+              (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+              targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)
             end
-				end;
-				if <eq>(1, i) then
-					result := (targetFileName, targetCode)
-				end;
-//      <debug>"build2";
-			if <leq>(2, i) then
-				if not([] := error') then
-//				  <debug>"build21";
-					<error-handler>"Fix errors compiling Java. Exiting code compilation.";
-					result := None()
-				else
-//          <debug>"build22";
-					// log(|Info(),"Phase 2: Compiling Java Code");
-					<write-file> ($[[project-path]/[targetFileName]], targetCode);
-//          <debug>"build23";
-					(exitCode, output, classFileName) := <compile-java-step> (targetFileName, project-path);
-//          <debug>"build24";
-					if <eq>(2, i) then
-						result := None()
-					end;
-//      <debug>"build3";
-			if <leq>(3, i) then
-				if not(0 := exitCode) then
-					<error-handler>output;
-					<error-handler>"Java compilation failed. Exiting code execution.";
-					result := None()
-				else
-					// log(|Info(),"Phase 3: Executing");
-					(exitCode', output') := <execute-java-step> classFileName;
-					result := output'
-				
-			end end end end end end
-	
-//	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
-//		with
-//			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
-	
-	generate-java-step(error-handler)                 = generate-java-code(error-handler)
-	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)
-	generate-webdsl-java-step(error-handler)          = generate-webdsl-java-code(error-handler)
-	generate-webdsl-eventual-no-ui-step(error-handler)= generate-webdsl-eventual-no-ui-code(error-handler)
-
-	copy-java-libraries: (javaFileName, project-path) -> None()
-		with
-			sourceDir := $[[<component-path>]/lib-java/src/lib];
-			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
-			<copy-dir>(sourceDir, targetDir);
-			<dirname;_refresh-workspace-file> targetDir
-			
-	copy-webdsl-libraries: (webdslFileName, project-path) -> None()
-		with
-			sourceDir := $[[<component-path>]/lib-webdsl];
-			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
-			<copy-dir>(sourceDir, targetDir);
-			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<component-path>]/lib-java/src];
-			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
-			<copy-dir>(sourceDir2, targetDir2);
-			<_refresh-workspace-file> targetDir
-			
-	copy-webdsl-libraries-no-ui: (webdslFileName, project-path) -> None()
-		with
-			sourceDir := $[[<component-path>]/lib-webdsl/lib];
-			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]/lib];
-			<copy-dir>(sourceDir, targetDir);
-			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<component-path>]/lib-java/src];
-			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
-			<copy-dir>(sourceDir2, targetDir2);
-			<dirname;_refresh-workspace-file> targetDir
-	
-	compile-java-step:
-		(javaFileName, project-path) -> (exitCode, output, classFileName)
-		with
-//		  <debug>"compile-java-step";
-//		  <debug>javaFileName;
-//		  <debug>project-path;
-//		  <debug>"/compile-java-step";
-//		  <debug>("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], $[[project-path]/[javaFileName]]]);
-			(exitCode, output) := <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], $[[project-path]/[javaFileName]]]);
-//      <debug>"compile-java-step1";
-			classFileName := <guarantee-extension(|"class")> javaFileName;
-//      <debug>"compile-java-step2";
-			<dirname;_refresh-workspace-file> $[[project-path]/[javaFileName]]
-
-	execute-java-step:
-		classFileName -> (exitCode, output)
-		with
-			classPath := <dirname>classFileName;
-			className := <base-filename;remove-extension> classFileName;
-			(exitCode, output) := <call-read-output> ("java", ["-cp", classPath, className])
-
-rules // call helper
-	
-	call-read-output: (program, args) -> (exitCode, <conc-strings> (errors, output))
-		with
-		  project-path := <_project-path>;
-		  stdout-file := $[[project-path]/stdout.txt];
-		  stderr-file := $[[project-path]/stderr.txt];
-		  Stream(instream)   := <stdin-stream>;
-		  Stream(filestream) := <fopen> (stdout-file, "w");
-		  Stream(filestream2):= <fopen> (stderr-file, "w")
-		with
-		  // log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
-		  exitCode := <prim("SSL_EXT_call", program, args, instream, filestream, filestream2)>
-		with
-		  <fclose>filestream;
-		  <fclose>filestream2;
-		  output := <read-text-file> stdout-file;
-		  errors := <read-text-file> stderr-file;
-		  <delete-file>"stdout.txt";
-		  <delete-file>"stderr.txt"
-
+        end;
+        if <eq>(1, phase) then
+          result := (targetFileName, targetCode)
+        else
+          if not([] := error') then
+            <error-handler>"Code generation failed.";
+            result := None()
+          else
+            // phase 2: compile generated files
+            <write-file> (targetFileName, targetCode);
+            (exitCode, stdOut, stdErr) := <call-javac(|<java-generated-path(|fullPath)>)>;
+            if not(0 := exitCode) then
+              <error-handler>stdOut;
+              <error-handler>stdErr;
+              <error-handler>"Java compilation failed."
+            end;
+            if <eq>(2, phase) then
+              result := None()
+            else
+              // phase 3: execute compiled code
+              (exitCode', stdOut', stdErr') := <call-java(|<java-compiled-path(|fullPath)>)>;
+              if not(0 := exitCode') then
+                <error-handler>stdOut';
+                <error-handler>stdErr';
+                <error-handler>"Java execution failed.";
+                result := None()
+              else
+                result := stdOut'
+              end
+            end 
+          end 
+        end 
+      end

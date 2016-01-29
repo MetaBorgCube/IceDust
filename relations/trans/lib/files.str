@@ -33,10 +33,6 @@ rules
 
 	write-file: (fileName, content) -> (fileName, content)
 		where
-//		  <debug>"write-file";
-//		  <debug>fileName;
-//		  <debug>content;
-//		  <debug>"/write-file";
 			<dirname;ensure-dir> fileName
 		where
 			fileDescriptor := <fopen> (fileName, "w");
@@ -130,3 +126,9 @@ rules
       <eq>(artifactId, is-artifactId)
 
 rules
+
+  eclipse-path: file-path -> result
+    with
+      project-path := <_project-path>;
+      project      := <base-filename>project-path;
+      result       := $[eclipse:///[project]/[file-path]]

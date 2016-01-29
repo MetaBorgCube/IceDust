@@ -22,13 +22,6 @@ rules
 
 rules
 
-  index-partition-path: (project-path, file-path) -> result
-    with
-      project := <base-filename> project-path;
-      result  := $[eclipse:///[project]/[file-path]]
-
-rules
-
   index-store-prop2(|kind, name): val -> val
     with
       <_index-add(|val, "compiler-options")>Prop(<_nabl-uri>name, kind)

@@ -21,10 +21,9 @@ rules // documentation
 
 rules // Builders
 	
-	generate-webdsl-java-code(err):(selected, path) -> (fileName, result, errors)
+	generate-webdsl-java-code(err):moduleName -> (result, errors)
 	  with
-			fileName := $[[<dirname>path]/DirtyCollections.java];
-			java-ast := <module-get-modulename;modulename-to-java-compilationunit2(err)> selected;
+			java-ast := <modulename-to-java-compilationunit2(err)> moduleName;
 			errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
 			java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
 			result   := <pp-java-string> java-ast'
