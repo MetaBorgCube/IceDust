@@ -29,21 +29,23 @@ imports // functions
 
 rules // entities
 	
-//  to-webdsl-eventual-no-ui(err): x_name -> 
-//		def |[
-//			extend entity x_name {
-//				ebd1*
-//				ebd2*
-//				ebd3*
-//				ebd4*
-//				ebd5*
-//			}
-//		]|
-//	where
-//		is-entityname
-//	with
-//		ebd1* := <entityname-get-attributenames;map(to-webdsl-eventual(err))>x_name;
-//		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
-//		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
-//		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eventual-trigger-dirty(err))>x_name;
-//		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eventual-trigger-dirty(err))>x_name
+	/*
+  to-webdsl-eventual-no-ui(err): x_name -> 
+		def |[
+			extend entity x_name {
+				ebd1*
+				ebd2*
+				ebd3*
+				ebd4*
+				ebd5*
+			}
+		]|
+	where
+		is-entityname
+	with
+		ebd1* := <entityname-get-attributenames;map(to-webdsl-eventual(err))>x_name;
+		ebd2* := <entityname-get-rolenames;     map(to-webdsl(err))>x_name;
+		ebd3* := <entityname-get-inversenames;  map(to-webdsl(err))>x_name;
+		ebd4* := <entityname-get-attributenames;filter(to-webdsl-eventual-trigger-dirty(err))>x_name;
+		ebd5* := <entityname-get-rolenames;     filter(to-webdsl-eventual-trigger-dirty(err))>x_name
+		*/
