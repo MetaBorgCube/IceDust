@@ -10,8 +10,8 @@ setup Common [[
 	relation Node.star * <-> + (ordered) Node.plus {}
   data
   n : Node {
-    maybe = <e : NodeMaybe { } > n2 { }
-    star  = <e2 : NodeStar { } > n2
+    maybe = <e : NodeMaybeRelation { } > n2 { }
+    star  = <e2 : NodeStarRelation { } > n2
   }
 	execute
 ]]
@@ -25,10 +25,10 @@ test multiplicity of role One					[[ [[e.one]] ]] 	run get-multiplicity to One
 test multiplicity of role ZeroOrMore	[[ [[e2.star]] ]]	run get-multiplicity to One
 test multiplicity of role OneOrMore		[[ [[e2.plus]] ]]	run get-multiplicity to One
 
-test multiplicity of inverse role ZeroOrOne   [[ [[n.nodeOne.maybe]] ]] run get-multiplicity to ZeroOrOne
-test multiplicity of inverse role One         [[ [[n.nodeMaybe.one]] ]] run get-multiplicity to One
-test multiplicity of inverse role ZeroOrMore  [[ [[n.nodePlus.star]] ]] run get-multiplicity to ZeroOrMore
-test multiplicity of inverse role OneOrMore   [[ [[n.nodeStar.plus]] ]] run get-multiplicity to OneOrMore
+test multiplicity of inverse role ZeroOrOne   [[ [[n.maybeRelation.maybe]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of inverse role One         [[ [[n.oneRelation.one]] ]] run get-multiplicity to One
+test multiplicity of inverse role ZeroOrMore  [[ [[n.starRelation.star]] ]] run get-multiplicity to ZeroOrMore
+test multiplicity of inverse role OneOrMore   [[ [[n.plusRelation.plus]] ]] run get-multiplicity to OneOrMore
 
 test multiplicity of shortcut ZeroOrOne	[[ [[n.maybe]] ]] run get-multiplicity to ZeroOrOne
 test multiplicity of shortcut One				[[ [[n.one]] ]] 	run get-multiplicity to One
@@ -41,5 +41,5 @@ test multiplicity of shortcut shortcut ZeroOrOne 2	[[ [[n.maybe.one]]  ]] run ge
 test ordering of shortcut Unordered		[[ [[n.star]] ]] run get-ordering to Unordered
 test ordering of shortcut Ordered	  	[[ [[n.plus]] ]] run get-ordering to Ordered
 
-test ordering of inverse Ordered    	[[ [[n.nodeStar]] ]] run get-ordering to Ordered
-test ordering of inverse Unordered  	[[ [[n.nodePlus]] ]] run get-ordering to Unordered
+test ordering of inverse Ordered    	[[ [[n.plusRelation]] ]] run get-ordering to Ordered
+test ordering of inverse Unordered  	[[ [[n.starRelation]] ]] run get-ordering to Unordered

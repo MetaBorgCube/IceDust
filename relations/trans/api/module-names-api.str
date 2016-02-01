@@ -30,6 +30,11 @@ rules // module
 	// string -> [[string]]
 	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 	
+	modulename-get-relationnames = modulename-get-entitynames;map(entityname-get-relationnames);flatten-list
+	modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
+	
+	modulename-get-rolenames = modulename-get-entitynames;map(entityname-get-rolenames);flatten-list
+	
 	modulename-get-toposort = index-get-prop(|TopoSort());Hd
 
 	is-modulename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsModule())

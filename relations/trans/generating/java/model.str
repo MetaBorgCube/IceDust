@@ -73,7 +73,7 @@ rules
       end
     with
       if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
-        flowsto-stms* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
+        flowsto-stms* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
       end
     with
       if attributename-is-normal <+ attributename-is-default then
@@ -273,13 +273,8 @@ rules
       x_removeInversePrivate := <name-remove-private>x_inverseName;
       x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName
     with
-      if attributename-is-calconwrite then
-        if is-attributename; name-get-flowsto-paths;?flowsto-paths then
-          flowsto-stms* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
-        else
-          name-get-inversename; name-get-flowsto-paths;?flowsto-paths;
-          flowsto-stms* := <filter(path-origin-is-role);map(ttuple(path-get-last, path-remove-end;path-to-expr;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
-        end
+      if attributename-is-calconwrite; name-get-flowsto-paths;?flowsto-paths then
+        flowsto-stms* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;exp-to-java-stm(err|0));model-path-to-java-stm(err))>flowsto-paths
       end
     with
       if get-multiplicity;upper-one then

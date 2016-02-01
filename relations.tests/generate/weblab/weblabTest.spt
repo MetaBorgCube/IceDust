@@ -99,13 +99,13 @@ model
     noValue : Int?
   }
   
-  relation StudentAssignment.whole ? <-> * StudentAssignment.parts {}
+  relation StudentAssignment.whole ? <-> * StudentAssignment.parts
   
-  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment {}
+  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment
 
-  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment {}
+  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment
   
-  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments {}
+  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments
 
 data
 

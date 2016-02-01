@@ -45,6 +45,7 @@ properties
 	origin-role					 of Inverse		: Role
 	origin-role2				 of Shortcut	: Role
 	rel-ty               of Shortcut  : Entity
+	side                 of Relation  : Term
 	
 binding rules // modules
 
@@ -138,6 +139,7 @@ binding rules // model
       of ordering-inverse right-or
       of type right-ty2
       of inverse right-name
+      of side Left()
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
@@ -147,6 +149,7 @@ binding rules // model
       of ordering-inverse left-or
       of type left-ty2
       of inverse left-name
+      of side Right()
 
 binding rules // data
 

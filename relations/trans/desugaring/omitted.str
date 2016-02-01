@@ -137,9 +137,9 @@ rules
       ]
     )
       with
-        relname := <custom-origin(|e1)>$[[e1][<ucfirst>s1]];
-        invname1 := <custom-origin(|e1)>$[[<lcfirst>e1][<ucfirst>s1]];
-        invname2 := <custom-origin(|e2)>$[[<lcfirst>e2][<ucfirst>s2]]
+        relname := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
+        invname1 := <custom-origin(|e1)>$[[s2]Relation];
+        invname2 := <custom-origin(|e2)>$[[s1]Relation]
 
   
 	

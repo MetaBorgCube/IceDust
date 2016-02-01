@@ -10,7 +10,7 @@ context-free syntax // brackets
 
 context-free syntax // operators
 
-  Exp.MemberAccess       = <<Exp> . <ID>>          {left}
+  Exp.MemberAccess       = <<Exp>.<ID>>            {left}
   Exp.Not                = <not <Exp>>             {right}
   Exp.Not2               = <!<Exp>>                {right}
   

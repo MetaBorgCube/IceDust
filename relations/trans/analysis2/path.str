@@ -8,9 +8,89 @@ imports // constructors
 imports // functions
 
 	api/model-names-api
-	lib/string
-	lib/index
+  lib/index
+  lib/string
+  lib/traverse
 	typing/references-manual
+
+signature constructors
+
+  DependencyPath : String * Expr -> Path
+  DataflowPath   : String * Expr -> Path
+
+rules // Expr -> [Expr] // path-based-abstract-interpretation of expressions
+
+  expr-pathexprs: e@This()    -> [e]
+  expr-pathexprs: e@Ref(name) -> []  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
+  expr-pathexprs: e@Ref(name) -> [e]
+  
+  expr-pathexprs: e@MemberAccess(expr, name) -> []  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
+  expr-pathexprs: e@MemberAccess(expr, name) -> result
+    with
+      subpathexprs := <expr-pathexprs>expr;
+      result   := <map(pathexpr-extend(|name))>subpathexprs
+
+  expr-pathexprs = get-arguments;map(expr-pathexprs);flatten-list // literals, unops and binops
+
+rules
+  
+  pathexpr-extend(|name): expr -> MemberAccess(expr, name)
+  
+  pathexpr-shorten: MemberAccess(expr, name) -> expr // Expr -> Expr or fail
+  
+  pathexpr-shorten-safe =  pathexpr-shorten
+  pathexpr-shorten-safe: Ref(_) -> This()
+  
+  pathexpr-shorten-refl-trans = reflexive-transitive-closure(pathexpr-shorten)
+  
+  pathexpr-remove-this: MemberAccess(This(), name) -> Ref(name)
+  pathexpr-remove-this: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-this>expr, name)
+  pathexpr-remove-this: e@Ref(name)                -> e
+  
+  pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(MemberAccess(<pathexpr-remove-shortcuts>expr, inverseName), roleName) where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
+  pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-shortcuts>expr, name)
+  pathexpr-remove-shortcuts: e@Ref(name)                -> MemberAccess(Ref(inverseName), roleName)                                           where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
+  pathexpr-remove-shortcuts: e@Ref(name)                -> e
+
+  pathexpr-last: MemberAccess(expr, name) -> name
+  pathexpr-last: Ref(name)                -> name
+  
+  pathexpr-first: MemberAccess(expr, name) -> <pathexpr-first>expr
+  pathexpr-first: Ref(name)                -> name
+  
+  pathexpr-remove-first: MemberAccess(Ref(name), name2) -> Ref(name2)
+  pathexpr-remove-first: MemberAccess(expr, name)       -> MemberAccess(<pathexpr-remove-first>expr, name)
+  
+  pathexpr-inverse: Ref(name)                  -> Ref(<try(name-get-inversename)>name)
+  pathexpr-inverse: e@MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-first;pathexpr-inverse>e, <pathexpr-first;try(name-get-inversename)>e)
+
+rules
+
+  path(|origin): pathexpr -> DependencyPath(origin, pathexpr-analyzed)
+    with
+      pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>origin)>pathexpr
+  
+  path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin, inv-pathexpr-analyzed)
+    with
+      inv-origin := <pathexpr-last>pathexpr;
+      if pathexpr-shortened := <pathexpr-shorten>pathexpr then
+        inv-pathexpr := MemberAccess(<pathexpr-inverse>pathexpr-shortened, origin)
+      else
+        inv-pathexpr := Ref(origin)
+      end;
+      inv-pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>inv-origin)>inv-pathexpr
+
+  path-pp: DependencyPath(origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] <- [<pp-partial-Relations-string>pathexpr]]
+  path-pp: DataflowPath  (origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] -> [<pp-partial-Relations-string>pathexpr]]
+  
+  path-store-on-origin: path@DependencyPath(origin, _) -> <index-store-prop(|DependsOn(), origin)>path
+  path-store-on-origin: path@DataflowPath(  origin, _) -> <index-store-prop(|FlowsTo(),   origin)>path
+
+  path-last = ?DependencyPath(_, <pathexpr-last>)
+  path-last = ?DataflowPath  (_, <pathexpr-last>)
+  
+  path-pathexpr = ?DependencyPath(_, <id>)
+  path-pathexpr = ?DataflowPath  (_, <id>)
 
 signature constructors
 	

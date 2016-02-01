@@ -22,12 +22,14 @@ imports // functions
 	lib/lists-tuples
 
 rules
-	
+
 	analysis2 =
 		analysis2-clear-index;
 		store-expressions;
-		depends-on-and-flows-to;
-		flows-toposort
+//		depends-on-and-flows-to;
+//		flows-toposort;
+		depends-on-and-flows-to-2;
+    flows-toposort-2
 
 rules
 
@@ -63,7 +65,7 @@ rules
       exprs := <collect-all(is-execute);map(execute-get-exprs);flatten-list>mod;
       name  := <module-get-modulename>mod;
       <index-store-prop(|AST(), name)>exprs
-
+/*
 rules
 	
 	depends-on-and-flows-to: ast -> ast
@@ -97,5 +99,53 @@ rules
 			<index-store-prop(|TopoSort(), moduleName)>toposort;
 			numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
 			<map(index-store-prop(|TopoSort()))>numbers
-	
+*/
 rules
+
+  depends-on-and-flows-to-2: ast -> ast
+    with
+      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
+      <map(attr-depends-on-and-flows-to)>attrs
+      
+  attr-depends-on-and-flows-to: attr -> attr
+    with
+      attrName          := <attr-get-name>attr;
+      expr              := <attr-get-derivation>attr;
+//      <pp-partial-Relations-string;debug>expr;
+//      <debug>expr;
+      pathexprs         := <expr-pathexprs>expr;
+//      <map(pp-partial-Relations-string;debug(|"pathexprs"))>pathexprs;
+      pathexprs-no-this := <map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
+      all-pathexprs     := <map(pathexpr-shorten-refl-trans);flatten-list;make-set>pathexprs-no-this;
+      dependencies      := <map(path(|attrName))>all-pathexprs;
+//      <map(path-pp;debug)>dependencies;
+      dataflow          := <map(path-inverse)>dependencies;
+//      <map(path-pp;debug)>dataflow;
+      <map(path-store-on-origin)>dependencies;
+      <map(path-store-on-origin)>dataflow
+      
+rules
+
+  flows-toposort-2: ast -> ast
+    with
+      moduleName      := <module-get-modulename>ast;
+      attributeNames* := <modulename-get-attributenames>moduleName;
+      relationNames*  := <modulename-get-relationnames-left>moduleName;
+      roleNames*      := <modulename-get-rolenames>moduleName;
+      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
+      <index-store-prop(|TopoSort(), moduleName)>toposort;
+      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+      <map(index-store-prop(|TopoSort()))>numbers
+
+  toposort-edge: name -> [names*, inv-names*]
+    with
+//      <debug(|"toposort-edge")>name;
+      names* := <index-get-prop(|FlowsTo());map(path-last)>name;
+//      <map(debug(|"x"))>names*;
+      if inv-name := <name-get-inversename>name then
+        inv-names* := <index-get-prop(|FlowsTo());map(path-last)>inv-name//;
+//        <map(debug(|"y"))>inv-names*
+      else
+        inv-names* := []
+      end

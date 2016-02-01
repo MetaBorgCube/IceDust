@@ -57,9 +57,9 @@ menus
         action: "Generate, Compile and Execute" = execute-java
       end
       submenu: "Calculate On Write"
-        action: "Generate"                      = generate-java (openeditor)
-        action: "Generate and Compile"          = compile-java 
-        action: "Generate, Compile and Execute" = execute-java
+        action: "Generate"                      = generate-java-incr (openeditor)
+        action: "Generate and Compile"          = compile-java-incr
+        action: "Generate, Compile and Execute" = execute-java-incr
       end
     end
     submenu: "to WebDSL"
