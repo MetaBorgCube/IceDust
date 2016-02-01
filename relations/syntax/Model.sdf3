@@ -23,6 +23,12 @@ context-free syntax // shortcut relations
     }
   ]
 
+context-free syntax // non-first-class relation
+
+  Model.Relation = [
+    relation [EntityRef].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [EntityRef].[ID]
+  ]
+
 context-free syntax // entity members
 
 	Member											= <<Attribute>>

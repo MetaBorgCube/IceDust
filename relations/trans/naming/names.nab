@@ -27,6 +27,7 @@ namespaces
 	Entity2                            //Nasty Hack to enforce no duplicate entity types
 	EntityInstance
 	Attribute
+	Relation
 	Role
 	Inverse
 	Shortcut
@@ -127,6 +128,26 @@ binding rules // model
 //      and This() resolves to This this
 //      and this has type rel-ty
 
+  Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
+    defines non-unique Entity left-ty2
+      scopes Relation
+    defines Relation left-name
+      of multiplicity left-mu
+      of multiplicity-inverse right-mu
+      of ordering left-or
+      of ordering-inverse right-or
+      of type right-ty2
+      of inverse right-name
+    defines non-unique Entity right-ty2
+      scopes Relation
+    defines Relation right-name
+      of multiplicity right-mu
+      of multiplicity-inverse left-mu
+      of ordering right-or
+      of ordering-inverse left-or
+      of type left-ty2
+      of inverse left-name
+
 binding rules // data
 
 	EntityInstance(e, EntityRef(e-ty), _) :
@@ -167,10 +188,14 @@ binding rules // references
 		refers to Attribute x	in Entity e-ty
 		where This() resolves to This this
 		and this has type e-ty
-	otherwise
-	  refers to Role x in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
+  otherwise
+    refers to Relation x in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
+  otherwise
+    refers to Role x in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 	otherwise
 	  refers to Inverse x in Entity e-ty
 		where This() resolves to This this
@@ -183,9 +208,12 @@ binding rules // references
 	MemberAccess(exp, a) :
 		refers to Attribute a in Entity e-ty
 		where exp has type e-ty
-	otherwise
-	  refers to Role a in Entity e-ty
-	  where exp has type e-ty
+  otherwise
+    refers to Relation a in Entity e-ty
+    where exp has type e-ty
+  otherwise
+    refers to Role a in Entity e-ty
+    where exp has type e-ty
 	otherwise
 	  refers to Inverse a in Entity e-ty
 	  where exp has type e-ty
@@ -208,6 +236,10 @@ binding rules // references
 
   MemberRef(m):
     refers to Attribute m in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
+  otherwise
+    refers to Relation m in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
   otherwise

@@ -14,13 +14,13 @@ rules
 	
 	nablhelp-before =
 		nablhelp1;
-		nablhelp2
+    nablhelp2
 	
 	nablhelp1 = try(sometd(entity-add-shortcut-types)) //requires the roles to be untouched
-	nablhelp2 = try(sometd(role-duplicate-type))
+	nablhelp2 = try(sometd(role-duplicate-type <+ relation-dup-types))
 	
 	nablhelp-after = 
-		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse))
+		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse <+ relation-dedup-types))
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
 	

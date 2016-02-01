@@ -29,6 +29,8 @@ rules // module
 	
 	// string -> [[string]]
 	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
+	
+	modulename-get-toposort = index-get-prop(|TopoSort());Hd
 
 	is-modulename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsModule())
 

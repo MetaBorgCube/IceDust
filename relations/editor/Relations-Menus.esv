@@ -29,7 +29,8 @@ menus
     end
 
   menu: "Analysis" 
-		action: "Properties (Selection)" = debug-properties (openeditor)
+    action: "5) Topological Sorting"       = debug-toposort
+		action: "Properties (Selection)"       = debug-properties (openeditor)
     submenu: "Index" (openeditor) 
       action: "File"                       = debug-index-selection-partition
       action: "File (unresolved tasks)"    = debug-index-partition

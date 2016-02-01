@@ -49,7 +49,14 @@ rules
       result := java:block-stm* |[
         x_eiName.x_setter(~attributeValueJava);
       ]|    
-          
+
+  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(relationname), valueAst) -> result
+    where
+      <is-relationname>relationname
+    with
+      valueNames := <collect-all(eiwrefnames)>valueAst;
+      result := <map(data-relationname-to-java-stm(err|x_eiName,relationname))>valueNames
+
   membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
     where
       <is-shortcutname>shortcutName
@@ -64,6 +71,20 @@ rules
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
 
 rules
+
+  data-relationname-to-java-stm(err|x_eiName,relationName): (_, x_eiName2) -> result
+    with
+      x_set := $[set_[relationName]];
+      x_add := $[add_[relationName]];
+      if <get-multiplicity;upper-one>relationName then
+        result := java:block-stm |[
+          x_eiName.x_set(x_eiName2);
+        ]|
+      else
+        result := java:block-stm |[
+          x_eiName.x_add(x_eiName2);
+        ]|
+      end
 
   data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
     with

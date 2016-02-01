@@ -26,6 +26,7 @@ rules
       is-entityname
     with
       attributesJava*   := <entityname-get-attributenames;map(model-attributename-to-java-classbodydecs(err)    );flatten-list>x_entityName;
+      relationsJava*    := <entityname-get-relationnames ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_entityName;
       rolesJava*        := <entityname-get-rolenames     ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_entityName;
       inversesJava*     := <entityname-get-inversenames  ;map(model-roleOrInversename-to-java-classbodydecs(err));flatten-list>x_entityName;
       shortcutsJava*    := <entityname-get-shortcutnames ;map(model-shortcutname-to-java-classbodydecs(err)     );flatten-list>x_entityName;
@@ -39,6 +40,7 @@ rules
             ~initCachesJava*
           }
           ~attributesJava*
+          ~relationsJava*
           ~rolesJava*
           ~shortcutsJava*
           ~inversesJava*
@@ -253,7 +255,7 @@ rules
 
   model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> [result1*,result-set*,result2*,result-flow*]
     where
-      is-rolename <+ is-inversename
+      is-rolename <+ is-inversename <+ is-relationname
     with
       x_inverseName          := <name-get-inversename>x_roleName;
       x_inverseEntityName    := <attributename-get-entityname>x_inverseName;

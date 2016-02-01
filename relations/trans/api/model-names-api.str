@@ -24,6 +24,7 @@ rules // entity
 	is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
 
 	entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
+  entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
 	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
 	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
 	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
@@ -49,7 +50,13 @@ rules // attributes
   attributename-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
   attributename-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
   attributename-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
-	
+
+rules // relations
+
+  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
+  
+  relationname-get-inversename = get-inverse
+
 rules // roles
 	
 	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
@@ -64,8 +71,9 @@ rules // inverses
 
 rules
 
-  name-get-inversename = where(is-rolename);rolename-get-inversename
-  name-get-inversename = where(is-inversename);inversename-get-rolename
+  name-get-inversename = where(is-relationname);relationname-get-inversename
+  name-get-inversename = where(is-rolename)    ;rolename-get-inversename
+  name-get-inversename = where(is-inversename) ;inversename-get-rolename
 
 rules // shortcuts
 

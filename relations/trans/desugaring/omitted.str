@@ -25,7 +25,8 @@ rules
 	omitted1 = role-generate-name
 	omitted1 = entity-generate-inverse-names
 	omitted1 = datadef-generate-entity-names
-	omitted1 = shortcutrel-generate-mult
+  omitted1 = shortcutrel-generate-mult
+  omitted1 = rel-generate-mult
 	
 	omitted2 = role-generate-ord                // matches same as role-generate-name
 	omitted2 = entity-generate-shortcuts        // requires role-generate-name
@@ -115,6 +116,12 @@ rules
   shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, ZeroOrMore(), o2, e2, s2, attrs)
   shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, m2    , o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2, attrs)
   shortcutrel-generate-mult: ShortcutRelation(e1, s1, m1,     o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2, attrs)
+
+rules
+
+  rel-generate-mult: Relation(e1, s1, None(), o1, None(), o2, e2, s2) -> Relation(e1, s1, ZeroOrMore(), o1, ZeroOrMore(), o2, e2, s2)
+  rel-generate-mult: Relation(e1, s1, None(), o1, m2    , o2, e2, s2) -> Relation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2)
+  rel-generate-mult: Relation(e1, s1, m1,     o1, None(), o2, e2, s2) -> Relation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2)
 
 rules
 

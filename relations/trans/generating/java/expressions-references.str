@@ -17,7 +17,7 @@ rules // member access
 
 	exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
 		where
-			<is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname>name
+			<is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_expType := <_get-type>e1;
 			x_getter := $[get_[name]];
@@ -40,7 +40,7 @@ rules // direct references
 				 
 	exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
 		where
-      <is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname>name
+      <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_getter := $[get_[name]];
 			refty := <java-type>e;
