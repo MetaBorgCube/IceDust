@@ -53,4 +53,4 @@ rules // direct references
 			exp := expr |[x_var]|
 				 
 			
-	exp-to-java-stm(err|i): This() -> ([], |[this]|)
+	exp-to-java-stm(err|i): This() -> ([], expr |[this]|)

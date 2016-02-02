@@ -30,7 +30,7 @@ rules
   entityinstancename-to-java-stm(err): x_eiName -> result
     with
       x_type := <_get-type>x_eiName;
-      result := |[
+      result := bstm |[
         x_type x_eiName = new x_type();
       ]|
 
