@@ -29,16 +29,18 @@ rules // entities
   		is-entityname
   	with
   		ebd1* := <entityname-get-attributenames;map(model-attributename-to-webdsl-ebds(err)    );flatten-list>x_entityName;
-  		ebd2* := <entityname-get-rolenames;     map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-  		ebd3* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-  		ebd4* := <entityname-get-shortcutnames; map(model-shortcutname-to-webdsl-ebds(err))     ;flatten-list>x_entityName
+      ebd2* := <entityname-get-relationnames; map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
+      ebd3* := <entityname-get-rolenames;     map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
+  		ebd4* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
+  		ebd5* := <entityname-get-shortcutnames; map(model-shortcutname-to-webdsl-ebds(err))     ;flatten-list>x_entityName
   	with
-  	 result := def |[
+  	  result := def |[
         entity x_entityName {
           ebd1*
           ebd2*
           ebd3*
           ebd4*
+          ebd5*
         }
       ]|
 
@@ -76,7 +78,7 @@ rules
       end
     with
       if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); name-get-flowsto-paths;?flowsto-paths then
-        stat_flowsTo* := <map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
+        stat_flowsTo* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
       end
     with
       if attributename-is-normal <+ attributename-is-default then
@@ -258,7 +260,7 @@ rules
 
   model-roleOrInversename-to-webdsl-ebds(err): x_roleName -> [result-field,result-get*,result-flow*,result-trigger*]
     where
-      is-rolename <+ is-inversename
+      is-rolename <+ is-inversename <+ is-relationname
     with
       x_inverseName          := <name-get-inversename>x_roleName;
       x_inverseEntityName    := <attributename-get-entityname>x_inverseName;
@@ -279,32 +281,35 @@ rules
       x_addRoleTrigger       := <name-add-trigger>x_setRoleTrigger;
       x_removeRoleTrigger    := <name-remove-trigger>x_setRoleTrigger
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        if is-attributename; name-get-flowsto-paths;?flowsto-paths then
-          stat_flowsTo* := <filter(path-origin-is-inverse);map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
-        else
-          name-get-inversename; name-get-flowsto-paths;?flowsto-paths;
-          stat_flowsTo* := <filter(path-origin-is-role);map(ttuple(path-get-last, path-remove-end;path-to-expr;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
-        end
+      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); name-get-flowsto-paths;?flowsto-paths then
+        stat_flowsTo* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
       end
     with
-      if is-rolename then
+      if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-one then
         result-field := webdsl |[
           x_roleName : x_inverseEntityName (inverse=x_inverseName)
+        ]|
+      else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
+        result-field := webdsl |[
+          x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
+        ]|
+      else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;unordered then
+        result-field := webdsl |[
+          x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
         ]|
       else if is-inversename; get-multiplicity;upper-one then
         result-field := webdsl |[
           x_roleName : x_inverseEntityName
         ]|
-      else if is-inversename; get-multiplicity;upper-one; !x_roleName;get-ordering;ordered then
+      else if is-inversename; get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
         result-field := webdsl |[
           x_roleName : [x_inverseEntityName]
         ]|
-      else
+      else // inverse unordered
         result-field := webdsl |[
           x_roleName : {x_inverseEntityName}
         ]|
-      end end end
+      end end end end end
     with
       if get-multiplicity;upper-one then
         result-get* := webdsl |[

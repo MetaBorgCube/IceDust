@@ -62,14 +62,21 @@ rules
     with
       result := stat |[
         x_eiName.x_memberName := e_value;
-      ]|    
+      ]|
+          
+  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(relationname), valueAst) -> result
+    where
+      <is-relationname>relationname
+    with
+      valueNames := <collect-all(eiwrefnames)>valueAst;
+      result := <map(data-relationname-to-webdsl-stm(err|x_eiName, relationname))>valueNames
           
   membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
     where
       <is-shortcutname>shortcutName
     with
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-shortcutname-to-webdsl-stms(err|x_eiName,shortcutName));flatten-list>valueNames
+      result := <map(data-shortcutname-to-webdsl-stms(err|x_eiName, shortcutName));flatten-list>valueNames
 
 rules
 
@@ -78,6 +85,18 @@ rules
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
 
 rules
+
+  data-relationname-to-webdsl-stm(err|x_eiName,x_relationName): (_, x_eiName2) -> result
+    with
+      if <get-multiplicity;upper-one>x_relationName then
+        result := stat |[
+          x_eiName.x_relationName := x_eiName2;
+        ]|
+      else
+        result := stat |[
+          x_eiName.x_relationName.add(x_eiName2);
+        ]|
+      end
 
   data-shortcutname-to-webdsl-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
     with

@@ -4,3 +4,5 @@
 /*/*/*.class
 /*/*/*.java
 /*/*/lib
+**/.saved-but-not-built
+**/common_.css
