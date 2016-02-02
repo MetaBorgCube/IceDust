@@ -155,3 +155,5 @@ rules
 	
 	_analyze-all(pre-trans, post-trans, pp-message|language) = analyze-all(pre-trans, post-trans, pp-message|language)
 	
+	_get-property(|kind) = get-property(|kind)
+	

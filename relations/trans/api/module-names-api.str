@@ -17,6 +17,7 @@ imports // functions
 	lib/search
 	lib/string
 	lib/lists-tuples
+  generating/_ir/constructors
 	
 rules // module
 	
@@ -43,13 +44,13 @@ rules // module
 
   modulename-get-exprs = index-get-prop(|AST());flatten-list
 
-  modulename-get-implstr = get-property(|ImplStrategy())
+  modulename-get-implstr = _get-property(|ImplStrategy())
   
   modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
   modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
   modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
 
-  modulename-get-uistyle = get-property(|UIStyle())
+  modulename-get-uistyle = _get-property(|UIStyle())
   
   modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
   modulename-is-crudui = where(modulename-get-uistyle;?CrudUI())

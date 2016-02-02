@@ -2,8 +2,8 @@ module _editor/generate
 
 imports // constructors
 
-  signatures/Modules-sig
   api/_runtime-constructors
+  generating/_ir/constructors
   
 imports // functions
 
@@ -20,29 +20,6 @@ imports // functions
   lib/files
   lib/call-external
   prettyprinting/pp
-
-signature sorts
-  
-  TargetLanguage
-  
-signature constructors
-  
-  Java               : TargetLanguage
-  WebDSL             : TargetLanguage
-  WebDSLEager        : TargetLanguage
-  WebDSLEventual     : TargetLanguage
-  WebDSLEventualNoUI : TargetLanguage
-  
-  ImplStrategy : CompilerOptions
-  UIStyle      : CompilerOptions
-  
-  CalcOnRead           : ImplStrategy
-  CalcOnWrite          : ImplStrategy
-  EventuallyConsistent : ImplStrategy
-  
-  NoUI   : UIStyle
-  CrudUI : UIStyle
-  
 
 rules // Builders
   
