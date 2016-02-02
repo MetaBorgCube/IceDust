@@ -34,6 +34,9 @@ rules // entity
   entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
   entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
   entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
+  
+  entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
+  entityname-is-crudui               = where(entityname-get-modulename;modulename-is-crudui)
 	
 rules // attributes
 	

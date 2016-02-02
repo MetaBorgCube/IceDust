@@ -50,6 +50,38 @@ rules // module
         native1*           := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-native)>x_moduleName
       end
     with
+      sec0* := webdsl |[
+        section model
+        
+          def1*
+        
+        section data
+          
+          init{
+            stat_initdcoll*
+            stat_initdata*
+            stat_initupdate*
+          }
+        
+        section ui
+        
+          define applicationmenu() {
+            elem_menu*
+          }
+          
+          def2*
+        
+        section hibernate hooks
+        
+          function beforeTransactionCompletion(){
+          
+          }
+          
+          function afterTransactionCompletion(){
+          
+          }
+      ]|
+    with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then  
         sec1* := [webdsl |[
           section caches and dirty flags
@@ -106,46 +138,33 @@ rules // module
         sec2* := []
       end
 	  with
+	    if modulename-is-noui then
       result := webdsl |[
         application x_moduleName
         
         imports lib/relations/crud-ui
         imports lib/relations/Expressions
       
-        section model
-        
-          def1*
+        sec0* // model, data, ui and hibernate hooks
         
         sec1* // caches and dirty flags
         
         sec2* // async dirty flags
-        
-        section data
-          
-          init{
-            stat_initdcoll*
-            stat_initdata*
-            stat_initupdate*
-          }
-        
-        section ui
-        
-          define applicationmenu() {
-            elem_menu*
-          }
-          
-          def2*
-        
-        section hibernate hooks
-        
-          function beforeTransactionCompletion(){
-          
-          }
-          
-          function afterTransactionCompletion(){
-          
-          }
       ]|
+    else
+      result := module |[
+        module x_moduleName
+        
+        imports lib/relations/crud-ui
+        imports lib/relations/Expressions
+      
+        sec0* // model, data, ui and hibernate hooks
+        
+        sec1* // caches and dirty flags
+        
+        sec2* // async dirty flags
+      ]|
+    end
 
 rules //crud
 	

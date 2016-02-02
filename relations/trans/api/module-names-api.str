@@ -49,6 +49,11 @@ rules // module
   modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
   modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
 
+  modulename-get-uistyle = get-property(|UIStyle())
+  
+  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
+  modulename-is-crudui = where(modulename-get-uistyle;?CrudUI())
+  
 rules // helper
 
 	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri

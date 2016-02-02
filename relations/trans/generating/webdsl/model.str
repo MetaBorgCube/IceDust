@@ -34,15 +34,27 @@ rules // entities
   		ebd4* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
   		ebd5* := <entityname-get-shortcutnames; map(model-shortcutname-to-webdsl-ebds(err))     ;flatten-list>x_entityName
   	with
-  	  result := def |[
-        entity x_entityName {
-          ebd1*
-          ebd2*
-          ebd3*
-          ebd4*
-          ebd5*
-        }
-      ]|
+  	  if entityname-is-noui then
+    	  result := def |[
+          entity x_entityName {
+            ebd1*
+            ebd2*
+            ebd3*
+            ebd4*
+            ebd5*
+          }
+        ]|
+      else
+        result := def |[
+          extend entity x_entityName {
+            ebd1*
+            ebd2*
+            ebd3*
+            ebd4*
+            ebd5*
+          }
+        ]|
+      end
 
 rules
 

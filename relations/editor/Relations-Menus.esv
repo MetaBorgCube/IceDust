@@ -63,10 +63,18 @@ menus
       end
     end
     submenu: "to WebDSL"
-      action: "Calculate On Read"               = generate-webdsl (openeditor)
-      action: "Calculate On Write"              = generate-webdsl-eager (openeditor)
-      action: "Eventually Consistent"           = generate-webdsl-eventual (openeditor)
-      action: "Eventually Consistent, no UI"    = generate-webdsl-eventual-no-ui (openeditor)
+      submenu: "Calculate On Read"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
+      end
+      submenu: "Calculate On Write"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor)
+      end
+      submenu: "Eventually Consistent"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eventual (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+      end
     end
 
     action: "Cleanup Generated Code" = cleanup-generated-files
