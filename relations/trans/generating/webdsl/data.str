@@ -21,9 +21,9 @@ rules
   data-modulename-to-webdsl-stms(err): moduleName -> result
     with
       eiNames          := <modulename-get-entityinstancenames>moduleName;
-      stat_objects*    := <map(entityinstancename-to-webdsl-stm(err))>eiNames;
-      stat_membervals* := <map(entityinstancename-to-webdsl-stms2(err));flatten-list>eiNames;
-      stat_saves*      := <map(entityinstancename-to-webdsl-stm3(err))>eiNames
+      stat_objects*    := < map(entityinstancename-to-webdsl-stm(err))>eiNames;
+      stat_membervals* := <fmap(entityinstancename-to-webdsl-stms2(err))>eiNames;
+      stat_saves*      := < map(entityinstancename-to-webdsl-stm3(err))>eiNames
     with
       result := stat* |[
         stat_objects*
@@ -44,7 +44,7 @@ rules // entity instances
   entityinstancename-to-webdsl-stms2(err): eiName -> result
     with
       memberValues := <entityinstancename-get-membervalues>eiName;
-      result := <map(membervalue-to-webdsl-stms(err|eiName));flatten-list>memberValues
+      result := <fmap(membervalue-to-webdsl-stms(err|eiName))>memberValues
 
 
 	entityinstancename-to-webdsl-stm3(err): x_eiName -> result
@@ -79,7 +79,7 @@ rules
       <is-shortcutname>shortcutName
     with
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-shortcutname-to-webdsl-stms(err|x_eiName, shortcutName));flatten-list>valueNames
+      result := <fmap(data-shortcutname-to-webdsl-stms(err|x_eiName, shortcutName))>valueNames
 
 rules
 

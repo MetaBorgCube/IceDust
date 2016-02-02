@@ -24,7 +24,7 @@ rules
     with
       eiNames := <modulename-get-entityinstancenames>moduleName;
       result1* := <map(entityinstancename-to-java-stm(err))>eiNames;
-      result2* := <map(entityinstancename-to-java-stms2(err));flatten-list>eiNames
+      result2* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
 
 rules
 
@@ -38,7 +38,7 @@ rules
   entityinstancename-to-java-stms2(err): eiName -> result
     with
       memberValues := <entityinstancename-get-membervalues>eiName;
-      result := <map(membervalue-to-java-stms(err|eiName));flatten-list>memberValues
+      result := <fmap(membervalue-to-java-stms(err|eiName))>memberValues
 
 rules
 
@@ -64,7 +64,7 @@ rules
       <is-shortcutname>shortcutName
     with
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-shortcutname-to-java-stms(err|x_eiName,shortcutName));flatten-list>valueNames
+      result := <fmap(data-shortcutname-to-java-stms(err|x_eiName,shortcutName))>valueNames
 
 rules
 

@@ -80,10 +80,15 @@ rules // bottom up traversal including annotations
 	
 	bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup(s)>a}); s
 
-
 rules // a -> List(a)
 
   transitive-closure(trans) = not(trans);![]
   transitive-closure(trans) = ?a;![<trans>a|<trans;transitive-closure(trans)>a]
   
   reflexive-transitive-closure(trans) = ?a;![a|<transitive-closure(trans)>a]
+
+rules
+
+  fmap(s) = flat-map(s)
+  flat-map(s) = map(s);flatten-list
+  

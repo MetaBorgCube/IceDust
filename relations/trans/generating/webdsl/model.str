@@ -3,10 +3,10 @@ module generating/webdsl/model
 imports // constructors
 
 	api/constructors
+  desugaring/constructors
 	webdsl/WebDSL
 	signatures/Model-sig
 	signatures/Modules-sig
-	desugaring/constructors
 
 imports // functions
 
@@ -14,13 +14,13 @@ imports // functions
 	api/_runtime
 	api/model-api
 	api/model-names-api
+  generating/_ir/model
+  generating/webdsl/expressions
+  generating/webdsl/expressions-references
+  generating/webdsl/types
 	lib/search
   names/naming/names
 	naming/_notNaBL
-  generating/_ir/model
-	generating/webdsl/expressions
-	generating/webdsl/expressions-references
-	generating/webdsl/types
 
 rules // entities
 	
@@ -28,11 +28,11 @@ rules // entities
   	where
   		is-entityname
   	with
-  		ebd1* := <entityname-get-attributenames;map(model-attributename-to-webdsl-ebds(err)    );flatten-list>x_entityName;
-      ebd2* := <entityname-get-relationnames; map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-      ebd3* := <entityname-get-rolenames;     map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-  		ebd4* := <entityname-get-inversenames;  map(model-roleOrInversename-to-webdsl-ebds(err));flatten-list>x_entityName;
-  		ebd5* := <entityname-get-shortcutnames; map(model-shortcutname-to-webdsl-ebds(err))     ;flatten-list>x_entityName
+  		ebd1* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
+      ebd2* := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+      ebd3* := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+  		ebd4* := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+  		ebd5* := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
   	with
   	  if entityname-is-noui then
     	  result := def |[
@@ -85,15 +85,15 @@ rules
       e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
       e_entityName                := String(x_entityName)
     with
-      if attributename-is-default <+ attributename-is-derivation then
+      if attributename-is-default-derivation then
         e_calculate := <attributename-get-expr;to-webdsl(err)>x_attributeName
       end
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); name-get-flowsto-paths;?flowsto-paths then
-        stat_flowsTo* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
+      if name-is-calconwrite-eventuallyconsistent then
+        stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_attributeName
       end
     with
-      if attributename-is-normal <+ attributename-is-default then
+      if attributename-is-normal-default then
         result-field := ebd |[
           x_attributeName : srt_attributeType (default=null)
         ]|
@@ -103,19 +103,19 @@ rules
         ]|
       end
     with
-      if attributename-is-default; attributename-is-calconread then
+      if attributename-is-default; name-is-calconread then
         result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return if(this.x_attributeName != null) this.x_attributeName else this.x_calculateAttribute();
           }
         ]|
-      else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      else if attributename-is-default; name-is-calconwrite-eventuallyconsistent then
         result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return if(this.x_attributeName != null) this.x_attributeName else this.x_attributeCache;
           }
         ]|
-      else if attributename-is-normal <+ ( attributename-is-derivation; attributename-is-calconread ) then
+      else if attributename-is-normal <+ ( attributename-is-derivation; name-is-calconread ) then
         result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return this.x_attributeName;
@@ -129,7 +129,7 @@ rules
         ]|
       end end end
     with
-      if attributename-is-default <+ attributename-is-derivation then
+      if attributename-is-default-derivation then
         result-calculate* := ebd* |[
           function x_calculateAttribute() : srt_attributeType {
             return e_calculate;
@@ -149,7 +149,7 @@ rules
         }
       ]|
     with
-      if (attributename-is-default <+ attributename-is-derivation); (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      if attributename-is-default-derivation; name-is-calconwrite-eventuallyconsistent then
         result-cache* := ebd* |[
           x_attributeCache : srt_attributeType (default=x_calculateAttribute())
           
@@ -191,7 +191,7 @@ rules
         result-cache* := []
       end
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      if name-is-calconwrite-eventuallyconsistent then
         result-flow* := ebd* |[          
           function x_dirtyFlagFlowsto() {
             stat_flowsTo*
@@ -201,7 +201,7 @@ rules
         result-flow* := []
       end
     with
-      if attributename-is-normal; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      if attributename-is-normal; name-is-calconwrite-eventuallyconsistent then
         result-trigger* := ebd* |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){
@@ -209,7 +209,7 @@ rules
             }
           }
         ]|
-      else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      else if attributename-is-default; name-is-calconwrite-eventuallyconsistent then
         result-trigger* := ebd* |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // use getter to get default-value behavior
@@ -222,7 +222,7 @@ rules
             }
           }
         ]|
-      else if attributename-is-derivation; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      else if attributename-is-derivation; name-is-calconwrite-eventuallyconsistent then
         result-trigger* := ebd* |[
           extend function x_setAttributeCacheTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // dirty flag if cached value changes
@@ -234,7 +234,7 @@ rules
         result-trigger* := []
       end end end
     with
-      if (attributename-is-default <+ attributename-is-derivation); attributename-is-eventuallyconsistent then
+      if attributename-is-default-derivation; name-is-eventuallyconsistent then
         result-async* := ebd* |[
           static function x_flagAttributeDirtyAsync() {
             var dirtyValues := x_entityName.x_getAndEmptyDirtyAttribute();
@@ -259,10 +259,12 @@ rules
 
 rules
 
-  model-path-to-webdsl-stm(err): (x_attributeName, e_path) -> result
+  model-pathexpr-to-webdsl-stm(err): pathexpr -> result
     with
-      x_entityName := <attributename-get-entityname>x_attributeName;
-      x_flagDirty  := <name-flagdirty>x_attributeName
+      x_attributeName := <pathexpr-last>pathexpr;
+      x_entityName    := <attributename-get-entityname>x_attributeName;
+      x_flagDirty     := <name-flagdirty>x_attributeName;
+      e_path          := <pathexpr-shorten-safe;to-webdsl(err)>pathexpr
     with
       result := stat |[
         x_entityName.x_flagDirty(e_path);
@@ -293,37 +295,37 @@ rules
       x_addRoleTrigger       := <name-add-trigger>x_setRoleTrigger;
       x_removeRoleTrigger    := <name-remove-trigger>x_setRoleTrigger
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); name-get-flowsto-paths;?flowsto-paths then
-        stat_flowsTo* := <map(ttuple(path-last, path-pathexpr;pathexpr-shorten-safe;to-webdsl(err));model-path-to-webdsl-stm(err))>flowsto-paths
+      if name-is-calconwrite-eventuallyconsistent then
+        stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_roleName
       end
     with
-      if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-one then
+      if name-is-left; name-is-to-one then
         result-field := ebd |[
           x_roleName : x_inverseEntityName (inverse=x_inverseName)
         ]|
-      else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
+      else if name-is-left; name-is-to-many-ordered then
         result-field := ebd |[
           x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
         ]|
-      else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;unordered then
+      else if name-is-left; name-is-to-many-unordered then
         result-field := ebd |[
           x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
         ]|
-      else if is-inversename; get-multiplicity;upper-one then
+      else if name-is-to-one then
         result-field := ebd |[
           x_roleName : x_inverseEntityName
         ]|
-      else if is-inversename; get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
+      else if name-is-to-many-ordered then
         result-field := ebd |[
           x_roleName : [x_inverseEntityName]
         ]|
-      else // inverse unordered
+      else // right unordered
         result-field := ebd |[
           x_roleName : {x_inverseEntityName}
         ]|
       end end end end end
     with
-      if get-multiplicity;upper-one then
+      if name-is-to-one then
         result-get* := ebd* |[
           function x_getRole() : x_inverseEntityName {
             return this.x_roleName;
@@ -358,7 +360,7 @@ rules
         ]|
       end
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
+      if name-is-calconwrite-eventuallyconsistent then
         result-flow* := ebd* |[
           function x_dirtyFlagFlowstoRole(){
             stat_flowsTo*
@@ -368,7 +370,7 @@ rules
         result-flow* := []
       end
     with
-      if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-one then
+      if name-is-calconwrite-eventuallyconsistent; name-is-to-one then
         result-trigger* := ebd* |[
           function x_setRoleTrigger(newValue : x_inverseEntityName){
             if(newValue != x_getRole()){
@@ -376,7 +378,7 @@ rules
             }
           }
         ]|
-      else if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-many then
+      else if name-is-calconwrite-eventuallyconsistent; name-is-to-many then
         result-trigger* := ebd* |[
           function x_addRoleTrigger(en : x_inverseEntityName){
             if(en != null){
@@ -409,7 +411,7 @@ rules
       x_getInverse       := <name-get>x_inverseName;
       x_getRole          := <name-get>x_roleName
     with
-      if get-multiplicity;upper-one then
+      if name-is-to-one then
         result* := ebd* |[
           function x_getShortcut() : x_targetEntityName {
             return x_relationName.x_getRole(this.x_getInverse());

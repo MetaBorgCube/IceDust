@@ -50,7 +50,7 @@ rules
   cache-modulename-to-java-stms: x_moduleName -> result
     with
       namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
-      update-stms* := <map(cache-attributenames-to-java-stms);flatten-list>namess
+      update-stms* := <fmap(cache-attributenames-to-java-stms)>namess
     with
       if modulename-is-calconwrite then
         result := bstm* |[

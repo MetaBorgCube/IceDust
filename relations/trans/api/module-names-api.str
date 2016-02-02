@@ -26,15 +26,15 @@ rules // module
 	modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;map(def-to-name); string-sort-anno
 	
 	// string -> [string]
-	modulename-get-attributenames = modulename-get-entitynames;map(entityname-get-attributenames);flatten-list
+	modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
 	
 	// string -> [[string]]
 	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 	
-	modulename-get-relationnames = modulename-get-entitynames;map(entityname-get-relationnames);flatten-list
+	modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
 	modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
 	
-	modulename-get-rolenames = modulename-get-entitynames;map(entityname-get-rolenames);flatten-list
+	modulename-get-rolenames = modulename-get-entitynames;fmap(entityname-get-rolenames)
 	
 	modulename-get-toposort = index-get-prop(|TopoSort());Hd
 

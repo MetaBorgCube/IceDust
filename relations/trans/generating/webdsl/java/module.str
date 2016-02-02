@@ -11,6 +11,7 @@ imports // functions
 	api/module-api
 	api/module-names-api
 	generating/_ir/model
+	lib/traverse
 
 rules // module (or modulename) -> java compilation-unit
 	
@@ -20,7 +21,7 @@ rules // module (or modulename) -> java compilation-unit
 		where
 		  modulename-is-eventuallyconsistent
 		with
-			decs* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-java-classbodydecs(err));flatten-list>x_moduleName
+			decs* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));fmap(attributename-to-java-classbodydecs(err))>x_moduleName
 	  with
       result := compilation-unit |[
         package derivations;

@@ -30,7 +30,7 @@ rules // Expr -> [Expr] // path-based-abstract-interpretation of expressions
       subpathexprs := <expr-pathexprs>expr;
       result   := <map(pathexpr-extend(|name))>subpathexprs
 
-  expr-pathexprs = get-arguments;map(expr-pathexprs);flatten-list // literals, unops and binops
+  expr-pathexprs = get-arguments;fmap(expr-pathexprs) // literals, unops and binops
 
 rules
   

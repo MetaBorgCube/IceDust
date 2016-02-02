@@ -23,13 +23,13 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*          := <modulename-get-entitynames;map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def2*          := <modulename-get-entitynames;map(entityname-to-webdsl-defs);flatten-list>x_moduleName;
-			elem_menu*     := <modulename-get-entitynames;map(entityname-to-webdsl-elem)>x_moduleName;
+			def1*          := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
+			def2*          := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
+			elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName;
 			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 		with
 		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName;
+		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));fmap(attributename-to-webdsl-defs)>x_moduleName;
 		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName;
 		    stat_initdcoll*  := stat* |[initDirtyCollections();]|
 		  else
@@ -327,7 +327,7 @@ rules
   cache-modulename-to-webdsl-stms: x_moduleName -> result
     with
       namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
-      stat_updat* := <map(cache-attributenames-to-webdsl-stms);flatten-list>namess
+      stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
         result := stat* |[
