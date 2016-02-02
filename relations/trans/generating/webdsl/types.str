@@ -15,11 +15,11 @@ imports // functions
 	
 rules // primitives
 	
-	type-to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		
-	type-to-webdsl(err): Int()     -> webdsl |[ Int ]|		
-	type-to-webdsl(err): String()  -> webdsl |[ String ]|		
-	type-to-webdsl(err): Float()   -> webdsl |[ Float ]|		
-	type-to-webdsl(err): Datetime()-> webdsl |[ DateTime ]|
+	type-to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		  //webdsl Annotation
+	type-to-webdsl(err): Int()     -> webdsl |[ Int ]|	    //webdsl Annotation	
+	type-to-webdsl(err): String()  -> webdsl |[ String ]|		//webdsl Annotation
+	type-to-webdsl(err): Float()   -> webdsl |[ Float ]|		//webdsl Annotation
+	type-to-webdsl(err): Datetime()-> webdsl |[ DateTime ]| //webdsl Annotation
 	type-to-webdsl(err): name      -> name                 where is-string
 
 rules // webdsl types
@@ -29,8 +29,8 @@ rules // webdsl types
 			ty := <_get-type>name;
 			mu := <get-multiplicity>name
 	
-	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;type-to-webdsl(err);?srt1;!webdsl |[ srt1   ]|
-	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;type-to-webdsl(err);?srt1;!webdsl |[ [srt1] ]|
+	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;type-to-webdsl(err);?srt1;!webdsl |[ srt1   ]| //webdsl Annotation
+	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;type-to-webdsl(err);?srt1;!webdsl |[ [srt1] ]| //webdsl Annotation
 
 rules
 

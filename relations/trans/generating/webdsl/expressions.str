@@ -27,7 +27,7 @@ rules // WebDSL specific: no generics, explicit casts
 
 rules // lib expression calls
   
-  to-webdsl(err): e -> Call(Var("Expressions"), x_methodpostfix, e1*) // |[ Expressions.x_methodpostfix(e1)]| //TODO: fix webdsl concrete syntax for expression list
+  to-webdsl(err): e -> result
     where
       lib-call
     where
@@ -36,8 +36,10 @@ rules // lib expression calls
       arg*            := <get-arguments>e;
       e1*             := <map(to-webdsl(err))>arg*;
       x_methodpostfix := <lib-method-name>e
+    with
+      result := exp |[ Expressions.x_methodpostfix(e1*) ]|
       
-  to-webdsl(err): e -> Cast(Call(Var("Expressions"), x_methodpostfix, e1*), srt1) //|[ Expressions.x_methodpostfix(e1) as srt1 ]| //TODO: fix webdsl concrete syntax for expression list
+  to-webdsl(err): e -> result
     where
       lib-call
     where
@@ -47,6 +49,8 @@ rules // lib expression calls
       e1*             := <map(to-webdsl(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
       srt1            := <webdsl-type(err)>e
+    with
+      result := exp |[ Expressions.x_methodpostfix(e1*) as srt1 ]|
   
 rules // literals
   
@@ -60,9 +64,9 @@ rules // literals
 
 rules // casts
   
-  to-webdsl(err): Cast(NoValue() , ex1-ty) -> |[ null as x ]| where x := <type-as-string>ex1-ty
+  to-webdsl(err): Cast(NoValue() , ex1-ty) -> exp |[ null as x ]| where x := <type-as-string>ex1-ty
   
-  to-webdsl(err): Cast(ex1, ex1-ty) -> |[ Expressions.x_method(e1) ]|
+  to-webdsl(err): Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
     with
       e1 := <to-webdsl(err)>ex1;
       x_method := $[as[<postfix-id>ex1-ty]]

@@ -94,52 +94,52 @@ rules
       end
     with
       if attributename-is-normal <+ attributename-is-default then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_attributeName : srt_attributeType (default=null)
         ]|
       else
-        result-field := webdsl |[
+        result-field := ebd |[
           x_attributeName : srt_attributeType := x_calculateAttribute()
         ]|
       end
     with
       if attributename-is-default; attributename-is-calconread then
-        result-get := webdsl |[
+        result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return if(this.x_attributeName != null) this.x_attributeName else this.x_calculateAttribute();
           }
         ]|
       else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-get := webdsl |[
+        result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return if(this.x_attributeName != null) this.x_attributeName else this.x_attributeCache;
           }
         ]|
       else if attributename-is-normal <+ ( attributename-is-derivation; attributename-is-calconread ) then
-        result-get := [webdsl |[
+        result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return this.x_attributeName;
           }
-        ]|]
+        ]|
       else // derivation; calconwrite
-        result-get := [webdsl |[
+        result-get := ebd |[
           function x_getAttribute() : srt_attributeType {
             return this.x_attributeCache;
           }
-        ]|]
+        ]|
       end end end
     with
       if attributename-is-default <+ attributename-is-derivation then
-        result-calculate* := [webdsl |[
+        result-calculate* := ebd* |[
           function x_calculateAttribute() : srt_attributeType {
             return e_calculate;
           }
-        ]|]
+        ]|
       else
         result-calculate* := []
       end
     with
-      result-get2* := webdsl |[          
+      result-get2* := ebd* |[          
         static function x_getAttribute(en: x_entityName) : srt_attributeType {
           return if(en == null) null as srt_attributeType else en.x_getAttribute();
         }
@@ -150,7 +150,7 @@ rules
       ]|
     with
       if (attributename-is-default <+ attributename-is-derivation); (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-cache* := webdsl |[
+        result-cache* := ebd* |[
           x_attributeCache : srt_attributeType (default=x_calculateAttribute())
           
           function x_updateAttributeCache(){
@@ -192,25 +192,25 @@ rules
       end
     with
       if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-flow* := [webdsl |[          
+        result-flow* := ebd* |[          
           function x_dirtyFlagFlowsto() {
             stat_flowsTo*
           }
-        ]|]
+        ]|
       else
         result-flow* := []
       end
     with
       if attributename-is-normal; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-trigger* := [webdsl |[
+        result-trigger* := ebd* |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){
               x_dirtyFlagFlowsto();
             }
           }
-        ]|]
+        ]|
       else if attributename-is-default; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-trigger* := webdsl |[
+        result-trigger* := ebd* |[
           extend function x_setAttributeTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // use getter to get default-value behavior
               x_dirtyFlagFlowsto();
@@ -223,19 +223,19 @@ rules
           }
         ]|
       else if attributename-is-derivation; (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-trigger* := [webdsl |[
+        result-trigger* := ebd* |[
           extend function x_setAttributeCacheTrigger(newValue : srt_attributeType){
             if(x_getAttribute() != newValue){ // dirty flag if cached value changes
               x_dirtyFlagFlowsto();
             }
           }
-        ]|]
+        ]|
       else
         result-trigger* := []
       end end end
     with
       if (attributename-is-default <+ attributename-is-derivation); attributename-is-eventuallyconsistent then
-        result-async* := webdsl |[
+        result-async* := ebd* |[
           static function x_flagAttributeDirtyAsync() {
             var dirtyValues := x_entityName.x_getAndEmptyDirtyAttribute();
             DirtyCollections.x_attributeGetQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
@@ -298,33 +298,33 @@ rules
       end
     with
       if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-one then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : x_inverseEntityName (inverse=x_inverseName)
         ]|
       else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
         ]|
       else if (is-rolename <+ is-relationname;relationname-is-left); get-multiplicity;upper-many; !x_roleName;get-ordering;unordered then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
         ]|
       else if is-inversename; get-multiplicity;upper-one then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : x_inverseEntityName
         ]|
       else if is-inversename; get-multiplicity;upper-many; !x_roleName;get-ordering;ordered then
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : [x_inverseEntityName]
         ]|
       else // inverse unordered
-        result-field := webdsl |[
+        result-field := ebd |[
           x_roleName : {x_inverseEntityName}
         ]|
       end end end end end
     with
       if get-multiplicity;upper-one then
-        result-get* := webdsl |[
+        result-get* := ebd* |[
           function x_getRole() : x_inverseEntityName {
             return this.x_roleName;
           }
@@ -338,7 +338,7 @@ rules
           }
         ]|
       else
-        result-get* := webdsl |[
+        result-get* := ebd* |[
           function x_getRole() : [x_inverseEntityName] {
             return [en | en : x_inverseEntityName in this.x_roleName]; // list comprehension to convert set or list to list
           }
@@ -359,25 +359,25 @@ rules
       end
     with
       if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent) then
-        result-flow* := [webdsl |[
+        result-flow* := ebd* |[
           function x_dirtyFlagFlowstoRole(){
             stat_flowsTo*
           }
-        ]|]
+        ]|
       else
         result-flow* := []
       end
     with
       if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-one then
-        result-trigger* := [webdsl |[
+        result-trigger* := ebd* |[
           function x_setRoleTrigger(newValue : x_inverseEntityName){
             if(newValue != x_getRole()){
               x_dirtyFlagFlowstoRole();
             }
           }
-        ]|]
+        ]|
       else if (attributename-is-calconwrite<+attributename-is-eventuallyconsistent); get-multiplicity;upper-many then
-        result-trigger* := webdsl |[
+        result-trigger* := ebd* |[
           function x_addRoleTrigger(en : x_inverseEntityName){
             if(en != null){
               x_dirtyFlagFlowstoRole();
@@ -410,7 +410,7 @@ rules
       x_getRole          := <name-get>x_roleName
     with
       if get-multiplicity;upper-one then
-        result* := webdsl |[
+        result* := ebd* |[
           function x_getShortcut() : x_targetEntityName {
             return x_relationName.x_getRole(this.x_getInverse());
           }
@@ -424,7 +424,7 @@ rules
           }
         ]|
       else
-        result* := webdsl |[
+        result* := ebd* |[
           function x_getShortcut() : [x_targetEntityName] {
             return x_relationName.x_getRole(this.x_getInverse());
           }

@@ -31,15 +31,15 @@ rules // module
 		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
 		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-defs);flatten-list>x_moduleName;
 		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName;
-		    stat_initdcoll*  := [webdsl |[initDirtyCollections();]|]
+		    stat_initdcoll*  := stat* |[initDirtyCollections();]|
 		  else
         stat_initdcoll*  := []
 		  end
 		with
 		  if modulename-is-calconwrite then
-		    stat_initupdate* := [webdsl |[updateDerivations();]|]
+		    stat_initupdate* := stat* |[updateDerivations();]|
 		  else if modulename-is-eventuallyconsistent then
-		    stat_initupdate* := [webdsl |[flagDirtyAsync();]|]
+		    stat_initupdate* := stat* |[flagDirtyAsync();]|
 		  else
         stat_initupdate* := []
 		  end end
@@ -50,7 +50,7 @@ rules // module
         native1*           := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-native)>x_moduleName
       end
     with
-      sec0* := webdsl |[
+      sec0* := webdsl |[ // webdsl Section
         section model
         
           def1*
@@ -83,7 +83,7 @@ rules // module
       ]|
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then  
-        sec1* := [webdsl |[
+        sec1* := [webdsl |[ // webdsl Section
           section caches and dirty flags
           
             def3*
@@ -102,7 +102,7 @@ rules // module
       end
     with
       if modulename-is-eventuallyconsistent then
-        sec2* := [webdsl |[
+        sec2* := [webdsl |[ // webdsl Section
           section async dirty flags
             
             extend function afterTransactionCompletion(){
@@ -139,7 +139,7 @@ rules // module
       end
 	  with
 	    if modulename-is-noui then
-      result := webdsl |[
+      result := application |[
         application x_moduleName
         
         imports lib/relations/crud-ui
@@ -184,9 +184,9 @@ rules //crud
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
     with
       if entityname-is-calconwrite then
-        stat_updateDerivations* := [stat |[
+        stat_updateDerivations* := stat* |[
           updateDerivations();
-        ]|]
+        ]|
       else
         stat_updateDerivations* := []
       end
@@ -318,7 +318,7 @@ rules // derivations
     with
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
     with
-      result := |[
+      result := native |[
         static x_attributeGetQueue() : Queue
       ]|
 
@@ -330,7 +330,7 @@ rules
       stat_updat* := <map(cache-attributenames-to-webdsl-stms);flatten-list>namess
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        result := webdsl |[
+        result := stat* |[
           var notEmpty : Bool;
           stat_updat*
         ]|
@@ -343,7 +343,7 @@ rules
       stat_updat* := <map(cache-attributename-to-webdsl-stm-update)>attributeNames;
       stat_empty* := <map(cache-attributename-to-webdsl-stm-empty)>attributeNames
     with
-      result := webdsl |[
+      result := stat* |[
         notEmpty := true;
         while(notEmpty){
           stat_updat*
@@ -357,7 +357,7 @@ rules
       x_entityName              := <attributename-get-entityname>x_attributeName;
       x_updateAllAttributeCache := <name-updateallcache>x_attributeName
     with
-      result := webdsl |[
+      result := stat |[
         x_entityName.x_updateAllAttributeCache();
       ]|
       
@@ -366,6 +366,6 @@ rules
       x_entityName              := <attributename-get-entityname>x_attributeName;
       x_hasDirty                := <name-hasdirty>x_attributeName
     with
-      result := webdsl |[
+      result := stat |[
         notEmpty := notEmpty || x_entityName.x_hasDirty();
       ]|

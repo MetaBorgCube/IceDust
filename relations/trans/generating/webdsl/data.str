@@ -22,7 +22,7 @@ rules
       stat_membervals* := <map(entityinstancename-to-webdsl-stms2(err));flatten-list>eiNames;
       stat_saves*      := <map(entityinstancename-to-webdsl-stm3(err))>eiNames
     with
-      result := webdsl |[
+      result := stat* |[
         stat_objects*
         stat_membervals*
         stat_saves*
@@ -109,13 +109,13 @@ rules
         x_relationObject := relName
       end;
       if(None() := relName) then
-        result0* := [stat |[
+        result0* := stat* |[
           var x_relationObject := x_relationType{};
-        ]|]
+        ]|
       else
         result0* := []
       end;
-      result1* := webdsl |[
+      result1* := stat* |[
         x_relationObject.x_roleName1 := x_eiName;
         x_relationObject.x_roleName2 := x_eiName2;
       ]|
@@ -123,7 +123,7 @@ rules
 rules // entity instance attributes
 	
 	to-webdsl(err|x_instanceName): av ->
-		webdsl |[
+		stat |[
 			x_instanceName.x_attrName := e1;
 		]|
 		where
@@ -135,7 +135,7 @@ rules // entity instance attributes
 rules // entity instance roles
 	
 	to-webdsl(err|x_instanceName): av ->
-		webdsl |[
+		stat |[
 			x_instanceName.x_roleName := e1;
 		]|
 		where
