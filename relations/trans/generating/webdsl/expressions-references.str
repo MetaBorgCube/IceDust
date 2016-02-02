@@ -13,6 +13,7 @@ imports // functions
 
 	api/_runtime
 	api/model-names-api
+	generating/_ir/model
 	generating/webdsl/types
   names/naming/names
 	naming/_notNaBL
@@ -25,13 +26,13 @@ rules // references : attributes, roles and inverses
 
 	to-webdsl(err): ex1@Ref(x_name) -> webdsl:e |[  x_srt1.x_getter(this)  ]|
 		with
-			x_getter := $[get_[x_name]];
+			x_getter := <name-get>x_name;
 			x_srt1   := <attributename-get-entityname>x_name
 			
 	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt.x_getter(e1) ]|
 		with
 			e1       := <to-webdsl(err)>ex1;
-			x_getter := $[get_[x_name]];
+			x_getter := <name-get>x_name;
 			x_srt    := <_get-type>ex1
 
 rules // references : this

@@ -13,6 +13,7 @@ imports // functions
   api/data-names-api
   api/model-names-api
   api/module-names-api
+  generating/_ir/model
 	generating/java/expressions
   names/naming/names
 
@@ -44,7 +45,7 @@ rules
     where
       <is-attributename>memberName
     with
-      x_setter := $[set_[memberName]];
+      x_setter := <name-set>memberName;
       (_, attributeValueJava) := <exp-to-java-stm(err|0)>valueAst;
       result := java:block-stm* |[
         x_eiName.x_setter(~attributeValueJava);
@@ -74,8 +75,8 @@ rules
 
   data-relationname-to-java-stm(err|x_eiName,relationName): (_, x_eiName2) -> result
     with
-      x_set := $[set_[relationName]];
-      x_add := $[add_[relationName]];
+      x_set := <name-set>relationName;
+      x_add := <name-add>relationName;
       if <get-multiplicity;upper-one>relationName then
         result := java:block-stm |[
           x_eiName.x_set(x_eiName2);
@@ -93,12 +94,12 @@ rules
       x_relationType := <attributename-get-entityname>x_roleName1;
       x_inverseName1 := <rolename-get-inversename>x_roleName1;
       x_inverseName2 := <rolename-get-inversename>x_roleName2;
-      x_set01        := $[set_[x_roleName1]];
-      x_set02        := $[set_[x_roleName2]];
-      x_set1         := $[set_[x_inverseName1]];
-      x_set2         := $[set_[x_inverseName2]];
-      x_add1         := $[add_[x_inverseName1]];
-      x_add2         := $[add_[x_inverseName2]];
+      x_set01        := <name-set>x_roleName1;
+      x_set02        := <name-set>x_roleName2;
+      x_set1         := <name-set>x_inverseName1;
+      x_set2         := <name-set>x_inverseName2;
+      x_add1         := <name-add>x_inverseName1;
+      x_add2         := <name-add>x_inverseName2;
       if(None() := relName) then
         x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
       else

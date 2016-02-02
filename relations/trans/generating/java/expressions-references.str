@@ -11,6 +11,7 @@ imports // functions
   api/data-names-api
   api/model-names-api
   names/naming/names
+  generating/_ir/model
 	generating/java/types
 
 rules // member access
@@ -20,7 +21,7 @@ rules // member access
 			<is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_expType := <_get-type>e1;
-			x_getter := $[get_[name]];
+			x_getter := <name-get>name;
 			(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
 			refty := <java-type>e;
 			j := <add>(i, <length>stms*);
@@ -42,7 +43,7 @@ rules // direct references
 		where
       <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
-			x_getter := $[get_[name]];
+			x_getter := <name-get>name;
 			refty := <java-type>e;
 			x_var := $[var[<inc>i]]
 		with
