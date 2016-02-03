@@ -3,7 +3,7 @@ module analysis2/path
 imports // constructors
 	
 	signatures/Expressions-sig
-	// analysis2/constructors
+	analysis2/constructors
 
 imports // functions
 
@@ -11,6 +11,7 @@ imports // functions
   lib/index
   lib/string
   lib/traverse
+  prettyprinting/pp
 	typing/references-manual
 
 signature constructors
