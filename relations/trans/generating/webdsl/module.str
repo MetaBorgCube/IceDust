@@ -29,20 +29,9 @@ rules // module
 			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 		with
 		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));fmap(attributename-to-webdsl-defs)>x_moduleName;
-		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName;
-		    stat_initdcoll*  := stat* |[initDirtyCollections();]|
-		  else
-        stat_initdcoll*  := []
+		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-def)>x_moduleName;
+		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
 		  end
-		with
-		  if modulename-is-calconwrite then
-		    stat_initupdate* := stat* |[updateDerivations();]|
-		  else if modulename-is-eventuallyconsistent then
-		    stat_initupdate* := stat* |[flagDirtyAsync();]|
-		  else
-        stat_initupdate* := []
-		  end end
     with
       if modulename-is-eventuallyconsistent then
         stat_flagasync*    := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-stat)>x_moduleName;
@@ -57,10 +46,8 @@ rules // module
         
         section data
           
-          init{
-            stat_initdcoll*
+          init {
             stat_initdata*
-            stat_initupdate*
           }
         
         section ui
@@ -70,27 +57,13 @@ rules // module
           }
           
           def2*
-        
-        section hibernate hooks
-        
-          function beforeTransactionCompletion(){
-          
-          }
-          
-          function afterTransactionCompletion(){
-          
-          }
       ]|
     with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then  
+      if (modulename-is-calconwrite <+ modulename-is-eventuallyconsistent) then  
         sec1* := [webdsl |[ // webdsl Section
           section caches and dirty flags
           
             def3*
-            
-            function initDirtyCollections(){
-  
-            }
             
             // calconwrite: call before flush to db
             function updateDerivations(){
@@ -105,16 +78,12 @@ rules // module
         sec2* := [webdsl |[ // webdsl Section
           section async dirty flags
             
-            extend function afterTransactionCompletion(){
-              flagDirtyAsync();
-            }
-            
+            // call after flush to db
             function flagDirtyAsync(){
               stat_flagasync*
             }
             
             function updateDerivationsAsync(){
-              initDirtyCollections();
               stat_receiveasync*
               updateDerivations();
             }
@@ -137,6 +106,27 @@ rules // module
       else
         sec2* := []
       end
+    with
+      if modulename-is-calconwrite then
+        sec3* := [webdsl |[ // webdsl Section
+          section triggers
+        
+            function beforeTransactionCompletion(){
+              updateDerivations();
+              flush();
+            }
+        ]|]
+      else if modulename-is-eventuallyconsistent then
+        sec3* := [webdsl |[ // webdsl Section
+          section triggers
+            
+            function afterTransactionCompletionCommitted(){
+              flagDirtyAsync();
+            }
+        ]|]
+      else
+        sec3* := []
+      end end   
 	  with
 	    if modulename-is-noui then
       result := application |[
@@ -150,6 +140,8 @@ rules // module
         sec1* // caches and dirty flags
         
         sec2* // async dirty flags
+        
+        sec3* // triggers
       ]|
     else
       result := module |[
@@ -183,14 +175,6 @@ rules //crud
       elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
     with
-      if entityname-is-calconwrite then
-        stat_updateDerivations* := stat* |[
-          updateDerivations();
-        ]|
-      else
-        stat_updateDerivations* := []
-      end
-    with
       if entityname-is-calconread then
         result := [DeriveCrud(x_entityName)]
       else
@@ -215,7 +199,6 @@ rules //crud
               }
               action save() { 
                 temp.save();
-                stat_updateDerivations*
                 return x_manageEntity();
               }
             }
@@ -242,7 +225,6 @@ rules //crud
               }
               action save() { 
                 arg.save();
-                stat_updateDerivations*
                 return x_manageEntity();
               }
             }
@@ -283,17 +265,13 @@ rules //crud
 	
 rules // derivations
   
-  attributename-to-webdsl-defs: x_attributeName -> result
+  attributename-to-webdsl-def: x_attributeName -> result
     with
       x_entityName := <attributename-get-entityname>x_attributeName;
       x_dirty      := <attributename-entityname-dirty>x_attributeName
     with
-      result := def* |[
+      result := def |[
         request var x_dirty := Set<x_entityName>()
-        
-        extend function initDirtyCollections(){
-          x_dirty := Set<x_entityName>();
-        }
       ]|
       
   attributename-to-webdsl-stat: x_attributeName -> result
