@@ -63,7 +63,7 @@ rules // check if entities have all the required attributes and roles assigned
 	]
 	
 	eval(|f) = where("ei-a1":=f); is-entityinstance
-	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-member)
+	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-membername)
 	eval(|f) = where("ei-a4":=f); entityinstance-get-name
 	
 	eval(|f) = where("ei-r1":=f); is-entityinstance
@@ -90,7 +90,7 @@ rules // check that we do not assign to derived value attributes
     where
      is-membervalue
     with
-      name          := <membervalue-get-member>m;
+      name          := <membervalue-get-membername>m;
       name-def-task := <_nabl-create-collectdefs(|ctx)>name;
       m-der-ty-task := <_get-or-create-property-task(|ctx, NablProp_derivation-type())>name-def-task;
       match-task    := <nabl-prop-match(|NablProp_derivation-type(), ctx, Eq(), Derivation())>m-der-ty-task;

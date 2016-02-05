@@ -34,19 +34,21 @@ namespaces
 	Shortcut
 	This
   MemberType
+  MemberValue
 
 properties
 
-	derivation-type 		 of Attribute	: DerivationType	//Derivation(), DefaultValue() or Normal()
-	multiplicity				 of Attribute	: Multiplicity
-	multiplicity-inverse of Role      : Multiplicity
-	ordering             of Role      : Ordering
-	ordering-inverse     of Role      : Ordering
-	inverse   					 of Role  		: Inverse
-	origin-role					 of Inverse		: Role
-	origin-role2				 of Shortcut	: Role
-	rel-ty               of Shortcut  : Entity
-	side                 of Relation  : Term
+	derivation-type 		 of Attribute	  : DerivationType	//Derivation(), DefaultValue() or Normal()
+	multiplicity				 of Attribute	  : Multiplicity
+	multiplicity-inverse of Role        : Multiplicity
+	ordering             of Role        : Ordering
+	ordering-inverse     of Role        : Ordering
+	inverse   					 of Role  		  : Inverse
+	origin-role					 of Inverse		  : Role
+	origin-role2				 of Shortcut	  : Role
+	rel-ty               of Shortcut    : Entity
+	side                 of Relation    : Term
+	member-origin        of MemberValue : Term
 	
 binding rules // modules
 
@@ -159,30 +161,34 @@ binding rules // data
 			of type e-ty
 			of multiplicity One()
 			of ordering Ordered()
+    scopes MemberValue
 		scopes This
 		implicitly defines This This()
 			of type e-ty
 			of multiplicity One()
 			of ordering Ordered()
 			
-    EntityInstance(e, None(), _) :
+  EntityInstance(e, None(), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
       of ordering Ordered()
       where MemberType() resolves to MemberType membertype
       and membertype has type e-ty
+    scopes MemberValue
     scopes This
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
       of ordering Ordered()
 
-  MemberValue(m, value) :
+  MemberValue(NaBLHelp(m@MemberRef(m-name), m2), value) :
+    defines MemberValue m2
+      of member-origin m-name
     scopes MemberType
     implicitly defines MemberType MemberType()
       of type m-ty
-      where m has type m-ty
+    where m has type m-ty
 
 binding rules // references
 

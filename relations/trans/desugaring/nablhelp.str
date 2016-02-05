@@ -6,7 +6,8 @@ imports // constructors
 
 imports // functions
 
-	api/model-api
+  api/data-api
+  api/model-api
 	lib/traverse
 	lib/origin
 	
@@ -14,13 +15,16 @@ rules
 	
 	nablhelp-before =
 		nablhelp1;
-    nablhelp2
+    nablhelp2;
+    nablhelp3
 	
 	nablhelp1 = try(sometd(entity-add-shortcut-types)) //requires the roles to be untouched
-	nablhelp2 = try(sometd(role-duplicate-type <+ relation-dup-types))
+	nablhelp2 = try(sometd(role-dup-type <+ relation-dup-types)) // touches roles
+	nablhelp3 = bottomup(try(membervalue-dup-member)) // has nestings
 	
 	nablhelp-after = 
-		try(sometd(role-duplicate-type-reverse <+ shortcut-add-type-reverse <+ relation-dedup-types))
+		try(sometd(role-dedup-type <+ shortcut-add-type-reverse <+ relation-dedup-types));
+		bottomup(try(membervalue-dedup-member))
 
 rules // add types to shortcuts (so we can define in those types the shortcuts)
 	
@@ -53,14 +57,6 @@ rules // add types to shortcuts (so we can define in those types the shortcuts)
 		where
 			<eq>(role, role2)
 
-rules // duplicate role types (so one can define and one can refer)
-	
-	role-duplicate-type = role-dup-type
-
-rules
-	
-	role-duplicate-type-reverse = role-dedup-type
-	
 rules
 	
 	shortcut-add-type-reverse =

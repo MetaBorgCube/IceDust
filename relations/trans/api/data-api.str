@@ -5,6 +5,7 @@ imports // constructors
 	signatures/Data-sig
 	signatures/Modules-sig
 	signatures/Model-sig
+  desugaring/constructors
 
 imports // functions
 		
@@ -26,8 +27,12 @@ rules // query
 	
 	attributevalue-get-attr  = ?AttributeValue(AttributeRef(<id>),_)
 	attributevalue-get-value = ?AttributeValue(_,<id>)
-	
-	membervalue-get-member = ?MemberValue(MemberRef(<id>), _)
+  
+  membervalue-get-name = ?MemberValue(MemberRef(<id>), _)
+  membervalue-get-name = ?MemberValue(NaBLHelp(_, <id>), _)
+  membervalue-get-membername = ?MemberValue(MemberRef(<id>), _)
+  membervalue-get-membername = ?MemberValue(NaBLHelp(MemberRef(<id>), _), _)
+  membervalue-get-expr = ?MemberValue(_, <id>)
 
 rules // properties
 	
@@ -47,6 +52,11 @@ rules // manipulate
 	datadef-set-data(|op) = DataDef(!op)
 	
 	entityinstance-set-name(|name) = EntityInstance(!name, id, id)
+	
+	membervalue-set-member(member) = MemberValue(member, id)
+	
+	membervalue-dup-member   = membervalue-set-member(\r@MemberRef(m) -> NaBLHelp(r, m)\)
+	membervalue-dedup-member = membervalue-set-member(\NaBLHelp(r, _) -> r\)
 	
 rules // representations    
   

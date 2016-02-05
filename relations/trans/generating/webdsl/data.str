@@ -40,12 +40,18 @@ rules // entity instances
       result := stat |[
         var x_eiName := srt1 {};
       ]|
-			
-  entityinstancename-to-webdsl-stms2(err): eiName -> result
+      
+  entityinstancename-to-webdsl-stms2(err): x_eiName -> result
     with
-      memberValues := <entityinstancename-get-membervalues>eiName;
-      result := <fmap(membervalue-to-webdsl-stms(err|eiName))>memberValues
-
+      stat_attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-webdsl-stms(err))>x_eiName;
+      stat_relations* := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_shortcuts* := <entityinstancename-get-shortcutvaluenames ;fmap(shortcutvaluename-to-webdsl-stms (err))>x_eiName
+    with
+      result := stat* |[
+        stat_attributes*
+        stat_relations*
+        stat_shortcuts*
+      ]|
 
 	entityinstancename-to-webdsl-stm3(err): x_eiName -> result
 		where
@@ -57,29 +63,37 @@ rules // entity instances
       
 rules
 
-  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(x_memberName), valueAst) -> result
+  attributevaluename-to-webdsl-stms(err): x_attributevalueName -> result
     where
-      <is-attributename>x_memberName
+      membervaluename-is-attribute
     with
+      x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
+      valueAst := <membervaluename-get-expr>x_attributevalueName;
       e_value := <to-webdsl(err)>valueAst
     with
-      result := stat |[
-        x_eiName.x_memberName := e_value;
+      result := stat* |[
+        x_eiName.x_attributevalueName := e_value;
       ]|
           
-  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(relationname), valueAst) -> result
+      
+  relationvaluename-to-webdsl-stms(err): x_relationvalueName -> result
     where
-      <is-relationname>relationname
+      membervaluename-is-relation
     with
+      x_eiName := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueAst := <membervaluename-get-expr>x_relationvalueName;
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-relationname-to-webdsl-stm(err|x_eiName, relationname))>valueNames
-          
-  membervalue-to-webdsl-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
+      result := <map(data-relationname-to-webdsl-stm(err|x_eiName, x_relationvalueName))>valueNames//;
+
+  shortcutvaluename-to-webdsl-stms(err): x_shortcutvalueName -> result
     where
-      <is-shortcutname>shortcutName
+      membervaluename-is-shortcut
     with
+      x_eiName := <membervaluename-get-entityinstancename>x_shortcutvalueName;
+      valueAst := <membervaluename-get-expr>x_shortcutvalueName;
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <fmap(data-shortcutname-to-webdsl-stms(err|x_eiName, shortcutName))>valueNames
+      result := <fmap(data-shortcutname-to-webdsl-stms(err|x_eiName, x_shortcutvalueName))>valueNames
+
 
 rules
 
@@ -91,7 +105,7 @@ rules
 
   data-relationname-to-webdsl-stm(err|x_eiName,x_relationName): (_, x_eiName2) -> result
     with
-      if <get-multiplicity;upper-one>x_relationName then
+      if <get-member-origin;get-multiplicity;upper-one>x_relationName then
         result := stat |[
           x_eiName.x_relationName := x_eiName2;
         ]|
@@ -103,8 +117,8 @@ rules
 
   data-shortcutname-to-webdsl-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
     with
-      x_roleName1    := <shortcutname-get-rolename1>shortcutName;
-      x_roleName2    := <shortcutname-get-rolename2>shortcutName;
+      x_roleName1    := <get-member-origin;shortcutname-get-rolename1>shortcutName;
+      x_roleName2    := <get-member-origin;shortcutname-get-rolename2>shortcutName;
       x_relationType := <attributename-get-entityname>x_roleName1;
       if(None() := relName) then
         x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
@@ -122,30 +136,3 @@ rules
         x_relationObject.x_roleName1 := x_eiName;
         x_relationObject.x_roleName2 := x_eiName2;
       ]|
-
-rules // entity instance attributes
-	
-	to-webdsl(err|x_instanceName): av ->
-		stat |[
-			x_instanceName.x_attrName := e1;
-		]|
-		where
-			is-attributevalue
-		with
-			x_attrName := <attributevalue-get-attr>av;
-			e1         := <attributevalue-get-value;to-webdsl(err)>av
-	
-rules // entity instance roles
-	
-	to-webdsl(err|x_instanceName): av ->
-		stat |[
-			x_instanceName.x_roleName := e1;
-		]|
-		where
-			is-rolevalue
-		with
-			x_roleName := <rolevalue-get-role>av;
-			e1         := <rolevalue-get-value;to-webdsl(err)>av
-	
-rules
-	

@@ -47,12 +47,12 @@ type rules // data well-formedness
 //    and val : val-ty
 //    and r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
     
-  MemberValue(m, val) :-
+  MemberValue(NaBLHelp(m, m2), val) :-
   where m   : m-ty
     and val : val-ty
     and m-ty == val-ty else error $[Type mismatch: expected [m-ty] got [val-ty] in Role Assignment] on val
 
-  MemberValue(m, val) :-
+  MemberValue(NaBLHelp(m, m2), val) :-
   where m has multiplicity m-mu
     and val has multiplicity val-mu
     and (

@@ -12,7 +12,8 @@ imports // functions
 	api/_runtime
 	api/data-api
   api/execute-api
-	api/model-api
+  api/data-api
+  api/model-api
 	api/model-names-api
 	api/module-api
 	api/module-names-api
@@ -26,8 +27,6 @@ rules
 	analysis2 =
 		analysis2-clear-index;
 		store-expressions;
-//		depends-on-and-flows-to;
-//		flows-toposort;
 		depends-on-and-flows-to-2;
     flows-toposort-2
 
@@ -43,8 +42,8 @@ rules
 		with
 			attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
 			<map(attr-store-expr)>attrs;
-			einsts := <collect-all(is-entityinstance)>ast;
-			<map(einst-store-expr)>einsts;
+      memvs := <collect-all(is-membervalue)>ast;
+      <map(membervalue-store-expr)>memvs;
       <module-store-expr>ast
 	
 	attr-store-expr: attr -> attr
@@ -52,13 +51,13 @@ rules
 			derivation := <attr-get-derivation>attr;
 			attrName   := <attr-get-name>attr;
 			<index-store-prop(|AST(), attrName)>derivation
-  
-  einst-store-expr: einst -> einst
+			
+  membervalue-store-expr: memv -> memv
     with
-      exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
-      exprs':= <try(sometd(entityinstance-to-entityinstanceref))>exprs;
-      name  := <entityinstance-get-name>einst;
-      <map(index-store-prop(|AST(), name))>exprs'
+      expr := <membervalue-get-expr>memv;
+      expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
+      name := <membervalue-get-name>memv;
+      <index-store-prop(|AST(), name)>expr'
   
   module-store-expr: mod -> mod
     with

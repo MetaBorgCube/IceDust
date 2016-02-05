@@ -20,51 +20,71 @@ imports // functions
 
 rules
  
-  data-modulename-to-java-stms(err): moduleName -> [result1*, result2*]
+  data-modulename-to-java-stms(err): moduleName -> result
     with
-      eiNames := <modulename-get-entityinstancenames>moduleName;
-      result1* := <map(entityinstancename-to-java-stm(err))>eiNames;
+      eiNames  := <modulename-get-entityinstancenames>moduleName;
+      result1* := < map(entityinstancename-to-java-stm(err))>eiNames;
       result2* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
+    with
+      result := bstm* |[
+        ~result1*
+        ~result2*
+      ]|
 
 rules
 
   entityinstancename-to-java-stm(err): x_eiName -> result
     with
-      x_type := <_get-type>x_eiName;
+      x_type := <_get-type>x_eiName
+    with
       result := bstm |[
         x_type x_eiName = new x_type();
       ]|
 
-  entityinstancename-to-java-stms2(err): eiName -> result
+  entityinstancename-to-java-stms2(err): x_eiName -> result
     with
-      memberValues := <entityinstancename-get-membervalues>eiName;
-      result := <fmap(membervalue-to-java-stms(err|eiName))>memberValues
+      result1* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
+      result2* := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result3* := <entityinstancename-get-shortcutvaluenames ;fmap(shortcutvaluename-to-java-stms (err))>x_eiName
+    with
+      result := bstm* |[
+        ~result1*
+        ~result2*
+        ~result3*
+      ]|
 
 rules
-
-  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(memberName), valueAst) -> result
+  
+  attributevaluename-to-java-stms(err): x_attributevalueName -> result
     where
-      <is-attributename>memberName
+      membervaluename-is-attribute
     with
-      x_setter := <name-set>memberName;
-      (_, attributeValueJava) := <exp-to-java-stm(err|0)>valueAst;
-      result := java:block-stm* |[
+      x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
+      x_setter := <name-set>x_attributevalueName;
+      valueAst := <membervaluename-get-expr>x_attributevalueName;
+      (_, attributeValueJava) := <exp-to-java-stm(err|0)>valueAst
+    with
+      result := bstm* |[
         x_eiName.x_setter(~attributeValueJava);
-      ]|    
-
-  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(relationname), valueAst) -> result
+      ]|
+      
+  relationvaluename-to-java-stms(err): x_relationvalueName -> result
     where
-      <is-relationname>relationname
+      membervaluename-is-relation
     with
+      x_eiName := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueAst := <membervaluename-get-expr>x_relationvalueName;
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-relationname-to-java-stm(err|x_eiName,relationname))>valueNames
+      result := <map(data-relationname-to-java-stm(err|x_eiName, x_relationvalueName))>valueNames//;
 
-  membervalue-to-java-stms(err|x_eiName): MemberValue(MemberRef(shortcutName), valueAst) -> result
+  shortcutvaluename-to-java-stms(err): x_shortcutvalueName -> result
     where
-      <is-shortcutname>shortcutName
+      membervaluename-is-shortcut
     with
+      x_eiName := <membervaluename-get-entityinstancename>x_shortcutvalueName;
+      valueAst := <membervaluename-get-expr>x_shortcutvalueName;
       valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <fmap(data-shortcutname-to-java-stms(err|x_eiName,shortcutName))>valueNames
+      result := <fmap(data-shortcutname-to-java-stms(err|x_eiName, x_shortcutvalueName))>valueNames
 
 rules
 
@@ -78,7 +98,7 @@ rules
     with
       x_set := <name-set>relationName;
       x_add := <name-add>relationName;
-      if <get-multiplicity;upper-one>relationName then
+      if <get-member-origin;get-multiplicity;upper-one>relationName then
         result := java:block-stm |[
           x_eiName.x_set(x_eiName2);
         ]|
@@ -90,8 +110,8 @@ rules
 
   data-shortcutname-to-java-stms(err|x_eiName,shortcutName): (relName, x_eiName2) -> [result0*,result1*]
     with
-      x_roleName1    := <shortcutname-get-rolename1>shortcutName;
-      x_roleName2    := <shortcutname-get-rolename2>shortcutName;
+      x_roleName1    := <get-member-origin;shortcutname-get-rolename1>shortcutName;
+      x_roleName2    := <get-member-origin;shortcutname-get-rolename2>shortcutName;
       x_relationType := <attributename-get-entityname>x_roleName1;
       x_inverseName1 := <rolename-get-inversename>x_roleName1;
       x_inverseName2 := <rolename-get-inversename>x_roleName2;
@@ -100,19 +120,22 @@ rules
       x_set1         := <name-set>x_inverseName1;
       x_set2         := <name-set>x_inverseName2;
       x_add1         := <name-add>x_inverseName1;
-      x_add2         := <name-add>x_inverseName2;
+      x_add2         := <name-add>x_inverseName2
+    with
       if(None() := relName) then
         x_relationObject := $[[x_eiName]_[x_eiName2]_[x_relationType]]
       else
         x_relationObject := relName
-      end;
+      end
+    with
       if(None() := relName) then
         result0* := java:block-stm* |[
           x_relationType x_relationObject = new x_relationType();
         ]|
       else
         result0* := []
-      end;
+      end
+    with
       result1* := java:block-stm* |[
         x_relationObject.x_set01(x_eiName);
         x_relationObject.x_set02(x_eiName2);

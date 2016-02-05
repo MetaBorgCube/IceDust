@@ -10,17 +10,37 @@ imports // constructors
 
 imports // functions
 
-	api/_runtime
+  api/_runtime
+  api/model-names-api
 	lib/origin
 	lib/search
 	lib/index
 
-rules // entity
+rules // entity instance
 
 	is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
 
 	entityinstancename-get-exprs = index-get-prop(|AST());Hd
 	entityinstancename-get-membervalues = index-get-prop(|AST())
 
-rules
-	
+  entityinstancename-get-membervaluenames = _nabl-get-child-definitions(|NablNsMemberValue()) ;map(def-to-name); string-sort-anno
+
+  entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
+  entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
+  entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+
+rules // member values
+
+  membervaluename-get-expr = index-get-prop(|AST());Hd
+  
+  membervaluename-get-origin = get-member-origin
+  
+  membervaluename-is-attribute = where(get-member-origin; is-attributename)
+  membervaluename-is-relation  = where(get-member-origin; is-relationname)
+  membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
+  
+  membervaluename-get-entityinstancename = nabl-name-parent
+
+rules // helper
+
+  def-to-name: d@Def(uri) -> name{d} with name := <_nabl-uri-name>uri
