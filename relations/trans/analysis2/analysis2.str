@@ -13,6 +13,7 @@ imports // functions
 	api/data-api
   api/execute-api
   api/data-api
+  api/data-names-api
   api/model-api
 	api/model-names-api
 	api/module-api
@@ -21,6 +22,7 @@ imports // functions
 	lib/graph
 	lib/index
 	lib/lists-tuples
+	names/naming/names
 
 rules
 
@@ -58,12 +60,21 @@ rules
       expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
       name := <membervalue-get-name>memv;
       <index-store-prop(|AST(), name)>expr'
+    with
+      if membervaluename-is-relation then
+        eiNames := <membervalue-getall-einames;map(Snd)>expr';
+        <map(index-store-prop(|Rel(), name))>eiNames
+      end
   
   module-store-expr: mod -> mod
     with
       exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
       name  := <module-get-modulename>mod;
       <index-store-prop(|AST(), name)>exprs
+
+signature constructors
+
+  Rel : Term
 
 rules
 
