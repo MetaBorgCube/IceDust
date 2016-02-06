@@ -61,20 +61,47 @@ rules
       name := <membervalue-get-name>memv;
       <index-store-prop(|AST(), name)>expr'
     with
-      if membervaluename-is-relation then
+      if <membervaluename-is-relation>name then
         eiNames := <membervalue-getall-einames;map(Snd)>expr';
         <map(index-store-prop(|Rel(), name))>eiNames
       end
+    with
+      if <membervaluename-is-shortcut>name then
+        invName := <get-member-origin;shortcutname-get-inversename>name;
+        invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
+        <index-store-def>invvalueName;
+        eiNamesTuples := <membervalue-getall-einames>expr';
+        roleName := <get-member-origin;shortcutname-get-rolename>name;
+        <map(store-shortcut-helper(|invvalueName, roleName))>eiNamesTuples
+      end
+      
+  store-shortcut-helper(|invvalueName, roleName): (riName, eiName2) -> None()
+    with
+      eiName       := <membervaluename-get-entityinstancename>invvalueName;
+      relationName := <attributename-get-entityname>roleName;
+//      <debug>[eiName];
+//      <debug>[riName];
+//      <debug>[eiName2];
+//      <debug>[roleName];
+      if None() := riName then
+        riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
+        riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
+//        <debug>[riName'];
+        <index-store-def>riName'
+      else
+        riName' := riName
+      end;
+//      <debug>[riName'];
+      <index-store-prop(|Rel(), invvalueName)>riName';
+      rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
+      <index-store-def>rolevalueName;
+      <index-store-prop(|Rel(), rolevalueName)>eiName
   
   module-store-expr: mod -> mod
     with
       exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
       name  := <module-get-modulename>mod;
       <index-store-prop(|AST(), name)>exprs
-
-signature constructors
-
-  Rel : Term
 
 rules
 

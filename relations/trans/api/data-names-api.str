@@ -15,6 +15,7 @@ imports // functions
 	lib/origin
 	lib/search
 	lib/index
+	lib/nabl-ext
 
 rules // entity instance
 
@@ -28,10 +29,15 @@ rules // entity instance
   entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
   entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+  
+  entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
+  
+  entityinstancename-get-modulename = nabl-name-parent
 
 rules // member values
 
   membervaluename-get-expr = index-get-prop(|AST());Hd
+  membervaluename-get-values = index-get-prop(|Rel())
   
   membervaluename-get-origin = get-member-origin
   
@@ -40,7 +46,3 @@ rules // member values
   membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
   
   membervaluename-get-entityinstancename = nabl-name-parent
-
-rules // helper
-
-  def-to-name: d@Def(uri) -> name{d} with name := <_nabl-uri-name>uri

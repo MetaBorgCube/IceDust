@@ -143,6 +143,7 @@ rules
 	_nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
 	
 	_index-add(|value, source) = index-add(|value, source)
+	_index-add(|source) = index-add(|source)
 	_index-get-all-values = index-get-all-values
 	_index-clear-source = index-clear-source
 
@@ -156,4 +157,8 @@ rules
 	_analyze-all(pre-trans, post-trans, pp-message|language) = analyze-all(pre-trans, post-trans, pp-message|language)
 	
 	_get-property(|kind) = get-property(|kind)
+	
+	_nabl-uri-qualifier = nabl-uri-qualifier
+	
+	_nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier) 
 	

@@ -15,7 +15,8 @@ imports // functions
 	lib/index
 	lib/origin
 	lib/search
-	lib/string
+  lib/string
+  lib/nabl-ext
 	lib/lists-tuples
   generating/_ir/constructors
 	
@@ -54,10 +55,6 @@ rules // module
   
   modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
   modulename-is-crudui = where(modulename-get-uistyle;?CrudUI())
-  
-rules // helper
 
-	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
-
-rules
+  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
 	

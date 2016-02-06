@@ -23,6 +23,7 @@ rules
   data-modulename-to-java-stms(err): moduleName -> result
     with
       eiNames  := <modulename-get-entityinstancenames>moduleName;
+//      <map(debug)>eiNames;
       result1* := < map(entityinstancename-to-java-stm(err))>eiNames;
       result2* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
     with
@@ -72,10 +73,9 @@ rules
     where
       membervaluename-is-relation
     with
-      x_eiName := <membervaluename-get-entityinstancename>x_relationvalueName;
-      valueAst := <membervaluename-get-expr>x_relationvalueName;
-      valueNames := <collect-all(eiwrefnames)>valueAst;
-      result := <map(data-relationname-to-java-stm(err|x_eiName, x_relationvalueName))>valueNames//;
+      x_eiName   := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueNames := <membervaluename-get-values>x_relationvalueName;
+      result     := <map(data-relationname-to-java-stm(err|x_eiName, x_relationvalueName))>valueNames//;
 
   shortcutvaluename-to-java-stms(err): x_shortcutvalueName -> result
     where
@@ -88,7 +88,7 @@ rules
 
 rules
 
-  data-relationname-to-java-stm(err|x_eiName,relationName): (_, x_eiName2) -> result
+  data-relationname-to-java-stm(err|x_eiName,relationName): x_eiName2 -> result
     with
       x_set := <name-set>relationName;
       x_add := <name-add>relationName;

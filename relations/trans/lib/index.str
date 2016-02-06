@@ -20,6 +20,10 @@ rules
 		where
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
 
+  index-store-def: name{defi} -> name
+    with
+      <_index-add(|"analysis2")>defi
+
 rules
 
   index-store-prop2(|kind, name): val -> val
