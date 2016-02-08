@@ -70,32 +70,29 @@ rules
         invName := <get-member-origin;shortcutname-get-inversename>name;
         invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
         <index-store-def>invvalueName;
+        <index-store-prop(|NablProp_member-origin(), invvalueName)>invName;
         eiNamesTuples := <membervalue-getall-einames>expr';
         roleName := <get-member-origin;shortcutname-get-rolename>name;
-        <map(store-shortcut-helper(|invvalueName, roleName))>eiNamesTuples
+        <map(store-shortcut-helper(|invvalueName, invName, roleName))>eiNamesTuples
       end
       
-  store-shortcut-helper(|invvalueName, roleName): (riName, eiName2) -> None()
+  store-shortcut-helper(|invvalueName, invName, roleName): (riName, eiName2) -> None()
     with
       eiName       := <membervaluename-get-entityinstancename>invvalueName;
       relationName := <attributename-get-entityname>roleName;
-//      <debug>[eiName];
-//      <debug>[riName];
-//      <debug>[eiName2];
-//      <debug>[roleName];
       if None() := riName then
         riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
         riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
-//        <debug>[riName'];
-        <index-store-def>riName'
+        <index-store-def>riName';
+        <index-store-prop(|Type(), riName')><get-type>invName
       else
         riName' := riName
       end;
-//      <debug>[riName'];
       <index-store-prop(|Rel(), invvalueName)>riName';
       rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
       <index-store-def>rolevalueName;
-      <index-store-prop(|Rel(), rolevalueName)>eiName
+      <index-store-prop(|NablProp_member-origin(), rolevalueName)>roleName;
+      <index-store-prop(|Rel(), rolevalueName)>eiName2
   
   module-store-expr: mod -> mod
     with

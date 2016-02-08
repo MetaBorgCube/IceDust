@@ -28,6 +28,8 @@ rules // entity instance
 
   entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
   entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
+  entityinstancename-get-rolevaluenames      = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
+  entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
   
   entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
@@ -43,6 +45,8 @@ rules // member values
   
   membervaluename-is-attribute = where(get-member-origin; is-attributename)
   membervaluename-is-relation  = where(get-member-origin; is-relationname)
+  membervaluename-is-role      = where(get-member-origin; is-rolename)
+  membervaluename-is-inverse   = where(get-member-origin; is-inversename)
   membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
   
   membervaluename-get-entityinstancename = nabl-name-parent

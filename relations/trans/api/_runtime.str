@@ -11,12 +11,13 @@ imports // generated runtime
 	runtime/editor/origins
 	runtime/editor/outline-library
 	runtime/editor/properties
-	runtime/index/core
+  runtime/index/core
 	runtime/index/legacy
 	runtime/index/query
 	runtime/nabl/check
 	runtime/nabl/collect
 	runtime/nabl/constraints
+  runtime/nabl/entries
 	runtime/nabl/resolve
 	runtime/nabl/tasks
 	runtime/nabl/query
@@ -160,5 +161,7 @@ rules
 	
 	_nabl-uri-qualifier = nabl-uri-qualifier
 	
-	_nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier) 
+	_nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier)
+	
+	_nabl-nonunique-uri = nabl-nonunique-uri
 	
