@@ -2,13 +2,10 @@ module generating/webdsl/data
 
 imports // constructors
 
-	api/constructors
 	webdsl/WebDSL
 
 imports // functions
 
-	api/_runtime
-	api/data-api
   api/data-names-api
   api/model-names-api
   api/module-names-api
@@ -21,12 +18,12 @@ rules
   data-modulename-to-webdsl-stms(err): moduleName -> result
     with
       eiNames          := <modulename-get-entityinstancenames>moduleName;
-      stat_objects*    := < map(entityinstancename-to-webdsl-stm(err))>eiNames;
+      stat_newObjects* := < map(entityinstancename-to-webdsl-stm(err))>eiNames;
       stat_membervals* := <fmap(entityinstancename-to-webdsl-stms2(err))>eiNames;
       stat_saves*      := < map(entityinstancename-to-webdsl-stm3(err))>eiNames
     with
       result := stat* |[
-        stat_objects*
+        stat_newObjects*
         stat_membervals*
         stat_saves*
       ]|
@@ -71,7 +68,7 @@ rules
     with
       x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
       valueAst := <membervaluename-get-expr>x_attributevalueName;
-      e_value := <to-webdsl(err)>valueAst
+      e_value := <expr-to-webdsl-expr(err)>valueAst
     with
       result := stat* |[
         x_eiName.x_attributevalueName := e_value;

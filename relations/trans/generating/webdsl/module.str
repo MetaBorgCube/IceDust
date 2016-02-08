@@ -23,32 +23,32 @@ rules // module
 		where
 			is-modulename
 		with
-			def1*          := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def2*          := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
+			def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
+			def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
 			elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName;
 			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
 		with
 		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-		    def3*            := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-def)>x_moduleName;
+		    def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
 		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
 		  end
     with
       if modulename-is-eventuallyconsistent then
-        stat_flagasync*    := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-stat)>x_moduleName;
-        stat_receiveasync* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-stat2)>x_moduleName;
-        native1*           := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));map(attributename-to-webdsl-native)>x_moduleName
+        stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
+        stat_receiveasync* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat2)>x_moduleName;
+        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName
       end
     with
-      sec0* := webdsl |[ // webdsl Section
-        section model
-        
-          def1*
-        
+      sec_modelDataUi* := section* |[
         section data
           
           init {
             stat_initdata*
           }
+        
+        section model
+        
+          def_model*
         
         section ui
         
@@ -56,29 +56,27 @@ rules // module
             elem_menu*
           }
           
-          def2*
+          def_crud*
       ]|
     with
       if (modulename-is-calconwrite <+ modulename-is-eventuallyconsistent) then  
-        sec1* := [webdsl |[ // webdsl Section
+        sec_cachesDirtyflag* := section* |[
           section caches and dirty flags
           
-            def3*
+            def_dirtyReqVar*
             
-            // calconwrite: call before flush to db
             function updateDerivations(){
               stat_cach*
             }
-        ]|]
+        ]|
       else
-        sec1* := []
+        sec_cachesDirtyflag* := []
       end
     with
       if modulename-is-eventuallyconsistent then
-        sec2* := [webdsl |[ // webdsl Section
+        sec_asyncDirtyflag* :=  section* |[
           section async dirty flags
             
-            // call after flush to db
             function flagDirtyAsync(){
               stat_flagasync*
             }
@@ -102,31 +100,31 @@ rules // module
               contains(String) : Bool
               isEmpty() : Bool
             }
-        ]|]
+        ]|
       else
-        sec2* := []
+        sec_asyncDirtyflag* := []
       end
     with
       if modulename-is-calconwrite then
-        sec3* := [webdsl |[ // webdsl Section
+        sec_hibernateTriggers* :=  section* |[
           section triggers
         
             function beforeTransactionCompletion(){
               updateDerivations();
               flush();
             }
-        ]|]
+        ]|
       else if modulename-is-eventuallyconsistent then
-        sec3* := [webdsl |[ // webdsl Section
+        sec_hibernateTriggers* :=  section* |[
           section triggers
             
             function afterTransactionCompletionCommitted(){
               flagDirtyAsync();
             }
-        ]|]
+        ]|
       else
-        sec3* := []
-      end end   
+        sec_hibernateTriggers* := []
+      end end
 	  with
 	    if modulename-is-noui then
       result := application |[
@@ -135,13 +133,13 @@ rules // module
         imports lib/relations/crud-ui
         imports lib/relations/Expressions
       
-        sec0* // model, data, ui and hibernate hooks
+        sec_modelDataUi*
         
-        sec1* // caches and dirty flags
+        sec_cachesDirtyflag*
         
-        sec2* // async dirty flags
+        sec_asyncDirtyflag*
         
-        sec3* // triggers
+        sec_hibernateTriggers*
       ]|
     else
       result := module |[
@@ -150,11 +148,13 @@ rules // module
         imports lib/relations/crud-ui
         imports lib/relations/Expressions
       
-        sec0* // model, data, ui and hibernate hooks
+        sec_modelDataUi*
         
-        sec1* // caches and dirty flags
+        sec_cachesDirtyflag*
         
-        sec2* // async dirty flags
+        sec_asyncDirtyflag*
+        
+        sec_hibernateTriggers*
       ]|
     end
 
@@ -168,7 +168,7 @@ rules //crud
       x_viewEntity   := <lcfirst>x_entityName;
       form-fields :=
         <concat(
-          entityname-get-attributenames;filter(where(not(attributename-is-derivation))),
+          entityname-get-attributenames-normal-default,
           entityname-get-rolenames,
           entityname-get-inversenames
         );map(attributename-to-webdsl)>x_entityName;
@@ -304,7 +304,7 @@ rules
   
   cache-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo;map(filter(where(is-attributename;not(attributename-is-normal))));filter(list-not-empty)>x_moduleName;
+      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
       stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then

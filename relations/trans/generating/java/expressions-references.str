@@ -23,7 +23,7 @@ rules // member access
 			x_expType := <_get-type>e1;
 			x_getter := <name-get>name;
 			(stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
-			refty := <java-type>e;
+			refty := <expr-to-java-type(err)>e;
 			j := <add>(i, <length>stms*);
 			x_var := $[var[<inc>j]]
 		with
@@ -44,13 +44,14 @@ rules // direct references
       <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
 		with
 			x_getter := <name-get>name;
-			refty := <java-type>e;
+			refty := <expr-to-java-type(err)>e;
 			x_var := $[var[<inc>i]]
 		with
 			stms := bstm* |[
 				refty x_var = this.x_getter();
 			]|;
 			exp := expr |[x_var]|
-				 
+
+rules // this
 			
 	exp-to-java-stm(err|i): This() -> ([], expr |[this]|)

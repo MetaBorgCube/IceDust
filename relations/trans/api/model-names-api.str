@@ -40,6 +40,8 @@ rules // entity
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
   entityname-is-crudui               = where(entityname-get-modulename;modulename-is-crudui)
 	
+	entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+	
 rules // attributes
 	
 	is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())

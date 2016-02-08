@@ -51,12 +51,12 @@ rules
 
 rules
 
-  model-attributename-to-java-classbodydecs(err): x_attributeName -> [result-field*,result-setter*,result-calculate*,result-cache*,result-flow*,result-get*,result3*]
+  model-attributename-to-java-classbodydecs(err): x_attributeName -> result
     where
       is-attributename
     with
       x_entityName                := <attributename-get-entityname>x_attributeName;
-      x_attributeType             := <_get-type;type-to-java(err)>x_attributeName;
+      x_attributeType             := <_get-type;type-to-string-java>x_attributeName;
       x_getAttribute              := <name-get>x_attributeName;
       x_setAttribute              := <name-set>x_attributeName;
       x_calculateAttribute        := <name-calculate>x_attributeName;
@@ -79,22 +79,94 @@ rules
       end
     with
       if attributename-is-normal-default then
-        result-field* := class-body-dec* |[
+        result-attributeField* := class-body-dec* |[
           private x_attributeType x_attributeName;
         ]|
       else
-        result-field* := []
+        result-attributeField* := []
+      end
+    with
+      if attributename-is-normal then
+        result-getAttribute* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_attributeName;
+          }
+        ]|
+      else if attributename-is-default; name-is-calconread then
+        result-getAttribute* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            if(x_attributeName != null)
+              return x_attributeName;
+            return x_calculateAttribute();
+          }
+        ]|
+      else if attributename-is-default; name-is-calconwrite then
+        result-getAttribute* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            if(x_attributeName != null)
+              return x_attributeName;
+            return x_attributeCache;
+          }
+        ]|
+      else if attributename-is-derivation; name-is-calconread then
+        result-getAttribute* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_calculateAttribute();
+          }
+        ]|
+      else // derivation calconwrite
+        result-getAttribute* := class-body-dec* |[
+          public x_attributeType x_getAttribute()
+          { 
+            return x_attributeCache;
+          }
+        ]|
+      end end end end
+    with
+      result-staticGetAttribute* := class-body-dec* |[
+        public static x_attributeType x_getAttribute(x_entityName c)
+        { 
+          return c == null ? null : c.x_getAttribute();
+        }
+        
+        public static Collection<x_attributeType> x_getAttribute(Collection<x_entityName> c)
+        { 
+          Collection<x_attributeType> result = Expressions.emptyCollection();
+          for(x_entityName n : c)
+          { 
+            x_attributeType v = n.x_getAttribute();
+            if(v != null)
+              result.add(v);
+          }
+          return result;
+        }
+      ]|
+    with
+      if attributename-is-default-derivation then
+        result-calculateAttribute* := class-body-dec* |[
+          public x_attributeType x_calculateAttribute()
+          { 
+            ~calculate-stms*
+            return ~calculate-exp;
+          }
+        ]|
+      else
+        result-calculateAttribute* := []
       end
     with
       if attributename-is-normal-default; name-is-calconread then
-        result-setter* := class-body-dec* |[
+        result-setAttribute* := class-body-dec* |[
           public void x_setAttribute(x_attributeType x_attributeName)
           { 
             this.x_attributeName = x_attributeName;
           }
         ]|
       else if attributename-is-normal-default; name-is-calconwrite then
-        result-setter* := class-body-dec* |[
+        result-setAttribute* := class-body-dec* |[
           public void x_setAttribute(x_attributeType newValue)
           { 
             if(this.x_getAttribute() != newValue){ // compare with getAttribute to compare to default-value behavior
@@ -104,34 +176,22 @@ rules
           }
         ]|
       else
-        result-setter* := []
+        result-setAttribute* := []
       end end
     with
-      if attributename-is-default-derivation then
-        result-calculate* := class-body-dec* |[
-          public x_attributeType x_calculateAttribute()
-          { 
-            ~calculate-stms*
-            return ~calculate-exp;
-          }
-        ]|
-      else
-        result-calculate* := []
-      end
-    with
       if name-is-calconwrite then
-        result-flow* := class-body-dec* |[
+        result-dirtyFlagFlowsto* := class-body-dec* |[
           public void x_dirtyFlagFlowsto()
           {
             ~flowsto-stms*
           }
         ]|
       else
-        result-flow* := []
+        result-dirtyFlagFlowsto* := []
       end
     with
       if attributename-is-default-derivation; name-is-calconwrite then
-        result-cache* := class-body-dec* |[
+        result-attributeCacheAndCacheFunctions* := class-body-dec* |[
           private x_attributeType x_attributeCache;
           
           public void x_updateAttributeCache()
@@ -176,67 +236,17 @@ rules
           }
         ]|
       else
-        result-cache* := []
+        result-attributeCacheAndCacheFunctions* := []
       end
     with
-      if attributename-is-normal then
-        result-get* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_attributeName;
-          }
-        ]|
-      else if attributename-is-default; name-is-calconread then
-        result-get* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            if(x_attributeName != null)
-              return x_attributeName;
-            return x_calculateAttribute();
-          }
-        ]|
-      else if attributename-is-default; name-is-calconwrite then
-        result-get* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            if(x_attributeName != null)
-              return x_attributeName;
-            return x_attributeCache;
-          }
-        ]|
-      else if attributename-is-derivation; name-is-calconread then
-        result-get* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_calculateAttribute();
-          }
-        ]|
-      else // derivation calconwrite
-        result-get* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_attributeCache;
-          }
-        ]|
-      end end end end
-    with
-      result3* := class-body-dec* |[
-        public static x_attributeType x_getAttribute(x_entityName c)
-        { 
-          return c == null ? null : c.x_getAttribute();
-        }
-        
-        public static Collection<x_attributeType> x_getAttribute(Collection<x_entityName> c)
-        { 
-          Collection<x_attributeType> result = Expressions.emptyCollection();
-          for(x_entityName n : c)
-          { 
-            x_attributeType v = n.x_getAttribute();
-            if(v != null)
-              result.add(v);
-          }
-          return result;
-        }
+      result := class-body-dec* |[
+        ~result-attributeField*
+        ~result-getAttribute*
+        ~result-staticGetAttribute*
+        ~result-calculateAttribute*
+        ~result-setAttribute*
+        ~result-dirtyFlagFlowsto*
+        ~result-attributeCacheAndCacheFunctions*
       ]|
 
 rules
@@ -257,7 +267,7 @@ rules
 
 rules
 
-  model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> [result1*,result-set*,result2*,result-flow*]
+  model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> result
     where
       is-rolename <+ is-inversename <+ is-relationname
     with
@@ -282,9 +292,17 @@ rules
       end
     with
       if get-multiplicity;upper-one then
-        result1* := class-body-dec* |[
+        result-roleField* := class-body-dec* |[
           private x_inverseEntityName x_roleName;
-        
+        ]|
+      else
+        result-roleField* := class-body-dec* |[
+          private Collection<x_inverseEntityName> x_roleName = Expressions.emptyCollection();
+        ]|
+      end
+    with
+      if get-multiplicity;upper-one then
+        result-getRole* := class-body-dec* |[
           public x_inverseEntityName x_getRole()
           { 
             return this.x_roleName;
@@ -307,9 +325,7 @@ rules
           }
         ]|
       else
-        result1* := class-body-dec* |[
-          private Collection<x_inverseEntityName> x_roleName = Expressions.emptyCollection();
-        
+        result-getRole* := class-body-dec* |[
           public Collection<x_inverseEntityName> x_getRole()
           { 
             return this.x_roleName;
@@ -334,7 +350,7 @@ rules
       end
     with
       if name-is-calconread; name-is-to-one then
-        result-set* := class-body-dec* |[
+        result-setAddRemoveRolePrivate* := class-body-dec* |[
           protected void x_setRolePrivate(x_inverseEntityName en)
           { 
             if(this.x_roleName != en){
@@ -343,7 +359,7 @@ rules
           }
         ]|
       else if name-is-calconwrite; name-is-to-one then
-        result-set* := class-body-dec* |[
+        result-setAddRemoveRolePrivate* := class-body-dec* |[
           protected void x_setRolePrivate(x_inverseEntityName en)
           { 
             if(this.x_roleName != en){
@@ -353,7 +369,7 @@ rules
           }
         ]|
       else if name-is-calconread; name-is-to-many then
-        result-set* := class-body-dec* |[
+        result-setAddRemoveRolePrivate* := class-body-dec* |[
           protected void x_addRolePrivate(x_inverseEntityName en)
           { 
             if(en != null){
@@ -369,7 +385,7 @@ rules
           }
         ]|
       else // calconwrite many
-        result-set* := class-body-dec* |[
+        result-setAddRemoveRolePrivate* := class-body-dec* |[
           protected void x_addRolePrivate(x_inverseEntityName en)
           { 
             if(en != null){
@@ -389,7 +405,7 @@ rules
       end end end
     with
       if name-is-to-one; name-inverse-is-to-one then
-        result2* := class-body-dec* |[
+        result-setAddRemoveRole* := class-body-dec* |[
           public void x_setRole(x_inverseEntityName en)
           { 
             if(x_roleName != null){
@@ -406,7 +422,7 @@ rules
           }
         ]|
       else if name-is-to-one; name-inverse-is-to-many then
-        result2* := class-body-dec* |[
+        result-setAddRemoveRole* := class-body-dec* |[
           public void x_setRole(x_inverseEntityName en)
           { 
             if(x_roleName != null){
@@ -419,7 +435,7 @@ rules
           }
         ]|
       else if name-is-to-many; name-inverse-is-to-one then
-        result2* := class-body-dec* |[
+        result-setAddRemoveRole* := class-body-dec* |[
           public void x_addRole(x_inverseEntityName en)
           { 
             if(en != null){
@@ -433,7 +449,7 @@ rules
           }
         ]|
       else // many-many
-        result2* := class-body-dec* |[
+        result-setAddRemoveRole* := class-body-dec* |[
           public void x_setRole(x_inverseEntityName en)
           { 
             if(en != null){
@@ -445,19 +461,27 @@ rules
       end end end
     with
       if name-is-calconwrite then
-        result-flow* := class-body-dec* |[
+        result-dirtyFlagFlowsto* := class-body-dec* |[
           public void x_dirtyFlagFlowstoRole()
           {
             ~flowsto-stms*
           }
         ]|
       else
-        result-flow* := []
+        result-dirtyFlagFlowsto* := []
       end
+    with
+      result := class-body-dec* |[
+        ~result-roleField*
+        ~result-getRole*
+        ~result-setAddRemoveRole*
+        ~result-setAddRemoveRolePrivate*
+        ~result-dirtyFlagFlowsto*
+      ]|
 
 rules
 
-  model-shortcutname-to-java-classbodydecs(err): x_shortcutName -> result
+  model-shortcutname-to-java-classbodydecs(err): x_shortcutName -> result-getShortcut*
     where
       is-shortcutname
     with
@@ -471,7 +495,7 @@ rules
       x_getRole          := <name-get>x_roleName
     with
       if name-is-to-one then
-        result := class-body-dec* |[
+        result-getShortcut* := class-body-dec* |[
           public x_targetEntityName x_getShortcut()
           { 
             return x_relationName.x_getRole(this.x_getInverse());
@@ -495,7 +519,7 @@ rules
           }
         ]|
       else // many
-        result := class-body-dec* |[
+        result-getShortcut* := class-body-dec* |[
           public Collection<x_targetEntityName> x_getShortcut()
           { 
             return x_relationName.x_getRole(this.x_getInverse());

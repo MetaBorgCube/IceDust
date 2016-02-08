@@ -29,8 +29,12 @@ rules // module
 	// string -> [string]
 	modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
 	
+  modulename-get-attributenames-default-derivation = modulename-get-attributenames;filter(attributename-is-default-derivation)  
+	
 	// string -> [[string]]
 	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
+
+  modulename-get-attributenames-topo-default-derivation = modulename-get-attributenames-topo;map(filter(attributename-is-default-derivation));filter(list-not-empty)
 	
 	modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
 	modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)

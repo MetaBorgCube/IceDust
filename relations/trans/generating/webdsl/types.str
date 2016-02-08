@@ -15,31 +15,38 @@ imports // functions
 	
 rules // primitives
 	
-	type-to-webdsl(err): Boolean() -> webdsl |[ Bool ]|		  //webdsl Annotation
-	type-to-webdsl(err): Int()     -> webdsl |[ Int ]|	    //webdsl Annotation	
-	type-to-webdsl(err): String()  -> webdsl |[ String ]|		//webdsl Annotation
-	type-to-webdsl(err): Float()   -> webdsl |[ Float ]|		//webdsl Annotation
-	type-to-webdsl(err): Datetime()-> webdsl |[ DateTime ]| //webdsl Annotation
-	type-to-webdsl(err): name      -> name                 where is-string
+	type-to-webdsl-srt(err): Boolean() -> webdsl |[ Bool ]|		  //webdsl srt
+	type-to-webdsl-srt(err): Int()     -> webdsl |[ Int ]|	    //webdsl srt	
+	type-to-webdsl-srt(err): String()  -> webdsl |[ String ]|		//webdsl srt
+	type-to-webdsl-srt(err): Float()   -> webdsl |[ Float ]|		//webdsl srt
+	type-to-webdsl-srt(err): Datetime()-> webdsl |[ DateTime ]| //webdsl srt
+	type-to-webdsl-srt(err): name      -> name
+	  where is-string
 
-rules // webdsl types
+rules // types of expressions and names (uses type and multiplicity)
 	
-	webdsl-type(err): name -> <webdsl-type(err|ty, mu)>
-		with
-			ty := <_get-type>name;
-			mu := <get-multiplicity>name
+	expr-to-webdsl-srt(err) = name-to-webdsl-srt(err)
 	
-	webdsl-type(err|ty, mu) = where(!mu;upper-one) ;!ty;type-to-webdsl(err);?srt1;!webdsl |[ srt1   ]| //webdsl Annotation
-	webdsl-type(err|ty, mu) = where(!mu;upper-many);!ty;type-to-webdsl(err);?srt1;!webdsl |[ [srt1] ]| //webdsl Annotation
+	name-to-webdsl-srt(err): name -> result
+	  with
+	    srt1 := <_get-type;type-to-webdsl-srt(err)>name
+	  with
+  	  if <get-multiplicity;upper-one>name then
+      result := webdsl |[ //webdsl srt
+        srt1
+      ]|
+    else
+      result := webdsl |[ //webdsl srt
+        [srt1]
+      ]|
+	  end
 
-rules
+rules // pritives as strings (not literal string in target language)
 
-	type-as-string: String()	-> "String"
-  type-as-string: Int()		  -> "Integer"
-  type-as-string: Boolean() -> "Boolean"
-  type-as-string: Float()   -> "Float"
-  type-as-string: Datetime()-> "DateTime"
-  type-as-string: _ -> <id>
+	type-to-string-webdsl: String()	  -> "String"
+  type-to-string-webdsl: Int()		  -> "Integer"
+  type-to-string-webdsl: Boolean()  -> "Boolean"
+  type-to-string-webdsl: Float()    -> "Float"
+  type-to-string-webdsl: Datetime() -> "DateTime"
+  type-to-string-webdsl: name       -> name
   	where is-string
-
-rules

@@ -3,10 +3,6 @@ module generating/java/data
 imports // constructors
 
 	java/Java
-	signatures/Data-sig
-	signatures/Expressions-sig
-	signatures/Model-sig
-	signatures/Modules-sig
 
 imports // functions
 
@@ -22,13 +18,13 @@ rules
  
   data-modulename-to-java-stms(err): moduleName -> result
     with
-      eiNames  := <modulename-get-entityinstancenames>moduleName;
-      result1* := < map(entityinstancename-to-java-stm(err))>eiNames;
-      result2* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
+      eiNames            := <modulename-get-entityinstancenames>moduleName;
+      result-newObjects* := < map(entityinstancename-to-java-stm(err))>eiNames;
+      result-membervals* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
     with
       result := bstm* |[
-        ~result1*
-        ~result2*
+        ~result-newObjects*
+        ~result-membervals*
       ]|
 
 rules
@@ -43,16 +39,16 @@ rules
 
   entityinstancename-to-java-stms2(err): x_eiName -> result
     with
-      result1* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
-      result2* := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result3* := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result4* := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
+      result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
+      result-relations*  := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
     with
       result := bstm* |[
-        ~result1*
-        ~result2*
-        ~result3*
-        ~result4*
+        ~result-attributes*
+        ~result-relations*
+        ~result-roles*
+        ~result-inverses*
       ]|
 
 rules
