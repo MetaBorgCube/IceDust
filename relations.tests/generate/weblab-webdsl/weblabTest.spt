@@ -5,7 +5,6 @@ language Relations
 setup Common [[
 
 module weblabTest
-
 model
 
   entity Student {
@@ -99,29 +98,29 @@ model
     noValue : Int?
   }
   
-  relation StudentAssignment.whole ? <-> * StudentAssignment.parts
+  relation StudentAssignment.whole ? <-> * StudentAssignment.parts {}
   
-  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment
+  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment {}
 
-  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment
+  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment {}
   
-  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments
+  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments {}
 
 data
 
   compiler : Course {
     name = "Compiler Construction"
     student =
-      < enA : Enrollment { } >
-      alice : Student {
+      < enA { } >
+      alice {
         name = "Alice"
       },
-      < enB : Enrollment { } >
-      bob : Student {
+      < enB { } >
+      bob {
         name = "Bob"
       },
-      < enC : Enrollment {  } >
-      charlie : Student {
+      < enC {  } >
+      charlie {
         name = "Charlie"
       }
     assignment = 
@@ -130,25 +129,25 @@ data
         parts =
           exam       { name="exam"       gradeWeight=2 gradeMinimum=60
             student =
-              <sa3:Submission{grade=60 }>alice,
-              <sb3:Submission{grade=100}>bob,
-              <sc3:Submission{grade=98 }>charlie
+              <sa3{grade=60 }>alice,
+              <sb3{grade=100}>bob,
+              <sc3{grade=98 }>charlie
             studentAssignments = aExam, bExam, cExam
           },
           practical  { name="practical"  gradeWeight=1 gradeMinimum=60
             parts =
               practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7
                 student =
-                  <sa1:Submission{grade=50  date=7 }>alice,
-                  <sb1:Submission{grade=50  date=7 }>bob,
-                  <sc1:Submission{grade=88  date=7 }>charlie
+                  <sa1{grade=50  date=7 }>alice,
+                  <sb1{grade=50  date=7 }>bob,
+                  <sc1{grade=88  date=7 }>charlie
                 studentAssignments = aPractA, bPractA, cPractA
               },
               practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20
                 student =
-                  <sa2:Submission{grade=90  date=13 }>alice,
-                  <sb2:Submission{grade=60  date=10 }>bob,
-                  <sc2:Submission{grade=76  date=15 }>charlie
+                  <sa2{grade=90  date=13 }>alice,
+                  <sb2{grade=60  date=10 }>bob,
+                  <sc2{grade=76  date=15 }>charlie
                 studentAssignments = aPractB, bPractB, cPractB
               }
             studentAssignments = aPract, bPract, cPract

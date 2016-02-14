@@ -20,8 +20,8 @@ data
 
   me : User {
     post =
-      p1 : Post {title = "First post"},
-      p2 : Post {title = "Second post" body = "Some text"}
+      p1 {title = "First post"},
+      p2 {title = "Second post" body = "Some text"}
   }
 
 execute

@@ -21,7 +21,7 @@ data
   man : Person {
     name = "Bob"
     wife =
-      < theMarriage : Marriage { } >
+      < theMarriage { } >
       woman {
         name = "Alice"
       }

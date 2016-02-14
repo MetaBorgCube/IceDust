@@ -14,6 +14,12 @@ context-free syntax   // entity instances
       <{MemberValue "\n"}*>
     }
   >
+  
+  RelationInstance.RelationInstance = <
+    \< <ID><EntityInstanceType?> {
+      <{MemberValue "\n"}*>
+    } \>
+  >
 
   EntityInstanceType = < : <EntityRef>>
 
@@ -33,7 +39,7 @@ context-free syntax   // entity instances
   EntityInstanceValue = EntityInstanceRef
   EntityInstanceValue = EntityInstance
   
-  RelationInstance.RelationInstance = [<[EntityInstanceValue]> ]
+//  RelationInstance.RelationInstance = [<[EntityInstanceValue]> ]
   
   AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  

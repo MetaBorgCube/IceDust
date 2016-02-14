@@ -26,15 +26,15 @@ data
   math : Course {
     name="Mathematics"
     student =
-      < enrollmentAlice : Enrollment { grade = 9.0 } >
+      < enrollmentAlice { grade = 9.0 } >
       alice {
         name = "Alice"
       },
-      < enrollmentBob : Enrollment { grade = 5.0 } >
+      < enrollmentBob { grade = 5.0 } >
       bob {
         name = "Bob"
       },
-      < enrollmentCharlie : Enrollment {  } >
+      < enrollmentCharlie {  } >
       charlie {
         name = "Charlie"
       }

@@ -13,8 +13,8 @@ data
 
   root : Node {
     children = 
-      n1 : Node {value=2},
-      n2 : Node {value=4}
+      n1 {value=2},
+      n2 {value=4}
   }
 
 execute

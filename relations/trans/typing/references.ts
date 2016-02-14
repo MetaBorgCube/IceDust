@@ -70,6 +70,9 @@ type rules // specific references
   MemberRef(m) has ordering m-or
   where definition of m has ordering m-or
   
+  MemberRef(m) has rel-ty r-ty
+  where definition of m has rel-ty r-ty
+  
   EntityInstanceRef(e) : e-ty
   where definition of e : e-ty
   

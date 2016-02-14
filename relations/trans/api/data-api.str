@@ -61,12 +61,13 @@ rules // manipulate
 rules // representations    
   
   entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members) -> EntityInstanceRef(ei)
+  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
 
 rules
 
   membervalue-getall-einames = collect-all(eiwrefnames)
 
   eirefname: EntityInstanceRef(name) -> name
-  eiwrefnames: EntityInstanceWrapper(RelationInstance(EntityInstanceRef(relname)), EntityInstanceRef(name)) -> (relname,name)
+  eiwrefnames: EntityInstanceWrapper(EntityInstanceRef(relname), EntityInstanceRef(name)) -> (relname,name)
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
   

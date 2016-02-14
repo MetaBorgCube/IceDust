@@ -69,4 +69,34 @@ test error on omitting required attribute[[
     }
 ]] 1 error
 
+test infer enitity instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <rel { } >
+        [[x1]] {i=4}
+    }
+]] run get-type to "X"{_}
+
+test infer relation instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <[[rel]] { } >
+        x1 {i=4}
+    }
+]] run get-type to "XYRelation"{_}
+
 //TODO: add testcases for relations

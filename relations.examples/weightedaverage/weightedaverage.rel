@@ -27,18 +27,18 @@ data
 
   a3 : AvgNode {
     children = 
-      a1 : AvgNode {
+      a1 {
         weight = 10
         leafChildren =
-          v1 : ValNode {value=100 weight=2},
-          v2 : ValNode {value=500 weight=3}
+          v1 {value=100 weight=2},
+          v2 {value=500 weight=3}
       },
-      a2 : AvgNode {
+      a2 {
         weight = 15
         leafChildren =
-          v3 : ValNode {value=228 weight=1},
-          v4 : ValNode {value=332 weight=1},
-          v5 : ValNode {value=376 weight=1}
+          v3 {value=228 weight=1},
+          v4 {value=332 weight=1},
+          v5 {value=376 weight=1}
       }
       
   }
