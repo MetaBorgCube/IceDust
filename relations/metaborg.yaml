@@ -1,0 +1,39 @@
+---
+compileDependencies:
+- "org.metaborg:org.metaborg.meta.lang.nabl:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.template:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.ts:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lib.analysis:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.esv:2.0.0-SNAPSHOT"
+runtimeDependencies:
+- "org.metaborg:org.metaborg.meta.lang.nabl:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.template:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.ts:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lib.analysis:2.0.0-SNAPSHOT"
+- "org.metaborg:org.metaborg.meta.lang.esv:2.0.0-SNAPSHOT"
+pardonedLanguages:
+- "EditorService"
+- "Stratego-Sugar"
+- "SDF"
+- "TypeSystemLanguage"
+- "NameBindingLanguage"
+name: "Relations"
+format: "ctree"
+language:
+  stratego:
+    args:
+    - "-la"
+    - "stratego-lib"
+    - "-la"
+    - "stratego-sglr"
+    - "-la"
+    - "stratego-gpp"
+    - "-la"
+    - "stratego-xtc"
+    - "-la"
+    - "stratego-aterm"
+    - "-la"
+    - "stratego-sdf"
+    - "-la"
+    - "strc"
+id: "org.metaborg:relations:0.3.1-SNAPSHOT"
