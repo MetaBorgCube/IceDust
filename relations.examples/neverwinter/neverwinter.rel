@@ -483,14 +483,14 @@ data
       helm {
         item = elementalDragonflightAssaultCap
         enchantments =
-          e1 {
+          {
             item = greaterDragonsHoardEnchantment
           },
-          reinforce1 {
+          {
             item = majorCriticalStrikeArmorKit
           },
-          setBonus1 {
-            item = dummyItem2 {
+          {
+            item = {
               name = "Dragon Flight Set Bonus"
               itemLevel = 0
               maximumHitPoints = 2000
@@ -501,24 +501,24 @@ data
       chest {
         item = elementalDragonflightRaidRobes
         enchantments =
-          e2 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           },
-          enhancement1 {
+          {
             item = lesserSoulforgedEnchantment
           },
-          reinforce2 {
+          {
             item = majorCriticalStrikeArmorKit
           }
       },
       arms {
         item = elementalDragonflightRaidArmlets
         enchantments =
-          e3 {
+          {
             item = greaterDragonsHoardEnchantment
           },
-          reinforce3 {
+          {
             item = majorCriticalStrikeArmorKit
           }
       },
@@ -526,19 +526,19 @@ data
         item = twistedSkulls
         rank = 60
         enchantments =
-          e4 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          e5 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          enhancement2 {
+          {
             item = perfectVorpalEnchantment
           },
-          setBonus2 {
-            item = dummyItem3 {
+          {
+            item = {
               name = "Twisted Set Bonus"
               itemLevel = 0
               power = 2080   // initial 13 offensive stacks of 160
@@ -550,16 +550,16 @@ data
         item = twistedTalisman
         rank = 60
         enchantments =
-          e6 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          e7 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           },
-          artifactStatIncrease {
-            item = dummyItem {
+          {
+            item = {
               name = "Artifact Stat Increase"
               itemLevel = 0
               combatAdvantageBonus = 366
@@ -569,10 +569,10 @@ data
       boots {
         item = elementalDragonflightRaidShoes
         enchantments =
-          e8 {
+          {
             item = dragonsHoardEnchantment
           },
-          reinforce4 {
+          {
             item = majorCriticalStrikeArmorKit
           }
       },
@@ -580,44 +580,44 @@ data
         item = lostmauthsHoardNecklace
         rank = 60
         enchantments =
-          e9 {
+          {
             item = dragonsHoardEnchantment
           },
-          e10 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          reinforce5 {
+          {
             item = majorActionPointGainJewel
           }
       },
       ring1 {
         item = personalizedAdamantRingofPiercing
         enchantments =
-          e11 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          e12 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           },
-          reinforce6 {
+          {
             item = majorActionPointGainJewel
           }
       },
       ring2 {
         item = personalizedAdamantRingofRecovery
         enchantments =
-          e13 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           },
-          e14 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           },
-          reinforce7 {
+          {
             item = majorActionPointGainJewel
           }
       },
@@ -625,21 +625,21 @@ data
         item = goldenBeltOfPuissance
         rank = 60
         enchantments =
-          e15 {
+          {
             item = dragonsHoardEnchantment
           },
-          e16 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           },
-          reinforce8 {
+          {
             item = majorActionPointGainJewel
           }
       },
       shirt {
         item = gemmedExquisiteElementalShirt
         enchantments =
-          e17 {
+          {
             item = brutalEnchantmentRank12Offense
             rank = 12
           }
@@ -647,7 +647,7 @@ data
       trousers {
         item = gemmedExquisiteElementalPants
         enchantments =
-          e18 {
+          {
             item = savageEnchantmentRank12Defense
             rank = 12
           }

@@ -10,13 +10,13 @@ context-free syntax   // entity instances
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID><EntityInstanceType?> {
+    <ID?><EntityInstanceType?> {
       <{MemberValue "\n"}*>
     }
   >
   
   RelationInstance.RelationInstance = <
-    \< <ID><EntityInstanceType?> {
+    \< <ID?><EntityInstanceType?> {
       <{MemberValue "\n"}*>
     } \>
   >
