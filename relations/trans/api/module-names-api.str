@@ -1,22 +1,24 @@
-module trans/api/module-names-api
+module api/module-names-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/api/_runtime-constructors
-	trans/desugaring/constructors
-  trans/analysis2/constructors
-	trans/naming/names
+	signatures/Model-sig
+	api/_runtime-constructors
+	desugaring/constructors
+  analysis2/constructors
+  names/naming/names
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/model-names-api
-	trans/lib/index
-	trans/lib/origin
-	trans/lib/search
-	trans/lib/string
-	trans/lib/lists-tuples
+	api/_runtime
+	api/model-names-api
+	lib/index
+	lib/origin
+	lib/search
+  lib/string
+  lib/nabl-ext
+	lib/lists-tuples
+  generating/_ir/constructors
 	
 rules // module
 	
@@ -25,16 +27,38 @@ rules // module
 	modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;map(def-to-name); string-sort-anno
 	
 	// string -> [string]
-	modulename-get-attributenames = modulename-get-entitynames;map(entityname-get-attributenames);flatten-list
+	modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
+	
+  modulename-get-attributenames-default-derivation = modulename-get-attributenames;filter(attributename-is-default-derivation)  
 	
 	// string -> [[string]]
 	modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 
+  modulename-get-attributenames-topo-default-derivation = modulename-get-attributenames-topo;map(filter(attributename-is-default-derivation));filter(list-not-empty)
+	
+	modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
+	modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
+	
+	modulename-get-rolenames = modulename-get-entitynames;fmap(entityname-get-rolenames)
+	
+	modulename-get-toposort = index-get-prop(|TopoSort());Hd
+
 	is-modulename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsModule())
 
-rules // helper
+  modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;make-set-ordered ;map(def-to-name); string-sort-anno
 
-	def-to-name: d@Def(uri) -> name{d} with	name := <_nabl-uri-name>uri
+  modulename-get-exprs = index-get-prop(|AST());flatten-list
 
-rules
+  modulename-get-implstr = _get-property(|ImplStrategy())
+  
+  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
+  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
+  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
+
+  modulename-get-uistyle = _get-property(|UIStyle())
+  
+  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
+  modulename-is-crudui = where(modulename-get-uistyle;?CrudUI())
+
+  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
 	

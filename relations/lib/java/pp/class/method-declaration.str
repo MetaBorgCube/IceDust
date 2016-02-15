@@ -1,4 +1,4 @@
-module lib/java/pp/class/method-declaration
+module java/pp/class/method-declaration
 rules
 
   java-to-box:

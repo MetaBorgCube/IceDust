@@ -1,0 +1,48 @@
+module weightedaverage
+
+model
+
+  entity AvgNode {
+    weight : Int ?
+    value  : Int = valueWeightedChildren /. weightChildren <+ 0
+    
+    valueWeighted : Int = (weight<+0) * value
+    
+    valueWeightedChildren : Int = sum( children.valueWeighted ++ leafChildren.valueWeighted )
+    weightChildren        : Int = sum( children.weight        ++ leafChildren.weight        )
+  }
+  
+  entity ValNode {
+    weight : Int
+    value  : Int
+    
+    valueWeighted : Int = weight * value
+  }
+
+  relation AvgNode.parent ? <-> * AvgNode.children {}
+
+  relation ValNode.leafParent 1 <-> * AvgNode.leafChildren {}
+
+data
+
+  a3 : AvgNode {
+    children = 
+      a1 {
+        weight = 10
+        leafChildren =
+          v1 {value=100 weight=2},
+          v2 {value=500 weight=3}
+      },
+      a2 {
+        weight = 15
+        leafChildren =
+          v3 {value=228 weight=1},
+          v4 {value=332 weight=1},
+          v5 {value=376 weight=1}
+      }
+      
+  }
+
+execute
+
+  a3.value

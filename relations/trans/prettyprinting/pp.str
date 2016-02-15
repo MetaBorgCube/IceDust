@@ -2,20 +2,20 @@ module pp
 
 imports // signatures
 
-	src-gen/signatures/Modules-sig
-	trans/desugaring/constructors
+	signatures/Modules-sig
+	desugaring/constructors
 
 imports // functions
 
 	libstratego-gpp
-	src-gen/pp/Common-pp
-	src-gen/pp/Model-pp
-	src-gen/pp/Modules-pp
-	src-gen/pp/Relations-pp
-	src-gen/pp/Data-pp
-	src-gen/pp/Execute-pp
-	src-gen/pp/Expressions-pp
-	src-gen/pp/Types-pp
+	pp/Common-pp
+	pp/Model-pp
+	pp/Modules-pp
+	pp/Relations-pp
+	pp/Data-pp
+	pp/Execute-pp
+	pp/Expressions-pp
+	pp/Types-pp
 
 rules
 	
@@ -43,7 +43,7 @@ rules // needed after desugaring
 			not(None() := x);
 			not(Some(_) := x)
 	
-	prettyprint-Start: ModuleDesugared(a,b,c,d) -> <prettyprint-Start>Module(a,b,c,d)
+	prettyprint-Start: ModuleDesugared(a,b) -> <prettyprint-Start>Module(a,b)
 
 	prettyprint-AttrRef: NaBLHelp(a, _) -> <prettyprint-AttrRef>a
 	prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a

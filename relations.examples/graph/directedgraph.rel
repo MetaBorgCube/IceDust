@@ -1,0 +1,30 @@
+module directedgraph
+
+model
+
+	entity Node {
+	}
+	
+	relation Node.from <-> Node.to {}
+	
+
+
+data
+
+  a : Node {
+    to = b {
+      to = c {
+        to = a
+      }
+    }
+  }
+
+execute
+
+	a
+	b
+	c
+	a.to //must be b
+	a.from //must be c
+	a.to.to //must be c
+	a.to.to.to //must be a

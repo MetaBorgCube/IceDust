@@ -10,7 +10,7 @@ context-free syntax // brackets
 
 context-free syntax // operators
 
-  Exp.MemberAccess       = <<Exp> . <ID>>          {left}
+  Exp.MemberAccess       = <<Exp>.<ID>>            {left}
   Exp.Not                = <not <Exp>>             {right}
   Exp.Not2               = <!<Exp>>                {right}
   
@@ -102,7 +102,7 @@ context-free syntax // literal values
 
 syntax // literal values: use kernel syntax to make sure " abc " is parsed as String(" abc ") instead of String("abc")
 
-	LitVal-CF.String = "\"" STRING-LEX "\""
+	LitVal-CF.LitString = "\"" STRING-LEX "\""
 
 context-free priorities
 

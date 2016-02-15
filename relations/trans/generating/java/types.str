@@ -1,52 +1,52 @@
-module trans/generating/java/types
+module generating/java/types
 
 imports // constructors
 
-  src-gen/signatures/Types-sig
-  src-gen/signatures/Expressions-sig
+  signatures/Types-sig
+  signatures/Expressions-sig
 
 imports // functions
 
-  trans/api/_runtime
-  trans/naming/names
-  trans/naming/_notNaBL
+  api/_runtime
+   names/naming/names
+  naming/_notNaBL
 
 rules // primitives
   
-  type-to-java(err): String()   -> "String"
-  type-to-java(err): Int()      -> "Integer"
-  type-to-java(err): Boolean()  -> "Boolean"
-  type-to-java(err): Float()    -> "Float"
-  type-to-java(err): Datetime() -> "Date"
-  type-to-java(err): NoValue()  -> "NullType"
+  type-to-java-type(err): String()   -> type |[ String ]|
+  type-to-java-type(err): Int()      -> type |[ Integer ]|
+  type-to-java-type(err): Boolean()  -> type |[ Boolean ]|
+  type-to-java-type(err): Float()    -> type |[ Float ]|
+  type-to-java-type(err): Datetime() -> type |[ Date ]|
+  type-to-java-type(err): NoValue()  -> type |[ NullType ]|
+  type-to-java-type(err): name       -> name
+    where is-string
 
-rules // Java-Refs
+rules // types of expressions and names (uses type and multiplicity)
   
-  java-id: String()   -> "String"
-  java-id: Int()      -> "Integer"
-  java-id: Boolean()  -> "Boolean"
-  java-id: Float()    -> "Float"
-  java-id: Datetime() -> "Date"
-  java-id: NoValue()  -> "NullType"
-  java-id: _          -> <id>  where is-string
+  expr-to-java-type(err) = name-to-java-type(err)
+  
+  name-to-java-type(err): name -> result
+    with
+      x_type := <_get-type;type-to-string-java>name
+    with
+      if <get-multiplicity;upper-one>name then
+      result := type |[
+        x_type
+      ]|
+    else
+      result := type |[
+        Collection<x_type>
+      ]|
+    end
 
-rules // Java-Types
+rules // primitives as strings
   
-  java-type: name -> <java-type>(ty, mu)
-    where
-      not(is-tuple)
-    with
-      ty := <_get-type>name;
-      mu := <get-multiplicity>name
-  
-  java-type: (ty, mu) -> type |[x_ty]|
-    where
-      <upper-one>mu
-    with
-      x_ty := <java-id>ty
-
-  java-type: (ty, mu) -> type |[Collection<x_ty>]|
-    where
-      <upper-many>mu
-    with
-      x_ty := <java-id>ty
+  type-to-string-java: String()   -> "String"
+  type-to-string-java: Int()      -> "Integer"
+  type-to-string-java: Boolean()  -> "Boolean"
+  type-to-string-java: Float()    -> "Float"
+  type-to-string-java: Datetime() -> "Date"
+  type-to-string-java: NoValue()  -> "NullType"
+  type-to-string-java: name       -> name
+    where is-string

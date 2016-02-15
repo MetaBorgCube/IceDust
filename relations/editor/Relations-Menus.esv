@@ -7,58 +7,75 @@ module Relations-Menus
 
 menus
   
-  menu: "Syntax"                       (openeditor)
-    
-    action: "Format"                                               = editor-format (realtime) (source)
-    action: "1) Show abstract syntax"                              = debug-show-aterm (realtime)  (source)
-    action: "2) Show desugared-before"                             = debug-show-desugared (realtime)  (source)
-    action: "3) Show analyzed"                                     = debug-show-analyzed-resolved0  (source)
-    action: "3) Show analyzed (unresolved)"                        = debug-show-analyzed 
-    action: "4) Show desugared-after"                              = debug-show-analyzed-resolved 
-    action: "4) Show desugared-after (no def or use anotations)"   = debug-show-analyzed-resolved2 
-    action: "4) Show desugared-after (no anotations)"              = debug-show-desugared2 
-    action: "Debug Origins of 2)"	                                 = debug-show-origin2  (source)
-    action: "Debug Origins of 4)"	                                 = debug-show-origin 
-
-
+  menu: "Syntax" (openeditor)
+  
+    submenu: "1) Abstract Syntax Tree"
+      action: "Show"                              = debug-show-aterm (realtime)  (source)
+      action: "Pretty Print (Format Code)"        = editor-format (realtime) (source)
+    end
+    submenu: "2) Desugared Before Analsys"
+      action: "Show"                              = debug-show-desugared (realtime)  (source)
+      action: "Debug Origins"                     = debug-show-origin2  (source)
+    end
+    submenu: "3) Analyzed Abstract Syntax Tree"
+      action: "Show"                              = debug-show-analyzed-resolved0  (source)
+      action: "Show (tasks unresolved)"           = debug-show-analyzed 
+    end
+    submenu: "4) Desugared After Analsys"
+      action: "Show "                             = debug-show-analyzed-resolved 
+      action: "Show (no def or use anotations)"   = debug-show-analyzed-resolved2 
+      action: "Show (no anotations)"              = debug-show-desugared2 
+      action: "Debug Origins"                     = debug-show-origin 
+    end
 
   menu: "Analysis" 
-    
-    action: "Reset and reanalyze"  = debug-reanalyze   
+    action: "5) Topological Sorting"       = debug-toposort
+		action: "Properties (Selection)"       = debug-properties (openeditor)
+    submenu: "Index" (openeditor) 
+      action: "File"                       = debug-index-selection-partition
+      action: "File (unresolved tasks)"    = debug-index-partition
+      action: "Project "                   = debug-index-project-resolve
+      action: "Project (unresolved tasks)" = debug-index-project 
+      action: "Project (AST)"              = debug-index-project-resolve-ast
+    end
+    submenu: "Index and Tasks" (openeditor)
+      action: "File"                       = debug-partition
+      action: "Project"                    = debug-project
+    end
+    submenu: "Tasks" (openeditor) 
+      action: "Selection"                  = debug-task-selection
+      action: "File"                       = debug-task-partition
+      action: "Project"                    = debug-task-project
+    end
 
-		action: "Show properties (selection)" = debug-properties (openeditor)
-
-    submenu: "Show analysis" (openeditor)
-      action: "Project"            = debug-project
-      action: "Partition"          = debug-partition
-    end
-    
-    submenu: "Show index" (openeditor)
-      action: "Project"            = debug-index-project 
-      action: "Project (resolved)" = debug-index-project-resolve (realtime) 
-      action: "Project (resolved AST)" = debug-index-project-resolve-ast (realtime) 
-      action: "Partition"          = debug-index-partition
-      action: "Partition (resolved)" = debug-index-selection-partition
-    end
-    
-    submenu: "Show tasks" (openeditor) 
-      action: "Project"            = debug-task-project
-      action: "Partition"          = debug-task-partition
-      action: "Selection"          = debug-task-selection
-    end
-    
-    
-  
   menu: "Generation"
-    
-    action: "Generate Java"        = generate-java (openeditor)
-    action: "Compile Java"         = compile-java 
-    action: "Execute Java"         = execute-java
-    action: "Generate WebDSL"      = generate-webdsl (openeditor)
-    action: "Generate WebDSL eager"= generate-webdsl-eager (openeditor)
-    action: "Generate WebDSL eventual"= generate-webdsl-eventual (openeditor)
-    action: "Generate WebDSL eventual no UI" = generate-webdsl-eventual-no-ui (openeditor)
+  
+    submenu: "to Java"
+      submenu: "Calculate On Read"
+        action: "Generate"                      = generate-java (openeditor)
+        action: "Generate and Compile"          = compile-java 
+        action: "Generate, Compile and Execute" = execute-java
+      end
+      submenu: "Calculate On Write"
+        action: "Generate"                      = generate-java-incr (openeditor)
+        action: "Generate and Compile"          = compile-java-incr
+        action: "Generate, Compile and Execute" = execute-java-incr
+      end
+    end
+    submenu: "to WebDSL"
+      submenu: "Calculate On Read"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
+      end
+      submenu: "Calculate On Write"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor)
+      end
+      submenu: "Eventually Consistent"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eventual (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+      end
+    end
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
-		// action: "test-optimized-search" = test-optimized-search (openeditor)

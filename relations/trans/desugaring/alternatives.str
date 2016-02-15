@@ -1,8 +1,8 @@
-module trans/desugaring/alternatives
+module desugaring/alternatives
 
 imports // constructors
 	
-	src-gen/signatures/Expressions-sig
+	signatures/Expressions-sig
 
 rules
 	

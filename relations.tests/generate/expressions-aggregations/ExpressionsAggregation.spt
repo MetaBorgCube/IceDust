@@ -1,0 +1,28 @@
+module generate-expressions-aggregation
+
+language Relations
+
+setup Common [[
+	module ExpressionsAggregation
+	
+	model
+	entity X {
+		noVal : Boolean?
+		val : Int = if(!disj(noVal++noVal)and conj(noVal++noVal)) //disj(no value)=false, conj(no value)=true
+		              max( 2 ++ 5 ++ 3)
+		            else
+		              1
+	}
+	
+	data
+	x : X{}
+	
+	execute
+	x.val
+]]
+
+test Expressions Aggregation generate-java [[ ]] build generate-java-test
+
+test Expressions Aggregation compile-java [[ ]] build compile-java-test
+
+test Expressions Aggregation execute-java [[ ]] build execute-java-test to "5"

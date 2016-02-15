@@ -2,22 +2,22 @@ module _notNaBL
 
 imports // constructors
 
-	src-gen/signatures/Data-sig
-	src-gen/signatures/Execute-sig
-	src-gen/signatures/Expressions-sig
-	src-gen/signatures/Model-sig
-	src-gen/signatures/Types-sig
-	trans/api/constructors
-	trans/api/_runtime-constructors
-	trans/naming/names
+	signatures/Data-sig
+	signatures/Execute-sig
+	signatures/Expressions-sig
+	signatures/Model-sig
+	signatures/Types-sig
+	api/constructors
+	api/_runtime-constructors
+  names/naming/names
 	
 imports // functions
 	
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/model-api
-	trans/lib/string
-	trans/lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
+	api/_runtime
+	api/data-api
+	api/model-api
+	lib/string
+	lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
 
 rules // unresolved references manual messages
 
@@ -26,7 +26,8 @@ rules // unresolved references manual messages
 	unresolved-error: Ref(e) 											-> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
 	unresolved-error: MemberAccess(_, e)					-> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
 	unresolved-error: AttributeRef(e) 						-> (e, [NablNsAttribute()])
-	unresolved-error: RoleRef(e) 									-> (e, [NablNsRole()])
+  unresolved-error: RoleRef(e)                  -> (e, [NablNsRole()])
+  unresolved-error: MemberRef(e)                -> (e, [NablNsAttribute(),NablNsShortcut()])
 	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
 	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
 
@@ -42,6 +43,9 @@ signature constructors
 
 	EiAttr : Term
 	EiRole : Term
+	MemberType : Term
+	Left : Term
+	Right : Term
 	
 rules // check if entities have all the required attributes and roles assigned
 	
@@ -53,23 +57,13 @@ rules // check if entities have all the required attributes and roles assigned
 				(NablProp_multiplicity(), One())
 			],
 			"ei-a1",
-			"ei-a2",
 			"ei-a3",
 			"ei-a4"
-		),
-		ContainsAll(
-			NablNsRole(),
-			[],
-			"ei-r1",
-			"ei-r2",
-			"ei-r3",
-			"ei-r4"
 		)
 	]
 	
 	eval(|f) = where("ei-a1":=f); is-entityinstance
-	eval(|f) = where("ei-a2":=f); entityinstance-get-type
-	eval(|f) = where("ei-a3":=f); entityinstance-get-attrvalues;map(attributevalue-get-attr)
+	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-membername)
 	eval(|f) = where("ei-a4":=f); entityinstance-get-name
 	
 	eval(|f) = where("ei-r1":=f); is-entityinstance
@@ -89,7 +83,20 @@ rules // check if Entity names start with a capital
 		where(is-entity);
 		entity-get-name;
 		if not(first-is-upper) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
-			
+
+rules // check that we do not assign to derived value attributes
+
+  nabl-constraint(|ctx): m -> <fail>
+    where
+     is-membervalue
+    with
+      name          := <membervalue-get-membername>m;
+      name-def-task := <_nabl-create-collectdefs(|ctx)>name;
+      m-der-ty-task := <_get-or-create-property-task(|ctx, NablProp_derivation-type())>name-def-task;
+      match-task    := <nabl-prop-match(|NablProp_derivation-type(), ctx, Eq(), Derivation())>m-der-ty-task;
+      msg           := ["Attribute ", name, " is a derived value."];
+      <_task-create-error-on-success(|ctx, match-task, msg)>name
+
 rules // predicates over multiplcities
 	
 	upper-one: ZeroOrOne() -> <id>
@@ -111,3 +118,9 @@ rules
 	
 	// FIXME: NaBL should have generated this	
   nabl-get-name : Entity(_, a, _) -> a
+  
+rules // disable messages for duplicate This (inside duplicate entities)
+      
+  nabl-check-disable-duplicate(|uri, ns):  name -> name
+    where
+      <eq>(ns, NablNsThis())

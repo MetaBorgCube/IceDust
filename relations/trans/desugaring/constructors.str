@@ -1,7 +1,7 @@
-module trans/desugaring/constructors
+module desugaring/constructors
 	
 signature constructors
 	
-	ModuleDesugared	: ID * ModelDef * DataDef * Executable -> ModuleDesugared
+	ModuleDesugared	: ID * ModuleSection -> ModuleDesugared
 	
 	NaBLHelp : ID * DefUse -> NaBLHelp

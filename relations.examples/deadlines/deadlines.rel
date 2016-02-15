@@ -1,0 +1,28 @@
+module deadlines
+
+model
+
+	entity Deadline{
+		deadline      : Datetime
+		extension     : Datetime
+		submitted     : Datetime?
+		onTime        : Boolean = submitted <= deadline <+ false
+		late          : Boolean = submitted >  deadline <+ false
+		extensionUsed : Float? = (submitted - deadline) as Float / (extension - deadline) as Float
+		hoursEarly    : Int? = (deadline - submitted) /. 3600
+		hoursLate     : Int? = (submitted - deadline) /. 3600
+	}
+
+data
+
+	x1 : Deadline{
+		deadline=2015-1-1 0:00:00
+		extension=2015-1-5 0:00:00
+		submitted=2015-1-4 9:00:00
+	}
+	
+execute
+
+	x1.late
+	x1.hoursLate
+	x1.extensionUsed

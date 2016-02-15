@@ -1,74 +1,40 @@
-module trans/generating/webdsl/expressions-references
+module generating/webdsl/expressions-references
 
 imports // constructors
 
-	lib/webdsl/constructors
-	lib/webdsl/WebDSL
-	src-gen/signatures/Data-sig
-	src-gen/signatures/Expressions-sig	
-	src-gen/signatures/Types-sig	
-	trans/desugaring/constructors
+	webdsl/constructors
+	webdsl/WebDSL
+	signatures/Expressions-sig
 
 imports // functions
 
-	trans/api/_runtime
-	trans/api/model-names-api
-	trans/generating/webdsl/types
-	trans/naming/names
-	trans/naming/_notNaBL
+	api/_runtime
+  api/data-names-api
+	api/model-names-api
+	generating/_ir/model
+	generating/webdsl/types
+  names/naming/names
+	naming/_notNaBL
 
-rules // references : entity instance
+rules // member access
+      
+  expr-to-webdsl-expr(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt.x_getter(e1) ]|
+    with
+      e1       := <expr-to-webdsl-expr(err)>ex1;
+      x_getter := <name-get>x_name;
+      x_srt    := <_get-type>ex1
 
-	to-webdsl(err): EntityInstanceRef(x_name) -> webdsl:e |[ x_name ]|
+rules // direct references
 
-rules // references : attributes, roles and inverses
+  expr-to-webdsl-expr(err): Ref(x_entityName) ->  webdsl:e |[ x_entityName ]|
+    where
+      <is-entityinstancename>x_entityName
 
-	to-webdsl(err): ex1@Ref(x_name) -> webdsl:e |[  x_srt1.x_getter(this)  ]|
-		where
-			<is-attributename+is-rolename+is-inversename>x_name
-		with
-			x_getter := $[get_[x_name]];
-			x_srt1   := <attributename-get-entityname>x_name
-			
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt.x_getter(e1) ]|
-		where
-			<not(is-shortcutname)>x_name
-		with
-			e1       := <to-webdsl(err)>ex1;
-			x_getter := $[get_[x_name]];
-			x_srt    := <_get-type>ex1
-
-rules // references : shortcuts
-
-	to-webdsl(err): Ref(x_name) -> webdsl:e |[ x_srt2.x_getter2(x_srt1.x_getter1(this)) ]|
-		where
-			<is-shortcutname>x_name
-		with
-			x_inverseName := <get-origin-role;get-inverse>x_name;
-			x_roleName    := <get-origin-role2>x_name;
-			x_srt1        := <attributename-get-entityname>x_inverseName;
-			x_getter1     := $[get_[x_inverseName]];
-			x_srt2        := <_get-type>x_inverseName;
-			x_getter2     := $[get_[x_roleName]]
-
-	to-webdsl(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt2.x_getter2(x_srt1.x_getter1(e1)) ]|
-		where
-			<is-shortcutname>x_name
-		with
-			e1 := <to-webdsl(err)>ex1;
-			x_inverseName := <get-origin-role;get-inverse>x_name;
-			x_roleName    := <get-origin-role2>x_name;
-			x_srt1        := <_get-type>ex1;
-			x_getter1     := $[get_[x_inverseName]];
-			x_srt2        := <_get-type>x_inverseName;
-			x_getter2     := $[get_[x_roleName]]
+  expr-to-webdsl-expr(err): ex1@Ref(x_name) -> webdsl:e |[  x_srt1.x_getter(this)  ]|
+    with
+      x_getter := <name-get>x_name;
+      x_srt1   := <attributename-get-entityname>x_name
 
 rules // references : this
 
-	to-webdsl(err): This() -> webdsl:e |[this]|
-
-rules // variables introduced during code generation
-	
-	to-webdsl(err): Ref(x_name) ->  webdsl:e |[ x_name ]|
-		where
-			not(is-attributename+is-rolename+is-inversename+is-shortcutname)
+  expr-to-webdsl-expr(err): This() -> webdsl:e |[this]|

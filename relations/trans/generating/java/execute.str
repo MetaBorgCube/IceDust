@@ -1,46 +1,24 @@
-module trans/generating/java/execute
+module generating/java/execute
 
 imports // constructors
 
-	lib/java/Java
-	src-gen/signatures/Execute-sig
-	src-gen/signatures/Modules-sig
+	java/Java
+	signatures/Execute-sig
+	signatures/Modules-sig
 
 imports // functions
 
-	trans/generating/java/expressions
+	generating/java/expressions
 
 rules
 
-	to-java-executable(err): CallRule(x_name, params) -> result
-  	with
-  		(stms*, exp*) := <to-java-execute-params(err|0)>params
-  	with
-  		result := bstm* |[
-  			{
-  				~stms*
-	  			x_name(~exp*);
-  			}
-  		]|
-  		
-  to-java-execute-params(err|i): [] -> ([],[])
-	to-java-execute-params(err|i): [e|es] -> (<conc>(stms,stmss), [exp|exps])
-		with
-			(stms, exp) := <exp-to-java-stm(err|i)>e;
-			j := <add>(i, <length>stms);
-			(stmss, exps) := <to-java-execute-params(err|j)>es
-
-  to-java-executable(err): exp -> result
-  	where
-  		not(CallRule(_,_) := exp)
-  	with
-  		(stms*, exp') := <exp-to-java-stm(err|0)>exp
-  	with
-  		result := bstm* |[
-  			{
-	  			~stms*
-	  			System.out.println(~exp');
-  			}
-  		]|
-
-	to-java(err): Executable(executes) -> <map(to-java-executable(err));concat>executes
+  execute-expr-to-java-stm(err): exp -> result
+    with
+      (stms*, exp') := <exp-to-java-stm(err|0)>exp
+    with
+      result := java:block-stm |[
+        {
+          ~stms*
+          System.out.println(~exp');
+        }
+      ]|

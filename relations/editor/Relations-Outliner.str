@@ -2,17 +2,17 @@ module editor/Relations-Outliner
 
 imports // constructors
 	
-  src-gen/signatures/Modules-sig
-  src-gen/signatures/Types-sig
-	trans/desugaring/constructors
+  signatures/Modules-sig
+  signatures/Types-sig
+	desugaring/constructors
 
 imports // functions
 	
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/model-api
-	trans/lib/origin
-	trans/desugaring/desugar
+	api/_runtime
+	api/data-api
+	api/model-api
+	lib/origin
+	desugaring/desugar
 
 rules
   

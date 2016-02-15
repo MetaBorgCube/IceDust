@@ -1,30 +1,46 @@
-module trans/api/model-names-api
+module api/model-names-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/api/_runtime-constructors
-	trans/api/constructors
-	trans/desugaring/constructors
-	trans/naming/names
-	trans/analysis2/constructors
+	signatures/Model-sig
+	api/_runtime-constructors
+	api/constructors
+	desugaring/constructors
+  names/naming/names
+  naming/_notNaBL
+	analysis2/constructors
 
 imports // functions
 
-	trans/api/_runtime
-	trans/lib/origin
-	trans/lib/search
-	trans/lib/string
-	trans/lib/index
+	api/_runtime
+	api/module-names-api
+	lib/origin
+	lib/search
+	lib/string
+  lib/index
+  lib/nabl-ext
+  analysis2/path
 
 rules // entity
 
 	is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
 
 	entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
+  entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
 	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
 	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
 	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
+	
+	entityname-get-modulename = nabl-name-parent
+	
+  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
+  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
+  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
+  
+  entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
+  entityname-is-crudui               = where(entityname-get-modulename;modulename-is-crudui)
+	
+	entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
 	
 rules // attributes
 	
@@ -34,10 +50,21 @@ rules // attributes
 	attributename-is-default    = where(get-derivation-type;?DefaultValue())
 	attributename-is-normal     = where(get-derivation-type;?Normal())
 	
-	attributename-get-entityname = _nabl-uri;_nabl-uri-parent;_nabl-uri-name
+	attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
+	attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
+	
+	attributename-get-entityname = nabl-name-parent
 	
 	attributename-get-expr = index-get-prop(|AST());Hd
-	
+
+rules // relations
+
+  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
+  
+  relationname-get-inversename = get-inverse
+  
+  relationname-is-left = where(get-side;?Left())
+
 rules // roles
 	
 	is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
@@ -49,6 +76,30 @@ rules // inverses
 	is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
 
 	inversename-get-rolename = get-origin-role
+
+rules
+
+  name-get-inversename = where(is-relationname);relationname-get-inversename
+  name-get-inversename = where(is-rolename)    ;rolename-get-inversename
+  name-get-inversename = where(is-inversename) ;inversename-get-rolename
+  
+  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
+  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
+  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
+  
+  name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
+  
+  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
+  
+  name-is-to-one             = where(get-multiplicity;upper-one)
+  name-is-to-many            = where(get-multiplicity;upper-many)
+  name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)
+  name-is-to-many-unordered  = where(name-is-to-many; get-ordering;unordered)
+  
+  name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
+  name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
+  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
+  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
 rules // shortcuts
 
@@ -64,6 +115,8 @@ rules // shortcuts
 rules // combined
 	
 	name-get-flowsto-paths = index-get-prop(|FlowsTo())
+	
+	name-get-flowsto-pathexprs = name-get-flowsto-paths;map(path-pathexpr)
 
 rules // helper
 

@@ -1,40 +1,43 @@
-module trans/generating/java/expressions
+module generating/java/expressions
 
 imports // constructors
 
-  lib/java/Java
-  src-gen/signatures/Expressions-sig
+  java/Java
+  signatures/Expressions-sig
 
 imports // functions
 
-  trans/api/_runtime
-  trans/generating/_ir/expressions
-  trans/generating/java/expressions-references
-  trans/generating/java/types
-  trans/lib/lists-tuples
-  trans/lib/string
-  trans/lib/traverse
-  trans/naming/names
+  api/_runtime
+  generating/_ir/expressions
+  generating/java/expressions-references
+  generating/java/types
+  lib/lists-tuples
+  lib/string
+  lib/traverse
+   names/naming/names
 
 rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
   
-  exp-to-java-stm(err|i): e ->
-    (
-      bstm*|[
-        ~args-stms*
-        refty x_var = Expressions.x_methodpostfix(~arg-exps*);
-      ]|,
-      expr |[x_var]|
-    )
-  where
-    lib-call
-  with
-    arg*                    := <get-arguments>e;
-    (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
-    (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
-    refty                   := <java-type>e;
-    x_var                   := $[var[<inc>l]];
-    x_methodpostfix         := <lib-method-name>e
+  exp-to-java-stm(err|i): e -> result
+    where
+      lib-call
+    with
+      arg*                    := <get-arguments>e;
+      (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
+      (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
+      refty                   := <expr-to-java-type(err)>e;
+      x_var                   := $[var[<inc>l]];
+      x_methodpostfix         := <lib-method-name>e
+    with
+      result := (
+        bstm*|[
+          ~args-stms*
+          refty x_var = Expressions.x_methodpostfix(~arg-exps*);
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
 
 rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
 
@@ -45,7 +48,7 @@ rules // (rel-expr, int) -> ((java-stm*, java-expr), int)
 
 rules // literals
   
-  exp-to-java-stm(err|i): String(value)         -> ([], Lit(String([Chars(value)])))
+  exp-to-java-stm(err|i): LitString(value)      -> ([], Lit(String([Chars(value)])))
   exp-to-java-stm(err|i): Int(value)            -> ([], Lit(Deci(value)))
   exp-to-java-stm(err|i): Float(value)          -> ([], Lit(Float($[[value]f])))
   exp-to-java-stm(err|i): True()                -> ([], Lit(True()))
@@ -55,15 +58,15 @@ rules // literals
 
 rules // casts
   
-  exp-to-java-stm(err|i): e@Cast(NoValue(), e1-ty) -> ([], expr |[(x)null]|) with x := <java-id>e1-ty
+  exp-to-java-stm(err|i): e@Cast(NoValue(), e1-ty) -> ([], expr |[(x)null]|) with x := <type-to-string-java>e1-ty
   
   exp-to-java-stm(err|i): e@Cast(e1, e1-ty) -> (stms, exp)
     with
       (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
       j := <add>(i, <length>exp1s*);
-      refty := <java-type>e;
+      refty := <expr-to-java-type(err)>e;
       x_var := $[var[<inc>j]];
-      x_method := $[as[<java-id>e1-ty]]
+      x_method := $[as[<type-to-string-java>e1-ty]]
     with
       stms := bstm*|[
         ~exp1s*

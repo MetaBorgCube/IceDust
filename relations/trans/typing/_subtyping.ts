@@ -7,7 +7,7 @@ imports
   src-gen/signatures/Types-sig
   
   // functions
-  trans/naming/names
+   names/naming/names
 
 relations
 

@@ -1,12 +1,12 @@
-module trans/lib/index
+module lib/index
 
 imports // constructors
 	
-	trans/api/_runtime-constructors
+	api/_runtime-constructors
 
 imports // functions
 
-	trans/api/_runtime
+	api/_runtime
 
 rules
 
@@ -20,4 +20,31 @@ rules
 		where
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
 
+  index-store-def: name{defi@Def(uri)} -> name
+    with
+      <_index-add(|"analysis2")>defi;
+//      <debug>uri;
+//      <debug>defi;
+      uri-nonnique := <_nabl-nonunique-uri>uri;
+//      <debug>uri-nonnique;
+      <new-alias2(|"analysis2", uri-nonnique, uri)>defi
+
+  new-alias2(|source, uri, alias-uri):
+    _ -> alias
+    with
+      alias  := Alias(uri);
+      ialias := InverseAlias(alias-uri);
+      if <not(eq)> (uri, alias-uri) then
+        <_index-add(|alias-uri, source)> alias;
+        <_index-add(|uri, source)> ialias
+      end
+
 rules
+
+  index-store-prop2(|kind, name): val -> val
+    with
+      <_index-add(|val, "compiler-options")>Prop(<_nabl-uri>name, kind)
+
+  clear-index2: a -> a
+    with
+      <_index-clear-source>"compiler-options"

@@ -1,4 +1,4 @@
-module lib/java/pp/type/variable
+module java/pp/type/variable
 rules
 
   java-to-box:

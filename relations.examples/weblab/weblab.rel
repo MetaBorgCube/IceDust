@@ -1,0 +1,205 @@
+module weblab
+
+model
+
+  entity Student {
+    name : String
+    
+    passedCourses : Int = sum(enrollment.pass2)  
+  }
+
+  entity Course {
+    name     : String
+    avgGrade : Int? = avg( enrollment.grade )
+    passPerc : Int? = 100 * sum(enrollment.pass2) /. count(enrollment)
+  }
+
+  relation Enrollment {
+    Course * 
+    Student *
+    
+    name : String = course.name + " " +student.name
+    
+    pass  : Boolean = studentAssignment.pass
+    pass2 : Int     = pass?1:0
+    grade : Int?    = studentAssignment.grade
+  }
+
+  entity Assignment {
+    name :  String
+    
+    gradeMinimum  : Int = 55 (default)
+    gradeWeight   : Int = 1  (default)
+    
+    deadline      : Int? // day since start academic year
+    extension     : Int?
+    extensionDays : Int? = extension - deadline
+    penalty       : Int? // for using the full extension
+  }
+
+  relation Submission {
+    Student * 
+    Assignment * 
+    
+    name : String = student.name + " " + assignment.name
+
+    grade        : Int    // between 10 (min) and 100 (max)
+    date         : Int?
+    extension    : Int? = assignment.extension (default)
+    
+    gradePanelty : Int? = assignment.penalty*lateDays/.assignment.extensionDays
+    gradeReal    : Int? = onTime      ? grade :
+                          onExtension ? grade - gradePanelty :
+                          noValue
+    
+    lateDays     : Int? = date - assignment.deadline
+    
+    onTime       : Boolean = date <= assignment.deadline
+                             <+ 
+                             count(date)==1 || count(assignment.deadline)==0
+
+    onExtension  : Boolean = date <= extension && !onTime
+                             <+
+                             count(date)==1 || count(extension)==0
+    noValue : Int?
+  }
+  
+  relation Course.assignment ? <-> 1 Assignment.course {
+    name : String = course.name + " " + assignment.name
+  }
+  
+  relation Assignment.whole ? <-> * Assignment.parts {
+    name : String = whole.name + " " + parts.name
+  }
+  
+  entity StudentAssignment {
+    name : String? = enrollment.name //+ " " + assignment.name
+    
+    pass            : Boolean = passGrade && passParts
+    
+    passGrade       : Boolean = grade >= assignment.gradeMinimum <+ false
+    passParts       : Boolean = conj( parts.pass ) <+ true 
+    
+    grade           : Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
+    
+    gradeWeighted   : Int? = grade * assignment.gradeWeight
+    
+    gradeSubmission : Int? = submission.gradeReal
+    gradeParts      : Int? = count(parts)==count(parts.grade)
+                             ? sum ( parts.gradeWeighted ) /. 
+                               sum ( assignment.parts.gradeWeight )
+                             : noValue
+    
+    noValue : Int?
+  }
+  
+  relation StudentAssignment.whole ? <-> * StudentAssignment.parts {}
+  
+  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment {}
+
+  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment {}
+  
+  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments {}
+
+data
+
+  compiler : Course {
+    name = "Compiler Construction"
+    student =
+      < enA { } >
+      alice {
+        name = "Alice"
+      },
+      < enB { } >
+      bob {
+        name = "Bob"
+      },
+      < enC {  } >
+      charlie {
+        name = "Charlie"
+      }
+    assignment = 
+      comp {
+        name = "root"
+        parts =
+          exam       { name="exam"       gradeWeight=2 gradeMinimum=60
+            student =
+              <sa3{grade=60 }>alice,
+              <sb3{grade=100}>bob,
+              <sc3{grade=98 }>charlie
+            studentAssignments = aExam, bExam, cExam
+          },
+          practical  { name="practical"  gradeWeight=1 gradeMinimum=60
+            parts =
+              practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7
+                student =
+                  <sa1{grade=50  date=7 }>alice,
+                  <sb1{grade=50  date=7 }>bob,
+                  <sc1{grade=88  date=7 }>charlie
+                studentAssignments = aPractA, bPractA, cPractA
+              },
+              practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20
+                student =
+                  <sa2{grade=90  date=13 }>alice,
+                  <sb2{grade=60  date=10 }>bob,
+                  <sc2{grade=76  date=15 }>charlie
+                studentAssignments = aPractB, bPractB, cPractB
+              }
+            studentAssignments = aPract, bPract, cPract
+          }
+        studentAssignments =
+          aComp {
+            enrollment = enA 
+            parts = 
+              aExam { submission = sa3 },
+              aPract {
+                parts =
+                  aPractA { submission = sa1 },
+                  aPractB { submission = sa2 }
+              }
+          },
+          bComp {
+            enrollment = enB 
+            parts = 
+              bExam { submission = sb3 },
+              bPract {
+                parts =
+                  bPractA { submission = sb1 },
+                  bPractB { submission = sb2 }
+              }
+          },
+          cComp {
+            enrollment = enC 
+            parts = 
+              cExam { submission = sc3 },
+              cPract {
+                parts =
+                  cPractA { submission = sc1 },
+                  cPractB { submission = sc2 }
+              }
+          }
+      }
+  } 
+
+execute
+
+  "Alice's compiler pass & grade:"
+  enA.pass
+  enA.grade
+  
+  ""
+  "Bob's compiler pass & grade:"
+  enB.pass
+  enB.grade
+
+  ""
+  "Charlie's compiler pass & grade:"
+  enC.pass
+  enC.grade
+
+  ""
+  "The average of all student grades:"
+  compiler.avgGrade
+  "Pass percentage:"
+  compiler.passPerc
+    

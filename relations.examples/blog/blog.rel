@@ -1,0 +1,33 @@
+module blog
+
+model
+
+  entity User {
+    name : String  = "my name" 
+  }
+
+  entity Post {
+    title : String  
+    body : String  = title (default)
+  }
+
+  relation Author {
+    User * 
+    Post 1 
+  }
+
+data
+
+  me : User {
+    post =
+      p1 {title = "First post"},
+      p2 {title = "Second post" body = "Some text"}
+  }
+
+execute
+
+  me.author // give Author objects for me
+
+  me.author.post // give Posts that are authored by me
+
+  me.author.post.title // my blogpost titles

@@ -1,17 +1,20 @@
-module trans/_editor/debug
+module _editor/debug
 
 imports // constructors
 
-	trans/api/_runtime-constructors
+	api/_runtime-constructors
 	
 imports // functions
 
-	trans/_editor/analysis
-	trans/api/_generated
-	trans/api/_runtime
-	trans/desugaring/desugar
-	trans/lib/search
-	trans/prettyprinting/pp
+	_editor/analysis
+	api/_generated
+	api/_runtime
+	api/module-api
+	desugaring/desugar
+  lib/files
+  lib/index
+	lib/search
+	prettyprinting/pp
 	
 rules // Debugging builders
 	
@@ -40,12 +43,18 @@ rules // Debugging builders
 	debug-show-analyzed-resolved0:
 		(selected, position, ast, path, project-path) -> (filename, result)
 			where
-	    	language := <_language>;
-	    	_index-setup(|language, project-path);
-	    	_task-setup(|project-path)
+	    	language := <_language>
 			with
-				ast' := <desugar-before-analysis> ast;
-				(analyzed-ast, error*, warning*, note*) := <_analysis-single-default(id, id, pp-message-top|<_language>)>(ast', path, project-path)
+			  partition-path := <eclipse-path>path;
+			  <_analyze-all(desugar-before-analysis, id, pp-message-top|language)>[File(partition-path, ast, -1.0)] =>
+  				Result(
+            post-trans-result*
+          , messages-only-result*
+          , affected-source*
+          , debug-result
+          , TimeResult(parse-time, pre-trans-time, collect-time, evaluate-time, post-trans-time, -1.0, -1.0)
+          );
+        [FileResult(source, initial-ast, analyzed-ast, error*, warning*, note*)] := post-trans-result*
 			with
 				filename := <guarantee-extension(|"analyzed.aterm")> path;
 				ast''		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>analyzed-ast;
@@ -55,9 +64,10 @@ rules // Debugging builders
 	debug-show-analyzed-resolved:
 		(selected, position, ast, path, project-path) -> (filename, result)
 			where
-	    	language := <_language>;
-	    	_index-setup(|language, project-path);
-	    	_task-setup(|project-path)
+	    	language := <_language>
+//	    	;
+//	    	_index-setup(|language, project-path);
+//	    	_task-setup(|project-path)
 			with
 				filename := <guarantee-extension(|"desugared.after.aterm")> path;
 				ast'		 := <bottomup(try(id{bottomup(try(_give-task-results))}))>ast;
@@ -73,8 +83,8 @@ rules // Debugging builders
 		(target, position, ast, path, project-path) -> (filename, result)
 			where
 	    	language := <_language>;
-	    	_index-setup(|language, project-path);
-	    	_task-setup(|project-path);
+//	    	_index-setup(|language, project-path);
+//	    	_task-setup(|project-path);
 				filename := <guarantee-extension(|"properties.txt")> path;
 				result:=
 					<map(\(a,b)->$[[a]: [b]]\);try(separate-by(|"\n");concat-strings)>
@@ -116,8 +126,8 @@ rules // Debugging builders
     	(_, _, _, path, project-path) -> (filename, result)
 	    with
 	    	language := <_language>;
-	    	_index-setup(|language, project-path);
-	    	_task-setup(|project-path);
+//	    	_index-setup(|language, project-path);
+//	    	_task-setup(|project-path);
 	    	result-ast := <_index-get-all-partitions; map(\f -> (f, <_index-get-all-in-partition> f)\)>;
 	    	result-ast' := <_beautify-indices> result-ast;
 			  filename := $[[project-path]/[<dirname> path]/index.project.aterm];
@@ -139,17 +149,28 @@ rules // Debugging builders
 	debug-partition =
 		_analysis-debug-partition(|<_language>)
 		
-	debug-reanalyze = 
-		_analysis-debug-reanalyze(|<_language>)
-		
+//	debug-reanalyze = 
+//		_analysis-debug-reanalyze(|<_language>)
+
+rules
+
+  debug-toposort: (target, position, ast, path, project-path) -> None()
+    with
+      <module-get-modulename;modulename-get-toposort;map(map(debug-name))>ast
+
+  debug-name: name -> name
+    with
+      <debug>$[[<index-get-prop(|TopoSort());Hd>name]: [<attributename-get-entityname>name].[name]]
+
 rules // test builders
 
   test-optimized-search:
     (selected, position, ast, path, project-path) -> (filename, result)
 	    with
-	    	language := <_language>;
-	    	_index-setup(|language, project-path);
-	    	_task-setup(|project-path)
+	    	language := <_language>
+//	    	;
+//	    	_index-setup(|language, project-path);
+//	    	_task-setup(|project-path)
 		  with
 	    	ext      := <get-extension> path;
 	      filename := <guarantee-extension(|"search.aterm")> path;

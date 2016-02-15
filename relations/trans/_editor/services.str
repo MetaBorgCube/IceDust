@@ -1,23 +1,23 @@
-module trans/_editor/services
+module _editor/services
 
 imports // constructors
 
-	src-gen/signatures/Expressions-sig
-	src-gen/signatures/Types-sig
-	trans/analysis2/constructors
-	trans/api/_runtime-constructors
-	trans/desugaring/constructors
+	signatures/Expressions-sig
+	signatures/Types-sig
+	analysis2/constructors
+	api/_runtime-constructors
+	desugaring/constructors
 	
 imports // functions
 
-	trans/api/_generated
-	// trans/analysis/rules
-	trans/analysis2/path
-	trans/api/_runtime
-	trans/lib/index
-	trans/lib/string
-	trans/prettyprinting/pp
-	trans/naming/names
+	api/_generated
+	// analysis/rules
+	analysis2/path
+	api/_runtime
+	lib/index
+	lib/string
+	prettyprinting/pp
+  names/naming/names
 	
 rules // Editor services
 	
@@ -26,7 +26,7 @@ rules // Editor services
 		(node, position, ast, path, project-path) -> definition
 		where
 			node' := <try(resolve-child)>node;
-			definition := <_analysis-resolve(|<_language>, project-path)> node'
+			definition := <_analysis-resolve(|<_language>,path)> node'
 	
 	resolve-child: NaBLHelp(name, _) -> name
 
@@ -35,6 +35,8 @@ rules // Editor services
 	// http://yellowgrass.org/issue/Spoofax/84
 	editor-hover:
 		x@(target, position, ast, path, project-path) -> $[[warning][hoverinfo]]
+		where
+		  <not(hover-parent-for)>target
 		with
 			if Def(_) := target then
 				warning := "<b>Warning showing hover info of Definition instead of Use</b><br/><br/>"
@@ -49,9 +51,10 @@ rules // Editor services
 	editor-properties:
 		x@(target, position, ast, path, project-path) -> properties
 		where
-    	language := <_language>;
-    	_index-setup(|language, project-path);
-    	_task-setup(|project-path)
+    	language := <_language>
+//    	;
+//    	_index-setup(|language, project-path);
+//    	_task-setup(|project-path)
 		with
 			target' := <editor-service-target>x;
 			properties :=	<editor-service-properties(|project-path);bottomup(try(string-replace(|"\n", "")))>target'
@@ -73,21 +76,12 @@ rules // Editor services
    
 rules // target of editor services
 
-	editor-service-target: (target, position, ast, path, project-path) -> target''
+	editor-service-target: (target, position, ast, path, project-path) -> target'
 		with
 			if Some(a) := target then
 				target' := a
 			else
 				target' := target
-			end;
-			if <hover-parent-for>target' then
-				if [_] := position then // if first level child parent-at-position fails
-					target'' := ast
-				else
-					target'' := <_parent-at-position(|position)>ast
-				end
-			else
-				target'' := target'
 			end
 
 	hover-parent-for: a -> a // for constructors with no children hover parent

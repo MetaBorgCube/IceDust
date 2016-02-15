@@ -1,0 +1,102 @@
+module types-data
+
+language Relations
+
+setup Common [[
+	module test
+]]
+
+
+test error on omitting required attribute [[
+	model
+	entity X{
+		i : Int
+	}
+	data
+	[[x]] : X {}
+]] 1 error
+
+test error on omitting required attribute multiple [[
+	model
+	entity X{
+		i : Int
+		j : String
+	}
+	data
+	[[x]] : X {}
+]] 1 errors
+
+test no error on omitting optional attribute[[
+	model
+	entity X{
+		i : Int ?
+	}
+	data
+	x : X {}
+]] 0 errors
+
+test no error on omitting derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {}
+]] 0 errors
+
+test error on supplying derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {
+    [[i]] = 5900
+  }
+]] 1 error
+
+test error on omitting required attribute[[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {}
+    }
+]] 1 error
+
+test infer enitity instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <rel { } >
+        [[x1]] {i=4}
+    }
+]] run get-type to "X"{_}
+
+test infer relation instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <[[rel]] { } >
+        x1 {i=4}
+    }
+]] run get-type to "XYRelation"{_}
+
+//TODO: add testcases for relations

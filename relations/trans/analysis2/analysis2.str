@@ -1,32 +1,36 @@
-module trans/analysis2/analysis2
+module analysis2/analysis2
 
 imports // constructors
 	
-	src-gen/signatures/Expressions-sig
-	trans/api/_runtime-constructors
-	trans/analysis2/constructors
+	signatures/Expressions-sig
+	api/_runtime-constructors
+	analysis2/constructors
 
 imports // functions
 
-	trans/analysis2/path
-	trans/api/_runtime
-	trans/api/data-api
-	trans/api/model-api
-	trans/api/model-names-api
-	trans/api/module-api
-	trans/api/module-names-api
-	trans/lib/nabl-ext
-	trans/lib/graph
-	trans/lib/index
-	trans/lib/lists-tuples
+	analysis2/path
+	api/_runtime
+	api/data-api
+  api/execute-api
+  api/data-api
+  api/data-names-api
+  api/model-api
+	api/model-names-api
+	api/module-api
+	api/module-names-api
+	lib/nabl-ext
+	lib/graph
+	lib/index
+	lib/lists-tuples
+	names/naming/names
 
 rules
-	
+
 	analysis2 =
 		analysis2-clear-index;
 		store-expressions;
-		depends-on-and-flows-to;
-		flows-toposort
+		depends-on-and-flows-to-2;
+    flows-toposort-2
 
 rules
 
@@ -38,55 +42,102 @@ rules
 	
 	store-expressions: ast -> ast
 		with
-			attrs      := <collect(is-attr);filter(where(attr-get-derivation))>ast;
+			attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
 			<map(attr-store-expr)>attrs;
-			einsts     := <collect(is-entityinstance)>ast;
-			<map(einst-store-expr)>einsts
+      memvs := <collect-all(is-membervalue)>ast;
+      <map(membervalue-store-expr)>memvs;
+      <module-store-expr>ast
 	
 	attr-store-expr: attr -> attr
 		with
 			derivation := <attr-get-derivation>attr;
 			attrName   := <attr-get-name>attr;
 			<index-store-prop(|AST(), attrName)>derivation
-	
-	einst-store-expr: einst -> einst
-		with
-			exprs := <concat(entityinstance-get-rolevalues,entityinstance-get-attrvalues)>einst;
-			name  := <entityinstance-get-name>einst;
-			<index-store-prop(|AST(), name)>exprs
+			
+  membervalue-store-expr: memv -> memv
+    with
+      expr := <membervalue-get-expr>memv;
+      expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
+      name := <membervalue-get-name>memv;
+      <index-store-prop(|AST(), name)>expr'
+    with
+      if <membervaluename-is-relation>name then
+        eiNames := <membervalue-getall-einames;map(Snd)>expr';
+        <map(index-store-prop(|Rel(), name))>eiNames
+      end
+    with
+      if <membervaluename-is-shortcut>name then
+        invName := <get-member-origin;shortcutname-get-inversename>name;
+        invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
+        <index-store-def>invvalueName;
+        <index-store-prop(|NablProp_member-origin(), invvalueName)>invName;
+        eiNamesTuples := <membervalue-getall-einames>expr';
+        roleName := <get-member-origin;shortcutname-get-rolename>name;
+        <map(store-shortcut-helper(|invvalueName, invName, roleName))>eiNamesTuples
+      end
+      
+  store-shortcut-helper(|invvalueName, invName, roleName): (riName, eiName2) -> None()
+    with
+      eiName       := <membervaluename-get-entityinstancename>invvalueName;
+      relationName := <attributename-get-entityname>roleName;
+      if None() := riName then
+        riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
+        riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
+        <index-store-def>riName';
+        <index-store-prop(|Type(), riName')><get-type>invName
+      else
+        riName' := riName
+      end;
+      <index-store-prop(|Rel(), invvalueName)>riName';
+      rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
+      <index-store-def>rolevalueName;
+      <index-store-prop(|NablProp_member-origin(), rolevalueName)>roleName;
+      <index-store-prop(|Rel(), rolevalueName)>eiName2
+  
+  module-store-expr: mod -> mod
+    with
+      exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
+      name  := <module-get-modulename>mod;
+      <index-store-prop(|AST(), name)>exprs
 
 rules
-	
-	depends-on-and-flows-to: ast -> ast
-		with
-			attrs      := <collect(is-attr)>ast;
-			paths      := <map(attr-depends-on);concat>attrs;
-			<map(path-store-on-origin(|DependsOn()))>paths;
-			invPaths   := <map(path-reverse;path-all-tails);concat>paths;
-			<map(path-store-on-origin(|FlowsTo()))>invPaths
 
-	attr-depends-on: attr -> []
-		where
-			not(attr-get-derivation)
-
-	attr-depends-on: attr -> paths
-		where
-			derivation := <attr-get-derivation>attr
-		with
-			attrName   := <attr-get-name>attr;
-			pathExprs  := <collect(?MemberAccess(_,_)<+?Ref(_))>derivation;
-			paths      := <map(expr-to-path(|attrName));filter(path-isvalid);map(path-no-shortcuts);give-all-tasks-results-anno;replace-use-with-defs-anno>pathExprs
-
+  depends-on-and-flows-to-2: ast -> ast
+    with
+      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
+      <map(attr-depends-on-and-flows-to)>attrs
+      
+  attr-depends-on-and-flows-to: attr -> attr
+    with
+      attrName          := <attr-get-name>attr;
+      expr              := <attr-get-derivation>attr;
+      pathexprs         := <expr-pathexprs>expr;
+      pathexprs-no-this := <map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
+      dependencies      := <map(path(|attrName))>all-pathexprs;
+      dataflow          := <map(path-inverse)>dependencies;
+      <map(path-store-on-origin)>dependencies;
+      <map(path-store-on-origin)>dataflow
+      
 rules
-	
-	flows-toposort: ast -> ast
-		with
-			moduleName  := <module-get-modulename>ast;
-			entityNames := <modulename-get-entitynames>moduleName;
-			graphNames  := <map(concat(entityname-get-attributenames,entityname-get-rolenames));concat>entityNames;
-			toposort    := <graph-topological-sort(index-get-prop(|FlowsTo());map(path-get-last))>graphNames;
-			<index-store-prop(|TopoSort(), moduleName)>toposort;
-			numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
-			<map(index-store-prop(|TopoSort()))>numbers
-	
-rules
+
+  flows-toposort-2: ast -> ast
+    with
+      moduleName      := <module-get-modulename>ast;
+      attributeNames* := <modulename-get-attributenames>moduleName;
+      relationNames*  := <modulename-get-relationnames-left>moduleName;
+      roleNames*      := <modulename-get-rolenames>moduleName;
+      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
+      <index-store-prop(|TopoSort(), moduleName)>toposort;
+      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+      <map(index-store-prop(|TopoSort()))>numbers
+
+  toposort-edge: name -> [names*, inv-names*]
+    with
+      names* := <index-get-prop(|FlowsTo());map(path-last)>name;
+      if inv-name := <name-get-inversename>name then
+        inv-names* := <index-get-prop(|FlowsTo());map(path-last)>inv-name
+      else
+        inv-names* := []
+      end

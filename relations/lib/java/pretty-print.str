@@ -7,7 +7,7 @@ module pretty-print
 
 imports
   
-  lib/java/pp/main
+  java/pp/main
 
 strategies
 

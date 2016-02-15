@@ -1,8 +1,8 @@
-module trans/lib/files
+module files
 
 imports
 
-	trans/api/_generated
+	api/_generated
 
 rules // builders
 	
@@ -39,6 +39,13 @@ rules
 			<fputs> (content, fileDescriptor);
 			<fclose> fileDescriptor;
 			<_refresh-workspace-file> fileName
+			
+  write-file: (fileName, content) -> (fileName, content)
+    where
+      <not(fopen)> (fileName, "w")
+    with
+      <debug> $[write-file failed, could not open file: [fileName]];
+      fail
 
 rules
 
@@ -98,7 +105,30 @@ rules
 			<file-exists> source
 		with
 			<copy-file> (source, target)
+			
+  copy-dir: (source, target) -> None()
+    where
+      <not(isdir <+ file-exists)> source
+    with
+      <debug> $[copy-dir failed, source is not a file or folder. source: [source]];
+      fail
 
 	copy-dir(|source, target): file -> None()
 		with
 			<copy-dir>($[[source]/[file]], $[[target]/[file]])
+
+rules
+
+  component-path = with(prim("language_components");filter(language-component-artifactId(|"relations"));Hd;?(_,_,_,path));!path
+  
+  language-component-artifactId(|is-artifactId): (groupId, artifactId, version, location) -> <id>
+    where
+      <eq>(artifactId, is-artifactId)
+
+rules
+
+  eclipse-path: file-path -> result
+    with
+      project-path := <_project-path>;
+      project      := <base-filename>project-path;
+      result       := $[eclipse:///[project]/[file-path]]

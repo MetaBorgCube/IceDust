@@ -1,16 +1,16 @@
-module trans/typing/references-manual
+module typing/references-manual
 
 imports // constructors
 	
-	src-gen/signatures/Expressions-sig
-	src-gen/signatures/Types-sig
-	trans/api/_runtime-constructors
-	trans/naming/names
+	signatures/Expressions-sig
+	signatures/Types-sig
+	api/_runtime-constructors
+  names/naming/names
 
 imports // functions
 	
-	trans/api/_runtime
-	trans/lib/annotations
+	api/_runtime
+	lib/annotations
 
 rules
 	

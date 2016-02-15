@@ -1,239 +1,132 @@
-module trans/_editor/generate
+module _editor/generate
 
 imports // constructors
 
-	src-gen/signatures/Modules-sig
-	trans/api/_runtime-constructors
-	
+  api/_runtime-constructors
+  generating/_ir/constructors
+  
 imports // functions
 
-	trans/_editor/analysis
-	trans/api/_generated
-	trans/api/_runtime
-	trans/desugaring/desugar
-	trans/generating/java/generate
-	trans/generating/webdsl/generate
-	trans/generating/webdsl-eager/generate
-	trans/generating/webdsl-eventual/generate
-	trans/generating/webdsl-eventual/java/generate
-	trans/generating/webdsl-eventual-no-ui/generate
-	trans/lib/files
-	trans/prettyprinting/pp
-
-signature sorts
-	
-	TargetLanguage
-	
-signature constructors
-	
-	Java               : TargetLanguage
-	WebDSL             : TargetLanguage
-	WebDSLEager        : TargetLanguage
-	WebDSLEventual     : TargetLanguage
-	WebDSLEventualNoUI : TargetLanguage
+  _editor/analysis
+  api/_generated
+  api/_runtime
+  api/module-api
+  api/module-names-api
+  desugaring/desugar
+  generating/_ir/paths
+  generating/java/generate
+  generating/webdsl/generate
+  generating/webdsl/java/generate
+  lib/files
+  lib/call-external
+  prettyprinting/pp
 
 rules // Builders
-	
-	generate-java      = generate-java(error-handler-editor)
-	generate-java-test = generate-java(error-handler-tests)
-	generate-java(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|Java())>(selected, path, project-path, 1)
-	
-	compile-java       = compile-java(error-handler-editor)
-	compile-java-test  = compile-java(error-handler-tests)
-	compile-java(error-handler):
-		(selected, position, ast, path, project-path) -> None()
-		with
-			<build(error-handler|Java())>(selected, path, project-path, 2)
-	
-	execute-java       = execute-java(error-handler-editor);echo;\ _ -> None() \
-	execute-java-test  = execute-java(error-handler-tests)
-	execute-java(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|Java())>(selected, path, project-path, 3)
+  
+  generate-java                      = build(error-handler-editor|Java(),CalcOnRead(),NoUI(),1)
+  generate-java-test                 = build(error-handler-tests |Java(),CalcOnRead(),NoUI(),1)
+  compile-java                       = build(error-handler-editor|Java(),CalcOnRead(),NoUI(),2)
+  compile-java-test                  = build(error-handler-tests |Java(),CalcOnRead(),NoUI(),2)
+  execute-java                       = build(error-handler-editor|Java(),CalcOnRead(),NoUI(),3);debug
+  execute-java-test                  = build(error-handler-tests |Java(),CalcOnRead(),NoUI(),3)
+  generate-java-incr                 = build(error-handler-editor|Java(),CalcOnWrite(),NoUI(),1)
+  generate-java-incr-test            = build(error-handler-tests |Java(),CalcOnWrite(),NoUI(),1)
+  compile-java-incr                  = build(error-handler-editor|Java(),CalcOnWrite(),NoUI(),2)
+  compile-java-incr-test             = build(error-handler-tests |Java(),CalcOnWrite(),NoUI(),2)
+  execute-java-incr                  = build(error-handler-editor|Java(),CalcOnWrite(),NoUI(),3);debug
+  execute-java-incr-test             = build(error-handler-tests |Java(),CalcOnWrite(),NoUI(),3)
 
-	generate-webdsl      = generate-webdsl(error-handler-editor)
-	generate-webdsl-test = generate-webdsl(error-handler-tests)
-	generate-webdsl(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSL())>(selected, path, project-path, 1)
-
-	generate-webdsl-eager      = generate-webdsl-eager(error-handler-editor)
-	generate-webdsl-eager-test = generate-webdsl-eager(error-handler-tests)
-	generate-webdsl-eager(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEager())>(selected, path, project-path, 1)
-
-	generate-webdsl-eventual      = generate-webdsl-eventual(error-handler-editor)
-	generate-webdsl-eventual-test = generate-webdsl-eventual(error-handler-tests)
-	generate-webdsl-eventual(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEventual())>(selected, path, project-path, 1)
-
-	generate-webdsl-eventual-no-ui      = generate-webdsl-eventual-no-ui(error-handler-editor)
-	generate-webdsl-eventual-no-ui-test = generate-webdsl-eventual-no-ui(error-handler-tests)
-	generate-webdsl-eventual-no-ui(error-handler):
-		(selected, position, ast, path, project-path) -> result
-		with
-			result := <build(error-handler|WebDSLEventualNoUI())>(selected, path, project-path, 1)
+  generate-webdsl                    = build(error-handler-editor|WebDSL(),CalcOnRead(),NoUI(),1)
+  generate-webdsl-test               = build(error-handler-tests |WebDSL(),CalcOnRead(),NoUI(),1)
+  generate-webdsl-noui               = build(error-handler-editor|WebDSL(),CalcOnRead(),CrudUI(),1)
+  generate-webdsl-noui-test          = build(error-handler-tests |WebDSL(),CalcOnRead(),CrudUI(),1)
+  generate-webdsl-eager              = build(error-handler-editor|WebDSL(),CalcOnWrite(),NoUI(),1)
+  generate-webdsl-eager-test         = build(error-handler-tests |WebDSL(),CalcOnWrite(),NoUI(),1)
+  generate-webdsl-eager-noui         = build(error-handler-editor|WebDSL(),CalcOnWrite(),CrudUI(),1)
+  generate-webdsl-eager-noui-test    = build(error-handler-tests |WebDSL(),CalcOnWrite(),CrudUI(),1)
+  generate-webdsl-eventual           = build(error-handler-editor|WebDSL(),EventuallyConsistent(),NoUI(),1)
+  generate-webdsl-eventual-test      = build(error-handler-tests |WebDSL(),EventuallyConsistent(),NoUI(),1)
+  generate-webdsl-eventual-noui      = build(error-handler-editor|WebDSL(),EventuallyConsistent(),CrudUI(),1)
+  generate-webdsl-eventual-noui-test = build(error-handler-tests |WebDSL(),EventuallyConsistent(),CrudUI(),1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
-	error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
-		with
-			err-msg(|msg)
+  error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
+    with
+      err-msg(|msg)
 
-	error-handler-tests : msg -> None()
-		with
-			with(fail|msg)
+  error-handler-tests : msg -> None()
+    with
+      with(fail|msg)
 
 rules // Build in steps
-	
-	build(error-handler|lang):
-		(ast, path, project-path, i) -> result
-		with
-			_index-setup(|<_language>, project-path);
-			_task-setup(|project-path);
 
-			if Module(_,_,_,_) := ast then
-				// log(|Info(),"Phase 0: Analyzing");
-				(ast', error*) := <analyze-ast-step> (ast, path, project-path)
-			else
-				ast' := ast;
-				error* := <_task-get-messages(|$[[project-path]/[path]])>
-			end;
-			
-			if not([] := error*) then
-				<error-handler>"Fix errors before generating code. Exiting code generation.";
-				result := None()
-			else
+  build(error-handler|lang, implstr, uistyle, phase): (selected, position, ast, path, project-path-wrong) -> result
+    with
+      moduleName  := <module-get-modulename>selected;
+      result      := <build(error-handler|lang, implstr, uistyle, phase, moduleName, path)>
 
-			if <leq>(1, i) then
-				// log(|Info(),"Phase 1: Generating Java Code");
-				switch !lang
-					case ?Java():
-						(targetFileName, targetCode, error') := <generate-java-step(error-handler)>(ast', path);
-						<copy-java-libraries>(targetFileName, project-path)
-					case ?WebDSL():
-						(targetFileName, targetCode, error') := <generate-webdsl-step(error-handler)>(ast', path);
-						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEager():
-						(targetFileName, targetCode, error') := <generate-webdsl-eager-step(error-handler)>(ast', path);
-						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEventual():
-						(targetFileName, targetCode, error') := <generate-webdsl-eventual-step(error-handler)>(ast', path);
-						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
-						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
-						<copy-webdsl-libraries>(targetFileName, project-path)
-					case ?WebDSLEventualNoUI():
-						(targetFileName, targetCode, error') := <generate-webdsl-eventual-no-ui-step(error-handler)>(ast', path);
-						(targetFileName2,targetCode2,error2'):= <generate-webdsl-eventual-java-step(error-handler)>(ast', path);
-						<write-file>($[[project-path]/nativejava/derivations/[<base-filename>targetFileName2]],targetCode2);
-						<copy-webdsl-libraries-no-ui>(targetFileName, project-path)
-				end;
-				if <eq>(1, i) then
-					result := (targetFileName, targetCode)
-				end;
-
-			if <leq>(2, i) then
-				if not([] := error') then
-					<error-handler>"Fix errors compiling Java. Exiting code compilation.";
-					result := None()
-				else
-					// log(|Info(),"Phase 2: Compiling Java Code");
-					<write-file> (targetFileName, targetCode);
-					(exitCode, output, classFileName) := <compile-java-step> (targetFileName, project-path);
-					if <eq>(2, i) then
-						result := None()
-					end;
-
-			if <leq>(3, i) then
-				if not(0 := exitCode) then
-					<error-handler>output;
-					<error-handler>"Java compilation failed. Exiting code execution.";
-					result := None()
-				else
-					// log(|Info(),"Phase 3: Executing");
-					(exitCode', output') := <execute-java-step> classFileName;
-					result := output'
-				
-			end end end end end end
-	
-	analyze-ast-step: (ast, path, project-path) -> (analyzed-ast, error*)
-		with
-			(analyzed-ast, error*, warning*, note*) := <analysis-single-default-interface>(ast, path, project-path)
-	
-	generate-java-step(error-handler)                 = generate-java-code(error-handler)
-	generate-webdsl-step(error-handler)               = generate-webdsl-code(error-handler)
-	generate-webdsl-eager-step(error-handler)         = generate-webdsl-eager-code(error-handler)
-	generate-webdsl-eventual-step(error-handler)      = generate-webdsl-eventual-code(error-handler)
-	generate-webdsl-eventual-no-ui-step(error-handler)= generate-webdsl-eventual-no-ui-code(error-handler)
-	generate-webdsl-eventual-java-step(error-handler) = generate-webdsl-eventual-java-code(error-handler)
-
-	copy-java-libraries: (javaFileName, project-path) -> None()
-		with
-			sourceDir := $[[<_plugin-path>]/lib-java/src/lib];
-			targetDir := $[[<dirname>$[[project-path]/[javaFileName]]]/lib];
-			<copy-dir>(sourceDir, targetDir);
-			<dirname;_refresh-workspace-file> targetDir
-			
-	copy-webdsl-libraries: (webdslFileName, project-path) -> None()
-		with
-			sourceDir := $[[<_plugin-path>]/lib-webdsl];
-			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]];
-			<copy-dir>(sourceDir, targetDir);
-			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
-			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
-			<copy-dir>(sourceDir2, targetDir2);
-			<_refresh-workspace-file> targetDir
-			
-	copy-webdsl-libraries-no-ui: (webdslFileName, project-path) -> None()
-		with
-			sourceDir := $[[<_plugin-path>]/lib-webdsl/lib];
-			targetDir := $[[<dirname>$[[project-path]/[webdslFileName]]]/lib];
-			<copy-dir>(sourceDir, targetDir);
-			<write-file>($[[targetDir]/.saved-but-not-built],"");
-			sourceDir2 := $[[<_plugin-path>]/lib-java/src];
-			targetDir2 := $[[<dirname>$[[project-path]/[webdslFileName]]]/nativejava];
-			<copy-dir>(sourceDir2, targetDir2);
-			<dirname;_refresh-workspace-file> targetDir
-	
-	compile-java-step:
-		(javaFileName, project-path) -> (exitCode, output, classFileName)
-		with
-			(exitCode, output) := <call-read-output> ("javac", ["-cp", <dirname>$[[project-path]/[javaFileName]], javaFileName]);
-			classFileName := <guarantee-extension(|"class")> javaFileName;
-			<dirname;_refresh-workspace-file> $[[project-path]/[javaFileName]]
-
-	execute-java-step:
-		classFileName -> (exitCode, output)
-		with
-			classPath := <dirname>classFileName;
-			className := <base-filename;remove-extension> classFileName;
-			(exitCode, output) := <call-read-output> ("java", ["-cp", classPath, className])
-
-rules // call helper
-	
-	call-read-output: (program, args) -> (exitCode, <conc-strings> (errors, output))
-		with
-		  Stream(instream)   := <stdin-stream>;
-		  Stream(filestream) := <fopen> ("stdout.txt", "w");
-		  Stream(filestream2):= <fopen> ("stderr.txt", "w")
-		with
-		  // log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
-		  exitCode := <prim("SSL_EXT_call", program, args, instream, filestream, filestream2)>
-		with
-		  <fclose>filestream;
-		  <fclose>filestream2;
-		  output := <read-text-file> "stdout.txt";
-		  errors := <read-text-file> "stderr.txt";
-		  <delete-file>"stdout.txt";
-		  <delete-file>"stderr.txt"
-
+  build(error-handler|lang, implstr, uistyle, phase, moduleName, relativePath): _ -> result
+    with
+      fullPath    := <full-path(|relativePath)>;
+      eclipsePath := <eclipse-path>relativePath
+    with
+      clear-index2;
+      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
+      <index-store-prop2(|UIStyle(),      moduleName)>uistyle;
+      error* := <_task-get-messages(|eclipsePath)>
+    with
+      if not([] := error*) then
+        <error-handler>"Fix errors before generating code. Exiting code generation.";
+        result := None()
+      else
+        // phase 1: generate files
+        switch !lang
+          case ?Java():
+            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
+            targetFileName := <java-generated-path(|relativePath)>;
+            java-library-paths(|fullPath);copy-dir
+          case ?WebDSL():
+            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+            targetFileName := <webdsl-generated-path(|relativePath)>;
+            webdsl-library-paths(|fullPath);copy-dir;
+            webdsl-java-library-paths(|fullPath);copy-dir;
+            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+            if <modulename-is-eventuallyconsistent>moduleName then
+              (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+              targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)
+            end
+        end;
+        if <eq>(1, phase) then
+          result := (targetFileName, targetCode)
+        else
+          if not([] := error') then
+            <error-handler>"Code generation failed.";
+            result := None()
+          else
+            // phase 2: compile generated files
+            <write-file> (targetFileName, targetCode);
+            (exitCode, stdOut, stdErr) := <call-javac(|<java-generated-path(|fullPath)>)>;
+            if not(0 := exitCode) then
+              <error-handler>stdOut;
+              <error-handler>stdErr;
+              <error-handler>"Java compilation failed."
+            end;
+            if <eq>(2, phase) then
+              result := None()
+            else
+              // phase 3: execute compiled code
+              (exitCode', stdOut', stdErr') := <call-java(|<java-compiled-path(|fullPath)>)>;
+              if not(0 := exitCode') then
+                <error-handler>stdOut';
+                <error-handler>stdErr';
+                <error-handler>"Java execution failed.";
+                result := None()
+              else
+                result := stdOut'
+              end
+            end 
+          end 
+        end 
+      end

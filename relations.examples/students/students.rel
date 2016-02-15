@@ -1,0 +1,60 @@
+module students
+
+model
+	
+	entity Student {
+		name         : String
+	}
+	
+	entity Course {
+		name         : String
+		averageGrade : Float? = avg(enrollment.grade)
+		passPerc     : Int = 100 * sum(enrollment.passI)/.count(enrollment) <+ 0
+	}
+	
+	relation Enrollment {
+		Student *
+		Course  *
+		
+		grade      : Float?
+		pass       : Boolean = grade >= 5.5 <+ false
+		passI      : Int = pass?1:0
+	}
+	
+data
+
+  math : Course {
+    name="Mathematics"
+    student =
+      < enrollmentAlice { grade = 9.0 } >
+      alice {
+        name = "Alice"
+      },
+      < enrollmentBob { grade = 5.0 } >
+      bob {
+        name = "Bob"
+      },
+      < enrollmentCharlie {  } >
+      charlie {
+        name = "Charlie"
+      }
+  }
+
+// attributes on relations currently not supported in the data section
+  
+execute
+
+	"Did alice pass math?"
+	alice.enrollment.pass
+  
+  ""
+  "The average grade at Mathematics:"
+  math.averageGrade
+  
+  ""
+  "The pass percentage at Mathematics:"
+  math.passPerc
+  
+	""
+	"Bob's classmates (including self):"
+	bob.course.student.name

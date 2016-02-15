@@ -1,13 +1,13 @@
-module trans/api/model-api
+module api/model-api
 
 imports // constructors
 
-	src-gen/signatures/Model-sig
-	trans/desugaring/constructors
+	signatures/Model-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/lib/origin
+	lib/origin
 
 rules // query
 	
@@ -59,6 +59,8 @@ rules // properties
 	
 	is-shortcut = ?Shortcut(_, _, _, _)
 	
+	is-relation = ?Relation(_, _, _, _, _, _, _, _)
+	
 rules // manipulation
 
 	entity-set-members(|members) = entity-set-members(!members)
@@ -76,6 +78,12 @@ rules // manipulation
 
 	role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
 	role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
+	
+	relation-set-type1(type) = Relation(type, id, id, id, id ,id, id, id)
+	relation-set-type2(type) = Relation(id, id, id, id, id ,id, type, id)
+	
+	relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
+	relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
 
 rules // creation
 	
