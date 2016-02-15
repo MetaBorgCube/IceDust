@@ -69,7 +69,7 @@ rules // api for conflicting nses error messages
 
 signature constructors
 	
-	ContainsAll : Term * Term * Term * Term * Term * Term -> Term
+	ContainsAll : Term * Term * Term * Term * Term -> Term
 
 rules // api for checking something contains all of def
 
@@ -87,14 +87,13 @@ rules // api for checking something contains all of def
 				def-child-ns, 
 				filters,
 				f-on,
-				f-def-of,
 				f-ast-children,
 				f-msg-on
 			) := f
 		where
 			<eval(|f-on)>a
 		with
-			a-ty                    := <eval(|f-def-of)>a;
+      a-ty                    := <_get-or-create-property-task(|ctx, Type())>a;
 			a-ty-def 	              := <_nabl-create-collectdefs(|ctx)> a-ty;
 			[a-ty-def-children]     := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def];
 			a-children              := <eval(|f-ast-children)>a;
@@ -128,3 +127,20 @@ rules // replacing uses with defs
 	
 	replace-use-with-def : Use(d@Def(_)) -> d
 	replace-use-with-def : Use([d@Def(_)]) -> d
+
+rules // string{uri} funcs
+
+  nabl-name-parent = _nabl-uri;_nabl-uri-parent;?uri;_nabl-uri-name;?name;!name{Def(uri)}
+
+rules
+
+  def-to-name: d@Def(uri) -> name{d} with name := <_nabl-uri-name>uri
+  uri-to-name: uri        -> name{Def(uri)} with name := <_nabl-uri-name>uri
+  
+rules
+  
+  name-get-childname(|ns, childname-string): name -> childname
+    with
+      nameUri := <_nabl-uri>name;
+      childnameUri := <_nabl-extend-uri(|ns, $[[childname-string]], <_nabl-uri-qualifier>nameUri)>nameUri;
+      childname := <uri-to-name>childnameUri

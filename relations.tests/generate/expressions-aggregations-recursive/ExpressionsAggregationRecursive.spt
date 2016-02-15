@@ -4,35 +4,27 @@ language Relations
 
 setup Common [[
 	module ExpressionsAggregationRecursive
-	
-	model
-	entity Node{
-		value : Int ? = avg( this.parentTree.child.value ) (default)
-	}
-	relation Tree{
-		Node * parent <- parentTree
-		Node 1 child  <- childTree
-	}
-	
-	data
-	Node n1{
-		value = 2
-	}
-	Node n2{
-		value = 4
-	}
-	Node n3{}
-	Tree t1{
-		parent:n3
-		child:n1
-	}
-	Tree t2{
-		parent:n3
-		child:n2
-	}
-	
-	execute
-	n3.value
+
+  model
+  
+    entity Node {
+      value : Int ? = avg ( this.children.value ) (default)
+    }
+  
+    relation Node.parent ? <-> * Node.children {}
+  
+  
+  data
+  
+    root : Node {
+      children = 
+        n1 : Node {value=2},
+        n2 : Node {value=4}
+    }
+  
+  execute
+  
+    root.value
 ]]
 
 test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test

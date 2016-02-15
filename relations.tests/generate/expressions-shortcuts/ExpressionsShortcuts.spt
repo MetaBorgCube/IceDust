@@ -17,21 +17,11 @@ setup Common [[
 	}
 	
 	data
-	Node n1{
-		value = 2
-	}
-	Node n2{
-		value = 4
-	}
-	Node n3{}
-	Tree t1{
-		parent:n3
-		child:n1
-	}
-	Tree t2{
-		parent:n3
-		child:n2
-	}
+    n3 : Node {
+      children = 
+        n1 : Node {value=2},
+        n2 : Node {value=4}
+    }
 	
 	execute
 	n3.value

@@ -33,5 +33,5 @@ rules // general
 	desugar-some: Some(a) -> a
 
 	desugar-done = keep-origin(desugar-done2)
-	desugar-done2: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
+	desugar-done2: Module(moduleName, section*) -> ModuleDesugared(moduleName, section*)
 

@@ -7,13 +7,40 @@ imports
 
 context-free syntax   // entity instances
 
-  Data.EntityInstance = <
-    <EntityRef> <ID?> {
-    	<{RoleValue "\n"}*>
-    	<{AttributeValue "\n"}*>
+  Data = EntityInstance
+
+  EntityInstance.EntityInstance = <
+    <ID?><EntityInstanceType?> {
+      <{MemberValue "\n"}*>
     }
   >
+  
+  RelationInstance.RelationInstance = <
+    \< <ID?><EntityInstanceType?> {
+      <{MemberValue "\n"}*>
+    } \>
+  >
 
+  EntityInstanceType = < : <EntityRef>>
+
+  MemberValue.MemberValue = <
+    <MemberRef> = <Value>
+  >
+  
+  Value.Comma = <
+    <Value>,
+    <Value>
+  > {left}
+  Value = LitVal
+  Value = EntityInstanceWrapper
+  
+  EntityInstanceWrapper.EntityInstanceWrapper = <<RelationInstance?><EntityInstanceValue>>
+  
+  EntityInstanceValue = EntityInstanceRef
+  EntityInstanceValue = EntityInstance
+  
+//  RelationInstance.RelationInstance = [<[EntityInstanceValue]> ]
+  
   AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  
   RoleValue.RoleValue = <<RoleRef> : <EntityInstanceRef>>

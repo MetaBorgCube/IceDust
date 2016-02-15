@@ -16,7 +16,7 @@ language Relations
 //	}
 //	
 //	data
-//	Node n{}
+//	n : Node {}
 //	
 //	execute
 //]]
@@ -56,7 +56,7 @@ module x
   }
   
   data
-  Node n{}
+  n : Node{}
   
 execute
 		n.in.out.name

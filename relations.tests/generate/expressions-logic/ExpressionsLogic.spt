@@ -11,7 +11,7 @@ setup Common [[
 	}
 	
 	data
-	X x{}
+	x : X {}
 	
 	execute
 	x.val

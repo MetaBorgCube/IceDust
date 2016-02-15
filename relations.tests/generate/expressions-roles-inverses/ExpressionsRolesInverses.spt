@@ -5,41 +5,45 @@ language Relations
 setup Common [[
 	module ExpressionsRolesInverses
 	
-	model
-	entity Person{}
-	relation Marriage{
-		Person 1 husband <- husbandM
-		Person 1 wife    <- wifeM
-	}
-	relation Counseling{
-		Person * counselor
-		Marriage 1 
-	}
-	
-	data
-	Person man{}
-	Person woman{}
-	Marriage marriage{
-		husband:man
-		wife:woman
-	}
-	Person professional{}
-	Counseling c{
-		marriage:marriage
-		counselor:professional
-	}
-	
-	execute
-	man.husband
-	marriage.husband
-	marriage.counseling
-	man.husband.wife
-	man.husband.counseling
-	man.husband.counseling.counselor
+  model
+  
+    entity Person {
+      name : String
+    }
+  
+    relation Marriage {
+      Person 1 husband <- marriage
+      Person 1 wife    <- marriage2
+    }
+  
+    relation Counseling {
+      Person * counselor
+      Marriage 1 counselled
+    }
+  
+  data
+  
+    man : Person {
+      name = "Bob"
+      wife =
+        < theMarriage { } >
+        woman {
+          name = "Alice"
+        }
+    }
+    counsellor : Person {
+      name = "Charles"
+      counselled = theMarriage
+    }
+  
+  execute
+  
+  
+    man.marriage.counseling.counselor.name // and then get the counselor of this marriage
 ]]
 
 test Expressions Roles Inverses generate-java [[ ]] build generate-java-test
 
 test Expressions Roles Inverses compile-java [[ ]] build compile-java-test
 
-// test Expressions Roles Inverses execute-java [[ ]] build execute-java-test //well we cant test memory addresses
+test Expressions Roles Inverses execute-java [[ ]] build execute-java-test to "Charles"

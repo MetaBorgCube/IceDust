@@ -22,7 +22,7 @@ rules // Analysis
 //	analysis-multiple-default-interface = 
 //	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis;analysis2, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
 	
-	editor-analyze = _analyze-all(desugar-before-analysis, desugar-after-analysis;analysis2, pp-message-top|<_language>)
+	editor-analyze = _analyze-all(desugar-before-analysis, analysis2;desugar-after-analysis, pp-message-top|<_language>)
 	
 //	editor-save = _analysis-save-default(|<_language>)
 

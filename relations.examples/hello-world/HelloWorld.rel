@@ -8,7 +8,7 @@ model
 
 data
 
-  Message hello {
+  hello : Message {
     text = "Hello World!"
   }
 

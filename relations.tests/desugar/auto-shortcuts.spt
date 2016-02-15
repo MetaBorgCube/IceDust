@@ -20,12 +20,9 @@ setup Common [[
 	}
 
 	data
-	Student s{}
-	Course c{}
-	Enrollment {
-		student : s
-		course  : c
-	}
+	s : Student {}
+	c : Course{}
+	e : Enrollment {}
 	execute
 ]]
 

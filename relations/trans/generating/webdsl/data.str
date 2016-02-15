@@ -2,72 +2,96 @@ module generating/webdsl/data
 
 imports // constructors
 
-	api/constructors
 	webdsl/WebDSL
 
 imports // functions
 
-	api/_runtime
-	api/data-api
-	api/data-names-api
+  api/data-names-api
+  api/model-names-api
+  api/module-names-api
 	lib/search
 	generating/webdsl/expressions
+	naming/_notNaBL
+
+rules
+
+  data-modulename-to-webdsl-stms(err): moduleName -> result
+    with
+      eiNames          := <modulename-get-entityinstancenames>moduleName;
+      stat_newObjects* := < map(entityinstancename-to-webdsl-stm(err))>eiNames;
+      stat_membervals* := <fmap(entityinstancename-to-webdsl-stms2(err))>eiNames;
+      stat_saves*      := < map(entityinstancename-to-webdsl-stm3(err))>eiNames
+    with
+      result := stat* |[
+        stat_newObjects*
+        stat_membervals*
+        stat_saves*
+      ]|
 
 rules // entity instances
 
-	to-webdsl-1(err): x_name ->
-		webdsl |[
-			var x_name := srt1 {};
-			stat1*
-		]|
+	entityinstancename-to-webdsl-stm(err): x_eiName -> result
+		with
+			srt1 := <_get-type>x_eiName
+		with
+      result := stat |[
+        var x_eiName := srt1 {};
+      ]|
+      
+  entityinstancename-to-webdsl-stms2(err): x_eiName -> result
+    with
+      stat_attributes* := <entityinstancename-get-attributevaluenames ;fmap(attributevaluename-to-webdsl-stms(err))>x_eiName;
+      stat_relations*  := <entityinstancename-get-relationvaluenames  ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_roles*      := <entityinstancename-get-rolevaluenames      ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_inverses*   := <entityinstancename-get-inversevaluenames   ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName
+    with
+      result := stat* |[
+        stat_attributes*
+        stat_relations*
+        stat_roles*
+        stat_inverses*
+      ]|
+
+	entityinstancename-to-webdsl-stm3(err): x_eiName -> result
 		where
 			is-entityinstancename
-		with
-			srt1 := <_get-type>x_name;
-			stat1* := []
-
-	to-webdsl-2(err): x_name ->
-		webdsl |[
-			stat1*
-		]|
-		where
-			is-entityinstancename
-		with
-			stat1* := <entityinstancename-get-exprs;map(to-webdsl(err|x_name))>x_name
-
-	to-webdsl-3(err): x_name ->
-		webdsl |[
-			x_name.save();
-			stat1*
-		]|
-		where
-			is-entityinstancename
-		with
-			stat1* := []
-
-rules // entity instance attributes
-	
-	to-webdsl(err|x_instanceName): av ->
-		webdsl |[
-			x_instanceName.x_attrName := e1;
-		]|
-		where
-			is-attributevalue
-		with
-			x_attrName := <attributevalue-get-attr>av;
-			e1         := <attributevalue-get-value;to-webdsl(err)>av
-	
-rules // entity instance roles
-	
-	to-webdsl(err|x_instanceName): av ->
-		webdsl |[
-			x_instanceName.x_roleName := e1;
-		]|
-		where
-			is-rolevalue
-		with
-			x_roleName := <rolevalue-get-role>av;
-			e1         := <rolevalue-get-value;to-webdsl(err)>av
-	
+    with
+      result := stat |[
+        x_eiName.save();
+      ]|
+      
 rules
-	
+
+  attributevaluename-to-webdsl-stms(err): x_attributevalueName -> result
+    where
+      membervaluename-is-attribute
+    with
+      x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
+      valueAst := <membervaluename-get-expr>x_attributevalueName;
+      e_value := <expr-to-webdsl-expr(err)>valueAst
+    with
+      result := stat* |[
+        x_eiName.x_attributevalueName := e_value;
+      ]|
+
+  relationvaluename-to-webdsl-stms(err): x_relationvalueName -> result
+    where
+      membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
+    with
+      x_eiName   := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueNames := <membervaluename-get-values>x_relationvalueName;
+      result     := <map(relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationvalueName))>valueNames
+
+rules
+
+  relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationName): x_eiName2 -> result
+    with
+      if <get-member-origin;get-multiplicity;upper-one>x_relationName then
+        result := stat |[
+          x_eiName.x_relationName := x_eiName2;
+        ]|
+      else
+        result := stat |[
+          x_eiName.x_relationName.add(x_eiName2);
+        ]|
+      end

@@ -9,5 +9,5 @@ setup Common [[
 	execute
 ]]
 
-test literal String whitespace [[	[[" Asdf "]] ]]  run rm-annotations to String(" Asdf ")
+test literal String whitespace [[	[[" Asdf "]] ]]  run rm-annotations to LitString(" Asdf ")
 

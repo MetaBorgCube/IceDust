@@ -10,20 +10,20 @@ setup Common [[
 
 test Duplicate entity fails [[
 	data
-	User u{}
-	User u{}
+	u : User {}
+	u : User {}
 ]] 2 errors
 
 test Resolve Identifier to entity [[
 	data
-	User [[u]]{}
+  [[u]] : User {}
 	execute
 	[[u]]
 ]] resolve #2 to #1
 
 test Resolve invalid Identifier fails [[
 	data
-	User u{}
+	u : User {}
 	execute
 	v
 ]] 1 error

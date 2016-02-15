@@ -13,7 +13,7 @@ test error on omitting required attribute [[
 		i : Int
 	}
 	data
-	X [[x]]{}
+	[[x]] : X {}
 ]] 1 error
 
 test error on omitting required attribute multiple [[
@@ -23,7 +23,7 @@ test error on omitting required attribute multiple [[
 		j : String
 	}
 	data
-	X [[x]]{}
+	[[x]] : X {}
 ]] 1 errors
 
 test no error on omitting optional attribute[[
@@ -32,58 +32,71 @@ test no error on omitting optional attribute[[
 		i : Int ?
 	}
 	data
-	X x{}
+	x : X {}
 ]] 0 errors
 
-test error on omitting only on required attribute[[
-	model
-	entity X{
-		i : Int ?
-		j : String
-	}
-	data
-	X [[x]]{}
-]] 1 error
-
-test no error on not omitting role in relation[[
-	model
-	entity Node{}
-	relation Edge{
-		Node 1 in <- x
-		Node * out
-	}
-	data
-	Node n{}
-	Edge e{
-		in:n
-		out:n
-	}
+test no error on omitting derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {}
 ]] 0 errors
 
-test error on omitting role in relation[[
-	model
-	entity Node{}
-	relation Edge{
-		Node 1 in <- x
-		Node * out
-	}
-	data
-	Node n{}
-	Edge [[e]]{
-		in:n
-	}
+test error on supplying derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {
+    [[i]] = 5900
+  }
 ]] 1 error
 
-test error on omitting roles in relation[[
-	model
-	entity Node{}
-	relation Edge{
-		Node 1 in <- x
-		Node * out
-	}
-	data
-	Node n{}
-	Edge [[e]]{}
+test error on omitting required attribute[[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {}
+    }
 ]] 1 error
 
-//TODO: add testcases for required relations (need syntax for specifying relations inside entities)
+test infer enitity instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <rel { } >
+        [[x1]] {i=4}
+    }
+]] run get-type to "X"{_}
+
+test infer relation instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <[[rel]] { } >
+        x1 {i=4}
+    }
+]] run get-type to "XYRelation"{_}
+
+//TODO: add testcases for relations

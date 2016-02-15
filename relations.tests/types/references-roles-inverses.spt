@@ -6,55 +6,40 @@ setup Common [[
 	module test
 	model
 	entity Node{}
-	relation Edge{
-		Node ? maybe <- maybe
-		Node 1 one   <- one
-		Node * star  <- star
-		Node + (ordered) plus  <- plus
-		
-		maybe.a <-> one.b
-		maybe.c <-> star.d
-		maybe.e <-> plus.f
-		one.g <-> star.h
-		one.i <-> plus.j
-		star.k <-> plus.l
-		
-	}
-	data
-	Node n{}
-	Edge e{
-		maybe:n
-		one:n
-		star:n
-		plus:n
-	}
+	relation Node.maybe ? <-> 1 Node.one {}
+	relation Node.star * <-> + (ordered) Node.plus {}
+  data
+  n : Node {
+    maybe = <e : NodeMaybeRelation { } > n2 { }
+    star  = <e2 : NodeStarRelation { } > n2
+  }
 	execute
 ]]
 
-test type of role								[[ [[e.maybe]] ]] 					run get-type to "Node"{_}
-test type of role inverse 			[[ [[e.maybe.one]] ]] 			run get-type to "Edge"{_}
-test type of role inverse role	[[ [[e.maybe.one.star]] ]]	run get-type to "Node"{_}
-
-test type of inverse							[[ [[n.maybe]] ]] 					run get-type to "Edge"{_}
-test type of inverse role 				[[ [[n.maybe.one]] ]] 			run get-type to "Node"{_}
-test type of inverse role inverse	[[ [[n.maybe.one.star]] ]]	run get-type to "Edge"{_}
+test type of shortcut						      	[[ [[n.maybe]] ]] 					run get-type to "Node"{_}
+test type of shortcut shortcut 	  			[[ [[n.maybe.one]] ]] 			run get-type to "Node"{_}
+test type of shortcut shortcut shortcut	[[ [[n.maybe.one.star]] ]]	run get-type to "Node"{_}
 
 test multiplicity of role ZeroOrOne		[[ [[e.maybe]] ]] run get-multiplicity to One
 test multiplicity of role One					[[ [[e.one]] ]] 	run get-multiplicity to One
-test multiplicity of role ZeroOrMore	[[ [[e.star]] ]]	run get-multiplicity to One
-test multiplicity of role OneOrMore		[[ [[e.plus]] ]]	run get-multiplicity to One
+test multiplicity of role ZeroOrMore	[[ [[e2.star]] ]]	run get-multiplicity to One
+test multiplicity of role OneOrMore		[[ [[e2.plus]] ]]	run get-multiplicity to One
 
-test multiplicity of inverse ZeroOrOne	[[ [[n.maybe]] ]] run get-multiplicity to ZeroOrOne
-test multiplicity of inverse One				[[ [[n.one]] ]] 	run get-multiplicity to One
-test multiplicity of inverse ZeroOrMore	[[ [[n.star]] ]]	run get-multiplicity to ZeroOrMore
-test multiplicity of inverse OneOrMore	[[ [[n.plus]] ]]	run get-multiplicity to OneOrMore
+test multiplicity of inverse role ZeroOrOne   [[ [[n.maybeRelation.maybe]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of inverse role One         [[ [[n.oneRelation.one]] ]] run get-multiplicity to One
+test multiplicity of inverse role ZeroOrMore  [[ [[n.starRelation.star]] ]] run get-multiplicity to ZeroOrMore
+test multiplicity of inverse role OneOrMore   [[ [[n.plusRelation.plus]] ]] run get-multiplicity to OneOrMore
 
-test multiplicity of inverse role ZeroOrOne 	[[ [[n.maybe.maybe]] ]] run get-multiplicity to ZeroOrOne
-test multiplicity of inverse role ZeroOrOne 2	[[ [[n.maybe.star]]  ]] run get-multiplicity to ZeroOrOne
-test multiplicity of inverse role ZeroOrOne 3	[[ [[n.maybe.plus]]  ]] run get-multiplicity to ZeroOrOne
+test multiplicity of shortcut ZeroOrOne	[[ [[n.maybe]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of shortcut One				[[ [[n.one]] ]] 	run get-multiplicity to One
+test multiplicity of shortcut ZeroOrMore	[[ [[n.star]] ]]	run get-multiplicity to ZeroOrMore
+test multiplicity of shortcut OneOrMore	[[ [[n.plus]] ]]	run get-multiplicity to OneOrMore
 
-test ordering of role Unordered		[[ [[e.maybe]] ]] run get-ordering to Ordered
-test ordering of role Ordered	  	[[ [[e.plus]] ]]	run get-ordering to Ordered
+test multiplicity of shortcut shortcut ZeroOrOne 	[[ [[n.maybe.maybe]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of shortcut shortcut ZeroOrOne 2	[[ [[n.maybe.one]]  ]] run get-multiplicity to ZeroOrOne
 
-test ordering of inverse Unordered	[[ [[n.maybe]] ]] run get-ordering to Unordered
-test ordering of inverse Ordered  	[[ [[n.plus]] ]]	run get-ordering to Ordered
+test ordering of shortcut Unordered		[[ [[n.star]] ]] run get-ordering to Unordered
+test ordering of shortcut Ordered	  	[[ [[n.plus]] ]] run get-ordering to Ordered
+
+test ordering of inverse Ordered    	[[ [[n.plusRelation]] ]] run get-ordering to Ordered
+test ordering of inverse Unordered  	[[ [[n.starRelation]] ]] run get-ordering to Unordered

@@ -24,7 +24,6 @@ trans/*/types.generated.str
 trans/names.str
 trans/*/names.str
 .settings/org.eclipse.jdt.core.prefs
-utils
 lib/runtime
 lib/analysis
 lib/editor

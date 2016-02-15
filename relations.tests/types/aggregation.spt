@@ -10,7 +10,7 @@ setup Common [[
 		s : String ?
 	}
 	data
-	X x{
+	x : X {
 		i = 1
 		s = "a"
 	}

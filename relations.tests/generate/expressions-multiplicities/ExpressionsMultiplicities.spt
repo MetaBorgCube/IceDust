@@ -13,7 +13,7 @@ setup Common [[
 	}
 	
 	data
-	Foo f{}
+	f : Foo {}
 	
 	execute
 	f.input1 ++ f.input2

@@ -15,12 +15,9 @@ relation Tree{
 }
 
 data
-Node n1{}
-Node n2{}
-Tree{
-	parent: n1
-	child : n2
-}
+n1 : Node {}
+n2 : Node { parent = n1 }
+
 
 execute
 ]]

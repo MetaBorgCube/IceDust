@@ -20,8 +20,8 @@ setup Common [[
 
   data
     
-    Node n  {}
-    Foo  foo{}
+    n : Node {}
+    foo : Foo {}
     
   execute
 ]]

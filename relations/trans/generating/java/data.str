@@ -3,54 +3,89 @@ module generating/java/data
 imports // constructors
 
 	java/Java
-	signatures/Data-sig
-	signatures/Expressions-sig
-	signatures/Model-sig
-	signatures/Modules-sig
 
 imports // functions
 
+  api/data-names-api
+  api/model-names-api
+  api/module-names-api
+  generating/_ir/model
 	generating/java/expressions
   names/naming/names
-	naming/_notNaBL // TODO move code
+  naming/_notNaBL
 
 rules
-	
-  to-java(err): DataDef(defs) -> <map(to-java(err));concat> defs
+ 
+  data-modulename-to-java-stms(err): moduleName -> result
+    with
+      eiNames            := <modulename-get-entityinstancenames>moduleName;
+      result-newObjects* := < map(entityinstancename-to-java-stm(err))>eiNames;
+      result-membervals* := <fmap(entityinstancename-to-java-stms2(err))>eiNames
+    with
+      result := bstm* |[
+        ~result-newObjects*
+        ~result-membervals*
+      ]|
 
-	to-java(err): EntityInstance(
-									EntityRef(x_type)
-								, x_name
-								, roleValues
-								, attributeValues
-								)
-  -> 
- 	|[
-    x_type x_name = new x_type();
-    ~attributeValuesJava*
-    ~roleValuesJava*
- 	]|
-	with
-		attributeValuesJava* := <map(to-java(err|x_name))> attributeValues;
-		roleValuesJava*			:= <map(to-java(err|x_name, x_type));concat> roleValues
+rules
 
-  to-java(err|x_name) : AttributeValue(AttributeRef(attributeName), attributeValue) ->
-		stm |[
-			x_name.x_setter(~attributeValueJava);
-		]|
-	  with
-	  	x_setter := $[set_[attributeName]];
-	  	(_, attributeValueJava) := <exp-to-java-stm(err|0)>attributeValue
+  entityinstancename-to-java-stm(err): x_eiName -> result
+    with
+      x_type := <_get-type>x_eiName
+    with
+      result := bstm |[
+        x_type x_eiName = new x_type();
+      ]|
 
-  to-java(err|x_entityName, entityType) :	RoleValue(RoleRef(x_roleName), EntityInstanceRef(x_otherName)) -> [result1, result2]
-		with
-			x_roleNameOther := $[[entityType]_[x_roleName]];
-			multiplicity := <get-multiplicity-inverse>x_roleName
-		with
-			result1 := stm |[ x_entityName.x_roleName = x_otherName; ]|;
-			if <upper-many>multiplicity then
-				result2 := stm |[ x_otherName.x_roleNameOther.add(x_entityName);]|
-			else
-				result2 := stm |[ x_otherName.x_roleNameOther = x_entityName;]|
-			end
-			  
+  entityinstancename-to-java-stms2(err): x_eiName -> result
+    with
+      result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
+      result-relations*  := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
+    with
+      result := bstm* |[
+        ~result-attributes*
+        ~result-relations*
+        ~result-roles*
+        ~result-inverses*
+      ]|
+
+rules
+  
+  attributevaluename-to-java-stms(err): x_attributevalueName -> result
+    where
+      membervaluename-is-attribute
+    with
+      x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
+      x_setter := <name-set>x_attributevalueName;
+      valueAst := <membervaluename-get-expr>x_attributevalueName;
+      (_, attributeValueJava) := <exp-to-java-stm(err|0)>valueAst
+    with
+      result := bstm* |[
+        x_eiName.x_setter(~attributeValueJava);
+      ]|
+      
+  relationvaluename-to-java-stms(err): x_relationvalueName -> result
+    where
+      membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
+    with
+      x_eiName   := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueNames := <membervaluename-get-values>x_relationvalueName;
+      result     := <map(relationvaluenameitem-to-java-stm(err|x_eiName, x_relationvalueName))>valueNames
+
+rules
+
+  relationvaluenameitem-to-java-stm(err|x_eiName, relationName): x_eiName2 -> result
+    with
+      x_set := <name-set>relationName;
+      x_add := <name-add>relationName;
+      if <get-member-origin;get-multiplicity;upper-one>relationName then
+        result := java:block-stm |[
+          x_eiName.x_set(x_eiName2);
+        ]|
+      else
+        result := java:block-stm |[
+          x_eiName.x_add(x_eiName2);
+        ]|
+      end

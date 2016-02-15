@@ -3,6 +3,7 @@ module relationbetweenrelations
 model
 
   entity Person {
+    name : String
   }
 
   relation Marriage {
@@ -17,31 +18,25 @@ model
 
 data
 
-  Person man {
+  man : Person {
+    name = "Bob"
+    wife =
+      < theMarriage { } >
+      woman {
+        name = "Alice"
+      }
   }
-
-  Person woman {
-  }
-
-  Marriage marriage {
-    husband : man
-    wife : woman
-  }
-
-  Person professional {
-  }
-
-  Counseling {
-    counselled : marriage
-    counselor : professional
+  counsellor : Person {
+    name = "Charles"
+    counselled = theMarriage
   }
 
 execute
 
   man.marriage // get the marriage
 
-  man.marriage.wife // get his wife
+  man.marriage.wife.name // get his wife
 
   man.marriage.counseling // go from the man to his marriage to the counseling of this marriage
 
-  man.marriage.counseling.counselor // and then get the counselor of this marriage
+  man.marriage.counseling.counselor.name // and then get the counselor of this marriage

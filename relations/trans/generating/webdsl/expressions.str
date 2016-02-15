@@ -27,44 +27,52 @@ rules // WebDSL specific: no generics, explicit casts
 
 rules // lib expression calls
   
-  to-webdsl(err): e -> Call(Var("Expressions"), x_methodpostfix, e1*) // |[ Expressions.x_methodpostfix(e1)]| //TODO: fix webdsl concrete syntax for expression list
+  expr-to-webdsl-expr(err): e -> result
     where
       lib-call
     where
       not(webdsl-lib-call-cast)
     with
       arg*            := <get-arguments>e;
-      e1*             := <map(to-webdsl(err))>arg*;
+      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e
+    with
+      result := exp |[
+        Expressions.x_methodpostfix(e1*)
+      ]|
       
-  to-webdsl(err): e -> Cast(Call(Var("Expressions"), x_methodpostfix, e1*), srt1) //|[ Expressions.x_methodpostfix(e1) as srt1 ]| //TODO: fix webdsl concrete syntax for expression list
+  expr-to-webdsl-expr(err): e -> result
     where
       lib-call
     where
       webdsl-lib-call-cast
     with
       arg*            := <get-arguments>e;
-      e1*             := <map(to-webdsl(err))>arg*;
+      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
-      srt1            := <webdsl-type(err)>e
+      srt1            := <name-to-webdsl-srt(err)>e
+    with
+      result := exp |[
+        Expressions.x_methodpostfix(e1*) as srt1
+      ]|
   
 rules // literals
   
-  to-webdsl(err): String(str1)                    -> String(str1)
-  to-webdsl(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
-  to-webdsl(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
-  to-webdsl(err): True()                          -> webdsl:e |[ true ]|
-  to-webdsl(err): False()                         -> webdsl:e |[ false ]|
-  to-webdsl(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
-  to-webdsl(err): NoValue()                       -> webdsl:e |[ null ]|
+  expr-to-webdsl-expr(err): LitString(str1)                 -> String(str1)
+  expr-to-webdsl-expr(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
+  expr-to-webdsl-expr(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
+  expr-to-webdsl-expr(err): True()                          -> webdsl:e |[ true ]|
+  expr-to-webdsl-expr(err): False()                         -> webdsl:e |[ false ]|
+  expr-to-webdsl-expr(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
+  expr-to-webdsl-expr(err): NoValue()                       -> webdsl:e |[ null ]|
 
 rules // casts
   
-  to-webdsl(err): Cast(NoValue() , ex1-ty) -> |[ null as x ]| where x := <type-as-string>ex1-ty
+  expr-to-webdsl-expr(err): Cast(NoValue() , ex1-ty) -> exp |[ null as x ]| where x := <type-to-string-webdsl>ex1-ty
   
-  to-webdsl(err): Cast(ex1, ex1-ty) -> |[ Expressions.x_method(e1) ]|
+  expr-to-webdsl-expr(err): Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
     with
-      e1 := <to-webdsl(err)>ex1;
+      e1 := <expr-to-webdsl-expr(err)>ex1;
       x_method := $[as[<postfix-id>ex1-ty]]
 
 rules

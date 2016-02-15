@@ -15,21 +15,11 @@ setup Common [[
 	}
 	
 	data
-	Node n1{
-		value = 2
-	}
-	Node n2{
-		value = 4
-	}
-	Node n3{}
-	Tree t1{
-		parent:n3
-		child:n1
-	}
-	Tree t2{
-		parent:n3
-		child:n2
-	}
+    n3 : Node {
+      child = 
+        n1 : Node {value=2},
+        n2 : Node {value=4}
+    }
 	
 	execute
 	n3.value
@@ -40,3 +30,5 @@ test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-t
 test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
 
 test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3"
+
+test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-incr-test to "3"

@@ -9,3 +9,5 @@ signature constructors
 	FlowsTo   : FlowsTo
 	TopoSort  : TopoSort
 	AST       : AST
+
+  Rel : Term

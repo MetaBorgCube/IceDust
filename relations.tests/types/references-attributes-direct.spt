@@ -28,7 +28,7 @@ test type of ref entity.attribute [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=3
 	}
 ]] run get-type to Int
@@ -81,7 +81,7 @@ test multiplicity of ref entity.attribute One [[
 	}
 	
 	data
-	X x{
+	x : X {
 		i=3
 	}
 ]] run get-multiplicity to One
@@ -93,7 +93,7 @@ test multiplicity of ref entity.attribute ZeroOrOne [[
 	}
 	
 	data
-	X x{}
+	x : X {}
 ]] run get-multiplicity to ZeroOrOne
 
 test ordering of ref entity.attribute Ordered [[
@@ -103,5 +103,5 @@ test ordering of ref entity.attribute Ordered [[
 	}
 	
 	data
-	X x{}
+	x : X {}
 ]] run get-ordering to Ordered

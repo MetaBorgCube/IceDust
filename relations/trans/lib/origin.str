@@ -22,7 +22,7 @@ rules // check AST whether every sub term has an origin
 	
 	warning-on-missing-origin: term -> <id>
 		with
-			terms-missing-origin;map(debug(|"Warning: Term missing origin: "))
+			terms-missing-origin;filter(not(?[]));map(debug(|"Warning: Term missing origin"))
 	
 	terms-missing-origin = collect-all(not(origin-offset))
 	

@@ -15,7 +15,7 @@ model
 
 data
 
-	Deadline x1{
+	x1 : Deadline{
 		deadline=2015-1-1 0:00:00
 		extension=2015-1-5 0:00:00
 		submitted=2015-1-4 9:00:00

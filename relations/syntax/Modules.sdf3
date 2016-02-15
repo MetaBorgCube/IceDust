@@ -12,29 +12,26 @@ context-free syntax // modules
 	Start.Module = <
 		module <ID>
 		
-		<ModelDef?>
-		
-		<DataDef?>
-		
-		<Executable?>
+		<ModuleSection*>
 		
 	>
 
-	ModelDef.ModelDef = <
+	ModuleSection.ModelDef = <
 		model
 		
 		  <{Model "\n\n"}*>
 		
 	>
 	
-	DataDef.DataDef = <
+	ModuleSection.DataDef = <
 		data
 		
 			<{Data "\n\n"}*>
 	>
 	
-	Executable.Executable = <
+	ModuleSection.Executable = <
 		execute
 		
-			<{Execute "\n\n"}*>
+			<{Execute "\n"}*>
+
   >

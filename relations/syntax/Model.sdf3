@@ -15,6 +15,20 @@ context-free syntax // entities
 	EntityOrRelation.EntityType = <entity>
 	EntityOrRelation.RelationType = <relation>
 
+context-free syntax // shortcut relations
+
+  Model.ShortcutRelation = [
+    relation [EntityRef].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [EntityRef].[ID] {
+      [{Attribute "\n"}*]
+    }
+  ]
+
+context-free syntax // non-first-class relation
+
+  Model.Relation = [
+    relation [EntityRef].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [EntityRef].[ID]
+  ]
+
 context-free syntax // entity members
 
 	Member											= <<Attribute>>
@@ -37,3 +51,4 @@ context-free syntax // specific references
 	EntityRef.EntityRef 				= ID
 	AttributeRef.AttributeRef   = ID
 	RoleRef.RoleRef							= ID
+	MemberRef.MemberRef         = ID // attr or shortcut

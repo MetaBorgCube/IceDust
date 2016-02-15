@@ -6,6 +6,7 @@ imports // constructors
 
 imports // functions
 
+  api/module-api
 	java/pretty-print
 	generating/java/data
 	generating/java/execute
@@ -14,31 +15,9 @@ imports // functions
 
 rules // Builders
 	
-	generate-java-code(err):
-	    (selected, path) -> (fileName, result, errors)
-	    with
-			fileName := <guarantee-extension(|"java")> path;
-			java-ast := <to-java(err)> selected;
+	generate-java-code(err): moduleName -> (result, errors)
+	  with
+			java-ast := <modulename-to-java-compilationunit(err)>moduleName;
 			errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
 			java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
 			result   := <pp-java-string> java-ast'
-
-rules	// General Java generation rules
-
-  to-java(err):
-    [_] -> <concat-strings> <map(to-java(err))>
-    
-  to-java(err):
-    () -> ""
-    
-  to-java(err):
-  	None() -> ""
-
-  to-java(err): Module(_,_,_,_) -> None()
-  	where
-  		<err> "Desugar before generating code."
-	
-  to-java(err): a -> a'
-  	where
-		  a' := <err>$[No to-java defined for [<get-constructor> a]/[<get-arguments;length> a].]
-

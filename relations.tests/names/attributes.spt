@@ -43,7 +43,7 @@ test Resolve attribute from entity.attribute [[
 		[[name]] : String = n.[[name]] (default)
 	}
 	data
-	Node n{
+	n : Node {
 		name = "a"
 	}
 ]] resolve #2 to #1
@@ -53,7 +53,7 @@ test (TS/1) Resolve invalid entity.attribute fails [[
 		name : String = n2.name (default)
 	}
 	data
-	Node n{
+	n : Node {
 		name = "a"
 	}
 ]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/1
@@ -67,7 +67,7 @@ test Resolve entity.invalid attribute fails [[
 		Node * out
 	}
 	data
-	Node n{
+	n : Node {
 		name = "a"
 	}
 	execute

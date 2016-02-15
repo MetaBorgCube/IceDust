@@ -9,8 +9,10 @@ imports // functions
 	_editor/analysis
 	api/_generated
 	api/_runtime
+	api/module-api
 	desugaring/desugar
-	lib/index
+  lib/files
+  lib/index
 	lib/search
 	prettyprinting/pp
 	
@@ -43,7 +45,7 @@ rules // Debugging builders
 			where
 	    	language := <_language>
 			with
-			  partition-path := <index-partition-path>(project-path, path);
+			  partition-path := <eclipse-path>path;
 			  <_analyze-all(desugar-before-analysis, id, pp-message-top|language)>[File(partition-path, ast, -1.0)] =>
   				Result(
             post-trans-result*
@@ -149,7 +151,17 @@ rules // Debugging builders
 		
 //	debug-reanalyze = 
 //		_analysis-debug-reanalyze(|<_language>)
-		
+
+rules
+
+  debug-toposort: (target, position, ast, path, project-path) -> None()
+    with
+      <module-get-modulename;modulename-get-toposort;map(map(debug-name))>ast
+
+  debug-name: name -> name
+    with
+      <debug>$[[<index-get-prop(|TopoSort());Hd>name]: [<attributename-get-entityname>name].[name]]
+
 rules // test builders
 
   test-optimized-search:

@@ -26,9 +26,9 @@ type rules
 	Float(x) has multiplicity One()
 	Float(x) has ordering Ordered()
 	
-	String(x) : String()
-	String(x) has multiplicity One()
-	String(x) has ordering Ordered()
+	LitString(x) : String()
+	LitString(x) has multiplicity One()
+	LitString(x) has ordering Ordered()
 	
 	True() : Boolean()
 	True() has multiplicity One()
