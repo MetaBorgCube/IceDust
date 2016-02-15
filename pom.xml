@@ -45,7 +45,7 @@
 		</repository>
 		<repository>
 			<id>spoofax-eclipse-repo</id>
-			<url>http://download.spoofax.org/update/newplugin-nightly/</url>
+			<url>http://download.spoofax.org/update/nightly/</url>
 			<layout>p2</layout>
 			<releases>
 				<enabled>false</enabled>
