@@ -14,7 +14,8 @@ imports // functions
 
 	api/_runtime
 	api/module-names-api
-	lib/origin
+  lib/eq
+  lib/origin
 	lib/search
 	lib/string
   lib/index
@@ -30,6 +31,9 @@ rules // entity
 	entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
 	entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
 	entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
+
+	entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+	entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
 	
 	entityname-get-modulename = nabl-name-parent
 	
@@ -41,6 +45,8 @@ rules // entity
   entityname-is-crudui               = where(entityname-get-modulename;modulename-is-crudui)
 	
 	entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+	
+	entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
 	
 rules // attributes
 	

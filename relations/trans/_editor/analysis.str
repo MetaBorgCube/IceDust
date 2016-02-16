@@ -8,9 +8,11 @@ imports // functions
 
 	api/_generated
 	api/_runtime
-	analysis2/analysis2
+  analysis2/analysis2
+  analysis2/check
 	desugaring/desugar
 	lib/origin
+	lib/nabl-ext
 	prettyprinting/pp
 	
 rules // Analysis
@@ -22,7 +24,7 @@ rules // Analysis
 //	analysis-multiple-default-interface = 
 //	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis;analysis2, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
 	
-	editor-analyze = _analyze-all(desugar-before-analysis, analysis2;desugar-after-analysis, pp-message-top|<_language>)
+	editor-analyze = _analyze-all(desugar-before-analysis, analysis2;desugar-after-analysis, pp-message-top|<_language>);add-custom-error-messages(analysis2check)
 	
 //	editor-save = _analysis-save-default(|<_language>)
 

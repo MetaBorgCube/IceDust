@@ -23,6 +23,7 @@ imports // functions
 	lib/index
 	lib/lists-tuples
 	names/naming/names
+  naming/_notNaBL
 
 rules
 
@@ -63,7 +64,10 @@ rules
     with
       if <membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse>name then
         eiNames := <membervalue-getall-einames;map(Snd)>expr';
-        <map(index-store-prop(|Rel(), name))>eiNames
+        <map(index-store-prop    (|Rel(),    name))>eiNames;
+        eiName := <membervaluename-get-entityinstancename>name;
+        names  := <map(entityinstancename-get-membervaluename(|<membervaluename-get-origin;name-get-inversename>name))>eiNames;
+        <map(index-store-prop-inv(|RelInv(), eiName))>names
       end
     with
       if <membervaluename-is-shortcut>name then
@@ -89,10 +93,12 @@ rules
         riName' := riName
       end;
       <index-store-prop(|Rel(), invvalueName)>riName';
+      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>invName)>riName')>eiName;
       rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
       <index-store-def>rolevalueName;
       <index-store-prop(|NablProp_member-origin(), rolevalueName)>roleName;
-      <index-store-prop(|Rel(), rolevalueName)>eiName2
+      <index-store-prop(|Rel(), rolevalueName)>eiName2;
+      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>roleName)>eiName2)>riName'
   
   module-store-expr: mod -> mod
     with

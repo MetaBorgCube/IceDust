@@ -12,6 +12,8 @@ setup Common [[
     n : Node {
       maybe = n2 { }
       star  = n2
+      one   = n2
+      plus  = n2
     }
 	execute
 ]]

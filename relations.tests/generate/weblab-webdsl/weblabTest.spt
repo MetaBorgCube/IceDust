@@ -5,6 +5,7 @@ language Relations
 setup Common [[
 
 module weblabTest
+
 model
 
   entity Student {
@@ -69,13 +70,9 @@ model
     noValue : Int?
   }
   
-  relation Course.assignment ? <-> 1 Assignment.course {
-    name : String = course.name + " " + assignment.name
-  }
+  relation Course.assignment 1 <-> ? Assignment.course
   
-  relation Assignment.whole ? <-> * Assignment.parts {
-    name : String = whole.name + " " + parts.name
-  }
+  relation Assignment.whole ? <-> * Assignment.parts
   
   entity StudentAssignment {
     name : String? = enrollment.name //+ " " + assignment.name
@@ -98,13 +95,13 @@ model
     noValue : Int?
   }
   
-  relation StudentAssignment.whole ? <-> * StudentAssignment.parts {}
+  relation StudentAssignment.whole ? <-> * StudentAssignment.parts
   
-  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment {}
+  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment
 
-  relation StudentAssignment.submission 1 <-> ? Submission.studentAssignment {}
+  relation StudentAssignment.submission ? <-> 1 Submission.studentAssignment
   
-  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments {}
+  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments
 
 data
 

@@ -144,10 +144,10 @@ model
     
     // stats
   }
-  relation ItemInstance.item 1 <-> * Item.instances {}
-  relation ItemInstance.enchantments * <-> * ItemInstance.enchants {}
+  relation ItemInstance.item 1 <-> * Item.instances
+  relation ItemInstance.enchantments * <-> * ItemInstance.enchants
   
-  relation Character.items * <-> 1 ItemInstance.character {}
+  relation Character.items * <-> ? ItemInstance.character
 
   entity Boon {
 //    name : String
@@ -199,7 +199,7 @@ model
     runSpeedBonus                 : Float = 0.0 (default)
   }
 
-  relation Character.boons * <-> * Boon.characters {}
+  relation Character.boons * <-> * Boon.characters
 
 data
 

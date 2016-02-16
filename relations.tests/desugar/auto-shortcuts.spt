@@ -22,7 +22,10 @@ setup Common [[
 	data
 	s : Student {}
 	c : Course{}
-	e : Enrollment {}
+	e : Enrollment {
+	  student = s
+	  course = c
+	}
 	execute
 ]]
 

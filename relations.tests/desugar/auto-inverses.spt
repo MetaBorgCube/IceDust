@@ -11,7 +11,7 @@ setup Common [[
 	
 	  relation Tree {
 	    Node * -> parent
-	    Node 1 -> child
+	    Node ? -> child
 	  }
 	  
 	  entity Foo{}

@@ -144,3 +144,14 @@ rules
       nameUri := <_nabl-uri>name;
       childnameUri := <_nabl-extend-uri(|ns, $[[childname-string]], <_nabl-uri-qualifier>nameUri)>nameUri;
       childname := <uri-to-name>childnameUri
+      
+rules
+
+  add-custom-error-messages(my-error-messages): result -> result'
+    with
+      Result(file-result*, message-result*, affected-source*, debug-result, time-result) := result;
+      [FileResult(source, initial-ast, analyzed-ast, error*, warning*, note*)] := file-result*;
+      new-error* := <my-error-messages>analyzed-ast;
+      error'* := [error*, new-error*];
+      file-result'* := [FileResult(source, initial-ast, analyzed-ast, error'*, warning*, note*)]; 
+      result':= Result(file-result'*, message-result*, affected-source*, debug-result, time-result)

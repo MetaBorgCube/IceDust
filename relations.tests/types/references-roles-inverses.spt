@@ -10,8 +10,8 @@ setup Common [[
 	relation Node.star * <-> + (ordered) Node.plus {}
   data
   n : Node {
-    maybe = <e : NodeMaybeRelation { } > n2 { }
-    star  = <e2 : NodeStarRelation { } > n2
+    maybe = <e : NodeMaybeRelation { } > n
+    star  = <e2 : NodeStarRelation { } > n
   }
 	execute
 ]]

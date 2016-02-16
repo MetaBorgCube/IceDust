@@ -1,0 +1,57 @@
+module analysis2/check
+
+imports // constructors
+  
+  signatures/Expressions-sig
+  api/_runtime-constructors
+  analysis2/constructors
+
+imports // functions
+
+  analysis2/path
+  api/_runtime
+  api/data-api
+  api/execute-api
+  api/data-api
+  api/data-names-api
+  api/model-api
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/nabl-ext
+  lib/graph
+  lib/index
+  lib/lists-tuples
+  names/naming/names
+  naming/_notNaBL
+  
+rules
+
+  analysis2check = data-check-multiplicities
+
+  data-check-multiplicities: ast -> result
+    with
+      moduleName := <module-get-modulename>ast;
+      eiNames*   := <modulename-get-entityinstancenames>moduleName;
+      result     := <fmap(einame-check-multiplicities)>eiNames*
+  
+  einame-check-multiplicities: eiName -> result
+    with
+      entityName       := <get-type>eiName;
+      relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
+      memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
+      result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
+      
+  memv-check-multiplicities(|eiName): memvName -> result
+    with
+      values       := <membervaluename-get-values-all>memvName;
+      num          := <length>values;
+      memberName   := <membervaluename-get-entityinstancename;get-type;entityname-get-membername(|memvName)>memvName;
+      multiplicity := <get-multiplicity>memberName;
+      if <mult-inbounds(|multiplicity)>num then
+        result := []
+      else
+        msg := $[Multiplicity mismatch: expected [<write-to-string>multiplicity] got [<write-to-string>num] on [eiName].[memberName]];
+        result := (eiName, msg)
+      end
+      

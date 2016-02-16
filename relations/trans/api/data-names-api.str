@@ -16,6 +16,7 @@ imports // functions
 	lib/search
 	lib/index
 	lib/nabl-ext
+	lib/lists-tuples
 
 rules // entity instance
 
@@ -34,12 +35,16 @@ rules // entity instance
   
   entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
   
+  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+  
   entityinstancename-get-modulename = nabl-name-parent
 
 rules // member values
 
   membervaluename-get-expr = index-get-prop(|AST());Hd
   membervaluename-get-values = index-get-prop(|Rel())
+  membervaluename-get-values-inv = index-get-prop(|RelInv())
+  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
   membervaluename-get-origin = get-member-origin
   

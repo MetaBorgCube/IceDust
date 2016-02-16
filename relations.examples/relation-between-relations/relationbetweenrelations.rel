@@ -7,8 +7,8 @@ model
   }
 
   relation Marriage {
-    Person.marriage  1 -> husband 
-    Person.marriage2 1 -> wife
+    Person.marriage  ? -> husband 
+    Person.marriage2 ? -> wife
   }
 
   relation Counseling {

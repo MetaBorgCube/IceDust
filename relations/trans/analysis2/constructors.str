@@ -10,4 +10,5 @@ signature constructors
 	TopoSort  : TopoSort
 	AST       : AST
 
-  Rel : Term
+  Rel    : Term
+  RelInv : Term

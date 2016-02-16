@@ -109,6 +109,13 @@ rules // predicates over multiplcities
 	lower-one: OneOrMore() -> <id>
 	nullable = lower-zero
 
+rules
+
+  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrMore())
+  mult-inbounds(|multiplicity) = where(!multiplicity => OneOrMore()) ;?i ;where(!(i,1);geq)
+  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrOne()) ;?i ;where(!(i,1);leq)
+  mult-inbounds(|multiplicity) = where(!multiplicity => One())       ;?i ;where(!(i,1);eq)
+
 rules // predicates over ordering
 	
 	ordered: Ordered() -> <id>

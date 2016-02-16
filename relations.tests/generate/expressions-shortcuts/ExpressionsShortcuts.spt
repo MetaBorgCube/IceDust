@@ -11,7 +11,7 @@ setup Common [[
 	}
 	relation Tree{
 		Node.parentTree * -> parent
-		Node.childTree 1  -> child
+		Node.childTree  ? -> child
 		
 		child.parent <-> parent.children
 	}

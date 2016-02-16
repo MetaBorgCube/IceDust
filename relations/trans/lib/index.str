@@ -16,6 +16,10 @@ rules
 		with
 			<_index-add(|val, "analysis2")>Prop(<_nabl-uri>name, kind)
 
+  index-store-prop-inv(|kind, val): name -> val
+    with
+      <index-store-prop(|kind, name)>val
+
 	index-get-prop(|kind): name -> val
 		where
 			<_index-get-all-values>Prop(<_nabl-uri>name, kind) => val
