@@ -11,8 +11,8 @@ test Duplicate role fails [[
 	entity Node {
 	}
 	relation Edge{
-		Node * in <- x
-		Node * in
+		Node.x * -> in
+		Node   * -> in
 		
 		in.c <-> in.d
 	}
@@ -23,8 +23,8 @@ test Resolve role  [[
 		name : String = concat(this.in.[[out]].name)
 	}
 	relation Edge{
-		Node + in      <- in
-		Node * [[out]] <- out
+		Node.in +  -> in
+		Node.out * -> [[out]]
 		in.a <-> out.b
 	}
 ]] resolve #1 to #2
@@ -34,8 +34,8 @@ test Resolve inverse  [[
 		name : String = concat(this.[[in]].out.name)
 	}
 	relation Edge{
-		Node + in  <- [[in]]
-		Node * out <- out
+		Node.[[in]] + -> in 
+		Node.out *    -> out
 		in.a <-> out.b
 	}
 ]] resolve #1 to #2
@@ -43,8 +43,8 @@ test Resolve inverse  [[
 test error on duplicate role [[
 	entity Node {}
 	relation Edge {
-		Node 1 [[node]] <- a
-		Node 1 [[node]] <- b
+		Node.a 1 -> [[node]]
+		Node.b 1 -> [[node]]
 		
 		node.c <-> node.d
 	}

@@ -16,8 +16,8 @@ test Resolve inverse [[
 	}
 	
 	relation Enrollment{
-		Student * student <- [[enrollments]]
-		Course  + course  <- enrollments
+		Student.[[enrollments]] * -> student
+		Course.enrollments +      -> course
 	}
 ]] resolve #1 to #2
 
@@ -27,16 +27,16 @@ test Resolve invalid inverse fails [[
 	}
 	
 	relation Enrollment{
-		Student * student <- enrollments
-		Course  + course  <- enrollments
+    Student.enrollments * -> student
+    Course.enrollments +  -> course
 	}
 ]] 1 error
 
 test error on duplicate inverse [[
 	entity Node {}
 	relation Edge {
-		Node 1 a <- [[edge]]
-		Node 1 b <- [[edge]]
+		Node.[[edge]] 1 -> a
+		Node.[[edge]] 1 -> b
 	}
 ]] 2 errors
 

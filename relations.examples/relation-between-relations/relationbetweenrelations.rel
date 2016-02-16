@@ -7,13 +7,13 @@ model
   }
 
   relation Marriage {
-    Person 1 husband <- marriage
-    Person 1 wife    <- marriage2
+    Person.marriage  1 -> husband 
+    Person.marriage2 1 -> wife
   }
 
   relation Counseling {
-    Person * counselor
-    Marriage 1 counselled
+    Person *   -> counselor
+    Marriage 1 -> counselled
   }
 
 data

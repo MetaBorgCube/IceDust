@@ -43,8 +43,8 @@ test Resolve role in shortcut [[
 	}
 	
 	relation Enrollment{
-		Student * [[student]] <- y
-		Course  + course <- x
+		Student.y * -> [[student]]
+		Course.x  + -> course
 		
 		student.abc <-> [[student]].bcd
 	}
@@ -65,8 +65,8 @@ test (SPTWithCore/7) Resolve invalid role in shortcut fails [[
 test error on duplicate shortcut [[
 	entity Node {}
 	relation Edge {
-		Node 1 a <- c
-		Node 1 b <- d
+		Node.c 1 -> a
+		Node.d 1 -> b
 		
 		a.[[node]] <-> b.[[node]]
 	}

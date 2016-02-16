@@ -10,8 +10,8 @@ entity Node{
 	a : Int  = 1
 }
 relation Tree{
-	Node * parent <- parentTree
-	Node ? child  <- childTree
+	Node.parentTree * -> parent
+	Node.childTree ?  -> child
 }
 
 data

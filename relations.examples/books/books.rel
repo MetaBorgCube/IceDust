@@ -17,15 +17,15 @@ model
 	}
 	
 	relation Own{
-		Lender * owner 
-		Book 1 holding
+		Lender * -> owner 
+		Book 1   -> holding
 	}
 	
 	relation Borrow{
-		Reader * borrower
-		Book ? borrowed
+		Reader * -> borrower
+		Book ?   -> borrowed
 	}
 	relation Subscribe{
-		Reader * subscriber
+		Reader * -> subscriber
 		Lender * 
 	}

@@ -14,8 +14,8 @@ test multiplicity of ref role.attribute ZeroOrOne ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node ? in <- in
-		Node 1 out <- out
+		Node.in ?  -> in
+		Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -26,8 +26,8 @@ test multiplicity of ref role.attribute ZeroOrOne One [[
 		i : Int = [[this.in.out.i]] <+ 0
 	}
 	relation Edge{
-		Node ? in <- in
-		Node 1 out <- out
+    Node.in ?  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -39,8 +39,8 @@ test multiplicity of ref role.attribute One ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node 1 in <- in
-		Node 1 out <- out
+    Node.in 1  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrOne
@@ -51,8 +51,8 @@ test multiplicity of ref role.attribute One One [[
 		i : Int = [[this.in.out.i]]
 	}
 	relation Edge{
-		Node 1 in <- in
-		Node 1 out <- out
+    Node.in 1  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to One
@@ -64,8 +64,8 @@ test multiplicity of ref role.attribute ZeroOrMore ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node * in <- in
-		Node 1 out <- out
+    Node.in *  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -76,8 +76,8 @@ test multiplicity of ref role.attribute ZeroOrMore One [[
 		i : Int = max( [[this.in.out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node * in <- in
-		Node 1 out <- out
+    Node.in *  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -89,8 +89,8 @@ test multiplicity of ref role.attribute OneOrMore ZeroOrOne [[
 		j : Int ?
 	}
 	relation Edge{
-		Node + in <- in
-		Node 1 out <- out
+    Node.in +  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to ZeroOrMore
@@ -101,8 +101,8 @@ test multiplicity of ref role.attribute OneOrMore One [[
 		i : Int = max( [[this.in.out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node + in <- in
-		Node 1 out <- out
+    Node.in +  -> in
+    Node.out 1 -> out
 		in.a <-> out.b
 	}
 ]] run get-multiplicity to OneOrMore
@@ -113,8 +113,8 @@ test ordering of ref role.attribute Unordered Ordered [[
 		i : Int = max( [[this.in.out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node + (unordered) in <- in
-		Node 1 (unordered) out <- out
+		Node.in + (unordered) -> in
+		Node.out 1 (unordered) -> out
 		in.a <-> out.b
 	}
 ]] run get-ordering to Unordered
@@ -125,8 +125,8 @@ test ordering of ref role.attribute Ordered Ordered [[
 		i : Int = max( [[this.in.out.i]] ) <+ 0
 	}
 	relation Edge{
-		Node + (ordered) in <- in
-		Node 1 (ordered) out <- out
+    Node.in + (ordered) -> in
+    Node.out 1 (ordered) -> out
 		in.a <-> out.b
 	}
 ]] run get-ordering to Ordered

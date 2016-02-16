@@ -50,8 +50,8 @@ module x
     name : String ?
   }
   relation Edge{
-    Node * in  <- in
-    Node * out <- out
+    Node.in *  -> in
+    Node.out * -> out
     in.a <-> out.b
   }
   

@@ -83,7 +83,7 @@ binding rules // model
 			of ordering Ordered()
 			of derivation-type a-dt
 
-	Role(NaBLHelp(role-ty, role-ty2), role-mu, role-ord, role, inverseName) :
+	Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
 		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
 		defines Role role
 			of type role-ty2

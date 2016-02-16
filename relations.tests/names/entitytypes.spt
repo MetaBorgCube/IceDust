@@ -20,8 +20,8 @@ test Duplicate relation fails [[
 		Book 1
 	}
 	relation Owns{
-		User * user1 <- x
-		Book 1 book1 <- y
+		User.x * -> user1
+		Book.y 1 -> book1
 	}
 ]] 2 errors
 

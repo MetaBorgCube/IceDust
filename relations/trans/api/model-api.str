@@ -22,10 +22,10 @@ rules // query
 
 	role-get-type           = ?Role(NaBLHelp(<id>, _), _, _, _, _)
 	role-get-type           = ?Role(<id>, _, _, _, _)
-	role-get-mult           = ?Role(_, <id>, _, _, _)
-	role-get-ord            = ?Role(_, _, <id>, _, _)
-	role-get-name           = ?Role(_, _, _, <id>, _)
-	role-get-inv            = ?Role(_, _, _, _, <id>)
+	role-get-inv            = ?Role(_, <id>, _, _, _)
+	role-get-mult           = ?Role(_, _, <id>, _, _)
+	role-get-ord            = ?Role(_, _, _, <id>, _)
+	role-get-name           = ?Role(_, _, _, _, <id>)
 
 	shortcut-get-roles: Shortcut(NaBLHelp(RoleRef(role1),_),_,NaBLHelp(RoleRef(role2),_),_) -> (role1, role2)
 	shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1, role2)
@@ -53,9 +53,9 @@ rules // properties
 	
 	is-role = ?Role(_, _, _, _, _)
 	
-	role-has-no-ord         = ?Role(_, _, None(), _, _)	
-	role-has-no-name        = ?Role(_, _, _, None(), _)
-	role-has-no-inversename = ?Role(_, _, _, _, None())
+	role-has-no-ord         = ?Role(_, _, _, None(), _)	
+	role-has-no-name        = ?Role(_, _, _, _, None())
+	role-has-no-inversename = ?Role(_, None(), _, _, _)
 	
 	is-shortcut = ?Shortcut(_, _, _, _)
 	
@@ -70,9 +70,9 @@ rules // manipulation
 	attr-set-mult(|mult)                = Attribute(id, id, !mult, id)
 	
 	role-set-type(|type)								= role-set-type(!type)
-	role-set-ord(|ord)                  = Role(id, id, !ord, id, id)
-	role-set-name(|name)                = Role(id, id, id, !name, id)
-	role-set-inversename(|inversename)  = Role(id, id, id, id, !inversename)
+	role-set-ord(|ord)                  = Role(id, id, id, !ord, id)
+	role-set-name(|name)                = Role(id, id, id, id, !name)
+	role-set-inversename(|inversename)  = Role(id, !inversename, id, id, id)
 	
 	role-set-type(type)									= Role(type, id, id, id, id)
 

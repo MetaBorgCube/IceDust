@@ -40,9 +40,13 @@ context-free syntax // entity members
 	DerivationType.DefaultValue	= <(default)>
 	DerivationType.Derivation		= <>
 
-	Role.Role										= <<ID> <Multiplicity> <Ordering?> <ID?> <Inverse?>>
-	Inverse											= <\<- <ID>>
+//	Role.Role										= <<ID> <Multiplicity> <Ordering?> <ID?> <Inverse?>>
+//	Inverse											= <\<- <ID>>
 	//TODO: test sdf2 version          ID Multiplicity ID? ("<-" ID)? -> Role {"Role"}
+	
+  Role.Role                   = <<ID><Inverse?> <Multiplicity> <Ordering?> <RoleName?>>
+  Inverse                     = <.<ID>>
+  RoleName                    = <-\> <ID>>
 
 	Shortcut.Shortcut						= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
 

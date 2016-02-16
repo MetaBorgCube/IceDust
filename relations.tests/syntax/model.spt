@@ -51,8 +51,8 @@ test Marriage model [[
 	model
 	entity Person{}
 	relation Marriage{
-		Person 1 husband
-		Person 1 wife
+		Person 1 -> husband
+		Person 1 -> wife
 	}
 ]] parse succeeds
 
@@ -61,11 +61,11 @@ test Marriage counseling model [[
 	model
 	entity Person{}
 	relation Marriage{
-		Person 1 husband
-		Person 1 wife
+		Person 1 -> husband
+		Person 1 -> wife
 	}
 	relation Counseling{
-		Person * counselor
+		Person *   -> counselor
 		Marriage *
 	}
 ]] parse succeeds
@@ -76,8 +76,8 @@ test Friend model [[
 	model
 	entity Person{}
 	relation Friendship{
-		Person 1 personA
-		Person 1 personB
+		Person 1 -> personA
+		Person 1 -> personB
 	}
 ]] parse succeeds
 
@@ -87,9 +87,9 @@ test Family tree model [[
 	model
 	entity Person{}
 	relation Parent{
-		Person 1 child	//has 1 father and mother
-		Person * father	//can have multiple children
-		Person * mother	//can have multiple children
+		Person 1 -> child	//has 1 father and mother
+		Person * -> father	//can have multiple children
+		Person * -> mother	//can have multiple children
 	}
 ]] parse succeeds
 
@@ -99,8 +99,8 @@ test Tree partial model [[
 	model
 	entity TreeNode{}
 	relation TreeEdge{
-		TreeNode * parent	//parent has multiple edges to children
-		TreeNode 1 child	//child has edge to parent
+		TreeNode * -> parent	//parent has multiple edges to children
+		TreeNode 1 -> child	//child has edge to parent
 	}
 ]] parse succeeds
 
@@ -110,8 +110,8 @@ test Tree model [[
 	model
 	entity TreeNode{}
 	relation TreeEdge{
-		TreeNode * parent
-		TreeNode 1 child
+		TreeNode * -> parent
+		TreeNode 1 -> child
 	}
 ]] parse succeeds
 
@@ -128,8 +128,8 @@ test Inverse definitions [[
 		entity Course{}
 		
 		relation Enrollment{
-			Student * student <- enrollments
-			Course  + course  <- enrollments
+			Student.enrollments * -> student
+			Course.enrollments  + -> course
 		}
 ]] parse succeeds
 
@@ -142,6 +142,6 @@ test error on role in relation[[
 		entity Student{}
 		
 		entity Enrollment{
-			[[Student * student <- enrollments]]
+			[[Student.enrollments * -> student]]
 		}
 ]] 1 error

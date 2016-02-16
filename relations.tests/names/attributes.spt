@@ -63,8 +63,8 @@ test Resolve entity.invalid attribute fails [[
 		name : String
 	}
 	relation Edge{
-		Node * in <- x
-		Node * out
+		Node.x * -> in
+		Node   * -> out
 	}
 	data
 	n : Node {
@@ -79,8 +79,8 @@ test Resolve attribute from role.attribute [[
 		[[name]] : String = concat(this.in.out.[[name]]) <+ ""
 	}
 	relation Edge{
-		Node * in  <- in
-		Node * out <- out
+		Node.in *  -> in
+		Node.out * -> out
 		in.a <-> out.b
 	}
 ]] resolve #2 to #1
@@ -90,8 +90,8 @@ test (TS/1) Resolve invalid role.attribute fails [[
 		name : String = concat(this.in.out.x) <+ ""
 	}
 	relation Edge{
-		Node * in  <- in
-		Node * out <- out
+    Node.in *  -> in
+    Node.out * -> out
 		in.a <-> out.b
 	}
 ]] 2 errors // 1 error  // http://yellowgrass.org/issue/TS/1

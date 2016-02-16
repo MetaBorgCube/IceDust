@@ -10,8 +10,8 @@ setup Common [[
 	  entity Node { }
 	
 	  relation Tree {
-	    Node * parent
-	    Node 1 child
+	    Node * -> parent
+	    Node 1 -> child
 	  }
 	  
 	  entity Foo{}

@@ -81,7 +81,7 @@ model
 	}
 	
 	relation Event{
-		User * actor
+		User *  -> actor
 		Issue *
 		actor.eventIssue <-> issue.eventActor
 		
@@ -95,7 +95,7 @@ model
 		moment : Int = event.moment
 	}
 	relation IssueMoved{
-		Project * target
+		Project * -> target
 		moment : Int = event.moment
 	}
 	relation TagAddition{
@@ -117,8 +117,8 @@ model
 	}
 	
 	relation TagTag{
-		Tag * hasTag <- hasTagRelation
-		Tag * taggedBy <- taggedByRelation
+		Tag.hasTagRelation * -> hasTag
+		Tag *                -> taggedBy
 	}
 	
 	relation IssueTags{
