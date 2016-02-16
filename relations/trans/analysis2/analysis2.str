@@ -61,7 +61,7 @@ rules
       name := <membervalue-get-name>memv;
       <index-store-prop(|AST(), name)>expr'
     with
-      if <membervaluename-is-relation>name then
+      if <membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse>name then
         eiNames := <membervalue-getall-einames;map(Snd)>expr';
         <map(index-store-prop(|Rel(), name))>eiNames
       end

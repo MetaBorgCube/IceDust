@@ -287,6 +287,14 @@ binding rules // references
     refers to Shortcut m in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
+  otherwise
+    refers to Role m in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
+  otherwise
+    refers to Inverse m in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 
 	EntityInstanceRef(e) :
 		refers to EntityInstance e
