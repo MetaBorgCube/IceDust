@@ -2,18 +2,22 @@ module directedgraph
 
 model
 
-	entity Node {
-	}
-	
-	relation Node.from <-> Node.to {}
-	
+  entity Node {
+    name : String  
+  }
+  
+  relation Node.from <-> Node.to {}
+  
 
 
 data
 
   a : Node {
+    name = "a"
     to = b {
+      name = "b"
       to = c {
+        name = "c"
         to = a
       }
     }
@@ -21,10 +25,10 @@ data
 
 execute
 
-	a
-	b
-	c
-	a.to //must be b
-	a.from //must be c
-	a.to.to //must be c
-	a.to.to.to //must be a
+  a.name
+  b.name
+  c.name
+  a.to.name //must be [b]
+  a.from.name //must be [c]
+  a.to.to.name //must be [c]
+  a.to.to.to.name //must be [a]

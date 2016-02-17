@@ -35,6 +35,10 @@ rules
       eiNames*   := <modulename-get-entityinstancenames>moduleName;
       result     := <fmap(einame-check-multiplicities)>eiNames*
   
+  einame-check-multiplicities: eiName -> []
+    where
+      Result(_) := <get-type>eiName // erroneous programs might have entity instances without type
+
   einame-check-multiplicities: eiName -> result
     with
       entityName       := <get-type>eiName;

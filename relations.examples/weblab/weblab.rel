@@ -1,201 +1,133 @@
 module weblab
 
+// TODO: add charlie, practical sub asssignments, grade weights, and deadlines
+
 model
 
   entity Student {
-    name : String
-    
-    passedCourses : Int = sum(enrollment.pass2)  
+    name       : String
   }
-
+  
   entity Course {
-    name     : String
-    avgGrade : Int? = avg( enrollment.grade )
-    passPerc : Int? = 100 * sum(enrollment.pass2) /. count(enrollment)
+    name       : String
+    avgGrade   : Float?  = assignment.avgGrade
+    passPerc   : Float?  = assignment.passPerc
   }
-
-  relation Enrollment {
-    Course * 
-    Student *
-    
-    name : String = course.name + " " +student.name
-    
-    pass  : Boolean = studentAssignment.pass
-    pass2 : Int     = pass?1:0
-    grade : Int?    = studentAssignment.grade
+  
+  entity Enrollment {
+    name       : String = course.name + " " +student.name
   }
-
+  
+  relation Course.enrollments *  <-> 1 Enrollment.course
+  relation Student.enrollments * <-> 1 Enrollment.student
+  
   entity Assignment {
-    name :  String
-    
-    gradeMinimum  : Int = 55 (default)
-    gradeWeight   : Int = 1  (default)
-    
-    deadline      : Int? // day since start academic year
-    extension     : Int?
-    extensionDays : Int? = extension - deadline
-    penalty       : Int? // for using the full extension
-  }
-
-  relation Submission {
-    Student * 
-    Assignment * 
-    
-    name : String = student.name + " " + assignment.name
-
-    grade        : Int    // between 10 (min) and 100 (max)
-    date         : Int?
-    extension    : Int? = assignment.extension (default)
-    
-    gradePanelty : Int? = assignment.penalty*lateDays/.assignment.extensionDays
-    gradeReal    : Int? = onTime      ? grade :
-                          onExtension ? grade - gradePanelty :
-                          noValue
-    
-    lateDays     : Int? = date - assignment.deadline
-    
-    onTime       : Boolean = date <= assignment.deadline
-                             <+ 
-                             count(date)==1 || count(assignment.deadline)==0
-
-    onExtension  : Boolean = date <= extension && !onTime
-                             <+
-                             count(date)==1 || count(extension)==0
-    noValue : Int?
+    name       : String
+    question   : String?
+    minimum    : Float?
+    avgGrade   : Float?  = avg(submissions.grade)
+    passPerc   : Float?  = sum(submissions.passInt) / count(submissions) * 100.0
   }
   
-  relation Course.assignment 1 <-> ? Assignment.course
+  entity Submission {
+    name       : String  = assignment.name + " " + student.name
+    answer     : String?
+    
+    grade      : Float?  = if(childPass) childGrade else no value (default)
+    pass       : Boolean = grade >= (assignment.minimum<+0.0) && childPass <+ false
+    childGrade : Float?  = avg(children.grade)
+    childPass  : Boolean = conj(children.pass)
   
-  relation Assignment.whole ? <-> * Assignment.parts
-  
-  entity StudentAssignment {
-    name : String? = enrollment.name //+ " " + assignment.name
-    
-    pass            : Boolean = passGrade && passParts
-    
-    passGrade       : Boolean = grade >= assignment.gradeMinimum <+ false
-    passParts       : Boolean = conj( parts.pass ) <+ true 
-    
-    grade           : Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
-    
-    gradeWeighted   : Int? = grade * assignment.gradeWeight
-    
-    gradeSubmission : Int? = submission.gradeReal
-    gradeParts      : Int? = count(parts)==count(parts.grade)
-                             ? sum ( parts.gradeWeighted ) /. 
-                               sum ( assignment.parts.gradeWeight )
-                             : noValue
-    
-    noValue : Int?
+    passInt    : Int     = if(pass) 1 else 0
+    best       : Boolean = grade == max(assignment.submissions.grade) <+ false
   }
   
-  relation StudentAssignment.whole ? <-> * StudentAssignment.parts
+  relation Assignment.parent     ? <-> * Assignment.children
+  relation Submission.parent     ? <-> * Submission.children
+  relation Submission.student    1 <-> * Student.submissions
+  relation Submission.assignment 1 <-> * Assignment.submissions
   
-  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment
-
-  relation StudentAssignment.submission ? <-> 1 Submission.studentAssignment
-  
-  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments
+  relation Course.assignment     1 <-> ? Assignment.course
+  relation Enrollment.submission 1 <-> ? Submission.enrollment
 
 data
 
-  compiler : Course {
-    name = "Compiler Construction"
-    student =
-      < enA { } >
-      alice {
-        name = "Alice"
-      },
-      < enB { } >
-      bob {
-        name = "Bob"
-      },
-      < enC {  } >
-      charlie {
-        name = "Charlie"
-      }
+  alice : Student {
+    name = "Alice"
+  }
+  bob : Student {
+    name = "Bob"
+  }
+  charlie : Student {
+    name = "Charlie"
+  }
+  math : Course {
+    name = "Math"
     assignment = 
-      comp {
-        name = "root"
-        parts =
-          exam       { name="exam"       gradeWeight=2 gradeMinimum=60
-            student =
-              <sa3{grade=60 }>alice,
-              <sb3{grade=100}>bob,
-              <sc3{grade=98 }>charlie
-            studentAssignments = aExam, bExam, cExam
+      mathAssignment {
+        name = "Math Assignments"
+        minimum = 6.0
+        children =
+          exam {
+            name = "Exam"
+            question = "1+1=?"
+            minimum = 5.0
           },
-          practical  { name="practical"  gradeWeight=1 gradeMinimum=60
-            parts =
-              practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7
-                student =
-                  <sa1{grade=50  date=7 }>alice,
-                  <sb1{grade=50  date=7 }>bob,
-                  <sc1{grade=88  date=7 }>charlie
-                studentAssignments = aPractA, bPractA, cPractA
-              },
-              practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20
-                student =
-                  <sa2{grade=90  date=13 }>alice,
-                  <sb2{grade=60  date=10 }>bob,
-                  <sc2{grade=76  date=15 }>charlie
-                studentAssignments = aPractB, bPractB, cPractB
-              }
-            studentAssignments = aPract, bPract, cPract
-          }
-        studentAssignments =
-          aComp {
-            enrollment = enA 
-            parts = 
-              aExam { submission = sa3 },
-              aPract {
-                parts =
-                  aPractA { submission = sa1 },
-                  aPractB { submission = sa2 }
-              }
-          },
-          bComp {
-            enrollment = enB 
-            parts = 
-              bExam { submission = sb3 },
-              bPract {
-                parts =
-                  bPractA { submission = sb1 },
-                  bPractB { submission = sb2 }
-              }
-          },
-          cComp {
-            enrollment = enC 
-            parts = 
-              cExam { submission = sc3 },
-              cPract {
-                parts =
-                  cPractA { submission = sc1 },
-                  cPractB { submission = sc2 }
-              }
+          practical {
+            name = "Practical"
+            question = "1/0=?"
+            minimum = 5.0
           }
       }
-  } 
-
+    enrollments = 
+      enA {
+        student = alice
+        submission =
+          mathAlice {
+            assignment = mathAssignment
+            children = 
+              examAlice {
+                assignment = exam
+                answer = "Good"
+                grade = 7.0
+                student = alice
+              },
+              practicalAlice {
+                assignment = practical
+                answer = "Great"
+                grade = 8.0
+                student = alice
+              }
+            student = alice
+          }
+      },
+      enB {
+        student = bob
+        submission =
+          mathBob {
+            assignment = mathAssignment
+            children = 
+              examBob {
+                assignment = exam
+                answer = "Bad"
+                grade = 3.0
+                student = bob
+              },
+              practicalBob {
+                assignment = practical
+                answer = "Perfect"
+                grade = 10.0
+                student = bob
+              }
+            student = bob
+          }
+      }
+  }
+  
 execute
 
-  "Alice's compiler pass & grade:"
-  enA.pass
-  enA.grade
-  
+  "The average grade at Mathematics:"
+  math.avgGrade
   ""
-  "Bob's compiler pass & grade:"
-  enB.pass
-  enB.grade
-
-  ""
-  "Charlie's compiler pass & grade:"
-  enC.pass
-  enC.grade
-
-  ""
-  "The average of all student grades:"
-  compiler.avgGrade
-  "Pass percentage:"
-  compiler.passPerc
-    
+  "The pass percentage at Mathematics:"
+  math.passPerc

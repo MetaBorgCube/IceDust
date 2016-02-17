@@ -447,16 +447,18 @@ rules
               this.x_addRolePrivate(en);
             }
           }
+          //TODO: add remove
         ]|
       else // many-many
         result-setAddRemoveRole* := class-body-dec* |[
-          public void x_setRole(x_inverseEntityName en)
+          public void x_addRole(x_inverseEntityName en)
           { 
             if(en != null){
               en.x_addInversePrivate(this);
               this.x_addRolePrivate(en);
             }
           }
+          //TODO: add remove
         ]|
       end end end
     with

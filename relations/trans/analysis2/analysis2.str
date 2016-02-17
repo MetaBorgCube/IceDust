@@ -60,10 +60,11 @@ rules
       expr := <membervalue-get-expr>memv;
       expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
       name := <membervalue-get-name>memv;
-      <index-store-prop(|AST(), name)>expr'
+      <index-store-prop(|AST(), name)>expr';
+      eiNamesTuples := <membervalue-getall-einames;filter((?None()<+is-entityinstancename,is-entityinstancename))>expr' // not all identifiers might be resolved in erroneous programs
     with
       if <membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse>name then
-        eiNames := <membervalue-getall-einames;map(Snd)>expr';
+        eiNames := <map(Snd)>eiNamesTuples;
         <map(index-store-prop    (|Rel(),    name))>eiNames;
         eiName := <membervaluename-get-entityinstancename>name;
         names  := <map(entityinstancename-get-membervaluename(|<membervaluename-get-origin;name-get-inversename>name))>eiNames;
@@ -75,7 +76,6 @@ rules
         invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
         <index-store-def>invvalueName;
         <index-store-prop(|NablProp_member-origin(), invvalueName)>invName;
-        eiNamesTuples := <membervalue-getall-einames>expr';
         roleName := <get-member-origin;shortcutname-get-rolename>name;
         <map(store-shortcut-helper(|invvalueName, invName, roleName))>eiNamesTuples
       end

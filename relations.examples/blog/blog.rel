@@ -11,23 +11,18 @@ model
     body : String  = title (default)
   }
 
-  relation Author {
-    User * 
-    Post 1 
-  }
+  relation Post.author 1 <-> * User.posts
 
 data
 
   me : User {
-    post =
+    posts =
       p1 {title = "First post"},
       p2 {title = "Second post" body = "Some text"}
   }
 
 execute
 
-  me.author // give Author objects for me
+  me.posts // give Posts that are authored by me
 
-  me.author.post // give Posts that are authored by me
-
-  me.author.post.title // my blogpost titles
+  me.posts.title // my blogpost titles

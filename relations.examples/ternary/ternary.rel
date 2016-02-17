@@ -3,15 +3,16 @@ module ternary
 model
 
   entity Supplier {
-    name : String  = "Supplier name" (default)
+    name : String
   }
 
   entity Part {
-    name : String  = "Part name" (default)
+    name : String
+    nameMany : String  = name + "s" (default) // not all names are +s for multiple
   }
 
   entity Project {
-    name : String  = "Project name" (default)
+    name : String
   }
 
   relation Supply {
@@ -19,15 +20,23 @@ model
     Part * 
     Project * 
     amount : Int  
+    
+    name : String = supplier.name + " supplies " + amount as String + " " + part.nameMany + " to " + project.name
   }
 
 data
 
-  s : Supplier {}
+  s : Supplier {
+    name = "MySupplier"
+  }
   
-  p : Part {}
+  p : Part {
+    name = "SomePart"
+  }
   
-  pr : Project {}
+  pr : Project {
+    name = "AwesomeProject"
+  }
   
   x : Supply {
     supplier = s
@@ -45,10 +54,10 @@ data
 
 execute
 
-  p.supply // this part participates in two supply relations
+  p.supply.name // this part participates in two supply relations
 
-  p.supply . amount // and these two have both an amount
+  p.supply.amount // and these two have both an amount
 
-  p.supply.supplier // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
+  p.supply.supplier.name // this part is supplied two times, but both by the same supplier -> 1 supplier, set based navigation
 
-  p.supply.project // and to the same project -> 1 project, set based navigation
+  p.supply.project.name // and to the same project -> 2 x project, bag based navigation

@@ -1,4 +1,4 @@
-module relationbetweenrelations
+module relationsbetweenrelations
 
 model
 
@@ -9,11 +9,15 @@ model
   relation Marriage {
     Person.marriage  ? -> husband 
     Person.marriage2 ? -> wife
+    
+    name : String = husband.name + " is married to " + wife.name
   }
 
   relation Counseling {
     Person *   -> counselor
     Marriage 1 -> counselled
+    
+    name : String = counselor.name + " is counseling " + counselled.husband.name + " and " + counselled.wife.name
   }
 
 data
@@ -33,10 +37,10 @@ data
 
 execute
 
-  man.marriage // get the marriage
+  man.marriage.name // get the marriage
 
   man.marriage.wife.name // get his wife
 
-  man.marriage.counseling // go from the man to his marriage to the counseling of this marriage
+  man.marriage.counseling.name // go from the man to his marriage to the counseling of this marriage
 
   man.marriage.counseling.counselor.name // and then get the counselor of this marriage
