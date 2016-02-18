@@ -92,7 +92,7 @@ Building the editor in Spoofax does not have both issues listed for the Download
 ## Try building the examples
 
 1. Check out this git repo
-2. See the [relations-examples](relations-examples)
+2. See the [relations.examples](relations.examples)
 
 ### Java backend
 
