@@ -8,9 +8,9 @@ model
   
   relation Node.from <-> Node.to {}
   
-
-
 data
+
+  // cyclic graph: a -> b -> c -> a
 
   a : Node {
     name = "a"
