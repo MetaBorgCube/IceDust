@@ -72,14 +72,16 @@ rules
       x_dirtyAttribute            := <attributename-entityname-dirty>x_attributeName;
       x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
       x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
+      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName;
       x_hasDirty                  := <name-hasdirty>x_attributeName;
+      x_hasDirtyAsync             := <name-hasdirtyasync>x_attributeName;
       x_flagAttributeDirty        := <name-flagdirty>x_attributeName;
       x_dirtyFlagFlowsto          := <name-dirtyflagflowsto>x_attributeName;
       x_attributeDefault          := <name-default>x_attributeName;
       x_setAttributeTrigger       := <name-set-trigger>x_attributeName;
       x_setAttributeCacheTrigger  := <name-set-cache-trigger>x_attributeName;
       x_flagAttributeDirtyAsync   := <name-flagdirtyasync>x_attributeName;
-      x_receiveAttributeDirtyAsync:= <name-receivedirtyasync>x_attributeName;
+      x_receiveOneAttributeDirtyAsync := <name-receiveonedirtyasync>x_attributeName;
       x_attributeGetQueue         := <attributename-entityname-getqueue>x_attributeName;
       x_moduleName                := <entityname-get-modulename>x_entityName;
       e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
@@ -241,16 +243,27 @@ rules
             DirtyCollections.x_attributeGetQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
           }
 
-          static function x_receiveAttributeDirtyAsync() {
+          static function x_receiveOneAttributeDirtyAsync() : x_entityName {
             var queue := DirtyCollections.x_attributeGetQueue();
-            var dirtyValues : Set<x_entityName>;
-            while(!queue.isEmpty()){
+            if(!queue.isEmpty()){
               var v : x_entityName := loadEntity(e_entityName, UUIDFromString(queue.poll() as String)) as x_entityName;
-              if(v != null){
-                dirtyValues.add(v);
-              }
+              return v;
             }
-            x_entityName.x_flagAttributeDirty(dirtyValues.list());
+            return null;
+          }
+          
+          static function x_updateAllAttributeCacheAsync () {
+            while( x_entityName.x_hasDirtyAsync() ){
+              var en := x_entityName.x_receiveOneAttributeDirtyAsync();
+              en.x_updateAttributeCache();
+              log("Updating " + e_entityNameAttributeName);
+              commitAndStartNewTransaction();
+            }
+          }
+    
+          static function x_hasDirtyAsync () : Bool {
+            var queue := DirtyCollections.x_attributeGetQueue();
+            return !queue.isEmpty();
           }
         ]|
       else

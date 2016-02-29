@@ -35,8 +35,8 @@ rules // module
     with
       if modulename-is-eventuallyconsistent then
         stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
-        stat_receiveasync* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat2)>x_moduleName;
-        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName
+        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName;
+        stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
       end
     with
       sec_modelDataUi* := section* |[
@@ -59,7 +59,7 @@ rules // module
           def_crud*
       ]|
     with
-      if (modulename-is-calconwrite <+ modulename-is-eventuallyconsistent) then  
+      if modulename-is-calconwrite  then  
         sec_cachesDirtyflag* := section* |[
           section caches and dirty flags
           
@@ -69,9 +69,15 @@ rules // module
               stat_cach*
             }
         ]|
+      else if modulename-is-eventuallyconsistent then  
+        sec_cachesDirtyflag* := section* |[
+          section caches and dirty flags
+          
+            def_dirtyReqVar*
+        ]|
       else
         sec_cachesDirtyflag* := []
-      end
+      end end
     with
       if modulename-is-eventuallyconsistent then
         sec_asyncDirtyflag* :=  section* |[
@@ -82,8 +88,7 @@ rules // module
             }
             
             function updateDerivationsAsync(){
-              stat_receiveasync*
-              updateDerivations();
+              stat_cachAsync*
             }
             
             invoke updateDerivationsAsync() every 3 seconds
@@ -283,15 +288,6 @@ rules // derivations
         x_entityName.x_flagAttributeDirtyAsync();
       ]|
       
-  attributename-to-webdsl-stat2: x_attributeName -> result
-    with
-      x_entityName                := <attributename-get-entityname>x_attributeName;
-      x_receiveAttributeDirtyAsync:= <name-receivedirtyasync>x_attributeName
-    with
-      result := stat |[
-        x_entityName.x_receiveAttributeDirtyAsync();
-      ]|
-      
   attributename-to-webdsl-native: x_attributeName -> result
     with
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
@@ -346,4 +342,52 @@ rules
     with
       result := stat |[
         notEmpty := notEmpty || x_entityName.x_hasDirty();
+      ]|
+
+rules
+  
+  cache-async-modulename-to-webdsl-stms: x_moduleName -> result
+    with
+      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
+        result := stat* |[
+          var notEmpty : Bool;
+          stat_updat*
+        ]|
+      else
+        result := []
+      end
+      
+  cache-async-attributenames-to-webdsl-stms: attributeNames -> result
+    with
+      stat_updat* := <map(cache-async-attributename-to-webdsl-stm-update)>attributeNames;
+      stat_empty* := <map(cache-async-attributename-to-webdsl-stm-empty)>attributeNames
+    with
+      result := stat* |[
+        notEmpty := true;
+        while(notEmpty){
+          stat_updat*
+          notEmpty := false;
+          stat_empty*
+        }
+      ]|
+      
+  cache-async-attributename-to-webdsl-stm-update: x_attributeName -> result
+    with
+      x_entityName                   := <attributename-get-entityname>x_attributeName;
+      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_updateAllAttributeCacheAsync();
+      ]|
+      
+  cache-async-attributename-to-webdsl-stm-empty: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_hasDirtyAsync           := <name-hasdirtyasync>x_attributeName
+    with
+      result := stat |[
+        notEmpty := notEmpty || x_entityName.x_hasDirtyAsync();
       ]|
