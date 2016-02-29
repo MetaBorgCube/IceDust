@@ -333,7 +333,7 @@ rules
         ]|
       else if name-is-left; name-is-to-many-unordered then
         ebd_roleField* := ebd* |[
-          x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
+          x_roleName : {x_inverseEntityName} (inverse=x_inverseName)
         ]|
       else if name-is-to-one then
         ebd_roleField* := ebd* |[

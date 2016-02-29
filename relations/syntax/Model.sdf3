@@ -18,7 +18,7 @@ context-free syntax // entities
 context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
-    relation [EntityRef].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [EntityRef].[ID] {
+    relation [EntityRef].[ID] [Multiplicity?] [Ordering] <-> [Multiplicity?] [Ordering] [EntityRef].[ID] {
       [{Attribute "\n"}*]
     }
   ]
@@ -26,7 +26,7 @@ context-free syntax // shortcut relations
 context-free syntax // non-first-class relation
 
   Model.Relation = [
-    relation [EntityRef].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [EntityRef].[ID]
+    relation [EntityRef].[ID] [Multiplicity?] [Ordering] <-> [Multiplicity?] [Ordering] [EntityRef].[ID]
   ]
 
 context-free syntax // entity members
@@ -44,7 +44,7 @@ context-free syntax // entity members
 //	Inverse											= <\<- <ID>>
 	//TODO: test sdf2 version          ID Multiplicity ID? ("<-" ID)? -> Role {"Role"}
 	
-  Role.Role                   = <<ID><Inverse?> <Multiplicity> <Ordering?> <RoleName?>>
+  Role.Role                   = <<ID><Inverse?> <Multiplicity> <Ordering> <RoleName?>>
   Inverse                     = <.<ID>>
   RoleName                    = <-\> <ID>>
 
