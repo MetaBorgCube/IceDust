@@ -316,8 +316,8 @@ rules
       x_removeInversePrivate := <name-remove-private>x_inverseName;
       x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName;
       x_setRoleTrigger       := <name-set-trigger>x_roleName;
-      x_addRoleTrigger       := <name-add-trigger>x_setRoleTrigger;
-      x_removeRoleTrigger    := <name-remove-trigger>x_setRoleTrigger
+      x_addRoleTrigger       := <name-add-trigger>x_roleName;
+      x_removeRoleTrigger    := <name-remove-trigger>x_roleName
     with
       if name-is-calconwrite-eventuallyconsistent then
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_roleName
