@@ -386,7 +386,7 @@ rules
     with
       if name-is-calconwrite-eventuallyconsistent; name-is-to-one then
         ebd_setAddRemoveRoleTrigger* := ebd* |[
-          function x_setRoleTrigger(newValue : x_inverseEntityName){
+          extend function x_setRoleTrigger(newValue : x_inverseEntityName){
             if(newValue != x_getRole()){
               x_dirtyFlagFlowstoRole();
             }
@@ -394,13 +394,13 @@ rules
         ]|
       else if name-is-calconwrite-eventuallyconsistent; name-is-to-many then
         ebd_setAddRemoveRoleTrigger* := ebd* |[
-          function x_addRoleTrigger(en : x_inverseEntityName){
+          extend function x_addRoleTrigger(en : x_inverseEntityName){
             if(en != null){
               x_dirtyFlagFlowstoRole();
             }
           }
           
-          function x_removeRoleTrigger(en : x_inverseEntityName){
+          extend function x_removeRoleTrigger(en : x_inverseEntityName){
             if(en != null){
               x_dirtyFlagFlowstoRole();
             }
