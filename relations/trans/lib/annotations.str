@@ -8,3 +8,5 @@ rules
 
 	set-annotations(|annos): term -> <set-annotations>(term, annos)
 	
+	_rm-annotations = rm-annotations
+	
