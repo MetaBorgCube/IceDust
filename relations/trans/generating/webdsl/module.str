@@ -91,7 +91,7 @@ rules // module
               stat_cachAsync*
             }
             
-            invoke updateDerivationsAsync() every 3 seconds
+            invoke updateDerivationsAsync() every 1 milliseconds
             
             native class derivations.DirtyCollections as DirtyCollections {
               native1*
