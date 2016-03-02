@@ -1,20 +1,22 @@
-module trans/desugaring/desugar
+module desugaring/desugar
 
 imports // constructors
 	
-	src-gen/signatures/Modules-sig
-	trans/desugaring/constructors
+	signatures/Modules-sig
+	desugaring/constructors
 
 imports // functions
 
-	trans/desugaring/nablhelp
-	trans/desugaring/omitted
-	trans/lib/origin
+	desugaring/alternatives
+	desugaring/nablhelp
+	desugaring/omitted
+	lib/origin
 	
 rules
 
 	desugar-before-analysis =
 		desugar-somes;
+		desugar-alternatives;
 		generate-omitted;
 		nablhelp-before;
 		desugar-done;
@@ -31,5 +33,5 @@ rules // general
 	desugar-some: Some(a) -> a
 
 	desugar-done = keep-origin(desugar-done2)
-	desugar-done2: Module(moduleName, model, data, execute) -> ModuleDesugared(moduleName, model, data, execute)
+	desugar-done2: Module(moduleName, section*) -> ModuleDesugared(moduleName, section*)
 

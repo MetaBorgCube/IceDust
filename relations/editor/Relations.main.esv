@@ -27,5 +27,5 @@ language General properties
   provider: include/relations-java.jar
   observer: editor-analyze (multifile)
   
-  on save : editor-save
-
+//  on save : editor-save
+ 

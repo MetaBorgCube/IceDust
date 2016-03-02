@@ -1,12 +1,13 @@
 module Relations-Colorer
 
-imports Relations-Colorer.generated
+imports editor/Colorer.generated
 
 colorer Entity and Role namespaces
 	
 	// _.Entity : 0 64 128 italic bold	//how to only color the name?
   _.EntityRef: 0 64 128 italic bold
   _.RoleRef: 0 64 128 italic
+  _.MemberRef: 0 64 128 italic
 
 	_.LHSTsHelp: 0 64 128 italic
 	_.NHSTsHelp: 0 64 128 italic
@@ -21,4 +22,4 @@ colorer Multiplicity
 	MultiplicityZ:160 0 0 bold
 
 colorer Primitive types
-	LitVal.String: 0 0 255 
+  _.LitString: 0 0 255 

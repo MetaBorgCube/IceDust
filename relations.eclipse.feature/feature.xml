@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="relations.eclipse.feature"
+      label="Relations Language Editor"
+      version="0.4.0.qualifier">
+
+   <description url="https://github.com/metaborg/relations">
+      The Relations Language Editor
+   </description>
+
+   <copyright url="https://github.com/metaborg/relations">
+      Copyright (c) Daco Harkes 2014
+   </copyright>
+
+   <license url="https://github.com/metaborg/relations">
+      Relations Language License Information
+      
+This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (LGPL). Runtime components related to the IMP, EMF and GMF libraries are licensed under the Eclipse Public License (EPL).
+   </license>
+
+   <includes
+         id="org.metaborg.spoofax.eclipse.feature"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
+   <includes
+         id="org.metaborg.spoofax.eclipse.meta.feature"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
+   <plugin
+         id="relations.eclipse"
+         download-size="0"
+         install-size="0"
+         version="0.4.0.qualifier"/>
+
+</feature>

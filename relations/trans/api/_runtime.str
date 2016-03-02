@@ -1,54 +1,58 @@
-module trans/api/_runtime
+module api/_runtime
 
 imports // generated runtime
 		
-	lib/runtime/analysis/complete	
-	lib/runtime/analysis/debug
-	lib/runtime/analysis/legacy
-	lib/runtime/analysis/resolve
-	lib/runtime/editor/annotations	
-	lib/runtime/editor/origins
-	lib/runtime/editor/outline-library
-	lib/runtime/editor/properties
-	lib/runtime/index/core
-	lib/runtime/index/legacy
-	lib/runtime/index/query
-	lib/runtime/nabl/check
-	lib/runtime/nabl/collect
-	lib/runtime/nabl/constraints
-	lib/runtime/nabl/resolve
-	lib/runtime/nabl/tasks
-	lib/runtime/nabl/query
-	lib/runtime/nabl/uri
-	lib/runtime/task/core
-	lib/runtime/task/insert
-	lib/runtime/task/messages
-	lib/runtime/task/tasks
-	lib/runtime/types/query
+	runtime/analysis/complete	
+	runtime/analysis/debug
+//	runtime/analysis/legacy
+  runtime/analysis/core
+  runtime/analysis/resolve
+	runtime/editor/annotations	
+	runtime/editor/origins
+	runtime/editor/outline-library
+	runtime/editor/properties
+  runtime/index/core
+	runtime/index/legacy
+	runtime/index/query
+	runtime/nabl/check
+	runtime/nabl/collect
+	runtime/nabl/constraints
+  runtime/nabl/entries
+	runtime/nabl/resolve
+	runtime/nabl/tasks
+	runtime/nabl/query
+	runtime/nabl/uri
+	runtime/relations/tasks
+	runtime/task/core
+	runtime/task/create
+	runtime/task/insert
+	runtime/task/messages
+	runtime/task/tasks
+	runtime/types/query
 
 // imports // custom runtime
 // 	
-// 	lib/analysis/complete	
-// 	lib/analysis/debug
-// 	lib/analysis/legacy
-// 	lib/analysis/resolve
-// 	lib/editor/annotations	
-// 	lib/editor/origins
-// 	lib/editor/outline-library
-// 	lib/editor/properties
-// 	lib/index/core
-// 	lib/index/legacy
-// 	lib/nabl/check
-// 	lib/nabl/constraints
-// 	lib/nabl/resolve
-// 	lib/nabl/tasks
-// 	lib/nabl/query
-// 	lib/nabl/uri
-// 	lib/task/core
-// 	lib/task/insert
-// 	lib/task/messages
-// 	lib/task/tasks
-// 	lib/types/query
+// 	analysis/complete	
+// 	analysis/debug
+// 	analysis/legacy
+// 	analysis/resolve
+// 	editor/annotations	
+// 	editor/origins
+// 	editor/outline-library
+// 	editor/properties
+// 	index/core
+// 	index/legacy
+// 	nabl/check
+// 	nabl/constraints
+// 	nabl/resolve
+// 	nabl/tasks
+// 	nabl/query
+// 	nabl/uri
+// 	task/core
+// 	task/insert
+// 	task/messages
+// 	task/tasks
+// 	types/query
 	
 rules
 	
@@ -81,6 +85,8 @@ rules
 	_nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
 	_nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
 	
+	_get-or-create-property-task(|ctx, prop) = get-or-create-property-task(|ctx, prop)
+	
 	_nabl-uri = nabl-uri
 	
 	_get-type = get-type
@@ -99,13 +105,13 @@ rules
 	
 	_simple-label-outline(to-outline-label) = simple-label-outline(to-outline-label)
 	
-	_analysis-default-editor = analysis-default-editor
-	_analysis-save-default(|language) = analysis-save-default(|language)
-	_analysis-single-default(pre-trans, post-trans, pp-message|language) = analysis-single-default(pre-trans, post-trans, pp-message|language)
-	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path)
-	
-	_index-setup(|language, project-path) = index-setup(|language, project-path)
-	_task-setup(|project-path) = task-setup(|project-path)
+//	_analysis-default-editor = analysis-default-editor
+//	_analysis-save-default(|language) = analysis-save-default(|language)
+//	_analysis-single-default(pre-trans, post-trans, pp-message|language) = analysis-single-default(pre-trans, post-trans, pp-message|language)
+//	_analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path)
+//	
+//	_index-setup(|language, project-path) = index-setup(|language, project-path)
+//	_task-setup(|project-path) = task-setup(|project-path)
 	
 	_get-editor-properties(language-pp | language, project-path) =  get-editor-properties(language-pp | language, project-path)
 	
@@ -126,7 +132,7 @@ rules
 	_index-get-all-in-partition = index-get-all-in-partition
 	_beautify-indices = beautify-indices
 	
-	_analysis-resolve(|language, project-path) = analysis-resolve(|language, project-path)
+	_analysis-resolve(|language,path) = analysis-resolve(|language,path)
 	
 	_properties-to-html = properties-to-html
 	_not-none = not-none
@@ -138,8 +144,24 @@ rules
 	_nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
 	
 	_index-add(|value, source) = index-add(|value, source)
+	_index-add(|source) = index-add(|source)
 	_index-get-all-values = index-get-all-values
 	_index-clear-source = index-clear-source
 
 	_ignore-extensions = ignore-extensions
+	
+	_relation-create-lookup(|ctx, rel) = relation-create-lookup(|ctx, rel)
+	_new-task(|partition, type, storage-type) = new-task(|partition, type, storage-type)
+	_task-combinator-type = task-combinator-type
+	_task-auto-storage = task-auto-storage
+	
+	_analyze-all(pre-trans, post-trans, pp-message|language) = analyze-all(pre-trans, post-trans, pp-message|language)
+	
+	_get-property(|kind) = get-property(|kind)
+	
+	_nabl-uri-qualifier = nabl-uri-qualifier
+	
+	_nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier)
+	
+	_nabl-nonunique-uri = nabl-nonunique-uri
 	

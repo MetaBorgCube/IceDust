@@ -1,4 +1,4 @@
-module lib/java/pp/interface/annotation
+module java/pp/interface/annotation
 
 
 rules

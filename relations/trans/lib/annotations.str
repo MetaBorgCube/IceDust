@@ -1,7 +1,12 @@
-module trans/lib/annotations
+module annotations
 
 imports
 	
 rules
 	
 	has-annotation(|kind) = get-annos;fetch-elem(?(kind, <id>))
+
+	set-annotations(|annos): term -> <set-annotations>(term, annos)
+	
+	_rm-annotations = rm-annotations
+	

@@ -3,6 +3,8 @@ module Types
 context-free syntax
 
 	PrimitiveType.Boolean	  = <Boolean>
+	PrimitiveType.Float	  	= <Float>
+	PrimitiveType.Datetime 	= <Datetime>
 	PrimitiveType.Int			  = <Int>
 	PrimitiveType.String	  = <String>
 	
@@ -11,5 +13,9 @@ context-free syntax
 	Multiplicity.OneOrMore	= <+>
 	Multiplicity.ZeroOrMore	= <*>
 	
-	MultiplicityZ = Multiplicity
+	MultiplicityZ           = Multiplicity
 	MultiplicityZ.Zero      = <0>
+
+	Ordering.Ordered        = <(ordered)>
+  Ordering.Unordered      = <(unordered)>
+  Ordering.Unordered      = <>

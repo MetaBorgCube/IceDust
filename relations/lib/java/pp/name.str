@@ -1,4 +1,4 @@
-module lib/java/pp/name
+module java/pp/name
 rules
 
   java-to-box:

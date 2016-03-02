@@ -1,4 +1,4 @@
-module lib/java/pp/statement
+module java/pp/statement
 rules
 
   stm-box:

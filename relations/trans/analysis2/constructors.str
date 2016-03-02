@@ -1,4 +1,4 @@
-module trans/analysis2/constructors
+module analysis2/constructors
 
 signature constructors
 	
@@ -9,3 +9,6 @@ signature constructors
 	FlowsTo   : FlowsTo
 	TopoSort  : TopoSort
 	AST       : AST
+
+  Rel    : Term
+  RelInv : Term

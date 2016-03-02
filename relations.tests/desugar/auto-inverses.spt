@@ -1,0 +1,30 @@
+module desugar-auto-inverses
+
+language Relations
+
+setup Common [[
+  module test
+  
+  model
+  
+	  entity Node { }
+	
+	  relation Tree {
+	    Node * -> parent
+	    Node ? -> child
+	  }
+	  
+	  entity Foo{}
+	  entity Bar{}
+	  relation Rel{Foo * Bar *}
+
+  data
+    
+    n : Node {}
+    foo : Foo {}
+    
+  execute
+]]
+
+test auto inverse on self relation  [[ [[n.treeAsParent]] ]]  run get-type to "Tree"{_}
+test auto inverse on other relation [[ [[foo.rel]]        ]]  run get-type to "Rel"{_}

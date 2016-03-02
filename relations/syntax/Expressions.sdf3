@@ -2,6 +2,7 @@ module Expressions
 
 imports
 	Common
+	Types
 
 context-free syntax // brackets
 
@@ -9,11 +10,15 @@ context-free syntax // brackets
 
 context-free syntax // operators
 
-  Exp.MemberAccess       = <<Exp> . <ID>>          {left}
-  Exp.Not                = <!<Exp>>                {right}
+  Exp.MemberAccess       = <<Exp>.<ID>>            {left}
+  Exp.Not                = <not <Exp>>             {right}
+  Exp.Not2               = <!<Exp>>                {right}
+  
+  Exp.Cast               = <<Exp> as <PrimitiveType>> {left}
 
   Exp.Multiplication     = <<Exp> * <Exp>>         {left}
   Exp.Division           = <<Exp> / <Exp>>         {left}
+  Exp.FloorDivision      = <<Exp> /. <Exp>>        {left}
   Exp.Modulo             = <<Exp> % <Exp>>         {left}
   Exp.Addition           = <<Exp> + <Exp>>         {left}
   Exp.Subtraction        = <<Exp> - <Exp>>         {left}
@@ -24,12 +29,50 @@ context-free syntax // operators
   Exp.GreaterThanEqual   = <<Exp> \>= <Exp>>       {left}
   Exp.Equal              = <<Exp> == <Exp>>        {left}
   Exp.Inequal            = <<Exp> != <Exp>>        {left}
-  Exp.And                = <<Exp> && <Exp>>        {left}
-  Exp.Or                 = <<Exp> || <Exp>>        {left}
-  Exp.TernaryConditional = <<Exp> ? <Exp> : <Exp>> {right}
+  Exp.And                = <<Exp> and <Exp>>       {left}
+  Exp.And2               = <<Exp> && <Exp>>        {left}
+  Exp.Or                 = <<Exp> or <Exp>>        {left}
+  Exp.Or2                = <<Exp> || <Exp>>        {left}
+	Exp.TernaryConditional2= <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
+
+  Exp.TernaryConditional = <
+  	if(<Exp>)
+  		<Exp>
+  	else
+  		<Exp>
+  > {right}
+  
+ 	Exp.TernaryConditional3 = <
+  	switch {
+  	  case <Exp> =\> <Exp>
+  	  <Case>
+  	}
+  >
+ 	Exp.TernaryConditional3 = <
+  	switch {
+  	  case <Exp> =\> <Exp>
+  		default =\> <Exp>
+  	}
+  >
+  Case.TernaryConditional3 = <
+  	case <Exp> =\> <Exp>
+  	<Case>
+  >
+  Case.TernaryConditional3 = <
+  	case <Exp> =\> <Exp>
+  	default =\> <Exp>
+  >
+  	
+  // Exp.Switch = <
+  // 	switch {
+  // 		<{Case "\n"}*>
+  // 	}
+  // >
+  // Case.Case              = <case <Exp> =\> <Exp>>
+  // Case.Default           = <default =\> <Exp>>
 
 context-free syntax // built-in functions
 
@@ -50,22 +93,33 @@ context-free syntax // references
 context-free syntax // literal values
 
   Exp                    = <<LitVal>>
-  LitVal.String          = <"<STRING>">
   LitVal.Int             = <<INT>>
+  LitVal.Float           = <<FLOAT>>
   LitVal.True            = <true>
   LitVal.False           = <false>
+  LitVal.Datetime        = <<DATETIME>>
+  LitVal.NoValue         = <no value>
 
+syntax // literal values: use kernel syntax to make sure " abc " is parsed as String(" abc ") instead of String("abc")
+
+	LitVal-CF.LitString = "\"" STRING-LEX "\""
 
 context-free priorities
+
 	{ left:
 		Exp.MemberAccess
 	} >	
 	{ right:
 		Exp.Not
+		Exp.Not2
+	} >
+	{ left:
+		Exp.Cast
 	} >
 	{ left:
 		Exp.Multiplication
-		Exp.Division
+    Exp.Division
+    Exp.FloorDivision
 		Exp.Modulo
 	} >
 	{ left:
@@ -84,12 +138,15 @@ context-free priorities
 	} >
 	{ left:
 		Exp.And
+		Exp.And2
 	} >
 	{ left:
 		Exp.Or
+		Exp.Or2
 	} >
 	{ right:
 		Exp.TernaryConditional
+		Exp.TernaryConditional2
 	} >
 	{ left:
 		Exp.Merge

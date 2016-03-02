@@ -1,0 +1,15 @@
+module api/execute-api
+
+imports // constructors
+  
+  signatures/Modules-sig
+  desugaring/constructors
+
+rules // query
+  
+  execute-get-exprs = ?Executable(<id>)
+
+rules // properties
+  
+  is-execute = ?Executable(_)
+  

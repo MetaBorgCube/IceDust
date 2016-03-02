@@ -1,4 +1,4 @@
-module lib/java/pp/type/reference
+module java/pp/type/reference
 strategies
 
   java-to-box:

@@ -1,0 +1,63 @@
+module types-math
+
+language Relations
+
+setup Common [[
+	module test
+	model
+	entity X{
+		i : Int ?
+		s : String ?
+	}
+	data
+	x : X {
+		i=3
+		s="a"
+	}
+	execute
+]]
+
+test type of plus	[[ [[1 + 3]] ]] run get-type to Int
+test type of minus[[ [[3 - 2]] ]] run get-type to Int
+test type of mult	[[ [[8 * 8]] ]] run get-type to Int
+test type of div  [[ [[4 / 7]] ]] run get-type to Float
+test type of floor div [[ [[4 /. 7]] ]] run get-type to Int
+test type of mod	[[ [[8 % 3]] ]] run get-type to Int
+
+test type of plus Float	[[ [[1.1 + 3.1]] ]] run get-type to Float
+
+test type of plus String [[ [["a" + "b"]] ]] run get-type to String
+
+test type of plus [[ [[3 + no value]] ]] run get-type to Int
+test type of plus [[ [[no value + 3]] ]] run get-type to Int
+test type of plus [[ [[no value + 3.0]] ]] run get-type to Float
+test type of plus [[ [[no value + no value + 3]] ]] run get-type to Int
+
+
+test (TS/6) error on Boolean plus Boolean [[ [[true]] + [[false]] ]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/6
+test error on Int plus String  [[ 1 + [["b"]] ]] 1 error
+test error on Int minus String [[ 1 - [["b"]] ]] 1 error
+test error on String mod String[[ [["a"]] % [["b"]] ]] 2 errors
+test (TS/6) error on String div Int   [[ [["a"]] / [[3]] ]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/6
+
+
+test multiplicity of One plus One	[[ [[1 + 3]] ]] run get-multiplicity to One
+test multiplicity of One minus One[[ [[3 - 2]] ]] run get-multiplicity to One
+test multiplicity of One mult One	[[ [[8 * 8]] ]] run get-multiplicity to One
+test multiplicity of One div One	[[ [[4 / 7]] ]] run get-multiplicity to One
+test multiplicity of One mod One	[[ [[8 % 3]] ]] run get-multiplicity to One
+test multiplicity of One div One 2[[ [[4 / 0]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One mod One 2[[ [[8 % 0]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One div One 3[[ [[4.0 / 7.0]] ]] run get-multiplicity to One
+test multiplicity of One mod One 3[[ [[8.0 % 3.0]] ]] run get-multiplicity to One
+test multiplicity of One div One 4[[ [[4.0 / 0.0]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One mod One 4[[ [[8.0 % 0.0]] ]] run get-multiplicity to ZeroOrOne
+
+test multiplicity of One plus ZeroOrOne					[[ [[1 + x.i]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of One plus ZeroOrOne String	[[ [["s" + x.s]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of ZeroOrOne minus One				[[ [[x.i - 5]] ]] run get-multiplicity to ZeroOrOne
+test multiplicity of ZeroOrOne mult ZeroOrOne		[[ [[x.i * x.i]] ]] run get-multiplicity to ZeroOrOne
+
+test (SPTWithCore/16) error on One plus OneOrMore [[ 1 + (2 ++ 3) ]] 1 error // http://yellowgrass.org/issue/SPTWithCore/16
+
+test ordering of Ordered mult Ordered	[[ [[8 * 8]] ]] run get-ordering to Ordered

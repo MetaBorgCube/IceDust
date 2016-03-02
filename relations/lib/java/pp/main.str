@@ -1,28 +1,28 @@
-module lib/java/pp/main
+module java/pp/main
 imports
   libstratego-lib
   libstratego-gpp
-  lib/java/Java
+  java/Java
   
-  lib/java/pp/helpers
-  lib/java/pp/statement
-  lib/java/pp/expression
-  lib/java/pp/literal
-  lib/java/pp/name
-  lib/java/pp/modifier
+  java/pp/helpers
+  java/pp/statement
+  java/pp/expression
+  java/pp/literal
+  java/pp/name
+  java/pp/modifier
 
-  lib/java/pp/type/parameterized
-  lib/java/pp/type/variable
-  lib/java/pp/type/primitive
-  lib/java/pp/type/reference
+  java/pp/type/parameterized
+  java/pp/type/variable
+  java/pp/type/primitive
+  java/pp/type/reference
 
-  lib/java/pp/class/enum-declaration
-  lib/java/pp/class/method-declaration
+  java/pp/class/enum-declaration
+  java/pp/class/method-declaration
 
-  lib/java/pp/interface/annotation
-  lib/java/pp/interface/annotation-type
+  java/pp/interface/annotation
+  java/pp/interface/annotation-type
   
-  lib/java/Java-parenthesize
+  java/Java-parenthesize
 
 strategies
 

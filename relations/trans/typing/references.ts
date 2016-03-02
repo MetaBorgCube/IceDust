@@ -12,7 +12,8 @@ imports
 	
 	// functions
 	typing/_multiplicity-functions
-	trans/naming/names
+	typing/_ordering-functions
+  names/naming/names
 	
 	// // use custom runtime libraries  
  //  lib/nabl/-
@@ -30,26 +31,59 @@ type rules // general references
 	where	expr has multiplicity expr-mu
 		and definition of member has multiplicity member-mu
 		and <cartesian-product> (expr-mu, member-mu) => mu
+	
+	MemberAccess(expr, member) has ordering or
+	where	expr has ordering expr-or
+		and definition of member has ordering member-or
+		and <or-nav> (expr-or, member-or) => or
 
 	Ref(a) : ty
 	where definition of a : ty
 	
 	Ref(a) has multiplicity a-mu
 	where definition of a has multiplicity a-mu
+	
+	Ref(a) has ordering a-or
+	where definition of a has ordering a-or
 
 	this@This() : ty
 	where definition of this : ty 
 
 	This() has multiplicity One()
 
+	This() has ordering Ordered()
+
 type rules // specific references
 
 	RoleRef(r) : r-ty
 	where definition of r : r-ty
-	
-	AttributeRef(a) : a-ty
-	where definition of a : a-ty
-	
-	EntityInstanceRef(e) : e-ty
-	where definition of e : e-ty
+  
+  AttributeRef(a) : a-ty
+  where definition of a : a-ty
+  
+  MemberRef(m) : m-ty
+  where definition of m : m-ty
+  
+  MemberRef(m) has multiplicity m-mu
+  where definition of m has multiplicity m-mu
+  
+  MemberRef(m) has ordering m-or
+  where definition of m has ordering m-or
+  
+  MemberRef(m) has rel-ty r-ty
+  where definition of m has rel-ty r-ty
+  
+  EntityInstanceRef(e) : e-ty
+  where definition of e : e-ty
+  
+  EntityInstanceRef(e) has multiplicity One()
+  
+  EntityInstanceRef(e) has ordering Ordered()
+  
+  EntityRef(e) : e-ty
+  where definition of e => e-ty
+  
+  EntityRef(e) has multiplicity One()
+  
+  EntityRef(e) has ordering Ordered()
 
