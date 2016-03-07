@@ -80,27 +80,32 @@ The type system is aware of _multiplicities_ (the number of values an expression
 
 Download from http://buildfarm.metaborg.org/job/relations-eclipsegen/
 
-## Building the Editor (in Spoofax)
+Or build the Editor (in Spoofax)
 
 1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
 2. Check out this git repo
-3. Build the editor project in [relations](relations)
+3. Build the Spoofax Language Project in [relations](relations)
 
-Building the editor in Spoofax does not have both issues listed for the Download.
+## Try the Examples
 
+See the [relations.examples](relations.examples).
 
-## Try building the examples
+There are three backends:
 
-1. Check out this git repo
-2. See the [relations.examples](relations.examples)
+* Java backend: Generates Java classes for the `model`, and generates code for the `data` and `execute` sections.
+  * Use 1: use the `execute` section and use the stdout output
+  * Use 2: only use `model` and `data`, and use the generated Java code in a Java project
+* WebDSL backed: Generate WebDSL entities for `model` and `data` (ignores `execute`)
+  * Standalone Application: generates a Create Read Update Delete interface
+  * Embedded Model: generates extend-entities for embedding in a WebDSL application
 
 ### Java backend
 
 To use the Java backend use the menu `Spoofax > Generation > to Java > Calculate on Read > Generate, Compile and Execute`.
 
-Or use `Spoofax > Generation > to Java > Calculate on Read > Generate` and build the generated Java (make sure the Java files are on the classpath and that your eclipse project has the Java nature and Java builder).
+Or use `Spoofax > Generation > to Java > Calculate on Read > Generate` to generate Java code (make sure the generated Java files are on the classpath and that your eclipse project has the Java nature and Java builder).
 
-### WebDSL backend
+### WebDSL backend - Standalone Application (CRUD-interface)
 
 Compiling to WebDSL requires you to have the Relations file the same name as the project name (case sensitive) and to be in the root folder of the project:
 
@@ -120,7 +125,16 @@ model
   //...
 ```
 
-2. Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Standalone Application` to generate the `.app` file.
-3. Import the project in the [WebDSL editor](http://buildfarm.metaborg.org/job/webdsl-eclipsegen/).
-4. Convert the project to a WebDSL project by right-clicking the project in the WebDSL editor.
-5. Press `Cmd + Alt + B` in the `.app` file to trigger the WebDSL compiler, the compiler will build the project and automatically launch a webserver and open the main web page of the application.
+1. Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Standalone Application` to generate the `.app` file.
+2. Import the project in the [WebDSL editor](http://buildfarm.metaborg.org/job/webdsl-eclipsegen/).
+3. Convert the project to a WebDSL project by right-clicking the project in the WebDSL editor.
+4. Press `Cmd + Alt + B` in the `.app` file to trigger the WebDSL compiler, the compiler will build the project and automatically launch a webserver and open the main web page of the application.
+
+Known issue: the CRUD interface does not work properly for optional values (all values are required), and also not for default values (as those are optional as well).
+
+### WebDSL backend - Embedded Model
+
+Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Embedded Model` to generate the `.app` file.
+
+You need to create a main `.app` file that includes the generated `.app` file.
+The generated `.app` file has `extend` entities, so the main `.app` file needs to define the entities to the generated code can extend these.
