@@ -138,3 +138,8 @@ Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Embedded M
 
 You need to create a main `.app` file that includes the generated `.app` file.
 The generated `.app` file has `extend` entities, so the main `.app` file needs to define the entities to the generated code can extend these.
+
+## Contributing
+
+We welcome contributions of any sort. Whether you are a student, someone from industry, or an enthousiast, you are welcome to contribute. See [Contributing](CONTRIBUTING.md) for more details.
+
