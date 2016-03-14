@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>relationsWebDSL</name>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments><dictionary>
+				<key>LaunchConfigHandle</key>
+				<value>&lt;project&gt;/relationsWebDSL build.xml.launch</value>
+			</dictionary></arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+		</buildCommand>
+		<buildCommand><name>webdsl.editor.builder</name></buildCommand>
+		<buildCommand>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>clean,</triggers>
+			<arguments><dictionary>
+				<key>LaunchConfigHandle</key>
+				<value>&lt;project&gt;/.settings/relationsWebDSL clean-project.xml.launch</value>
+			</dictionary></arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
+		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
+		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
+	</natures>
+</projectDescription>
