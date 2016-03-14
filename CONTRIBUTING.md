@@ -9,18 +9,18 @@ If you want to become a contributor feel free to contact us.
 We have a wishlist for contributions, structured in the form of projects:
 
 * New backends (for embedding in applications)
-  * Python backend (in-memory)
+  * [Python backend](#python-backend) (in-memory)
   * C# backend (persisted data)
   * Google Go backend (in-memory or persisted)
   * peer2peer backend
-  * JavaScript backend for calculating derived values on clients
+  * [JavaScript backend](#javascript-backend) for calculating derived values on clients
   * WebSocket based backend for automatically updating values on clients
 * New backends (full applications)
   * Create-Read-Update-Delete interface, but then better
   * Generic structured data editor for phones, communicating changes to other phones
 * Infrastructure
   * Web-based language editor with a 'publish'-button that automatically publishes a webapplication
-* Case studies
+* [Case studies](#case-study)
   * Use the Java backend to build a desktop application
   * Use the WebDSL backend to build a web application
 
@@ -40,7 +40,7 @@ Creating a Python backend would involve the following steps:
 You will be working closely together with us, and will receive the necessary [Spoofax](http://www.metaborg.org/spoofax/) support to get you up and running.
 
 
-## JavaScript backend for calculating derived values
+## JavaScript backend
 
 The WebDSL backend computes all derived values on the server.
 For applications it is often useful to calculate derived values based on values entered in forms before submitting the changes to the server.
