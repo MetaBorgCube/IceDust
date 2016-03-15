@@ -23,7 +23,7 @@ language General properties
   table:  include/Relations.tbl
   start symbols: Start
   
-  provider: include/relations.jar
+  provider: include/relations.ctree
   provider: include/relations-java.jar
   observer: editor-analyze (multifile)
   
