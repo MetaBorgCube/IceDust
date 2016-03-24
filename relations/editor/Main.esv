@@ -1,4 +1,4 @@
-module Relations.main
+module Main
 
 imports
   Relations-Menus
@@ -20,11 +20,13 @@ language General properties
   url: http://strategoxt.org
   
   extensions: rel
-  table:  include/Relations.tbl
+  table : target/metaborg/sdf.tbl
   start symbols: Start
   
-  provider: include/relations.ctree
-  provider: include/relations-java.jar
+  provider: target/metaborg/stratego.ctree
+  //provider: target/metaborg/stratego.jar
+  provider: target/metaborg/stratego-javastrat.jar
+  
   observer: editor-analyze (multifile)
   
 //  on save : editor-save
