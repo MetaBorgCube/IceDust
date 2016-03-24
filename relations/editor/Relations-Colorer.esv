@@ -1,6 +1,9 @@
 module Relations-Colorer
 
-imports editor/Colorer.generated
+imports
+
+  editor/Colorer.generated
+  completion/colorer/relations-cc-esv
 
 colorer Entity and Role namespaces
 	
