@@ -2,7 +2,7 @@ module Relations-Colorer
 
 imports
 
-  completion/colorer/relations-cc-esv
+  completion/colorer/Relations-cc-esv
 
 colorer Entity and Role namespaces
 	
