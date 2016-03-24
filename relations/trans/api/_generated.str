@@ -2,7 +2,7 @@ module api/_generated
 
 imports // generated language file
 		
-	editor-common.generated
+	stratego/metaborg
 	
 rules
 	
