@@ -50,3 +50,7 @@ rules // needed after desugaring
 	prettyprint-ID:      NaBLHelp(a, _) -> <prettyprint-ID>a
 
 	prettyprint-Exp = prettyprint-ID
+
+rules // content completion
+  
+  pp-completion = pp-partial-Relations-string

@@ -18,6 +18,8 @@ imports // functions
 	lib/string
 	prettyprinting/pp
   names/naming/names
+  completion/Relations-cp
+  runtime/completion/-
 	
 rules // Editor services
 	

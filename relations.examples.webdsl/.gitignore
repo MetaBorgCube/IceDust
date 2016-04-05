@@ -1,0 +1,17 @@
+bin
+nativejava
+.servletapp
+lib
+stylesheets
+WebContent
+relationsWebDSL.app
+.settings/
+.webdsl-parsecache
+.dependencies.webdsl
+build.xml
+clean-project.xml
+relationsWebDSL build.xml.launch
+relationsWebDSL clean-project.xml.launch
+.classpath
+application.ini
+.saved-but-not-built
