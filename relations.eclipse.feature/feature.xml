@@ -2,7 +2,7 @@
 <feature
       id="relations.eclipse.feature"
       label="Relations Language Editor"
-      version="0.4.0.qualifier">
+      version="0.4.1.qualifier">
 
    <description url="https://github.com/metaborg/relations">
       The Relations Language Editor
@@ -35,6 +35,6 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
          id="relations.eclipse"
          download-size="0"
          install-size="0"
-         version="0.4.0.qualifier"/>
+         version="0.4.1.qualifier"/>
 
 </feature>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/relations.eclipse.feature_0.4.0.qualifier.jar" id="relations.eclipse.feature" version="0.4.0.qualifier">
+   <feature url="features/relations.eclipse.feature_0.4.1.qualifier.jar" id="relations.eclipse.feature" version="0.4.1.qualifier">
       <category name="Relations_Language_Editor"/>
    </feature>
    <category-def name="Relations_Language_Editor" label="Relations Language Editor">
