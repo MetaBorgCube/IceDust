@@ -33,57 +33,49 @@ context-free syntax // operators
   Exp.And2               = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> or <Exp>>        {left}
   Exp.Or2                = <<Exp> || <Exp>>        {left}
-	Exp.TernaryConditional2= <<Exp> ? <Exp> : <Exp>> {right}
+	Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
-  Exp.TernaryConditional = <
+  Exp.If = <
   	if(<Exp>)
   		<Exp>
   	else
   		<Exp>
   > {right}
   
- 	Exp.TernaryConditional3 = <
+ 	Exp.If3 = <
   	switch {
   	  case <Exp> =\> <Exp>
   	  <Case>
   	}
   >
- 	Exp.TernaryConditional3 = <
+ 	Exp.If4 = <
   	switch {
   	  case <Exp> =\> <Exp>
   		default =\> <Exp>
   	}
   >
-  Case.TernaryConditional3 = <
+  Case.If5 = <
   	case <Exp> =\> <Exp>
   	<Case>
   >
-  Case.TernaryConditional3 = <
+  Case.If6 = <
   	case <Exp> =\> <Exp>
   	default =\> <Exp>
   >
-  	
-  // Exp.Switch = <
-  // 	switch {
-  // 		<{Case "\n"}*>
-  // 	}
-  // >
-  // Case.Case              = <case <Exp> =\> <Exp>>
-  // Case.Default           = <default =\> <Exp>>
 
 context-free syntax // built-in functions
 
-  Exp.Min                = <min ( <Exp> )>
-  Exp.Max                = <max ( <Exp> )>
-  Exp.Avg                = <avg ( <Exp> )>
-  Exp.Sum                = <sum ( <Exp> )>
-  Exp.Concat             = <concat ( <Exp> )>
-  Exp.Count              = <count ( <Exp> )>
-  Exp.Conj               = <conj ( <Exp> )>
-  Exp.Disj               = <disj ( <Exp> )>
+  Exp.Min                = <min( <Exp> )>
+  Exp.Max                = <max( <Exp> )>
+  Exp.Avg                = <avg( <Exp> )>
+  Exp.Sum                = <sum( <Exp> )>
+  Exp.Concat             = <concat( <Exp> )>
+  Exp.Count              = <count( <Exp> )>
+  Exp.Conj               = <conj( <Exp> )>
+  Exp.Disj               = <disj( <Exp> )>
 
 context-free syntax // references
 
@@ -128,9 +120,9 @@ context-free priorities
 	} >
 	{ left:
 		Exp.LessThan
-		Exp.LessThanEqual
-		Exp.GreaterThan
-		Exp.GreaterThanEqual
+    Exp.LessThanEqual
+    Exp.GreaterThan
+    Exp.GreaterThanEqual
 	} >
 	{ left:
 		Exp.Equal
@@ -145,8 +137,10 @@ context-free priorities
 		Exp.Or2
 	} >
 	{ right:
-		Exp.TernaryConditional
-		Exp.TernaryConditional2
+		Exp.If
+    Exp.If2
+    Exp.If3
+    Exp.If4
 	} >
 	{ left:
 		Exp.Merge

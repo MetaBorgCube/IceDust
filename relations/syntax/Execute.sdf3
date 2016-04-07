@@ -7,6 +7,3 @@ imports
 context-free syntax
 
 	Execute = Exp {longest-match}
-	Execute = CallRule
-	
-	CallRule.CallRule = <match <ID>(<{Exp ","}*>)>

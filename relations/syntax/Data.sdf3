@@ -30,7 +30,7 @@ context-free syntax   // entity instances
   Value.Comma = <
     <Value>,
     <Value>
-  > {left}
+  > {right}
   Value = LitVal
   Value = EntityInstanceWrapper
   
@@ -38,8 +38,6 @@ context-free syntax   // entity instances
   
   EntityInstanceValue = EntityInstanceRef
   EntityInstanceValue = EntityInstance
-  
-//  RelationInstance.RelationInstance = [<[EntityInstanceValue]> ]
   
   AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
  

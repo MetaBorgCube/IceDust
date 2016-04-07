@@ -20,7 +20,7 @@ imports // functions
 
 rules // WebDSL specific: no generics, explicit casts
   
-  webdsl-lib-call-cast = ?TernaryConditional(_,_,_)
+  webdsl-lib-call-cast = ?If(_,_,_)
 
   webdsl-lib-call-cast = ?Merge(_, _)
   webdsl-lib-call-cast = ?ChoiceLeft(_, _)
