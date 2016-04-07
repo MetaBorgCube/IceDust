@@ -25,9 +25,9 @@ rules
   
 	// to-outline-label : ModuleDesugared(n,_,_,_,_) -> n{"icons/module.png"}
 	
-	to-outline-label = ?ModelDef(_)   ;keyword-outline-label(|"Model"  {"icons/model.png"})
-	to-outline-label = ?DataDef(_)    ;keyword-outline-label(|"Data"   {"icons/data.png"})
-	to-outline-label = ?Executable(_) ;keyword-outline-label(|"Execute"{"icons/execute.png"})
+	to-outline-label = ?ModelSection(_)   ;keyword-outline-label(|"Model"  {"icons/model.png"})
+	to-outline-label = ?DataSection(_)    ;keyword-outline-label(|"Data"   {"icons/data.png"})
+	to-outline-label = ?ExecuteSection(_) ;keyword-outline-label(|"Execute"{"icons/execute.png"})
   
 	to-outline-label = where(is-entity;entity-is-entitytype);      ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/square-red.png"}     ;custom-origin(|<entity-get-name>e)
 	to-outline-label = where(is-entity;not(entity-is-entitytype)); ?e; !$[[<entity-get-name;pp-o>e] : [<entity-get-type;pp-o>e]]                    {"icons/diamond-yellow.png"} ;custom-origin(|<entity-get-name>e)

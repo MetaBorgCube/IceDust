@@ -13,7 +13,7 @@ imports // functions
 
 rules // query
 	
-	datadef-get-data = ?DataDef(<id>)
+	datadef-get-data = ?DataSection(<id>)
 	
   entityinstance-get-type = ?EntityInstance(_, EntityRef(<id>), _)
   entityinstance-get-type = ?EntityInstance(_, <id>, _) // no type in concrete syntax (type inferred)
@@ -36,7 +36,7 @@ rules // query
 
 rules // properties
 	
-	is-datadef = ?DataDef(_)
+	is-datadef = ?DataSection(_)
 	
 	is-entityinstance = ?EntityInstance(_, _, _)
 	
@@ -50,7 +50,7 @@ rules // properties
 
 rules // manipulate
 	
-	datadef-set-data(|op) = DataDef(!op)
+	datadef-set-data(|op) = DataSection(!op)
 	
   entityinstance-set-name(|name) = EntityInstance(!name, id, id)
   entityinstance-set-name(|name) = RelationInstance(!name, id, id)

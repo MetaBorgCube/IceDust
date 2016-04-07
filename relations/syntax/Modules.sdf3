@@ -16,20 +16,20 @@ context-free syntax // modules
 		
 	>
 
-	ModuleSection.ModelDef = <
+	ModuleSection.ModelSection = <
 		model
 		
 		  <{Model "\n\n"}*>
 		
 	>
 	
-	ModuleSection.DataDef = <
+	ModuleSection.DataSection = <
 		data
 		
 			<{Data "\n\n"}*>
 	>
 	
-	ModuleSection.Executable = <
+	ModuleSection.ExecuteSection = <
 		execute
 		
 			<{Execute "\n"}*>

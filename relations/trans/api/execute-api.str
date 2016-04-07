@@ -7,9 +7,9 @@ imports // constructors
 
 rules // query
   
-  execute-get-exprs = ?Executable(<id>)
+  execute-get-exprs = ?ExecuteSection(<id>)
 
 rules // properties
   
-  is-execute = ?Executable(_)
+  is-execute = ?ExecuteSection(_)
   
