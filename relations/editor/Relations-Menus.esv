@@ -10,12 +10,12 @@ menus
   menu: "Syntax" (openeditor)
   
     submenu: "1) Abstract Syntax Tree"
-      action: "Show"                              = debug-show-aterm (realtime)  (source)
-      action: "Pretty Print (Format Code)"        = editor-format (realtime) (source)
+      action: "Show"                              = debug-show-aterm (realtime) (source)
+      action: "Pretty Print (Format Code)"        = editor-format    (realtime) (source)
     end
     submenu: "2) Desugared Before Analsys"
-      action: "Show"                              = debug-show-desugared (realtime)  (source)
-      action: "Debug Origins"                     = debug-show-origin2  (source)
+      action: "Show"                              = debug-show-desugared (realtime) (source)
+      action: "Debug Origins"                     = debug-show-origin2   (source)
     end
     submenu: "3) Analyzed Abstract Syntax Tree"
       action: "Show"                              = debug-show-analyzed-resolved0  (source)
@@ -26,6 +26,7 @@ menus
       action: "Show (no def or use anotations)"   = debug-show-analyzed-resolved2 
       action: "Show (no anotations)"              = debug-show-desugared2 
       action: "Debug Origins"                     = debug-show-origin 
+      action: "Pretty Print (Show Implicit Code)" = editor-format // but this time not with (source)
     end
 
   menu: "Analysis" 
