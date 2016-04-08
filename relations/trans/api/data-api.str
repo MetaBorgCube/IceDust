@@ -21,12 +21,6 @@ rules // query
 	entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>)
 	entityinstance-get-attrvalues = ?EntityInstance(_, _, <id>)
 	entityinstance-get-membervalues = ?EntityInstance(_, _, <id>)
-	
-	rolevalue-get-role       = ?RoleValue(RoleRef(<id>), _)
-	rolevalue-get-value      = ?RoleValue(_, <id>)
-	
-	attributevalue-get-attr  = ?AttributeValue(AttributeRef(<id>),_)
-	attributevalue-get-value = ?AttributeValue(_,<id>)
   
   membervalue-get-name = ?MemberValue(MemberRef(<id>), _)
   membervalue-get-name = ?MemberValue(NaBLHelp(_, <id>), _)
@@ -40,9 +34,6 @@ rules // properties
 	
 	is-entityinstance = ?EntityInstance(_, _, _)
 	
-	is-attributevalue = ?AttributeValue(_,_)
-	is-rolevalue      = ?RoleValue(_, _)
-
   is-membervalue = ?MemberValue(_,_)
 
 	entityinstance-has-no-name = ?EntityInstance(None(), _, _)

@@ -21,7 +21,7 @@ context-free syntax   // entity instances
     } >
   ]
 
-  IDSpace             = < <ID>>
+  IDSpace             = <<ID> >
   ColonEntityRefSpace = <: <EntityRef> >
 
   MemberValue.MemberValue = <
@@ -39,10 +39,6 @@ context-free syntax   // entity instances
   
   EntityInstanceValue = EntityInstanceRef
   EntityInstanceValue = EntityInstance
-  
-  AttributeValue.AttributeValue = <<AttributeRef> = <LitVal>>
- 
-  RoleValue.RoleValue = <<RoleRef> : <EntityInstanceRef>>
 
 context-free syntax // specific references
 	

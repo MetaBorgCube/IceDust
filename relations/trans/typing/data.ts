@@ -20,12 +20,6 @@ imports
 
 type rules
 
-	AttributeValue(AttributeRef(a), val) :-
-	where definition of a has derivation-type a-dt
-	  and	(a-dt == Normal() or a-dt == DefaultValue()) else error "Derivations cannot be assigned custom values." on a
-
-type rules
-
   EntityInstance(ei, e, mem) : e-ty
   where definition of ei : e-ty
   
