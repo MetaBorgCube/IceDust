@@ -12,7 +12,7 @@ context-free syntax // modules
 	Start.Module = <
 		module <ID>
 		
-		<ModuleSection*>
+		<{ModuleSection "\n\n"}*>
 		
 	>
 
@@ -20,18 +20,16 @@ context-free syntax // modules
 		model
 		
 		  <{Model "\n\n"}*>
-		
 	>
 	
 	ModuleSection.DataSection = <
 		data
 		
-			<{Data "\n\n"}*>
+			<{Data "\n"}*>
 	>
 	
 	ModuleSection.ExecuteSection = <
 		execute
 		
 			<{Execute "\n"}*>
-
   >

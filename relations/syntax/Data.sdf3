@@ -10,18 +10,19 @@ context-free syntax   // entity instances
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID?><EntityInstanceType?> {
+    <IDSpace?><ColonEntityRefSpace?>{
       <{MemberValue "\n"}*>
     }
   >
   
-  RelationInstance.RelationInstance = <
-    \< <ID?><EntityInstanceType?> {
-      <{MemberValue "\n"}*>
-    } \>
-  >
+  RelationInstance.RelationInstance = [
+    < [IDSpace?][ColonEntityRefSpace?]{
+      [{MemberValue "\n"}*]
+    } >
+  ]
 
-  EntityInstanceType = < : <EntityRef>>
+  IDSpace             = < <ID>>
+  ColonEntityRefSpace = <: <EntityRef> >
 
   MemberValue.MemberValue = <
     <MemberRef> = <Value>

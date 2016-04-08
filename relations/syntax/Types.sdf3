@@ -18,4 +18,3 @@ context-free syntax
 
 	Ordering.Ordered        = <(ordered)>
   Ordering.Unordered      = <(unordered)>
-  Ordering.Unordered      = <>
