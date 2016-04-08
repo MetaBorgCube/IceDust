@@ -63,4 +63,8 @@ rules
   eirefname: EntityInstanceRef(name) -> name
   eiwrefnames: EntityInstanceWrapper(EntityInstanceRef(relname), EntityInstanceRef(name)) -> (relname,name)
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
+
+rules
+
+  is-comma = ?Comma(_, _)
   

@@ -33,18 +33,12 @@ context-free syntax // operators
   Exp.And2               = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> or <Exp>>        {left}
   Exp.Or2                = <<Exp> || <Exp>>        {left}
+  Exp.If                 = <if(<Exp>) <Exp> else <Exp>> {right}
 	Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
-  Exp.If = <
-  	if(<Exp>)
-  		<Exp>
-  	else
-  		<Exp>
-  > {right}
-  
  	Exp.If3 = <
   	switch {
   	  case <Exp> =\> <Exp>
@@ -68,14 +62,14 @@ context-free syntax // operators
 
 context-free syntax // built-in functions
 
-  Exp.Min                = <min( <Exp> )>
-  Exp.Max                = <max( <Exp> )>
-  Exp.Avg                = <avg( <Exp> )>
-  Exp.Sum                = <sum( <Exp> )>
-  Exp.Concat             = <concat( <Exp> )>
-  Exp.Count              = <count( <Exp> )>
-  Exp.Conj               = <conj( <Exp> )>
-  Exp.Disj               = <disj( <Exp> )>
+  Exp.Min                = <min(<Exp>)>
+  Exp.Max                = <max(<Exp>)>
+  Exp.Avg                = <avg(<Exp>)>
+  Exp.Sum                = <sum(<Exp>)>
+  Exp.Concat             = <concat(<Exp>)>
+  Exp.Count              = <count(<Exp>)>
+  Exp.Conj               = <conj(<Exp>)>
+  Exp.Disj               = <disj(<Exp>)>
 
 context-free syntax // references
 

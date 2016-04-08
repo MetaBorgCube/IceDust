@@ -43,9 +43,15 @@ context-free syntax // entity members
 	Member										  	= <<Role>>
 	Member										  	= <<Shortcut>>
 
-  Attribute.Attribute           = <<ID> : <PrimitiveType><Multiplicity?>>
-  Attribute.DerivationAttribute = <<ID> : <PrimitiveType><Multiplicity?> = <Exp>>
-  Attribute.DefaultAttribute    = <<ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)>
+  Attribute.Attribute           = <
+    <ID> : <PrimitiveType><Multiplicity?>
+  >
+  Attribute.DerivationAttribute = <
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp>
+  >
+  Attribute.DefaultAttribute    = <
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)
+  >
 	DerivationType.DefaultValue  	= <(default)>
 	DerivationType.Derivation		  = <>
 

@@ -1,0 +1,60 @@
+module prettyprinting/variations
+
+imports // constructors
+
+  signatures/_PrettyPrint-sig
+  signatures/Data-sig
+  signatures/Model-sig
+
+imports // functions
+
+  api/data-api
+  pp/Expressions-pp
+
+rules
+
+  apply-pp-variation = bottomup(try(pp-variation))
+
+rules // newline a member value if it is a list or an entity
+
+  pp-variation: MemberValue(a, b) -> MemberValuePP(a, b)
+    where
+      EntityInstanceWrapper(_, EntityInstance(_, _, _)) := b
+      
+  pp-variation: MemberValue(a, b) -> MemberValuePP(a, b)
+    where
+      <is-comma>b
+
+rules // single line an entity instance if it has no attributes
+
+  pp-variation: EntityInstance(a, b, c) -> EntityInstancePP(a, b, c)
+    where
+      [] := c
+
+rules // newline a derivation expression if subexpression is multiline
+
+  pp-variation: DerivationAttribute(a, b, c, d) -> DerivationAttributePP(a, b, c, d)
+    where
+      <multiline-expression>d
+      
+  pp-variation: DefaultAttribute   (a, b, c, d) -> DefaultAttributePP   (a, b, c, d)
+    where
+      <multiline-expression>d
+
+rules // multiline an if if one of the subexpressions is multiline
+
+  pp-variation: If(a, b, c) -> IfPP(a, b, c)
+    where
+      <multiline-expression>b
+      
+  pp-variation: If(a, b, c) -> IfPP(a, b, c)
+    where
+      <multiline-expression>c
+
+rules
+  
+  multiline-expression : e -> e
+    where
+      e-pp := <prettyprint-Exp;!V([], <id>);box2text-string(|120)>e;
+      [_, _ | _ ] := <get-lines>e-pp // minimal two lines
+      

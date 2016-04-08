@@ -17,7 +17,6 @@ imports // functions
 	lib/index
 	lib/string
 	prettyprinting/pp
-	pp/Relations-parenthesize
   names/naming/names
   completion/Relations-cp
   runtime/completion/-
@@ -75,7 +74,7 @@ rules // Editor services
     with
 //    	ext      := <get-extension> path;
 //      filename := <guarantee-extension(|$[pp.[ext]])> path;
-      result   := <parenthesize-Relations;pp-debug> selected
+      result   := <pp-debug> selected
    
 rules // target of editor services
 
