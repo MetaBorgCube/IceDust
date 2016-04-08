@@ -11,9 +11,12 @@ imports // functions
 
 rules // query
 	
-	entity-get-type = ?Entity(<id>,_,_)
-	entity-get-name = ?Entity(_,<id>,_)
-	entity-get-members = ?Entity(_, _, <id>)
+	entity-get-type: Entity            (_,_) -> EntityType()
+	entity-get-type: FirstClassRelation(_,_) -> RelationType()
+  entity-get-name    = ?Entity            (<id>,_)
+  entity-get-name    = ?FirstClassRelation(<id>,_)
+  entity-get-members = ?Entity            (_, <id>)
+  entity-get-members = ?FirstClassRelation(_, <id>)
 
 	attr-get-name       = ?Attribute(<id>, _, _, _)
 	attr-get-type       = ?Attribute(_, <id>, _, _)
@@ -43,7 +46,8 @@ rules // query
 
 rules // properties
 	
-	is-entity = ?Entity(_,_,_)
+	is-entity = ?Entity            (_,_)
+	is-entity = ?FirstClassRelation(_,_)
 	
 	entity-is-entitytype = entity-get-type;?EntityType()
 	
@@ -65,7 +69,8 @@ rules // manipulation
 
 	entity-set-members(|members) = entity-set-members(!members)
 	
-	entity-set-members(members) = Entity(id, id, members)
+	entity-set-members(members) = Entity            (id, members)
+	entity-set-members(members) = FirstClassRelation(id, members)
 
 	attr-set-mult(|mult)                = Attribute(id, id, !mult, id)
 	

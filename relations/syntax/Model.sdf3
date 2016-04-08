@@ -8,10 +8,15 @@ imports
 context-free syntax // entities
 
 	Model.Entity = <
-		<EntityOrRelation> <ID> {
+		entity <ID> {
 			<{Member "\n"}*>
 		}
 	>
+  Model.FirstClassRelation = <
+    relation <ID> {
+      <{Member "\n"}*>
+    }
+  >
 	EntityOrRelation.EntityType = <entity>
 	EntityOrRelation.RelationType = <relation>
 
