@@ -36,28 +36,25 @@ context-free syntax // non-first-class relation
 
 context-free syntax // entity members
 
-	Member											= <<Attribute>>
-	Member											= <<Role>>
-	Member											= <<Shortcut>>
+	Member											  = <<Attribute>>
+	Member										  	= <<Role>>
+	Member										  	= <<Shortcut>>
 
-	Attribute.Attribute 				= <<ID> : <PrimitiveType> <Multiplicity?> <Derivation?>>
-	Derivation.Derivation 			= <= <Exp> <DerivationType>>
-	DerivationType.DefaultValue	= <(default)>
-	DerivationType.Derivation		= <>
+  Attribute.Attribute           = <<ID> : <PrimitiveType><Multiplicity?>>
+  Attribute.DerivationAttribute = <<ID> : <PrimitiveType><Multiplicity?> = <Exp>>
+  Attribute.DefaultAttribute    = <<ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)>
+	DerivationType.DefaultValue  	= <(default)>
+	DerivationType.Derivation		  = <>
 
-//	Role.Role										= <<ID> <Multiplicity> <Ordering?> <ID?> <Inverse?>>
-//	Inverse											= <\<- <ID>>
-	//TODO: test sdf2 version          ID Multiplicity ID? ("<-" ID)? -> Role {"Role"}
-	
-  Role.Role                   = <<ID><Inverse?> <Multiplicity> <Ordering> <RoleName?>>
-  Inverse                     = <.<ID>>
-  RoleName                    = <-\> <ID>>
+  Role.Role                     = <<ID><Inverse?> <Multiplicity> <Ordering> <RoleName?>>
+  Inverse                       = <.<ID>>
+  RoleName                      = <-\> <ID>>
 
-	Shortcut.Shortcut						= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
+	Shortcut.Shortcut					  	= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
 
 context-free syntax // specific references
 	
-	EntityRef.EntityRef 				= ID
-	AttributeRef.AttributeRef   = ID
-	RoleRef.RoleRef							= ID
-	MemberRef.MemberRef         = ID // attr or shortcut
+	EntityRef.EntityRef 				  = ID
+	AttributeRef.AttributeRef     = ID
+	RoleRef.RoleRef						  	= ID
+	MemberRef.MemberRef           = ID // attr or shortcut

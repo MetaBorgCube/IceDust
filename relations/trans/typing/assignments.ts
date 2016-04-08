@@ -22,12 +22,14 @@ imports
 
 type rules // derivations well-formedness
 
-	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
+  DerivationAttribute(a, a-ty, a-mu, e)
++ DefaultAttribute   (a, a-ty, a-mu, e) :-
 	where	e	: e-ty
 		and	(e-ty == a-ty or e-ty <sub: a-ty) 
 		    else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
 			
-	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
+  DerivationAttribute(a, a-ty, a-mu, e)
++ DefaultAttribute   (a, a-ty, a-mu, e) :-
 	where	e has multiplicity e-mu
 		and (
 						a-mu == ZeroOrOne() and e-mu == One()
