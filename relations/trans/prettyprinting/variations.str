@@ -57,20 +57,24 @@ rules // newline a derivation expression if subexpression is multiline + align c
       pp-ty := <          prettyprint-PrimitiveType ;!V([], <id>);box2text-string(|120)>ty;
       pp-mu := <pp-option(prettyprint-Multiplicity );!V([], <id>);box2text-string(|120)>mu
 
-rules // multiline an if if one of the subexpressions is multiline
+rules // multiline an expression if one of the subexpressions is multiline or long
 
-  pp-variation: If(a, b, c) -> IfPP(a, b, c)
-    where
-      <multiline-expression>b
-      
-  pp-variation: If(a, b, c) -> IfPP(a, b, c)
-    where
-      <multiline-expression>c
+  pp-variation: If(a, b, c)    -> IfPP(a, b, c)    where <lome>b <+ <lome>c
+  pp-variation: Addition(a, b) -> AdditionPP(a, b) where <lome>a <+ <lome>b
 
 rules
   
-  multiline-expression : e -> e
+  multiline-expression: e -> e
     where
       e-pp := <prettyprint-Exp;!V([], <id>);box2text-string(|120)>e;
       [_, _ | _ ] := <get-lines>e-pp // minimal two lines
+
+  long-expression: e -> e
+    where
+      e-pp := <prettyprint-Exp;!V([], <id>);box2text-string(|120)>e;
+      e-pp-len := <strlen>e-pp;
+      <gt>(e-pp-len, 80)
+      
+  long-or-multiline-expression = long-expression <+ multiline-expression
+  lome = long-or-multiline-expression
       

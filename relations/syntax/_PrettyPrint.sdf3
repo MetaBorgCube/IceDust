@@ -40,6 +40,8 @@ context-free syntax
       <Exp> (default)
   >
 
+  MyLayOut = <>
+
 context-free syntax
   
   Exp.IfPP = <
@@ -49,5 +51,9 @@ context-free syntax
       <Exp>
   > {right}
   
-  MyLayOut = <>
-  
+context-free syntax
+
+  Exp.AdditionPP = <
+    <Exp> +
+    <Exp>
+  > {left}

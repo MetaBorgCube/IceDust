@@ -23,15 +23,15 @@ imports // functions
 rules
 	
   pp-Relations-string =
-      apply-pp-variation
-    ; parenthesize-Relations
+      parenthesize-Relations
+    ; apply-pp-variation
     ; prettyprint-Start
     ; !V([], <id>)
     ; box2text-string(|120)
 
   pp-partial-Relations-string =
-      apply-pp-variation
-    ; parenthesize-Relations
+      parenthesize-Relations
+    ; apply-pp-variation
     ; prettyprint-example
     ; !V([], <id>)
     ; box2text-string(|120)
