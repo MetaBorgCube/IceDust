@@ -1,6 +1,6 @@
 # Relational programming
 
-This is an information system modeling language; a declarative specification language with first class icedust and derived values.
+This is an information system modeling language; a declarative specification language with first class relations and derived values.
 
 ## Example
 
@@ -70,7 +70,7 @@ execute
   math.numStudents
 ```
 
-The example describes a system in the `model` section with students, courses and enrollment-icedust between students and courses. The `pass` attribute in Enrollment and the `averageGrade` attribute in Course are _derived values_. Based on the compiler settings these are eagerly, lazily or eventually computed.
+The example describes a system in the `model` section with students, courses and enrollment-relations between students and courses. The `pass` attribute in Enrollment and the `averageGrade` attribute in Course are _derived values_. Based on the compiler settings these are eagerly, lazily or eventually computed.
 
 The `data` section describes the default data for the system, and the `execute` section triggers computation for the Java compiler.
 
