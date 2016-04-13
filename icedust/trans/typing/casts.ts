@@ -17,7 +17,7 @@ imports
  //  lib/task/-
  //  lib/types/-
  //  lib/properties/-
- //  lib/icedust/-
+ //  lib/relations/-
 
 type rules // derivations well-formedness
 
