@@ -1,0 +1,59 @@
+module _PrettyPrint
+
+imports
+  Common
+  Data
+  Model
+  Expressions
+  Types
+
+context-free syntax
+
+  MemberValue.MemberValuePP = <
+    <MemberRef> =
+      <Value>
+  >
+
+context-free syntax
+
+  EntityInstance.EntityInstancePP = <
+    <IDSpace?><ColonEntityRefSpace?>{<{MemberValue "\n"}*> }
+  >
+
+context-free syntax
+  
+  Attribute.AttributePP = <
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?>
+  >   
+  Attribute.DerivationAttributePP = <
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp>
+  >  
+  Attribute.DerivationAttributePPMultiLine = <
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
+      <Exp>
+  >
+  Attribute.DefaultAttributePP = <
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)
+  >
+  Attribute.DefaultAttributePPMultiLine = <
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
+      <Exp> (default)
+  >
+
+  MyLayOut = <>
+
+context-free syntax
+  
+  Exp.IfPP = <
+    if(<Exp>)
+      <Exp>
+    else
+      <Exp>
+  > {right}
+  
+context-free syntax
+
+  Exp.AdditionPP = <
+    <Exp> +
+    <Exp>
+  > {left}

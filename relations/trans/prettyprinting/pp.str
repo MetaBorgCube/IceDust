@@ -8,6 +8,7 @@ imports // signatures
 imports // functions
 
 	libstratego-gpp
+	pp/_PrettyPrint-pp
 	pp/Common-pp
 	pp/Model-pp
 	pp/Modules-pp
@@ -16,16 +17,22 @@ imports // functions
 	pp/Execute-pp
 	pp/Expressions-pp
 	pp/Types-pp
+  pp/Relations-parenthesize
+	prettyprinting/variations
 
 rules
 	
   pp-Relations-string =
-    prettyprint-Start
+      parenthesize-Relations
+    ; apply-pp-variation
+    ; prettyprint-Start
     ; !V([], <id>)
     ; box2text-string(|120)
 
   pp-partial-Relations-string =
-    prettyprint-example
+      parenthesize-Relations
+    ; apply-pp-variation
+    ; prettyprint-example
     ; !V([], <id>)
     ; box2text-string(|120)
        

@@ -34,7 +34,7 @@ rules // logic
   lib-call-postfix-mults:    Inequal(_, _)          ->"neq"
   lib-call:                  And(_, _)              ->"and"
   lib-call:                  Or(_, _)               ->"or"
-  lib-call-postfix-mults:    TernaryConditional(_,_,_) ->"conditional"
+  lib-call-postfix-mults:    If(_,_,_) ->"conditional"
 
 rules // aggregations
   

@@ -65,11 +65,6 @@ rules // check if entities have all the required attributes and roles assigned
 	eval(|f) = where("ei-a1":=f); is-entityinstance
 	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-membername)
 	eval(|f) = where("ei-a4":=f); entityinstance-get-name
-	
-	eval(|f) = where("ei-r1":=f); is-entityinstance
-	eval(|f) = where("ei-r2":=f); entityinstance-get-type
-	eval(|f) = where("ei-r3":=f); entityinstance-get-rolevalues;map(rolevalue-get-role)
-	eval(|f) = where("ei-r4":=f); entityinstance-get-name
 
 rules // check if Entity (not Relation) has no roles
 
@@ -124,7 +119,8 @@ rules // predicates over ordering
 rules
 	
 	// FIXME: NaBL should have generated this	
-  nabl-get-name : Entity(_, a, _) -> a
+  nabl-get-name : Entity(a, _) -> a
+  nabl-get-name : FirstClassRelation(a, _) -> a
   
 rules // disable messages for duplicate This (inside duplicate entities)
       

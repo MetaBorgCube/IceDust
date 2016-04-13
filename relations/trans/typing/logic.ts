@@ -52,7 +52,7 @@ type rules
     and (y-ty == Boolean() or y-ty <sub: Boolean())
         else error $[Type mismatch: eypected Boolean got [y-ty] in Logic Operation] on y
 	
-	TernaryConditional(x, y, z) : ty
+	If(x, y, z) : ty
 	where x : x-ty
 		and y : y-ty
 		and z : z-ty
@@ -79,7 +79,7 @@ type rules
 		and (x-mu == ZeroOrOne() or x-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [x-mu] in Math Operation] on x
 		and (y-mu == ZeroOrOne() or y-mu == One()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [y-mu] in Math Operation] on y
 
-	TernaryConditional(x, y, z) has multiplicity mu
+	If(x, y, z) has multiplicity mu
 	where x	has multiplicity x-mu
 		and	y	has multiplicity y-mu
 		and z	has multiplicity z-mu
@@ -101,7 +101,7 @@ type rules
 		and	y	has ordering  y-or
 		and <or-nav> (x-or, y-or) => or
 		
-	TernaryConditional(x, y, z) has ordering or
+	If(x, y, z) has ordering or
 	where	x	has ordering x-or
 		and	y	has ordering  y-or
 		and	z	has ordering  z-or

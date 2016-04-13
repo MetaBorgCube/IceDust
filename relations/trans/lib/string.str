@@ -49,4 +49,10 @@ rules // concat with
 
 	concat-strings(|sep) = separate-by(|sep);concat-strings
 
-rules
+rules // string repeat
+
+  whitespace = ?i;!" ";string-repeat(|i)
+
+  string-repeat(|i) = ?s;!"";repeat(string-append(|s)|i)
+  
+  string-append(|s2): s1 -> $[[s1][s2]]

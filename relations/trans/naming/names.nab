@@ -60,7 +60,7 @@ binding rules // modules
 
 binding rules // model
 
-	Entity(ent-or-rel, e-ty, _) :
+	Entity(e-ty, _) :
 		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
 		defines non-unique Entity e-ty
 		scopes Attribute
@@ -68,20 +68,36 @@ binding rules // model
 		scopes This
 		implicitly defines This This()
 			of type e-ty
+			
+  FirstClassRelation(e-ty, _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
 
-	Attribute(a, a-ty, a-mu, None()) :
+	Attribute(a, a-ty, a-mu) :
 		defines Attribute a
 			of type a-ty
 			of multiplicity a-mu
 			of ordering Ordered()
 			of derivation-type Normal()
-			
-	Attribute(a, a-ty, a-mu, Derivation(_, a-dt)) :
-		defines Attribute a
-			of type a-ty
-			of multiplicity a-mu
-			of ordering Ordered()
-			of derivation-type a-dt
+      
+  DerivationAttribute(a, a-ty, a-mu, _) :
+    defines Attribute a
+      of type a-ty
+      of multiplicity a-mu
+      of ordering Ordered()
+      of derivation-type Derivation() 
+          
+  DefaultAttribute(a, a-ty, a-mu, _) :
+    defines Attribute a
+      of type a-ty
+      of multiplicity a-mu
+      of ordering Ordered()
+      of derivation-type DefaultValue()
 
 	Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
 		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving

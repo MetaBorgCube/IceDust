@@ -70,10 +70,10 @@ rules // Editor services
 	
 	// Formats the program using a pretty printer		
   editor-format:
-    (selected, position, ast, path, project-path) -> (filename, result)
+    (selected, position, ast, path, project-path) -> (path, result)
     with
-    	ext      := <get-extension> path;
-      filename := <guarantee-extension(|$[pp.[ext]])> path;
+//    	ext      := <get-extension> path;
+//      filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <pp-debug> selected
    
 rules // target of editor services

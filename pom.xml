@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>relations.build</artifactId>
-	<version>0.3.1-SNAPHSHOT</version>
+	<version>0.4.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>

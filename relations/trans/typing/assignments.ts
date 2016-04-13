@@ -22,12 +22,14 @@ imports
 
 type rules // derivations well-formedness
 
-	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
+  DerivationAttribute(a, a-ty, a-mu, e)
++ DefaultAttribute   (a, a-ty, a-mu, e) :-
 	where	e	: e-ty
 		and	(e-ty == a-ty or e-ty <sub: a-ty) 
 		    else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
 			
-	Attribute(a, a-ty, a-mu, Derivation(e, derivationType)) :-
+  DerivationAttribute(a, a-ty, a-mu, e)
++ DefaultAttribute   (a, a-ty, a-mu, e) :-
 	where	e has multiplicity e-mu
 		and (
 						a-mu == ZeroOrOne() and e-mu == One()
@@ -37,16 +39,6 @@ type rules // derivations well-formedness
 
 type rules // data well-formedness
 
-//	AttributeValue(a, val) :-
-//	where	a		: a-ty
-//		and	val	: val-ty
-//		and	a-ty == val-ty	else error $[Type mismatch: expected [a-ty] got [val-ty] in Attribute Assignment] on val
-//
-//  RoleValue(r, val) :-
-//  where r   : r-ty
-//    and val : val-ty
-//    and r-ty == val-ty else error $[Type mismatch: expected [r-ty] got [val-ty] in Role Assignment] on val
-    
   MemberValue(NaBLHelp(m, m2), val) :-
   where m   : m-ty
     and val : val-ty
