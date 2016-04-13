@@ -29,7 +29,7 @@ rules // entities
   		is-entityname
   	with
   		ebd_attributes* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
-      ebd_icedust*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+      ebd_relations*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_roles*      := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
   		ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
   		ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
@@ -38,7 +38,7 @@ rules // entities
     	  result := def |[
           entity x_entityName {
             ebd_attributes*
-            ebd_icedust*
+            ebd_relations*
             ebd_roles*
             ebd_inverses*
             ebd_shortcuts*
@@ -48,7 +48,7 @@ rules // entities
         result := def |[
           extend entity x_entityName {
             ebd_attributes*
-            ebd_icedust*
+            ebd_relations*
             ebd_roles*
             ebd_inverses*
             ebd_shortcuts*

@@ -20,7 +20,7 @@ context-free syntax // entities
 	EntityOrRelation.EntityType = <entity>
 	EntityOrRelation.RelationType = <relation>
 
-context-free syntax // shortcut icedust
+context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
     relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID] {

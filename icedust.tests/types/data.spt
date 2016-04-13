@@ -99,4 +99,4 @@ test infer relation instance type [[
     }
 ]] run get-type to "XYRelation"{_}
 
-//TODO: add testcases for icedust
+//TODO: add testcases for relations

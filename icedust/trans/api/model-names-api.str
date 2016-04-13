@@ -63,7 +63,7 @@ rules // attributes
 	
 	attributename-get-expr = index-get-prop(|AST());Hd
 
-rules // icedust
+rules // relations
 
   is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
   

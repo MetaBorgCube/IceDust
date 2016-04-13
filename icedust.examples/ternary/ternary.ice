@@ -54,7 +54,7 @@ data
 
 execute
 
-  p.supply.name // this part participates in two supply icedust
+  p.supply.name // this part participates in two supply relations
 
   p.supply.amount // and these two have both an amount
 

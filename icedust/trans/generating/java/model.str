@@ -28,7 +28,7 @@ rules
       is-entityname
     with
       attributesJava*   := <entityname-get-attributenames;fmap(model-attributename-to-java-classbodydecs(err)    )>x_entityName;
-      icedustJava*    := <entityname-get-relationnames ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
+      relationsJava*    := <entityname-get-relationnames ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
       rolesJava*        := <entityname-get-rolenames     ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
       inversesJava*     := <entityname-get-inversenames  ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
       shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
@@ -42,7 +42,7 @@ rules
             ~initCachesJava*
           }
           ~attributesJava*
-          ~icedustJava*
+          ~relationsJava*
           ~rolesJava*
           ~shortcutsJava*
           ~inversesJava*

@@ -41,13 +41,13 @@ rules // entity instances
   entityinstancename-to-webdsl-stms2(err): x_eiName -> result
     with
       stat_attributes* := <entityinstancename-get-attributevaluenames ;fmap(attributevaluename-to-webdsl-stms(err))>x_eiName;
-      stat_icedust*  := <entityinstancename-get-relationvaluenames  ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_relations*  := <entityinstancename-get-relationvaluenames  ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
       stat_roles*      := <entityinstancename-get-rolevaluenames      ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
       stat_inverses*   := <entityinstancename-get-inversevaluenames   ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName
     with
       result := stat* |[
         stat_attributes*
-        stat_icedust*
+        stat_relations*
         stat_roles*
         stat_inverses*
       ]|
