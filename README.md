@@ -78,17 +78,17 @@ The type system is aware of _multiplicities_ (the number of values an expression
 
 ## Getting the Editor
 
-Download from http://buildfarm.metaborg.org/job/relations-eclipsegen/
+Download from http://buildfarm.metaborg.org/job/icedust-eclipsegen/
 
 Or build the Editor (in Spoofax)
 
 1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
 2. Check out this git repo
-3. Build the Spoofax Language Project in [relations](relations)
+3. Build the Spoofax Language Project in [icedust](icedust)
 
 ## Try the Examples
 
-See the [relations.examples](relations.examples).
+See the [icedust.examples](icedust.examples).
 
 There are three backends:
 
@@ -107,11 +107,11 @@ Or use `Spoofax > Generation > to Java > Calculate on Read > Generate` to genera
 
 ### WebDSL backend - Standalone Application (CRUD-interface)
 
-Compiling to WebDSL requires you to have the Relations file the same name as the project name (case sensitive) and to be in the root folder of the project:
+Compiling to WebDSL requires you to have the IceDust file the same name as the project name (case sensitive) and to be in the root folder of the project:
 
 ```
 Demo (project name)
-Demo/Demo.rel (relations file)
+Demo/Demo.rel (icedust file)
 Demo/Demo.app (generated WebDSL file)
 ```
 

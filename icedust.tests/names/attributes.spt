@@ -1,0 +1,98 @@
+module names-attributes
+
+language IceDust
+
+setup Common [[
+	module test
+	model
+]]
+
+test Duplicate attribute fails [[
+	entity User {
+		name : String
+		name : String
+	}
+]] 2 errors
+
+test Resolve attribute from Identifier [[
+	entity User {
+		[[name]] : String = [[name]]
+	}
+]] resolve #2 to #1
+
+test Resolve invalid Identifier fails [[
+	entity User {
+		name : String = [[x]]
+	}
+]] 1 error
+
+test Resolve attribute from this.attribute [[
+	entity User {
+		[[name]] : String = this.[[name]]
+	}
+]] resolve #2 to #1
+
+test Resolve invalid this.attribute fails [[
+	entity User {
+		name : String = this.[[x]]
+	}
+]] 1 error
+
+test Resolve attribute from entity.attribute [[
+	entity Node {
+		[[name]] : String = n.[[name]] (default)
+	}
+	data
+	n : Node {
+		name = "a"
+	}
+]] resolve #2 to #1
+
+test (TS/1) Resolve invalid entity.attribute fails [[
+	entity Node {
+		name : String = n2.name (default)
+	}
+	data
+	n : Node {
+		name = "a"
+	}
+]] 2 errors // 1 error // http://yellowgrass.org/issue/TS/1
+
+test Resolve entity.invalid attribute fails [[
+	entity Node {
+		name : String
+	}
+	relation Edge{
+		Node.x * -> in
+		Node   * -> out
+	}
+	data
+	n : Node {
+		name = "a"
+	}
+	execute
+	n.[[notin]]
+]] 1 error
+
+test Resolve attribute from role.attribute [[
+	entity Node {
+		[[name]] : String = concat(this.in.out.[[name]]) <+ ""
+	}
+	relation Edge{
+		Node.in *  -> in
+		Node.out * -> out
+		in.a <-> out.b
+	}
+]] resolve #2 to #1
+
+test (TS/1) Resolve invalid role.attribute fails [[
+	entity Node {
+		name : String = concat(this.in.out.x) <+ ""
+	}
+	relation Edge{
+    Node.in *  -> in
+    Node.out * -> out
+		in.a <-> out.b
+	}
+]] 2 errors // 1 error  // http://yellowgrass.org/issue/TS/1
+

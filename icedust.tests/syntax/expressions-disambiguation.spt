@@ -1,0 +1,67 @@
+module syntax-expressions-disambiguation
+
+language IceDust
+
+//setup Common [[module x execute 
+//	module test
+//	
+//	model
+//	entity Node{
+//		name : String ?
+//	}
+//	relation Edge{
+//		Node * in  <- in
+//		Node * out <- out
+//		in.a <-> out.b
+//	}
+//	
+//	data
+//	n : Node {}
+//	
+//	execute
+//]]
+
+test Disambiguate left associative multiplication [[module x execute 21 * 14 * 14]] parse to [[module x execute (21 * 14) * 14]]
+test Disambiguate left associative division [[module x execute 21 / 14 / 14]] parse to [[module x execute (21 / 14) / 14]]
+test Disambiguate left associative modulo [[module x execute 21 % 14 % 14]] parse to [[module x execute (21 % 14) % 14]]
+
+test Disambiguate left associative addition [[module x execute 21 + 14 + 14]] parse to [[module x execute (21 + 14) + 14]]
+test Disambiguate left associative subtraction [[module x execute 21 - 14 - 14]] parse to [[module x execute (21 - 14) - 14]]
+test Disambiguate left associative addition and subtraction   [[module x execute 21 + 14 - 14]] parse to [[module x execute (21 + 14) - 14]]
+test Disambiguate left associative addition and subtraction 2 [[module x execute 21 - 14 + 14]] parse to [[module x execute (21 - 14) + 14]]
+test Disambiguate left associative mul div mod [[module x execute 1 * 2 / 3 % 4]] parse to [[module x execute ((1 * 2) / 3) % 4]]
+
+test Disambiguate mult over plus [[module x execute 2 + 3 * 4]] parse to [[module x execute 2 + (3 * 4)]]
+test Disambiguate div over plus  [[module x execute 2 + 3 / 4]] parse to [[module x execute 2 + (3 / 4)]]
+test Disambiguate mod over minus [[module x execute 2 - 3 % 4]] parse to [[module x execute 2 - (3 % 4)]]
+
+test Disambiguate left associative choice [[module x execute 21 <+ 14 <+ 14]] parse to [[module x execute (21 <+ 14) <+ 14]]
+test Disambiguate left associative merge  [[module x execute 21 ++ 14 ++ 14]] parse to [[module x execute (21 ++ 14) ++ 14]]
+
+test Disambiguate plus over merge   [[module x execute 2 ++ 3 + 4]] parse to [[module x execute 2 ++ (3 + 4)]]
+test Disambiguate mult over choice  [[module x execute 2 <+ 3 * 4]] parse to [[module x execute 2 <+ (3 * 4)]]
+test Disambiguate merge over choice [[module x execute 2 <+ 3 ++ 4]] parse to [[module x execute 2 <+ (3 ++ 4)]]
+
+test Disambiguate member access over merge [[
+module x  
+
+  model
+  entity Node{
+    name : String ?
+  }
+  relation Edge{
+    Node.in *  -> in
+    Node.out * -> out
+    in.a <-> out.b
+  }
+  
+  data
+  n : Node{}
+  
+execute
+		n.in.out.name
+	++n.out.in.name
+]]
+
+test Disambiguate large expression [[module x execute 5 * 8 - 5 <+ 3 ++ 0 * 9]] parse to [[module x execute ((5*8)-5) <+ (3++(0*9))]]
+test Disambiguate large expression 2 [[module x execute "a"+"b"+"c"+"d"+"e"]] parse to [[module x execute ((("a"+"b")+"c")+"d")+"e"]]
