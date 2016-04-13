@@ -1,6 +1,6 @@
 # Relational programming
 
-This is an information system modeling language; a declarative specification language with first class relations and derived values.
+This is an information system modeling language; a declarative specification language with first class icedust and derived values.
 
 ## Example
 
@@ -70,7 +70,7 @@ execute
   math.numStudents
 ```
 
-The example describes a system in the `model` section with students, courses and enrollment-relations between students and courses. The `pass` attribute in Enrollment and the `averageGrade` attribute in Course are _derived values_. Based on the compiler settings these are eagerly, lazily or eventually computed.
+The example describes a system in the `model` section with students, courses and enrollment-icedust between students and courses. The `pass` attribute in Enrollment and the `averageGrade` attribute in Course are _derived values_. Based on the compiler settings these are eagerly, lazily or eventually computed.
 
 The `data` section describes the default data for the system, and the `execute` section triggers computation for the Java compiler.
 
@@ -78,17 +78,17 @@ The type system is aware of _multiplicities_ (the number of values an expression
 
 ## Getting the Editor
 
-Download from http://buildfarm.metaborg.org/job/relations-eclipsegen/
+Download from http://buildfarm.metaborg.org/job/icedust-eclipsegen/
 
 Or build the Editor (in Spoofax)
 
 1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
 2. Check out this git repo
-3. Build the Spoofax Language Project in [relations](relations)
+3. Build the Spoofax Language Project in [icedust](icedust)
 
 ## Try the Examples
 
-See the [relations.examples](relations.examples).
+See the [icedust.examples](icedust.examples).
 
 There are three backends:
 
@@ -107,11 +107,11 @@ Or use `Spoofax > Generation > to Java > Calculate on Read > Generate` to genera
 
 ### WebDSL backend - Standalone Application (CRUD-interface)
 
-Compiling to WebDSL requires you to have the Relations file the same name as the project name (case sensitive) and to be in the root folder of the project:
+Compiling to WebDSL requires you to have the IceDust file the same name as the project name (case sensitive) and to be in the root folder of the project:
 
 ```
 Demo (project name)
-Demo/Demo.rel (relations file)
+Demo/Demo.rel (icedust file)
 Demo/Demo.app (generated WebDSL file)
 ```
 

@@ -1,0 +1,17 @@
+bin
+nativejava
+.servletapp
+lib
+stylesheets
+WebContent
+icedustWebDSL.app
+.settings/
+.webdsl-parsecache
+.dependencies.webdsl
+build.xml
+clean-project.xml
+icedustWebDSL build.xml.launch
+icedustWebDSL clean-project.xml.launch
+.classpath
+application.ini
+.saved-but-not-built

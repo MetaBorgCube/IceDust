@@ -1,0 +1,82 @@
+module IceDust-Menus
+
+//imports IceDust-Menus.generated
+
+  // This file can be used to specify toolbar menus.
+  // See the imported file for a brief introduction and examples.
+
+menus
+  
+  menu: "Syntax" (openeditor)
+  
+    submenu: "1) Abstract Syntax Tree"
+      action: "Show"                              = debug-show-aterm (realtime) (source)
+      action: "Pretty Print (Format Code)"        = editor-format    (realtime) (source)
+    end
+    submenu: "2) Desugared Before Analsys"
+      action: "Show"                              = debug-show-desugared (realtime) (source)
+      action: "Debug Origins"                     = debug-show-origin2   (source)
+    end
+    submenu: "3) Analyzed Abstract Syntax Tree"
+      action: "Show"                              = debug-show-analyzed-resolved0  (source)
+      action: "Show (tasks unresolved)"           = debug-show-analyzed 
+    end
+    submenu: "4) Desugared After Analsys"
+      action: "Show "                             = debug-show-analyzed-resolved 
+      action: "Show (no def or use anotations)"   = debug-show-analyzed-resolved2 
+      action: "Show (no anotations)"              = debug-show-desugared2 
+      action: "Debug Origins"                     = debug-show-origin 
+      action: "Pretty Print (Show Implicit Code)" = editor-format // but this time not with (source)
+    end
+
+  menu: "Analysis" 
+    action: "5) Topological Sorting"       = debug-toposort
+		action: "Properties (Selection)"       = debug-properties (openeditor)
+    submenu: "Index" (openeditor) 
+      action: "File"                       = debug-index-selection-partition
+      action: "File (unresolved tasks)"    = debug-index-partition
+      action: "Project "                   = debug-index-project-resolve
+      action: "Project (unresolved tasks)" = debug-index-project 
+      action: "Project (AST)"              = debug-index-project-resolve-ast
+    end
+    submenu: "Index and Tasks" (openeditor)
+      action: "File"                       = debug-partition
+      action: "Project"                    = debug-project
+    end
+    submenu: "Tasks" (openeditor) 
+      action: "Selection"                  = debug-task-selection
+      action: "File"                       = debug-task-partition
+      action: "Project"                    = debug-task-project
+    end
+
+  menu: "Generation"
+  
+    submenu: "to Java"
+      submenu: "Calculate On Read"
+        action: "Generate"                      = generate-java (openeditor)
+        action: "Generate and Compile"          = compile-java 
+        action: "Generate, Compile and Execute" = execute-java
+      end
+      submenu: "Calculate On Write"
+        action: "Generate"                      = generate-java-incr (openeditor)
+        action: "Generate and Compile"          = compile-java-incr
+        action: "Generate, Compile and Execute" = execute-java-incr
+      end
+    end
+    submenu: "to WebDSL"
+      submenu: "Calculate On Read"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
+      end
+      submenu: "Calculate On Write"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor)
+      end
+      submenu: "Eventually Consistent"
+        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eventual (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+      end
+    end
+
+    action: "Cleanup Generated Code" = cleanup-generated-files
+

@@ -1,0 +1,46 @@
+module types-multiplicity-op-merge
+
+language IceDust
+
+setup Common [[
+	module test
+	model
+	entity X{
+		i : Int ?
+	}
+	relation Y{
+		X *
+	}
+	data
+	x : X {
+		i=9
+	}
+	execute
+]]
+
+
+test type of merge Int		[[ [[4 ++ 3]] 		]] run get-type to Int
+test type of merge String	[[ [["a" ++ "b"]] ]] run get-type to String
+
+
+test mul ZeroOrOne	merge ZeroOrOne	[[ [[x.i 				++ x.i]] 				]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrOne	merge One				[[ [[x.i 				++ 3]] 					]] run get-multiplicity to OneOrMore
+test mul ZeroOrOne	merge ZeroOrMore[[ [[x.i 				++ (x.i++x.i)]] ]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrOne	merge OneOrMore	[[ [[x.i 				++ (3++2)]] 		]] run get-multiplicity to OneOrMore
+test mul One 				merge ZeroOrOne	[[ [[4 					++ x.i]] 				]] run get-multiplicity to OneOrMore
+test mul One				merge One				[[ [[4 					++ 3]] 					]] run get-multiplicity to OneOrMore
+test mul One				merge ZeroOrMore[[ [[4 					++ (x.i++x.i)]] ]] run get-multiplicity to OneOrMore
+test mul One				merge OneOrMore	[[ [[4 					++ (3++2)]] 		]] run get-multiplicity to OneOrMore
+test mul ZeroOrMore merge ZeroOrOne	[[ [[(x.i++x.i) ++ x.i]] 				]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrMore	merge One				[[ [[(x.i++x.i) ++ 3]] 					]] run get-multiplicity to OneOrMore
+test mul ZeroOrMore	merge ZeroOrMore[[ [[(x.i++x.i) ++ (x.i++x.i)]] ]] run get-multiplicity to ZeroOrMore
+test mul ZeroOrMore	merge OneOrMore	[[ [[(x.i++x.i) ++ (3++2)]] 		]] run get-multiplicity to OneOrMore
+test mul OneOrMore	merge ZeroOrOne	[[ [[(3++2) 		++ x.i]] 				]] run get-multiplicity to OneOrMore
+test mul OneOrMore	merge One				[[ [[(3++2) 		++ 3]] 					]] run get-multiplicity to OneOrMore
+test mul OneOrMore	merge ZeroOrMore[[ [[(3++2) 		++ (x.i++x.i)]]	]] run get-multiplicity to OneOrMore
+test mul OneOrMore	merge OneOrMore	[[ [[(3++2) 		++ (3++2)]] 		]] run get-multiplicity to OneOrMore
+
+test ord Ordered	 merge Ordered	  [[ [[x.i 				++ x.i]] 				]] run get-ordering to Ordered
+test ord Ordered	 merge Unordered  [[ [[x.i 				++ x.y.x.i]] 		]] run get-ordering to Unordered
+test ord Unordered merge Unordered  [[ [[x.y.x.i		++ x.y.x.i]] 		]] run get-ordering to Unordered
+test ord Unordered merge Ordered    [[ [[x.y.x.i		++ x.i]]    		]] run get-ordering to Unordered

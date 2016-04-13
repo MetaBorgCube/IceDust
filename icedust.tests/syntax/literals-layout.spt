@@ -1,0 +1,13 @@
+module literals-layout
+
+
+language IceDust
+
+setup Common [[
+	module test
+	
+	execute
+]]
+
+test literal String whitespace [[	[[" Asdf "]] ]]  run _rm-annotations to LitString(" Asdf ")
+

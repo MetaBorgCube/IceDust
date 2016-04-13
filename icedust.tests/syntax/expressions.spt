@@ -1,0 +1,68 @@
+module syntax-expressions
+
+language IceDust
+
+setup Common [[
+	module test
+	
+	model
+	entity User{
+		name : String
+	}
+	entity Post{
+		title: String
+		body : String
+	}
+	relation UserPost{
+		User *
+		Post 1
+	}
+	
+	data
+	u : User{}
+	
+	execute
+]]
+
+test Literal Int 		[[ 1 ]] parse succeeds
+test literal String [[ "Asdf"]] parse succeeds
+test Literal True		[[ true ]] parse succeeds
+test literal False	[[ false ]] parse succeeds
+
+test math plus	[[1 + 3]] parse succeeds
+test math minus [[3 - 2]] parse succeeds
+test math mult	[[8 * 8]] parse succeeds
+test math div		[[4 / 7]] parse succeeds
+test math modulo[[8 % 3]] parse succeeds
+
+test aggr min		[[min(4 ++ 3)			]] parse succeeds
+test aggr max		[[max(4 ++ 3 ++ 8)]] parse succeeds
+test aggr avg 	[[avg(1 ++ 3)			]] parse succeeds
+test aggr sum 	[[sum(1 ++ 3)			]] parse succeeds
+test aggr concat[[concat("Asdf" ++ "Fdsa")]] parse succeeds
+test aggr count	[[count("Asdf" ++ "Fdsa")]] parse succeeds
+
+test logic not	[[!false]] parse succeeds
+test logic lt		[[3<5]] parse succeeds
+test logic lte	[[3<=5]] parse succeeds
+test logic gt		[[3>5]] parse succeeds
+test logic gte	[[3>=5]] parse succeeds
+test logic eq		[[3==5]] parse succeeds
+test logic neq	[[3!=5]] parse succeeds
+test logic and	[[true&&false]] parse succeeds
+test logic or		[[true||false]] parse succeeds
+test logic inline if[[true?3:5]] parse succeeds
+
+test multiplicity merge	[[4 ++ 4]] parse succeeds
+test multiplicity choice[[4 <+ 3]] parse succeeds // This is going to give an error, since choice doesn't make sense for something that is always there
+
+test inverse [[	u.userPost]] parse succeeds
+test inervse.role [[	u.userPost.post]] parse succeeds
+test inverse.role.inverse [[	u.userPost.post.user]] parse succeeds
+
+test Identifier						[[u]] parse succeeds
+test Identifier.attribute [[u.name]] parse succeeds
+test inverse.role.inverse.attribute	[[u.userPost.post.user.name]] parse succeeds
+
+test Cast	[[5.0 as Int]] parse succeeds
+test Cast2[[5 as Float]] parse succeeds
