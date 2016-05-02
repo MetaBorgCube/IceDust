@@ -43,7 +43,7 @@ rules // entity
   
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
   entityname-is-crudui               = where(entityname-get-modulename;modulename-is-crudui)
-	
+  entityname-is-newcrudui            = where(entityname-get-modulename;modulename-is-newcrudui)	
 	entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
 	
 	entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
