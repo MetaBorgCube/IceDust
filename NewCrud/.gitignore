@@ -5,3 +5,4 @@
 .webdsl-parsecache
 .saved-but-not-built
 WebContent
+.dependencies.webdsl

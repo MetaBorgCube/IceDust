@@ -70,8 +70,13 @@ section pages
   	  " "
   	  navigate editEntity(p) [] { "Edit" }
   	  " "
-  	  "Remove"
+  	  action("Remove", removeEntity(p))
   	  <br/>
+  	}
+  	
+  	action removeEntity(p: Person) {
+  	  globalList.persons.remove(p);
+  	  globalList.save();
   	}
   }
   
@@ -94,6 +99,7 @@ section pages
   	  };
   	  globalList.persons.add(p);
   	  p.save();
+  	  globalList.save();
   	}
   }
   
@@ -111,7 +117,7 @@ section pages
   	var nickname := p.nickname
   	form {
   	  "Name: " input(name) <br/>
-  	  "Nickname: " output(nickname) <br/>
+  	  "Nickname: " input(nickname) <br/>
   	  submit("Save", editPerson(p, name, nickname))
   	}
   	navigate manageEntity() [] { "Back" }
