@@ -52,19 +52,13 @@ section  model
     }
   }
 
-  entity PersonList {
-  	persons -> List<Person>
-  }
-
-  var globalPersonList := PersonList {}
-
 section pages
 
   page manageEntity() {
   	"Manage Persons:" <br/>
   	navigate createEntity() [] { "Create" }
   	<br/>
-  	for(p: Person in globalPersonList.persons) {
+  	for(p: Person) {
   	  output(p.getName())
   	  navigate viewEntity(p) [] { "View" }
   	  " "
@@ -75,9 +69,7 @@ section pages
   	}
   	
   	action removeEntity(p: Person) {
-  	  globalPersonList.persons.remove(p);
   	  p.delete();
-  	  globalPersonList.save();
   	}
   }
   
@@ -98,9 +90,7 @@ section pages
   	  	name := newname,
   	  	nickname := newnickname
   	  };
-  	  globalPersonList.persons.add(p);
   	  p.save();
-  	  globalPersonList.save();
   	}
   }
   
