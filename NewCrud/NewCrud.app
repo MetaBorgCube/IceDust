@@ -51,12 +51,12 @@ section  model
       return [ en.getNickname() | en : Person in entities where en.getNickname() != null ];
     }
   }
-  
+
   entity PersonList {
   	persons -> List<Person>
   }
-  
-  var globalList := PersonList { }
+
+  var globalPersonList := PersonList {}
 
 section pages
 
@@ -64,7 +64,7 @@ section pages
   	"Manage Persons:" <br/>
   	navigate createEntity() [] { "Create" }
   	<br/>
-  	for(p: Person in globalList.persons) {
+  	for(p: Person in globalPersonList.persons) {
   	  output(p.getName())
   	  navigate viewEntity(p) [] { "View" }
   	  " "
@@ -75,8 +75,9 @@ section pages
   	}
   	
   	action removeEntity(p: Person) {
-  	  globalList.persons.remove(p);
-  	  globalList.save();
+  	  globalPersonList.persons.remove(p);
+  	  p.delete();
+  	  globalPersonList.save();
   	}
   }
   
@@ -97,9 +98,9 @@ section pages
   	  	name := newname,
   	  	nickname := newnickname
   	  };
-  	  globalList.persons.add(p);
+  	  globalPersonList.persons.add(p);
   	  p.save();
-  	  globalList.save();
+  	  globalPersonList.save();
   	}
   }
   
@@ -112,12 +113,13 @@ section pages
   }
   
   page editEntity(p: Person) {
-  	"View Person:" <br/>
+  	"Edit Person:" <br/>
   	var name := p.name
   	var nickname := p.nickname
   	form {
   	  "Name: " input(name) <br/>
   	  "Nickname: " input(nickname) <br/>
+  	  "Full name:" output(p.getFullname()) <br/>
   	  submit("Save", editPerson(p, name, nickname))
   	}
   	navigate manageEntity() [] { "Back" }
