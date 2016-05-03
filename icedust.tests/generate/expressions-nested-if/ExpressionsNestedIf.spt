@@ -3,7 +3,7 @@ module generate-expressions-nested-if
 language IceDust
 
 setup Common [[
-  module debug
+  module ExpressionsNestedIf
   
   model
   
