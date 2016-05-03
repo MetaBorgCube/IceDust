@@ -47,6 +47,7 @@ rules
   pathexpr-remove-this: MemberAccess(This(), name) -> Ref(name)
   pathexpr-remove-this: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-this>expr, name)
   pathexpr-remove-this: e@Ref(name)                -> e
+  pathexpr-remove-this: This()                     -> <fail> // partial function
   
   pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(MemberAccess(<pathexpr-remove-shortcuts>expr, inverseName), roleName) where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
   pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-shortcuts>expr, name)
