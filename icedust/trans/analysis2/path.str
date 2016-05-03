@@ -19,19 +19,25 @@ signature constructors
   DependencyPath : String * Expr -> Path
   DataflowPath   : String * Expr -> Path
 
-rules // Expr -> [Expr] // path-based-abstract-interpretation of expressions
+rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expressions
 
-  expr-pathexprs: e@This()    -> [e]
-  expr-pathexprs: e@Ref(name) -> []  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
-  expr-pathexprs: e@Ref(name) -> [e]
+  expr-pathexprs: e@This()    -> ([e], [])
+  expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
+  expr-pathexprs: e@Ref(name) -> ([e], [])
   
-  expr-pathexprs: e@MemberAccess(expr, name) -> []  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
-  expr-pathexprs: e@MemberAccess(expr, name) -> result
+  expr-pathexprs: e@MemberAccess(expr, name) -> ([],  [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
+  expr-pathexprs: e@MemberAccess(expr, name) -> (p'*, q*)
     with
-      subpathexprs := <expr-pathexprs>expr;
-      result   := <map(pathexpr-extend(|name))>subpathexprs
+      (p*, q*)  := <expr-pathexprs>expr;
+      p'*       := <map(pathexpr-extend(|name))>p*
 
-  expr-pathexprs = get-arguments;fmap(expr-pathexprs) // literals, unops and binops
+  expr-pathexprs: e@If(e1, e2, e3) -> ([p2*,p3*], [p1*,q1*,q2*,q3*])
+    with
+      (p1*, q1*) := <expr-pathexprs>e1;
+      (p2*, q2*) := <expr-pathexprs>e2;
+      (p3*, q3*) := <expr-pathexprs>e3
+
+  expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 
 rules
   

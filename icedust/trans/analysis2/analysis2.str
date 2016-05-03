@@ -117,7 +117,8 @@ rules
     with
       attrName          := <attr-get-name>attr;
       expr              := <attr-get-derivation>attr;
-      pathexprs         := <expr-pathexprs>expr;
+      (p*, q*)          := <expr-pathexprs>expr;
+      pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
       all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
       dependencies      := <map(path(|attrName))>all-pathexprs;
