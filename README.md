@@ -1,6 +1,6 @@
-# Relational programming
+# IceDust
 
-This is an information system modeling language; a declarative specification language with first class relations and derived values.
+IceDust is an information system modeling language; a declarative specification language with first class relations and derived values.
 
 ## Example
 
