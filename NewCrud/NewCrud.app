@@ -1,7 +1,7 @@
 application NewCrud
 
 imports lib/icedust/newcrud-ui
-
+imports lib/icedust/non-required-inputs
 imports lib/icedust/Expressions
 
 section  data
@@ -95,7 +95,7 @@ section  model
     {
       return [ en.getNonReqFloat() | en : Person in entities where en.getNonReqFloat() != null ];
     }
-    nonReqInt : Int ( default= null )
+    nonReqInt : Int ( default = null )
     function getNonReqInt ( ) : Int
     {
       return this.nonReqInt;
@@ -214,20 +214,10 @@ section pagesForPerson
       "reqFloat: " input(reqFloat) <br/>
       "nonReqFloat: " input(nonReqFloat) <br/>
       "reqBool: " input(reqBool) <br/>
-      "nonReqBool: " input(nonReqBool) <br/>
+      "nonReqBool: " inputNonRequiredBool(nonReqBool) <br/>
       "reqDatetime: " input(reqDatetime) <br/>
       "nonReqDatetime: " input(nonReqDatetime) <br/>
       submit action {
-      	log(name);
-      	log(nickname);
-      	log(reqInt);
-      	log(nonReqInt);
-      	log(reqFloat);
-      	log(nonReqFloat);
-      	log(reqBool);
-      	log(nonReqBool);
-      	log(reqDatetime);
-      	log(nonReqDatetime);
       	var p := Person {
   	  	  name := name,
   	  	  nickname := nickname,
@@ -253,26 +243,56 @@ section pagesForPerson
   	"Name: " output(p.getName()) <br/>
   	"Nickname: " output(p.getNickname()) <br/>
   	"Full name: " output(p.getFullname()) <br/>
+  	"reqInt: " output(p.getReqInt()) <br/>
+  	"nonReqInt: " output(p.getNonReqInt()) <br/>
+  	"reqFloat: " output(p.getReqFloat()) <br/>
+  	"nonReqFloat: " output(p.getNonReqFloat()) <br/>
+  	"reqBool: " output(p.getReqBool()) <br/>
+  	"nonReqBool: " output(p.getNonReqBool()) <br/>
+  	"reqDatetime: " output(p.reqDatetime) <br/>
+  	"nonReqDatetime: " output(p.nonReqDatetime) <br/>
   	navigate managePerson() [] { "Back" }
   }
   
   page editPerson(p: Person) {
   	applicationmenu() <br/>
   	"Edit Person:" <br/>
-  	var name := p.name
-  	var nickname := p.nickname
+  	var name := p.getName()
+  	var nickname := p.getNickname()
+  	var reqInt := p.getReqInt()
+  	var nonReqInt := p.getNonReqInt()
+  	var reqFloat := p.getReqFloat()
+  	var nonReqFloat := p.getNonReqFloat()
+  	var reqBool := p.getReqBool()
+  	var nonReqBool := p.getNonReqBool()
+  	var reqDatetime := p.getReqDatetime()
+  	var nonReqDatetime := p.getNonReqDatetime()
   	form {
   	  "Name: " input(name) <br/>
   	  "Nickname: " input(nickname) <br/>
   	  "Full name:" output(p.getFullname()) <br/>
-  	  submit("Save", editPerson(p, name, nickname))
+  	  "reqInt: " input(reqInt) <br/>
+      "nonReqInt: " input(nonReqInt) <br/>
+      "reqFloat: " input(reqFloat) <br/>
+      "nonReqFloat: " input(nonReqFloat) <br/>
+      "reqBool: " input(reqBool) <br/>
+      "nonReqBool: " inputNonRequiredBool(nonReqBool) <br/>
+      "reqDatetime: " input(reqDatetime) <br/>
+      "nonReqDatetime: " input(nonReqDatetime) <br/>
+  	  submit action {
+  	  	p.name := name;
+  	    p.nickname := nickname;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.save();
+  	  } { "Save" }
   	}
   	navigate managePerson() [] { "Back" }
-  	
-  	action editPerson(cperson: Person, newname : String, newnickname : String) {
-  	  cperson.name := newname;
-  	  cperson.nickname := newnickname;
-  	  cperson.save();
-  	}
   }
   
