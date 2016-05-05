@@ -5,7 +5,10 @@ model
   entity Message {
     text : String  
   }
-
+  entity Envelope {
+    text: String
+  }
+  
 data
 
   hello : Message {

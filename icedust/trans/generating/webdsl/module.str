@@ -185,6 +185,7 @@ rules //crud
       x_manageEntity := <name-manage>x_entityName;
       x_createEntity := <name-create>x_entityName;
       x_editEntity   := <name-edit>x_entityName;
+      x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
       form-fields :=
         <concat(
@@ -196,7 +197,35 @@ rules //crud
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
     with
       if entityname-is-calconread then
-        result := [DeriveCrud(x_entityName)]
+        result := def* |[
+          page x_manageEntity(){
+		  	navigate x_createEntity() [] { "Create" }
+		  	<br/>
+		  	for(entity: x_entityName) {
+		  	  output(entity.name)
+		  	  navigate x_viewEntity(entity) [] { "View" }
+		  	  " "
+		  	  navigate x_editEntity(entity) [] { "Edit" }
+		  	  " "
+		  	  action("Remove", x_removeEntity(entity))
+		  	  <br/>
+		  	}
+		  	
+		  	action x_removeEntity(entity: x_entityName) {
+		  	  entity.delete();
+		  	}
+          }
+          
+          page x_createEntity(){
+
+          }
+          page x_viewEntity(arg : x_entityName){
+          
+          }
+          page x_editEntity(arg : x_entityName){
+          
+          }
+        ]|
       else
         result := def* |[
           define page x_createEntity(){

@@ -6,11 +6,11 @@ section ui
   {
     main()
     define body() {
-      "Hello world!"
+      "Welcome to the new CRUD!"
     }
   }
   
-  define override main() {
+  define main() {
     <div id="pagewrapper">
       <div id="navbar">
         applicationmenu()
@@ -26,7 +26,7 @@ section ui
     </div>
   }
   
-  define override body(){
+  define body(){
     "default body"
   }
   
@@ -54,3 +54,14 @@ section ui
     }
   }
   
+section validator-inputs
+
+  define nonRequiredIntInput(ident: Int) {
+  	<div class="non-required-int-input">
+  	  <input id="non-required-int-input" + ident>
+  	  </input>
+  	  <div id="non-required-int-input-message" + ident>
+  	  </div>
+  	</div>
+  }
+

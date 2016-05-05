@@ -46,7 +46,7 @@ rules // entities
         ]|
       else
         result := def |[
-          extend entity x_entityName {
+          entity x_entityName {
             ebd_attributes*
             ebd_relations*
             ebd_roles*

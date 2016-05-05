@@ -32,6 +32,7 @@ rules // generic names
   name-remove-trigger:     name -> $[removeFrom[<ucfirst>name]]
   name-manage:             name -> $[manage[<ucfirst>name]]
   name-create:             name -> $[create[<ucfirst>name]]
+  name-remove:             name -> $[remove[<ucfirst>name]]
   name-edit:               name -> $[edit[<ucfirst>name]]
   name-flagdirtyasync:     name -> $[flagDirtyAsync[<ucfirst>name]]
   name-receivedirtyasync:  name -> $[receiveDirtyAsync[<ucfirst>name]]
