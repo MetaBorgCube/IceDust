@@ -1,7 +1,7 @@
 application NewCrud
 
 imports lib/icedust/newcrud-ui
-
+imports lib/icedust/non-required-inputs
 imports lib/icedust/Expressions
 
 section  data
@@ -95,7 +95,7 @@ section  model
     {
       return [ en.getNonReqFloat() | en : Person in entities where en.getNonReqFloat() != null ];
     }
-    nonReqInt : Int ( default= null )
+    nonReqInt : Int ( default = null )
     function getNonReqInt ( ) : Int
     {
       return this.nonReqInt;
@@ -218,16 +218,6 @@ section pagesForPerson
       "reqDatetime: " input(reqDatetime) <br/>
       "nonReqDatetime: " input(nonReqDatetime) <br/>
       submit action {
-      	log(name);
-      	log(nickname);
-      	log(reqInt);
-      	log(nonReqInt);
-      	log(reqFloat);
-      	log(nonReqFloat);
-      	log(reqBool);
-      	log(nonReqBool);
-      	log(reqDatetime);
-      	log(nonReqDatetime);
       	var p := Person {
   	  	  name := name,
   	  	  nickname := nickname,
@@ -253,6 +243,14 @@ section pagesForPerson
   	"Name: " output(p.getName()) <br/>
   	"Nickname: " output(p.getNickname()) <br/>
   	"Full name: " output(p.getFullname()) <br/>
+  	"reqInt: " output(p.getReqInt()) <br/>
+  	"nonReqInt: " output(p.getNonReqInt()) <br/>
+  	"reqFloat: " output(p.getReqFloat()) <br/>
+  	"nonReqFloat: " output(p.getNonReqFloat()) <br/>
+  	"reqBool: " output(p.getReqBool()) <br/>
+  	"nonReqBool: " output(p.getNonReqBool()) <br/>
+  	"reqDatetime: " p.getReqDatetime() <br/>
+  	"nonReqDatetime: " p.getNonReqDatetime() <br/>
   	navigate managePerson() [] { "Back" }
   }
   
