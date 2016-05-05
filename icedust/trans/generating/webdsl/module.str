@@ -151,6 +151,7 @@ rules // module
 	          application x_moduleName
 	        
 	          imports lib/icedust/newcrud-ui
+			  imports lib/icedust/non-required-inputs
 	          imports lib/icedust/Expressions
 	      
 	          sec_modelDataUi*
@@ -215,15 +216,50 @@ rules //crud
 		  	  entity.delete();
 		  	}
           }
-          
           page x_createEntity(){
-
+            var temp := x_entityName{}
+            header{"Create " output(temp.name) } 
+			form {
+              <fieldset>
+                <legend>
+                  output("Details")
+                </legend>
+                <table>
+                  elem_deriveEditRowsTemp
+                  // derive editRows from temp
+                </table>
+              </fieldset>   
+              action("Save", save())
+			}
+			action save() {
+			  temp.save();
+			  return x_manageEntity();
+			}
           }
-          page x_viewEntity(arg : x_entityName){
-          
+          define page x_viewEntity(arg : x_entityName){
+            derive viewPage from arg
           }
-          page x_editEntity(arg : x_entityName){
-          
+          define page x_editEntity(arg : x_entityName){
+            //derive editPage from arg
+            define body() {
+              header{"Edit " output(arg.name) } 
+              form { 
+                <fieldset>
+                  <legend>
+                    output("Details")
+                  </legend>
+                  <table>
+                    elem_deriveEditRowsArg
+                    // derive editRows from arg
+                  </table>
+                </fieldset>  
+                action("Save", save())
+              }
+              action save() { 
+                arg.save();
+                return x_manageEntity();
+              }
+            }
           }
         ]|
       else

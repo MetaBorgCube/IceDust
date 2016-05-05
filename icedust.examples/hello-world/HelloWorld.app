@@ -84,6 +84,7 @@ section  ui
     Envelope
     )
     {
+    output ( entity.name )
     navigate envelope(entity) [ ] { "View" }
     " "
     navigate editEnvelope(entity) [ ] { "Edit" }
@@ -108,6 +109,48 @@ section  ui
 
   page createEnvelope ( )
   {
+  var temp := Envelope{}
+    header
+      {
+      "Create "
+        output ( temp.name )
+        }
+    form
+      {
+      <
+        fieldset
+        >
+        <
+        legend
+        >
+        output ( "Details" )
+        </
+        legend
+        >
+        <
+        table
+        >
+        derive editRows from temp for ( text )
+        </
+        table
+        >
+        </
+        fieldset
+        >
+        submit
+        (
+        "Save"
+        ,
+        save()
+        )
+        [
+        ]
+        }
+    action save ( )
+    {
+      temp.save();
+      return manageEnvelope();
+    }
   }
 
   page envelope ( arg : Envelope )
@@ -131,6 +174,7 @@ section  ui
     Message
     )
     {
+    output ( entity.name )
     navigate message(entity) [ ] { "View" }
     " "
     navigate editMessage(entity) [ ] { "Edit" }
@@ -155,6 +199,48 @@ section  ui
 
   page createMessage ( )
   {
+  var temp := Message{}
+    header
+      {
+      "Create "
+        output ( temp.name )
+        }
+    form
+      {
+      <
+        fieldset
+        >
+        <
+        legend
+        >
+        output ( "Details" )
+        </
+        legend
+        >
+        <
+        table
+        >
+        derive editRows from temp for ( text )
+        </
+        table
+        >
+        </
+        fieldset
+        >
+        submit
+        (
+        "Save"
+        ,
+        save()
+        )
+        [
+        ]
+        }
+    action save ( )
+    {
+      temp.save();
+      return manageMessage();
+    }
   }
 
   page message ( arg : Message )
