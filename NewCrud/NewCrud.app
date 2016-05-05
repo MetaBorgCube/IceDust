@@ -4,6 +4,12 @@ imports lib/icedust/newcrud-ui
 
 imports lib/icedust/Expressions
 
+section  data
+
+  init
+  {
+  }
+
 section  model
 
   entity Person {
@@ -24,7 +30,7 @@ section  model
     {
       return Expressions.plus_String(Expressions.plus_String(Person.getName(this), " "), ( Expressions.choice_One_One(Person.getNickname(this), "") as String ));
     }
-    name : String ( validate(name != null && name.trim() != "", "Name cannot be empty") )
+    name : String ( validate(name != null && name.trim() != "", "Name cannot be empty!") )
     function getName ( ) : String
     {
       return this.name;
@@ -50,59 +56,208 @@ section  model
     {
       return [ en.getNickname() | en : Person in entities where en.getNickname() != null ];
     }
+    nonReqBool : Bool ( default= null )
+    function getNonReqBool ( ) : Bool
+    {
+      return this.nonReqBool;
+    }
+    static function getNonReqBool ( en : Person ) : Bool
+    {
+      return if ( en == null ) ( null as Bool ) else en.getNonReqBool();
+    }
+    static function getNonReqBool ( entities : List<Person> ) : List<Bool>
+    {
+      return [ en.getNonReqBool() | en : Person in entities where en.getNonReqBool() != null ];
+    }
+    nonReqDatetime : DateTime ( default= null )
+    function getNonReqDatetime ( ) : DateTime
+    {
+      return this.nonReqDatetime;
+    }
+    static function getNonReqDatetime ( en : Person ) : DateTime
+    {
+      return if ( en == null ) ( null as DateTime ) else en.getNonReqDatetime();
+    }
+    static function getNonReqDatetime ( entities : List<Person> ) : List<DateTime>
+    {
+      return [ en.getNonReqDatetime() | en : Person in entities where en.getNonReqDatetime() != null ];
+    }
+    nonReqFloat : Float ( default= null )
+    function getNonReqFloat ( ) : Float
+    {
+      return this.nonReqFloat;
+    }
+    static function getNonReqFloat ( en : Person ) : Float
+    {
+      return if ( en == null ) ( null as Float ) else en.getNonReqFloat();
+    }
+    static function getNonReqFloat ( entities : List<Person> ) : List<Float>
+    {
+      return [ en.getNonReqFloat() | en : Person in entities where en.getNonReqFloat() != null ];
+    }
+    nonReqInt : Int ( default= null )
+    function getNonReqInt ( ) : Int
+    {
+      return this.nonReqInt;
+    }
+    static function getNonReqInt ( en : Person ) : Int
+    {
+      return if ( en == null ) ( null as Int ) else en.getNonReqInt();
+    }
+    static function getNonReqInt ( entities : List<Person> ) : List<Int>
+    {
+      return [ en.getNonReqInt() | en : Person in entities where en.getNonReqInt() != null ];
+    }
+    reqBool : Bool ( validate(reqBool != null, "reqBool cannot be empty!") )
+    function getReqBool ( ) : Bool
+    {
+      return this.reqBool;
+    }
+    static function getReqBool ( en : Person ) : Bool
+    {
+      return if ( en == null ) ( null as Bool ) else en.getReqBool();
+    }
+    static function getReqBool ( entities : List<Person> ) : List<Bool>
+    {
+      return [ en.getReqBool() | en : Person in entities where en.getReqBool() != null ];
+    }
+    reqDatetime : DateTime ( validate(reqDatetime != null, "reqDatetime cannot be empty!") )
+    function getReqDatetime ( ) : DateTime
+    {
+      return this.reqDatetime;
+    }
+    static function getReqDatetime ( en : Person ) : DateTime
+    {
+      return if ( en == null ) ( null as DateTime ) else en.getReqDatetime();
+    }
+    static function getReqDatetime ( entities : List<Person> ) : List<DateTime>
+    {
+      return [ en.getReqDatetime() | en : Person in entities where en.getReqDatetime() != null ];
+    }
+    reqFloat : Float ( validate(reqFloat != null, "reqFloat cannot be empty!") )
+    function getReqFloat ( ) : Float
+    {
+      return this.reqFloat;
+    }
+    static function getReqFloat ( en : Person ) : Float
+    {
+      return if ( en == null ) ( null as Float ) else en.getReqFloat();
+    }
+    static function getReqFloat ( entities : List<Person> ) : List<Float>
+    {
+      return [ en.getReqFloat() | en : Person in entities where en.getReqFloat() != null ];
+    }
+    reqInt : Int ( validate(reqInt != null, "reqInt cannot be empty!")  )
+    function getReqInt ( ) : Int
+    {
+      return this.reqInt;
+    }
+    static function getReqInt ( en : Person ) : Int
+    {
+      return if ( en == null ) ( null as Int ) else en.getReqInt();
+    }
+    static function getReqInt ( entities : List<Person> ) : List<Int>
+    {
+      return [ en.getReqInt() | en : Person in entities where en.getReqInt() != null ];
+    }
+  }
+  
+section applicationmenu
+
+  define applicationmenu() {
+  	navbaritem {
+  	  navigate managePerson() [] { "Manage Persons" }
+  	}
   }
 
-section pages
+section pagesForPerson
 
-  page manageEntity() {
+  page managePerson() {
+  	applicationmenu() <br/>
   	"Manage Persons:" <br/>
-  	navigate createEntity() [] { "Create" }
+  	navigate createPerson() [] { "Create" }
   	<br/>
   	for(p: Person) {
   	  output(p.getName())
-  	  navigate viewEntity(p) [] { "View" }
+  	  navigate viewPerson(p) [] { "View" }
   	  " "
-  	  navigate editEntity(p) [] { "Edit" }
+  	  navigate editPerson(p) [] { "Edit" }
   	  " "
   	  action("Remove", removeEntity(p))
   	  <br/>
   	}
+  	navigate root() [] { "Back" }
   	
   	action removeEntity(p: Person) {
   	  p.delete();
   	}
   }
   
-  page createEntity() {
+  page createPerson() {
+  	applicationmenu() <br/>
   	var name : String
   	var nickname : String
+  	var reqInt : Int
+  	var nonReqInt : Int
+  	var reqFloat : Float
+  	var nonReqFloat : Float
+  	var reqBool : Bool
+  	var nonReqBool : Bool
+  	var reqDatetime : DateTime
+  	var nonReqDatetime : DateTime
   	"Create Person:" <br/>
   	form {
       "Name: " input(name) <br/>
       "Nickname: " input(nickname) <br/>
-      submit("Save", createPerson(name, nickname))
+      "reqInt: " input(reqInt) <br/>
+      "nonReqInt: " input(nonReqInt) <br/>
+      "reqFloat: " input(reqFloat) <br/>
+      "nonReqFloat: " input(nonReqFloat) <br/>
+      "reqBool: " input(reqBool) <br/>
+      "nonReqBool: " input(nonReqBool) <br/>
+      "reqDatetime: " input(reqDatetime) <br/>
+      "nonReqDatetime: " input(nonReqDatetime) <br/>
+      submit action {
+      	log(name);
+      	log(nickname);
+      	log(reqInt);
+      	log(nonReqInt);
+      	log(reqFloat);
+      	log(nonReqFloat);
+      	log(reqBool);
+      	log(nonReqBool);
+      	log(reqDatetime);
+      	log(nonReqDatetime);
+      	var p := Person {
+  	  	  name := name,
+  	  	  nickname := nickname,
+  	  	  reqInt := reqInt,
+  	  	  nonReqInt := nonReqInt,
+  	  	  reqFloat := reqFloat,
+  	  	  nonReqFloat := nonReqFloat,
+  	  	  reqBool := reqBool,
+  	  	  nonReqBool := nonReqBool,
+  	  	  reqDatetime := reqDatetime,
+  	  	  nonReqDatetime := nonReqDatetime
+	  	};
+	  	p.save();
+      } { "Save" }
   	}
   	<br/>
-  	navigate manageEntity() [] { "Back" }
-  	
-  	action createPerson(newname : String, newnickname : String) {
-  	  var p := Person {
-  	  	name := newname,
-  	  	nickname := newnickname
-  	  };
-  	  p.save();
-  	}
+  	navigate managePerson() [] { "Back" }
   }
   
-  page viewEntity(p: Person) {
+  page viewPerson(p: Person) {
+  	applicationmenu() <br/>
   	"View Person:" <br/>
   	"Name: " output(p.getName()) <br/>
   	"Nickname: " output(p.getNickname()) <br/>
   	"Full name: " output(p.getFullname()) <br/>
-  	navigate manageEntity() [] { "Back" }
+  	navigate managePerson() [] { "Back" }
   }
   
-  page editEntity(p: Person) {
+  page editPerson(p: Person) {
+  	applicationmenu() <br/>
   	"Edit Person:" <br/>
   	var name := p.name
   	var nickname := p.nickname
@@ -112,7 +267,7 @@ section pages
   	  "Full name:" output(p.getFullname()) <br/>
   	  submit("Save", editPerson(p, name, nickname))
   	}
-  	navigate manageEntity() [] { "Back" }
+  	navigate managePerson() [] { "Back" }
   	
   	action editPerson(cperson: Person, newname : String, newnickname : String) {
   	  cperson.name := newname;

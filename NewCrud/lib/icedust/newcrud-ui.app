@@ -4,13 +4,16 @@ section ui
 
   page root ( )
   {
-    "New CRUD UI" <br/>
-    navigate manageEntity() [] { "Manage" }
+    main()
+    define body() {
+      "Welcome to the new CRUD!"
+    }
   }
   
   define main() {
     <div id="pagewrapper">
       <div id="navbar">
+        applicationmenu()
       </div>
       <div id="content">
         body()
@@ -51,3 +54,14 @@ section ui
     }
   }
   
+section validator-inputs
+
+  define nonRequiredIntInput(ident: Int) {
+  	<div class="non-required-int-input">
+  	  <input id="non-required-int-input" + ident>
+  	  </input>
+  	  <div id="non-required-int-input-message" + ident>
+  	  </div>
+  	</div>
+  }
+
