@@ -135,4 +135,119 @@ override template inputFloatInternal( i: ref Float, tname: String ){
   }
 }
 
+section bool-input
+
+override template output( b: Bool ){
+  if(b == null) {
+  	"null"
+  } else {
+    <input
+      type = "checkbox"
+      if( b ){
+       checked = "true"
+      }
+      disabled = "true"
+      all attributes
+    />
+  }
+}
+
+template inputNonRequiredBool( b: ref Bool ){
+  request var errors: [String] := null // request var keeps its value, even when validation fails (regular var is reset when validation fails)
+
+  if( errors != null && errors.length > 0 ){
+    errorTemplateInput( errors ){
+      inputNonRequiredBoolInternal( b, id )[ all attributes ]  // use same id so the inputs are updated in both cases
+      validate{ getPage().enterLabelContext( id ); }
+      elements
+      validate{ getPage().leaveLabelContext(); }
+    }
+  }
+  else{
+    inputNonRequiredBoolInternal( b, id )[ all attributes ]
+    validate{ getPage().enterLabelContext( id ); }
+    elements
+    validate{ getPage().leaveLabelContext(); }
+  }
+  validate{
+    errors := b.getValidationErrors();
+    errors.addAll( getPage().getValidationErrorsByName( id ) ); //nested validate elements
+    errors := handleValidationErrors( errors );
+  }
+}
+
+template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
+  var rnamehidden := rname + "_isinput"
+
+  <input type = "hidden" name=rname + "_isinput" />
+  
+  <div style="display: inline-block"
+  if( getPage().inLabelContext() ){
+      id = getPage().getLabelString()
+    }>
+  	<input
+  	  type="radio"
+  	  name=rname
+  	  value="true"
+  	  if(       getRequestParameter( rnamehidden ) != null
+           && getRequestParameter( rname ) == "true"
+        ||
+              getRequestParameter( rnamehidden ) == null
+           && b == true
+      ){
+        checked = "true"
+      }
+  	  inputBool attributes
+      all attributes>"True"</input>
+      
+      <input
+  	  type="radio"
+  	  name=rname
+  	  value="false"
+  	  if(       getRequestParameter( rnamehidden ) != null
+           && getRequestParameter( rname ) == "false"
+        ||
+              getRequestParameter( rnamehidden ) == null
+           && b == false
+      ){
+        checked = "true"
+      }
+  	  inputBool attributes
+      all attributes>"False"</input>
+      
+      <input
+  	  type="radio"
+  	  name=rname
+  	  value="null"
+  	  if(       getRequestParameter( rnamehidden ) != null
+           && getRequestParameter( rname ) == "null"
+        ||
+              getRequestParameter( rnamehidden ) == null
+           && b == null
+      ){
+        checked = "true"
+      }
+  	  inputBool attributes
+      all attributes>"null"</input>
+  </div>
+
+  databind{
+    var tmp: String := getRequestParameter( rname );
+    var tmphidden := getRequestParameter( rnamehidden );
+    if( tmphidden != null ){
+      if( getRequestParameter( rname ) == "null" ){
+      	b := null;
+      } else {
+      	if(getRequestParameter(rname) == "true") {
+          b := true;
+        }
+        else{
+        b := false;
+        }
+      }
+    }
+  }
+}
+
+
 

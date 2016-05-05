@@ -214,7 +214,7 @@ section pagesForPerson
       "reqFloat: " input(reqFloat) <br/>
       "nonReqFloat: " input(nonReqFloat) <br/>
       "reqBool: " input(reqBool) <br/>
-      "nonReqBool: " input(nonReqBool) <br/>
+      "nonReqBool: " inputNonRequiredBool(nonReqBool) <br/>
       "reqDatetime: " input(reqDatetime) <br/>
       "nonReqDatetime: " input(nonReqDatetime) <br/>
       submit action {
@@ -249,28 +249,50 @@ section pagesForPerson
   	"nonReqFloat: " output(p.getNonReqFloat()) <br/>
   	"reqBool: " output(p.getReqBool()) <br/>
   	"nonReqBool: " output(p.getNonReqBool()) <br/>
-  	"reqDatetime: " p.getReqDatetime() <br/>
-  	"nonReqDatetime: " p.getNonReqDatetime() <br/>
+  	"reqDatetime: " output(p.reqDatetime) <br/>
+  	"nonReqDatetime: " output(p.nonReqDatetime) <br/>
   	navigate managePerson() [] { "Back" }
   }
   
   page editPerson(p: Person) {
   	applicationmenu() <br/>
   	"Edit Person:" <br/>
-  	var name := p.name
-  	var nickname := p.nickname
+  	var name := p.getName()
+  	var nickname := p.getNickname()
+  	var reqInt := p.getReqInt()
+  	var nonReqInt := p.getNonReqInt()
+  	var reqFloat := p.getReqFloat()
+  	var nonReqFloat := p.getNonReqFloat()
+  	var reqBool := p.getReqBool()
+  	var nonReqBool := p.getNonReqBool()
+  	var reqDatetime := p.getReqDatetime()
+  	var nonReqDatetime := p.getNonReqDatetime()
   	form {
   	  "Name: " input(name) <br/>
   	  "Nickname: " input(nickname) <br/>
   	  "Full name:" output(p.getFullname()) <br/>
-  	  submit("Save", editPerson(p, name, nickname))
+  	  "reqInt: " input(reqInt) <br/>
+      "nonReqInt: " input(nonReqInt) <br/>
+      "reqFloat: " input(reqFloat) <br/>
+      "nonReqFloat: " input(nonReqFloat) <br/>
+      "reqBool: " input(reqBool) <br/>
+      "nonReqBool: " inputNonRequiredBool(nonReqBool) <br/>
+      "reqDatetime: " input(reqDatetime) <br/>
+      "nonReqDatetime: " input(nonReqDatetime) <br/>
+  	  submit action {
+  	  	p.name := name;
+  	    p.nickname := nickname;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.reqInt := reqInt;
+  	    p.nonReqInt := nonReqInt;
+  	    p.save();
+  	  } { "Save" }
   	}
   	navigate managePerson() [] { "Back" }
-  	
-  	action editPerson(cperson: Person, newname : String, newnickname : String) {
-  	  cperson.name := newname;
-  	  cperson.nickname := newnickname;
-  	  cperson.save();
-  	}
   }
   
