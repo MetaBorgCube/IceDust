@@ -102,7 +102,7 @@ rules
 	        ]|
 	    else
 	    	ebd_attributeField* := ebd* |[
-	    	  x_attributeName : srt_attributeType (validate(x_attributeName != null, "attribute cannot be empty!"))
+	    	  x_attributeName : srt_attributeType (validate(x_attributeName != null, " required field cannot be empty! "))
 	    	]|
 	    end
                 

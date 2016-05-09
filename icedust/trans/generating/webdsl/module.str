@@ -376,7 +376,6 @@ rules //crud rules
   attributename-to-webdsl-inputcreate : x_name -> result
   with
     type := <_get-type>x_name;
-    //inputtext := <attributetype-to-webdsl-inputtext(|x_name)> type;
     if <_get-type;Boolean()>x_name then
 	    if <get-multiplicity;ZeroOrOne()>x_name then
 	      result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
@@ -414,8 +413,11 @@ rules //crud rules
   attributename-to-webdsl-outputview: x_name ->  result
   with
     ux_name := <ucfirst>x_name;
-    result := $["[x_name] :" output(temp.get[ux_name]()) <br>]
-
+    if <_get-type;Datetime()>x_name then
+      result := $["[x_name] :" output(temp.[x_name]) <br>]
+	else
+	  result := $["[x_name] :" output(temp.get[ux_name]()) <br>]
+	end
 rules // derivations
   
   attributename-to-webdsl-def: x_attributeName -> result
