@@ -5,12 +5,14 @@ imports // constructors
 	webdsl/constructors
 	webdsl/WebDSL
 	desugaring/constructors
+	signatures/Types-sig
 
 imports // functions
   
   generating/_ir/model 
   generating/webdsl/model
 	generating/webdsl/data
+  generating/webdsl/types
   api/model-names-api
 	api/module-api
   api/module-names-api
@@ -188,14 +190,25 @@ rules //crud
       x_editEntity   := <name-edit>x_entityName;
       x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
-      form-fields :=
+      attributenames :=
         <concat(
           entityname-get-attributenames-normal-default,
           entityname-get-rolenames,
           entityname-get-inversenames
-        );map(attributename-to-webdsl)>x_entityName;
-      elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
-      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
+        )>x_entityName;
+      numberOfAttributes := <length>attributenames;
+      entity-fields := <map(attributename-to-webdsl)>attributenames;
+      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)>attributenames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)>attributenames;
+      //elem_deriveRowsTest := <take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames;
+      //x_testy := elem_deriveRowsTest;
+      //x_testyr := <last;attributename-to-webdsl-assigncreatelast>attributenames;
+      elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames;
+      elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
+      x_testy := <concat> [<take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames,[<last;attributename-to-webdsl-assigncreatelast>attributenames]];
+      x_assignEditEntity := <concat> [<take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assignedit)>attributenames,[<last;attributename-to-webdsl-assigneditlast>attributenames]];
+      elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), attributenames);
+      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames)
     with
       if entityname-is-calconread then
         result := def* |[
@@ -204,10 +217,8 @@ rules //crud
 		  	<br/>
 		  	for(entity: x_entityName) {
 		  	  output(entity.name)
-		  	  navigate x_viewEntity(entity) [] { "View" }
-		  	  " "
-		  	  navigate x_editEntity(entity) [] { "Edit" }
-		  	  " "
+		  	  navigate x_viewEntity(entity) [] { "View" } " "
+		  	  navigate x_editEntity(entity) [] { "Edit" } " "
 		  	  action("Remove", x_removeEntity(entity))
 		  	  <br/>
 		  	}
@@ -217,49 +228,39 @@ rules //crud
 		  	}
           }
           page x_createEntity(){
-            var temp := x_entityName{}
-            header{"Create " output(temp.name) } 
+            header{"Create"} 
+            elem_deriveRowsVarCreate
 			form {
-              <fieldset>
-                <legend>
-                  output("Details")
-                </legend>
-                <table>
-                  elem_deriveEditRowsTemp
-                  // derive editRows from temp
-                </table>
-              </fieldset>   
-              action("Save", save())
+			  elem_deriveRowsInputCreate
+			  action("Save", save())
+			  // print form fields
+              
 			}
 			action save() {
+		      var temp := x_entityName {
+				x_testy
+		  	  };
 			  temp.save();
 			  return x_manageEntity();
 			}
+			navigate managePerson() [] { "Back" }
           }
-          define page x_viewEntity(arg : x_entityName){
-            derive viewPage from arg
+          page x_viewEntity(temp: x_entityName){
+            header{"View"}
+            elem_deriveRowsOutputView
+            navigate managePerson() [] { "Back" }
           }
-          define page x_editEntity(arg : x_entityName){
-            //derive editPage from arg
-            define body() {
-              header{"Edit " output(arg.name) } 
-              form { 
-                <fieldset>
-                  <legend>
-                    output("Details")
-                  </legend>
-                  <table>
-                    elem_deriveEditRowsArg
-                    // derive editRows from arg
-                  </table>
-                </fieldset>  
-                action("Save", save())
-              }
-              action save() { 
-                arg.save();
-                return x_manageEntity();
-              }
+          page x_editEntity(temp: x_entityName){
+            header{"Edit"}
+            elem_deriveRowsVarEdit
+            form {
+              elem_deriveRowsInputCreate
+              submit action {
+                x_assignEditEntity;
+                temp.save();
+              } { "Save" }
             }
+            navigate managePerson() [] { "Back" }
           }
         ]|
       else
@@ -347,7 +348,74 @@ rules //crud
 		  result := elem |[
 		    navbaritem{navigate x_manageName(){$text}}
 		  ]|
-	
+
+rules //crud rules
+  attributename-to-webdsl-varcreate : x_name -> result
+  with
+    x_type := <name-to-webdsl-srt(err)>x_name;
+    result := def |[
+      var x_name : x_type
+    ]|
+  
+  booleantype-to-webdsl-inputtext : ZeroOrOne() -> result
+  with
+    result := "inputNonRequiredBool"
+    
+  booleantype-to-webdsl-inputtext : m -> result
+  with
+    result := "input"
+  
+  //attributetype-to-webdsl-inputtext(|x_name) : Boolean() -> result
+  //with
+  //  result := <get-multiplicity;booleantype-to-webdsl-inputtext> x_name  
+  
+  attributetype-to-webdsl-inputtext(|x_name) : type -> result
+  with
+    result := "input"
+  
+  attributename-to-webdsl-inputcreate : x_name -> result
+  with
+    type := <_get-type>x_name;
+    //inputtext := <attributetype-to-webdsl-inputtext(|x_name)> type;
+    if <_get-type;Boolean()>x_name then
+	    if <get-multiplicity;ZeroOrOne()>x_name then
+	      result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
+	    else
+	      result := $["[x_name] :" input([x_name]) <br/>]
+	    end
+	else
+	  result := $["[x_name] :" input([x_name]) <br/>]
+	end
+    
+  attributename-to-webdsl-assigncreate: x_name -> result
+  with
+    result := $[[x_name] := [x_name],] 
+
+  attributename-to-webdsl-assigncreatelast: x_name -> result
+  with
+    result := $[[x_name] := [x_name]] 
+
+  attributename-to-webdsl-assignedit: x_name -> result
+  with
+    result := $[temp.[x_name] := [x_name];]
+
+  attributename-to-webdsl-assigneditlast: x_name -> result
+  with
+    result := $[temp.[x_name] := [x_name]]
+
+  attributename-to-webdsl-varedit: x_name -> result
+  with
+    ux_name := <ucfirst>x_name;
+    x_nameRightHand := $[temp.get[ux_name]()];
+    result := def |[
+      var x_name := x_nameRightHand
+    ]|
+    
+  attributename-to-webdsl-outputview: x_name ->  result
+  with
+    ux_name := <ucfirst>x_name;
+    result := $["[x_name] :" output(temp.get[ux_name]()) <br>]
+
 rules // derivations
   
   attributename-to-webdsl-def: x_attributeName -> result

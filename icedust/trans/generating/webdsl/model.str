@@ -96,9 +96,16 @@ rules
       end
     with
       if attributename-is-normal-default then
-        ebd_attributeField* := ebd* |[
-          x_attributeName : srt_attributeType (default=null)
-        ]|
+        if <get-multiplicity;ZeroOrOne()>x_attributeName then
+	        ebd_attributeField* := ebd* |[
+	          x_attributeName : srt_attributeType (default=null)
+	        ]|
+	    else
+	    	ebd_attributeField* := ebd* |[
+	    	  x_attributeName : srt_attributeType (validate(x_attributeName != null, "attribute cannot be empty!"))
+	    	]|
+	    end
+                
       else
         ebd_attributeField* := ebd* |[
           x_attributeName : srt_attributeType := x_calculateAttribute()

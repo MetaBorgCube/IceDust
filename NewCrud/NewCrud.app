@@ -284,12 +284,12 @@ section pagesForPerson
   	    p.nickname := nickname;
   	    p.reqInt := reqInt;
   	    p.nonReqInt := nonReqInt;
-  	    p.reqInt := reqInt;
-  	    p.nonReqInt := nonReqInt;
-  	    p.reqInt := reqInt;
-  	    p.nonReqInt := nonReqInt;
-  	    p.reqInt := reqInt;
-  	    p.nonReqInt := nonReqInt;
+  	    p.reqFloat := reqFloat;
+  	    p.nonReqFloat := nonReqFloat;
+  	    p.reqBool := reqBool;
+  	    p.nonReqBool := nonReqBool;
+  	    p.reqDatetime := reqDatetime;
+  	    p.nonReqDatetime := nonReqDatetime;
   	    p.save();
   	  } { "Save" }
   	}
