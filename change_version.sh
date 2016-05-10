@@ -1,1 +1,1 @@
-grep -rEl --exclude=*/target/* --exclude=*/src-gen/* "0.4.1(.qualifier|-SNAPSHOT)" * | xargs sed -i "" "s/0.4.1/0.4.2/g"
+grep -rEl --exclude=*/target/* --exclude=*/src-gen/* "0.4.2(.qualifier|-SNAPSHOT)" * | xargs sed -i "" "s/0.4.2/0.4.3/g"
