@@ -35,14 +35,14 @@ rules
    *
    * Returns: (exitCode, stdOut, stdErr)
    */
-  call-javac(|mainFile) = call-external-read-output(|"javac", ["-cp", <dirname>mainFile, mainFile])
+  call-javac(|mainFile) = call-external-read-output(|"javac", ["-cp", <dirname;local-path>mainFile, <local-path>mainFile])
 
   /**
    * Calls java, with as classpath the folder of the main file.
    *
    * Returns: (exitCode, stdOut, stdErr)
    */
-  call-java(|mainFile): _ -> <call-external-read-output(|"java", ["-cp", <dirname>mainFile, className])> 
+  call-java(|mainFile): _ -> <call-external-read-output(|"java", ["-cp", <dirname;local-path>mainFile, className])> 
     with
       className := <base-filename;remove-extension> mainFile 
       
