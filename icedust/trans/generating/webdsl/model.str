@@ -101,8 +101,9 @@ rules
 	          x_attributeName : srt_attributeType (default=null)
 	        ]|
 	    else
+	      e1 := String(x_attributeName);
 	    	ebd_attributeField* := ebd* |[
-	    	  x_attributeName : srt_attributeType (validate(x_attributeName != null, " required field cannot be empty! "))
+	    	  x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
 	    	]|
 	    end
                 
