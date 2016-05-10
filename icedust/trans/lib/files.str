@@ -132,3 +132,8 @@ rules
       project-path := <_project-path>;
       project      := <base-filename>project-path;
       result       := $[eclipse:///[project]/[file-path]]
+
+rules
+
+  local-path = prim("local_path")
+      
