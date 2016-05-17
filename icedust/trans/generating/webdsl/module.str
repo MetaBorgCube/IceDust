@@ -191,22 +191,23 @@ rules //crud
       x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
       attributenames :=
-        <concat(
-          entityname-get-attributenames-normal-default,
-          entityname-get-rolenames,
-          entityname-get-inversenames
-        )>x_entityName;
+        <
+          entityname-get-attributenames
+        >x_entityName;
+      attributenames-normal-default := <entityname-get-attributenames-normal-default>x_entityName;
       numberOfAttributes := <length>attributenames;
+      numberOfAttributesNormalDefault := <length>attributenames-normal-default;
       entity-fields := <map(attributename-to-webdsl)>attributenames;
-      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)>attributenames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)>attributenames;
+      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)>attributenames-normal-default;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)>attributenames-normal-default;
       //elem_deriveRowsTest := <take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames;
       //x_testy := elem_deriveRowsTest;
       //x_testyr := <last;attributename-to-webdsl-assigncreatelast>attributenames;
-      elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames;
+      elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames-normal-default;
+      elem_deriveRowsInputEdit := <map(attributename-to-webdsl-inputedit)>attributenames;
       elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
-      x_testy := <concat> [<take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames,[<last;attributename-to-webdsl-assigncreatelast>attributenames]];
-      x_assignEditEntity := <concat> [<take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assignedit)>attributenames,[<last;attributename-to-webdsl-assigneditlast>attributenames]];
+      x_testy := <concat> [<take(|<dec>numberOfAttributesNormalDefault);map(attributename-to-webdsl-assigncreate)>attributenames-normal-default,[<last;attributename-to-webdsl-assigncreatelast>attributenames-normal-default]];
+      x_assignEditEntity := <concat> [<take(|<dec>numberOfAttributesNormalDefault);map(attributename-to-webdsl-assignedit)>attributenames-normal-default,[<last;attributename-to-webdsl-assigneditlast>attributenames-normal-default]];
       elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), attributenames);
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames)
     with
@@ -385,7 +386,24 @@ rules //crud rules
 	else
 	  result := $["[x_name] :" input([x_name]) <br/>]
 	end
-    
+  
+  attributename-to-webdsl-inputedit : x_name -> result
+  with
+    if <attributename-is-derivation>x_name then
+    	result := $["[x_name] :" output([x_name]) <br/>]
+    else
+	    type := <_get-type>x_name;
+	    if <_get-type;Boolean()>x_name then
+		    if <get-multiplicity;ZeroOrOne()>x_name then
+		      result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
+		    else
+		      result := $["[x_name] :" input([x_name]) <br/>]
+		    end
+		else
+		  result := $["[x_name] :" input([x_name]) <br/>]
+		end
+	end
+  
   attributename-to-webdsl-assigncreate: x_name -> result
   with
     result := $[[x_name] := [x_name],] 
@@ -396,19 +414,65 @@ rules //crud rules
 
   attributename-to-webdsl-assignedit: x_name -> result
   with
-    result := $[temp.[x_name] := [x_name];]
+    if <attributename-is-default>x_name then
+      if <_get-type;String()>x_name then
+      	result := $[
+	      	if([x_name].trim() != "") {
+	  	      temp.[x_name] := [x_name];
+	  	    } else {
+	  	      temp.[x_name] := null;
+	  	    }
+      	]
+      else
+        result := $[
+        	if([x_name] != null) {
+  	      	  temp.[x_name] := [x_name];
+  	    	} else {
+  	      	  temp.[x_name] := null;
+  	    	}
+        ]
+      end
+    else
+      result := $[temp.[x_name] := [x_name];]
+    end
 
   attributename-to-webdsl-assigneditlast: x_name -> result
   with
-    result := $[temp.[x_name] := [x_name]]
-
+    if <attributename-is-default>x_name then
+      if <_get-type;String()>x_name then
+      	result := $[
+	      	if([x_name].trim() != "") {
+	  	      temp.[x_name] := [x_name];
+	  	    } else {
+	  	      temp.[x_name] := null;
+	  	    }
+      	]
+      else
+        result := $[
+        	if([x_name] != null) {
+  	      	  temp.[x_name] := [x_name];
+  	    	} else {
+  	      	  temp.[x_name] := null;
+  	    	}
+        ]
+      end
+    else
+      result := $[temp.[x_name] := [x_name]]
+    end
   attributename-to-webdsl-varedit: x_name -> result
   with
     ux_name := <ucfirst>x_name;
-    x_nameRightHand := $[temp.get[ux_name]()];
-    result := def |[
-      var x_name := x_nameRightHand
-    ]|
+    if <attributename-is-default>x_name then
+      x_nameRightHand := $[temp.[x_name]];
+      result := def |[
+        var x_name := x_nameRightHand
+      ]|
+    else
+      x_nameRightHand := $[temp.get[ux_name]()];
+      result := def |[
+        var x_name := x_nameRightHand
+      ]|
+    end
     
   attributename-to-webdsl-outputview: x_name ->  result
   with
