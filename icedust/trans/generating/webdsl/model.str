@@ -97,22 +97,27 @@ rules
     with
       if attributename-is-normal-default then
         if <get-multiplicity;ZeroOrOne()>x_attributeName then
+	      ebd_attributeField* := ebd* |[
+	        x_attributeName : srt_attributeType (default=null)
+	      ]|
+	    else
+	      if attributename-is-default then    
 	        ebd_attributeField* := ebd* |[
 	          x_attributeName : srt_attributeType (default=null)
 	        ]|
-	    else
-	      e1 := String(x_attributeName);
-	      if <_get-type ; String()> x_attributeName then
-	        ebd_attributeField* := ebd* |[
-	          x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
-	        ]|
 	      else
-	        ebd_attributeField* := ebd* |[
-	          x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
-	        ]|
+	        e1 := String(x_attributeName);
+	        if <_get-type ; String()> x_attributeName then
+	          ebd_attributeField* := ebd* |[
+	            x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
+	          ]|
+	        else
+	          ebd_attributeField* := ebd* |[
+	            x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+	          ]|
+	        end
 	      end
-	    end
-                
+        end    
       else
         ebd_attributeField* := ebd* |[
           x_attributeName : srt_attributeType := x_calculateAttribute()
