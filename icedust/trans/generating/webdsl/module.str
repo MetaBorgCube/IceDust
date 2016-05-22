@@ -190,16 +190,16 @@ rules //crud
       x_editEntity   := <name-edit>x_entityName;
       x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
-      attributenames :=
-        <
-          entityname-get-attributenames
-        >x_entityName;
+      attributenames := <entityname-get-attributenames>x_entityName;
+      relations := <entityname-get-relationnames> x_entityName;
+      relationsOnes := <filter(where(get-multiplicity; ?One()))> relations;
       attributenames-normal-default := <entityname-get-attributenames-normal-default>x_entityName;
       numberOfAttributes := <length>attributenames;
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
       entity-fields := <map(attributename-to-webdsl)>attributenames;
-      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)>attributenames-normal-default;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)>attributenames-normal-default;
+      allNames := <conc> (attributenames, relationsOnes);
+      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)> allNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)> allNames;
       //elem_deriveRowsTest := <take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames;
       //x_testy := elem_deriveRowsTest;
       //x_testyr := <last;attributename-to-webdsl-assigncreatelast>attributenames;
@@ -209,11 +209,15 @@ rules //crud
       x_testy := <concat> [<take(|<dec>numberOfAttributesNormalDefault);map(attributename-to-webdsl-assigncreate)>attributenames-normal-default,[<last;attributename-to-webdsl-assigncreatelast>attributenames-normal-default]];
       x_assignEditEntity := <concat> [<take(|<dec>numberOfAttributesNormalDefault);map(attributename-to-webdsl-assignedit)>attributenames-normal-default,[<last;attributename-to-webdsl-assigneditlast>attributenames-normal-default]];
       elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), attributenames);
-      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames)
+      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames);
+      def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
+      elem_editRelations := <map(relationname-to-editlink)> relations;
+      elem_relationsOutputView := <map(relationname-to-output)> relations
     with
       if entityname-is-calconread then
         result := def* |[
           page x_manageEntity(){
+            applicationmenu() <br/>
 		  	navigate x_createEntity() [] { "Create" }
 		  	<br/>
 		  	for(entity: x_entityName) {
@@ -229,6 +233,7 @@ rules //crud
 		  	}
           }
           page x_createEntity(){
+            applicationmenu() <br/>
             header{"Create"} 
             elem_deriveRowsVarCreate
 			form {
@@ -242,27 +247,34 @@ rules //crud
 				x_testy
 		  	  };
 			  temp.save();
-			  return x_manageEntity();
 			}
-			navigate managePerson() [] { "Back" }
+			navigate x_manageEntity() [] { "Back" }
           }
           page x_viewEntity(temp: x_entityName){
+            applicationmenu() <br/>
             header{"View"}
             elem_deriveRowsOutputView
-            navigate managePerson() [] { "Back" }
+            <hr/>
+            elem_relationsOutputView
+            navigate x_manageEntity() [] { "Back" }
           }
           page x_editEntity(temp: x_entityName){
+            applicationmenu() <br/>
             header{"Edit"}
             elem_deriveRowsVarEdit
             form {
-              elem_deriveRowsInputCreate
+              elem_deriveRowsInputEdit
               submit action {
                 x_assignEditEntity;
                 temp.save();
               } { "Save" }
             }
-            navigate managePerson() [] { "Back" }
+            <hr/>
+            elem_editRelations
+            navigate x_manageEntity() [] { "Back" }
           }
+          
+          def_relationsetters
         ]|
       else
         result := def* |[
@@ -365,6 +377,118 @@ rules //crud rules
   booleantype-to-webdsl-inputtext : m -> result
   with
     result := "input"
+    
+  relationname-to-editlink : x_name -> result
+  with
+    x_setname := $[set_[x_name]];
+    x_s := $["[x_name]"];
+    x_getname := <name-get> x_name;
+    result := elem* |[
+      x_s ": "
+      output(temp.x_getname())
+      navigate x_setname(temp) [] { "Set " x_s } <br/>
+    ]|
+    
+  relationname-to-output : x_name -> result
+  with
+    mult := <get-multiplicity> x_name;
+    x_s := $["[x_name]"];
+    x_getname := <name-get> x_name;
+    if <?ZeroOrMore()> mult then // *
+      result := elem* |[
+        <b>x_s ": "</b> <br/>
+        for(s in temp.x_getname()) {
+          output(s.name) <br/>
+        }
+      ]|
+    else // 1 ?
+      result := elem* |[
+        x_s ": " output(temp.x_getname().name) <br/>
+      ]|
+    end  
+  
+  relationname-to-setter(|x_entityName) : x_name -> result
+  with
+    mult := <get-multiplicity> x_name;
+    x_setname := $[set_[x_name]];
+    x_stringifiedname := $["[x_name]"];
+    x_getname := <name-get> x_name;
+    x_editEntity := <name-edit> x_entityName;
+    x_inverseName := <name-get-inversename> x_name;
+    x_entname := <attributename-get-entityname>x_inverseName;
+    if <?One()> mult then // 1
+      result := def |[
+        page x_setname(ent: x_entityName) {
+          applicationmenu() <br/>
+  	      "Set " x_stringifiedname " for: " output(ent.name) <br/>
+  	      "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
+  	      <hr/>
+  	      for(f: x_entname) {
+  	        output(f.name)
+            submit action {
+              ent.x_name := f;
+              ent.save();
+            } { "Set" }
+            <br/>
+  	      }
+  	      navigate x_editEntity(ent) [] { "Back" }
+        }
+      ]|
+    else
+      if <?ZeroOrOne()> mult then // ?
+        result := def |[
+          page x_setname(ent: x_entityName) {
+            applicationmenu() <br/>
+  	        "Set " x_stringifiedname " for: " output(ent.name) <br/>
+  	        "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
+  	        <hr/>
+  	        "null"
+  	        submit action {
+  	          ent.x_name := null;
+  	          ent.save();	
+  	        } { "Set" }
+  	        <br/>
+  	        for(f: x_entname) {
+  	          output(f.name)
+              submit action {
+                ent.x_name := f;
+                ent.save();
+              } { "Set" }
+              <br/>
+  	        }
+  	        navigate x_editEntity(ent) [] { "Back" }
+          }
+        ]|
+      else // *
+        result := def |[
+          page x_setname(ent: x_entityName) {
+            applicationmenu() <br/>
+            "Set " x_stringifiedname " for: " output(ent.name) <br/>
+            "Current entities in " x_stringifiedname ": " <br/>
+            for(s in ent.x_getname()) {
+              output(s.name)
+              submit action {
+                ent.x_name.remove(s);
+                ent.save();
+              } { "Remove" }
+              <br/>  
+            }
+            "Add: " <br/>
+            for(s: x_entname) {
+              if(ent.x_getname().indexOf(s) == -1) {
+                output(s.name)
+                submit action {
+                  ent.x_name.add(s);
+                  ent.save();
+                } { "Add" }
+                <br/>
+              }
+            }
+            navigate x_editEntity(ent) [] { "Back" }
+          }
+        ]|
+      end
+    end
   
   //attributetype-to-webdsl-inputtext(|x_name) : Boolean() -> result
   //with
@@ -390,7 +514,8 @@ rules //crud rules
   attributename-to-webdsl-inputedit : x_name -> result
   with
     if <attributename-is-derivation>x_name then
-    	result := $["[x_name] :" output([x_name]) <br/>]
+        x_getname := <name-get> x_name;
+    	result := $["[x_name] :" output(temp.[x_getname]()) <br/>]
     else
 	    type := <_get-type>x_name;
 	    if <_get-type;Boolean()>x_name then
