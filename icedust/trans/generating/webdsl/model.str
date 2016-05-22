@@ -342,31 +342,53 @@ rules
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_roleName
       end
     with
-      if name-is-left; name-is-to-one then
-        ebd_roleField* := ebd* |[
-          x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleName + " cannot be null"), inverse=x_inverseName )
-        ]|
-      else if name-is-left; name-is-to-many-ordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
-        ]|
-      else if name-is-left; name-is-to-many-unordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : {x_inverseEntityName} (inverse=x_inverseName)
-        ]|
-      else if name-is-to-one then
-        ebd_roleField* := ebd* |[
-          x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleName + " cannot be null") )
-        ]|
-      else if name-is-to-many-ordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : [x_inverseEntityName]
-        ]|
-      else // right unordered
-        ebd_roleField* := ebd* |[
-          x_roleName : {x_inverseEntityName}
-        ]|
-      end end end end end
+      if name-is-left then
+        if where(get-multiplicity; ?One()) then
+          x_roleNameStr := $["[x_roleName]"];
+          ebd_roleField* := ebd* |[
+            x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null"), inverse=x_inverseEntityName.x_inverseName )
+          ]|
+        else
+          if name-is-to-one then
+            ebd_roleField* := ebd* |[
+              x_roleName : x_inverseEntityName ( inverse=x_inverseEntityName.x_inverseName )
+            ]|
+          else
+            if name-is-to-many-ordered then
+              ebd_roleField* := ebd* |[
+                x_roleName : [x_inverseEntityName] (inverse=x_inverseEntityName.x_inverseName)
+              ]|
+            else
+              ebd_roleField* := ebd* |[
+                x_roleName : {x_inverseEntityName} (inverse=x_inverseEntityName.x_inverseName)
+              ]|
+            end
+          end
+        end
+      else
+        if where(get-multiplicity; ?One()) then
+          x_roleNameStr := $["[x_roleName]"];
+          ebd_roleField* := ebd* |[
+            x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null") )
+          ]|
+        else
+          if name-is-to-one then
+            ebd_roleField* := ebd* |[
+              x_roleName : x_inverseEntityName
+            ]|
+          else
+            if name-is-to-many-ordered then
+              ebd_roleField* := ebd* |[
+                x_roleName : [x_inverseEntityName]
+              ]|
+            else
+              ebd_roleField* := ebd* |[
+                x_roleName : {x_inverseEntityName}
+              ]|
+            end
+          end
+        end
+      end
     with
       if name-is-to-one then
         ebd_getRole* := ebd* |[

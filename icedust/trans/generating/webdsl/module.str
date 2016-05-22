@@ -385,7 +385,7 @@ rules //crud rules
     x_getname := <name-get> x_name;
     result := elem* |[
       x_s ": "
-      output(temp.x_getname())
+      output(temp.x_getname()) " "
       navigate x_setname(temp) [] { "Set " x_s } <br/>
     ]|
     
