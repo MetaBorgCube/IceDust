@@ -1,0 +1,12 @@
+module signatures/Statement-sig
+
+imports
+  signatures/Common-sig
+  signatures/Expression-sig
+
+
+signature
+  constructors
+    return           : Expression -> Statement
+    Statement-Plhdr  : Statement
+    Expression-Plhdr : Expression

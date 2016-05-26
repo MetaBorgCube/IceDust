@@ -1,0 +1,538 @@
+module pp/Expression-pp
+
+imports
+  libstratego-gpp
+  runtime/tmpl/pp
+  libstratego-sglr
+  signatures/Expression-sig
+
+
+imports
+  signatures/Common-sig
+
+
+imports
+  pp/Common-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-Expression
+
+  prettyprint-Expression :
+    Parenthetical(t1__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [ S(" ( ")
+                               , t1__'
+                               , S(" ) ")
+                               ]
+                             )
+                           ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+
+  prettyprint-Expression :
+    MethodCall(t1__, t2__, t3__) -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [ t1__'
+                                        , S(".")
+                                        , t2__'
+                                        , S("(")
+                                        , t3__'
+                                        , S(")")
+                                        ]
+                                      )
+                                    ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-ID)> t2__
+    with t3__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-H-list(prettyprint-Expression|",")> t3__
+
+  is-Expression =
+    ?MethodCall(_, _, _)
+
+  get-indent :
+    (MethodCall(t1__, t2__, t3__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (MethodCall(t1__, t2__, t3__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (MethodCall(t1__, t2__, t3__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    FunctionCall(t1__, t2__) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [ t1__'
+                                    , S("(")
+                                    , t2__'
+                                    , S(")")
+                                    ]
+                                  )
+                                ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-ID)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-H-list(prettyprint-Expression|",")> t2__
+
+  is-Expression =
+    ?FunctionCall(_, _)
+
+  get-indent :
+    (FunctionCall(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (FunctionCall(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (FunctionCall(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    IntegerLiteral(t1__) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [t1__']
+                              )
+                            ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-INT)> t1__
+
+  is-Expression =
+    ?IntegerLiteral(_)
+
+  get-indent :
+    (IntegerLiteral(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (IntegerLiteral(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (IntegerLiteral(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    True() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("true")]
+                )
+              ]
+
+  is-Expression =
+    ?True()
+
+  get-indent :
+    (True(), index) -> indent
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (True(), index) -> separator
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (True(), index) -> ws
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    False() -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("false")]
+                 )
+               ]
+
+  is-Expression =
+    ?False()
+
+  get-indent :
+    (False(), index) -> indent
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (False(), index) -> separator
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (False(), index) -> ws
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    Identifier(t1__) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [t1__']
+                          )
+                        ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-ID)> t1__
+
+  is-Expression =
+    ?Identifier(_)
+
+  get-indent :
+    (Identifier(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Identifier(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Identifier(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    String(t1__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [t1__']
+                      )
+                    ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-STRING)> t1__
+
+  is-Expression =
+    ?String(_)
+
+  get-indent :
+    (String(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (String(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (String(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    Addition(t1__, t2__) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [t1__', S(" + "), t2__']
+                              )
+                            ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+
+  is-Expression =
+    ?Addition(_, _)
+
+  get-indent :
+    (Addition(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Addition(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Addition(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    Substraction(t1__, t2__) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [t1__', S(" - "), t2__']
+                                  )
+                                ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+
+  is-Expression =
+    ?Substraction(_, _)
+
+  get-indent :
+    (Substraction(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Substraction(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Substraction(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Expression :
+    Multiplication(t1__, t2__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [t1__', S(" * "), t2__']
+                                    )
+                                  ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+
+  is-Expression =
+    ?Multiplication(_, _)
+
+  get-indent :
+    (Multiplication(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Multiplication(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Multiplication(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Expression =
+    fail
+
+  prettyprint-Expression :
+    amb([h|hs]) -> <prettyprint-Expression> h
+
+  prettyprint-INT :
+    INT-Plhdr() -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("[[INT]]")]
+                     )
+                   ]
+
+  is-INT =
+    ?INT-Plhdr()
+
+  is-SDF-placeholder =
+    ?INT-Plhdr()
+
+  prettyprint-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("[[ID]]")]
+                    )
+                  ]
+
+  is-ID =
+    ?ID-Plhdr()
+
+  is-SDF-placeholder =
+    ?ID-Plhdr()
+
+  prettyprint-STRING :
+    STRING-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("[[STRING]]")]
+                        )
+                      ]
+
+  is-STRING =
+    ?STRING-Plhdr()
+
+  is-SDF-placeholder =
+    ?STRING-Plhdr()
+
+  prettyprint-Expression :
+    Expression-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[Expression]]")]
+                            )
+                          ]
+
+  is-Expression =
+    ?Expression-Plhdr()
+
+  is-SDF-placeholder =
+    ?Expression-Plhdr()
