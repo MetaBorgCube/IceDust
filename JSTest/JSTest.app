@@ -117,16 +117,11 @@ section  ui
       "Create"
         }
     var
-    derived
-    :
-    String
-    var
     personName
     :
     String
     form
       {
-      "derived :" input(derived) <br/>
         "personName :" input(personName) <br/>
         submit
         (
@@ -165,6 +160,7 @@ section  ui
 
   page editPerson ( temp : Person )
   {
+  	includeJS("javascript-lib.js")
   applicationmenu (  )
     <
     br
@@ -179,17 +175,13 @@ section  ui
     temp.getPersonName()
     form
       {
-      "derived :" output(temp.getDerived()) <br/>
-        "personName :" input(personName) <br/>
-        <div id="personName"></div>
+      "derived :" <div id="derived">output(temp.getDerived())</div> <br/>
+        "personName :" <div id="personName" class="input" data-flows-to="derived">input(personName)</div> <br/>
         submit
         action
         {
           temp.personName := personName;
           temp.save();
-          
-          
-          runscript("document.getElementById('personName').innerHTML = 'dit is een test'");
         }
         [
         ]
