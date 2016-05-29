@@ -521,12 +521,24 @@ rules //crud rules
 	    type := <_get-type>x_name;
 	    if <_get-type;Boolean()>x_name then
 		    if <get-multiplicity;ZeroOrOne()>x_name then
-		      result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
+		      if <attributename-is-default> x_name then
+		        result := $["[x_name] :" inputNonRequiredBool([x_name]) ; output([x_name]) <br/>]
+		      else
+		        result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
+		      end
 		    else
-		      result := $["[x_name] :" input([x_name]) <br/>]
+		      if <attributename-is-default> x_name then
+		        result := $["[x_name] :" input([x_name]) ; output([x_name]) <br/>]
+		      else
+		        result := $["[x_name] :" input([x_name]) <br/>]
+		      end
 		    end
 		else
-		  result := $["[x_name] :" input([x_name]) <br/>]
+		  if <attributename-is-default> x_name then
+		    result := $["[x_name] :" input([x_name]) ; output([x_name]) <br/>]
+		  else
+		    result := $["[x_name] :" input([x_name]) <br/>]
+		  end
 		end
 	end
   
