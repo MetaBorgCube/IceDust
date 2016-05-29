@@ -198,8 +198,9 @@ rules //crud
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
       entity-fields := <map(attributename-to-webdsl)>attributenames;
       allNames := <conc> (attributenames, relationsOnes);
-      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)> allNames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)> allNames;
+      createNames := <filter(attributename-is-normal-default)> allNames;
+      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)> createNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)> createNames;
       //elem_deriveRowsTest := <take(|<dec>numberOfAttributes);map(attributename-to-webdsl-assigncreate)>attributenames;
       //x_testy := elem_deriveRowsTest;
       //x_testyr := <last;attributename-to-webdsl-assigncreatelast>attributenames;
