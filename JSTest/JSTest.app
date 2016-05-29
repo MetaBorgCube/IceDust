@@ -15,6 +15,32 @@ section  data
 section  model
 
   entity Person {
+    boolean : Bool ( validate ( boolean != null , "" + "boolean" + " cannot be empty! " ) )
+    function getBoolean ( ) : Bool
+    {
+      return this.boolean;
+    }
+    static function getBoolean ( en : Person ) : Bool
+    {
+      return if ( en == null ) ( null as Bool ) else en.getBoolean();
+    }
+    static function getBoolean ( entities : List<Person> ) : List<Bool>
+    {
+      return [ en.getBoolean() | en : Person in entities where en.getBoolean() != null ];
+    }
+    booleanOptional : Bool ( default= null )
+    function getBooleanOptional ( ) : Bool
+    {
+      return this.booleanOptional;
+    }
+    static function getBooleanOptional ( en : Person ) : Bool
+    {
+      return if ( en == null ) ( null as Bool ) else en.getBooleanOptional();
+    }
+    static function getBooleanOptional ( entities : List<Person> ) : List<Bool>
+    {
+      return [ en.getBooleanOptional() | en : Person in entities where en.getBooleanOptional() != null ];
+    }
     derived : String := calculateDerived()
     function getDerived ( ) : String
     {
@@ -29,6 +55,23 @@ section  model
       return [ en.getDerived() | en : Person in entities where en.getDerived() != null ];
     }
     function calculateDerived ( ) : String
+    {
+      return Expressions.plus_String("You are ", Person.getPersonName(this));
+    }
+    derivedDefault : String ( default= null )
+    function getDerivedDefault ( ) : String
+    {
+      return if ( this.derivedDefault != null ) this.derivedDefault else this.calculateDerivedDefault();
+    }
+    static function getDerivedDefault ( en : Person ) : String
+    {
+      return if ( en == null ) ( null as String ) else en.getDerivedDefault();
+    }
+    static function getDerivedDefault ( entities : List<Person> ) : List<String>
+    {
+      return [ en.getDerivedDefault() | en : Person in entities where en.getDerivedDefault() != null ];
+    }
+    function calculateDerivedDefault ( ) : String
     {
       return Expressions.plus_String("You are ", Person.getPersonName(this));
     }
@@ -117,11 +160,31 @@ section  ui
       "Create"
         }
     var
+    boolean
+    :
+    Bool
+    var
+    booleanOptional
+    :
+    Bool
+    var
+    derived
+    :
+    String
+    var
+    derivedDefault
+    :
+    String
+    var
     personName
     :
     String
     form
       {
+      "boolean :" input(boolean) <br/>
+        "booleanOptional :" inputNonRequiredBool(booleanOptional) <br/>
+        "derived :" input(derived) <br/>
+        "derivedDefault :" input(derivedDefault) <br/>
         "personName :" input(personName) <br/>
         submit
         (
@@ -134,7 +197,10 @@ section  ui
         }
     action save ( )
     {
-      var temp := Person{personName := personName} ;
+      var temp := Person{boolean := boolean,
+                         booleanOptional := booleanOptional,
+                         derivedDefault := derivedDefault,
+                         personName := personName} ;
       temp.save();
     }
     navigate managePerson() [ ] { "Back" }
@@ -150,7 +216,10 @@ section  ui
       {
       "View"
         }
+    "boolean :" output(temp.getBoolean()) <br>
+    "booleanOptional :" output(temp.getBooleanOptional()) <br>
     "derived :" output(temp.getDerived()) <br>
+    "derivedDefault :" output(temp.getDerivedDefault()) <br>
     "personName :" output(temp.getPersonName()) <br>
     <
     hr
@@ -160,7 +229,6 @@ section  ui
 
   page editPerson ( temp : Person )
   {
-  	includeJS("javascript-lib.js")
   applicationmenu (  )
     <
     br
@@ -170,17 +238,38 @@ section  ui
       "Edit"
         }
     var
+    boolean
+    :=
+    temp.getBoolean()
+    var
+    booleanOptional
+    :=
+    temp.getBooleanOptional()
+    var
+    derivedDefault
+    :=
+    temp.derivedDefault
+    var
     personName
     :=
     temp.getPersonName()
     form
       {
-      "derived :" <div id="derived">output(temp.getDerived())</div> <br/>
-        "personName :" <div id="personName" class="input" data-flows-to="derived">input(personName)</div> <br/>
+      "boolean :" input(boolean) <br/>
+        "booleanOptional :" inputNonRequiredBool(booleanOptional) <br/>
+        "derived :" output(temp.getDerived()) <br/>
+        "derivedDefault :" input(derivedDefault) <br/>
+        "personName :" input(personName) <br/>
         submit
         action
         {
-          temp.personName := personName;
+          temp.boolean := boolean; temp.booleanOptional := booleanOptional; 
+if(derivedDefault.trim() != "") {
+  temp.derivedDefault := derivedDefault;
+} else {
+  temp.derivedDefault := null;
+}
+ temp.personName := personName;
           temp.save();
         }
         [
