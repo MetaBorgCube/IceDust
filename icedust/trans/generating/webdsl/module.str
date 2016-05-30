@@ -6,6 +6,7 @@ imports // constructors
 	webdsl/WebDSL
 	desugaring/constructors
 	signatures/Types-sig
+	analysis2/path
 
 imports // functions
   
@@ -260,6 +261,7 @@ rules //crud
             navigate x_manageEntity() [] { "Back" }
           }
           page x_editEntity(temp: x_entityName){
+          	includeJS("javascript-lib.js")
             applicationmenu() <br/>
             header{"Edit"}
             elem_deriveRowsVarEdit
@@ -512,35 +514,112 @@ rules //crud rules
 	  result := $["[x_name] :" input([x_name]) <br/>]
 	end
   
+  name-to-webdsl-input : x_name -> result
+  with
+    if <_get-type;Boolean()> x_name then
+      if <get-multiplicity;ZeroOrOne()> x_name then
+        result := elem |[ inputNonRequiredBool(x_name) ]|
+      else
+        result := elem |[ input(x_name) ]|
+      end
+    else
+      result := elem |[ input(x_name) ]|
+    end
+    
+  extract-flow : DataflowPath(x, Ref(y)) -> y
+  
+  add-space : s -> <conc-strings> (s, " ")
+  
+  name-to-type-string : x_name -> result
+  with
+    type := <_get-type> x_name;
+    if <Boolean()> type then
+      if <get-multiplicity;One()> x_name then
+        result := "Boolean"
+      else
+        result := "Boolean?"
+      end
+    else
+      if <Float()> type then
+        if <get-multiplicity;One()> x_name then
+          result := "Float"
+        else
+          result := "Float?"
+        end
+      else
+        if <Int()> type then
+          if <get-multiplicity;One()> x_name then
+            result := "Int"
+          else
+            result := "Int?"
+          end
+        else
+          if <String()> type then
+            if <get-multiplicity;One()> x_name then
+              result := "String"
+            else
+              result := "String?"
+            end
+          else
+            result := "UnimplementedType"
+          end
+        end
+      end
+    end
+  
   attributename-to-webdsl-inputedit : x_name -> result
   with
+    x_namestr := String(x_name);
+    x_typestr := <name-to-type-string; double-quote> x_name;
+    x_input := <name-to-webdsl-input> x_name;
+    flows := <name-get-flowsto-paths> x_name;
+    flowstr := <map(extract-flow)> flows;
+    x_flows := <map(add-space); concat-strings; double-quote> flowstr;
     if <attributename-is-derivation>x_name then
-        x_getname := <name-get> x_name;
-    	result := $["[x_name] :" output(temp.[x_getname]()) <br/>]
+      x_getname := <name-get> x_name;
+      result := elem* |[
+        "" x_namestr ": "
+    	<div
+    	  data-name = x_namestr
+    	  data-type = x_typestr
+    	  data-updates = x_flows>
+          <div class="output">
+    	    output(temp.x_getname())
+    	  </div>
+          <div class="error-msg" style="color: red"></div>
+    	</div>
+    	<br/> 
+      ]|
     else
-	    type := <_get-type>x_name;
-	    if <_get-type;Boolean()>x_name then
-		    if <get-multiplicity;ZeroOrOne()>x_name then
-		      if <attributename-is-default> x_name then
-		        result := $["[x_name] :" inputNonRequiredBool([x_name]) ; output([x_name]) <br/>]
-		      else
-		        result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
-		      end
-		    else
-		      if <attributename-is-default> x_name then
-		        result := $["[x_name] :" input([x_name]) ; output([x_name]) <br/>]
-		      else
-		        result := $["[x_name] :" input([x_name]) <br/>]
-		      end
-		    end
-		else
-		  if <attributename-is-default> x_name then
-		    result := $["[x_name] :" input([x_name]) ; output([x_name]) <br/>]
-		  else
-		    result := $["[x_name] :" input([x_name]) <br/>]
-		  end
-		end
-	end
+	  if <attributename-is-default> x_name then
+        result := elem* |[
+          "" x_namestr ": "
+          <div
+            data-name = x_namestr
+            data-type = x_typestr
+            data-updates = x_flows
+            data-default = "true">
+            "" x_input
+            <div class="error-msg" style="color: red"></div>
+	        <div class="default-output"></div>
+          </div>
+          <br/>
+        ]|
+      else
+        result := elem* |[
+          "" x_namestr ": "
+          <div
+            data-name = x_namestr
+            data-type = x_typestr
+            data-updates = x_flows>
+            "" x_input
+            <div class="error-msg" style="color: red"></div>
+	        <div class="default-output"></div>
+          </div>
+          <br/>
+        ]|
+      end
+    end
   
   attributename-to-webdsl-assigncreate: x_name -> result
   with
