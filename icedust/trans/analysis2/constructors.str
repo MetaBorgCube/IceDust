@@ -3,7 +3,7 @@ module analysis2/constructors
 signature constructors
 	
 	Path      : List(URL) -> Path
-	Inv       : Inv(Path) -> Path
+	Inv       : Path -> Path
 
 	DependsOn : DependsOn
 	FlowsTo   : FlowsTo
