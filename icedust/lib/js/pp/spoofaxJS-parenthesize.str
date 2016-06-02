@@ -1,0 +1,94 @@
+module pp/spoofaxJS-parenthesize
+
+imports
+  libstratego-lib
+  signatures/spoofaxJS-sig
+
+
+strategies
+  io-spoofaxJS-parenthesize =
+    io-wrap(parenthesize-spoofaxJS)
+
+  parenthesize-spoofaxJS =
+    innermost(spoofaxJSParenthesize)
+
+
+rules
+
+  spoofaxJSParenthesize :
+    MethodCall(t_0, t_1, t_2) -> MethodCall(Parenthetical(t_0), t_1, t_2)
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    MethodCall(t_0, t_1, t_2) -> MethodCall(t_0, Parenthetical(t_1), t_2)
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    MethodCall(t_0, t_1, t_2) -> MethodCall(t_0, t_1, Parenthetical(t_2))
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_2
+
+  spoofaxJSParenthesize :
+    FunctionCall(t_0, t_1) -> FunctionCall(Parenthetical(t_0), t_1)
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    FunctionCall(t_0, t_1) -> FunctionCall(t_0, Parenthetical(t_1))
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(Parenthetical(t_0), t_1)
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(t_0, Parenthetical(t_1))
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Substraction(t_0, t_1) -> Substraction(t_0, Parenthetical(t_1))
+    where <(?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Addition(t_0, t_1) -> Addition(t_0, Parenthetical(t_1))
+    where <(?Addition(_, _)
+            + ?Substraction(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    String(t_0) -> String(Parenthetical(t_0))
+    where <(?String(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Identifier(t_0) -> Identifier(Parenthetical(t_0))
+    where <(?Identifier(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    IntegerLiteral(t_0) -> IntegerLiteral(Parenthetical(t_0))
+    where <(?IntegerLiteral(_) + fail)> t_0
+
+
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown
+

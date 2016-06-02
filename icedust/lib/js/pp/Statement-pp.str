@@ -1,0 +1,112 @@
+module pp/Statement-pp
+
+imports
+  libstratego-gpp
+  runtime/tmpl/pp
+  libstratego-sglr
+  signatures/Statement-sig
+
+
+imports
+  signatures/Common-sig
+  signatures/Expression-sig
+
+
+imports
+  pp/Common-pp
+  pp/Expression-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-Statement
+
+  prettyprint-Statement :
+    return(t1__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [ S("return ")
+                        , t1__'
+                        , S(";")
+                        ]
+                      )
+                    ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+
+  is-Statement =
+    ?return(_)
+
+  get-indent :
+    (return(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (return(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (return(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statement =
+    fail
+
+  prettyprint-Statement :
+    amb([h|hs]) -> <prettyprint-Statement> h
+
+  prettyprint-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("[[Statement]]")]
+                           )
+                         ]
+
+  is-Statement =
+    ?Statement-Plhdr()
+
+  is-SDF-placeholder =
+    ?Statement-Plhdr()
+
+  prettyprint-Expression :
+    Expression-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[Expression]]")]
+                            )
+                          ]
+
+  is-Expression =
+    ?Expression-Plhdr()
+
+  is-SDF-placeholder =
+    ?Expression-Plhdr()

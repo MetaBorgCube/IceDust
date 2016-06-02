@@ -1,4 +1,4 @@
-id: org.metaborg:icedust:0.4.2-SNAPSHOT
+id: org.metaborg:icedust:0.4.3-SNAPSHOT
 name: IceDust
 metaborgVersion: 2.0.0-SNAPSHOT
 dependencies:
@@ -24,7 +24,7 @@ pardonedLanguages:
 - NameBindingLanguage
 language:
   stratego:
-    format: jar
+    format: ctree
     args:
     - -la
     - stratego-lib

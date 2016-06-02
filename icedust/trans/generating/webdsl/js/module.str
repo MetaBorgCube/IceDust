@@ -1,0 +1,26 @@
+module generating/webdsl/js/module
+
+imports // constructors
+
+	webdsl/constructors
+	webdsl/WebDSL
+	desugaring/constructors
+
+imports // functions
+  
+  generating/_ir/model 
+  generating/webdsl/model
+	generating/webdsl/data
+  api/model-names-api
+	api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+
+rules // module
+
+
+  blaat: a -> a
+    with
+      e_asdf := js-expr |[3]|;
+      b := js-expr |[1 + 2 + e_asdf]|

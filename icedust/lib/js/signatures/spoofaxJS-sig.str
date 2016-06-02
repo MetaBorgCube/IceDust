@@ -1,0 +1,13 @@
+module signatures/spoofaxJS-sig
+
+imports
+  signatures/Common-sig
+  signatures/Expression-sig
+  signatures/Statement-sig
+  signatures/MethodDecl-sig
+
+
+signature
+  constructors
+    Empty       : Start
+    Start-Plhdr : Start
