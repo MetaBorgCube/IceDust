@@ -3,10 +3,16 @@ module signatures/Statement-sig
 imports
   signatures/Common-sig
   signatures/Expression-sig
+  signatures/MethodDecl-sig
 
 
 signature
   constructors
+    expStmt          : Expression -> Statement
+    varDecl          : ID * Expression -> Statement
     return           : Expression -> Statement
-    Statement-Plhdr  : Statement
+                     : MethodDecl -> Statement
+    ID-Plhdr         : ID
     Expression-Plhdr : Expression
+    Statement-Plhdr  : Statement
+    MethodDecl-Plhdr : MethodDecl

@@ -86,6 +86,45 @@ strategies
              ws := ""
          end
 
+  prettyprint-Start :
+    Program(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [t1__']
+                       )
+                     ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-V-list(prettyprint-Statement|"1")> t1__
+
+  is-Start =
+    ?Program(_)
+
+  get-indent :
+    (Program(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Program(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := "\n\n"
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Program(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
   is-Start =
     fail
 
@@ -104,3 +143,16 @@ strategies
 
   is-SDF-placeholder =
     ?Start-Plhdr()
+
+  prettyprint-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("[[Statement]]")]
+                           )
+                         ]
+
+  is-Statement =
+    ?Statement-Plhdr()
+
+  is-SDF-placeholder =
+    ?Statement-Plhdr()

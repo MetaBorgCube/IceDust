@@ -4,6 +4,7 @@ imports // constructors
 
 	webdsl/constructors
 	webdsl/WebDSL
+	
 	desugaring/constructors
 
 imports // functions
@@ -22,5 +23,5 @@ rules // module
 
   blaat: a -> a
     with
-      e_asdf := js-expr |[3]|;
-      b := js-expr |[1 + 2 + e_asdf]|
+      e_asd := js-ex |[3]|;
+      b := js-stmt |[return a;]|

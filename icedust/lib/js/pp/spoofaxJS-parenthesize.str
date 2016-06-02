@@ -16,35 +16,14 @@ strategies
 rules
 
   spoofaxJSParenthesize :
-    MethodCall(t_0, t_1, t_2) -> MethodCall(Parenthetical(t_0), t_1, t_2)
+    Call(t_0, t_1) -> Call(Parenthetical(t_0), t_1)
     where <(?Substraction(_, _)
             + ?Addition(_, _)
             + ?Multiplication(_, _)
             + fail)> t_0
 
   spoofaxJSParenthesize :
-    MethodCall(t_0, t_1, t_2) -> MethodCall(t_0, Parenthetical(t_1), t_2)
-    where <(?Substraction(_, _)
-            + ?Addition(_, _)
-            + ?Multiplication(_, _)
-            + fail)> t_1
-
-  spoofaxJSParenthesize :
-    MethodCall(t_0, t_1, t_2) -> MethodCall(t_0, t_1, Parenthetical(t_2))
-    where <(?Substraction(_, _)
-            + ?Addition(_, _)
-            + ?Multiplication(_, _)
-            + fail)> t_2
-
-  spoofaxJSParenthesize :
-    FunctionCall(t_0, t_1) -> FunctionCall(Parenthetical(t_0), t_1)
-    where <(?Substraction(_, _)
-            + ?Addition(_, _)
-            + ?Multiplication(_, _)
-            + fail)> t_0
-
-  spoofaxJSParenthesize :
-    FunctionCall(t_0, t_1) -> FunctionCall(t_0, Parenthetical(t_1))
+    Call(t_0, t_1) -> Call(t_0, Parenthetical(t_1))
     where <(?Substraction(_, _)
             + ?Addition(_, _)
             + ?Multiplication(_, _)
@@ -86,6 +65,10 @@ rules
   spoofaxJSParenthesize :
     IntegerLiteral(t_0) -> IntegerLiteral(Parenthetical(t_0))
     where <(?IntegerLiteral(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Property(t_0, t_1) -> Property(t_0, Parenthetical(t_1))
+    where <(?Property(_, _) + fail)> t_1
 
 
 signature

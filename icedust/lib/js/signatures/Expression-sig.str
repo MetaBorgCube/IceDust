@@ -2,12 +2,14 @@ module signatures/Expression-sig
 
 imports
   signatures/Common-sig
+  signatures/Parameter-sig
+  signatures/Statement-sig
 
 
 signature
   constructors
-    MethodCall       : Expression * ID * List(Expression) -> Expression
-    FunctionCall     : ID * List(Expression) -> Expression
+    Property         : Expression * ID -> Expression
+    Call             : Expression * List(Expression) -> Expression
     IntegerLiteral   : INT -> Expression
     True             : Expression
     False            : Expression
@@ -16,7 +18,10 @@ signature
     Addition         : Expression * Expression -> Expression
     Substraction     : Expression * Expression -> Expression
     Multiplication   : Expression * Expression -> Expression
+    AnonFunction     : List(Parameter) * List(Statement) -> Expression
     INT-Plhdr        : INT
     ID-Plhdr         : ID
     STRING-Plhdr     : STRING
     Expression-Plhdr : Expression
+    Parameter-Plhdr  : Parameter
+    Statement-Plhdr  : Statement

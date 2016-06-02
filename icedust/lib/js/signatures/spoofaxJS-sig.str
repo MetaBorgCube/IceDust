@@ -9,5 +9,7 @@ imports
 
 signature
   constructors
-    Empty       : Start
-    Start-Plhdr : Start
+    Empty           : Start
+    Program         : List(Statement) -> Start
+    Start-Plhdr     : Start
+    Statement-Plhdr : Statement
