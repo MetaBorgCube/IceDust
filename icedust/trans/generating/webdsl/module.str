@@ -214,7 +214,8 @@ rules //crud
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames);
       def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
       elem_editRelations := <map(relationname-to-editlink)> relations;
-      elem_relationsOutputView := <map(relationname-to-output)> relations
+      elem_relationsOutputView := <map(relationname-to-output)> relations;
+      stat_createDefaultWrap* := <map(create-wrap-default)> (<filter(attributename-is-default)> attributenames)
     with
       if entityname-is-calconread then
         result := def* |[
@@ -245,6 +246,7 @@ rules //crud
               
 			}
 			action save() {
+			  stat_createDefaultWrap*
 		      var temp := x_entityName {
 				x_testy
 		  	  };
@@ -366,6 +368,14 @@ rules //crud
 		  ]|
 
 rules //crud rules
+  create-wrap-default : x_name -> result
+  with
+    result := stat |[
+      if(x_name.trim() == "") {
+        x_name := null;
+      }
+    ]|
+
   attributename-to-webdsl-varcreate : x_name -> result
   with
     x_type := <name-to-webdsl-srt(err)>x_name;

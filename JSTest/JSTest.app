@@ -168,10 +168,6 @@ section  ui
     :
     Bool
     var
-    derived
-    :
-    String
-    var
     derivedDefault
     :
     String
@@ -183,7 +179,6 @@ section  ui
       {
       "boolean :" input(boolean) <br/>
         "booleanOptional :" inputNonRequiredBool(booleanOptional) <br/>
-        "derived :" input(derived) <br/>
         "derivedDefault :" input(derivedDefault) <br/>
         "personName :" input(personName) <br/>
         submit
@@ -197,6 +192,10 @@ section  ui
         }
     action save ( )
     {
+      if ( derivedDefault.trim() == "" )
+      {
+        derivedDefault := null;
+      }
       var temp := Person{boolean := boolean,
                          booleanOptional := booleanOptional,
                          derivedDefault := derivedDefault,
@@ -229,7 +228,8 @@ section  ui
 
   page editPerson ( temp : Person )
   {
-  applicationmenu (  )
+  includeJS ( "javascript-lib.js" )
+    applicationmenu (  )
     <
     br
     />
@@ -255,11 +255,228 @@ section  ui
     temp.getPersonName()
     form
       {
-      "boolean :" input(boolean) <br/>
-        "booleanOptional :" inputNonRequiredBool(booleanOptional) <br/>
-        "derived :" output(temp.getDerived()) <br/>
-        "derivedDefault :" input(derivedDefault) <br/>
-        "personName :" input(personName) <br/>
+      ""
+        "boolean"
+        ": "
+        <
+        div
+        data-name
+        =
+        "boolean"
+        data-type
+        =
+        "Boolean"
+        data-updates
+        =
+        ""
+        >
+        ""
+        input ( boolean )
+        <
+        div
+        class
+        =
+        "error-msg"
+        style
+        =
+        "color: red"
+        >
+        </
+        div
+        >
+        <
+        div
+        class
+        =
+        "default-output"
+        >
+        </
+        div
+        >
+        </
+        div
+        >
+        <
+        br
+        />
+        ""
+        "booleanOptional"
+        ": "
+        <
+        div
+        data-name
+        =
+        "booleanOptional"
+        data-type
+        =
+        "Boolean?"
+        data-updates
+        =
+        ""
+        >
+        ""
+        inputNonRequiredBool ( booleanOptional )
+        <
+        div
+        class
+        =
+        "error-msg"
+        style
+        =
+        "color: red"
+        >
+        </
+        div
+        >
+        <
+        div
+        class
+        =
+        "default-output"
+        >
+        </
+        div
+        >
+        </
+        div
+        >
+        <
+        br
+        />
+        ""
+        "derived"
+        ": "
+        <
+        div
+        data-name
+        =
+        "derived"
+        data-type
+        =
+        "String"
+        data-updates
+        =
+        ""
+        >
+        <
+        div
+        class
+        =
+        "output"
+        >
+        output ( temp.getDerived() )
+        </
+        div
+        >
+        <
+        div
+        class
+        =
+        "error-msg"
+        style
+        =
+        "color: red"
+        >
+        </
+        div
+        >
+        </
+        div
+        >
+        <
+        br
+        />
+        ""
+        "derivedDefault"
+        ": "
+        <
+        div
+        data-name
+        =
+        "derivedDefault"
+        data-type
+        =
+        "String"
+        data-updates
+        =
+        ""
+        data-default
+        =
+        "true"
+        >
+        ""
+        input ( derivedDefault )
+        <
+        div
+        class
+        =
+        "error-msg"
+        style
+        =
+        "color: red"
+        >
+        </
+        div
+        >
+        <
+        div
+        class
+        =
+        "default-output"
+        >
+        </
+        div
+        >
+        </
+        div
+        >
+        <
+        br
+        />
+        ""
+        "personName"
+        ": "
+        <
+        div
+        data-name
+        =
+        "personName"
+        data-type
+        =
+        "String"
+        data-updates
+        =
+        "derivedDefault derived "
+        >
+        ""
+        input ( personName )
+        <
+        div
+        class
+        =
+        "error-msg"
+        style
+        =
+        "color: red"
+        >
+        </
+        div
+        >
+        <
+        div
+        class
+        =
+        "default-output"
+        >
+        </
+        div
+        >
+        </
+        div
+        >
+        <
+        br
+        />
         submit
         action
         {
