@@ -214,6 +214,8 @@ rules //crud
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames);
       def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
       elem_editRelations := <map(relationname-to-editlink)> relations;
+      elem_a := elem_editRelations;
+      
       elem_relationsOutputView := <map(relationname-to-output)> relations
     with
       if entityname-is-calconread then

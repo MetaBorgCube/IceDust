@@ -1,0 +1,241 @@
+module pp/Statement-pp
+
+imports
+  libstratego-gpp
+  runtime/tmpl/pp
+  libstratego-sglr
+  signatures/Statement-sig
+
+
+imports
+  signatures/Common-sig
+  signatures/Expression-sig
+  signatures/MethodDecl-sig
+
+
+imports
+  pp/Common-pp
+  pp/Expression-pp
+  pp/MethodDecl-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-Statement
+
+  prettyprint-Statement :
+    expStmt(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [t1__', S(";")]
+                       )
+                     ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+
+  is-Statement =
+    ?expStmt(_)
+
+  get-indent :
+    (expStmt(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (expStmt(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (expStmt(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
+    varDecl(t1__, t2__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [ S("var ")
+                               , t1__'
+                               , S(" = ")
+                               , t2__'
+                               , S(";")
+                               ]
+                             )
+                           ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-ID)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+
+  is-Statement =
+    ?varDecl(_, _)
+
+  get-indent :
+    (varDecl(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (varDecl(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (varDecl(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := " "
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
+    return(t1__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [ S("return ")
+                        , t1__'
+                        , S(";")
+                        ]
+                      )
+                    ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+
+  is-Statement =
+    ?return(_)
+
+  get-indent :
+    (return(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (return(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (return(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statement)
+    where t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                    <+ pp-one-Z(prettyprint-MethodDecl)> t1__
+
+  is-Statement =
+    fail
+
+  prettyprint-Statement :
+    amb([h|hs]) -> <prettyprint-Statement> h
+
+  prettyprint-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("[[ID]]")]
+                    )
+                  ]
+
+  is-ID =
+    ?ID-Plhdr()
+
+  is-SDF-placeholder =
+    ?ID-Plhdr()
+
+  prettyprint-Expression :
+    Expression-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[Expression]]")]
+                            )
+                          ]
+
+  is-Expression =
+    ?Expression-Plhdr()
+
+  is-SDF-placeholder =
+    ?Expression-Plhdr()
+
+  prettyprint-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("[[Statement]]")]
+                           )
+                         ]
+
+  is-Statement =
+    ?Statement-Plhdr()
+
+  is-SDF-placeholder =
+    ?Statement-Plhdr()
+
+  prettyprint-MethodDecl :
+    MethodDecl-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[MethodDecl]]")]
+                            )
+                          ]
+
+  is-MethodDecl =
+    ?MethodDecl-Plhdr()
+
+  is-SDF-placeholder =
+    ?MethodDecl-Plhdr()

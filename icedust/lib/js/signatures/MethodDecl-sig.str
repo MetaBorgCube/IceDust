@@ -1,0 +1,16 @@
+module signatures/MethodDecl-sig
+
+imports
+  signatures/Common-sig
+  signatures/Statement-sig
+  signatures/Expression-sig
+  signatures/Parameter-sig
+
+
+signature
+  constructors
+    method           : ID * List(Parameter) * List(Statement) -> MethodDecl
+    MethodDecl-Plhdr : MethodDecl
+    ID-Plhdr         : ID
+    Parameter-Plhdr  : Parameter
+    Statement-Plhdr  : Statement

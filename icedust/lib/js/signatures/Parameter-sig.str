@@ -1,0 +1,12 @@
+module signatures/Parameter-sig
+
+imports
+  signatures/Common-sig
+  signatures/Parameter-sig
+
+
+signature
+  constructors
+    parameter       : ID -> Parameter
+    Parameter-Plhdr : Parameter
+    ID-Plhdr        : ID

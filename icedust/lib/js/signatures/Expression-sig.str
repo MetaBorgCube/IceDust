@@ -1,0 +1,27 @@
+module signatures/Expression-sig
+
+imports
+  signatures/Common-sig
+  signatures/Parameter-sig
+  signatures/Statement-sig
+
+
+signature
+  constructors
+    Property         : Expression * ID -> Expression
+    Call             : Expression * List(Expression) -> Expression
+    IntegerLiteral   : INT -> Expression
+    True             : Expression
+    False            : Expression
+    Identifier       : ID -> Expression
+    String           : STRING -> Expression
+    Addition         : Expression * Expression -> Expression
+    Substraction     : Expression * Expression -> Expression
+    Multiplication   : Expression * Expression -> Expression
+    AnonFunction     : List(Parameter) * List(Statement) -> Expression
+    INT-Plhdr        : INT
+    ID-Plhdr         : ID
+    STRING-Plhdr     : STRING
+    Expression-Plhdr : Expression
+    Parameter-Plhdr  : Parameter
+    Statement-Plhdr  : Statement

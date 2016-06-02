@@ -1,0 +1,158 @@
+module pp/spoofaxJS-pp
+
+imports
+  libstratego-gpp
+  runtime/tmpl/pp
+  libstratego-sglr
+  signatures/spoofaxJS-sig
+
+
+imports
+  signatures/Common-sig
+  signatures/Expression-sig
+  signatures/Statement-sig
+  signatures/MethodDecl-sig
+
+
+imports
+  pp/Common-pp
+  pp/Expression-pp
+  pp/Statement-pp
+  pp/MethodDecl-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS-start-symbols =
+    prettyprint-Start
+
+  prettyprint-spoofaxJS-start-symbols =
+    prettyprint-MethodDecl
+
+  prettyprint-spoofaxJS-start-symbols =
+    prettyprint-Expression
+
+  prettyprint-spoofaxJS-start-symbols =
+    prettyprint-Statement
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-Start
+
+  prettyprint-Start :
+    Empty() -> [ H(
+                   []
+                 , [S("")]
+                 )
+               ]
+
+  is-Start =
+    ?Empty()
+
+  get-indent :
+    (Empty(), index) -> indent
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Empty(), index) -> separator
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Empty(), index) -> ws
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Start :
+    Program(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [t1__']
+                       )
+                     ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-V-list(prettyprint-Statement|"1")> t1__
+
+  is-Start =
+    ?Program(_)
+
+  get-indent :
+    (Program(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (Program(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := "\n\n"
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (Program(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Start =
+    fail
+
+  prettyprint-Start :
+    amb([h|hs]) -> <prettyprint-Start> h
+
+  prettyprint-Start :
+    Start-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("[[Start]]")]
+                       )
+                     ]
+
+  is-Start =
+    ?Start-Plhdr()
+
+  is-SDF-placeholder =
+    ?Start-Plhdr()
+
+  prettyprint-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("[[Statement]]")]
+                           )
+                         ]
+
+  is-Statement =
+    ?Statement-Plhdr()
+
+  is-SDF-placeholder =
+    ?Statement-Plhdr()
