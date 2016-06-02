@@ -135,19 +135,23 @@ window.addEventListener('load', function() {
 		var el = els[i];
 		var type = el.getAttribute('data-type');
 		var construct = types[type];
-		if(!construct) throw new Error('Invalid type: ' + type);
-		elements[el.getAttribute('data-name')] = new construct(el);
+		if(!construct)
+			console.error('Invalid type: ' + type);
+		else
+			elements[el.getAttribute('data-name')] = new construct(el);
 	}
+	for(var k in elements) elements[k].refresh();
 });
 
 // Types
 defType('String', function() {
-	if(this.get().trim().length === 0)
+	if(!this.isDefault && this.get().trim().length === 0)
 		return this.name + ' cannot be empty!';
 });
 defType('String?');
 defType('Int', function() {
-	if(this.getRaw().trim().length === 0) return this.name + ' cannot be empty!';
+	if(!this.isDefault && this.getRaw().trim().length === 0)
+		return this.name + ' cannot be empty!';
 	var v = this.get();
 	if(isNaN(v)) return this.name + ' must be a number!';
 	if(Math.floor(v) !== v) return this.name + ' must be an integer!';
@@ -159,7 +163,8 @@ defType('Int?', function() {
 	if(Math.floor(v) !== v) return this.name + ' must be an integer!';
 }, function(v) {return v.trim().length === 0? null: +v});
 defType('Float', function() {
-	if(this.getRaw().trim().length === 0) return this.name + ' cannot be empty!';
+	if(!this.isDefault && this.getRaw().trim().length === 0)
+		return this.name + ' cannot be empty!';
 	if(isNaN(this.get())) return this.name + ' must be a number!';
 }, function(v) {return +v});
 defType('Float?', function() {
@@ -174,19 +179,14 @@ var get = function(n) {return elements[n]? elements[n].get(): null};
 var setDerived = function(n, f) {
 	window.addEventListener('load', function() {
 		if(elements[n]) elements[n].setDerived(f);
+		for(var k in elements) elements[k].refresh();
 	});
 };
 
 // generated
-setDerived('greeting', function() {
-	return 'Hello ' + get('personName');
+setDerived('derived', function() {
+	return 'You are ' + get('personName');
 });
-setDerived('femaleOutput', function() {
-	return get('female');
-});
-setDerived('booleanOptionalOutput', function() {
-	return '' + get('booleanOptional');
-});
-setDerived('nickname', function() {
-	return get('personName') + ' de makker';
+setDerived('derivedDefault', function() {
+	return 'You are ' + get('personName');
 });
