@@ -1,9 +1,9 @@
-module signatures/Expression-sig
+module lib/js/signatures/Expression-sig
 
 imports
-  signatures/Common-sig
-  signatures/Parameter-sig
-  signatures/Statement-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Parameter-sig
+  lib/js/signatures/Statement-sig
 
 
 signature

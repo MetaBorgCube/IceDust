@@ -21,7 +21,7 @@ imports // functions
 rules // module
 
 
-  blaat: a -> a
+  blaat: a -> b
     with
       e_asd := js-ex |[3]|;
       b := js-stmt |[return a;]|

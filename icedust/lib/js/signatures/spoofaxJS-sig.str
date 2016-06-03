@@ -1,10 +1,10 @@
-module signatures/spoofaxJS-sig
+module lib/js/signatures/spoofaxJS-sig
 
 imports
-  signatures/Common-sig
-  signatures/Expression-sig
-  signatures/Statement-sig
-  signatures/MethodDecl-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/Statement-sig
+  lib/js/signatures/MethodDecl-sig
 
 
 signature

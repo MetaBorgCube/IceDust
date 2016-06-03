@@ -1,10 +1,10 @@
-module signatures/MethodDecl-sig
+module lib/js/signatures/MethodDecl-sig
 
 imports
-  signatures/Common-sig
-  signatures/Statement-sig
-  signatures/Expression-sig
-  signatures/Parameter-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Statement-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/Parameter-sig
 
 
 signature

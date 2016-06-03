@@ -1,8 +1,8 @@
-module signatures/Parameter-sig
+module lib/js/signatures/Parameter-sig
 
 imports
-  signatures/Common-sig
-  signatures/Parameter-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Parameter-sig
 
 
 signature

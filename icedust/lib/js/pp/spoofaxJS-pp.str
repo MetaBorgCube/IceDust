@@ -1,24 +1,24 @@
-module pp/spoofaxJS-pp
+module lib/js/pp/spoofaxJS-pp
 
 imports
   libstratego-gpp
   runtime/tmpl/pp
   libstratego-sglr
-  signatures/spoofaxJS-sig
+  lib/js/signatures/spoofaxJS-sig
 
 
 imports
-  signatures/Common-sig
-  signatures/Expression-sig
-  signatures/Statement-sig
-  signatures/MethodDecl-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/Statement-sig
+  lib/js/signatures/MethodDecl-sig
 
 
 imports
-  pp/Common-pp
-  pp/Expression-pp
-  pp/Statement-pp
-  pp/MethodDecl-pp
+  lib/js/pp/Common-pp
+  lib/js/pp/Expression-pp
+  lib/js/pp/Statement-pp
+  lib/js/pp/MethodDecl-pp
 
 
 strategies

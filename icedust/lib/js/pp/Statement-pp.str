@@ -1,22 +1,22 @@
-module pp/Statement-pp
+module lib/js/pp/Statement-pp
 
 imports
   libstratego-gpp
   runtime/tmpl/pp
   libstratego-sglr
-  signatures/Statement-sig
+  lib/js/signatures/Statement-sig
 
 
 imports
-  signatures/Common-sig
-  signatures/Expression-sig
-  signatures/MethodDecl-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/MethodDecl-sig
 
 
 imports
-  pp/Common-pp
-  pp/Expression-pp
-  pp/MethodDecl-pp
+  lib/js/pp/Common-pp
+  lib/js/pp/Expression-pp
+  lib/js/pp/MethodDecl-pp
 
 
 strategies

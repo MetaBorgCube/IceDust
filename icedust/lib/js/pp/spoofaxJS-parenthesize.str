@@ -1,8 +1,8 @@
-module pp/spoofaxJS-parenthesize
+module lib/js/pp/spoofaxJS-parenthesize
 
 imports
   libstratego-lib
-  signatures/spoofaxJS-sig
+  lib/js/signatures/spoofaxJS-sig
 
 
 strategies

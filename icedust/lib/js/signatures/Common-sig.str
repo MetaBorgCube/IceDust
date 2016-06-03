@@ -1,4 +1,4 @@
-module signatures/Common-sig
+module lib/js/signatures/Common-sig
 
 signature
   constructors

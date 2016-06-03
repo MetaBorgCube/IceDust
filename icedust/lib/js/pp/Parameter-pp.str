@@ -1,20 +1,20 @@
-module pp/Parameter-pp
+module lib/js/pp/Parameter-pp
 
 imports
   libstratego-gpp
   runtime/tmpl/pp
   libstratego-sglr
-  signatures/Parameter-sig
+  lib/js/signatures/Parameter-sig
 
 
 imports
-  signatures/Common-sig
-  signatures/Parameter-sig
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Parameter-sig
 
 
 imports
-  pp/Common-pp
-  pp/Parameter-pp
+  lib/js/pp/Common-pp
+  lib/js/pp/Parameter-pp
 
 
 strategies

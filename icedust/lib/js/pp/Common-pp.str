@@ -1,10 +1,10 @@
-module pp/Common-pp
+module lib/js/pp/Common-pp
 
 imports
   libstratego-gpp
   runtime/tmpl/pp
   libstratego-sglr
-  signatures/Common-sig
+  lib/js/signatures/Common-sig
 
 
 strategies
