@@ -1,22 +1,26 @@
 // lib
 var vals = {};
+
 vals.Output = function(el) {this.el = el};
 vals.Output.prototype.get = function() {return this.el.innerHTML};
 vals.Output.prototype.set = function(v) {this.el.innerHTML = v};
 vals.Output.prototype.change = function(f) {};
-vals.Input = function(el) {this.el = el};
-vals.Input.prototype.get = function() {return this.el.value};
-vals.Input.prototype.set = function(v) {this.el.value = v};
+
+vals.Input = function(el) {this.el = $(el)};
+vals.Input.prototype.get = function() {return this.el.val()};
+vals.Input.prototype.set = function(v) {this.el.val(v)};
 vals.Input.prototype.change = function(f) {
-	this.el.addEventListener('change', f);
-	this.el.addEventListener('keyup', f);
+	this.el.change(f);
+	this.el.on('keyup', f);
 };
+
 vals.Checkbox = function(el) {this.el = el};
 vals.Checkbox.prototype.get = function() {return this.el.checked};
 vals.Checkbox.prototype.set = function(v) {this.el.checked = v};
 vals.Checkbox.prototype.change = function(f) {
 	this.el.addEventListener('change', f);
 };
+
 vals.Radios = function(el) {
 	this.el = el;
 	this.trueEl = el.querySelector('input[value="true"]');
@@ -48,6 +52,7 @@ vals.Radios.prototype.change = function(f) {
 	for(var i = 0, l = radios.length; i < l; i++)
 		radios[i].addEventListener('change', f);
 };
+
 var getVal = function(el) {
 	var radios = el.querySelector('.optionalBoolean');
 	if(radios) return new vals.Radios(radios);
@@ -173,11 +178,18 @@ defType('Float?', function() {
 }, function(v) {return v.trim().length === 0? null: +v});
 defType('Boolean');
 defType('Boolean?');
+
+var parseDate = function(s) {
+	if(s === null || s.trim().length === 0) return null;
+	var t = s.match(/(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/);
+	return new Date(+t[3], (+t[2]) - 1, +t[1], +t[4], +t[5]);
+};
+
 defType('Datetime', function() {
 	if(!this.isDefault && this.getRaw().trim().length === 0)
 		return this.name + ' cannot be empty!';
-});
-defType('Datetime?');
+}, parseDate);
+defType('Datetime?', null, parseDate);
 
 // api
 var get = function(n) {return elements[n]? elements[n].get(): null};
@@ -189,6 +201,10 @@ var setDerived = function(n, f) {
 };
 
 // generated
-setDerived('derivedDateDefault', function() {
-	return get('date');
+setDerived('dateDefault', function() {
+	return get('date1');
 });
+setDerived('seconds', function() {
+	return (+get('date2') - +get('date1')) / 1000;
+});
+
