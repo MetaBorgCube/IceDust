@@ -1,4 +1,16 @@
 /derivations/
+/email.properties
+/hibernate.properties
 /lib/
+/log4j.properties
+/tomcat.properties
+/tpl_email.properties
+/tpl_hibernate.properties
+/tpl_hibernateh2.properties
+/tpl_hibernatejndi.properties
+/tpl_hibernatepostgres.properties
+/tpl_hibernatesqlite.properties
+/tpl_log4j.properties
+/tpl_tomcat.properties
 /utils/
 /webdsl/
