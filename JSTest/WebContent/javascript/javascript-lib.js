@@ -173,6 +173,11 @@ defType('Float?', function() {
 }, function(v) {return v.trim().length === 0? null: +v});
 defType('Boolean');
 defType('Boolean?');
+defType('Datetime', function() {
+	if(!this.isDefault && this.getRaw().trim().length === 0)
+		return this.name + ' cannot be empty!';
+});
+defType('Datetime?');
 
 // api
 var get = function(n) {return elements[n]? elements[n].get(): null};
@@ -184,9 +189,6 @@ var setDerived = function(n, f) {
 };
 
 // generated
-setDerived('derived', function() {
-	return 'You are ' + get('personName');
-});
-setDerived('derivedDefault', function() {
-	return 'You are ' + get('personName');
+setDerived('derivedDateDefault', function() {
+	return get('date');
 });
