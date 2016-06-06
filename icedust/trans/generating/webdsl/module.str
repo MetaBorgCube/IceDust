@@ -612,7 +612,7 @@ rules //crud rules
     flowstr := <map(extract-flow)> flows;
     x_flows := <map(add-space); concat-strings; double-quote> flowstr;
     if <attributename-is-derivation>x_name then
-      x_output := <attributename-to-webdsl-outputview> x_name;
+      x_output := <attributename-to-webdsl-output> x_name;
       result := elem* |[
         "" x_namestr ": "
     	<div
@@ -727,13 +727,22 @@ rules //crud rules
       ]|
     end
     
+    attributename-to-webdsl-output: x_name ->  result
+  with
+    x_getname := <name-get> x_name;
+    if <_get-type;Datetime()>x_name then
+      result := elem |[output(temp.x_name)]|
+	else
+	  result := elem |[output(temp.x_getname())]|
+	end
+    
   attributename-to-webdsl-outputview: x_name ->  result
   with
     ux_name := <ucfirst>x_name;
     if <_get-type;Datetime()>x_name then
-      result := $["[x_name] :" output(temp.[x_name]) <br>]
+      result := $["[x_name]: " output(temp.[x_name]) <br>]
 	else
-	  result := $["[x_name] :" output(temp.get[ux_name]()) <br>]
+	  result := $["[x_name]: " output(temp.get[ux_name]()) <br>]
 	end
 rules // derivations
   
