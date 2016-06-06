@@ -27,7 +27,7 @@ rules // Builders
     with
       result :=
             <parenthesize-spoofaxJS
-            ; prettyprint-Statement
+            ; prettyprint-spoofaxJS
             ; !V([], <id>)
             ; box2text-string(|120)> x
 	

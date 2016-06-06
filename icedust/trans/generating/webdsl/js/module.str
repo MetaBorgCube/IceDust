@@ -35,20 +35,35 @@ rules // module
   
   test-js: derivations -> js
     with
-      e_asd := js-ex |[3]|;
-      js := js-stmt |[return a;]|
+     // e_asd := js-ex |[3]|;
+      //f_list* := [e_asd,e_asd];
+      //a := e_asd;
+      //exp-list := js-ex* |[ f_list* ]|;
+      //m_a := js-methoddecl |[function a(){return a;}]|;
+     // a := m_a;
+      //s_s := js-stmt |[setDerived('greeting', function() {
+	//	return a;
+	 // });]|;
+	  s_s* := js-stmt* |[etDerived('greeting', function() {
+		return a;
+	  });etDerived('greeting', function() {
+		return a;
+	  });]|;
+      js := js-program |[s_s*]|
+      
+      
 
   moduleName-to-derivation-js: moduleName -> derivation-js
     with
       //derivation-js := <test-js> entityName
-      a := moduleName
-    ; attributes := <modulename-get-attributenames-default-derivation> moduleName
-    ; attributes-derivation-js* := <map(attributeName-default-derivation-to-js)>attributes
+    //  a := moduleName
+      attributes := <modulename-get-attributenames-default-derivation> moduleName
+    ; e_attributes-derivation-js* := <map(attributeName-default-derivation-to-js)>attributes
     ; e_moduleName := moduleName
-    ; derivation-js := js-ex |[e_moduleName]|
-    //; derivation-js := <test-js> moduleName
+    //; derivation-js := js-ex |[e_moduleName]|
+    ; derivation-js := <test-js> moduleName
   
   attributeName-default-derivation-to-js: attributeName -> derivation-js
   	with
   	  e_attributeName := attributeName
-  	; derivation-js := js-ex |[3]|
+  	; derivation-js := js-ex |[e_attributeName]|

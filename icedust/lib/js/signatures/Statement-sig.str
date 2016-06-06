@@ -11,7 +11,7 @@ signature
     expStmt          : Expression -> Statement
     varDecl          : ID * Expression -> Statement
     return           : Expression -> Statement
-                     : MethodDecl -> Statement
+    methodDecl       : MethodDecl -> Statement
     ID-Plhdr         : ID
     Expression-Plhdr : Expression
     Statement-Plhdr  : Statement
