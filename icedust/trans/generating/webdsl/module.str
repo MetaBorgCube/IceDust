@@ -574,7 +574,15 @@ rules //crud rules
               result := "String?"
             end
           else
-            result := "UnimplementedType"
+            if <Datetime()> type then
+              if <get-multiplicity;One()> x_name then
+                result := "Datetime"
+              else
+                result := "Datetime?"
+              end
+            else
+              result := "UnimplementedType"
+            end
           end
         end
       end
