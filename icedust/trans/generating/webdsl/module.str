@@ -597,7 +597,7 @@ rules //crud rules
     flowstr := <map(extract-flow)> flows;
     x_flows := <map(add-space); concat-strings; double-quote> flowstr;
     if <attributename-is-derivation>x_name then
-      x_getname := <name-get> x_name;
+      x_output := <attributename-to-webdsl-outputview> x_name;
       result := elem* |[
         "" x_namestr ": "
     	<div
@@ -605,7 +605,7 @@ rules //crud rules
     	  data-type = x_typestr
     	  data-updates = x_flows>
           <div class="output">
-    	    output(temp.x_getname())
+    	    "" x_output
     	  </div>
           <div class="error-msg" style="color: red"></div>
     	</div>
