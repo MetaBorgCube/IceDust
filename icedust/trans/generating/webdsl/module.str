@@ -216,7 +216,9 @@ rules //crud
       elem_editRelations := <map(relationname-to-editlink)> relations;
       elem_a := elem_editRelations;
       elem_relationsOutputView := <map(relationname-to-output)> relations;
-      stat_createDefaultWrap* := <map(create-wrap-default)> (<filter(attributename-is-default)> attributenames)
+      stat_createDefaultWrap* :=
+        <filter(where(_get-type; ?String()); attributename-is-default);
+         map(create-wrap-default)> attributenames
     with
       if entityname-is-calconread then
         result := def* |[
