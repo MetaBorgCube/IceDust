@@ -173,14 +173,43 @@ strategies
          end
 
   prettyprint-Statement :
-    t1__ -> [ H(
-                [SOpt(HS(), "0")]
-              , [t1__']
-              )
-            ]
-    where not(is-Statement)
-    where t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                    <+ pp-one-Z(prettyprint-MethodDecl)> t1__
+    methodDecl(t1__) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [t1__']
+                          )
+                        ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-MethodDecl)> t1__
+
+  is-Statement =
+    ?methodDecl(_)
+
+  get-indent :
+    (methodDecl(t1__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (methodDecl(t1__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (methodDecl(t1__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
 
   is-Statement =
     fail

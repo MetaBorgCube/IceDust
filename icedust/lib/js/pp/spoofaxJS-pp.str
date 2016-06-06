@@ -41,15 +41,6 @@ strategies
   prettyprint-spoofaxJS-start-symbols =
     prettyprint-Start
 
-  prettyprint-spoofaxJS-start-symbols =
-    prettyprint-MethodDecl
-
-  prettyprint-spoofaxJS-start-symbols =
-    prettyprint-Expression
-
-  prettyprint-spoofaxJS-start-symbols =
-    prettyprint-Statement
-
 
 strategies
   prettyprint-spoofaxJS =
