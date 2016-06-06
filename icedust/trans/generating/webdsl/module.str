@@ -223,64 +223,72 @@ rules //crud
       if entityname-is-calconread then
         result := def* |[
           page x_manageEntity(){
-            applicationmenu() <br/>
-		  	navigate x_createEntity() [] { "Create" }
-		  	<br/>
-		  	for(entity: x_entityName) {
-		  	  output(entity.name)
-		  	  navigate x_viewEntity(entity) [] { "View" } " "
-		  	  navigate x_editEntity(entity) [] { "Edit" } " "
-		  	  action("Remove", x_removeEntity(entity))
+            main()
+            define body() {
+		  	  navigate x_createEntity() [] { "Create" }
 		  	  <br/>
-		  	}
+		  	  for(entity: x_entityName) {
+		  	    output(entity.name)
+		  	    navigate x_viewEntity(entity) [] { "View" } " "
+		  	    navigate x_editEntity(entity) [] { "Edit" } " "
+		  	    action("Remove", x_removeEntity(entity))
+		  	    <br/>
+		  	  }
 		  	
-		  	action x_removeEntity(entity: x_entityName) {
-		  	  entity.delete();
+		  	  action x_removeEntity(entity: x_entityName) {
+		  	    entity.delete();
+		  	  }
 		  	}
           }
           page x_createEntity(){
-            applicationmenu() <br/>
-            header{"Create"} 
-            elem_deriveRowsVarCreate
-			form {
-			  elem_deriveRowsInputCreate
-			  action("Save", save())
-			  // print form fields
+            main()
+            define body() {
+              header{"Create"} 
+              elem_deriveRowsVarCreate
+			  form {
+			    elem_deriveRowsInputCreate
+			    action("Save", save())
+			    // print form fields
               
+			  }
+			  action save() {
+			    stat_createDefaultWrap*
+		        var temp := x_entityName {
+			  	  x_testy
+		  	    };
+			    temp.save();
+			  }
+			  navigate x_manageEntity() [] { "Back" }
 			}
-			action save() {
-			  stat_createDefaultWrap*
-		      var temp := x_entityName {
-				x_testy
-		  	  };
-			  temp.save();
-			}
-			navigate x_manageEntity() [] { "Back" }
           }
           page x_viewEntity(temp: x_entityName){
-            applicationmenu() <br/>
-            header{"View"}
-            elem_deriveRowsOutputView
-            <hr/>
-            elem_relationsOutputView
-            navigate x_manageEntity() [] { "Back" }
+            main()
+            define body() {
+              header{"View"}
+              elem_deriveRowsOutputView
+              <hr/>
+              elem_relationsOutputView
+              navigate x_manageEntity() [] { "Back" }
+            }
           }
           page x_editEntity(temp: x_entityName){
           	includeJS("javascript-lib.js")
           	includeJS("nativejs/output.js")
-            applicationmenu() <br/>
-            header{"Edit"}
-            elem_deriveRowsVarEdit
-            form {
-              elem_deriveRowsInputEdit
-              submit action {
-                x_assignEditEntity;
-                temp.save();
-              } { "Save" }
+            main()
+            define body() {
+              header{"Edit"}
+              elem_deriveRowsVarEdit
+              form {
+                elem_deriveRowsInputEdit
+                submit action {
+                  x_assignEditEntity;
+                  temp.save();
+                } { "Save" }
+              }
+              <hr/>
+              elem_editRelations
+              navigate x_manageEntity() [] { "Back" }
             }
-            <hr/>
-            elem_editRelations
-            navigate x_manageEntity() [] { "Back" }
           }
           
           def_relationsetters
@@ -436,35 +444,11 @@ rules //crud rules
     if <?One()> mult then // 1
       result := def |[
         page x_setname(ent: x_entityName) {
-          applicationmenu() <br/>
-  	      "Set " x_stringifiedname " for: " output(ent.name) <br/>
-  	      "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
-  	      <hr/>
-  	      for(f: x_entname) {
-  	        output(f.name)
-            submit action {
-              ent.x_name := f;
-              ent.save();
-            } { "Set" }
-            <br/>
-  	      }
-  	      navigate x_editEntity(ent) [] { "Back" }
-        }
-      ]|
-    else
-      if <?ZeroOrOne()> mult then // ?
-        result := def |[
-          page x_setname(ent: x_entityName) {
-            applicationmenu() <br/>
+          main()
+          define body() {
   	        "Set " x_stringifiedname " for: " output(ent.name) <br/>
   	        "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
   	        <hr/>
-  	        "null"
-  	        submit action {
-  	          ent.x_name := null;
-  	          ent.save();	
-  	        } { "Set" }
-  	        <br/>
   	        for(f: x_entname) {
   	          output(f.name)
               submit action {
@@ -474,34 +458,64 @@ rules //crud rules
               <br/>
   	        }
   	        navigate x_editEntity(ent) [] { "Back" }
+  	      }
+        }
+      ]|
+    else
+      if <?ZeroOrOne()> mult then // ?
+        result := def |[
+          page x_setname(ent: x_entityName) {
+            main()
+            define body() {
+  	          "Set " x_stringifiedname " for: " output(ent.name) <br/>
+  	          "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
+  	          <hr/>
+  	          "null"
+  	          submit action {
+  	            ent.x_name := null;
+  	            ent.save();	
+  	          } { "Set" }
+  	          <br/>
+  	          for(f: x_entname) {
+  	            output(f.name)
+                submit action {
+                  ent.x_name := f;
+                  ent.save();
+                } { "Set" }
+                <br/>
+  	          }
+  	          navigate x_editEntity(ent) [] { "Back" }
+  	        }
           }
         ]|
       else // *
         result := def |[
           page x_setname(ent: x_entityName) {
-            applicationmenu() <br/>
-            "Set " x_stringifiedname " for: " output(ent.name) <br/>
-            "Current entities in " x_stringifiedname ": " <br/>
-            for(s in ent.x_getname()) {
-              output(s.name)
-              submit action {
-                ent.x_name.remove(s);
-                ent.save();
-              } { "Remove" }
-              <br/>  
-            }
-            "Add: " <br/>
-            for(s: x_entname) {
-              if(ent.x_getname().indexOf(s) == -1) {
+            main()
+            define body() {
+              "Set " x_stringifiedname " for: " output(ent.name) <br/>
+              "Current entities in " x_stringifiedname ": " <br/>
+              for(s in ent.x_getname()) {
                 output(s.name)
                 submit action {
-                  ent.x_name.add(s);
+                  ent.x_name.remove(s);
                   ent.save();
-                } { "Add" }
-                <br/>
+                } { "Remove" }
+                <br/>  
               }
+              "Add: " <br/>
+              for(s: x_entname) {
+                if(ent.x_getname().indexOf(s) == -1) {
+                  output(s.name)
+                  submit action {
+                    ent.x_name.add(s);
+                    ent.save();
+                  } { "Add" }
+                  <br/>
+                }
+              }
+              navigate x_editEntity(ent) [] { "Back" }
             }
-            navigate x_editEntity(ent) [] { "Back" }
           }
         ]|
       end
