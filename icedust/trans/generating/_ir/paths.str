@@ -19,7 +19,7 @@ rules // paths
   
   webdsl-generated-path(|path)           = !path;guarantee-extension(|"app")
   webdsl-java-generated-path(|path)      = !$[[<dirname>path]/nativejava/derivations/DirtyCollections.java]
-  webdsl-js-generated-path(|path)      = !$[[<dirname>path]/nativejs/output.js]
+  webdsl-js-generated-path(|path)        = !$[[<dirname>path]/WebContent/javascript/derivations.js]
 
   webdsl-library-source-path             = !$[[<component-path>]/lib-webdsl]
   webdsl-library-target-path(|path)      = !$[[<dirname>path]]

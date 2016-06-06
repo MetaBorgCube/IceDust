@@ -273,7 +273,7 @@ rules //crud
           }
           page x_editEntity(temp: x_entityName){
           	includeJS("javascript-lib.js")
-          	includeJS("nativejs/output.js")
+          	includeJS("derivations.js")
             main()
             define body() {
               header{"Edit"}
