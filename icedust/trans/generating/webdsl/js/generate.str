@@ -27,15 +27,11 @@ rules // Builders
     with
       result :=
             <parenthesize-spoofaxJS
-            ; debug(!"paren")
             ; prettyprint-Statement
-            ; debug(!"prettyprint")
             ; !V([], <id>)
-            ; debug(!"v thing")
             ; box2text-string(|120)> x
-            ; debug(!"box to string")
 	
 	generate-webdsl-js-code: moduleName -> result
 	  with
-			js-ast := <blaat> moduleName;
-			result   := <pp-js-string> js-ast
+	  		derivation-js := <moduleName-to-derivation-js> moduleName
+	  ;		result   := <pp-js-string> derivation-js
