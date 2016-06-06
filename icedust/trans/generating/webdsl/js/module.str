@@ -17,11 +17,38 @@ imports // functions
   api/module-names-api
   lib/lists-tuples
   lib/string
-
+  analysis2/path
+	api/_runtime
+	api/model-api
+	api/model-names-api
+  generating/_ir/model
+  generating/webdsl/expressions
+  generating/webdsl/expressions-references
+  generating/webdsl/types
+	lib/search
+  names/naming/names
+	naming/_notNaBL
+	
 rules // module
 
 
-  blaat: a -> b
+  
+  test-js: derivations -> js
     with
       e_asd := js-ex |[3]|;
-      b := js-stmt |[return a;]|
+      js := js-stmt |[return a;]|
+
+  moduleName-to-derivation-js: moduleName -> derivation-js
+    with
+      //derivation-js := <test-js> entityName
+      a := moduleName
+    ; attributes := <modulename-get-attributenames-default-derivation> moduleName
+    ; attributes-derivation-js* := <map(attributeName-default-derivation-to-js)>attributes
+    ; e_moduleName := moduleName
+    ; derivation-js := js-ex |[e_moduleName]|
+    //; derivation-js := <test-js> moduleName
+  
+  attributeName-default-derivation-to-js: attributeName -> derivation-js
+  	with
+  	  e_attributeName := attributeName
+  	; derivation-js := js-ex |[3]|

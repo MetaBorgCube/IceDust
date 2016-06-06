@@ -267,6 +267,7 @@ rules //crud
           }
           page x_editEntity(temp: x_entityName){
           	includeJS("javascript-lib.js")
+          	includeJS("nativejs/output.js")
             applicationmenu() <br/>
             header{"Edit"}
             elem_deriveRowsVarEdit
