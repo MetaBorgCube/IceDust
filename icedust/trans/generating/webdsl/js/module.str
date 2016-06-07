@@ -57,6 +57,7 @@ rules // module
   	with
   	  exp_attributeNamestr := <name-to-jsstring> attributeName
   	; exp_derivation := <attributename-get-expr; expr-to-js> attributeName
+  	; <debug> exp_derivation
   	; derivation-js := js-stmt |[setDerived(exp_attributeNamestr, function() {
 		return exp_derivation;
 	  });]|
@@ -68,15 +69,28 @@ rules // module
   //expr-to-webdsl-expr(err): False()                         -> webdsl:e |[ false ]|
   //expr-to-webdsl-expr(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
   //expr-to-webdsl-expr(err): NoValue()                       -> webdsl:e |[ null ]|
-	
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1
   expr-to-js: Ref(entityName) -> js-ref
   where
     exp_entityName := <name-to-jsstring> entityName
   ; js-ref := js-ex |[ get(exp_entityName) ]|
-  expr-to-js: Addition(e1,e2) -> js-addition
-  where
-    exp_1 := <expr-to-js> e1
-  ; exp_2 := <expr-to-js> e2
-  ; js-addition := js-ex |[exp_1 + exp_2]|
+  
+  expr-to-js: expr -> js 
+    where
+      lib-call
+    with
+      arg*            := <get-arguments>expr;
+      exp_args*       := <map(expr-to-js)>arg*;
+      exp_call        := <lib-method-name>expr
+    with
+      js := js-ex |[
+       exp_call(exp_args*)
+      ]|  
+  
+
+  //expr-to-js: Addition(e1,e2) -> js-addition
+  //where
+  //  exp_1 := <expr-to-js> e1
+  //; exp_2 := <expr-to-js> e2
+  //; js-addition := js-ex |[exp_1 + exp_2]|
     
