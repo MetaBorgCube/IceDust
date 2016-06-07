@@ -1,3 +1,4 @@
+
 /**
  * Expression.js
  *
@@ -19,7 +20,7 @@
 // helper methods
 
 function toCollection(e) {
-	return e ==== null ? [] : [e];
+	return e === null ? [] : [e];
 }
 
 function equals(a, b) {
@@ -108,6 +109,7 @@ function plus_String(i, j) {
 function plus_Number(i, j) {
 	return i !== null && j !== null ? i + j : null;
 }
+var plus_Float = plus_Integer = plus_Number;
 
 function minus_NullType(i, j) {
 	return null;
@@ -116,6 +118,7 @@ function minus_NullType(i, j) {
 function minus_Number(i, j) {
 	return i !== null && j !== null ? i - j : null;
 }
+var minus_Float = minus_Integer = minus_Number;
 
 function minus_Date(i, j) {
 	return i !== null && j !== null ?
@@ -130,6 +133,7 @@ function mul_NullType(i, j) {
 function mul_Number(i, j) {
 	return i !== null && j !== null ? i * j : null;
 }
+var mul_Float = mul_Integer = mul_Number;
 
 function mod_NullType(i, j) {
 	return null;
@@ -138,6 +142,7 @@ function mod_NullType(i, j) {
 function mod_Number(i, j) {
 	return i !== null && j !== null && j !== 0 ? i % j : null;
 }
+var mod_Float = mod_Integer = mod_Number;
 
 function div_NullType(i, j) {
 	return null;
@@ -146,6 +151,7 @@ function div_NullType(i, j) {
 function div_Number(i, j) {
 	return i !== null && j !== null && j !== 0 ? i / j : null;
 }
+var div_Float = div_Integer = div_Number;
 
 function floordiv_NullType(i, j) {
 	return null;
@@ -154,6 +160,7 @@ function floordiv_NullType(i, j) {
 function floordiv_Number(i, j) {
 	return i !== null && j !== null && j !== 0 ? Math.floor(i / j) : null;
 }
+var floordiv_Float = floordiv_Integer = floordiv_Number;
 
 // aggregation expressions
 
@@ -171,6 +178,7 @@ function avg_Number(c) {
 	}
 	return sum / l;
 }
+var avg_Float = avg_Integer = avg_Number;
 
 function sum_NullType(i, j) {
 	return null;
@@ -183,6 +191,7 @@ function sum_Number(c) {
 	}
 	return sum;
 }
+var sum_Float = sum_Integer = sum_Number;
 
 function max_NullType(i, j) {
 	return null;
@@ -200,6 +209,7 @@ function max_Number(c) {
 	}
 	return max;
 }
+var max_Float = max_Integer = max_Number;
 
 function min_NullType(i, j) {
 	return null;
@@ -217,7 +227,7 @@ function min_Number(c) {
 	}
 	return min;
 }
-
+var min_Float = min_Integer = min_Number;
 
 function conj(b) {
 	var conj = true;
@@ -258,8 +268,9 @@ function lt_NullType(i, j) {
 function lt_Number(i, j) {
 	return i !== null && j !== null ? i < j : null;
 }
+var lt_Float = lt_Integer = lt_Number;
 
-function Boolean lt_Date(Date i, Date j) {
+function lt_Date(i, j) {
 	return i !== null && j !== null ? i.getTime() < j.getTime() : null;
 }
 
@@ -270,8 +281,9 @@ function lte_NullType(i, j) {
 function lte_Number(i, j) {
 	return i !== null && j !== null ? i <= j : null;
 }
+var lte_Float = lte_Integer = lte_Number;
 
-function Boolean lte_Date(Date i, Date j) {
+function lte_Date(i, j) {
 	return i !== null && j !== null ? i.getTime() <= j.getTime() : null;
 }
 
@@ -282,8 +294,9 @@ function gt_NullType(i, j) {
 function gt_Number(i, j) {
 	return i !== null && j !== null ? i > j : null;
 }
+var gt_Float = gt_Integer = gt_Number;
 
-function Boolean gt_Date(Date i, Date j) {
+function gt_Date(i, j) {
 	return i !== null && j !== null ? i.getTime() > j.getTime() : null;
 }
 
@@ -294,8 +307,9 @@ function gte_NullType(i, j) {
 function gte_Number(i, j) {
 	return i !== null && j !== null ? i >= j : null;
 }
+var gte_Float = gte_Integer = gte_Number;
 
-function Boolean gte_Date(Date i, Date j) {
+function gte_Date(i, j) {
 	return i !== null && j !== null ? i.getTime() >= j.getTime() : null;
 }
 
@@ -361,11 +375,9 @@ function conditional_One_Many_Many(b, i, j) {
 
 // cast expressions
 
-function asFloat(i) {
-	return i === null ? null : +i;
-}
-
 function asFloat(is) {
+	if(!Array.isArray(is))
+		return is === null ? null : +is;
 	var c = [];
 	for(var i = 0, l = is.length; i < l; i++) {
 		c.push(is[i]);
@@ -373,11 +385,9 @@ function asFloat(is) {
 	return c;
 }
 
-function asInteger(i) {
-	return i === null ? null : Math.floor(i);
-}
-
 function asInteger(is) {
+	if(!Array.isArray(is))
+		return is === null ? null : Math.floor(+is);
 	var c = [];
 	for(var i = 0, l = is.length; i < l; i++) {
 		c.push(Math.floor(is[i]));
@@ -385,11 +395,9 @@ function asInteger(is) {
 	return c;
 }
 
-function asString(i) {
-	return i === null ? null : '' + i;
-}
-
 function asString(is) {
+	if(!Array.isArray(is))
+		return is === null ? null : '' + is;
 	var c = [];
 	for(var i = 0, l = is.length; i < l; i++) {
 		c.push('' + is[i]);
