@@ -93,10 +93,10 @@ rules // Build in steps
             targetFileName := <webdsl-generated-path(|relativePath)>;
             webdsl-library-paths(|fullPath);copy-dir;
             webdsl-java-library-paths(|fullPath);copy-dir;
+            webdsl-js-library-paths(|fullPath);copy-dir;
             !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
             jsString := <generate-webdsl-js-code> moduleName; debug(!"JSSTRING: ");
             <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString);
-            //a := jsString;
             if <modulename-is-eventuallyconsistent>moduleName then
               (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
               targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
