@@ -61,13 +61,6 @@ rules // module
 		return exp_derivation;
 	  });]|
 
-  //expr-to-webdsl-expr(err): LitString(str1)                 -> String(str1)
-  //expr-to-webdsl-expr(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
-  //expr-to-webdsl-expr(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
-  //expr-to-webdsl-expr(err): True()                          -> webdsl:e |[ true ]|
-  //expr-to-webdsl-expr(err): False()                         -> webdsl:e |[ false ]|
-  //expr-to-webdsl-expr(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
-  //expr-to-webdsl-expr(err): NoValue()                       -> webdsl:e |[ null ]|
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1
   expr-to-js: Ref(entityName) -> js-ref
   where
@@ -77,6 +70,8 @@ rules // module
   expr-to-js: Int(i) -> IntegerLiteral(i)
   expr-to-js: True() -> True()
   expr-to-js: False() -> False()
+  expr-to-js: NoValue() -> Null()
+  expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
 
   expr-to-js: Cast(ex1, ex1-ty) -> js-cast
     with
@@ -95,9 +90,5 @@ rules // module
         js := js-ex |[
           exp_call(exp_args*)
         ]|
-  //expr-to-js: Addition(e1,e2) -> js-addition
-  //where
-  //  exp_1 := <expr-to-js> e1
-  //; exp_2 := <expr-to-js> e2
-  //; js-addition := js-ex |[exp_1 + exp_2]|
+
     
