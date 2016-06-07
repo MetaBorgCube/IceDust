@@ -8,7 +8,7 @@ imports // constructors
 	desugaring/constructors
 
 imports // functions
-  
+  lib/js/signatures/spoofaxJS-sig
   generating/_ir/model 
   generating/webdsl/model
 	generating/webdsl/data
@@ -31,8 +31,6 @@ imports // functions
 	
 rules // module
 
-
-  
   test-js: derivations -> js
     with
 	  stmt_a* := js-stmt* |[setDerived('greeting', function() {
@@ -74,20 +72,21 @@ rules // module
   where
     exp_entityName := <name-to-jsstring> entityName
   ; js-ref := js-ex |[ get(exp_entityName) ]|
-  
-  expr-to-js: expr -> js 
-    where
-      lib-call
-    with
-      arg*            := <get-arguments>expr;
-      exp_args*       := <map(expr-to-js)>arg*;
-      exp_call        := <lib-method-name>expr
-    with
-      js := js-ex |[
-       exp_call(exp_args*)
-      ]|  
-  
-
+  expr-to-js: Float(f) -> FloatLiteral(f)
+  expr-to-js: Int(i) -> IntegerLiteral(i)
+  expr-to-js: True() -> True()
+  expr-to-js: False() -> False()
+  expr-to-js: expr -> js
+      where
+        lib-call
+      with
+        arg*            := <get-arguments>expr;
+        exp_args*       := <map(expr-to-js)>arg*;
+        exp_call        := <lib-method-name>expr
+      with
+        js := js-ex |[
+          exp_call(exp_args*)
+        ]|
   //expr-to-js: Addition(e1,e2) -> js-addition
   //where
   //  exp_1 := <expr-to-js> e1

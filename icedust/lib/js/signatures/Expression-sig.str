@@ -11,15 +11,25 @@ signature
     Property         : Expression * ID -> Expression
     Call             : Expression * List(Expression) -> Expression
     IntegerLiteral   : INT -> Expression
+    FloatLiteral     : FLOAT -> Expression
     True             : Expression
     False            : Expression
+    Null             : Expression
     Identifier       : ID -> Expression
     String           : STRING -> Expression
     Addition         : Expression * Expression -> Expression
     Substraction     : Expression * Expression -> Expression
     Multiplication   : Expression * Expression -> Expression
+    Division         : Expression * Expression -> Expression
+    Greater          : Expression * Expression -> Expression
+    Lower            : Expression * Expression -> Expression
+    GreaterEquals    : Expression * Expression -> Expression
+    LowerEquals      : Expression * Expression -> Expression
+    And              : Expression * Expression -> Expression
+    Or               : Expression * Expression -> Expression
     AnonFunction     : List(Parameter) * List(Statement) -> Expression
     INT-Plhdr        : INT
+    FLOAT-Plhdr      : FLOAT
     ID-Plhdr         : ID
     STRING-Plhdr     : STRING
     Expression-Plhdr : Expression

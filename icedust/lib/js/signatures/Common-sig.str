@@ -4,6 +4,7 @@ signature
   constructors
      : String -> ID
      : String -> INT
+     : String -> FLOAT
      : String -> STRING
      : String -> StringChar
      : String -> BackSlashChar

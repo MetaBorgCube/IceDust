@@ -30,6 +30,9 @@ strategies
   prettyprint-INT =
     ![S(<is-string>)]
 
+  prettyprint-FLOAT =
+    ![S(<is-string>)]
+
   prettyprint-STRING =
     ![S(<is-string>)]
 
@@ -58,6 +61,9 @@ strategies
     prettyprint-INT
 
   prettyprint-spoofaxJS =
+    prettyprint-FLOAT
+
+  prettyprint-spoofaxJS =
     prettyprint-STRING
 
   prettyprint-spoofaxJS =
@@ -83,6 +89,9 @@ strategies
 
   prettyprint-INT :
     amb([h|hs]) -> <prettyprint-INT> h
+
+  prettyprint-FLOAT :
+    amb([h|hs]) -> <prettyprint-FLOAT> h
 
   prettyprint-STRING :
     amb([h|hs]) -> <prettyprint-STRING> h

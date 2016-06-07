@@ -10,8 +10,11 @@ signature
   constructors
     expStmt          : Expression -> Statement
     varDecl          : ID * Expression -> Statement
+    assignment       : ID * Expression -> Statement
+    for              : Statement * Expression * Expression * List(Statement) -> Statement
+    while            : Expression * List(Statement) -> Statement
     return           : Expression -> Statement
-    methodDecl       : MethodDecl -> Statement
+                     : MethodDecl -> Statement
     ID-Plhdr         : ID
     Expression-Plhdr : Expression
     Statement-Plhdr  : Statement

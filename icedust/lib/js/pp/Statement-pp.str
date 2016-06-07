@@ -131,6 +131,188 @@ strategies
          end
 
   prettyprint-Statement :
+    assignment(t1__, t2__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ t1__'
+                                  , S(" = ")
+                                  , t2__'
+                                  , S(";")
+                                  ]
+                                )
+                              ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-ID)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+
+  is-Statement =
+    ?assignment(_, _)
+
+  get-indent :
+    (assignment(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (assignment(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (assignment(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
+    for(t1__, t2__, t3__, t4__) -> [ H(
+                                       [SOpt(HS(), "0")]
+                                     , [ S("for (")
+                                       , t1__'
+                                       , t2__'
+                                       , S(";")
+                                       , t3__'
+                                       , S(") {")
+                                       ]
+                                     )
+                                   , t4__'
+                                   , H(
+                                       [SOpt(HS(), "0")]
+                                     , [S("}")]
+                                     )
+                                   ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Statement)> t1__
+    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t3__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t3__
+    with t4__' := <pp-indent(|"2")> [ <is-string ; pp-one-Z(prettyprint-origin-term)
+                                       <+ pp-H-list(prettyprint-Statement)> t4__
+                                    ]
+
+  is-Statement =
+    ?for(_, _, _, _)
+
+  get-indent :
+    (for(t1__, t2__, t3__, t4__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           case ?4 :
+             indent := "  "
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (for(t1__, t2__, t3__, t4__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           case ?4 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (for(t1__, t2__, t3__, t4__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := ""
+           case ?4 :
+             ws := "\n  "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
+    while(t1__, t2__) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [ S("while (")
+                             , t1__'
+                             , S(") {")
+                             ]
+                           )
+                         , t2__'
+                         , H(
+                             [SOpt(HS(), "0")]
+                           , [S("}")]
+                           )
+                         ]
+    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t2__' := <pp-indent(|"2")> [ <is-string ; pp-one-Z(prettyprint-origin-term)
+                                       <+ pp-H-list(prettyprint-Statement)> t2__
+                                    ]
+
+  is-Statement =
+    ?while(_, _)
+
+  get-indent :
+    (while(t1__, t2__), index) -> indent
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := "  "
+           otherwise :
+             indent := ""
+         end
+
+  get-separator :
+    (while(t1__, t2__), index) -> separator
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  get-leading-ws :
+    (while(t1__, t2__), index) -> ws
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := "\n  "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statement :
     return(t1__) -> [ H(
                         [SOpt(HS(), "0")]
                       , [ S("return ")
@@ -173,43 +355,14 @@ strategies
          end
 
   prettyprint-Statement :
-    methodDecl(t1__) -> [ H(
-                            [SOpt(HS(), "0")]
-                          , [t1__']
-                          )
-                        ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-MethodDecl)> t1__
-
-  is-Statement =
-    ?methodDecl(_)
-
-  get-indent :
-    (methodDecl(t1__), index) -> indent
-    with switch !index
-           case ?1 :
-             indent := ""
-           otherwise :
-             indent := ""
-         end
-
-  get-separator :
-    (methodDecl(t1__), index) -> separator
-    with switch !index
-           case ?1 :
-             separator := ""
-           otherwise :
-             separator := ""
-         end
-
-  get-leading-ws :
-    (methodDecl(t1__), index) -> ws
-    with switch !index
-           case ?1 :
-             ws := ""
-           otherwise :
-             ws := ""
-         end
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statement)
+    where t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
+                    <+ pp-one-Z(prettyprint-MethodDecl)> t1__
 
   is-Statement =
     fail
