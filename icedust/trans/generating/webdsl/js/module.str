@@ -31,19 +31,7 @@ imports // functions
 	
 rules // module
 
-  test-js: derivations -> js
-    with
-	  stmt_a* := js-stmt* |[setDerived('greeting', function() {
-		return b;
-	  });
-	  setDerived('greeting', function() {
-		return a;
-	  });]|;
-      js := js-program |[stmt_a*]|
-
-  name-to-jsstring: name -> js-string
-    with
-      js-string := String(<concat-strings> ["\"", name, "\""])
+  name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
 
   moduleName-to-derivation-js: moduleName -> derivation-js
     with
@@ -55,17 +43,13 @@ rules // module
   	with
   	  exp_attributeNamestr := <name-to-jsstring> attributeName
   	; exp_derivation := <attributename-get-expr; expr-to-js> attributeName
-  	; <debug> exp_derivation
   	; derivation-js := js-stmt |[
   	  setDerived(exp_attributeNamestr, function() {
 		return exp_derivation;
 	  });]|
 
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1
-  expr-to-js: Ref(entityName) -> js-ref
-  where
-    exp_entityName := <name-to-jsstring> entityName
-  ; js-ref := js-ex |[ get(exp_entityName) ]|
+  expr-to-js: Ref(entityName) -> js-ex |[ get(exp_entityName) ]| where exp_entityName := <name-to-jsstring> entityName
   expr-to-js: Float(f) -> FloatLiteral(f)
   expr-to-js: Int(i) -> IntegerLiteral(i)
   expr-to-js: True() -> True()
