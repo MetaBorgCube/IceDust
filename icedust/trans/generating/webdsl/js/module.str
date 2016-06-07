@@ -56,7 +56,8 @@ rules // module
   	  exp_attributeNamestr := <name-to-jsstring> attributeName
   	; exp_derivation := <attributename-get-expr; expr-to-js> attributeName
   	; <debug> exp_derivation
-  	; derivation-js := js-stmt |[setDerived(exp_attributeNamestr, function() {
+  	; derivation-js := js-stmt |[
+  	  setDerived(exp_attributeNamestr, function() {
 		return exp_derivation;
 	  });]|
 
@@ -76,6 +77,13 @@ rules // module
   expr-to-js: Int(i) -> IntegerLiteral(i)
   expr-to-js: True() -> True()
   expr-to-js: False() -> False()
+
+  expr-to-js: Cast(ex1, ex1-ty) -> js-cast
+    with
+      exp_1 := <expr-to-js>ex1;
+      exp_call := $[as[<postfix-id>ex1-ty]];
+      js-cast := js-ex |[ exp_call(exp_1) ]|
+
   expr-to-js: expr -> js
       where
         lib-call
