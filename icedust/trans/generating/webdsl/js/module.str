@@ -35,35 +35,48 @@ rules // module
   
   test-js: derivations -> js
     with
-     // e_asd := js-ex |[3]|;
-      //f_list* := [e_asd,e_asd];
-      //a := e_asd;
-      //exp-list := js-ex* |[ f_list* ]|;
-      //m_a := js-methoddecl |[function a(){return a;}]|;
-     // a := m_a;
-      //s_s := js-stmt |[setDerived('greeting', function() {
-	//	return a;
-	 // });]|;
-	  s_s* := js-stmt* |[etDerived('greeting', function() {
-		return a;
-	  });etDerived('greeting', function() {
+	  stmt_a* := js-stmt* |[setDerived('greeting', function() {
+		return b;
+	  });
+	  setDerived('greeting', function() {
 		return a;
 	  });]|;
-      js := js-program |[s_s*]|
-      
-      
+      js := js-program |[stmt_a*]|
+
+  name-to-jsstring: name -> js-string
+    with
+      js-string := String(<concat-strings> ["\"", name, "\""])
 
   moduleName-to-derivation-js: moduleName -> derivation-js
     with
-      //derivation-js := <test-js> entityName
-    //  a := moduleName
       attributes := <modulename-get-attributenames-default-derivation> moduleName
-    ; e_attributes-derivation-js* := <map(attributeName-default-derivation-to-js)>attributes
-    ; e_moduleName := moduleName
-    //; derivation-js := js-ex |[e_moduleName]|
-    ; derivation-js := <test-js> moduleName
+    ; stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes
+    ; derivation-js := js-program |[stmt_derivationjs*]|
   
   attributeName-default-derivation-to-js: attributeName -> derivation-js
   	with
-  	  e_attributeName := attributeName
-  	; derivation-js := js-ex |[e_attributeName]|
+  	  exp_attributeNamestr := <name-to-jsstring> attributeName
+  	; exp_derivation := <attributename-get-expr; expr-to-js> attributeName
+  	; derivation-js := js-stmt |[setDerived(exp_attributeNamestr, function() {
+		return exp_derivation;
+	  });]|
+
+  //expr-to-webdsl-expr(err): LitString(str1)                 -> String(str1)
+  //expr-to-webdsl-expr(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
+  //expr-to-webdsl-expr(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
+  //expr-to-webdsl-expr(err): True()                          -> webdsl:e |[ true ]|
+  //expr-to-webdsl-expr(err): False()                         -> webdsl:e |[ false ]|
+  //expr-to-webdsl-expr(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
+  //expr-to-webdsl-expr(err): NoValue()                       -> webdsl:e |[ null ]|
+	
+  expr-to-js: LitString(str1) -> <name-to-jsstring> str1
+  expr-to-js: Ref(entityName) -> js-ref
+  where
+    exp_entityName := <name-to-jsstring> entityName
+  ; js-ref := js-ex |[ get(exp_entityName) ]|
+  expr-to-js: Addition(e1,e2) -> js-addition
+  where
+    exp_1 := <expr-to-js> e1
+  ; exp_2 := <expr-to-js> e2
+  ; js-addition := js-ex |[exp_1 + exp_2]|
+    
