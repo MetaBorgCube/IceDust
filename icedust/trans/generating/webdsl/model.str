@@ -96,12 +96,12 @@ rules
       end
     with
       if attributename-is-normal-default then
-        if <get-multiplicity;ZeroOrOne()>x_attributeName then
-	      ebd_attributeField* := ebd* |[
-	        x_attributeName : srt_attributeType (default=null)
+        if attributename-is-default then
+          ebd_attributeField* := ebd* |[
+	          x_attributeName : srt_attributeType (default=x_calculateAttribute())
 	      ]|
-	    else
-	      if attributename-is-default then    
+        else
+          if <get-multiplicity;ZeroOrOne()>x_attributeName then
 	        ebd_attributeField* := ebd* |[
 	          x_attributeName : srt_attributeType (default=null)
 	        ]|
