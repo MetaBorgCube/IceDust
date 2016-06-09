@@ -2,40 +2,40 @@ module generating/webdsl/model
 
 imports // constructors
 
-	api/constructors
+  api/constructors
   desugaring/constructors
-	webdsl/WebDSL
-	signatures/Model-sig
-	signatures/Modules-sig
+  webdsl/WebDSL
+  signatures/Model-sig
+  signatures/Modules-sig
 
 imports // functions
 
   analysis2/path
-	api/_runtime
-	api/model-api
-	api/model-names-api
+  api/_runtime
+  api/model-api
+  api/model-names-api
   generating/_ir/model
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
-	lib/search
+  lib/search
   names/naming/names
-	naming/_notNaBL
+  naming/_notNaBL
 
 rules // entities
-	
+  
   model-entityname-to-webdsl-def(err): x_entityName -> result
-  	where
-  		is-entityname
-  	with
-  		ebd_attributes* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
+    where
+      is-entityname
+    with
+      ebd_attributes* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
       ebd_relations*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_roles*      := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
-  		ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
-  		ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
-  	with
-  	  if entityname-is-noui then
-    	  result := def |[
+      ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
+    with
+      if entityname-is-noui then
+        result := def |[
           entity x_entityName {
             ebd_attributes*
             ebd_relations*
@@ -98,25 +98,25 @@ rules
       if attributename-is-normal-default then
         if attributename-is-default then
           ebd_attributeField* := ebd* |[
-	          x_attributeName : srt_attributeType (default=x_calculateAttribute())
-	      ]|
+            x_attributeName : srt_attributeType (default=x_calculateAttribute())
+        ]|
         else
           if <get-multiplicity;ZeroOrOne()>x_attributeName then
-	        ebd_attributeField* := ebd* |[
-	          x_attributeName : srt_attributeType (default=null)
-	        ]|
-	      else
-	        e1 := String(x_attributeName);
-	        if <_get-type ; String()> x_attributeName then
-	          ebd_attributeField* := ebd* |[
-	            x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
-	          ]|
-	        else
-	          ebd_attributeField* := ebd* |[
-	            x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
-	          ]|
-	        end
-	      end
+          ebd_attributeField* := ebd* |[
+            x_attributeName : srt_attributeType (default=null)
+          ]|
+        else
+          e1 := String(x_attributeName);
+          if <_get-type ; String()> x_attributeName then
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
+            ]|
+          else
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+            ]|
+          end
+        end
         end    
       else
         ebd_attributeField* := ebd* |[
