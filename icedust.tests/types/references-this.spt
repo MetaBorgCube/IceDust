@@ -2,7 +2,7 @@ module types-references-this
 
 language IceDust
 
-test type error on this		[[
+test type error on this    [[
 module debug
 
 model

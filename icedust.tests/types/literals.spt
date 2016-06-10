@@ -3,22 +3,22 @@ module types-literals
 language IceDust
 
 fixture [[
-	module test
-	model
-	data
-	execute
-	[[...]]
+  module test
+  model
+  data
+  execute
+  [[...]]
 ]]
 
-test type of Literal Int 		[[1]] run get-type to Int() 
-test type of Literal Float	[[1.4]] run get-type to Float() 
-test type of literal String [["Asdf"]] run get-type to String()
+test type of Literal Int      [[1]] run get-type to Int() 
+test type of Literal Float    [[1.4]] run get-type to Float() 
+test type of literal String   [["Asdf"]] run get-type to String()
 test type of literal Datetime [[2015-01-01 0:00:00]] run get-type to Datetime() 
 test type of literal Datetime2[[2015-12-31 23:59:59]] run get-type to Datetime() 
 test type of literal No Value [[no value]] run get-type to NoValue()
 
-test multiplicity of Literal Int 		[[1]] run get-multiplicity to One() 
-test multiplicity of literal String [["Asdf"]] run get-multiplicity to One()
+test multiplicity of Literal Int      [[1]] run get-multiplicity to One() 
+test multiplicity of literal String   [["Asdf"]] run get-multiplicity to One()
 test multiplicity of literal No Value [[no value]] run get-multiplicity to ZeroOrOne() //there is no Zero representation
 
-test ordering of Literal Int 		[[1]] run get-ordering to Ordered() 
+test ordering of Literal Int     [[1]] run get-ordering to Ordered() 

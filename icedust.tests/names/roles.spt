@@ -3,60 +3,60 @@ module names-roles
 language IceDust
 
 fixture [[
-	module test
-	model
-	[[...]]
+  module test
+  model
+  [[...]]
 ]]
 
 test Duplicate role fails [[
-	entity Node {
-	}
-	relation Edge{
-		Node.x * -> in
-		Node   * -> in
-		
-		in.c <-> in.d
-	}
-]] 2 errors
+  entity Node {
+  }
+  relation Edge{
+    Node.x * -> [[in]]
+    Node   * -> [[in]]
+    
+    in.c <-> in.d
+  }
+]] 2 errors at #1,#2
 
 test Resolve role  [[
-	entity Node {
-		name : String = concat(this.in.[[out]].name)
-	}
-	relation Edge{
-		Node.in +  -> in
-		Node.out * -> [[out]]
-		in.a <-> out.b
-	}
+  entity Node {
+    name : String = concat(this.in.[[out]].name)
+  }
+  relation Edge{
+    Node.in +  -> in
+    Node.out * -> [[out]]
+    in.a <-> out.b
+  }
 ]] resolve #1 to #2
 
 test Resolve inverse  [[
-	entity Node {
-		name : String = concat(this.[[in]].out.name)
-	}
-	relation Edge{
-		Node.[[in]] + -> in 
-		Node.out *    -> out
-		in.a <-> out.b
-	}
+  entity Node {
+    name : String = concat(this.[[in]].out.name)
+  }
+  relation Edge{
+    Node.[[in]] + -> in 
+    Node.out *    -> out
+    in.a <-> out.b
+  }
 ]] resolve #1 to #2
 
 test error on duplicate role [[
-	entity Node {}
-	relation Edge {
-		Node.a 1 -> [[node]]
-		Node.b 1 -> [[node]]
-		
-		node.c <-> node.d
-	}
-]] 2 errors
+  entity Node {}
+  relation Edge {
+    Node.a 1 -> [[node]]
+    Node.b 1 -> [[node]]
+    
+    node.c <-> node.d
+  }
+]] 2 errors at #1,#2
 
 test error on duplicate role by desugaring [[
-	entity Node {}
-	relation Edge {
-		[[Node]] 1
-		[[Node]] 1
-		
-		node.c <-> node.d
-	}
+  entity Node {}
+  relation Edge {
+    [[Node]] 1
+    [[Node]] 1
+    
+    node.c <-> node.d
+  }
 ]] 4 errors // always also results in duplicate inverses

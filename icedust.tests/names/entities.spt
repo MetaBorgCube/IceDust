@@ -3,29 +3,29 @@ module names-entities
 language IceDust
 
 fixture [[
-	module test
-	model
-	entity User{}
-	
-	[[...]]
+  module test
+  model
+  entity User{}
+  
+  [[...]]
 ]]
 
 test Duplicate entity fails [[
-	data
-	u : User {}
-	u : User {}
-]] 2 errors
+  data
+  [[u]] : User {}
+  [[u]] : User {}
+]] 2 errors at #1,#2
 
 test Resolve Identifier to entity [[
-	data
+  data
   [[u]] : User {}
-	execute
-	[[u]]
+  execute
+  [[u]]
 ]] resolve #2 to #1
 
 test Resolve invalid Identifier fails [[
-	data
-	u : User {}
-	execute
-	v
-]] 1 error
+  data
+  u : User {}
+  execute
+  [[v]]
+]] 1 error  at #1

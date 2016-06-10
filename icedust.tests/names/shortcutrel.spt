@@ -45,4 +45,4 @@ test Resolve invalid role in shortcut fails [[
   execute
   
     node1.[[iDoNotExist]]
-]] 1 error
+]] 1 error at #1

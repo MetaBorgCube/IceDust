@@ -7,16 +7,16 @@ fixture [[
   
   model
   
-	  entity Node { }
-	
-	  relation Tree {
-	    Node * -> parent
-	    Node ? -> child
-	  }
-	  
-	  entity Foo{}
-	  entity Bar{}
-	  relation Rel{Foo * Bar *}
+    entity Node { }
+  
+    relation Tree {
+      Node * -> parent
+      Node ? -> child
+    }
+    
+    entity Foo{}
+    entity Bar{}
+    relation Rel{Foo * Bar *}
 
   data
     
@@ -27,5 +27,5 @@ fixture [[
     [[...]]
 ]]
 
-test auto inverse on self relation  [[ [[n.treeAsParent]] ]]  run get-type to "Tree"
-test auto inverse on other relation [[ [[foo.rel]]        ]]  run get-type to "Rel"
+test auto inverse on self relation  [[n.treeAsParent]]  run get-type to "Tree"
+test auto inverse on other relation [[foo.rel       ]]  run get-type to "Rel"

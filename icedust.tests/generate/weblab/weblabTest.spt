@@ -2,7 +2,7 @@ module generate-weblab
 
 language IceDust
 
-setup Common [[
+fixture [[
 
 module weblabTest
 
@@ -186,13 +186,12 @@ data
 execute
 
   compiler.avgGrade
-  
-]]
+  [[...]] ]]
 
-// test Weblab generate-java [[ ]] build generate-java-test
+// test Weblab generate-java [[ ]] run generate-java-test
 
-// test Weblab compile-java [[ ]] build compile-java-test
+// test Weblab compile-java [[ ]] run compile-java-test
 
-test Weblab execute-java [[ ]] build execute-java-test to "77"
+test Weblab execute-java [[ ]] run execute-java-test to "77"
 
-test Weblab execute-java-incr [[ ]] build execute-java-incr-test to "77"
+test Weblab execute-java-incr [[ ]] run execute-java-incr-test to "77"

@@ -4,12 +4,12 @@ module literals-layout
 language IceDust
 
 fixture [[
-	module test
-	
-	execute
-	
-	 [[...]]
+  module test
+  
+  execute
+  
+   [[...]]
 ]]
 
-test literal String whitespace [[	[[" Asdf "]] ]]  run _rm-annotations to LitString(" Asdf ")
+test literal String whitespace [[  [[" Asdf "]] ]]  run rm-annotations to LitString(" Asdf ")
 

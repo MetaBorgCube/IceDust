@@ -2,15 +2,16 @@ module generate-expressions-cast
 
 language IceDust
 
-setup Common [[
-	module ExpressionsCast
-	
-	execute
-		concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
+fixture [[
+  module ExpressionsCast
+  
+  execute
+    concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
+    [[...]]
 ]]
 
-test Expressions Logic generate-java [[ ]] build generate-java-test
+//test Expressions Logic generate-java [[ ]] run generate-java-test
+//
+//test Expressions Logic compile-java [[ ]] run compile-java-test
 
-test Expressions Logic compile-java [[ ]] build compile-java-test
-
-test Expressions Math execute-java [[ ]] build execute-java-test to "5.0 true 5"
+test Expressions Math execute-java [[ ]] run execute-java-test to "5.0 true 5"
