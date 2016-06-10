@@ -2,7 +2,7 @@ module generate-auto-shortcuts
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module AutoShortcuts
 	
 	model
@@ -23,12 +23,15 @@ setup Common [[
 	
 	execute
 	n3.value
+	[[...]]
 ]]
 
-test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
+//test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
+test Expressions Aggregation Recursive generate-java [[ ]] transform "SPT -> generate-java-test" to ""
 
-test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
+//test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
 
-test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3"
+test Expressions Aggregation Recursive execute-java [[ ]] transform "SPT -> execute-java-incr-test" to "3"
 
-test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-incr-test to "3"
+//test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-incr-test to "3"
+

@@ -2,8 +2,9 @@ module types-data
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
+	[[...]]
 ]]
 
 
@@ -82,7 +83,7 @@ test infer enitity instance type [[
         <rel { } >
         [[x1]] {i=4}
     }
-]] run get-type to "X"{_}
+]] run get-type on #1 to "X"
 
 test infer relation instance type [[
   model
@@ -97,6 +98,6 @@ test infer relation instance type [[
         <[[rel]] { } >
         x1 {i=4}
     }
-]] run get-type to "XYRelation"{_}
+]] run get-type on #1 to "XYRelation"
 
 //TODO: add testcases for relations

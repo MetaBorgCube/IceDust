@@ -2,12 +2,14 @@ module names-inverses
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module inverses
 
 	model
 	
 		entity Course{}
+		
+		[[...]]
 ]]
 
 test Resolve inverse [[

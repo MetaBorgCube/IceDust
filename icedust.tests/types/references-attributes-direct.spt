@@ -2,8 +2,9 @@ module types-references-attributes-direct
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
+	[[...]]
 ]]
 
 
@@ -12,14 +13,14 @@ test type of ref attribute (Identifier) [[
 	entity X{
 		i : Int = [[i]]
 	}
-]] run get-type to Int
+]] run get-type on #1 to Int()
 
 test type of ref this.attribute [[
 	model
 	entity X{
 		i : Int = [[this.i]]
 	}
-]] run get-type to Int
+]] run get-type on #1 to Int()
 
 test type of ref entity.attribute [[
 	model
@@ -31,7 +32,7 @@ test type of ref entity.attribute [[
 	x : X {
 		i=3
 	}
-]] run get-type to Int
+]] run get-type on #1 to Int()
 
 test type of ref role.attribute [[
 	model
@@ -43,7 +44,7 @@ test type of ref role.attribute [[
 		Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-type to Int
+]] run get-type on #1 to Int()
 
 
 test multiplicity of ref attribute (Identifier) One [[
@@ -51,28 +52,28 @@ test multiplicity of ref attribute (Identifier) One [[
 	entity X{
 		i : Int = [[i]]
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 
 test multiplicity of ref attribute (Identifier) ZeroOrOne [[
 	model
 	entity X{
 		i : Int ? = [[i]]
 	}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test multiplicity of ref this.attribute One [[
 	model
 	entity X{
 		i : Int = [[this.i]]
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 
 test multiplicity of ref this.attribute ZeroOrOne [[
 	model
 	entity X{
 		i : Int ? = [[this.i]]
 	}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test multiplicity of ref entity.attribute One [[
 	model
@@ -84,7 +85,7 @@ test multiplicity of ref entity.attribute One [[
 	x : X {
 		i=3
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 
 test multiplicity of ref entity.attribute ZeroOrOne [[
 	model
@@ -94,7 +95,7 @@ test multiplicity of ref entity.attribute ZeroOrOne [[
 	
 	data
 	x : X {}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test ordering of ref entity.attribute Ordered [[
 	model
@@ -104,4 +105,4 @@ test ordering of ref entity.attribute Ordered [[
 	
 	data
 	x : X {}
-]] run get-ordering to Ordered
+]] run get-ordering on #1 to Ordered()

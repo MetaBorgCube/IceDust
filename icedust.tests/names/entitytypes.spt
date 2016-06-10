@@ -2,9 +2,10 @@ module names-entitytypes
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
 	model
+	[[...]]
 ]]
 
 test Duplicate entity type fails [[

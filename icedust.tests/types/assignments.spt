@@ -2,8 +2,9 @@ module types-assignments
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
+	[[...]]
 ]]
 
 

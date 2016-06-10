@@ -2,10 +2,12 @@ module names-members
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module members
 
 	model
+	
+	[[...]]
 
 ]]
 

@@ -2,9 +2,10 @@ module names-attributes
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
 	model
+	[[...]]
 ]]
 
 test Duplicate attribute fails [[

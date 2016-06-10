@@ -2,8 +2,9 @@ module types-references-attributes-indirect
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
+	[[...]]
 ]]
 
 
@@ -18,7 +19,7 @@ test multiplicity of ref role.attribute ZeroOrOne ZeroOrOne [[
 		Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test multiplicity of ref role.attribute ZeroOrOne One [[
 	model
@@ -30,7 +31,7 @@ test multiplicity of ref role.attribute ZeroOrOne One [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test multiplicity of ref role.attribute One ZeroOrOne [[
 	model
@@ -43,7 +44,7 @@ test multiplicity of ref role.attribute One ZeroOrOne [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrOne
+]] run get-multiplicity on #1 to ZeroOrOne()
 
 test multiplicity of ref role.attribute One One [[
 	model
@@ -55,7 +56,7 @@ test multiplicity of ref role.attribute One One [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 
 test multiplicity of ref role.attribute ZeroOrMore ZeroOrOne [[
 	model
@@ -68,7 +69,7 @@ test multiplicity of ref role.attribute ZeroOrMore ZeroOrOne [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrMore
+]] run get-multiplicity on #1 to ZeroOrMore()
 
 test multiplicity of ref role.attribute ZeroOrMore One [[
 	model
@@ -80,7 +81,7 @@ test multiplicity of ref role.attribute ZeroOrMore One [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrMore
+]] run get-multiplicity on #1 to ZeroOrMore()
 
 test multiplicity of ref role.attribute OneOrMore ZeroOrOne [[
 	model
@@ -93,7 +94,7 @@ test multiplicity of ref role.attribute OneOrMore ZeroOrOne [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to ZeroOrMore
+]] run get-multiplicity on #1 to ZeroOrMore()
 
 test multiplicity of ref role.attribute OneOrMore One [[
 	model
@@ -105,7 +106,7 @@ test multiplicity of ref role.attribute OneOrMore One [[
     Node.out 1 -> out
 		in.a <-> out.b
 	}
-]] run get-multiplicity to OneOrMore
+]] run get-multiplicity on #1 to OneOrMore()
 
 test ordering of ref role.attribute Unordered Ordered [[
 	model
@@ -117,7 +118,7 @@ test ordering of ref role.attribute Unordered Ordered [[
 		Node.out 1 (unordered) -> out
 		in.a <-> out.b
 	}
-]] run get-ordering to Unordered
+]] run get-ordering on #1 to Unordered()
 
 test ordering of ref role.attribute Ordered Ordered [[
 	model
@@ -129,4 +130,4 @@ test ordering of ref role.attribute Ordered Ordered [[
     Node.out 1 (ordered) -> out
 		in.a <-> out.b
 	}
-]] run get-ordering to Ordered
+]] run get-ordering on #1 to Ordered()

@@ -2,12 +2,14 @@ module names-shortcuts
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module inverses
 
 	model
 	
 		entity Course{}
+		
+		[[...]]
 ]]
 
 test Resolve shortcut [[

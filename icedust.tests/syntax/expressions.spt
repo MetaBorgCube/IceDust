@@ -2,7 +2,7 @@ module syntax-expressions
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
 	
 	model
@@ -22,6 +22,8 @@ setup Common [[
 	u : User{}
 	
 	execute
+	
+	  [[...]]
 ]]
 
 test Literal Int 		[[ 1 ]] parse succeeds

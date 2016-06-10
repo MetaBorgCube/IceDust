@@ -2,9 +2,10 @@ module names-roles
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
 	model
+	[[...]]
 ]]
 
 test Duplicate role fails [[

@@ -2,7 +2,7 @@ module desugar-auto-inverses
 
 language IceDust
 
-setup Common [[
+fixture [[
   module test
   
   model
@@ -24,7 +24,8 @@ setup Common [[
     foo : Foo {}
     
   execute
+    [[...]]
 ]]
 
-test auto inverse on self relation  [[ [[n.treeAsParent]] ]]  run get-type to "Tree"{_}
-test auto inverse on other relation [[ [[foo.rel]]        ]]  run get-type to "Rel"{_}
+test auto inverse on self relation  [[ [[n.treeAsParent]] ]]  run get-type to "Tree"
+test auto inverse on other relation [[ [[foo.rel]]        ]]  run get-type to "Rel"

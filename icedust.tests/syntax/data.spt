@@ -2,7 +2,7 @@ module syntax-data
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
 	
 	model
@@ -19,6 +19,8 @@ setup Common [[
 	}
 	
 	data
+	
+	  [[...]]
 ]]
 
 test Blog data [[

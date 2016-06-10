@@ -2,8 +2,9 @@ module types-references-entities
 
 language IceDust
 
-setup Common [[
+fixture [[
 	module test
+	[[...]]
 ]]
 
 
@@ -17,7 +18,7 @@ test type of ref entity this [[
 	x : X {
 		i=8
 	}
-]] run get-type to "X"{_}
+]] run get-type on #1 to "X"
 	 
 test type of ref entity Identifier [[
 	model
@@ -29,7 +30,7 @@ test type of ref entity Identifier [[
 	x : X {
 		i=6
 	}
-]] run get-type to "X"{_}
+]] run get-type on #1 to "X"
 
 
 test multiplicity of ref this [[
@@ -42,7 +43,7 @@ test multiplicity of ref this [[
 	x : X {
 		i=8
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 	 
 test multiplicity of ref entity Identifier [[
 	model
@@ -54,7 +55,7 @@ test multiplicity of ref entity Identifier [[
 	x : X {
 		i=5
 	}
-]] run get-multiplicity to One
+]] run get-multiplicity on #1 to One()
 
 
 test ordering of ref this [[
@@ -67,7 +68,7 @@ test ordering of ref this [[
 	x : X {
 		i=8
 	}
-]] run get-ordering to Ordered
+]] run get-ordering on #1 to Ordered()
 	 
 test ordering of ref entity Identifier [[
 	model
@@ -79,4 +80,4 @@ test ordering of ref entity Identifier [[
 	x : X {
 		i=5
 	}
-]] run get-ordering to Ordered
+]] run get-ordering on #1 to Ordered()

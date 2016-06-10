@@ -2,8 +2,9 @@ module names-shortcutrel
 
 language IceDust
 
-setup Common [[
+fixture [[
   module test
+  [[...]]
 ]]
 
 test Resolve to shortcut [[
