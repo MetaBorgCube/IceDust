@@ -2,188 +2,188 @@ module generating/webdsl/module
 
 imports // constructors
 
-	webdsl/constructors
-	webdsl/WebDSL
-	desugaring/constructors
-	signatures/Types-sig
-	analysis2/path
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
 
 imports // functions
   
   generating/_ir/model 
   generating/webdsl/model
-	generating/webdsl/data
+  generating/webdsl/data
   generating/webdsl/types
   api/model-names-api
-	api/module-api
+  api/module-api
   api/module-names-api
   lib/lists-tuples
   lib/string
 
 rules // module
 
-	modulename-to-webdsl-application(err): x_moduleName -> result
-		where
-			is-modulename
-		with
-			def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
-			elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName;
-			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
-		with
-		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-		    def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
-		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
-		  end
-	    with
-	      if modulename-is-eventuallyconsistent then
-	        stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
-	        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName;
-	        stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
-	      end
-	    with
-	      sec_modelDataUi* := section* |[
-	        section data
-	          
-	          init {
-	            stat_initdata*
-	          }
-	        
-	        section model
-	        
-	          def_model*
-	        
-	        section ui
-	        
-	          define applicationmenu() {
-	            elem_menu*
-	          }
-	          
-	          def_crud*
-	      ]|
-	    with
-	      if modulename-is-calconwrite  then  
-	        sec_cachesDirtyflag* := section* |[
-	          section caches and dirty flags
-	          
-	            def_dirtyReqVar*
-	            
-	            function updateDerivations(){
-	              stat_cach*
-	            }
-	        ]|
-	      else if modulename-is-eventuallyconsistent then  
-	        sec_cachesDirtyflag* := section* |[
-	          section caches and dirty flags
-	          
-	            def_dirtyReqVar*
-	        ]|
-	      else
-	        sec_cachesDirtyflag* := []
-	      end end
-	    with
-	      if modulename-is-eventuallyconsistent then
-	        sec_asyncDirtyflag* :=  section* |[
-	          section async dirty flags
-	            
-	            function flagDirtyAsync(){
-	              stat_flagasync*
-	            }
-	            
-	            function updateDerivationsAsync(){
-	              stat_cachAsync*
-	            }
-	            
-	            invoke updateDerivationsAsync() every 1 milliseconds
-	            
-	            native class derivations.DirtyCollections as DirtyCollections {
-	              native1*
-	            }
-	            
-	            native class java.util.Queue as Queue{
-	              offer(String) : Bool
-	              add(String) : Bool
-	              addAll(List<String>) : Bool
-	              poll() : String
-	              contains(String) : Bool
-	              isEmpty() : Bool
-	            }
-	        ]|
-	      else
-	        sec_asyncDirtyflag* := []
-	      end
-	    with
-	      if modulename-is-calconwrite then
-	        sec_hibernateTriggers* :=  section* |[
-	          section triggers
-	        
-	            function beforeTransactionCompletion(){
-	              updateDerivations();
-	              flush();
-	            }
-	        ]|
-	      else if modulename-is-eventuallyconsistent then
-	        sec_hibernateTriggers* :=  section* |[
-	          section triggers
-	            
-	            function afterTransactionCompletionCommitted(){
-	              flagDirtyAsync();
-	            }
-	        ]|
-	      else
-	        sec_hibernateTriggers* := []
-	      end end
-		with
-		  if modulename-is-noui then
-	        result := application |[
-	          application x_moduleName
-	        
-	          imports lib/icedust/crud-ui
-	          imports lib/icedust/Expressions
-	      
-	          sec_modelDataUi*
-	        
-	          sec_cachesDirtyflag*
-	        
-	          sec_asyncDirtyflag*
-	        
-	          sec_hibernateTriggers*
-	        ]|
-	      else if modulename-is-newcrudui then
-	        result := application |[
-	          application x_moduleName
-	        
-	          imports lib/icedust/newcrud-ui
-			  imports lib/icedust/non-required-inputs
-	          imports lib/icedust/Expressions
-	      
-	          sec_modelDataUi*
-	        
-	          sec_cachesDirtyflag*
-	        
-	          sec_asyncDirtyflag*
-	        
-	          sec_hibernateTriggers*
-	        ]|	        
-	      else
-	        result := module |[
-	          module x_moduleName
-	        
-	          imports lib/icedust/crud-ui
-	          imports lib/icedust/Expressions
-	      
-	          sec_modelDataUi*
-	        
-	          sec_cachesDirtyflag*
-	        
-	          sec_asyncDirtyflag*
-	        
-	          sec_hibernateTriggers*
-	        ]|
-	    end end
+  modulename-to-webdsl-application(err): x_moduleName -> result
+    where
+      is-modulename
+    with
+      def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
+      def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
+      elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName;
+      stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
+        def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
+        stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
+      end
+      with
+        if modulename-is-eventuallyconsistent then
+          stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
+          native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName;
+          stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
+        end
+      with
+        sec_modelDataUi* := section* |[
+          section data
+            
+            init {
+              stat_initdata*
+            }
+          
+          section model
+          
+            def_model*
+          
+          section ui
+          
+            define applicationmenu() {
+              elem_menu*
+            }
+            
+            def_crud*
+        ]|
+      with
+        if modulename-is-calconwrite  then  
+          sec_cachesDirtyflag* := section* |[
+            section caches and dirty flags
+            
+              def_dirtyReqVar*
+              
+              function updateDerivations(){
+                stat_cach*
+              }
+          ]|
+        else if modulename-is-eventuallyconsistent then  
+          sec_cachesDirtyflag* := section* |[
+            section caches and dirty flags
+            
+              def_dirtyReqVar*
+          ]|
+        else
+          sec_cachesDirtyflag* := []
+        end end
+      with
+        if modulename-is-eventuallyconsistent then
+          sec_asyncDirtyflag* :=  section* |[
+            section async dirty flags
+              
+              function flagDirtyAsync(){
+                stat_flagasync*
+              }
+              
+              function updateDerivationsAsync(){
+                stat_cachAsync*
+              }
+              
+              invoke updateDerivationsAsync() every 1 milliseconds
+              
+              native class derivations.DirtyCollections as DirtyCollections {
+                native1*
+              }
+              
+              native class java.util.Queue as Queue{
+                offer(String) : Bool
+                add(String) : Bool
+                addAll(List<String>) : Bool
+                poll() : String
+                contains(String) : Bool
+                isEmpty() : Bool
+              }
+          ]|
+        else
+          sec_asyncDirtyflag* := []
+        end
+      with
+        if modulename-is-calconwrite then
+          sec_hibernateTriggers* :=  section* |[
+            section triggers
+          
+              function beforeTransactionCompletion(){
+                updateDerivations();
+                flush();
+              }
+          ]|
+        else if modulename-is-eventuallyconsistent then
+          sec_hibernateTriggers* :=  section* |[
+            section triggers
+              
+              function afterTransactionCompletionCommitted(){
+                flagDirtyAsync();
+              }
+          ]|
+        else
+          sec_hibernateTriggers* := []
+        end end
+    with
+      if modulename-is-noui then
+          result := application |[
+            application x_moduleName
+          
+            imports lib/icedust/crud-ui
+            imports lib/icedust/Expressions
+        
+            sec_modelDataUi*
+          
+            sec_cachesDirtyflag*
+          
+            sec_asyncDirtyflag*
+          
+            sec_hibernateTriggers*
+          ]|
+        else if modulename-is-newcrudui then
+          result := application |[
+            application x_moduleName
+          
+            imports lib/icedust/newcrud-ui
+        imports lib/icedust/non-required-inputs
+            imports lib/icedust/Expressions
+        
+            sec_modelDataUi*
+          
+            sec_cachesDirtyflag*
+          
+            sec_asyncDirtyflag*
+          
+            sec_hibernateTriggers*
+          ]|          
+        else
+          result := module |[
+            module x_moduleName
+          
+            imports lib/icedust/crud-ui
+            imports lib/icedust/Expressions
+        
+            sec_modelDataUi*
+          
+            sec_cachesDirtyflag*
+          
+            sec_asyncDirtyflag*
+          
+            sec_hibernateTriggers*
+          ]|
+      end end
 
 rules //crud
-	
+  
   entityname-to-webdsl-defs: x_entityName -> result
     with
       x_manageEntity := <name-manage>x_entityName;
@@ -225,41 +225,41 @@ rules //crud
           page x_manageEntity(){
             main()
             define body() {
-		  	  navigate x_createEntity() [] { "Create" }
-		  	  <br/>
-		  	  for(entity: x_entityName) {
-		  	    output(entity.name)
-		  	    navigate x_viewEntity(entity) [] { "View" } " "
-		  	    navigate x_editEntity(entity) [] { "Edit" } " "
-		  	    action("Remove", x_removeEntity(entity))
-		  	    <br/>
-		  	  }
-		  	
-		  	  action x_removeEntity(entity: x_entityName) {
-		  	    entity.delete();
-		  	  }
-		  	}
+          navigate x_createEntity() [] { "Create" }
+          <br/>
+          for(entity: x_entityName) {
+            output(entity.name)
+            navigate x_viewEntity(entity) [] { "View" } " "
+            navigate x_editEntity(entity) [] { "Edit" } " "
+            action("Remove", x_removeEntity(entity))
+            <br/>
+          }
+        
+          action x_removeEntity(entity: x_entityName) {
+            entity.delete();
+          }
+        }
           }
           page x_createEntity(){
             main()
             define body() {
               header{"Create"} 
               elem_deriveRowsVarCreate
-			  form {
-			    elem_deriveRowsInputCreate
-			    action("Save", save())
-			    // print form fields
+        form {
+          elem_deriveRowsInputCreate
+          action("Save", save())
+          // print form fields
               
-			  }
-			  action save() {
-			    stat_createDefaultWrap*
-		        var temp := x_entityName {
-			  	  x_testy
-		  	    };
-			    temp.save();
-			  }
-			  navigate x_manageEntity() [] { "Back" }
-			}
+        }
+        action save() {
+          stat_createDefaultWrap*
+            var temp := x_entityName {
+            x_testy
+            };
+          temp.save();
+        }
+        navigate x_manageEntity() [] { "Back" }
+      }
           }
           page x_viewEntity(temp: x_entityName){
             main()
@@ -368,17 +368,17 @@ rules //crud
           }
         ]|
       end
-	
+  
   attributename-to-webdsl: x_name -> DeriveDefault(x_name)
-	
-	entityname-to-webdsl-elem: x_entityName -> result
-		with
-			x_manageName := $[manage[x_entityName]];
-			$text := Text(x_entityName)
-		with
-		  result := elem |[
-		    navbaritem{navigate x_manageName(){$text}}
-		  ]|
+  
+  entityname-to-webdsl-elem: x_entityName -> result
+    with
+      x_manageName := $[manage[x_entityName]];
+      $text := Text(x_entityName)
+    with
+      result := elem |[
+        navbaritem{navigate x_manageName(){$text}}
+      ]|
 
 rules //crud rules
   create-wrap-default : x_name -> result
@@ -447,19 +447,19 @@ rules //crud rules
         page x_setname(ent: x_entityName) {
           main()
           define body() {
-  	        "Set " x_stringifiedname " for: " output(ent.name) <br/>
-  	        "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
-  	        <hr/>
-  	        for(f: x_entname) {
-  	          output(f.name)
+            "Set " x_stringifiedname " for: " output(ent.name) <br/>
+            "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
+            <hr/>
+            for(f: x_entname) {
+              output(f.name)
               submit action {
                 ent.x_name := f;
                 ent.save();
               } { "Set" }
               <br/>
-  	        }
-  	        navigate x_editEntity(ent) [] { "Back" }
-  	      }
+            }
+            navigate x_editEntity(ent) [] { "Back" }
+          }
         }
       ]|
     else
@@ -468,25 +468,25 @@ rules //crud rules
           page x_setname(ent: x_entityName) {
             main()
             define body() {
-  	          "Set " x_stringifiedname " for: " output(ent.name) <br/>
-  	          "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
-  	          <hr/>
-  	          "null"
-  	          submit action {
-  	            ent.x_name := null;
-  	            ent.save();	
-  	          } { "Set" }
-  	          <br/>
-  	          for(f: x_entname) {
-  	            output(f.name)
+              "Set " x_stringifiedname " for: " output(ent.name) <br/>
+              "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
+              <hr/>
+              "null"
+              submit action {
+                ent.x_name := null;
+                ent.save();  
+              } { "Set" }
+              <br/>
+              for(f: x_entname) {
+                output(f.name)
                 submit action {
                   ent.x_name := f;
                   ent.save();
                 } { "Set" }
                 <br/>
-  	          }
-  	          navigate x_editEntity(ent) [] { "Back" }
-  	        }
+              }
+              navigate x_editEntity(ent) [] { "Back" }
+            }
           }
         ]|
       else // *
@@ -532,16 +532,9 @@ rules //crud rules
   
   attributename-to-webdsl-inputcreate : x_name -> result
   with
-    type := <_get-type>x_name;
-    if <_get-type;Boolean()>x_name then
-	    if <get-multiplicity;ZeroOrOne()>x_name then
-	      result := $["[x_name] :" inputNonRequiredBool([x_name]) <br/>]
-	    else
-	      result := $["[x_name] :" input([x_name]) <br/>]
-	    end
-	else
-	  result := $["[x_name] :" input([x_name]) <br/>]
-	end
+  	x_qname := <double-quote> x_name;
+    elem_input := <name-to-webdsl-input> x_name;
+    result := elem* |[ "" x_qname ": " elem_input ]|
   
   name-to-webdsl-input : x_name -> result
   with
@@ -616,19 +609,19 @@ rules //crud rules
       x_output := <attributename-to-webdsl-output> x_name;
       result := elem* |[
         "" x_namestr ": "
-    	<div
-    	  data-name = x_namestr
-    	  data-type = x_typestr
-    	  data-updates = x_flows>
+      <div
+        data-name = x_namestr
+        data-type = x_typestr
+        data-updates = x_flows>
           <div class="output">
-    	    "" x_output
-    	  </div>
+          "" x_output
+        </div>
           <div class="error-msg" style="color: red"></div>
-    	</div>
-    	<br/> 
+      </div>
+      <br/> 
       ]|
     else
-	  if <attributename-is-default> x_name then
+    if <attributename-is-default> x_name then
         result := elem* |[
           "" x_namestr ": "
           <div
@@ -638,7 +631,7 @@ rules //crud rules
             data-default = "true">
             "" x_input
             <div class="error-msg" style="color: red"></div>
-	        <div class="default-output"></div>
+          <div class="default-output"></div>
           </div>
           <br/>
         ]|
@@ -651,7 +644,7 @@ rules //crud rules
             data-updates = x_flows>
             "" x_input
             <div class="error-msg" style="color: red"></div>
-	        <div class="default-output"></div>
+          <div class="default-output"></div>
           </div>
           <br/>
         ]|
@@ -670,20 +663,20 @@ rules //crud rules
   with
     if <attributename-is-default>x_name then
       if <_get-type;String()>x_name then
-      	result := stat |[
-	      	if(x_name.trim() != "") {
-	  	      temp.x_name := x_name;
-	  	    } else {
-	  	      temp.x_name := null;
-	  	    }
-      	]|
+        result := stat |[
+          if(x_name.trim() != "") {
+            temp.x_name := x_name;
+          } else {
+            temp.x_name := null;
+          }
+        ]|
       else
         result := stat |[
-        	if(x_name != null) {
-  	      	  temp.x_name := x_name;
-  	    	} else {
-  	      	  temp.x_name := null;
-  	    	}
+          if(x_name != null) {
+              temp.x_name := x_name;
+          } else {
+              temp.x_name := null;
+          }
         ]|
       end
     else
@@ -710,18 +703,20 @@ rules //crud rules
     x_getname := <name-get> x_name;
     if <_get-type;Datetime()>x_name then
       result := elem |[output(temp.x_name)]|
-	else
-	  result := elem |[output(temp.x_getname())]|
-	end
+    else
+      result := elem |[output(temp.x_getname())]|
+    end
     
   attributename-to-webdsl-outputview: x_name ->  result
   with
-    ux_name := <ucfirst>x_name;
+    x_qname := <double-quote> x_name;
     if <_get-type;Datetime()>x_name then
-      result := $["[x_name]: " output(temp.[x_name]) <br>]
-	else
-	  result := $["[x_name]: " output(temp.get[ux_name]()) <br>]
-	end
+      result := elem* |["" x_qname ": " output(temp.x_name) <br>]|
+    else
+      x_getname := <name-get> x_name;
+      result := elem* |["" x_qname ": " output(temp.x_getname()) <br>]|
+    end
+    
 rules // derivations
   
   attributename-to-webdsl-def: x_attributeName -> result
