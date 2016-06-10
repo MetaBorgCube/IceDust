@@ -19,14 +19,14 @@ rules // paths
   
   webdsl-generated-path(|path)           = !path;guarantee-extension(|"app")
   webdsl-java-generated-path(|path)      = !$[[<dirname>path]/nativejava/derivations/DirtyCollections.java]
-  webdsl-js-generated-path(|path)        = !$[[<dirname>path]/WebContent/javascript/derivations.js]
+  webdsl-js-generated-path(|path)        = !$[[<dirname>path]/javascript/derivations.js]
 
   webdsl-library-source-path             = !$[[<component-path>]/lib-webdsl]
   webdsl-library-target-path(|path)      = !$[[<dirname>path]]
   webdsl-java-library-source-path        = !$[[<component-path>]/lib-java/src]
   webdsl-java-library-target-path(|path) = !$[[<dirname>path]/nativejava]
   webdsl-js-library-source-path          = !$[[<component-path>]/lib-javascript/src]
-  webdsl-js-library-target-path(|path)   = !$[[<dirname>path]/WebContent/javascript]
+  webdsl-js-library-target-path(|path)   = !$[[<dirname>path]/javascript]
   
   webdsl-saved-but-not-build(|path)      = !$[[<dirname>path]/.saved-but-not-built]
 

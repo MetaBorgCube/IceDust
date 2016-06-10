@@ -200,11 +200,3 @@ var setDerived = function(n, f) {
 	});
 };
 
-// generated
-setDerived('dateDefault', function() {
-	return get('date1');
-});
-setDerived('seconds', function() {
-	return (+get('date2') - +get('date1')) / 1000;
-});
-

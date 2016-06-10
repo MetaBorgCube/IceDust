@@ -99,7 +99,7 @@ section  model
     {
       return Expressions.mul_Float(Income.getGrossSalary(this), 12.0);
     }
-    holidayAllowance : Float ( default= null )
+    holidayAllowance : Float ( default= calculateHolidayAllowance() )
     function getHolidayAllowance ( ) : Float
     {
       return if ( this.holidayAllowance != null ) this.holidayAllowance else this.calculateHolidayAllowance();
@@ -189,7 +189,7 @@ section  model
     {
       return [ en.getMonthlySalary() | en : Income in entities where en.getMonthlySalary() != null ];
     }
-    name : String ( default= null )
+    name : String ( default= calculateName() )
     function getName ( ) : String
     {
       return if ( this.name != null ) this.name else this.calculateName();
@@ -478,7 +478,7 @@ section  model
     {
       return Expressions.div_Float(52.0, 100.0);
     }
-    thirteenthMonth : Bool ( default= null )
+    thirteenthMonth : Bool ( default= calculateThirteenthMonth() )
     function getThirteenthMonth ( ) : Bool
     {
       return if ( this.thirteenthMonth != null ) this.thirteenthMonth else this.calculateThirteenthMonth();
@@ -597,12 +597,30 @@ section  ui
     Bool
     form
       {
-      "holidayAllowance :" input(holidayAllowance) <br/>
-        "leaseCarPercent :" input(leaseCarPercent) <br/>
-        "leaseCarPrice :" input(leaseCarPrice) <br/>
-        "monthlySalary :" input(monthlySalary) <br/>
-        "name :" input(name) <br/>
-        "thirteenthMonth :" input(thirteenthMonth) <br/>
+      ""
+        "holidayAllowance"
+        ": "
+        input ( holidayAllowance )
+        ""
+        "leaseCarPercent"
+        ": "
+        input ( leaseCarPercent )
+        ""
+        "leaseCarPrice"
+        ": "
+        input ( leaseCarPrice )
+        ""
+        "monthlySalary"
+        ": "
+        input ( monthlySalary )
+        ""
+        "name"
+        ": "
+        input ( name )
+        ""
+        "thirteenthMonth"
+        ": "
+        input ( thirteenthMonth )
         submit
         (
         "Save"
@@ -642,34 +660,202 @@ section  ui
       {
       "View"
         }
-    "employedTaxDiscount: " output(temp.getEmployedTaxDiscount()) <br>
-    "gernalTaxDiscount: " output(temp.getGernalTaxDiscount()) <br>
-    "grossSalary: " output(temp.getGrossSalary()) <br>
-    "grossSalaryYear: " output(temp.getGrossSalaryYear()) <br>
-    "holidayAllowance: " output(temp.getHolidayAllowance()) <br>
-    "incomeTax: " output(temp.getIncomeTax()) <br>
-    "leaseCarAddition: " output(temp.getLeaseCarAddition()) <br>
-    "leaseCarPercent: " output(temp.getLeaseCarPercent()) <br>
-    "leaseCarPrice: " output(temp.getLeaseCarPrice()) <br>
-    "monthlySalary: " output(temp.getMonthlySalary()) <br>
-    "name: " output(temp.getName()) <br>
-    "netSalary: " output(temp.getNetSalary()) <br>
-    "netSalaryYear: " output(temp.getNetSalaryYear()) <br>
-    "salaryBracket1: " output(temp.getSalaryBracket1()) <br>
-    "salaryBracket2: " output(temp.getSalaryBracket2()) <br>
-    "salaryBracket3: " output(temp.getSalaryBracket3()) <br>
-    "salaryBracket4: " output(temp.getSalaryBracket4()) <br>
-    "summary: " output(temp.getSummary()) <br>
-    "tax: " output(temp.getTax()) <br>
-    "taxableIncome: " output(temp.getTaxableIncome()) <br>
-    "taxBracket1: " output(temp.getTaxBracket1()) <br>
-    "taxBracket2: " output(temp.getTaxBracket2()) <br>
-    "taxBracket3: " output(temp.getTaxBracket3()) <br>
-    "taxRate1: " output(temp.getTaxRate1()) <br>
-    "taxRate2: " output(temp.getTaxRate2()) <br>
-    "taxRate3: " output(temp.getTaxRate3()) <br>
-    "taxRate4: " output(temp.getTaxRate4()) <br>
-    "thirteenthMonth: " output(temp.getThirteenthMonth()) <br>
+    ""
+    "employedTaxDiscount"
+    ": "
+    output ( temp.getEmployedTaxDiscount() )
+    <
+    br
+    />
+    ""
+    "gernalTaxDiscount"
+    ": "
+    output ( temp.getGernalTaxDiscount() )
+    <
+    br
+    />
+    ""
+    "grossSalary"
+    ": "
+    output ( temp.getGrossSalary() )
+    <
+    br
+    />
+    ""
+    "grossSalaryYear"
+    ": "
+    output ( temp.getGrossSalaryYear() )
+    <
+    br
+    />
+    ""
+    "holidayAllowance"
+    ": "
+    output ( temp.getHolidayAllowance() )
+    <
+    br
+    />
+    ""
+    "incomeTax"
+    ": "
+    output ( temp.getIncomeTax() )
+    <
+    br
+    />
+    ""
+    "leaseCarAddition"
+    ": "
+    output ( temp.getLeaseCarAddition() )
+    <
+    br
+    />
+    ""
+    "leaseCarPercent"
+    ": "
+    output ( temp.getLeaseCarPercent() )
+    <
+    br
+    />
+    ""
+    "leaseCarPrice"
+    ": "
+    output ( temp.getLeaseCarPrice() )
+    <
+    br
+    />
+    ""
+    "monthlySalary"
+    ": "
+    output ( temp.getMonthlySalary() )
+    <
+    br
+    />
+    ""
+    "name"
+    ": "
+    output ( temp.getName() )
+    <
+    br
+    />
+    ""
+    "netSalary"
+    ": "
+    output ( temp.getNetSalary() )
+    <
+    br
+    />
+    ""
+    "netSalaryYear"
+    ": "
+    output ( temp.getNetSalaryYear() )
+    <
+    br
+    />
+    ""
+    "salaryBracket1"
+    ": "
+    output ( temp.getSalaryBracket1() )
+    <
+    br
+    />
+    ""
+    "salaryBracket2"
+    ": "
+    output ( temp.getSalaryBracket2() )
+    <
+    br
+    />
+    ""
+    "salaryBracket3"
+    ": "
+    output ( temp.getSalaryBracket3() )
+    <
+    br
+    />
+    ""
+    "salaryBracket4"
+    ": "
+    output ( temp.getSalaryBracket4() )
+    <
+    br
+    />
+    ""
+    "summary"
+    ": "
+    output ( temp.getSummary() )
+    <
+    br
+    />
+    ""
+    "tax"
+    ": "
+    output ( temp.getTax() )
+    <
+    br
+    />
+    ""
+    "taxableIncome"
+    ": "
+    output ( temp.getTaxableIncome() )
+    <
+    br
+    />
+    ""
+    "taxBracket1"
+    ": "
+    output ( temp.getTaxBracket1() )
+    <
+    br
+    />
+    ""
+    "taxBracket2"
+    ": "
+    output ( temp.getTaxBracket2() )
+    <
+    br
+    />
+    ""
+    "taxBracket3"
+    ": "
+    output ( temp.getTaxBracket3() )
+    <
+    br
+    />
+    ""
+    "taxRate1"
+    ": "
+    output ( temp.getTaxRate1() )
+    <
+    br
+    />
+    ""
+    "taxRate2"
+    ": "
+    output ( temp.getTaxRate2() )
+    <
+    br
+    />
+    ""
+    "taxRate3"
+    ": "
+    output ( temp.getTaxRate3() )
+    <
+    br
+    />
+    ""
+    "taxRate4"
+    ": "
+    output ( temp.getTaxRate4() )
+    <
+    br
+    />
+    ""
+    "thirteenthMonth"
+    ": "
+    output ( temp.getThirteenthMonth() )
+    <
+    br
+    />
     <
     hr
     />
@@ -1962,25 +2148,33 @@ section  ui
         submit
         action
         {
-          
-if(holidayAllowance != null) {
-	  temp.holidayAllowance := holidayAllowance;
-	} else {
-	  temp.holidayAllowance := null;
-	}
- temp.leaseCarPercent := leaseCarPercent; temp.leaseCarPrice := leaseCarPrice; temp.monthlySalary := monthlySalary; 
-if(name.trim() != "") {
-  temp.name := name;
-} else {
-  temp.name := null;
-}
- 
-if(thirteenthMonth != null) {
-	  temp.thirteenthMonth := thirteenthMonth;
-	} else {
-	  temp.thirteenthMonth := null;
-	}
-
+          if ( holidayAllowance != null )
+          {
+            temp.holidayAllowance := holidayAllowance;
+          }
+          else
+          {
+            temp.holidayAllowance := null;
+          }
+          temp.leaseCarPercent := leaseCarPercent;
+          temp.leaseCarPrice := leaseCarPrice;
+          temp.monthlySalary := monthlySalary;
+          if ( name.trim() != "" )
+          {
+            temp.name := name;
+          }
+          else
+          {
+            temp.name := null;
+          }
+          if ( thirteenthMonth != null )
+          {
+            temp.thirteenthMonth := thirteenthMonth;
+          }
+          else
+          {
+            temp.thirteenthMonth := null;
+          }
           temp.save();
         }
         [

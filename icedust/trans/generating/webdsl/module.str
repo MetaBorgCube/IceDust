@@ -711,10 +711,10 @@ rules //crud rules
   with
     x_qname := <double-quote> x_name;
     if <_get-type;Datetime()>x_name then
-      result := elem* |["" x_qname ": " output(temp.x_name) <br>]|
+      result := elem* |["" x_qname ": " output(temp.x_name) <br/>]|
     else
       x_getname := <name-get> x_name;
-      result := elem* |["" x_qname ": " output(temp.x_getname()) <br>]|
+      result := elem* |["" x_qname ": " output(temp.x_getname()) <br/>]|
     end
     
 rules // derivations

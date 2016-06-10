@@ -1,0 +1,40 @@
+<project name="webdsl-eclipse-plugin" default="plugin-eclipse-build">
+	<fail unless="plugindir" message="WebDSL plugin is not correctly installed. The 'plugindir' property is not available." />
+	<property name="templatedir" value="${plugindir}/webdsl-template"/>
+	<property name="currentdir" value="${basedir}"/>
+	<property name="webdsl-java-cp" value="${plugindir}/include/webdsl.jar"/>
+	<property name="webdslexec" value="java"/>
+	<!-- command-line build only uses .servletapp, plugin build also uses WebContent to deploy with WTP -->
+	<property name="generate-dir" value="WebContent"/>
+	<property name="webcontentdir" value="${currentdir}/${generate-dir}"/>
+	<import file="${plugindir}/webdsl-template/webdsl-build-eclipse-plugin-entry.xml"/>
+	<target name="plugin-eclipse-build">
+		<antcall target="eclipse-build"/>
+	</target>
+	<target name="plugin-war" depends="load-config">
+		<property name="buildoptions" value="build-war" />
+		<antcall target="eclipse-build"/><!-- assumes project builder for wtp deployment is disabled in .project file -->
+		<ant dir="${currentdir}/${generate-dir}" antfile="${currentdir}/${generate-dir}/build.xml" target="war"/>
+		<if><equals arg1="${rootapp}" arg2="true"/><then><copy overwrite="true" file="${generate-dir}/ROOT.war" todir="${tomcatpath}/webapps/"/></then><else><copy overwrite="true" file="${generate-dir}/incometax.war" todir="${tomcatpath}/webapps/"/></else></if>
+	</target>
+	<target name="plugin-build">
+		<property name="buildoptions" value="build" />
+		<antcall target="command"/>
+	</target>
+	<target name="plugin-run">
+		<property name="buildoptions" value="run" />
+		<antcall target="command"/>
+	</target>
+	<target name="plugin-deploy">
+		<property name="buildoptions" value="deploy" />
+		<antcall target="command"/>
+	</target>
+	<target name="plugin-tomcatdeploy">
+		<property name="buildoptions" value="tomcatdeploy" />
+		<antcall target="command"/>
+	</target>
+	<target name="plugin-cleanall">
+		<property name="buildoptions" value="cleanall" />
+		<antcall target="command"/>
+	</target>
+</project>
