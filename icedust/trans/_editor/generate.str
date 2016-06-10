@@ -42,6 +42,7 @@ rules // Builders
   generate-webdsl-noui               = build(error-handler-editor|WebDSL(),CalcOnRead(),CrudUI(),1)
   generate-webdsl-noui-test          = build(error-handler-tests |WebDSL(),CalcOnRead(),CrudUI(),1)
   generate-webdsl-newcrudui          = build(error-handler-editor|WebDSL(),CalcOnRead(),NewCrudUI(),1)
+  generate-webdsl-newcrudui-test     = build(error-handler-tests |WebDSL(),CalcOnRead(),NewCrudUI(),1)
   generate-webdsl-eager              = build(error-handler-editor|WebDSL(),CalcOnWrite(),NoUI(),1)
   generate-webdsl-eager-test         = build(error-handler-tests |WebDSL(),CalcOnWrite(),NoUI(),1)
   generate-webdsl-eager-noui         = build(error-handler-editor|WebDSL(),CalcOnWrite(),CrudUI(),1)
