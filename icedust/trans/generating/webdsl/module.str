@@ -534,7 +534,7 @@ rules //crud rules
   with
   	x_qname := <double-quote> x_name;
     elem_input := <name-to-webdsl-input> x_name;
-    result := elem* |[ "" x_qname ": " elem_input ]|
+    result := elem* |[ "" x_qname ": " elem_input <br/> ]|
   
   name-to-webdsl-input : x_name -> result
   with
@@ -547,8 +547,9 @@ rules //crud rules
     else
       result := elem |[ input(x_name) ]|
     end
-    
+      
   extract-flow : DataflowPath(x, Ref(y)) -> y
+  extract-flow : DataflowPath(x, y) -> "error-out-of-entity-path"
   
   add-space : s -> <conc-strings> (s, " ")
   
