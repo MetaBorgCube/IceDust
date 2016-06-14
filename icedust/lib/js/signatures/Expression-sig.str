@@ -35,3 +35,4 @@ signature
     Expression-Plhdr : Expression
     Parameter-Plhdr  : Parameter
     Statement-Plhdr  : Statement
+    Relation         : Expression -> Expression

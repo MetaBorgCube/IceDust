@@ -40,6 +40,9 @@ strategies
     prettyprint-Expression
 
   prettyprint-Expression :
+    Relation(e1) -> <prettyprint-Expression> e1
+
+  prettyprint-Expression :
     Parenthetical(t1__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [ S(" ( ")
@@ -444,7 +447,7 @@ strategies
            otherwise :
              ws := ""
          end
-
+  
   prettyprint-Expression :
     Substraction(t1__, t2__) -> [ H(
                                     [SOpt(HS(), "0")]

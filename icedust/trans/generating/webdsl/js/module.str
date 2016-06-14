@@ -35,30 +35,50 @@ rules // module
 
   moduleName-to-derivation-js: moduleName -> derivation-js
     with
-      attributes := <modulename-get-attributenames-default-derivation> moduleName
-    ; stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes
-    ; derivation-js := js-program |[stmt_derivationjs*]|
+      attributes := <modulename-get-attributenames-default-derivation> moduleName;
+      stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes;
+      derivation-js := js-program |[stmt_derivationjs*]|
+  
+  is-relation = ?Relation(_)
   
   attributeName-default-derivation-to-js: attributeName -> derivation-js
   	with
-  	  exp_attributeNamestr := <name-to-jsstring> attributeName
-  	; exp_derivation := <attributename-get-expr; expr-to-js> attributeName
-  	; derivation-js := js-stmt |[
-  	  setDerived(exp_attributeNamestr, function() {
-		return exp_derivation;
+  	  exp_attributeNamestr := <name-to-jsstring> attributeName;
+  	  exp_derivation := <attributename-get-expr; expr-to-js> attributeName;
+  	  relations := <collect-all(is-relation)> exp_derivation;
+      if <?[]> relations then
+        stmt_return := js-stmt |[ return exp_derivation; ]|
+      else
+        stmt_return := js-stmt |[ return 4; ]|
+      end;
+	  derivation-js := js-stmt |[
+	  setDerived(exp_attributeNamestr, function() {
+		stmt_return
 	  });]|
 
+  expr-to-js: Ref(entityName) -> js-ex |[ exp_entityName ]|
+    where <is-entityinstancename>entityName
+    with exp_entityName := <name-to-jsstring> entityName
+ 
+  expr-to-js: Ref(relationName) -> Relation(js)
+    where <is-relationname> relationName
+    with
+      exp_relationName := <name-to-jsstring> relationName;
+      js := js-ex |[ relation(exp_relationName) ]|
+      
+  expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
+    with exp_attributeName := <name-to-jsstring> attributeName
+  
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1
-  expr-to-js: Ref(entityName) -> js-ex |[ get(exp_entityName) ]| where exp_entityName := <name-to-jsstring> entityName
   expr-to-js: Float(f) -> FloatLiteral(f)
   expr-to-js: Int(i) -> IntegerLiteral(i)
   expr-to-js: True() -> True()
   expr-to-js: False() -> False()
   expr-to-js: NoValue() -> Null()
   expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
-  expr-to-js: MemberAccess(Ref(entityName), attributeName) -> js-ex |[ getOtherEntity(exp_entityName,exp_attributeName) ]|
+  expr-to-js: MemberAccess(exp1, attributeName) -> js-ex |[ getMember(exp_1, exp_attributeName) ]|
     with
-      exp_entityName := <name-to-jsstring> entityName;
+      exp_1 := <expr-to-js> exp1;
       exp_attributeName := <name-to-jsstring> attributeName
 
   expr-to-js: Cast(ex1, ex1-ty) -> js-cast
@@ -78,5 +98,7 @@ rules // module
         js := js-ex |[
           exp_call(exp_args*)
         ]|
+        
+    rules
 
     
