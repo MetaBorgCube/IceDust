@@ -56,6 +56,10 @@ rules // module
   expr-to-js: False() -> False()
   expr-to-js: NoValue() -> Null()
   expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
+  expr-to-js: MemberAccess(Ref(entityName), attributeName) -> js-ex |[ getOtherEntity(exp_entityName,exp_attributeName) ]|
+    with
+      exp_entityName := <name-to-jsstring> entityName;
+      exp_attributeName := <name-to-jsstring> attributeName
 
   expr-to-js: Cast(ex1, ex1-ty) -> js-cast
     with
