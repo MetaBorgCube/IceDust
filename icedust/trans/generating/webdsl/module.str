@@ -24,7 +24,7 @@ rules // module
 
   modulename-to-webdsl-application(err): x_moduleName -> result
     where
-      is-modulename
+      <is-modulename> x_moduleName
     with
       def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
       def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
@@ -381,6 +381,17 @@ rules //crud
       ]|
 
 rules //crud rules
+  
+  var-to-hidden-div: name -> result
+  with
+     x_strname := <double-quote> name;
+     x_getname := <name-get> name;
+     result := elem* |[
+       <div data-name=x_strname style="display:hidden">
+         output(x_getname)
+       </div>
+     ]|
+
   create-wrap-default : x_name -> result
   with
     result := stat |[
