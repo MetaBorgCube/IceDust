@@ -272,6 +272,7 @@ rules //crud
             }
           }
           page x_editEntity(temp: x_entityName){
+            includeCSS("edit-page.css")
             includeJS("Expressions.js")
             includeJS("javascript-lib.js")
             includeJS("derivations.js")
@@ -281,6 +282,7 @@ rules //crud
               elem_deriveRowsVarEdit
               form {
                 elem_deriveRowsInputEdit
+                <br/>
                 submit action {
                   stat_assignEditEntity
                   temp.save();
@@ -620,45 +622,60 @@ rules //crud rules
     if <attributename-is-derivation>x_name then
       x_output := <attributename-to-webdsl-output> x_name;
       result := elem* |[
-        "" x_namestr ": "
-      <div
-        data-name = x_namestr
-        data-type = x_typestr
-        data-updates = x_flows>
-          <div class="output">
-          "" x_output
+        <div class="ice-attr">
+          <div class="ice-attr-name">
+            "" x_namestr
+          </div>
+          <div class="ice-attr-val ice-attr-output">
+            <div
+              data-name = x_namestr
+              data-type = x_typestr
+              data-updates = x_flows>
+              <div class="output">
+                "" x_output
+              </div>
+              <div class="error-msg"></div>
+            </div>
+          </div>
         </div>
-          <div class="error-msg" style="color: red"></div>
-      </div>
-      <br/> 
       ]|
     else
     if <attributename-is-default> x_name then
         result := elem* |[
-          "" x_namestr ": "
-          <div
-            data-name = x_namestr
-            data-type = x_typestr
-            data-updates = x_flows
-            data-default = "true">
-            "" x_input
-            <div class="error-msg" style="color: red"></div>
-          <div class="default-output"></div>
+          <div class="ice-attr">
+            <div class="ice-attr-name">
+              "" x_namestr
+            </div>
+            <div class="ice-attr-val ice-attr-input-output">
+              <div
+                data-name = x_namestr
+                data-type = x_typestr
+                data-updates = x_flows
+                data-default = "true">
+                "" x_input
+                <div class="error-msg"></div>
+                <div class="default-output"></div>
+              </div>
+            </div>
           </div>
-          <br/>
         ]|
       else
         result := elem* |[
-          "" x_namestr ": "
-          <div
-            data-name = x_namestr
-            data-type = x_typestr
-            data-updates = x_flows>
-            "" x_input
-            <div class="error-msg" style="color: red"></div>
-          <div class="default-output"></div>
+          <div class="ice-attr">
+            <div class="ice-attr-name"> 
+              "" x_namestr
+            </div>
+            <div class="ice-attr-val ice-attr-input">
+              <div
+                data-name = x_namestr
+                data-type = x_typestr
+                data-updates = x_flows>
+                "" x_input
+                <div class="error-msg"></div>
+                <div class="default-output"></div>
+              </div>
+            </div>
           </div>
-          <br/>
         ]|
       end
     end
