@@ -107,8 +107,10 @@ rules
     with
       if attributename-is-default-derivation then
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName;
-        e_partial := <attributename-get-expr;expr-to-partial-expr>x_attributeName;
-        <debug> e_partial
+        e_partial := <attributename-get-expr;expr-to-partial-expr; partial-expr-add-names(|<concat-strings>[x_entityName, "_", x_attributeName, "_"])> x_attributeName;
+        vars := <collect-all(?Partial(_,_))> e_partial;
+        <debug> e_partial;
+        <debug> vars
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
