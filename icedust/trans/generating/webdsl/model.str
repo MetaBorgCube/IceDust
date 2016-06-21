@@ -108,7 +108,7 @@ rules
       if attributename-is-default-derivation then
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName;
         e_partial := <attributename-get-expr;expr-to-partial-expr>x_attributeName;
-        <debug> [x_attributeName, e_partial]
+        <debug> e_partial
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
