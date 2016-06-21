@@ -97,7 +97,7 @@ rules // Build in steps
             webdsl-js-library-paths(|fullPath);copy-dir;
             webdsl-css-library-paths(|fullPath);copy-dir;
             !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
-            jsString := <generate-webdsl-js-code> moduleName; debug(!"JSSTRING: ");
+            jsString := <generate-webdsl-js-code> moduleName;
             <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString);
             if <modulename-is-eventuallyconsistent>moduleName then
               (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;

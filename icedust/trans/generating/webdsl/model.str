@@ -19,6 +19,7 @@ imports // functions
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
+  generating/webdsl/partial-expressions
   lib/search
   names/naming/names
   naming/_notNaBL
@@ -105,7 +106,9 @@ rules
       e_entityName                := String(x_entityName)
     with
       if attributename-is-default-derivation then
-        e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
+        e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName;
+        e_partial := <attributename-get-expr;expr-to-partial-expr>x_attributeName;
+        <debug> [x_attributeName, e_partial]
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
