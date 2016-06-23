@@ -88,10 +88,14 @@ rules // rel-expr -> List(String)
   method-mult-postfix: e -> []
     where <not(lib-call-postfix-mults)>e
     
+  unwrap: Partial(_, e) -> e
+  unwrap: NoRelation(e) -> e
+  unwrap: e -> e
+    
   method-mult-postfix: e -> arg-mult*
     with
       arg* := <get-arguments>e;
-      arg-mult* := <map(get-multiplicity;postfix-id)>arg*
+      arg-mult* := <map(unwrap;get-multiplicity;postfix-id)>arg*
 
 rules // type -> String
   
