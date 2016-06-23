@@ -49,6 +49,7 @@ rules
   expr-to-partial-expr:  w @ Float() -> w
   expr-to-partial-expr:  w @ String() -> w
   expr-to-partial-expr:  w @ Datetime() -> w
+  expr-to-partial-expr:  w @ NoValue() -> w
 
   expr-to-partial-expr = expr-is-relationref
   expr-to-partial-expr: expr -> result

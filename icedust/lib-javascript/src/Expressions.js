@@ -408,8 +408,7 @@ function asString(is) {
 // literals
 
 function parseDatetime(s) {
-	var parsed = Date.parse(s);
-	if(isNaN(parsed))
-		return null;
-	return new Date(parsed);
+	if(s === null || s.trim().length === 0) return null;
+	var t = s.match(/(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/);
+	return new Date(+t[3], (+t[2]) - 1, +t[1], +t[4], +t[5]);
 }

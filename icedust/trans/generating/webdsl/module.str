@@ -187,6 +187,7 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
+      debug(!"entityname-to-webdsl-defs: ");
       x_manageEntity := <name-manage>x_entityName;
       x_createEntity := <name-create>x_entityName;
       x_editEntity   := <name-edit>x_entityName;
@@ -209,7 +210,21 @@ rules //crud
       elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames-normal-default;
       elem_deriveRowsInputEdit := <map(attributename-to-webdsl-inputedit)>attributenames;
       elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
-      x_testy := <concat> [<take(|<dec>numberOfAttributesNormalDefault);map(attributename-to-webdsl-assigncreate)>attributenames-normal-default,[<last;attributename-to-webdsl-assigncreatelast>attributenames-normal-default]];
+      
+      if <?0> numberOfAttributesNormalDefault then
+        x_testy := []
+      else
+        x_testy := <concat> [
+          <
+            take(|<dec>numberOfAttributesNormalDefault);
+            map(attributename-to-webdsl-assigncreate)
+          > attributenames-normal-default,
+          [
+            <last;attributename-to-webdsl-assigncreatelast>attributenames-normal-default
+          ]
+        ]
+      end;
+      
       stat_assignEditEntity := <map(attributename-to-webdsl-assignedit)> attributenames-normal-default;
       elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), attributenames);
       elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames);
@@ -401,7 +416,7 @@ rules //crud rules
           data-name=x_strname
           data-type=x_strtype
           style="display:none">
-          output(temp.x_getname())
+          output(temp.x_getname().toString())
         </div>
       ]|
 
@@ -546,10 +561,6 @@ rules //crud rules
         ]|
       end
     end
-  
-  //attributetype-to-webdsl-inputtext(|x_name) : Boolean() -> result
-  //with
-  //  result := <get-multiplicity;booleantype-to-webdsl-inputtext> x_name  
   
   attributetype-to-webdsl-inputtext(|x_name) : type -> result
   with

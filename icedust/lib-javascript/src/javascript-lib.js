@@ -140,11 +140,14 @@ var parsePartialVar = function(val, type) {
 	if(type === 'String') return val || '';
 	if(type === 'String?') return !val || val.trim('').length === 0? null: val;
 	if(type === 'Int') return Math.floor(+val);
-	if(type === 'Int?') return val === null || val === 'null'? null: Math.floor(+val);
+	if(type === 'Int?') return val === '' || val === null || val === 'null'? null: Math.floor(+val);
 	if(type === 'Float') return +val;
-	if(type === 'Float?') return val === null || val === 'null'? null: +val;
+	if(type === 'Float?') return val === '' || val === null || val === 'null'? null: +val;
 	if(type === 'Boolean') return val === 'true';
-	if(type === 'Boolean?') return val === null || val === 'null'? null: val === 'true';
+	if(type === 'Boolean?') return val === '' || val === null || val === 'null'? null: val === 'true';
+	if(type === 'Datetime') return parseDate(val);
+	if(type === 'Datetime?') return val === '' || val === null || val === 'null'? null: parseDate(val);
+	return null
 };
 
 window.addEventListener('load', function() {
