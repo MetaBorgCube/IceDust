@@ -44,6 +44,12 @@ rules
 
   expr-is-relationref: Ref(entityName) -> NoRelation(Ref(entityName)) where not(<is-relationname> entityName)
 
+  expr-to-partial-expr:  w @ Boolean() -> w
+  expr-to-partial-expr:  w @ Int() -> w
+  expr-to-partial-expr:  w @ Float() -> w
+  expr-to-partial-expr:  w @ String() -> w
+  expr-to-partial-expr:  w @ Datetime() -> w
+
   expr-to-partial-expr = expr-is-relationref
   expr-to-partial-expr: expr -> result
   where
