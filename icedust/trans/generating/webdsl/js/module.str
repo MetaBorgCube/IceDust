@@ -56,47 +56,10 @@ rules // module
 	    });
 	  ]|
 
-  expr-to-js-aggregation = ?Count(_)
-  expr-to-js-aggregation = ?Max(_)                 
-  expr-to-js-aggregation = ?Min(_)                 
-  expr-to-js-aggregation = ?Avg(_)                 
-  expr-to-js-aggregation = ?Sum(_)                 
-  expr-to-js-aggregation = ?Conj(_)                
-  expr-to-js-aggregation = ?Disj(_)                
-  expr-to-js-aggregation = ?Concat(_)           
-  
-  expr-to-js: expr -> js
-    where expr-to-js-aggregation
-    with
-      arg* := <get-arguments>expr;
-      exp_args* := <map(expr-to-js)>arg*;
-      relations := <collect-all(is-relation)> exp_args*;
-      if <?[]> relations then
-        exp_call := <lib-method-name>expr;
-        js := js-ex |[
-          exp_call(exp_args*)
-        ]|
-      else
-        exp_relationName := String("random_name");
-        js := js-ex |[ getPartialVar(exp_relationName) ]|  
-      end
-
-  expr-to-js: Ref(relationName) -> Relation(js)
-    where <is-relationname> relationName
-    with
-      exp_relationName := <name-to-jsstring> relationName;
-      js := js-ex |[ getPartialVar(exp_relationName) ]|
-
-  expr-to-js: MemberAccess(exp1, attributeName) -> Relation(js) 
-    with
-      exp_memberName := String("randon_name");
-      js := js-ex |[ getPartialVar(exp_memberName) ]|
-      
   expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
     with
       entityName := <attributename-get-entityname> attributeName;
-      exp_attributeName :=
-        <name-to-jsstring-with-prefix(|entityName)> attributeName
+      exp_attributeName := <name-to-jsstring-with-prefix(|entityName)> attributeName
     
   expr-to-js: NoRelation(x) -> <expr-to-js> x
   
@@ -118,8 +81,7 @@ rules // module
 
   expr-to-js: expr -> js
       where
-        lib-call;
-        not(expr-to-js-aggregation)
+        lib-call
       with
         arg*            := <get-arguments>expr;
         exp_args*       := <map(expr-to-js)>arg*;
