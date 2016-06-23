@@ -32,6 +32,8 @@ imports // functions
 rules // module
 
   name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
+  
+  name-to-jsstring-with-prefix(|prefix): name -> String(<concat-strings> ["\"", prefix, "_", name, "\""])
 
   is-relation = ?Relation(_)
 
@@ -43,7 +45,8 @@ rules // module
     
   attributeName-default-derivation-to-js: attributeName -> derivation-js
   	with
-  	  exp_attributeNamestr := <name-to-jsstring> attributeName;
+  	  exp_attributeNamestr :=
+  	    <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
   	  partial-expr := <partial-expr-from-attribute> attributeName;
   	  exp_derivation := <expr-to-js> partial-expr;
       stmt_return := js-stmt |[ return exp_derivation; ]|;
