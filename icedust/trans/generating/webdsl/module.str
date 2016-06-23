@@ -572,11 +572,6 @@ rules //crud rules
     else
       result := elem |[ input(x_name) ]|
     end
-      
-  extract-flow : DataflowPath(x, Ref(y)) -> y
-  extract-flow : DataflowPath(x, y) -> ""
-  
-  add-space : s -> <conc-strings> (s, " ")
   
   name-to-type-string : x_name -> result
   with
@@ -622,6 +617,12 @@ rules //crud rules
         end
       end
     end
+    
+  extract-flow : DataflowPath(x, Ref(y)) ->
+    $[[<attributename-get-entityname> y]_[y]]
+  extract-flow : DataflowPath(x, y) -> ""
+  
+  add-space : s -> <conc-strings> (s, " ")
   
   attributename-to-webdsl-inputedit : x_name -> result
   with
@@ -631,8 +632,8 @@ rules //crud rules
     x_typestr := <name-to-type-string; double-quote> x_name;
     x_input := <name-to-webdsl-input> x_name;
     flows := <name-get-flowsto-paths> x_name;
-    flowstr := <map(extract-flow)> flows;
-    x_flows := <map(add-space); concat-strings; double-quote> flowstr;
+    flows-extracted := <map(extract-flow)> flows;
+    x_flows := <map(add-space); concat-strings; double-quote> flows-extracted;
     if <attributename-is-derivation>x_name then
       x_output := <attributename-to-webdsl-output> x_name;
       result := elem* |[
