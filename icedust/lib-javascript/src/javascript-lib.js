@@ -134,16 +134,34 @@ var defType = function(name, check, parse) {
 	if(parse) types[name].prototype.parse = parse;
 };
 
+var partialVars = {};
+
+var parsePartialVar = function(val, type) {
+	if(type === 'String') return val || '';
+	if(type === 'String?') return !val || val.trim('').length === 0? null: val;
+	if(type === 'Int') return Math.floor(+val);
+	if(type === 'Int?') return val === null || val === 'null'? null: Math.floor(+val);
+	if(type === 'Float') return +val;
+	if(type === 'Float?') return val === null || val === 'null'? null: +val;
+	if(type === 'Boolean') return val === 'true';
+	if(type === 'Boolean?') return val === null || val === 'null'? null: val === 'true';
+};
+
 window.addEventListener('load', function() {
 	var els = document.querySelectorAll('[data-name]');
 	for(var i = 0, l = els.length; i < l; i++) {
 		var el = els[i];
-		var type = el.getAttribute('data-type');
-		var construct = types[type];
-		if(!construct)
-			console.error('Invalid type: ' + type);
-		else
-			elements[el.getAttribute('data-name')] = new construct(el);
+		if(el.getAttribute('data-partial-var') === 'true') {
+			partialsVars[el.getAttribute('data-name')] =
+				parsePartialVar(el.innerHTML, el.getAttribute('data-type'));
+		} else {
+			var type = el.getAttribute('data-type');
+			var construct = types[type];
+			if(!construct)
+				console.error('Invalid type: ' + type);
+			else
+				elements[el.getAttribute('data-name')] = new construct(el);
+		}
 	}
 	for(var k in elements) elements[k].refresh();
 });
@@ -193,6 +211,7 @@ defType('Datetime?', null, parseDate);
 
 // api
 var get = function(n) {return elements[n]? elements[n].get(): null};
+var getPartialVar = function(n) {return typeof partialVars[n] !== 'undefined'? partialVars[n]: null};
 var setDerived = function(n, f) {
 	window.addEventListener('load', function() {
 		if(elements[n]) elements[n].setDerived(f);

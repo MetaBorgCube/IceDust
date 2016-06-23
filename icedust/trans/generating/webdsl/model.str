@@ -26,7 +26,7 @@ imports // functions
 
 rules // entities
 
-  model-entityname-to-webdsl-def-with(err): x_entityName -> result
+  model-entityname-to-webdsl-def(err): x_entityName -> result
     where
       <is-entityname> x_entityName
     with

@@ -19,6 +19,7 @@ imports // functions
   api/module-names-api
   lib/lists-tuples
   lib/string
+  generating/webdsl/partial-expressions
 
 rules // module
 
@@ -218,7 +219,10 @@ rules //crud
       elem_relationsOutputView := <map(relationname-to-output)> relations;
       stat_createDefaultWrap* :=
         <filter(where(_get-type; ?String()); attributename-is-default);
-         map(create-wrap-default)> attributenames
+         map(create-wrap-default)> attributenames;
+      attributenames-default-derivation := <entityname-get-attributenames-default-derivation> x_entityName;
+      partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
+      elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
     with
       if entityname-is-calconread then
         result := def* |[
@@ -281,6 +285,7 @@ rules //crud
               header{"Edit"}
               elem_deriveRowsVarEdit
               form {
+                elem_hiddenvars*
                 elem_deriveRowsInputEdit
                 <br/>
                 submit action {
@@ -384,15 +389,20 @@ rules //crud
 
 rules //crud rules
   
-  var-to-hidden-div: name -> result
-  with
-     x_strname := <double-quote> name;
-     x_getname := <name-get> name;
-     result := elem* |[
-       <div data-name=x_strname style="display:hidden">
-         output(x_getname)
-       </div>
-     ]|
+  var-to-hidden-div: Partial(name, expr) -> result
+    with
+      type := <name-to-type-string> expr;
+      x_strname := <double-quote> name;
+      x_strtype := <double-quote> type;
+      x_getname := <name-get> name;
+      result := elem |[
+        <div
+          data-partial-var="true"
+          data-name=x_strname style="display:hidden"
+          data-type=x_strtype>
+          output(temp.x_getname())
+        </div>
+      ]|
 
   create-wrap-default : x_name -> result
   with
@@ -562,7 +572,7 @@ rules //crud rules
     end
       
   extract-flow : DataflowPath(x, Ref(y)) -> y
-  extract-flow : DataflowPath(x, y) -> "error-out-of-entity-path"
+  extract-flow : DataflowPath(x, y) -> ""
   
   add-space : s -> <conc-strings> (s, " ")
   
