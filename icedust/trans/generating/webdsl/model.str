@@ -66,12 +66,13 @@ rules // entities
       
 rules
 
-  var-to-webdsl-function(err): (name, expr) -> result
+  var-to-webdsl-function(err): Partial(name, expr) -> result
     with
       x_getVar := <name-get> name;
+      srt_type := <_get-type; type-to-webdsl-srt(err)> expr;
       e_calculate := <expr-to-webdsl-expr(err)> expr;
-      result := ebd* |[
-        function x_getVar() {
+      result := ebd |[
+        function x_getVar() : srt_type {
           return e_calculate;
         }
       ]|
@@ -106,11 +107,14 @@ rules
       e_entityName                := String(x_entityName)
     with
       if attributename-is-default-derivation then
-        e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName;
-        e_partial := <attributename-get-expr;expr-to-partial-expr; partial-expr-add-names(|<concat-strings>[x_entityName, "_", x_attributeName, "_"])> x_attributeName;
+        e_partial := <
+          attributename-get-expr;
+          expr-to-partial-expr;
+          partial-expr-add-names(|<concat-strings>[x_entityName, "_", x_attributeName, "_"])
+        > x_attributeName;
         vars := <collect-all(?Partial(_,_))> e_partial;
-        <debug> e_partial;
-        <debug> vars
+        vars-fns := <map(var-to-webdsl-function(err))> vars;
+        e_calculate := <expr-to-webdsl-expr(err)> e_partial
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
