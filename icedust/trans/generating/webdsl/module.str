@@ -626,6 +626,8 @@ rules //crud rules
   attributename-to-webdsl-inputedit : x_name -> result
   with
     x_namestr := String(x_name);
+    entityName := <attributename-get-entityname> x_name;
+    x_derivedname := $["[entityName]_[x_name]"];
     x_typestr := <name-to-type-string; double-quote> x_name;
     x_input := <name-to-webdsl-input> x_name;
     flows := <name-get-flowsto-paths> x_name;
@@ -640,7 +642,7 @@ rules //crud rules
           </div>
           <div class="ice-attr-val ice-attr-output">
             <div
-              data-name = x_namestr
+              data-name = x_derivedname
               data-type = x_typestr
               data-updates = x_flows>
               <div class="output">
@@ -660,7 +662,7 @@ rules //crud rules
             </div>
             <div class="ice-attr-val ice-attr-input-output">
               <div
-                data-name = x_namestr
+                data-name = x_derivedname
                 data-type = x_typestr
                 data-updates = x_flows
                 data-default = "true">
@@ -679,7 +681,7 @@ rules //crud rules
             </div>
             <div class="ice-attr-val ice-attr-input">
               <div
-                data-name = x_namestr
+                data-name = x_derivedname
                 data-type = x_typestr
                 data-updates = x_flows>
                 "" x_input
