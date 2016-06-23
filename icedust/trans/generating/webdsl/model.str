@@ -26,10 +26,7 @@ imports // functions
 
 rules // entities
 
-  model-entityname-to-webdsl-def(err): x_entityName ->
-    <model-entityname-to-webdsl-def-with-vars(err)> ([], x_entityName)
-
-  model-entityname-to-webdsl-def-with-vars(err): (vars, x_entityName) -> result
+  model-entityname-to-webdsl-def-with(err): x_entityName -> result
     where
       <is-entityname> x_entityName
     with
@@ -37,8 +34,7 @@ rules // entities
       ebd_relations*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_roles*      := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
-      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName;
-      ebd_vars*       := <map(var-to-webdsl-function(err))>vars
+      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
     with
       if entityname-is-noui then
         result := def |[
@@ -48,7 +44,6 @@ rules // entities
             ebd_roles*
             ebd_inverses*
             ebd_shortcuts*
-            ebd_vars*
           }
         ]|
       else
@@ -59,7 +54,6 @@ rules // entities
             ebd_roles*
             ebd_inverses*
             ebd_shortcuts*
-            ebd_vars*
           }
         ]|
       end
@@ -113,8 +107,10 @@ rules
           partial-expr-add-names(|<concat-strings>[x_entityName, "_", x_attributeName, "_"])
         > x_attributeName;
         vars := <collect-all(?Partial(_,_))> e_partial;
-        vars-fns := <map(var-to-webdsl-function(err))> vars;
+        ebd_varsfns := <map(var-to-webdsl-function(err))> vars;
         e_calculate := <expr-to-webdsl-expr(err)> e_partial
+      else
+        ebd_varsfns := []
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
@@ -324,6 +320,7 @@ rules
         ebd_dirtyFlagFlowsto*
         ebd_attributeCacheAndCacheFunctions*
         ebd_flagAttributeDirtyAsync*
+        ebd_varsfns
       ]|
 
 rules
