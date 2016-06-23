@@ -430,7 +430,8 @@ rules //crud rules
     
   relationname-to-editlink : x_name -> result
   with
-    x_setname := $[set_[x_name]];
+    entity := <attributename-get-entityname> x_name;
+    x_setname := $[set_[entity]_[x_name]];
     x_s := $["[x_name]"];
     x_getname := <name-get> x_name;
     result := elem* |[
@@ -460,7 +461,7 @@ rules //crud rules
   relationname-to-setter(|x_entityName) : x_name -> result
   with
     mult := <get-multiplicity> x_name;
-    x_setname := $[set_[x_name]];
+    x_setname := $[set_[x_entityName]_[x_name]];
     x_stringifiedname := $["[x_name]"];
     x_getname := <name-get> x_name;
     x_editEntity := <name-edit> x_entityName;
