@@ -36,14 +36,14 @@ rules // lib expression calls
       arg*            := <get-arguments>e;
       e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
-      if not(webdsl-lib-call-cast) then
-        result := exp |[
-          Expressions.x_methodpostfix(e1*)
-        ]|
-      else
+      if <webdsl-lib-call-cast> e then
         srt1          := <name-to-webdsl-srt(err)>e;
         result := exp |[
           Expressions.x_methodpostfix(e1*) as srt1
+        ]|
+      else
+        result := exp |[
+          Expressions.x_methodpostfix(e1*)
         ]|
       end
   
