@@ -86,14 +86,16 @@ rules
     with
       (expr', _) := <topdown-fold-keep-anno(try(partial-expr-add-name(|prefix)))> (expr, [])
       
-      
   partial-vars-from-attribute: attribute -> vars
     with
+      vars := <partial-expr-from-attribute; collect-all(?Partial(_,_))> attribute
+      
+  partial-expr-from-attribute: attribute -> expr
+    with
       entity := <attributename-get-entityname> attribute;
-      e_partial := <
+      expr := <
         attributename-get-expr;
         expr-to-partial-expr;
         partial-expr-add-names(|<concat-strings>[entity, "_", attribute, "_"])
-      > attribute;
-      vars := <collect-all(?Partial(_,_))> e_partial
+      > attribute
    

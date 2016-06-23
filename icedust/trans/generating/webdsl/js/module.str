@@ -2,36 +2,37 @@ module generating/webdsl/js/module
 
 imports // constructors
 
-	webdsl/constructors
-	webdsl/WebDSL
-	
-	desugaring/constructors
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
 
 imports // functions
   lib/js/signatures/spoofaxJS-sig
   generating/_ir/model 
   generating/webdsl/model
-	generating/webdsl/data
+  generating/webdsl/data
   api/model-names-api
-	api/module-api
+  api/module-api
   api/module-names-api
   lib/lists-tuples
   lib/string
   analysis2/path
-	api/_runtime
-	api/model-api
-	api/model-names-api
+  api/_runtime
+  api/model-api
+  api/model-names-api
   generating/_ir/model
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
-	lib/search
+  lib/search
   names/naming/names
-	naming/_notNaBL
+  naming/_notNaBL
+  generating/webdsl/partial-expressions
 	
 rules // module
 
   name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
+
   is-relation = ?Relation(_)
 
   moduleName-to-derivation-js: moduleName -> derivation-js
@@ -43,12 +44,14 @@ rules // module
   attributeName-default-derivation-to-js: attributeName -> derivation-js
   	with
   	  exp_attributeNamestr := <name-to-jsstring> attributeName;
-  	  exp_derivation := <attributename-get-expr; expr-to-js> attributeName;
+  	  partial-expr := <partial-expr-from-attribute> attributeName;
+  	  exp_derivation := <expr-to-js> partial-expr;
       stmt_return := js-stmt |[ return exp_derivation; ]|;
 	  derivation-js := js-stmt |[
-	  setDerived(exp_attributeNamestr, function() {
-		stmt_return
-	  });]|
+	    setDerived(exp_attributeNamestr, function() {
+		  stmt_return
+	    });
+	  ]|
 
   expr-to-js-aggregation = ?Count(_)
   expr-to-js-aggregation = ?Max(_)                 
@@ -72,22 +75,27 @@ rules // module
         ]|
       else
         exp_relationName := String("random_name");
-        js := js-ex |[ getPartialAggregation(exp_relationName) ]|  
+        js := js-ex |[ getPartialVar(exp_relationName) ]|  
       end
 
   expr-to-js: Ref(relationName) -> Relation(js)
     where <is-relationname> relationName
     with
       exp_relationName := <name-to-jsstring> relationName;
-      js := js-ex |[ getPartialRef(exp_relationName) ]|
+      js := js-ex |[ getPartialVar(exp_relationName) ]|
 
   expr-to-js: MemberAccess(exp1, attributeName) -> Relation(js) 
     with
       exp_memberName := String("randon_name");
-      js := js-ex |[ getPartialMember(exp_memberName) ]|
+      js := js-ex |[ getPartialVar(exp_memberName) ]|
       
   expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
     with exp_attributeName := <name-to-jsstring> attributeName
+    
+  expr-to-js: NoRelation(x) -> <expr-to-js> x
+  
+  expr-to-js: Partial(name, _) -> js-ex |[ getPartialVar(exp_name) ]|
+    with exp_name := <name-to-jsstring> name
 
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1
   expr-to-js: Float(f) -> FloatLiteral(f)

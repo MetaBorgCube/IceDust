@@ -398,8 +398,9 @@ rules //crud rules
       result := elem |[
         <div
           data-partial-var="true"
-          data-name=x_strname style="display:hidden"
-          data-type=x_strtype>
+          data-name=x_strname
+          data-type=x_strtype
+          style="display:none">
           output(temp.x_getname())
         </div>
       ]|

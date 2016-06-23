@@ -152,7 +152,7 @@ window.addEventListener('load', function() {
 	for(var i = 0, l = els.length; i < l; i++) {
 		var el = els[i];
 		if(el.getAttribute('data-partial-var') === 'true') {
-			partialsVars[el.getAttribute('data-name')] =
+			partialVars[el.getAttribute('data-name')] =
 				parsePartialVar(el.innerHTML, el.getAttribute('data-type'));
 		} else {
 			var type = el.getAttribute('data-type');
