@@ -27,7 +27,9 @@ signature
 
 rules
   expr-is-partial = ?Partial(_,_)
+  
   expr-is-norelation = ?NoRelation(_)
+  
   expr-is-aggregation = ?Count(_)
   expr-is-aggregation = ?Max(_)                 
   expr-is-aggregation = ?Min(_)                 
@@ -39,33 +41,37 @@ rules
   
   expr-remove-partial: Partial(s,e) -> e
   expr-remove-partial: e -> e where not(expr-is-partial)
+
   expr-is-relationref: Ref(entityName) -> NoRelation(Ref(entityName)) where not(<is-relationname> entityName)
+
   expr-to-partial-expr = expr-is-relationref
   expr-to-partial-expr: expr -> result
   where
     not(expr-is-relationref);
     not(expr-to-partial-expr-type)
   with
+    annotations := <get-annotations> expr;
     arg* := <get-arguments>expr;
     exp_args* := <map(expr-to-partial-expr)>arg*;
     constr := <get-constructor>expr;
     relations := <collect-all(expr-is-norelation)> exp_args*;
     if <?[]> relations then
-      newterm := <mkterm>(constr, <map(expr-remove-partial)> exp_args*);
+      newterm_plain := <mkterm>(constr, <map(expr-remove-partial)> exp_args*);
+      newterm := <set-annotations> (newterm_plain, annotations);
       result := Partial("String",newterm)
     else
-      result := <mkterm>(constr, exp_args*)
+      result_plain := <mkterm>(constr, exp_args*);
+      result := <set-annotations> (result_plain, annotations)
     end
-
-
     
-  expr-to-partial-expr-type: LitString(str1)                 -> Partial("String", LitString(str1))
-  expr-to-partial-expr-type: Int(i_1)                        -> Partial("String", Int(i_1))
-  expr-to-partial-expr-type: Float(f_1)                      -> Partial("String", Float(f_1))
-  expr-to-partial-expr-type: True()                          -> Partial("String", True())
-  expr-to-partial-expr-type: False()                         -> Partial("String", False())
-  expr-to-partial-expr-type: Datetime(str1)                  -> Partial("String", Datetime(str1))
-  expr-to-partial-expr-type: NoValue()                       -> Partial("String", NoValue())
+  expr-to-partial-expr-type: w @ LitString(str1)                 -> Partial("String", w)
+  expr-to-partial-expr-type: w @ Int(i_1)                        -> Partial("String", w)
+  expr-to-partial-expr-type: w @ Float(f_1)                      -> Partial("String", w)
+  expr-to-partial-expr-type: w @ True()                          -> Partial("String", w)
+  expr-to-partial-expr-type: w @ False()                         -> Partial("String", w)
+  expr-to-partial-expr-type: w @ Datetime(str1)                  -> Partial("String", w)
+  expr-to-partial-expr-type: w @ NoValue()                       -> Partial("String", w)
+  
   expr-to-partial-expr = expr-to-partial-expr-type
 
   partial-expr-add-name(|prefix): (Partial(s,e), history) -> (Partial(s',e), history')
