@@ -93,7 +93,10 @@ rules // module
       js := js-ex |[ getPartialVar(exp_memberName) ]|
       
   expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
-    with exp_attributeName := <name-to-jsstring> attributeName
+    with
+      entityName := <attributename-get-entityname> attributeName;
+      exp_attributeName :=
+        <name-to-jsstring-with-prefix(|entityName)> attributeName
     
   expr-to-js: NoRelation(x) -> <expr-to-js> x
   
