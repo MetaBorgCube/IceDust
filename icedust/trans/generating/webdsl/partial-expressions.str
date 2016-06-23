@@ -74,12 +74,15 @@ rules
   
   expr-to-partial-expr = expr-to-partial-expr-type
 
-  partial-expr-add-name(|prefix): (Partial(s,e), history) -> (Partial(s',e), history')
-  with (s', history') := <new-name>(prefix, history)
+  partial-expr-add-name(|prefix): (Partial(s,e), history) -> result
+    with
+      (s', history') := <new-name>(prefix, history);
+      result := (Partial(s',e), history')
   
   partial-expr-add-name(|prefix): (expr, history) -> (expr, history)
-  where not(<expr-is-partial> expr)
+    where not(<expr-is-partial> expr)
 
   partial-expr-add-names(|prefix): expr -> expr'
-  with (expr', _) := <topdown-fold(try(partial-expr-add-name(|prefix)))> (expr, [])
+    with
+      (expr', _) := <topdown-fold-keep-anno(try(partial-expr-add-name(|prefix)))> (expr, [])
    
