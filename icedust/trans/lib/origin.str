@@ -47,4 +47,16 @@ rules // set the length of an origin
       <_origin-location-offset-set(|(a, b, c, d, e'))>x;
       random := <next-random>;
       x' := <_add-annotation(|random);_remove-annotations(?random)>x //Dirty hack to propagate the origin-location-offset to origin-offset
-			
+
+rules // sorting (keeping annotations) 
+
+  origin-sort-anno      = qsort(origin-lt)
+
+rules
+
+  origin-lt: (a,b) -> result
+    with
+      (origin-a, _) := <origin-offset>a;
+      (origin-b, _) := <origin-offset>b
+    where
+      result        := <lt>(origin-a, origin-b) 
