@@ -30,7 +30,7 @@ rules // entities
     where
       <is-entityname> x_entityName
     with
-      ebd_attributes* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
+      ebd_attributes* := <entityname-get-attributenames2;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
       ebd_relations*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_roles*      := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;

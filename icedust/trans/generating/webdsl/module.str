@@ -193,10 +193,10 @@ rules //crud
       x_editEntity   := <name-edit>x_entityName;
       x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
-      attributenames := <entityname-get-attributenames>x_entityName;
+      attributenames := <entityname-get-attributenames2>x_entityName;
       relations := <entityname-get-relationnames> x_entityName;
       relationsOnes := <filter(where(get-multiplicity; ?One()))> relations;
-      attributenames-normal-default := <entityname-get-attributenames-normal-default>x_entityName;
+      attributenames-normal-default := <entityname-get-attributenames2-normal-default>x_entityName;
       numberOfAttributes := <length>attributenames;
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
       entity-fields := <map(attributename-to-webdsl)>attributenames;
@@ -235,7 +235,7 @@ rules //crud
       stat_createDefaultWrap* :=
         <filter(where(_get-type; ?String()); attributename-is-default);
          map(create-wrap-default)> attributenames;
-      attributenames-default-derivation := <entityname-get-attributenames-default-derivation> x_entityName;
+      attributenames-default-derivation := <entityname-get-attributenames2-default-derivation> x_entityName;
       partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
     with
