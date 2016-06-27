@@ -368,7 +368,7 @@ rules
     with
       if name-is-left then
         if where(get-multiplicity; ?One()) then
-          x_roleNameStr := $["[x_roleName]"];
+          x_roleNameStr := <double-quote> x_roleName;
           ebd_roleField* := ebd* |[
             x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null"), inverse=x_inverseEntityName.x_inverseName )
           ]|
@@ -391,7 +391,7 @@ rules
         end
       else
         if where(get-multiplicity; ?One()) then
-          x_roleNameStr := $["[x_roleName]"];
+          x_roleNameStr := <double-quote> x_roleName;
           ebd_roleField* := ebd* |[
             x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null") )
           ]|

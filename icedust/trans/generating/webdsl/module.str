@@ -438,7 +438,7 @@ rules //crud rules
   with
     entity := <attributename-get-entityname> x_name;
     x_setname := $[set_[entity]_[x_name]];
-    x_s := $["[x_name]"];
+    x_s := <double-quote> x_name;
     x_getname := <name-get> x_name;
     result := elem* |[
       x_s ": "
@@ -449,7 +449,7 @@ rules //crud rules
   relationname-to-output : x_name -> result
   with
     mult := <get-multiplicity> x_name;
-    x_s := $["[x_name]"];
+    x_s := <double-quote> x_name;
     x_getname := <name-get> x_name;
     if <?ZeroOrMore()> mult then // *
       result := elem* |[
@@ -468,7 +468,7 @@ rules //crud rules
   with
     mult := <get-multiplicity> x_name;
     x_setname := $[set_[x_entityName]_[x_name]];
-    x_stringifiedname := $["[x_name]"];
+    x_stringifiedname := <double-quote> x_name;
     x_getname := <name-get> x_name;
     x_editEntity := <name-edit> x_entityName;
     x_inverseName := <name-get-inversename> x_name;
