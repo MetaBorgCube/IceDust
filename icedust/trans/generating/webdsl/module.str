@@ -212,17 +212,10 @@ rules //crud
       elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
       
       if <?0> numberOfAttributesNormalDefault then
-        x_testy := []
+        x_createEntityBlock := ObjectCreation(x_entityName, [])
       else
-        x_testy := <concat> [
-          <
-            take(|<dec>numberOfAttributesNormalDefault);
-            map(attributename-to-webdsl-assigncreate)
-          > attributenames-normal-default,
-          [
-            <last;attributename-to-webdsl-assigncreatelast>attributenames-normal-default
-          ]
-        ]
+        x_createEntityBlock :=
+          ObjectCreation(x_entityName, <map(attributename-to-creation-property)> attributenames-normal-default)
       end;
       
       stat_assignEditEntity := <map(attributename-to-webdsl-assignedit)> attributenames-normal-default;
@@ -264,21 +257,17 @@ rules //crud
             define body() {
               header{"Create"} 
               elem_deriveRowsVarCreate
-        form {
-          elem_deriveRowsInputCreate
-          action("Save", save())
-          // print form fields
-              
-        }
-        action save() {
-          stat_createDefaultWrap*
-            var temp := x_entityName {
-            x_testy
-            };
-          temp.save();
-        }
-        navigate x_manageEntity() [] { "Back" }
-      }
+              form {
+                elem_deriveRowsInputCreate
+                action("Save", save())
+              }
+              action save() {
+                stat_createDefaultWrap*
+                var temp := x_createEntityBlock;
+                temp.save();
+              }
+              navigate x_manageEntity() [] { "Back" }
+            }
           }
           page x_viewEntity(temp: x_entityName){
             main()
@@ -706,15 +695,9 @@ rules //crud rules
       end
     end
   
-  attributename-to-webdsl-assigncreate: x_name -> result
-  with
-    result := $[[x_name] := [x_name],] 
+  attributename-to-creation-property : x_name -> ObjectPropertyAssignment(x_name, Var(x_name))
 
-  attributename-to-webdsl-assigncreatelast: x_name -> result
-  with
-    result := $[[x_name] := [x_name]] 
-
-  attributename-to-webdsl-assignedit: x_name -> result
+  attributename-to-webdsl-assignedit : x_name -> result
   with
     if <attributename-is-default>x_name then
       if <_get-type;String()>x_name then
