@@ -237,21 +237,21 @@ rules //crud
           page x_manageEntity(){
             main()
             define body() {
-          navigate x_createEntity() [] { "Create" }
-          <br/>
-          for(entity: x_entityName) {
-            output(entity.name)
-            navigate x_viewEntity(entity) [] { "View" } " "
-            navigate x_editEntity(entity) [] { "Edit" } " "
-            action("Remove", x_removeEntity(entity))
-            <br/>
+              navigate x_createEntity() [] { "Create" }
+              <br/>
+              for(entity: x_entityName) {
+                output(entity.name)
+                navigate x_viewEntity(entity) [] { "View" } " "
+                navigate x_editEntity(entity) [] { "Edit" } " "
+                action("Remove", x_removeEntity(entity))
+                <br/>
+              }
+              action x_removeEntity(entity: x_entityName) {
+                entity.delete();
+              }
+            }
           }
-        
-          action x_removeEntity(entity: x_entityName) {
-            entity.delete();
-          }
-        }
-          }
+          
           page x_createEntity(){
             main()
             define body() {
@@ -269,6 +269,7 @@ rules //crud
               navigate x_manageEntity() [] { "Back" }
             }
           }
+          
           page x_viewEntity(temp: x_entityName){
             main()
             define body() {
@@ -279,6 +280,7 @@ rules //crud
               navigate x_manageEntity() [] { "Back" }
             }
           }
+          
           page x_editEntity(temp: x_entityName){
             includeCSS("edit-page.css")
             includeJS("Expressions.js")
