@@ -408,11 +408,18 @@ function asString(is) {
 // literals
 function parseDatetime(s) {
 	if(s === null || s.trim().length === 0) return null;
-	var t = s.match(/^(\d+)\/(\d+)\/(\d+) (\d+):(\d+)$/);
+	var t = s.match(/^(\d\d)[\/\-](\d\d)[\/\-](\d\d\d\d) (\d+):(\d+)$/);
 	if(t)
 		return new Date(+t[3], (+t[2]) - 1, +t[1], +t[4], +t[5]);
-	t = s.match(/^(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)\.(\d+)$/);
+	t = s.match(/^(\d\d)[\/\-](\d\d)[\/\-](\d\d\d\d) (\d+):(\d+):(\d+)\.(\d+)$/);
 	if(t)
 		return new Date(+t[3], (+t[2]) - 1, +t[1], +t[4], +t[5], +t[6], +t[7]);
+	t = s.match(/^(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) (\d+):(\d+)$/);
+	if(t)
+		return new Date(+t[1], (+t[2]) - 1, +t[3], +t[4], +t[5]);
+	t = s.match(/^(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) (\d+):(\d+):(\d+)\.(\d+)$/);
+	if(t)
+		return new Date(+t[1], (+t[2]) - 1, +t[3], +t[4], +t[5], +t[6], +t[7]);
 	return null;
 }
+
