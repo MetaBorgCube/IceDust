@@ -155,7 +155,7 @@ rules // module
             application x_moduleName
           
             imports lib/icedust/newcrud-ui
-        imports lib/icedust/non-required-inputs
+            imports lib/icedust/non-required-inputs
             imports lib/icedust/Expressions
         
             sec_modelDataUi*
@@ -187,7 +187,6 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
-      debug(!"entityname-to-webdsl-defs: ");
       x_manageEntity := <name-manage>x_entityName;
       x_createEntity := <name-create>x_entityName;
       x_editEntity   := <name-edit>x_entityName;
@@ -228,7 +227,7 @@ rules //crud
       partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
     with
-      if entityname-is-calconread then
+      if entityname-is-newcrudui then
         result := def* |[
           page x_manageEntity(){
             main()
