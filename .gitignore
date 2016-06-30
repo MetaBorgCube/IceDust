@@ -44,6 +44,3 @@ lib-refactoring/*.generated.str
 syntax/*.sdf
 /include
 update/target
-relations-eclipse-plugin/target
-.metadata
-Servers
