@@ -227,7 +227,9 @@ rules //crud
       partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
     with
-      if entityname-is-newcrudui then
+      if entityname-is-calconread then
+        result := [DeriveCrud(x_entityName)]
+      else if entityname-is-newcrudui then
         result := def* |[
           page x_manageEntity(){
             main()
@@ -375,7 +377,7 @@ rules //crud
             }
           }
         ]|
-      end
+      end end
   
   attributename-to-webdsl: x_name -> DeriveDefault(x_name)
   
