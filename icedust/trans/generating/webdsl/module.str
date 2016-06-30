@@ -215,8 +215,6 @@ rules //crud
       end;
       
       stat_assignEditEntity := <map(attributename-to-webdsl-assignedit)> attributenames-normal-default;
-      elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), attributenames);
-      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  attributenames);
       def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
       elem_editRelations := <map(relationname-to-editlink)> relations;
       elem_relationsOutputView := <map(relationname-to-output)> relations;
@@ -227,9 +225,7 @@ rules //crud
       partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
     with
-      if entityname-is-calconread then
-        result := [DeriveCrud(x_entityName)]
-      else if entityname-is-newcrudui then
+      if entityname-is-newcrudui then
         result := def* |[
           page x_manageEntity(){
             main()
@@ -304,7 +300,18 @@ rules //crud
           
           def_relationsetters
         ]|
+      else if entityname-is-calconread then
+        result := [DeriveCrud(x_entityName)]
       else
+        form-fields :=
+          <concat(
+            entityname-get-attributenames-normal-default,
+            entityname-get-relationnames,
+            entityname-get-rolenames,
+            entityname-get-inversenames
+          );map(attributename-to-webdsl)>x_entityName;
+        elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
+        elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields);  
         result := def* |[
           define page x_createEntity(){
             //derive createPage from temp
