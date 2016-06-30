@@ -1,8 +1,0 @@
-.cache
-.servletapp
-.settings
-.webdsl-fragment-cache
-.webdsl-parsecache
-.saved-but-not-built
-WebContent
-.dependencies.webdsl
