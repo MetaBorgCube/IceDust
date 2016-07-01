@@ -88,11 +88,11 @@ types.Type.prototype.flow = function() {
 types.Type.prototype.refresh = function() {
 	if(this.derived) {
 		if(this.isDefault) {
-			var v = this.get();
+			var v = this.getRaw();
 			if(v === null || (typeof v === 'string' && v.trim().length === 0))
 				this.setDefault(this.derived());
 			else
-				this.setDefault(v);
+				this.setDefault(this.get());
 		} else {
 			this.set(this.derived());
 		}
@@ -233,4 +233,3 @@ var setDerived = function(n, f) {
 		for(var k in elements) elements[k].refresh();
 	});
 };
-
