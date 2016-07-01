@@ -223,7 +223,13 @@ rules //crud
          map(create-wrap-default)> attributenames;
       attributenames-default-derivation := <entityname-get-attributenames2-default-derivation> x_entityName;
       partial_vars := <fmap(partial-vars-from-attribute)> attributenames-default-derivation;
-      elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars
+      elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars;
+      
+      ctime := "0";//<time>;
+      x_cssEditPage := <double-quote> $[edit-page.css?[ctime]];
+      x_jsExpressions := <double-quote> $[Expressions.js?[ctime]];
+      x_jsLib := <double-quote> $[javascript-lib.js?[ctime]];
+      x_jsDerivations := <double-quote> $[derivations.js?[ctime]]
     with
       if entityname-is-newcrudui then
         result := def* |[
@@ -275,10 +281,10 @@ rules //crud
           }
           
           page x_editEntity(temp: x_entityName){
-            includeCSS("edit-page.css")
-            includeJS("Expressions.js")
-            includeJS("javascript-lib.js")
-            includeJS("derivations.js")
+            includeCSS(x_cssEditPage)
+            includeJS(x_jsExpressions)
+            includeJS(x_jsLib)
+            includeJS(x_jsDerivations)
             main()
             define body() {
               header{"Edit"}
