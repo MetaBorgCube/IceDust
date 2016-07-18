@@ -2,7 +2,7 @@ module generate-expressions-nested-if
 
 language IceDust
 
-setup Common [[
+fixture [[
   module ExpressionsNestedIf
   
   model
@@ -20,10 +20,11 @@ setup Common [[
   execute
   
     z.c
+    [[...]]
 ]]
 
-test Expressions Logic generate-java [[ ]] build generate-java-test
+//test Expressions Logic generate-java [[ ]] run generate-java-test
+//
+//test Expressions Logic compile-java [[ ]] run compile-java-test
 
-test Expressions Logic compile-java [[ ]] build compile-java-test
-
-test Expressions Math execute-java [[ ]] build execute-java-test to "true"
+test Expressions Math execute-java [[ ]] run execute-java-test to "true"

@@ -2,7 +2,7 @@ module generate-weblab-webdsl
 
 language IceDust
 
-setup Common [[
+fixture [[
 
 module weblabTest
 
@@ -186,14 +186,14 @@ data
 execute
 
   compiler.avgGrade
-  
+  [[...]]
 ]]
 
-test Weblab generate-webdsl-test [[ ]] build generate-webdsl-test
-
-test Weblab generate-webdsl-eager-test [[ ]] build generate-webdsl-eager-test
-
-test Weblab generate-eventual-eager-test [[ ]] build generate-webdsl-eventual-test
-
-test Weblab generate-eventual-eager-noui-test [[ ]] build generate-webdsl-eventual-test
+//test Weblab generate-webdsl-test [[ ]] run generate-webdsl-test
+//
+//test Weblab generate-webdsl-eager-test [[ ]] run generate-webdsl-eager-test
+//
+//test Weblab generate-eventual-eager-test [[ ]] run generate-webdsl-eventual-test
+//
+//test Weblab generate-eventual-eager-noui-test [[ ]] run generate-webdsl-eventual-test
 

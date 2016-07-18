@@ -2,81 +2,82 @@ module types-references-entities
 
 language IceDust
 
-setup Common [[
-	module test
+fixture [[
+  module test
+  [[...]]
 ]]
 
 
 test type of ref entity this [[
-	model
-	entity X{
-		i : Int = [[this]].i (default)
-	}
-	
-	data
-	x : X {
-		i=8
-	}
-]] run get-type to "X"{_}
-	 
+  model
+  entity X{
+    i : Int = [[this]].i (default)
+  }
+  
+  data
+  x : X {
+    i=8
+  }
+]] run get-type on #1 to "X"
+   
 test type of ref entity Identifier [[
-	model
-	entity X{
-		i : Int = [[x]].i (default)
-	}
-	
-	data
-	x : X {
-		i=6
-	}
-]] run get-type to "X"{_}
+  model
+  entity X{
+    i : Int = [[x]].i (default)
+  }
+  
+  data
+  x : X {
+    i=6
+  }
+]] run get-type on #1 to "X"
 
 
 test multiplicity of ref this [[
-	model
-	entity X{
-		i : Int = [[this]].i (default)
-	}
-	
-	data
-	x : X {
-		i=8
-	}
-]] run get-multiplicity to One
-	 
+  model
+  entity X{
+    i : Int = [[this]].i (default)
+  }
+  
+  data
+  x : X {
+    i=8
+  }
+]] run get-multiplicity on #1 to One()
+   
 test multiplicity of ref entity Identifier [[
-	model
-	entity X{
-		i : Int = [[x]].i (default)
-	}
-	
-	data
-	x : X {
-		i=5
-	}
-]] run get-multiplicity to One
+  model
+  entity X{
+    i : Int = [[x]].i (default)
+  }
+  
+  data
+  x : X {
+    i=5
+  }
+]] run get-multiplicity on #1 to One()
 
 
 test ordering of ref this [[
-	model
-	entity X{
-		i : Int = [[this]].i (default)
-	}
-	
-	data
-	x : X {
-		i=8
-	}
-]] run get-ordering to Ordered
-	 
+  model
+  entity X{
+    i : Int = [[this]].i (default)
+  }
+  
+  data
+  x : X {
+    i=8
+  }
+]] run get-ordering on #1 to Ordered()
+   
 test ordering of ref entity Identifier [[
-	model
-	entity X{
-		i : Int = [[x]].i (default)
-	}
-	
-	data
-	x : X {
-		i=5
-	}
-]] run get-ordering to Ordered
+  model
+  entity X{
+    i : Int = [[x]].i (default)
+  }
+  
+  data
+  x : X {
+    i=5
+  }
+]] run get-ordering on #1 to Ordered()

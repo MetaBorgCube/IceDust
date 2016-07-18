@@ -80,3 +80,8 @@ menus
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
+  menu: "SPT" (meta)
+    action: "generate-java-test" = generate-java-test (openeditor)
+    action: "execute-java-incr-test" = execute-java-incr-test
+    
+    

@@ -2,7 +2,7 @@ module types-references-this
 
 language IceDust
 
-test type error on this		[[
+test type error on this    [[
 module debug
 
 model
@@ -11,5 +11,5 @@ model
     b : Boolean
     d : Boolean = [[this]]
   }
-]] 1 error
+]] 1 error at #1
 
