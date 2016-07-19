@@ -1,0 +1,21 @@
+module lib/js/signatures/Statement-sig
+
+imports
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/MethodDecl-sig
+
+
+signature
+  constructors
+    expStmt          : Expression -> Statement
+    varDecl          : ID * Expression -> Statement
+    assignment       : ID * Expression -> Statement
+    for              : Statement * Expression * Expression * List(Statement) -> Statement
+    while            : Expression * List(Statement) -> Statement
+    return           : Expression -> Statement
+                     : MethodDecl -> Statement
+    ID-Plhdr         : ID
+    Expression-Plhdr : Expression
+    Statement-Plhdr  : Statement
+    MethodDecl-Plhdr : MethodDecl

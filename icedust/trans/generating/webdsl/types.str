@@ -20,6 +20,7 @@ rules // primitives
 	type-to-webdsl-srt(err): String()  -> webdsl |[ String ]|		//webdsl srt
 	type-to-webdsl-srt(err): Float()   -> webdsl |[ Float ]|		//webdsl srt
 	type-to-webdsl-srt(err): Datetime()-> webdsl |[ DateTime ]| //webdsl srt
+	type-to-webdsl-srt(err): NoValue()-> webdsl |[ Void ]|
 	type-to-webdsl-srt(err): name      -> name
 	  where is-string
 

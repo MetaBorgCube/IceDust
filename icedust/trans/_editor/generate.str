@@ -17,6 +17,7 @@ imports // functions
   generating/java/generate
   generating/webdsl/generate
   generating/webdsl/java/generate
+  generating/webdsl/js/generate
   lib/files
   lib/call-external
   prettyprinting/pp
@@ -40,6 +41,8 @@ rules // Builders
   generate-webdsl-test               = build(error-handler-tests |WebDSL(),CalcOnRead(),NoUI(),1)
   generate-webdsl-noui               = build(error-handler-editor|WebDSL(),CalcOnRead(),CrudUI(),1)
   generate-webdsl-noui-test          = build(error-handler-tests |WebDSL(),CalcOnRead(),CrudUI(),1)
+  generate-webdsl-newcrudui          = build(error-handler-editor|WebDSL(),CalcOnRead(),NewCrudUI(),1)
+  generate-webdsl-newcrudui-test     = build(error-handler-tests |WebDSL(),CalcOnRead(),NewCrudUI(),1)
   generate-webdsl-eager              = build(error-handler-editor|WebDSL(),CalcOnWrite(),NoUI(),1)
   generate-webdsl-eager-test         = build(error-handler-tests |WebDSL(),CalcOnWrite(),NoUI(),1)
   generate-webdsl-eager-noui         = build(error-handler-editor|WebDSL(),CalcOnWrite(),CrudUI(),1)
@@ -92,10 +95,16 @@ rules // Build in steps
             webdsl-library-paths(|fullPath);copy-dir;
             webdsl-java-library-paths(|fullPath);copy-dir;
             !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
-            if <modulename-is-eventuallyconsistent>moduleName then
+            if <modulename-is-newcrudui> moduleName then
+              webdsl-js-library-paths(|fullPath);copy-dir;
+              webdsl-css-library-paths(|fullPath);copy-dir;
+              jsString := <generate-webdsl-js-code> moduleName;
+              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
+            end;
+            if <modulename-is-eventuallyconsistent> moduleName then
               (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
               targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
-              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)
+              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
             end
         end;
         if <eq>(1, phase) then

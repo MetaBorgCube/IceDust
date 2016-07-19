@@ -42,6 +42,35 @@ rules // apply strategy on a tree top-down and carry over a history
 		with
 			(term', fold-value') := <map-strategy>(term, fold-value)
 			
+	// for lists
+	topdown-fold-keep-anno(map-strategy): (x@[], fold-base-value) -> (x, fold-base-value)
+
+	topdown-fold-keep-anno(map-strategy): ([input-head|input-rest], fold-value) -> ([input-head'|input-rest'], fold-value'')
+		with
+			(input-head', fold-value') := <topdown-fold-keep-anno(map-strategy)>(input-head, fold-value);
+			(input-rest', fold-value'') := <topdown-fold-keep-anno(map-strategy)>(input-rest, fold-value')
+
+	// for terms
+	topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term'''', fold-value'')
+		where
+			<explode-term>term
+		with
+		    annotations := <get-annotations> term;
+			(term', fold-value') := <map-strategy>(term, fold-value);
+			(cons, args) := <explode-term>term';
+			(args', fold-value'') := <topdown-fold-keep-anno(map-strategy)>(args, fold-value');
+			term'' := <mkterm>(cons, args');
+			term''' := <custom-origin(|term)>term'';
+			term'''' := <set-annotations> (term''', annotations)
+
+	// for not(list) not(term)
+	topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term', fold-value')
+		where
+			<not(is-list)>term;
+			<not(explode-term)>term
+		with
+			(term', fold-value') := <map-strategy>(term, fold-value)
+			
 rules // apply strategy on a tree top-down and carry over a history, dont carry over history for some
 
 	// for lists

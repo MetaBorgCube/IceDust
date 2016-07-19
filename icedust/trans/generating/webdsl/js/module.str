@@ -1,0 +1,93 @@
+module generating/webdsl/js/module
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
+
+imports // functions
+  lib/js/signatures/spoofaxJS-sig
+  generating/_ir/model 
+  generating/webdsl/model
+  generating/webdsl/data
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+  analysis2/path
+  api/_runtime
+  api/model-api
+  api/model-names-api
+  generating/_ir/model
+  generating/webdsl/expressions
+  generating/webdsl/expressions-references
+  generating/webdsl/types
+  lib/search
+  names/naming/names
+  naming/_notNaBL
+  generating/webdsl/partial-expressions
+	
+rules // module
+
+  name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
+  
+  name-to-jsstring-with-prefix(|prefix): name -> String(<concat-strings> ["\"", prefix, "_", name, "\""])
+
+  is-relation = ?Relation(_)
+
+  moduleName-to-derivation-js: moduleName -> derivation-js
+    with
+      attributes := <modulename-get-attributenames-default-derivation> moduleName;
+      stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes;
+      derivation-js := js-program |[stmt_derivationjs*]|
+    
+  attributeName-default-derivation-to-js: attributeName -> derivation-js
+  	with
+  	  exp_attributeNamestr :=
+  	    <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
+  	  partial-expr := <partial-expr-from-attribute> attributeName;
+  	  exp_derivation := <expr-to-js> partial-expr;
+      stmt_return := js-stmt |[ return exp_derivation; ]|;
+	  derivation-js := js-stmt |[
+	    setDerived(exp_attributeNamestr, function() {
+		  stmt_return
+	    });
+	  ]|
+
+  expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
+    with
+      entityName := <attributename-get-entityname> attributeName;
+      exp_attributeName := <name-to-jsstring-with-prefix(|entityName)> attributeName
+    
+  expr-to-js: NoRelation(x) -> <expr-to-js> x
+  
+  expr-to-js: Partial(name, _) -> js-ex |[ getPartialVar(exp_name) ]|
+    with exp_name := <name-to-jsstring> name
+
+  expr-to-js: LitString(str1) -> <name-to-jsstring> str1
+  expr-to-js: Float(f) -> FloatLiteral(f)
+  expr-to-js: Int(i) -> IntegerLiteral(i)
+  expr-to-js: True() -> True()
+  expr-to-js: False() -> False()
+  expr-to-js: NoValue() -> Null()
+  expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
+  expr-to-js: Cast(ex1, ex1-ty) -> js-cast
+    with
+      exp_1 := <expr-to-js>ex1;
+      exp_call := $[as[<postfix-id>ex1-ty]];
+      js-cast := js-ex |[ exp_call(exp_1) ]|
+
+  expr-to-js: expr -> js
+      where
+        lib-call
+      with
+        arg*            := <get-arguments>expr;
+        exp_args*       := <map(expr-to-js)>arg*;
+        exp_call        := <lib-method-name>expr
+      with
+        js := js-ex |[
+          exp_call(exp_args*)
+        ]|
+    
