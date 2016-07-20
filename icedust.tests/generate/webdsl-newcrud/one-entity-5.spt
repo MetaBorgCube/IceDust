@@ -2,9 +2,10 @@ module one-entity-5
 
 language IceDust
 
-setup Common [[
 
-module one-entity-5
+fixture [[
+
+module oneentity5
 
 model
 
@@ -23,6 +24,8 @@ model
     derivedDefault : String = text (default)
   }
 
+[[...]]
+
 ]]
 
-test one-entity-5 generate new crud test [[ ]] build generate-webdsl-newcrudui-test
+test one-entity-5 generate new crud test [[ ]] run generate-webdsl-newcrudui-test
