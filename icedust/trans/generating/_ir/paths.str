@@ -2,6 +2,7 @@ module generating/_ir/paths
 
 imports
 
+  api/_generated
   lib/files
   lib/string
 

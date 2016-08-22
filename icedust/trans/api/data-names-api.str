@@ -17,6 +17,7 @@ imports // functions
   lib/index
   lib/nabl-ext
   lib/lists-tuples
+  lib/string
 
 rules // entity instance
 

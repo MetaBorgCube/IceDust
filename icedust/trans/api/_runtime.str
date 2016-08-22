@@ -29,30 +29,8 @@ imports // generated runtime
   runtime/task/messages
   runtime/task/tasks
   runtime/types/query
-
-// imports // custom runtime
-//   
-//   analysis/complete  
-//   analysis/debug
-//   analysis/legacy
-//   analysis/resolve
-//   editor/annotations  
-//   editor/origins
-//   editor/outline-library
-//   editor/properties
-//   index/core
-//   index/legacy
-//   nabl/check
-//   nabl/constraints
-//   nabl/resolve
-//   nabl/tasks
-//   nabl/query
-//   nabl/uri
-//   task/core
-//   task/insert
-//   task/messages
-//   task/tasks
-//   types/query
+  runtime/properties/collect
+  runtime/properties/query
   
 rules
   
@@ -164,4 +142,6 @@ rules
   _nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier)
   
   _nabl-nonunique-uri = nabl-nonunique-uri
+  
+  _nabl-prop-match(|kind, partition, relation, expected) = nabl-prop-match(|kind, partition, relation, expected)
   

@@ -1,4 +1,4 @@
-module files
+module lib/files
 
 imports
 

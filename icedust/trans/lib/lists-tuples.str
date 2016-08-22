@@ -1,4 +1,4 @@
-module lists-tuples
+module lib/lists-tuples
 
 imports
 

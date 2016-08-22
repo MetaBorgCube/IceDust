@@ -1,4 +1,4 @@
-module new-name
+module lib/new-name
 
 rules // alternative implementation of newname, passing the names and counters around
   

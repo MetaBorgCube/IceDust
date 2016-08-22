@@ -1,4 +1,4 @@
-module origin
+module lib/origin
 
 imports // functions
 

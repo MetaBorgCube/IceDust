@@ -1,4 +1,4 @@
-module pp
+module prettyprinting/pp
 
 imports // signatures
 

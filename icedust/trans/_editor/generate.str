@@ -20,6 +20,7 @@ imports // functions
   generating/webdsl/js/generate
   lib/files
   lib/call-external
+  lib/index
   prettyprinting/pp
 
 rules // Builders

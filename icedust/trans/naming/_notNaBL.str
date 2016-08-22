@@ -88,7 +88,7 @@ rules // check that we do not assign to derived value attributes
       name          := <membervalue-get-membername>m;
       name-def-task := <_nabl-create-collectdefs(|ctx)>name;
       m-der-ty-task := <_get-or-create-property-task(|ctx, NablProp_derivation-type())>name-def-task;
-      match-task    := <nabl-prop-match(|NablProp_derivation-type(), ctx, Eq(), Derivation())>m-der-ty-task;
+      match-task    := <_nabl-prop-match(|NablProp_derivation-type(), ctx, Eq(), Derivation())>m-der-ty-task;
       msg           := ["Attribute ", name, " is a derived value."];
       <_task-create-error-on-success(|ctx, match-task, msg)>name
 

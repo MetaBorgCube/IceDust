@@ -1,4 +1,4 @@
-module search
+module lib/search
 
 imports
   

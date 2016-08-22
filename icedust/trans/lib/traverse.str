@@ -1,4 +1,4 @@
-module traverse
+module lib/traverse
 
 imports
 

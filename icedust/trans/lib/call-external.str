@@ -1,7 +1,8 @@
-module call-external
+module lib/call-external
 
 imports
 
+  api/_generated
   lib/files
 
 rules

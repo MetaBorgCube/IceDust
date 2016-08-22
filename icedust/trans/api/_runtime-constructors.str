@@ -38,3 +38,5 @@ signature constructors // copy from runtime library
 
   // TimeResult(parse-time, pre-trans-time, collect-time, perform-time, post-trans-time, index-persist-time, task-persist-time)
   TimeResult : Real * Real * Real * Real * Real * Real * Real -> TimeResult
+
+  Eq: Relation

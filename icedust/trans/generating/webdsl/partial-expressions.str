@@ -6,11 +6,13 @@ imports // constructors
   webdsl/WebDSL
   signatures/Data-sig
   signatures/Expressions-sig  
+  signatures/Types-sig  
   desugaring/constructors
 
 imports // functions
 
   api/_runtime  
+  api/model-names-api
   api/module-names-api
   generating/_ir/expressions
   generating/webdsl/model

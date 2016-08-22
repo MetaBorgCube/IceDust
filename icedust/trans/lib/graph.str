@@ -1,4 +1,4 @@
-module graph
+module lib/graph
 
 rules
 

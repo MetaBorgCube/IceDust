@@ -1,4 +1,4 @@
-module nabl-ext
+module lib/nabl-ext
 
 imports // constructors
   

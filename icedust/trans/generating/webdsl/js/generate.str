@@ -6,6 +6,7 @@ imports // constructors
 
 imports // functions
 
+  libstratego-gpp
   api/module-api
   lib/js/pp/spoofaxJS-pp
   lib/js/pp/spoofaxJS-parenthesize

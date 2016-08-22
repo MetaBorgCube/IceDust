@@ -22,6 +22,7 @@ imports // functions
   lib/graph
   lib/index
   lib/lists-tuples
+  lib/traverse
   names/naming/names
   naming/_notNaBL
   
@@ -37,11 +38,11 @@ rules
   
   einame-check-multiplicities: eiName -> []
     where
-      Result(_) := <get-type>eiName // erroneous programs might have entity instances without type
+      Result(_) := <_get-type>eiName // erroneous programs might have entity instances without type
 
   einame-check-multiplicities: eiName -> result
     with
-      entityName       := <get-type>eiName;
+      entityName       := <_get-type>eiName;
       relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
       memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
       result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
@@ -50,7 +51,7 @@ rules
     with
       values       := <membervaluename-get-values-all>memvName;
       num          := <length>values;
-      memberName   := <membervaluename-get-entityinstancename;get-type;entityname-get-membername(|memvName)>memvName;
+      memberName   := <membervaluename-get-entityinstancename;_get-type;entityname-get-membername(|memvName)>memvName;
       multiplicity := <get-multiplicity>memberName;
       if <mult-inbounds(|multiplicity)>num then
         result := []
