@@ -65,8 +65,8 @@ rules
       nodes := <map(\x -> Node(x, children)\)>labels
 
 signature constructors
-  
-  Node: label * children -> Node
+
+  Node: String * List(Node) -> Node
 
 rules
   
