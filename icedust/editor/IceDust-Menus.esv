@@ -31,7 +31,7 @@ menus
 
   menu: "Analysis" 
     action: "5) Topological Sorting"       = debug-toposort
-		action: "Properties (Selection)"       = debug-properties (openeditor)
+    action: "Properties (Selection)"       = debug-properties (openeditor)
     submenu: "Index" (openeditor) 
       action: "File"                       = debug-index-selection-partition
       action: "File (unresolved tasks)"    = debug-index-partition
@@ -67,7 +67,7 @@ menus
       submenu: "Calculate On Read"
         action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
         action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
-		action: "New CRUD UI"                             = generate-webdsl-newcrudui (openeditor)     
+    action: "New CRUD UI"                             = generate-webdsl-newcrudui (openeditor)     
       end
       submenu: "Calculate On Write"
         action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)

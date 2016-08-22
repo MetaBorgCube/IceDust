@@ -2,26 +2,26 @@ module pp
 
 imports // signatures
 
-	signatures/Modules-sig
-	desugaring/constructors
+  signatures/Modules-sig
+  desugaring/constructors
 
 imports // functions
 
-	libstratego-gpp
-	pp/_PrettyPrint-pp
-	pp/Common-pp
-	pp/Model-pp
-	pp/Modules-pp
-	pp/IceDust-pp
-	pp/Data-pp
-	pp/Execute-pp
-	pp/Expressions-pp
-	pp/Types-pp
+  libstratego-gpp
+  pp/_PrettyPrint-pp
+  pp/Common-pp
+  pp/Model-pp
+  pp/Modules-pp
+  pp/IceDust-pp
+  pp/Data-pp
+  pp/Execute-pp
+  pp/Expressions-pp
+  pp/Types-pp
   pp/IceDust-parenthesize
-	prettyprinting/variations
+  prettyprinting/variations
 
 rules
-	
+  
   pp-IceDust-string =
       parenthesize-IceDust
     ; apply-pp-variation
@@ -44,19 +44,19 @@ rules
     ;  result := ""
 
 rules // needed after desugaring
-	
-	pp-option(pp): x -> <pp>x
-		where
-			not(None() := x);
-			not(Some(_) := x)
-	
-	prettyprint-Start: ModuleDesugared(a,b) -> <prettyprint-Start>Module(a,b)
+  
+  pp-option(pp): x -> <pp>x
+    where
+      not(None() := x);
+      not(Some(_) := x)
+  
+  prettyprint-Start: ModuleDesugared(a,b) -> <prettyprint-Start>Module(a,b)
 
-	prettyprint-AttrRef: NaBLHelp(a, _) -> <prettyprint-AttrRef>a
-	prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a
-	prettyprint-ID:      NaBLHelp(a, _) -> <prettyprint-ID>a
+  prettyprint-AttrRef: NaBLHelp(a, _) -> <prettyprint-AttrRef>a
+  prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a
+  prettyprint-ID:      NaBLHelp(a, _) -> <prettyprint-ID>a
 
-	prettyprint-Exp = prettyprint-ID
+  prettyprint-Exp = prettyprint-ID
 
 rules // content completion
   

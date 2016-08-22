@@ -139,7 +139,7 @@ section bool-input
 
 override template output( b: Bool ){
   if(b == null) {
-  	"null"
+    "null"
   } else {
     <input
       type = "checkbox"
@@ -185,11 +185,11 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
   if( getPage().inLabelContext() ){
       id = getPage().getLabelString()
     }>
-  	<input
-  	  type="radio"
-  	  name=rname
-  	  value="true"
-  	  if(       getRequestParameter( rnamehidden ) != null
+    <input
+      type="radio"
+      name=rname
+      value="true"
+      if(       getRequestParameter( rnamehidden ) != null
            && getRequestParameter( rname ) == "true"
         ||
               getRequestParameter( rnamehidden ) == null
@@ -197,14 +197,14 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
       ){
         checked = "true"
       }
-  	  inputBool attributes
+      inputBool attributes
       all attributes>"True"</input>
       
       <input
-  	  type="radio"
-  	  name=rname
-  	  value="false"
-  	  if(       getRequestParameter( rnamehidden ) != null
+      type="radio"
+      name=rname
+      value="false"
+      if(       getRequestParameter( rnamehidden ) != null
            && getRequestParameter( rname ) == "false"
         ||
               getRequestParameter( rnamehidden ) == null
@@ -212,14 +212,14 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
       ){
         checked = "true"
       }
-  	  inputBool attributes
+      inputBool attributes
       all attributes>"False"</input>
       
       <input
-  	  type="radio"
-  	  name=rname
-  	  value="null"
-  	  if(       getRequestParameter( rnamehidden ) != null
+      type="radio"
+      name=rname
+      value="null"
+      if(       getRequestParameter( rnamehidden ) != null
            && getRequestParameter( rname ) == "null"
         ||
               getRequestParameter( rnamehidden ) == null
@@ -227,7 +227,7 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
       ){
         checked = "true"
       }
-  	  inputBool attributes
+      inputBool attributes
       all attributes>"null"</input>
   </div>
 
@@ -236,9 +236,9 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
     var tmphidden := getRequestParameter( rnamehidden );
     if( tmphidden != null ){
       if( getRequestParameter( rname ) == "null" ){
-      	b := null;
+        b := null;
       } else {
-      	if(getRequestParameter(rname) == "true") {
+        if(getRequestParameter(rname) == "true") {
           b := true;
         }
         else{

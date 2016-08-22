@@ -28,7 +28,7 @@ imports // functions
   names/naming/names
   naming/_notNaBL
   generating/webdsl/partial-expressions
-	
+  
 rules // module
 
   name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
@@ -44,17 +44,17 @@ rules // module
       derivation-js := js-program |[stmt_derivationjs*]|
     
   attributeName-default-derivation-to-js: attributeName -> derivation-js
-  	with
-  	  exp_attributeNamestr :=
-  	    <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
-  	  partial-expr := <partial-expr-from-attribute> attributeName;
-  	  exp_derivation := <expr-to-js> partial-expr;
+    with
+      exp_attributeNamestr :=
+        <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
+      partial-expr := <partial-expr-from-attribute> attributeName;
+      exp_derivation := <expr-to-js> partial-expr;
       stmt_return := js-stmt |[ return exp_derivation; ]|;
-	  derivation-js := js-stmt |[
-	    setDerived(exp_attributeNamestr, function() {
-		  stmt_return
-	    });
-	  ]|
+    derivation-js := js-stmt |[
+      setDerived(exp_attributeNamestr, function() {
+      stmt_return
+      });
+    ]|
 
   expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
     with

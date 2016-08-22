@@ -2,9 +2,9 @@ module generating/java/module
 
 imports // constructors
 
-	java/Java
-	signatures/Modules-sig	
-	desugaring/constructors
+  java/Java
+  signatures/Modules-sig  
+  desugaring/constructors
 
 imports // functions
 

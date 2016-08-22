@@ -2,22 +2,22 @@ module org/webdsl/dsl/utils/constructors
 
 // Constructors shared between front- and back-end
 
-signature constructors	// not generated automatically due to usage of AST Term as constructor
+signature constructors  // not generated automatically due to usage of AST Term as constructor
   String : Term -> Term
   Text : Term -> Term
 
-signature constructors		// utils
+signature constructors    // utils
   RemoveMe : Annotation
 
-signature constructors		// data model
+signature constructors    // data model
   //JoinProperties : List(String) -> Annotation
   ClassSort : Id -> Sort
 
 
-signature constructors		// ui normalized if template
+signature constructors    // ui normalized if template
   IfTempl : Term * Term * Term -> Term
 
-signature constructors		// request var
+signature constructors    // request var
   RequestVar : Id -> Var
   RequestScopeVarDecl : Id * Sort -> VarDecl
   RequestScopeVarDeclInit : Id * Sort * Exp -> VarDecl
@@ -30,7 +30,7 @@ signature constructors   //local var inside template
   LocalScopeTemplateVarDecl : Term * Term -> Term
   LocalScopeTemplateVarDeclInit : Term * Term * Term -> Term
 
-signature constructors		// template call
+signature constructors    // template call
   ResolvedRequireKey: Term -> Term
 
 signature constructors //Function

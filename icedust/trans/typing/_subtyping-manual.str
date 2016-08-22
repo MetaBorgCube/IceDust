@@ -1,9 +1,9 @@
 module typing/_subtyping-manual
 
 imports // constructors
-	
+  
   api/_runtime-constructors
-	
+  
 imports // functions
   
   api/_runtime

@@ -57,11 +57,11 @@ section ui
 section validator-inputs
 
   define nonRequiredIntInput(ident: Int) {
-  	<div class="non-required-int-input">
-  	  <input id="non-required-int-input" + ident>
-  	  </input>
-  	  <div id="non-required-int-input-message" + ident>
-  	  </div>
-  	</div>
+    <div class="non-required-int-input">
+      <input id="non-required-int-input" + ident>
+      </input>
+      <div id="non-required-int-input-message" + ident>
+      </div>
+    </div>
   }
 

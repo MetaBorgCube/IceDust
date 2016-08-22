@@ -2,16 +2,16 @@ module generating/java/model
 
 imports // constructors
 
-	api/constructors
+  api/constructors
   desugaring/constructors
-	java/Java
-	signatures/Model-sig
-	signatures/Modules-sig
+  java/Java
+  signatures/Model-sig
+  signatures/Modules-sig
 
 imports // functions
 
   analysis2/path
-	api/_runtime
+  api/_runtime
   api/model-names-api
   generating/_ir/model
   generating/java/expressions
@@ -19,7 +19,7 @@ imports // functions
   lib/lists-tuples
   lib/traverse
   names/naming/names
-	naming/_notNaBL
+  naming/_notNaBL
 
 rules
 

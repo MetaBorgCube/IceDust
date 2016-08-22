@@ -1,25 +1,25 @@
 .error-msg {
-	color: red;
+  color: red;
 }
 
 .ice-attr-name {
-	font-weight: bold;
-	margin-right: 5pt;
-	padding: 5pt;
-	border: black dashed 1pt;
-	width: 150pt;
+  font-weight: bold;
+  margin-right: 5pt;
+  padding: 5pt;
+  border: black dashed 1pt;
+  width: 150pt;
 }
 
 .ice-attr {
-	border: black solid 1pt;
-	margin: 0;
+  border: black solid 1pt;
+  margin: 0;
 }
 
 .ice-attr div {
-	display: inline-block;
+  display: inline-block;
 }
 
 .default-output {
-	margin-left: 5pt;
+  margin-left: 5pt;
 }
 

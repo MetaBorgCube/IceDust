@@ -1,24 +1,24 @@
 module Model
 
 imports
-	Common
-	Expressions
-	Types
+  Common
+  Expressions
+  Types
 
 context-free syntax // entities
 
-	Model.Entity = <
-		entity <ID> {
-			<{Member "\n"}*>
-		}
-	>
+  Model.Entity = <
+    entity <ID> {
+      <{Member "\n"}*>
+    }
+  >
   Model.FirstClassRelation = <
     relation <ID> {
       <{Member "\n"}*>
     }
   >
-	EntityOrRelation.EntityType = <entity>
-	EntityOrRelation.RelationType = <relation>
+  EntityOrRelation.EntityType = <entity>
+  EntityOrRelation.RelationType = <relation>
 
 context-free syntax // shortcut relations
 
@@ -39,9 +39,9 @@ context-free syntax // non-first-class relation
 
 context-free syntax // entity members
 
-	Member											  = <<Attribute>>
-	Member										  	= <<Role>>
-	Member										  	= <<Shortcut>>
+  Member                        = <<Attribute>>
+  Member                        = <<Role>>
+  Member                        = <<Shortcut>>
 
   Attribute.Attribute           = <
     <ID> : <PrimitiveType><Multiplicity?>
@@ -52,18 +52,18 @@ context-free syntax // entity members
   Attribute.DefaultAttribute    = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)
   >
-	DerivationType.DefaultValue  	= <(default)>
-	DerivationType.Derivation		  = <>
+  DerivationType.DefaultValue   = <(default)>
+  DerivationType.Derivation     = <>
 
   Role.Role                     = <<ID><DotID?><SpaceMultiplicity><SpaceOrdering?><SpaceArrowID?>>
   DotID                         = <.<ID>>
   SpaceArrowID                  = [ -> [ID]]
 
-	Shortcut.Shortcut					  	= <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
+  Shortcut.Shortcut             = <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
 
 context-free syntax // specific references
-	
-	EntityRef.EntityRef 				  = ID
-	AttributeRef.AttributeRef     = ID
-	RoleRef.RoleRef						  	= ID
-	MemberRef.MemberRef           = ID // attr or shortcut
+  
+  EntityRef.EntityRef           = ID
+  AttributeRef.AttributeRef     = ID
+  RoleRef.RoleRef               = ID
+  MemberRef.MemberRef           = ID // attr or shortcut

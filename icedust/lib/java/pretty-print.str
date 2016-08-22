@@ -38,5 +38,5 @@ strategies
     pp-java-box(fail)
 
   pp-java-box(extension) =
-  	pp-java5-to-abox(extension)
+    pp-java5-to-abox(extension)
 

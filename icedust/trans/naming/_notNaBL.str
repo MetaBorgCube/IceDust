@@ -2,82 +2,82 @@ module _notNaBL
 
 imports // constructors
 
-	signatures/Data-sig
-	signatures/Execute-sig
-	signatures/Expressions-sig
-	signatures/Model-sig
-	signatures/Types-sig
-	api/constructors
-	api/_runtime-constructors
+  signatures/Data-sig
+  signatures/Execute-sig
+  signatures/Expressions-sig
+  signatures/Model-sig
+  signatures/Types-sig
+  api/constructors
+  api/_runtime-constructors
   names/naming/names
-	
+  
 imports // functions
-	
-	api/_runtime
-	api/data-api
-	api/model-api
-	lib/string
-	lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
+  
+  api/_runtime
+  api/data-api
+  api/model-api
+  lib/string
+  lib/nabl-ext //is not called, but calls unresolved-error, ns-conflict-error, ...
 
 rules // unresolved references manual messages
 
-	nabl-check-disable-unresolved = id
-		  
-	unresolved-error: Ref(e) 											-> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
-	unresolved-error: MemberAccess(_, e)					-> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
-	unresolved-error: AttributeRef(e) 						-> (e, [NablNsAttribute()])
+  nabl-check-disable-unresolved = id
+      
+  unresolved-error: Ref(e)                      -> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+  unresolved-error: MemberAccess(_, e)          -> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+  unresolved-error: AttributeRef(e)             -> (e, [NablNsAttribute()])
   unresolved-error: RoleRef(e)                  -> (e, [NablNsRole()])
   unresolved-error: MemberRef(e)                -> (e, [NablNsAttribute(),NablNsShortcut()])
-	unresolved-error: EntityRef(e) 								-> (e, [NablNsEntity()])
-	unresolved-error: EntityInstanceRef(e)				-> (e, [NablNsEntityInstance()])
+  unresolved-error: EntityRef(e)                -> (e, [NablNsEntity()])
+  unresolved-error: EntityInstanceRef(e)        -> (e, [NablNsEntityInstance()])
 
-	unresolved-error = where(is-role);?e;!(<role-get-type>e, 	    [NablNsEntity()])
+  unresolved-error = where(is-role);?e;!(<role-get-type>e,       [NablNsEntity()])
 
 rules // check if there are no name collisions in attributes, roles, inverses and shortcuts
-	
-	ns-conflict-error = ![
-		[NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()]
-	]
-		  
+  
+  ns-conflict-error = ![
+    [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()]
+  ]
+      
 signature constructors
 
-	EiAttr : Term
-	EiRole : Term
-	MemberType : Term
-	Left : Term
-	Right : Term
-	
+  EiAttr : Term
+  EiRole : Term
+  MemberType : Term
+  Left : Term
+  Right : Term
+  
 rules // check if entities have all the required attributes and roles assigned
-	
-	contains-all-errors = ![
-		ContainsAll(
-			NablNsAttribute(),
-			[
-				(NablProp_derivation-type(), Normal()),
-				(NablProp_multiplicity(), One())
-			],
-			"ei-a1",
-			"ei-a3",
-			"ei-a4"
-		)
-	]
-	
-	eval(|f) = where("ei-a1":=f); is-entityinstance
-	eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-membername)
-	eval(|f) = where("ei-a4":=f); entityinstance-get-name
+  
+  contains-all-errors = ![
+    ContainsAll(
+      NablNsAttribute(),
+      [
+        (NablProp_derivation-type(), Normal()),
+        (NablProp_multiplicity(), One())
+      ],
+      "ei-a1",
+      "ei-a3",
+      "ei-a4"
+    )
+  ]
+  
+  eval(|f) = where("ei-a1":=f); is-entityinstance
+  eval(|f) = where("ei-a3":=f); entityinstance-get-membervalues;map(membervalue-get-membername)
+  eval(|f) = where("ei-a4":=f); entityinstance-get-name
 
 rules // check if Entity (not Relation) has no roles
 
-	nabl-constraint(|ctx) =
-		where(is-entity;entity-is-entitytype);
-		entity-get-members;filter(is-role;_task-create-error(|ctx, ["An entity cannot have roles."]));fail
+  nabl-constraint(|ctx) =
+    where(is-entity;entity-is-entitytype);
+    entity-get-members;filter(is-role;_task-create-error(|ctx, ["An entity cannot have roles."]));fail
 
 rules // check if Entity names start with a capital
-			
-	nabl-constraint(|ctx) =
-		where(is-entity);
-		entity-get-name;
-		if not(first-is-upper) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
+      
+  nabl-constraint(|ctx) =
+    where(is-entity);
+    entity-get-name;
+    if not(first-is-upper) then _task-create-warning(|ctx, ["Entity type names must start with a capital."]) end;fail
 
 rules // check that we do not assign to derived value attributes
 
@@ -93,16 +93,16 @@ rules // check that we do not assign to derived value attributes
       <_task-create-error-on-success(|ctx, match-task, msg)>name
 
 rules // predicates over multiplcities
-	
-	upper-one: ZeroOrOne() -> <id>
-	upper-one: One() -> <id>
-	upper-many: ZeroOrMore() -> <id>
-	upper-many: OneOrMore() -> <id>
-	lower-zero: ZeroOrOne() -> <id>
-	lower-zero: ZeroOrMore() -> <id>
-	lower-one: One() -> <id>
-	lower-one: OneOrMore() -> <id>
-	nullable = lower-zero
+  
+  upper-one: ZeroOrOne() -> <id>
+  upper-one: One() -> <id>
+  upper-many: ZeroOrMore() -> <id>
+  upper-many: OneOrMore() -> <id>
+  lower-zero: ZeroOrOne() -> <id>
+  lower-zero: ZeroOrMore() -> <id>
+  lower-one: One() -> <id>
+  lower-one: OneOrMore() -> <id>
+  nullable = lower-zero
 
 rules
 
@@ -112,13 +112,13 @@ rules
   mult-inbounds(|multiplicity) = where(!multiplicity => One())       ;?i ;where(!(i,1);eq)
 
 rules // predicates over ordering
-	
-	ordered: Ordered() -> <id>
-	unordered: Unordered() -> <id>
+  
+  ordered: Ordered() -> <id>
+  unordered: Unordered() -> <id>
 
 rules
-	
-	// FIXME: NaBL should have generated this	
+  
+  // FIXME: NaBL should have generated this  
   nabl-get-name : Entity(a, _) -> a
   nabl-get-name : FirstClassRelation(a, _) -> a
   

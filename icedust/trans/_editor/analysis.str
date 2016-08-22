@@ -1,56 +1,56 @@
 module _editor/analysis
 
 imports // constructors
-	
-	api/_runtime-constructors
-	
+  
+  api/_runtime-constructors
+  
 imports // functions
 
-	api/_generated
-	api/_runtime
+  api/_generated
+  api/_runtime
   analysis2/analysis2
   analysis2/check
-	desugaring/desugar
-	lib/origin
-	lib/nabl-ext
-	prettyprinting/pp
-	
+  desugaring/desugar
+  lib/origin
+  lib/nabl-ext
+  prettyprinting/pp
+  
 rules // Analysis
-	
-//	editor-analyze = _analysis-default-editor
-	
-//	analysis-single-default-interface = 
-//	  _analysis-single-default(desugar-before-analysis, desugar-after-analysis;analysis2, pp-message-top|<_language>)
-//	analysis-multiple-default-interface = 
-//	  _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis;analysis2, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
-	
-	editor-analyze = _analyze-all(desugar-before-analysis, analysis2;desugar-after-analysis, pp-message-top|<_language>);add-custom-error-messages(analysis2check)
-	
-//	editor-save = _analysis-save-default(|<_language>)
+  
+//  editor-analyze = _analysis-default-editor
+  
+//  analysis-single-default-interface = 
+//    _analysis-single-default(desugar-before-analysis, desugar-after-analysis;analysis2, pp-message-top|<_language>)
+//  analysis-multiple-default-interface = 
+//    _analysis-multiple-default(_parse-file <+ !(), desugar-before-analysis;analysis2, desugar-after-analysis, pp-message-top|<_language>, <_project-path>)
+  
+  editor-analyze = _analyze-all(desugar-before-analysis, analysis2;desugar-after-analysis, pp-message-top|<_language>);add-custom-error-messages(analysis2check)
+  
+//  editor-save = _analysis-save-default(|<_language>)
 
-rules	//@see http://yellowgrass.org/issue/Spoofax/823
-	
-	pp-message-top = keep-origin((id, strip-annos; pp-message))
-	pp-message = pp-uri-list
-	pp-message : Def(uri) -> <_pp-uri>uri
-	pp-message = not(is-list); (is-string <+ pp-result <+ (strip-annos; write-to-string))
-	pp-message = map(pp-preprocess(fail);pp-message); concat-strings
-	pp-preprocess(cascaded) = [] < cascaded + try(\[a] -> a\) //prevent some cascading error messages hack from http://yellowgrass.org/issue/TS/1
-	
-	pp-uri-list: a -> b
-		where
-			Hd;get-uri
-		with
-			b := <map(get-uri;_nabl-uri-name);separate-by(|", ");concat-strings>a
-	
-	get-uri = ?URI(_,_)
-	get-uri = ?Def(<id>)
-	
-	pp-result:
-	    result@Result(_) -> msg
-	    where
-	       if <_task-has-failed> result then
-	         msg := "fail"
-	       else
-	         msg := <_task-get-results; map(pp-message); separate-by(|" or "); concat-strings> result
-	       end
+rules  //@see http://yellowgrass.org/issue/Spoofax/823
+  
+  pp-message-top = keep-origin((id, strip-annos; pp-message))
+  pp-message = pp-uri-list
+  pp-message : Def(uri) -> <_pp-uri>uri
+  pp-message = not(is-list); (is-string <+ pp-result <+ (strip-annos; write-to-string))
+  pp-message = map(pp-preprocess(fail);pp-message); concat-strings
+  pp-preprocess(cascaded) = [] < cascaded + try(\[a] -> a\) //prevent some cascading error messages hack from http://yellowgrass.org/issue/TS/1
+  
+  pp-uri-list: a -> b
+    where
+      Hd;get-uri
+    with
+      b := <map(get-uri;_nabl-uri-name);separate-by(|", ");concat-strings>a
+  
+  get-uri = ?URI(_,_)
+  get-uri = ?Def(<id>)
+  
+  pp-result:
+      result@Result(_) -> msg
+      where
+         if <_task-has-failed> result then
+           msg := "fail"
+         else
+           msg := <_task-get-results; map(pp-message); separate-by(|" or "); concat-strings> result
+         end

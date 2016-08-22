@@ -3,44 +3,44 @@ module lists-tuples
 imports
 
 rules // (|b) a -> (a, b)
-	
-	tuple-with(|b): a -> (a, b)
+  
+  tuple-with(|b): a -> (a, b)
 
 rules // (|a) b -> (a, b)
-	
-	tuple-with-rev(|a): b -> (a, b)
+  
+  tuple-with-rev(|a): b -> (a, b)
 
 rules // tuple -> tuple
 
-	tuple-reverse = TupleToList;reverse;ListToTuple
+  tuple-reverse = TupleToList;reverse;ListToTuple
 
 rules // (a * List(b)) -> List((a * b))
-	
-	zip-repeat-1: (a, bs) -> <map(tuple-with-rev(|a))>bs
+  
+  zip-repeat-1: (a, bs) -> <map(tuple-with-rev(|a))>bs
 
 rules // (List(a) * b) -> List((a * b))
 
-	zip-repeat-2: (as, b) -> <map(tuple-with(|b))>as
+  zip-repeat-2: (as, b) -> <map(tuple-with(|b))>as
 
 rules // List -> List
-	
-	make-set-ordered = reverse;make-set
+  
+  make-set-ordered = reverse;make-set
 
 rules // List -> List or fail
-	
-	list-empty     = ?[]
-	list-not-empty = not(?[])
+  
+  list-empty     = ?[]
+  list-not-empty = not(?[])
 
 rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 
-	concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
+  concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
   concat(s1,s2,s3): t -> <concat>[<s1>t, <s2>t, <s3>t]
   concat(s1,s2,s3,s4): t -> <concat>[<s1>t, <s2>t, <s3>t, <s4>t]
   concat(s1,s2,s3,s4,s5): t -> <concat>[<s1>t, <s2>t, <s3>t, <s4>t, <s5>t]
 
 rules // s1:a->b  s2:a->c  a->(a, b)
-	
-	ttuple(s1,s2): t -> (<s1>t, <s2>t)
+  
+  ttuple(s1,s2): t -> (<s1>t, <s2>t)
 
 rules // List -> List
   

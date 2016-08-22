@@ -2,46 +2,46 @@ module origin
 
 imports // functions
 
-	api/_runtime
-	lib/debug
+  api/_runtime
+  lib/debug
 
 rules // rewrite terms to have an origin
-	
-	custom-origin(strategy|custom-origin): term -> result
-		with
-			r := <strategy>term;
-			result := <_origin-track-forced(custom-origin-internal(|r))>custom-origin
-			
-	custom-origin(|custom-origin): term -> result
-		with
-			result := <_origin-track-forced(custom-origin-internal(|term))>custom-origin
-	
-	custom-origin-internal(|term) : custom-origin -> term
-	
+  
+  custom-origin(strategy|custom-origin): term -> result
+    with
+      r := <strategy>term;
+      result := <_origin-track-forced(custom-origin-internal(|r))>custom-origin
+      
+  custom-origin(|custom-origin): term -> result
+    with
+      result := <_origin-track-forced(custom-origin-internal(|term))>custom-origin
+  
+  custom-origin-internal(|term) : custom-origin -> term
+  
 rules // check AST whether every sub term has an origin
-	
-	warning-on-missing-origin: term -> <id>
-		with
-			terms-missing-origin;filter(not(?[]));map(debug(|"Warning: Term missing origin"))
-	
-	terms-missing-origin = collect-all(not(origin-offset))
-	
+  
+  warning-on-missing-origin: term -> <id>
+    with
+      terms-missing-origin;filter(not(?[]));map(debug(|"Warning: Term missing origin"))
+  
+  terms-missing-origin = collect-all(not(origin-offset))
+  
 rules // origin for lists
-	
-	origin-offset: list -> (start-offset, end-offset)
+  
+  origin-offset: list -> (start-offset, end-offset)
     where
       <is-list> list;
-     	(start-offset, _) := <Hd; origin-offset> list;
-     	(_, end-offset)   := <last; origin-offset> list
+       (start-offset, _) := <Hd; origin-offset> list;
+       (_, end-offset)   := <last; origin-offset> list
 
 rules //  short alias
-	
-	keep-origin(a) = _origin-track-forced(a)
+  
+  keep-origin(a) = _origin-track-forced(a)
 
 rules // set the length of an origin
-	
-	set-origin-length(|l): x -> x'
-		with
+  
+  set-origin-length(|l): x -> x'
+    with
       (a, b, c, d, e) := <_origin-location-offset>x;
       e' := <add> (d, <dec>l);
       <_origin-location-offset-set(|(a, b, c, d, e'))>x;

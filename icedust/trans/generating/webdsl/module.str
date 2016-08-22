@@ -569,7 +569,7 @@ rules //crud rules
   
   attributename-to-webdsl-inputcreate : x_name -> result
   with
-  	x_qname := <double-quote> x_name;
+    x_qname := <double-quote> x_name;
     elem_input := <name-to-webdsl-input> x_name;
     result := elem* |[ "" x_qname ": " elem_input <br/> ]|
   

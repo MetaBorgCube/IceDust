@@ -1,23 +1,23 @@
 module desugaring/alternatives
 
 imports // constructors
-	
-	signatures/Expressions-sig
+  
+  signatures/Expressions-sig
 
 rules
-	
-	desugar-alternatives = topdown(try(desugar-alternative))
-	
+  
+  desugar-alternatives = topdown(try(desugar-alternative))
+  
   desugar-alternative: If2(a,b,c) -> If(a,b,c)
   desugar-alternative: If3(a,b,c) -> If(a,b,c)
   desugar-alternative: If4(a,b,c) -> If(a,b,c)
   desugar-alternative: If5(a,b,c) -> If(a,b,c)
   desugar-alternative: If6(a,b,c) -> If(a,b,c)
-	
-	desugar-alternative: And2(a,b) -> And(a,b)
-	desugar-alternative: Or2 (a,b) -> Or (a,b)
-	
-	desugar-alternative: Not2(a) -> Not(a)
+  
+  desugar-alternative: And2(a,b) -> And(a,b)
+  desugar-alternative: Or2 (a,b) -> Or (a,b)
+  
+  desugar-alternative: Not2(a) -> Not(a)
 
 rules
-	
+  
