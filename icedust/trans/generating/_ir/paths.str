@@ -28,8 +28,6 @@ rules // paths
   webdsl-java-library-target-path(|path) = !$[[<dirname>path]/nativejava]
   webdsl-js-library-source-path          = !$[[<component-path>]/lib-javascript/src]
   webdsl-js-library-target-path(|path)   = !$[[<dirname>path]/javascript]
-  webdsl-css-library-source-path          = !$[[<component-path>]/lib-css]
-  webdsl-css-library-target-path(|path)   = !$[[<dirname>path]/stylesheets]
   
   webdsl-saved-but-not-build(|path)      = !$[[<dirname>path]/.saved-but-not-built]
 
@@ -40,5 +38,4 @@ rules // path tuples
   webdsl-library-paths(|path)            = !(<webdsl-library-source-path>,      <webdsl-library-target-path(|path)>)
   webdsl-java-library-paths(|path)       = !(<webdsl-java-library-source-path>, <webdsl-java-library-target-path(|path)>)
   webdsl-js-library-paths(|path)         = !(<webdsl-js-library-source-path>, <webdsl-js-library-target-path(|path)>)
-  webdsl-css-library-paths(|path)        = !(<webdsl-css-library-source-path>, <webdsl-css-library-target-path(|path)>)
   

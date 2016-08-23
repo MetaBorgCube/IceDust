@@ -187,6 +187,7 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
+      elem_nameString:= String(x_entityName);
       x_manageEntity := <name-manage>x_entityName;
       x_createEntity := <name-create>x_entityName;
       x_editEntity   := <name-edit>x_entityName;
@@ -226,7 +227,6 @@ rules //crud
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars;
       
       ctime := "0";//<time>;
-      x_cssEditPage := <double-quote> $[edit-page.css?[ctime]];
       x_jsExpressions := <double-quote> $[Expressions.js?[ctime]];
       x_jsLib := <double-quote> $[javascript-lib.js?[ctime]];
       x_jsDerivations := <double-quote> $[derivations.js?[ctime]]
@@ -236,14 +236,16 @@ rules //crud
           page x_manageEntity(){
             main()
             define body() {
-              navigate x_createEntity() [] { "Create" }
+              header{ elem_nameString }
+              navigate x_createEntity() [class="ice-ent-create"] { "Create " }
               <br/>
               for(entity: x_entityName) {
-                output(entity.name)
-                navigate x_viewEntity(entity) [] { "View" } " "
-                navigate x_editEntity(entity) [] { "Edit" } " "
-                action("Remove", x_removeEntity(entity))
-                <br/>
+                div[class="ice-ent"]{
+                  div[class="ice-ent-name"]{
+                    navigate x_editEntity(entity) [] { output(entity.name) }
+                  }
+                  action("Remove", x_removeEntity(entity))
+                }
               }
               action x_removeEntity(entity: x_entityName) {
                 entity.delete();
@@ -281,29 +283,28 @@ rules //crud
           }
           
           page x_editEntity(temp: x_entityName){
-            includeCSS(x_cssEditPage)
             includeJS(x_jsExpressions)
             includeJS(x_jsLib)
             includeJS(x_jsDerivations)
             main()
             define body() {
-              header{"Edit"}
+              header{"Edit " output(temp.name)}
               elem_deriveRowsVarEdit
-              form {
-                elem_hiddenvars*
-                elem_deriveRowsInputEdit
-                <br/>
-                submit action {
-                  stat_assignEditEntity
-                  temp.save();
-                } { "Save" }
+              div[class="ice-form"] {
+                form {
+                  elem_editRelations
+                  elem_hiddenvars*
+                  elem_deriveRowsInputEdit
+                  <br/>
+                  submit action {
+                    stat_assignEditEntity
+                    temp.save();
+                  } { "Save" }
+                }
               }
-              <hr/>
-              elem_editRelations
-              navigate x_manageEntity() [] { "Back" }
             }
           }
-          
+
           def_relationsetters
         ]|
       else if entityname-is-calconread then
@@ -447,13 +448,22 @@ rules //crud rules
   relationname-to-editlink : x_name -> result
   with
     entity := <attributename-get-entityname> x_name;
+    x_namestr := String(<ucfirst>x_name);
     x_setname := $[set_[entity]_[x_name]];
     x_s := <double-quote> x_name;
     x_getname := <name-get> x_name;
     result := elem* |[
-      x_s ": "
-      output(temp.x_getname()) " "
-      navigate x_setname(temp) [] { "Set " x_s } <br/>
+      <div class="ice-attr">
+        <div class="ice-attr-name">
+          "" x_namestr ":"
+        </div>
+        <div class="ice-rel-val">
+          "" output(temp.x_getname())
+        </div>
+        <div class="ice-rel-edit">
+          navigate x_setname(temp) [] { "Edit " }
+        </div>
+      </div>
     ]|
     
   relationname-to-output : x_name -> result
@@ -638,7 +648,7 @@ rules //crud rules
   
   attributename-to-webdsl-inputedit : x_name -> result
   with
-    x_namestr := String(x_name);
+    x_namestr := String(<ucfirst>x_name);
     entityName := <attributename-get-entityname> x_name;
     x_derivedname := $["[entityName]_[x_name]"];
     x_typestr := <name-to-type-string; double-quote> x_name;
@@ -651,7 +661,7 @@ rules //crud rules
       result := elem* |[
         <div class="ice-attr">
           <div class="ice-attr-name">
-            "" x_namestr
+            "" x_namestr ":"
           </div>
           <div class="ice-attr-val ice-attr-output">
             <div
@@ -671,7 +681,7 @@ rules //crud rules
         result := elem* |[
           <div class="ice-attr">
             <div class="ice-attr-name">
-              "" x_namestr
+              "" x_namestr ":"
             </div>
             <div class="ice-attr-val ice-attr-input-output">
               <div
@@ -690,7 +700,7 @@ rules //crud rules
         result := elem* |[
           <div class="ice-attr">
             <div class="ice-attr-name"> 
-              "" x_namestr
+              "" x_namestr ":"
             </div>
             <div class="ice-attr-val ice-attr-input">
               <div

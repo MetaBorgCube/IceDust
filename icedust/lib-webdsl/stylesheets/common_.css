@@ -26,6 +26,9 @@ input[type="text"]{
 input[type="file"]{
   width : 200px;
 }
+input:not([type]) {
+  width : 200px;
+}
 img {
   border-width: 0px;
 }
@@ -123,4 +126,95 @@ span.navbaritem a:hover {
   /* text and colors */
   background-color: #333;
   color: #fff;
+}
+
+/* CSS for new CRUD ui */
+
+.error-msg {
+  color: red;
+}
+
+.ice-form {
+  padding: 10px;
+  border: 1px solid #999;
+}
+
+.ice-attr-name {
+  margin-right: 5px;
+  width: 150px;
+  vertical-align: top;
+}
+
+.ice-attr {
+  margin: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.ice-attr div {
+  display: inline-block;
+}
+
+.default-output {
+  margin-left: 5px;
+}
+
+.ice-attr ul {
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
+}
+
+.ice-attr li {
+  list-style-type: none;
+}
+
+.ice-rel-val {
+  width: 206px;
+}
+
+.ice-rel-edit {
+  margin-left: 5px;
+  vertical-align: top;
+}
+
+.ice-rel-val a {
+  color: black;
+}
+
+.ice-rel-edit a {
+  color: black;
+  font-size: 11px;
+  text-decoration: none;
+  padding: 2px 6px 2px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+}
+
+.ice-ent {
+  margin: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.ice-ent-name {
+  margin-right: 5px;
+  width: 200px;
+  vertical-align: top;
+  display: inline-block;
+}
+
+.ice-ent-name a {
+  color: black;
+}
+
+a.ice-ent-create {
+  color: black;
+  font-size: 11px;
+  text-decoration: none;
+  padding: 2px 6px 2px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: inline-block;
 }
