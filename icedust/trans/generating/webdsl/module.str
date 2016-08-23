@@ -239,10 +239,10 @@ rules //crud
               header{ elem_nameString }
               navigate x_createEntity() [class="ice-ent-create"] { "Create " }
               <br/>
-              for(entity: x_entityName) {
+              for(entity: x_entityName order by entity.name asc) {
                 div[class="ice-ent"]{
                   div[class="ice-ent-name"]{
-                    navigate x_editEntity(entity) [] { output(entity.name) }
+                    navigate x_viewEntity(entity) [] { output(entity.name) }
                   }
                   action("Remove", x_removeEntity(entity))
                 }
@@ -272,17 +272,6 @@ rules //crud
           }
           
           page x_viewEntity(temp: x_entityName){
-            main()
-            define body() {
-              header{"View"}
-              elem_deriveRowsOutputView
-              <hr/>
-              elem_relationsOutputView
-              navigate x_manageEntity() [] { "Back" }
-            }
-          }
-          
-          page x_editEntity(temp: x_entityName){
             includeJS(x_jsExpressions)
             includeJS(x_jsLib)
             includeJS(x_jsDerivations)
@@ -491,6 +480,7 @@ rules //crud rules
     x_stringifiedname := <double-quote> x_name;
     x_getname := <name-get> x_name;
     x_editEntity := <name-edit> x_entityName;
+    x_viewEntity   := <lcfirst>x_entityName;
     x_inverseName := <name-get-inversename> x_name;
     x_entname := <attributename-get-entityname>x_inverseName;
     if <?One()> mult then // 1
@@ -509,7 +499,7 @@ rules //crud rules
               } { "Set" }
               <br/>
             }
-            navigate x_editEntity(ent) [] { "Back" }
+            navigate x_viewEntity(ent) [] { "Back" }
           }
         }
       ]|
@@ -536,7 +526,7 @@ rules //crud rules
                 } { "Set" }
                 <br/>
               }
-              navigate x_editEntity(ent) [] { "Back" }
+              navigate x_viewEntity(ent) [] { "Back" }
             }
           }
         ]|
@@ -566,7 +556,7 @@ rules //crud rules
                   <br/>
                 }
               }
-              navigate x_editEntity(ent) [] { "Back" }
+              navigate x_viewEntity(ent) [] { "Back" }
             }
           }
         ]|
