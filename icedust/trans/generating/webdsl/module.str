@@ -244,7 +244,7 @@ rules //crud
                   div[class="ice-ent-name"]{
                     navigate x_viewEntity(entity) [] { output(entity.name) }
                   }
-                  action("Remove", x_removeEntity(entity))
+                  action("Delete", x_removeEntity(entity))
                 }
               }
               action x_removeEntity(entity: x_entityName) {
@@ -256,7 +256,7 @@ rules //crud
           page x_createEntity(){
             main()
             define body() {
-              header{"Create"} 
+              header{ "Create " elem_nameString } 
               elem_deriveRowsVarCreate
               div[class="ice-form"] {
                 form {
@@ -491,18 +491,32 @@ rules //crud rules
         page x_setname(ent: x_entityName) {
           main()
           define body() {
-            "Set " x_stringifiedname " for: " output(ent.name) <br/>
-            "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
-            <hr/>
-            for(f: x_entname) {
-              output(f.name)
-              submit action {
-                ent.x_name := f;
-                ent.save();
-              } { "Set" }
-              <br/>
-            }
-            navigate x_viewEntity(ent) [] { "Back" }
+            header{ "Edit " output(ent.name) " " x_stringifiedname }
+            <div class="ice-form">
+              <div class="ice-attr">
+                <div class="ice-attr-name">
+                  "" x_stringifiedname ":"
+                </div>
+                <div class="ice-rel-val">
+                  "" output(ent.x_getname())
+                </div>
+              </div>
+            </div>
+            <div class="ice-form2">
+              for(s: x_entname order by s.name asc) {
+                if(ent.x_getname() != s) {
+                  div[class="ice-ent"]{
+                    div[class="ice-ent-name"]{
+                      output(s)
+                    }
+                    submit action {
+                      ent.x_name := s;
+                      ent.save();
+                    } { "Set" }
+                  }
+                }
+              }
+            </div>
           }
         }
       ]|
@@ -512,24 +526,40 @@ rules //crud rules
           page x_setname(ent: x_entityName) {
             main()
             define body() {
-              "Set " x_stringifiedname " for: " output(ent.name) <br/>
-              "Current " x_stringifiedname ": " output(ent.x_getname().name) <br/>
-              <hr/>
-              "null"
-              submit action {
-                ent.x_name := null;
-                ent.save();  
-              } { "Set" }
-              <br/>
-              for(f: x_entname) {
-                output(f.name)
-                submit action {
-                  ent.x_name := f;
-                  ent.save();
-                } { "Set" }
-                <br/>
-              }
-              navigate x_viewEntity(ent) [] { "Back" }
+              header{ "Edit " output(ent.name) " " x_stringifiedname }
+              <div class="ice-form">
+                <div class="ice-attr">
+                  <div class="ice-attr-name">
+                    "" x_stringifiedname ":"
+                  </div>
+                  <div class="ice-rel-val">
+                    "" output(ent.x_getname())
+                  </div>
+                  if(ent.x_getname() != null){
+                    <div class="ice-rel-edit">
+                      submit action {
+                        ent.x_name := null;
+                        ent.save();
+                      } { "Remove" }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="ice-form2">
+                for(s: x_entname order by s.name asc) {
+                  if(ent.x_getname() != s) {
+                    div[class="ice-ent"]{
+                      div[class="ice-ent-name"]{
+                        output(s)
+                      }
+                      submit action {
+                        ent.x_name := s;
+                        ent.save();
+                      } { "Set" }
+                    }
+                  }
+                }
+              </div>
             }
           }
         ]|
@@ -538,28 +568,43 @@ rules //crud rules
           page x_setname(ent: x_entityName) {
             main()
             define body() {
-              "Set " x_stringifiedname " for: " output(ent.name) <br/>
-              "Current entities in " x_stringifiedname ": " <br/>
-              for(s in ent.x_getname()) {
-                output(s.name)
-                submit action {
-                  ent.x_name.remove(s);
-                  ent.save();
-                } { "Remove" }
-                <br/>  
-              }
-              "Add: " <br/>
-              for(s: x_entname) {
-                if(ent.x_getname().indexOf(s) == -1) {
-                  output(s.name)
-                  submit action {
-                    ent.x_name.add(s);
-                    ent.save();
-                  } { "Add" }
-                  <br/>
+              header{ "Edit " output(ent.name) " " x_stringifiedname }
+              <div class="ice-form">
+                <div class="ice-attr">
+                  <div class="ice-attr-name">
+                    "" x_stringifiedname ":"
+                  </div>
+                  <div class="ice-rel-vals">
+                    for(s in ent.x_getname()) {
+                      <div class="ice-rel-val">
+                        "" output(s)
+                      </div>
+                      <div class="ice-rel-edit">
+                        submit action {
+                          ent.x_name.remove(s);
+                          ent.save();
+                        } { "Remove" }
+                      </div>
+                      <br/>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="ice-form2">
+                for(s: x_entname order by s.name asc) {
+                  if(ent.x_getname().indexOf(s) == -1) {
+                    div[class="ice-ent"]{
+                      div[class="ice-ent-name"]{
+                        output(s)
+                      }
+                      submit action {
+                        ent.x_name.add(s);
+                        ent.save();
+                      } { "Add" }
+                    }
+                  }
                 }
-              }
-              navigate x_viewEntity(ent) [] { "Back" }
+              </div>
             }
           }
         ]|

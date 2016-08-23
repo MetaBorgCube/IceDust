@@ -139,6 +139,13 @@ span.navbaritem a:hover {
   border: 1px solid #999;
 }
 
+.ice-form2 {
+  padding: 10px;
+  border: 1px solid #999;
+  border-top-width: 0px;
+  padding-left: 165px;
+}
+
 .ice-attr-name {
   margin-right: 5px;
   width: 150px;
@@ -199,7 +206,7 @@ span.navbaritem a:hover {
 
 .ice-ent-name {
   margin-right: 5px;
-  width: 200px;
+  width: 206px;
   vertical-align: top;
   display: inline-block;
 }
