@@ -203,7 +203,7 @@ rules //crud
       allNames := <conc> (attributenames, relationsOnes);
       createNames := <filter(attributename-is-normal-default)> allNames;
       elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)> createNames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputcreate)> createNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> createNames;
       elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames-normal-default;
       elem_deriveRowsInputEdit := <map(attributename-to-webdsl-inputedit)>attributenames;
       elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
@@ -258,16 +258,19 @@ rules //crud
             define body() {
               header{"Create"} 
               elem_deriveRowsVarCreate
-              form {
-                elem_deriveRowsInputCreate
-                action("Save", save())
+              div[class="ice-form"] {
+                form {
+                  elem_deriveRowsInputCreate
+                  <br/>
+                  action("Save", save())
+                }
               }
               action save() {
                 stat_createDefaultWrap*
                 var temp := x_createEntityBlock;
                 temp.save();
+                return x_viewEntity(temp);
               }
-              navigate x_manageEntity() [] { "Back" }
             }
           }
           
