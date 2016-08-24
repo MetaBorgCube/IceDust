@@ -97,7 +97,6 @@ rules // Build in steps
             webdsl-java-library-paths(|fullPath);copy-dir;
             !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
             if <modulename-is-newcrudui> moduleName then
-              webdsl-js-library-paths(|fullPath);copy-dir;
               jsString := <generate-webdsl-js-code> moduleName;
               <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
             end;
