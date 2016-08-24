@@ -65,7 +65,7 @@ model
                            <+
                            count(deadline)==0 || count(date)==1 // no deadline is always on time
 
-    onExtension: Boolean = date <= extension
+    onExtension: Boolean = !onTime && date <= extension
                            <+
                            false // no extension means late, no submission date also means late
 
