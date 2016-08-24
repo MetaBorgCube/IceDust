@@ -5,7 +5,7 @@ imports // constructors
   java/Java
   signatures/Expressions-sig
   signatures/Types-sig
-  generating/webdsl/partial-expressions
+  tiersplit/constructors
 
 imports // functions
 

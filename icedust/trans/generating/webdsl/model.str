@@ -19,10 +19,10 @@ imports // functions
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
-  generating/webdsl/partial-expressions
   lib/search
   names/naming/names
   naming/_notNaBL
+  tiersplit/intra-object
 
 rules // entities
 
@@ -103,12 +103,7 @@ rules
     with
       if <attributename-get-entityname;entityname-is-newcrudui> x_attributeName then
         if <attributename-is-default-derivation> x_attributeName then
-          e_partial := <
-            attributename-get-expr;
-            expr-to-partial-expr;
-            partial-expr-add-names(|<concat-strings>[x_entityName, "_", x_attributeName, "_"])
-          > x_attributeName;
-          vars := <collect-all(?Partial(_,_))> e_partial;
+          (e_partial, vars) := <attributename-get-expr-tiersplit>x_attributeName;
           ebd_varsfns := <map(var-to-webdsl-function(err))> vars;
           e_calculate := <expr-to-webdsl-expr(err)> e_partial
         else

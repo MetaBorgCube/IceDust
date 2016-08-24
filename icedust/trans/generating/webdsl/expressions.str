@@ -7,7 +7,7 @@ imports // constructors
   signatures/Data-sig
   signatures/Expressions-sig  
   desugaring/constructors
-  generating/webdsl/partial-expressions
+  tiersplit/constructors
 
 imports // functions
 

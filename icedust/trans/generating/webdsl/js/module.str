@@ -5,6 +5,7 @@ imports // constructors
   webdsl/constructors
   webdsl/WebDSL
   desugaring/constructors
+  tiersplit/constructors
 
 imports // functions
   lib/js/signatures/spoofaxJS-sig
@@ -27,7 +28,7 @@ imports // functions
   lib/search
   names/naming/names
   naming/_notNaBL
-  generating/webdsl/partial-expressions
+  tiersplit/intra-object
   
 rules // module
 
@@ -45,14 +46,13 @@ rules // module
     
   attributeName-default-derivation-to-js: attributeName -> derivation-js
     with
-      exp_attributeNamestr :=
-        <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
-      partial-expr := <partial-expr-from-attribute> attributeName;
+      exp_attributeNamestr := <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
+      partial-expr := <attributename-get-expr-tiersplit-expr> attributeName;
       exp_derivation := <expr-to-js> partial-expr;
       stmt_return := js-stmt |[ return exp_derivation; ]|;
-    derivation-js := js-stmt |[
-      setDerived(exp_attributeNamestr, function() {
-      stmt_return
+      derivation-js := js-stmt |[
+        setDerived(exp_attributeNamestr, function() {
+        stmt_return
       });
     ]|
 
