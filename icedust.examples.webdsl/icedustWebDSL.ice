@@ -69,7 +69,10 @@ model
                            <+
                            false // no extension means late, no submission date also means late
 
-    latePenalty: Float   = (date - deadline) / (extension - deadline) * assignment.latePenalty
+    latePenalty: Float   = if(onExtension)
+                             (date - deadline) / (extension - deadline) * assignment.latePenalty
+                           else
+                             0.0
                            <+
                            0.0
     
