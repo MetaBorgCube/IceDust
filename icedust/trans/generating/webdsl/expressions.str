@@ -72,5 +72,7 @@ rules
     with
       x_name := <name-get> name
   
-  expr-to-webdsl-expr(err): NoRelation(Ref(x_name)) -> exp |[ x_name ]|
+  expr-to-webdsl-expr(err): NoRelation(Ref(name)) -> exp |[ x_name() ]|
+    with
+      x_name := <name-get> name
   
