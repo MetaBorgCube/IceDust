@@ -71,7 +71,15 @@ var elements = {};
 var types = {};
 
 types.Type = function() {};
-types.Type.prototype.get = function() {return this.parse(this.val.get())};
+types.Type.prototype.get = function() {
+  var v = this.parse(this.val.get());
+  if(this.isDefault){
+    if(v === null || (typeof v === 'string' && v.trim().length === 0)){
+    v = this.derived();
+    }
+  }
+  return v;
+};
 types.Type.prototype.getRaw = function() {return this.val.get()};
 types.Type.prototype.set = function(v) {return this.val.set(v)};
 types.Type.prototype.setDerived = function(f) {this.derived = f};
