@@ -24,9 +24,7 @@ rules
       entityName      := <attributename-get-entityname>attrName;
       expr            := <attributename-get-expr>attrName;
       prefix          := $[[entityName]_[attrName]_];
-      (e', vars')     := <split-expr(|prefix)>expr;
-      <debugn>e';
-      <map(debugn)>vars'
+      (e', vars')     := <split-expr(|prefix)>expr
 
 rules
 
