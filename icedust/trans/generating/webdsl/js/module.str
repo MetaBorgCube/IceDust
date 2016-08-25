@@ -8,6 +8,7 @@ imports // constructors
   tiersplit/constructors
 
 imports // functions
+
   lib/js/signatures/spoofaxJS-sig
   generating/_ir/model 
   generating/webdsl/model
@@ -29,6 +30,7 @@ imports // functions
   names/naming/names
   naming/_notNaBL
   tiersplit/intra-object
+  generating/webdsl/js/expressions
   
 rules // module
 
@@ -55,37 +57,4 @@ rules // module
         stmt_return
       });
     ]|
-
-  expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
-    with
-      entityName := <attributename-get-entityname> attributeName;
-      exp_attributeName := <name-to-jsstring-with-prefix(|entityName)> attributeName
-
-  expr-to-js: TierSplit(name) -> js-ex |[ getPartialVar(exp_name) ]|
-    with exp_name := <name-to-jsstring> name
-
-  expr-to-js: LitString(str1) -> <name-to-jsstring> str1
-  expr-to-js: Float(f) -> FloatLiteral(f)
-  expr-to-js: Int(i) -> IntegerLiteral(i)
-  expr-to-js: True() -> True()
-  expr-to-js: False() -> False()
-  expr-to-js: NoValue() -> Null()
-  expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
-  expr-to-js: Cast(ex1, ex1-ty) -> js-cast
-    with
-      exp_1 := <expr-to-js>ex1;
-      exp_call := $[as[<postfix-id>ex1-ty]];
-      js-cast := js-ex |[ exp_call(exp_1) ]|
-
-  expr-to-js: expr -> js
-      where
-        lib-call
-      with
-        arg*            := <get-arguments>expr;
-        exp_args*       := <map(expr-to-js)>arg*;
-        exp_call        := <lib-method-name>expr
-      with
-        js := js-ex |[
-          exp_call(exp_args*)
-        ]|
     
