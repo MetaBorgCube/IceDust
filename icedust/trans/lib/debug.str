@@ -19,6 +19,8 @@ rules // debug tasks
 
   task-number: Result(a) -> a
   
+  pp-tasks = bottomup-anno(try(debug-task-s))
+  
   pp-uris = bottomup-anno(try(_pp-uri))
 
 rules // debug with prefix
@@ -48,3 +50,11 @@ rules // debug-pp
   debug-pp(|info): t -> t
     with
       pp-uris;debug(|info)
+
+rules // debug-no-anno
+
+  debugn = debug-no-anno
+
+  debug-no-anno = strip-annos;debug
+
+  debug-no-anno(|info) = strip-annos;debug(|info)

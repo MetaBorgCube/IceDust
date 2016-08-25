@@ -398,7 +398,7 @@ rules //crud
 
 rules //crud rules
   
-  var-to-hidden-div: Partial(name, expr) -> result
+  var-to-hidden-div: TierSplit(name, expr) -> result
     with
       type := <name-to-type-string> expr;
       x_strname := <double-quote> name;

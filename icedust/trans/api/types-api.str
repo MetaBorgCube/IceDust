@@ -1,0 +1,13 @@
+module api/types-api
+
+imports
+
+  signatures/Types-sig
+  
+rules
+
+  is-type = ?Boolean()
+  is-type = ?Float()
+  is-type = ?Datetime()
+  is-type = ?Int()
+  is-type = ?String()

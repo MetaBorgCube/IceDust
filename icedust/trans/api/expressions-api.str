@@ -1,0 +1,22 @@
+module api/expressions-api
+
+imports // signatures
+
+  signatures/Expressions-sig
+
+imports // functions
+
+  api/types-api
+
+rules
+
+  is-expr = not(is-string);not(is-type) // identifiers inside expressions are not expressions, neither are type constructors
+  
+  is-literal = ?Int(_)
+  is-literal = ?Float(_)
+  is-literal = ?True()
+  is-literal = ?False()
+  is-literal = ?Datetime(_)
+  is-literal = ?NoValue()
+  is-literal = ?LitString(_)
+  

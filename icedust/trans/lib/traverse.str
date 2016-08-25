@@ -55,7 +55,7 @@ rules // apply strategy on a tree top-down and carry over a history
     where
       <explode-term>term
     with
-        annotations := <get-annotations> term;
+      annotations := <get-annotations> term;
       (term', fold-value') := <map-strategy>(term, fold-value);
       (cons, args) := <explode-term>term';
       (args', fold-value'') := <topdown-fold-keep-anno(map-strategy)>(args, fold-value');
@@ -70,7 +70,38 @@ rules // apply strategy on a tree top-down and carry over a history
       <not(explode-term)>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value)
-      
+
+rules // 
+
+  // for lists
+  topdown-parent-fold-keep-anno(map-strategy): (x@[], parent, fold-base-value) -> (x, fold-base-value)
+
+  topdown-parent-fold-keep-anno(map-strategy): ([input-head|input-rest], parent, fold-value) -> ([input-head'|input-rest'], fold-value'')
+    with
+      (input-head', fold-value') := <topdown-parent-fold-keep-anno(map-strategy)>(input-head, parent, fold-value);
+      (input-rest', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(input-rest, parent, fold-value')
+
+  // for terms
+  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term'''', fold-value'')
+    where
+      <explode-term>term
+    with
+      annotations := <get-annotations> term;
+      (term', fold-value') := <map-strategy>(term, parent, fold-value);
+      (cons, args) := <explode-term>term';
+      (args', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(args, term, fold-value');
+      term'' := <mkterm>(cons, args');
+      term''' := <custom-origin(|term)>term'';
+      term'''' := <set-annotations> (term''', annotations)
+
+  // for not(list) not(term)
+  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term', fold-value')
+    where
+      <not(is-list)>term;
+      <not(explode-term)>term
+    with
+      (term', fold-value') := <map-strategy>(term, parent, fold-value)
+
 rules // apply strategy on a tree top-down and carry over a history, dont carry over history for some
 
   // for lists

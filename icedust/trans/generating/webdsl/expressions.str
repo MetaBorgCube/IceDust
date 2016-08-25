@@ -65,14 +65,3 @@ rules // casts
     with
       e1 := <expr-to-webdsl-expr(err)>ex1;
       x_method := $[as[<postfix-id>ex1-ty]]
-
-rules
-
-  expr-to-webdsl-expr(err): Partial(name, _) -> exp |[ x_name() ]|
-    with
-      x_name := <name-get> name
-  
-  expr-to-webdsl-expr(err): NoRelation(Ref(name)) -> exp |[ x_name() ]|
-    with
-      x_name := <name-get> name
-  

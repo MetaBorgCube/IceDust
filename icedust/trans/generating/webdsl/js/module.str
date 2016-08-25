@@ -60,10 +60,8 @@ rules // module
     with
       entityName := <attributename-get-entityname> attributeName;
       exp_attributeName := <name-to-jsstring-with-prefix(|entityName)> attributeName
-    
-  expr-to-js: NoRelation(x) -> <expr-to-js> x
-  
-  expr-to-js: Partial(name, _) -> js-ex |[ getPartialVar(exp_name) ]|
+
+  expr-to-js: TierSplit(name) -> js-ex |[ getPartialVar(exp_name) ]|
     with exp_name := <name-to-jsstring> name
 
   expr-to-js: LitString(str1) -> <name-to-jsstring> str1

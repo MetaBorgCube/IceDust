@@ -38,3 +38,9 @@ rules // direct references
 rules // references : this
 
   expr-to-webdsl-expr(err): This() -> webdsl:e |[this]|
+
+rules // references : tiersplit
+
+  expr-to-webdsl-expr(err): TierSplit(name) -> exp |[ x_name() ]|
+    with
+      x_name := <name-get> name

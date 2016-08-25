@@ -1,6 +1,6 @@
 module tiersplit/constructors
- 
+
 signature constructors
 
-  NoRelation: Exp -> Exp
-  Partial: STRING * Exp -> Exp
+  TierSplit: STRING       -> Exp
+  TierSplit: STRING * Exp -> Exp

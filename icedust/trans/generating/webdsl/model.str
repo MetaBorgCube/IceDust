@@ -59,8 +59,8 @@ rules // entities
       end
       
 rules
-
-  var-to-webdsl-function(err): Partial(name, expr) -> result
+      
+  var-to-webdsl-function(err): TierSplit(name, expr) -> result
     with
       x_getVar := <name-get> name;
       type := <_get-type> expr;
