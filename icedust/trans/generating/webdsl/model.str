@@ -101,31 +101,26 @@ rules
       e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
       e_entityName                := String(x_entityName)
     with
-      if <attributename-get-entityname;entityname-is-newcrudui> x_attributeName then
-        if <attributename-is-default-derivation> x_attributeName then
-          vars        := <attributename-get-expr-tiersplit-vars>x_attributeName;
-          ebd_varsfns := <map(var-to-webdsl-function(err))> vars;
-          e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
-        else
-          ebd_varsfns := []
-        end
+      if <attributename-is-newcrudui;attributename-is-default-derivation> x_attributeName then
+        ebd_varsfns := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_attributeName
       else
-        ebd_varsfns := [];
-        if <attributename-is-default-derivation> x_attributeName then
-          e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
-        end
+        ebd_varsfns := []
+      end
+    with
+      if <attributename-is-default-derivation> x_attributeName then
+        e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
       end
     with
       if name-is-calconwrite-eventuallyconsistent then
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_attributeName
       end
     with
-      if <attributename-get-entityname;entityname-is-newcrudui> x_attributeName then
+      if <attributename-is-newcrudui> x_attributeName then
         if attributename-is-normal-default then
           if attributename-is-default then
             ebd_attributeField* := ebd* |[
               x_attributeName : srt_attributeType (default=x_calculateAttribute())
-          ]|
+            ]|
           else
             if <get-multiplicity;ZeroOrOne()>x_attributeName then
               ebd_attributeField* := ebd* |[

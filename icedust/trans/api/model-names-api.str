@@ -14,6 +14,7 @@ imports // functions
 
   api/_runtime
   api/module-names-api
+  api/types-api
   lib/eq
   lib/origin
   lib/search
@@ -69,6 +70,12 @@ rules // attributes
   attributename-get-entityname = nabl-name-parent
   
   attributename-get-expr = index-get-prop(|AST());Hd
+  
+  attributename-is-newcrudui = where(attributename-get-entityname;entityname-is-newcrudui)
+  
+  attributename-pp2-type-multiplicity: attrName -> x
+    with
+      x := <pp2-type-multiplicity>(<_get-type>attrName, <get-multiplicity>attrName)
 
 rules // relations
 
