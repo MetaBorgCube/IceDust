@@ -103,9 +103,9 @@ rules
     with
       if <attributename-get-entityname;entityname-is-newcrudui> x_attributeName then
         if <attributename-is-default-derivation> x_attributeName then
-          (e_partial, vars) := <attributename-get-expr-tiersplit>x_attributeName;
+          vars        := <attributename-get-expr-tiersplit-vars>x_attributeName;
           ebd_varsfns := <map(var-to-webdsl-function(err))> vars;
-          e_calculate := <expr-to-webdsl-expr(err)> e_partial
+          e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
         else
           ebd_varsfns := []
         end
