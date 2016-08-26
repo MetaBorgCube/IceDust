@@ -67,15 +67,17 @@ menus
       submenu: "Calculate On Read"
         action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
         action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
-    action: "New CRUD UI"                             = generate-webdsl-newcrudui (openeditor)     
+        action: "New CRUD UI"                             = generate-webdsl-newcrudui (openeditor)     
       end
       submenu: "Calculate On Write"
         action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)
         action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor)
+        action: "New CRUD UI"                             = generate-webdsl-eager-newcrudui (openeditor)  
       end
       submenu: "Eventually Consistent"
         action: "Standalone Application (CRUD UI)"        = generate-webdsl-eventual (openeditor)
         action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+        action: "New CRUD UI"                             = generate-webdsl-eventual-newcrudui (openeditor)  
       end
     end
 
