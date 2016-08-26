@@ -101,7 +101,7 @@ rules
       e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
       e_entityName                := String(x_entityName)
     with
-      if <attributename-is-newcrudui;attributename-is-default-derivation> x_attributeName then
+      if <attributename-is-explorerui;attributename-is-default-derivation> x_attributeName then
         ebd_varsfns := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_attributeName
       else
         ebd_varsfns := []

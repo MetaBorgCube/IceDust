@@ -1,4 +1,4 @@
-module lib/icedust/newcrud-ui
+module lib/icedust/modelexplorer-ui
 
 section ui
 
@@ -6,7 +6,7 @@ section ui
   {
     main()
     define body() {
-      "Welcome to the new CRUD!"
+      "Welcome to the Model Explorer."
     }
   }
   

@@ -69,7 +69,7 @@ rules //crud
       x_jsLib := <double-quote> $[javascript-lib.js?[ctime]];
       x_jsDerivations := <double-quote> $[derivations.js?[ctime]]
     with
-      if entityname-is-newcrudui then
+      if entityname-is-explorerui then
         result := def* |[
           page x_manageEntity(){
             main()

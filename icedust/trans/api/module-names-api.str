@@ -59,7 +59,6 @@ rules // module
   modulename-get-uistyle = _get-property(|UIStyle())
   
   modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
-  modulename-is-crudui = where(modulename-get-uistyle;?CrudUI())
-  modulename-is-newcrudui = where(modulename-get-uistyle;?NewCrudUI())
+  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
   modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
   

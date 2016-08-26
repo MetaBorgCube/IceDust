@@ -21,6 +21,5 @@ signature constructors
   CalcOnWrite          : ImplStrategy
   EventuallyConsistent : ImplStrategy
   
-  NoUI   : UIStyle
-  CrudUI : UIStyle
-  NewCrudUI : UIStyle
+  NoUI      : UIStyle
+  ExplorerUI : UIStyle

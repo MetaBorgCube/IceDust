@@ -152,11 +152,11 @@ rules // module
           
             sec_hibernateTriggers*
           ]|
-        else if modulename-is-newcrudui then
+        else if modulename-is-explorerui then
           result := application |[
             application x_moduleName
           
-            imports lib/icedust/newcrud-ui
+            imports lib/icedust/modelexplorer-ui
             imports lib/icedust/non-required-inputs
             imports lib/icedust/Expressions
         
