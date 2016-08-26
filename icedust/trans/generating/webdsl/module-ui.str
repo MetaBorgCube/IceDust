@@ -69,159 +69,74 @@ rules //crud
       x_jsLib := <double-quote> $[javascript-lib.js?[ctime]];
       x_jsDerivations := <double-quote> $[derivations.js?[ctime]]
     with
-      if entityname-is-explorerui then
-        result := def* |[
-          page x_manageEntity(){
-            main()
-            define body() {
-              header{ elem_nameString }
-              navigate x_createEntity() [class="ice-ent-create"] { "Create " }
-              <br/>
-              for(entity: x_entityName order by entity.name asc) {
-                div[class="ice-ent"]{
-                  div[class="ice-ent-name"]{
-                    navigate x_viewEntity(entity) [] { output(entity.name) }
-                  }
-                  action("Delete", x_removeEntity(entity))
+      result := def* |[
+        page x_manageEntity(){
+          main()
+          define body() {
+            header{ elem_nameString }
+            navigate x_createEntity() [class="ice-ent-create"] { "Create " }
+            <br/>
+            for(entity: x_entityName order by entity.name asc) {
+              div[class="ice-ent"]{
+                div[class="ice-ent-name"]{
+                  navigate x_viewEntity(entity) [] { output(entity.name) }
                 }
+                action("Delete", x_removeEntity(entity))
               }
-              action x_removeEntity(entity: x_entityName) {
-                entity.delete();
+            }
+            action x_removeEntity(entity: x_entityName) {
+              entity.delete();
+            }
+          }
+        }
+        
+        page x_createEntity(){
+          main()
+          define body() {
+            header{ "Create " elem_nameString } 
+            elem_deriveRowsVarCreate
+            div[class="ice-form"] {
+              form {
+                elem_deriveRowsInputCreate
+                <br/>
+                action("Save", save())
+              }
+            }
+            action save() {
+              stat_createDefaultWrap*
+              var temp := x_createEntityBlock;
+              temp.save();
+              return x_viewEntity(temp);
+            }
+          }
+        }
+        
+        page x_viewEntity(temp: x_entityName){
+          includeJS(x_jsExpressions)
+          includeJS(x_jsLib)
+          includeJS(x_jsDerivations)
+          main()
+          define body() {
+            header{"Edit " output(temp.name)}
+            elem_deriveRowsVarEdit
+            div[class="ice-form"] {
+              form {
+                elem_editRelations
+                elem_hiddenvars*
+                elem_deriveRowsInputEdit
+                <br/>
+                submit action {
+                  stat_assignEditEntity
+                  temp.save();
+                } { "Save" }
               }
             }
           }
-          
-          page x_createEntity(){
-            main()
-            define body() {
-              header{ "Create " elem_nameString } 
-              elem_deriveRowsVarCreate
-              div[class="ice-form"] {
-                form {
-                  elem_deriveRowsInputCreate
-                  <br/>
-                  action("Save", save())
-                }
-              }
-              action save() {
-                stat_createDefaultWrap*
-                var temp := x_createEntityBlock;
-                temp.save();
-                return x_viewEntity(temp);
-              }
-            }
-          }
-          
-          page x_viewEntity(temp: x_entityName){
-            includeJS(x_jsExpressions)
-            includeJS(x_jsLib)
-            includeJS(x_jsDerivations)
-            main()
-            define body() {
-              header{"Edit " output(temp.name)}
-              elem_deriveRowsVarEdit
-              div[class="ice-form"] {
-                form {
-                  elem_editRelations
-                  elem_hiddenvars*
-                  elem_deriveRowsInputEdit
-                  <br/>
-                  submit action {
-                    stat_assignEditEntity
-                    temp.save();
-                  } { "Save" }
-                }
-              }
-            }
-          }
+        }
 
-          def_relationsetters
-        ]|
-      else if entityname-is-calconread then
-        result := [DeriveCrud(x_entityName)]
-      else
-        form-fields :=
-          <concat(
-            entityname-get-attributenames-normal-default,
-            entityname-get-relationnames,
-            entityname-get-rolenames,
-            entityname-get-inversenames
-          );map(attributename-to-webdsl)>x_entityName;
-        elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
-        elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields);  
-        result := def* |[
-          define page x_createEntity(){
-            //derive createPage from temp
-            main()
-            define body() {
-              var temp := x_entityName{}
-              header{"Create " output(temp.name) } 
-              form { 
-                <fieldset>
-                  <legend>
-                    output("Details")
-                  </legend>
-                  <table>
-                    elem_deriveEditRowsTemp
-                    // derive editRows from temp
-                  </table>
-                </fieldset>      
-                action("Save", save())
-              }
-              action save() { 
-                temp.save();
-                return x_manageEntity();
-              }
-            }
-          }
-          define page x_viewEntity(arg : x_entityName){
-            derive viewPage from arg
-          }
-          define page x_editEntity(arg : x_entityName){
-            //derive editPage from arg
-            main()
-            define body() {
-              header{"Edit " output(arg.name) } 
-              form { 
-                <fieldset>
-                  <legend>
-                    output("Details")
-                  </legend>
-                  <table>
-                    elem_deriveEditRowsArg
-                    // derive editRows from arg
-                  </table>
-                </fieldset>  
-                action("Save", save())
-              }
-              action save() { 
-                arg.save();
-                return x_manageEntity();
-              }
-            }
-          }
-          define page x_manageEntity(){
-            main()
-            define body(){
-              navigate(x_createEntity()){ "create" }
-              <list>
-                for(elem : x_entityName){
-                  <li> 
-                    output(elem)
-                    " "
-                    navigate(x_editEntity(elem)){ "edit" }
-                    " "
-                    form{action("remove",remove(elem))}
-                  </li>
-                }
-              </list>
-              action remove(arg : x_entityName){
-                arg.delete();
-              }
-            }
-          }
-        ]|
-      end end
+        def_relationsetters
+      ]|
+    
   
   attributename-to-webdsl: x_name -> DeriveDefault(x_name)
   

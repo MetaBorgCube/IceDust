@@ -36,7 +36,7 @@ rules // entities
       ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
     with
-      if entityname-is-noui then
+      if entityname-is-explorerui then
         result := def |[
           entity x_entityName {
             ebd_attributes*
@@ -48,7 +48,7 @@ rules // entities
         ]|
       else
         result := def |[
-          entity x_entityName {
+          extend entity x_entityName {
             ebd_attributes*
             ebd_relations*
             ebd_roles*

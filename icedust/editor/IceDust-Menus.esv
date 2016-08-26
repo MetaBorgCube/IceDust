@@ -66,15 +66,15 @@ menus
     submenu: "to WebDSL"
       submenu: "Calculate On Read"
         action: "Model Explorer"                          = generate-webdsl-explorerui (openeditor)     
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl (openeditor)
       end
       submenu: "Calculate On Write"
         action: "Model Explorer"                          = generate-webdsl-eager-explorerui (openeditor) 
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor) 
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager (openeditor) 
       end
       submenu: "Eventually Consistent"
         action: "Model Explorer"                          = generate-webdsl-eventual-explorerui (openeditor)  
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual (openeditor)
       end
     end
 
