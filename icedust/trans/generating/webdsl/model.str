@@ -115,46 +115,28 @@ rules
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_attributeName
       end
     with
-      if <attributename-is-newcrudui> x_attributeName then
-        if attributename-is-normal-default then
-          if attributename-is-default then
-            ebd_attributeField* := ebd* |[
-              x_attributeName : srt_attributeType (default=x_calculateAttribute())
-            ]|
-          else
-            if <get-multiplicity;ZeroOrOne()>x_attributeName then
-              ebd_attributeField* := ebd* |[
-                x_attributeName : srt_attributeType (default=null)
-              ]|
-            else
-              e1 := String(x_attributeName);
-              if <_get-type ; String()> x_attributeName then
-                ebd_attributeField* := ebd* |[
-                  x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
-                ]|
-              else
-                ebd_attributeField* := ebd* |[
-                  x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
-                ]|
-              end
-            end
-          end
-        else
-          ebd_attributeField* := ebd* |[
-            x_attributeName : srt_attributeType := x_calculateAttribute()
-          ]|
-        end
-      else
-        if attributename-is-normal-default then
+      if attributename-is-normal-default then
+        if <(get-multiplicity;ZeroOrOne()) <+ attributename-is-default>x_attributeName then
           ebd_attributeField* := ebd* |[
             x_attributeName : srt_attributeType (default=null)
           ]|
         else
-          ebd_attributeField* := ebd* |[
-            x_attributeName : srt_attributeType := x_calculateAttribute()
-          ]|
+          e1 := String(x_attributeName);
+          if <_get-type ; String()> x_attributeName then
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
+            ]|
+          else
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+            ]|
+          end
         end
-      end   
+      else
+        ebd_attributeField* := ebd* |[
+          x_attributeName : srt_attributeType := x_calculateAttribute()
+        ]|
+      end
     with
       if attributename-is-default; name-is-calconread then
         ebd_getAttribute* := ebd* |[
