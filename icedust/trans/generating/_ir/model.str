@@ -55,4 +55,12 @@ rules // prefixed names
   attributename-entityname-queue: attributename -> $[[entityname][<ucfirst>attributename]Queue]
     with
       entityname := <attributename-get-entityname>attributename
+      
+  attributename-entityname-prefix: attributename -> $[[entityname]_[attributename]_]
+    with
+      entityname := <attributename-get-entityname>attributename
+      
+  attributename-entityname: attributename -> $[[entityname]_[attributename]]
+    with
+      entityname := <attributename-get-entityname>attributename
   

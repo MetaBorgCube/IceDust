@@ -13,6 +13,7 @@ imports // functions
   lib/debug
   lib/new-name
   lib/traverse
+  generating/_ir/model
   
 rules
 
@@ -21,10 +22,9 @@ rules
 
   attributename-get-expr-tiersplit: attrName -> (e', vars')
     with
-      entityName      := <attributename-get-entityname>attrName;
-      expr            := <attributename-get-expr>attrName;
-      prefix          := $[[entityName]_[attrName]_];
-      (e', vars')     := <split-expr(|prefix)>expr
+      expr        := <attributename-get-expr>attrName;
+      prefix      := <attributename-entityname-prefix>attrName;
+      (e', vars') := <split-expr(|prefix)>expr
 
 rules
 

@@ -8,7 +8,7 @@ imports // constructors
 
 imports // functions
 
-
+  generating/webdsl/js/js-helper
 
 rules // lib expression calls
 
@@ -26,29 +26,28 @@ rules // lib expression calls
 
 rules // literals
 
-  expr-to-js: LitString(str1) -> <name-to-jsstring> str1
-  expr-to-js: Float(f) -> FloatLiteral(f)
-  expr-to-js: Int(i) -> IntegerLiteral(i)
-  expr-to-js: True() -> True()
-  expr-to-js: False() -> False()
-  expr-to-js: NoValue() -> Null()
-  expr-to-js: Datetime(str1) -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
+  expr-to-js: LitString(str1) -> <js-string> str1
+  expr-to-js: Float(f)        -> FloatLiteral(f)
+  expr-to-js: Int(i)          -> IntegerLiteral(i)
+  expr-to-js: True()          -> True()
+  expr-to-js: False()         -> False()
+  expr-to-js: NoValue()       -> Null()
+  expr-to-js: Datetime(str1)  -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
   
 rules // casts
   
   expr-to-js: Cast(ex1, ex1-ty) -> js-cast
     with
-      exp_1 := <expr-to-js>ex1;
+      exp_1    := <expr-to-js>ex1;
       exp_call := $[as[<postfix-id>ex1-ty]];
-      js-cast := js-ex |[ exp_call(exp_1) ]|
+      js-cast  := js-ex |[ exp_call(exp_1) ]|
 
 rules // references
 
   expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
     with
-      entityName := <attributename-get-entityname> attributeName;
-      exp_attributeName := <name-to-jsstring-with-prefix(|entityName)> attributeName
+      exp_attributeName := <attributename-entityname;js-string>attributeName
 
   expr-to-js: TierSplit(name) -> js-ex |[ getPartialVar(exp_name) ]|
-    with exp_name := <name-to-jsstring> name
+    with exp_name := <js-string> name
         

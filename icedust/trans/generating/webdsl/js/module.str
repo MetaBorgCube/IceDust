@@ -31,28 +31,25 @@ imports // functions
   naming/_notNaBL
   tiersplit/intra-object
   generating/webdsl/js/expressions
+  generating/webdsl/js/js-helper
   
 rules // module
 
-  name-to-jsstring: name -> String(<concat-strings> ["\"", name, "\""])
-  
-  name-to-jsstring-with-prefix(|prefix): name -> String(<concat-strings> ["\"", prefix, "_", name, "\""])
-
-  is-relation = ?Relation(_)
-
-  moduleName-to-derivation-js: moduleName -> derivation-js
+  moduleName-to-derivation-js: moduleName -> result
     with
-      attributes := <modulename-get-attributenames-default-derivation> moduleName;
-      stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes;
-      derivation-js := js-program |[stmt_derivationjs*]|
+      attributes         := <modulename-get-attributenames-default-derivation> moduleName;
+      stmt_derivationjs* := <map(attributeName-default-derivation-to-js)>attributes
+    with
+      result := js-program |[stmt_derivationjs*]|
     
-  attributeName-default-derivation-to-js: attributeName -> derivation-js
+  attributeName-default-derivation-to-js: attributeName -> result
     with
-      exp_attributeNamestr := <name-to-jsstring-with-prefix(|<attributename-get-entityname> attributeName)> attributeName;
-      partial-expr := <attributename-get-expr-tiersplit-expr> attributeName;
-      exp_derivation := <expr-to-js> partial-expr;
-      stmt_return := js-stmt |[ return exp_derivation; ]|;
-      derivation-js := js-stmt |[
+      exp_attributeNamestr := <attributename-entityname;js-string>attributeName;
+      partial-expr         := <attributename-get-expr-tiersplit-expr> attributeName;
+      exp_derivation       := <expr-to-js> partial-expr;
+      stmt_return          := js-stmt |[ return exp_derivation; ]|
+    with
+      result := js-stmt |[
         setDerived(exp_attributeNamestr, function() {
         stmt_return
       });
