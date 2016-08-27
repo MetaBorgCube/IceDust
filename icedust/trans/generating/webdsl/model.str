@@ -116,7 +116,7 @@ rules
       end
     with
       if attributename-is-normal-default then
-        if <(get-multiplicity;ZeroOrOne()) <+ attributename-is-default>x_attributeName then
+        if <name-is-zeroormore <+ attributename-is-default-derivation>x_attributeName then
           ebd_attributeField* := ebd* |[
             x_attributeName : srt_attributeType (default=null)
           ]|

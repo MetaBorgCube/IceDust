@@ -110,6 +110,9 @@ rules
   
   name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
   
+  name-is-one                = where(get-multiplicity;lower-one;upper-one)
+  name-is-zeroormore         = where(get-multiplicity;lower-zero;upper-one)
+  
   name-is-to-one             = where(get-multiplicity;upper-one)
   name-is-to-many            = where(get-multiplicity;upper-many)
   name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)

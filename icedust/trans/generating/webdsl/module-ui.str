@@ -40,9 +40,9 @@ rules //crud
       entity-fields := <map(attributename-to-webdsl)>attributenames;
       allNames := <conc> (attributenames, relationsOnes);
       createNames := <filter(attributename-is-normal-default)> allNames;
-      elem_deriveRowsVarCreate   := <map(attributename-to-webdsl-varcreate)> createNames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> createNames;
-      elem_deriveRowsVarEdit     := <map(attributename-to-webdsl-varedit)>   attributenames-normal-default;
+//      elem_deriveRowsVarCreate   := <map(attributename-to-webdsl-varcreate)> createNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> attributenames; // createNames;
+//      elem_deriveRowsVarEdit     := <map(attributename-to-webdsl-varedit)>   attributenames-normal-default;
       elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames;
 //    elem_deriveRowsOutputView  := <map(attributename-to-webdsl-outputview)>attributenames;
       
@@ -91,15 +91,16 @@ rules //crud
         }
         
         page x_createEntity(){
+          var temp := x_entityName{}
           includeJS(x_jsExpressions)
           includeJS(x_jsLib)
           includeJS(x_jsDerivations)
           main()
           define body() {
-            header{ "Create " elem_nameString } 
-            elem_deriveRowsVarCreate
+            header{ "Create " elem_nameString }
             div[class="ice-form"] {
               form {
+                elem_hiddenvars*
                 elem_deriveRowsInputCreate
                 <br/>
                 action("Save", save())
@@ -107,7 +108,6 @@ rules //crud
             }
             action save() {
               stat_createDefaultWrap*
-              var temp := x_createEntityBlock;
               temp.save();
               return x_viewEntity(temp);
             }
@@ -121,7 +121,6 @@ rules //crud
           main()
           define body() {
             header{"Edit " output(temp.name)}
-            elem_deriveRowsVarEdit
             div[class="ice-form"] {
               form {
                 elem_editRelations
@@ -129,7 +128,7 @@ rules //crud
                 elem_deriveRowsInputEdit
                 <br/>
                 submit action {
-                  stat_assignEditEntity
+                  stat_createDefaultWrap*
                   temp.save();
                 } { "Save" }
               }
@@ -173,8 +172,8 @@ rules //crud rules
   create-wrap-default : x_name -> result
   with
     result := stat |[
-      if(x_name.trim() == "") {
-        x_name := null;
+      if(temp.x_name.trim() == "") {
+        temp.x_name := null;
       }
     ]|
 
@@ -381,12 +380,12 @@ rules //crud rules
   with
     if <_get-type;Boolean()> x_name then
       if <get-multiplicity;ZeroOrOne()> x_name then
-        result := elem |[ inputNonRequiredBool(x_name) ]|
+        result := elem |[ inputNonRequiredBool(temp.x_name) ]|
       else
-        result := elem |[ input(x_name) ]|
+        result := elem |[ input(temp.x_name) ]|
       end
     else
-      result := elem |[ input(x_name) ]|
+      result := elem |[ input(temp.x_name) ]|
     end
     
   extract-flow : DataflowPath(x, Ref(y)) ->
@@ -405,8 +404,8 @@ rules //crud rules
     flows := <name-get-flowsto-paths> x_name;
     flows-extracted := <map(extract-flow)> flows;
     x_flows := <map(add-space); concat-strings; double-quote> flows-extracted;
+    x_output := <attributename-to-webdsl-output> x_name;
     if <attributename-is-derivation>x_name then
-      x_output := <attributename-to-webdsl-output> x_name;
       result := elem* |[
         <div class="ice-attr">
           <div class="ice-attr-name">
@@ -440,7 +439,9 @@ rules //crud rules
                 data-default = "true">
                 "" x_input
                 <div class="error-msg"></div>
-                <div class="default-output"></div>
+                <div class="default-output">
+                  "" x_output
+                </div>
               </div>
             </div>
           </div>
