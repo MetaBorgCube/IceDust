@@ -40,11 +40,11 @@ rules //crud
       entity-fields := <map(attributename-to-webdsl)>attributenames;
       allNames := <conc> (attributenames, relationsOnes);
       createNames := <filter(attributename-is-normal-default)> allNames;
-      elem_deriveRowsVarCreate := <map(attributename-to-webdsl-varcreate)> createNames;
+      elem_deriveRowsVarCreate   := <map(attributename-to-webdsl-varcreate)> createNames;
       elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> createNames;
-      elem_deriveRowsVarEdit := <map(attributename-to-webdsl-varedit)>attributenames-normal-default;
-      elem_deriveRowsInputEdit := <map(attributename-to-webdsl-inputedit)>attributenames;
-      elem_deriveRowsOutputView := <map(attributename-to-webdsl-outputview)>attributenames;
+      elem_deriveRowsVarEdit     := <map(attributename-to-webdsl-varedit)>   attributenames-normal-default;
+      elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames;
+//    elem_deriveRowsOutputView  := <map(attributename-to-webdsl-outputview)>attributenames;
       
       if <?0> numberOfAttributesNormalDefault then
         x_createEntityBlock := ObjectCreation(x_entityName, [])
@@ -91,6 +91,9 @@ rules //crud
         }
         
         page x_createEntity(){
+          includeJS(x_jsExpressions)
+          includeJS(x_jsLib)
+          includeJS(x_jsDerivations)
           main()
           define body() {
             header{ "Create " elem_nameString } 
@@ -179,7 +182,7 @@ rules //crud rules
   with
     x_type := <name-to-webdsl-srt(err)>x_name;
     result := def |[
-      var x_name : x_type
+      var x_name : x_type := null
     ]|
   
   booleantype-to-webdsl-inputtext : ZeroOrOne() -> result
