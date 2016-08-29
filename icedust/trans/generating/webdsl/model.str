@@ -116,7 +116,7 @@ rules
       end
     with
       if attributename-is-normal-default then
-        if <name-is-zeroormore <+ attributename-is-default-derivation>x_attributeName then
+        if <name-is-zeroorone <+ attributename-is-default-derivation>x_attributeName then
           ebd_attributeField* := ebd* |[
             x_attributeName : srt_attributeType (default=null)
           ]|
@@ -126,11 +126,15 @@ rules
             ebd_attributeField* := ebd* |[
               x_attributeName : srt_attributeType (default=null, validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
             ]|
+          else  if <_get-type ; Boolean()> x_attributeName then
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+            ]|
           else
             ebd_attributeField* := ebd* |[
               x_attributeName : srt_attributeType (default=null, validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
             ]|
-          end
+          end end
         end
       else
         ebd_attributeField* := ebd* |[

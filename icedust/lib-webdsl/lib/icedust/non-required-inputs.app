@@ -181,7 +181,7 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
 
   <input type = "hidden" name=rname + "_isinput" />
   
-  <div style="display: inline-block"
+  <div class="optionalBoolean non-required-bool"
   if( getPage().inLabelContext() ){
       id = getPage().getLabelString()
     }>
@@ -242,7 +242,7 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
           b := true;
         }
         else{
-        b := false;
+          b := false;
         }
       }
     }

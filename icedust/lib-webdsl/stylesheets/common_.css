@@ -225,3 +225,8 @@ a.ice-ent-create {
   margin-bottom: 10px;
   display: inline-block;
 }
+
+.non-required-bool {
+  display: inline-block;
+  width: 206px;
+}

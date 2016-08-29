@@ -379,7 +379,7 @@ rules //crud rules
   name-to-webdsl-input : x_name -> result
   with
     if <_get-type;Boolean()> x_name then
-      if <get-multiplicity;ZeroOrOne()> x_name then
+      if <attributename-is-default <+ (get-multiplicity;ZeroOrOne())> x_name then
         result := elem |[ inputNonRequiredBool(temp.x_name) ]|
       else
         result := elem |[ input(temp.x_name) ]|
