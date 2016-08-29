@@ -29,34 +29,23 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
-      elem_nameString := String(x_entityName);
-      x_manageEntity  := <name-manage>x_entityName;
-      x_createEntity  := <name-create>x_entityName;
-      x_editEntity    := <name-edit>x_entityName;
-      x_removeEntity  := <name-remove>x_entityName;
-      x_viewEntity    := <lcfirst>x_entityName;
-      attributenames* := <entityname-get-attributenames2>x_entityName;
-      relations       := <entityname-get-relationnames>x_entityName;
-      relationsOnes*  := <filter(where(get-multiplicity; ?One()))> relations;
-      attributenames-normal-default := <entityname-get-attributenames2-normal-default>x_entityName;
-      numberOfAttributes := <length>attributenames*;
-      numberOfAttributesNormalDefault := <length>attributenames-normal-default;
+      elem_nameString            := String(x_entityName);
+      x_manageEntity             := <name-manage>x_entityName;
+      x_createEntity             := <name-create>x_entityName;
+      x_editEntity               := <name-edit>x_entityName;
+      x_removeEntity             := <name-remove>x_entityName;
+      x_viewEntity               := <lcfirst>x_entityName;
+      attributenames*            := <entityname-get-attributenames2>x_entityName;
+      relations                  := <entityname-get-relationnames>x_entityName;
+      relationsOnes*             := <filter(where(get-multiplicity; ?One()))> relations;
       elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> relationsOnes*;
       elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames*;
-      
-      def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
-      elem_editRelations := <map(relationname-to-editlink)> relations;
-      stat_createDefaultWrap* :=
-        <filter(where(_get-type; ?String()); attributename-is-default);
-         map(create-wrap-default)> attributenames*;
-      attributenames-default-derivation := <entityname-get-attributenames2-default-derivation> x_entityName;
-      partial_vars := <fmap(attributename-get-expr-tiersplit-vars)> attributenames-default-derivation;
-      elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars;
-      
-      ctime := "0";//<time>;
-      x_jsExpressions := <double-quote> $[Expressions.js?[ctime]];
-      x_jsLib := <double-quote> $[javascript-lib.js?[ctime]];
-      x_jsDerivations := <double-quote> $[derivations.js?[ctime]]
+      def_relationsetters        := <map(relationname-to-setter(|x_entityName))> relations;
+      elem_editRelations         := <map(relationname-to-editlink)> relations;
+      stat_createDefaultWrap*    := <filter(where(_get-type; ?String()); attributename-is-default);map(create-wrap-default)> attributenames*;
+      attrs-default-derivation   := <entityname-get-attributenames2-default-derivation> x_entityName;
+      partial_vars               := <fmap(attributename-get-expr-tiersplit-vars)> attrs-default-derivation;
+      elem_hiddenvars*           := <map(var-to-hidden-div)> partial_vars
     with
       result := def* |[
         page x_manageEntity(){
@@ -81,9 +70,9 @@ rules //crud
         
         page x_createEntity(){
           var temp := x_entityName{}
-          includeJS(x_jsExpressions)
-          includeJS(x_jsLib)
-          includeJS(x_jsDerivations)
+          includeJS("Expressions.js")
+          includeJS("javascript-lib.js")
+          includeJS("derivations.js")
           main()
           define body() {
             header{ "Create " elem_nameString }
@@ -104,9 +93,9 @@ rules //crud
         }
         
         page x_viewEntity(temp: x_entityName){
-          includeJS(x_jsExpressions)
-          includeJS(x_jsLib)
-          includeJS(x_jsDerivations)
+          includeJS("Expressions.js")
+          includeJS("javascript-lib.js")
+          includeJS("derivations.js")
           main()
           define body() {
             header{"Edit " output(temp.name)}
@@ -136,20 +125,21 @@ rules //crud
   entityname-to-webdsl-elem: x_entityName -> result
     with
       x_manageName := $[manage[x_entityName]];
-      $text := Text(x_entityName)
+      $text        := Text(x_entityName)
     with
       result := elem |[
         navbaritem{navigate x_manageName(){$text}}
       ]|
 
-rules //crud rules
+rules
   
   var-to-hidden-div: TierSplit(name, expr) -> result
     with
-      type := <attributename-pp2-type-multiplicity> expr;
+      type      := <attributename-pp2-type-multiplicity> expr;
       x_strname := <double-quote> name;
       x_strtype := <double-quote> type;
-      x_getname := <name-get> name;
+      x_getname := <name-get> name
+    with
       result := elem |[
         div[
           data-partial-var="true",
@@ -162,70 +152,36 @@ rules //crud rules
       ]|
 
   create-wrap-default : x_name -> result
-  with
-    result := stat |[
-      if(temp.x_name.trim() == "") {
-        temp.x_name := null;
-      }
-    ]|
-  
-  relationname-to-editlink : x_name -> result
-  with
-    entity := <attributename-get-entityname> x_name;
-    x_namestr := String(<ucfirst>x_name);
-    x_setname := $[set_[entity]_[x_name]];
-    x_s := <double-quote> x_name;
-    x_getname := <name-get> x_name;
-    result := elem* |[
-      relationEdit(x_namestr, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
-    ]|
-    
-  relationname-to-setter(|x_entityName) : x_name -> result
-  with
-    mult := <get-multiplicity> x_name;
-    x_setname := $[set_[x_entityName]_[x_name]];
-    x_stringifiedname := <double-quote> x_name;
-    x_getname := <name-get> x_name;
-    x_editEntity := <name-edit> x_entityName;
-    x_viewEntity   := <lcfirst>x_entityName;
-    x_inverseName := <name-get-inversename> x_name;
-    x_entname := <attributename-get-entityname>x_inverseName;
-    if <?One()> mult then // 1
-      result := def |[
-        page x_setname(ent: x_entityName) {
-          main()
-          define body() {
-            header{ "Edit " output(ent.name) " " x_stringifiedname }
-            div[class="ice-form"]{
-              div[class="ice-attr"]{
-                div[class="ice-attr-name"]{
-                  "" x_stringifiedname ":"
-                }
-                div[class="ice-rel-val"]{
-                  "" output(ent.x_getname())
-                }
-              }
-            }
-            div[class="ice-form2"]{
-              for(s: x_entname order by s.name asc) {
-                if(ent.x_getname() != s) {
-                  div[class="ice-ent"]{
-                    div[class="ice-ent-name"]{
-                      output(s)
-                    }
-                    submit action {
-                      ent.x_name := s;
-                      ent.save();
-                    } { "Set" }
-                  }
-                }
-              }
-            }
-          }
+    with
+      result := stat |[
+        if(temp.x_name.trim() == "") {
+          temp.x_name := null;
         }
       ]|
-    else
-      if <?ZeroOrOne()> mult then // ?
+  
+  relationname-to-editlink : x_name -> result
+    with
+      entity    := <attributename-get-entityname> x_name;
+      x_namestr := String(<ucfirst>x_name);
+      x_setname := $[set_[entity]_[x_name]];
+      x_getname := <name-get> x_name
+    with
+      result := elem* |[
+        relationEdit(x_namestr, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
+      ]|
+    
+  relationname-to-setter(|x_entityName) : x_name -> result
+    with
+      mult              := <get-multiplicity> x_name;
+      x_setname         := $[set_[x_entityName]_[x_name]];
+      x_stringifiedname := <double-quote> x_name;
+      x_getname         := <name-get> x_name;
+      x_editEntity      := <name-edit> x_entityName;
+      x_viewEntity      := <lcfirst>x_entityName;
+      x_inverseName     := <name-get-inversename> x_name;
+      x_entname         := <attributename-get-entityname>x_inverseName
+    with
+      if <?One()> mult then // 1
         result := def |[
           page x_setname(ent: x_entityName) {
             main()
@@ -238,14 +194,6 @@ rules //crud rules
                   }
                   div[class="ice-rel-val"]{
                     "" output(ent.x_getname())
-                  }
-                  if(ent.x_getname() != null){
-                    div[class="ice-rel-edit"]{
-                      submit action {
-                        ent.x_name := null;
-                        ent.save();
-                      } { "Remove" }
-                    }
                   }
                 }
               }
@@ -267,105 +215,148 @@ rules //crud rules
             }
           }
         ]|
-      else // *
-        result := def |[
-          page x_setname(ent: x_entityName) {
-            main()
-            define body() {
-              header{ "Edit " output(ent.name) " " x_stringifiedname }
-              div[class="ice-form"]{
-                div[class="ice-attr"]{
-                  div[class="ice-attr-name"]{
-                    "" x_stringifiedname ":"
-                  }
-                  div[class="ice-rel-vals"]{
-                    for(s in ent.x_getname()) {
-                      div[class="ice-rel-val"]{
-                        "" output(s)
-                      }
+      else
+        if <?ZeroOrOne()> mult then // ?
+          result := def |[
+            page x_setname(ent: x_entityName) {
+              main()
+              define body() {
+                header{ "Edit " output(ent.name) " " x_stringifiedname }
+                div[class="ice-form"]{
+                  div[class="ice-attr"]{
+                    div[class="ice-attr-name"]{
+                      "" x_stringifiedname ":"
+                    }
+                    div[class="ice-rel-val"]{
+                      "" output(ent.x_getname())
+                    }
+                    if(ent.x_getname() != null){
                       div[class="ice-rel-edit"]{
                         submit action {
-                          ent.x_name.remove(s);
+                          ent.x_name := null;
                           ent.save();
                         } { "Remove" }
                       }
-                      br{}
                     }
                   }
                 }
-              }
-              div[class="ice-form2"]{
-                for(s: x_entname order by s.name asc) {
-                  if(ent.x_getname().indexOf(s) == -1) {
-                    div[class="ice-ent"]{
-                      div[class="ice-ent-name"]{
-                        output(s)
+                div[class="ice-form2"]{
+                  for(s: x_entname order by s.name asc) {
+                    if(ent.x_getname() != s) {
+                      div[class="ice-ent"]{
+                        div[class="ice-ent-name"]{
+                          output(s)
+                        }
+                        submit action {
+                          ent.x_name := s;
+                          ent.save();
+                        } { "Set" }
                       }
-                      submit action {
-                        ent.x_name.add(s);
-                        ent.save();
-                      } { "Add" }
                     }
                   }
                 }
               }
             }
-          }
-        ]|
+          ]|
+        else // * and +
+          result := def |[
+            page x_setname(ent: x_entityName) {
+              main()
+              define body() {
+                header{ "Edit " output(ent.name) " " x_stringifiedname }
+                div[class="ice-form"]{
+                  div[class="ice-attr"]{
+                    div[class="ice-attr-name"]{
+                      "" x_stringifiedname ":"
+                    }
+                    div[class="ice-rel-vals"]{
+                      for(s in ent.x_getname()) {
+                        div[class="ice-rel-val"]{
+                          "" output(s)
+                        }
+                        div[class="ice-rel-edit"]{
+                          submit action {
+                            ent.x_name.remove(s);
+                            ent.save();
+                          } { "Remove" }
+                        }
+                        br{}
+                      }
+                    }
+                  }
+                }
+                div[class="ice-form2"]{
+                  for(s: x_entname order by s.name asc) {
+                    if(ent.x_getname().indexOf(s) == -1) {
+                      div[class="ice-ent"]{
+                        div[class="ice-ent-name"]{
+                          output(s)
+                        }
+                        submit action {
+                          ent.x_name.add(s);
+                          ent.save();
+                        } { "Add" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]|
+        end
       end
-    end
   
   name-to-webdsl-input : x_name -> result
-  with
-    if <_get-type;Boolean()> x_name then
-      if <attributename-is-default <+ (get-multiplicity;ZeroOrOne())> x_name then
-        result := elem |[ inputNonRequiredBool(temp.x_name) ]|
+    with
+      if <_get-type;Boolean()> x_name then
+        if <attributename-is-default <+ (get-multiplicity;ZeroOrOne())> x_name then
+          result := elem |[ inputNonRequiredBool(temp.x_name) ]|
+        else
+          result := elem |[ input(temp.x_name) ]|
+        end
       else
         result := elem |[ input(temp.x_name) ]|
       end
-    else
-      result := elem |[ input(temp.x_name) ]|
-    end
     
-  extract-flow : DataflowPath(x, Ref(y)) ->
-    $[[<attributename-get-entityname> y]_[y]]
-  extract-flow : DataflowPath(x, y) -> ""
+  extract-flow : DataflowPath(x, Ref(y)) -> $[[<attributename-get-entityname> y]_[y]]
+  extract-flow : DataflowPath(x, y)      -> ""
   
   add-space : s -> <conc-strings> (s, " ")
   
   attributename-to-webdsl-inputedit : x_name -> result
-  with
-    x_namestr := String(<ucfirst>x_name);
-    entityName := <attributename-get-entityname> x_name;
-    x_derivedname := $["[entityName]_[x_name]"];
-    x_typestr := <attributename-pp2-type-multiplicity; double-quote> x_name;
-    x_input := <name-to-webdsl-input> x_name;
-    flows := <name-get-flowsto-paths> x_name;
-    flows-extracted := <map(extract-flow)> flows;
-    x_flows := <map(add-space); concat-strings; double-quote> flows-extracted;
-    x_output := <attributename-to-webdsl-output> x_name;
-    if <attributename-is-derivation>x_name then
-      result := elem* |[
-        attributeDerived(x_namestr,x_derivedname,x_typestr,x_flows){""x_output}
-      ]|
-    else
-    if <attributename-is-default> x_name then
+    with
+      x_namestr       := String(<ucfirst>x_name);
+      entityName      := <attributename-get-entityname> x_name;
+      x_derivedname   := $["[entityName]_[x_name]"];
+      x_typestr       := <attributename-pp2-type-multiplicity; double-quote> x_name;
+      x_input         := <name-to-webdsl-input> x_name;
+      flows           := <name-get-flowsto-paths> x_name;
+      flows-extracted := <map(extract-flow)> flows;
+      x_flows         := <map(add-space); concat-strings; double-quote> flows-extracted;
+      x_output        := <attributename-to-webdsl-output> x_name
+    with
+      if <attributename-is-derivation>x_name then
         result := elem* |[
-          attributeDefault(x_namestr,x_derivedname,x_typestr,x_flows,{""x_input}){""x_output}
+          attributeDerived(x_namestr,x_derivedname,x_typestr,x_flows){""x_output}
         ]|
       else
-        result := elem* |[
-          attributeNormal(x_namestr,x_derivedname,x_typestr,x_flows){""x_input}
-        ]|
+      if <attributename-is-default> x_name then
+          result := elem* |[
+            attributeDefault(x_namestr,x_derivedname,x_typestr,x_flows,{""x_input}){""x_output}
+          ]|
+        else
+          result := elem* |[
+            attributeNormal(x_namestr,x_derivedname,x_typestr,x_flows){""x_input}
+          ]|
+        end
       end
-    end
     
   attributename-to-webdsl-output: x_name ->  result
-  with
-    x_getname := <name-get> x_name;
-    if <_get-type;Datetime()>x_name then
-      result := elem |[outputNonRef(temp.x_getname())]|
-    else
-      result := elem |[output(temp.x_getname())]|
-    end
-
+    with
+      x_getname := <name-get> x_name
+    with
+      if <_get-type;Datetime()>x_name then
+        result := elem |[outputNonRef(temp.x_getname())]|
+      else
+        result := elem |[output(temp.x_getname())]|
+      end
