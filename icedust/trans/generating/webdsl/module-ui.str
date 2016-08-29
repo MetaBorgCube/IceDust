@@ -25,26 +25,23 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
-      elem_nameString:= String(x_entityName);
-      x_manageEntity := <name-manage>x_entityName;
-      x_createEntity := <name-create>x_entityName;
-      x_editEntity   := <name-edit>x_entityName;
-      x_removeEntity := <name-remove>x_entityName;
-      x_viewEntity   := <lcfirst>x_entityName;
+      elem_nameString := String(x_entityName);
+      x_manageEntity  := <name-manage>x_entityName;
+      x_createEntity  := <name-create>x_entityName;
+      x_editEntity    := <name-edit>x_entityName;
+      x_removeEntity  := <name-remove>x_entityName;
+      x_viewEntity    := <lcfirst>x_entityName;
       attributenames* := <entityname-get-attributenames2>x_entityName;
-      relations := <entityname-get-relationnames> x_entityName;
-      relationsOnes* := <filter(where(get-multiplicity; ?One()))> relations;
+      relations       := <entityname-get-relationnames>x_entityName;
+      relationsOnes*  := <filter(where(get-multiplicity; ?One()))> relations;
       attributenames-normal-default := <entityname-get-attributenames2-normal-default>x_entityName;
       numberOfAttributes := <length>attributenames*;
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
       entity-fields := <map(attributename-to-webdsl)>attributenames*;
-      allNames := [relationsOnes*, attributenames*];
-      createNames := <filter(attributename-is-normal-default)> allNames;
-//      elem_deriveRowsVarCreate   := <map(attributename-to-webdsl-varcreate)> createNames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> allNames; // createNames;
-//      elem_deriveRowsVarEdit     := <map(attributename-to-webdsl-varedit)>   attributenames-normal-default;
+//      allNames := [relationsOnes*, attributenames*];
+//      createNames := <filter(attributename-is-normal-default)> allNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> relationsOnes*;
       elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames*;
-//    elem_deriveRowsOutputView  := <map(attributename-to-webdsl-outputview)>attributenames;
       
       if <?0> numberOfAttributesNormalDefault then
         x_createEntityBlock := ObjectCreation(x_entityName, [])
@@ -100,8 +97,8 @@ rules //crud
             header{ "Create " elem_nameString }
             div[class="ice-form"] {
               form {
-                elem_hiddenvars*
                 elem_deriveRowsInputCreate
+                x_editEntity(temp)
                 <br/>
                 action("Save", save())
               }
@@ -124,8 +121,7 @@ rules //crud
             div[class="ice-form"] {
               form {
                 elem_editRelations
-                elem_hiddenvars*
-                elem_deriveRowsInputEdit
+                x_editEntity(temp)
                 <br/>
                 submit action {
                   stat_createDefaultWrap*
@@ -134,6 +130,11 @@ rules //crud
               }
             }
           }
+        }
+        
+        template x_editEntity(temp: x_entityName){
+          elem_hiddenvars*
+          elem_deriveRowsInputEdit
         }
 
         def_relationsetters
