@@ -31,19 +31,19 @@ rules //crud
       x_editEntity   := <name-edit>x_entityName;
       x_removeEntity := <name-remove>x_entityName;
       x_viewEntity   := <lcfirst>x_entityName;
-      attributenames := <entityname-get-attributenames2>x_entityName;
+      attributenames* := <entityname-get-attributenames2>x_entityName;
       relations := <entityname-get-relationnames> x_entityName;
-      relationsOnes := <filter(where(get-multiplicity; ?One()))> relations;
+      relationsOnes* := <filter(where(get-multiplicity; ?One()))> relations;
       attributenames-normal-default := <entityname-get-attributenames2-normal-default>x_entityName;
-      numberOfAttributes := <length>attributenames;
+      numberOfAttributes := <length>attributenames*;
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
-      entity-fields := <map(attributename-to-webdsl)>attributenames;
-      allNames := <conc> (attributenames, relationsOnes);
+      entity-fields := <map(attributename-to-webdsl)>attributenames*;
+      allNames := [relationsOnes*, attributenames*];
       createNames := <filter(attributename-is-normal-default)> allNames;
 //      elem_deriveRowsVarCreate   := <map(attributename-to-webdsl-varcreate)> createNames;
-      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> attributenames; // createNames;
+      elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> allNames; // createNames;
 //      elem_deriveRowsVarEdit     := <map(attributename-to-webdsl-varedit)>   attributenames-normal-default;
-      elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames;
+      elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames*;
 //    elem_deriveRowsOutputView  := <map(attributename-to-webdsl-outputview)>attributenames;
       
       if <?0> numberOfAttributesNormalDefault then
@@ -59,7 +59,7 @@ rules //crud
       elem_relationsOutputView := <map(relationname-to-output)> relations;
       stat_createDefaultWrap* :=
         <filter(where(_get-type; ?String()); attributename-is-default);
-         map(create-wrap-default)> attributenames;
+         map(create-wrap-default)> attributenames*;
       attributenames-default-derivation := <entityname-get-attributenames2-default-derivation> x_entityName;
       partial_vars := <fmap(attributename-get-expr-tiersplit-vars)> attributenames-default-derivation;
       elem_hiddenvars* := <map(var-to-hidden-div)> partial_vars;
