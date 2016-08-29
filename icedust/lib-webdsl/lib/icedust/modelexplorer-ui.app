@@ -65,3 +65,52 @@ section validator-inputs
     </div>
   }
 
+section attribute inputs
+
+  template attributeDerived(name:String, derivedname:String, typestr:String, flows:String){
+    div[class="ice-attr"]{
+      div[class="ice-attr-name"]{
+        output(name) ":"
+      }
+      div[class="ice-attr-val ice-attr-output"]{
+        div[data-name=derivedname, data-type=typestr, data-updates=flows]{
+          div[class="output"]{
+            elements
+          }
+          div[class="error-msg"]{}
+        }
+      }
+    }
+  }
+  
+  template attributeDefault(name:String, derivedname:String, typestr:String, flows:String, input:TemplateElements){
+    div[class="ice-attr"]{
+      div[class="ice-attr-name"]{
+        output(name) ":"
+      }
+      div[class="ice-attr-val ice-attr-input-output"]{
+        div[data-name=derivedname, data-type=typestr, data-updates=flows, data-default="true"]{
+          input()
+          div[class="error-msg"]{}
+          div[class="default-output"]{
+            elements
+          }
+        }
+      }
+    }
+  }
+  
+  template attributeNormal(name:String, derivedname:String, typestr:String, flows:String){
+    div[class="ice-attr"]{
+      div[class="ice-attr-name"]{
+        output(name) ":"
+      }
+      div[class="ice-attr-val ice-attr-input"]{
+        div[data-name=derivedname, data-type=typestr, data-updates=flows]{
+          elements
+          div[class="error-msg"]{}
+        }
+      }
+    }
+  }
+

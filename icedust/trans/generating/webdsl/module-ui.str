@@ -9,6 +9,10 @@ imports // constructors
   analysis2/path
   tiersplit/constructors
 
+signature constructors
+
+  TemplateElementsArgument: Term -> Term //TODO: update WebDSL constructors
+
 imports // functions
   
   generating/_ir/model 
@@ -408,62 +412,16 @@ rules //crud rules
     x_output := <attributename-to-webdsl-output> x_name;
     if <attributename-is-derivation>x_name then
       result := elem* |[
-        <div class="ice-attr">
-          <div class="ice-attr-name">
-            "" x_namestr ":"
-          </div>
-          <div class="ice-attr-val ice-attr-output">
-            <div
-              data-name = x_derivedname
-              data-type = x_typestr
-              data-updates = x_flows>
-              <div class="output">
-                "" x_output
-              </div>
-              <div class="error-msg"></div>
-            </div>
-          </div>
-        </div>
+        attributeDerived(x_namestr,x_derivedname,x_typestr,x_flows){""x_output}
       ]|
     else
     if <attributename-is-default> x_name then
         result := elem* |[
-          <div class="ice-attr">
-            <div class="ice-attr-name">
-              "" x_namestr ":"
-            </div>
-            <div class="ice-attr-val ice-attr-input-output">
-              <div
-                data-name = x_derivedname
-                data-type = x_typestr
-                data-updates = x_flows
-                data-default = "true">
-                "" x_input
-                <div class="error-msg"></div>
-                <div class="default-output">
-                  "" x_output
-                </div>
-              </div>
-            </div>
-          </div>
+          attributeDefault(x_namestr,x_derivedname,x_typestr,x_flows,{""x_input}){""x_output}
         ]|
       else
         result := elem* |[
-          <div class="ice-attr">
-            <div class="ice-attr-name"> 
-              "" x_namestr ":"
-            </div>
-            <div class="ice-attr-val ice-attr-input">
-              <div
-                data-name = x_derivedname
-                data-type = x_typestr
-                data-updates = x_flows>
-                "" x_input
-                <div class="error-msg"></div>
-                <div class="default-output"></div>
-              </div>
-            </div>
-          </div>
+          attributeNormal(x_namestr,x_derivedname,x_typestr,x_flows){""x_input}
         ]|
       end
     end
