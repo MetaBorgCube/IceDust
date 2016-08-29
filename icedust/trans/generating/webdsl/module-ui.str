@@ -41,23 +41,11 @@ rules //crud
       attributenames-normal-default := <entityname-get-attributenames2-normal-default>x_entityName;
       numberOfAttributes := <length>attributenames*;
       numberOfAttributesNormalDefault := <length>attributenames-normal-default;
-      entity-fields := <map(attributename-to-webdsl)>attributenames*;
-//      allNames := [relationsOnes*, attributenames*];
-//      createNames := <filter(attributename-is-normal-default)> allNames;
       elem_deriveRowsInputCreate := <map(attributename-to-webdsl-inputedit)> relationsOnes*;
       elem_deriveRowsInputEdit   := <map(attributename-to-webdsl-inputedit)> attributenames*;
       
-      if <?0> numberOfAttributesNormalDefault then
-        x_createEntityBlock := ObjectCreation(x_entityName, [])
-      else
-        x_createEntityBlock :=
-          ObjectCreation(x_entityName, <map(attributename-to-creation-property)> attributenames-normal-default)
-      end;
-      
-      stat_assignEditEntity := <map(attributename-to-webdsl-assignedit)> attributenames-normal-default;
       def_relationsetters := <map(relationname-to-setter(|x_entityName))> relations;
       elem_editRelations := <map(relationname-to-editlink)> relations;
-      elem_relationsOutputView := <map(relationname-to-output)> relations;
       stat_createDefaultWrap* :=
         <filter(where(_get-type; ?String()); attributename-is-default);
          map(create-wrap-default)> attributenames*;
@@ -145,8 +133,6 @@ rules //crud
       ]|
     
   
-  attributename-to-webdsl: x_name -> DeriveDefault(x_name)
-  
   entityname-to-webdsl-elem: x_entityName -> result
     with
       x_manageName := $[manage[x_entityName]];
@@ -182,22 +168,7 @@ rules //crud rules
         temp.x_name := null;
       }
     ]|
-
-  attributename-to-webdsl-varcreate : x_name -> result
-  with
-    x_type := <name-to-webdsl-srt(err)>x_name;
-    result := def |[
-      var x_name : x_type := null
-    ]|
   
-  booleantype-to-webdsl-inputtext : ZeroOrOne() -> result
-  with
-    result := "inputNonRequiredBool"
-    
-  booleantype-to-webdsl-inputtext : m -> result
-  with
-    result := "input"
-    
   relationname-to-editlink : x_name -> result
   with
     entity := <attributename-get-entityname> x_name;
@@ -219,24 +190,6 @@ rules //crud rules
       }
     ]|
     
-  relationname-to-output : x_name -> result
-  with
-    mult := <get-multiplicity> x_name;
-    x_s := <double-quote> x_name;
-    x_getname := <name-get> x_name;
-    if <?ZeroOrMore()> mult then // *
-      result := elem* |[
-        <b>x_s ": "</b> br{}
-        for(s in temp.x_getname()) {
-          output(s.name) br{}
-        }
-      ]|
-    else // 1 ?
-      result := elem* |[
-        x_s ": " output(temp.x_getname().name) br{}
-      ]|
-    end  
-  
   relationname-to-setter(|x_entityName) : x_name -> result
   with
     mult := <get-multiplicity> x_name;
@@ -372,16 +325,6 @@ rules //crud rules
       end
     end
   
-  attributetype-to-webdsl-inputtext(|x_name) : type -> result
-  with
-    result := "input"
-  
-  attributename-to-webdsl-inputcreate : x_name -> result
-  with
-    x_qname := <double-quote> x_name;
-    elem_input := <name-to-webdsl-input> x_name;
-    result := elem* |[ "" x_qname ": " elem_input br{} ]|
-  
   name-to-webdsl-input : x_name -> result
   with
     if <_get-type;Boolean()> x_name then
@@ -426,49 +369,8 @@ rules //crud rules
         ]|
       end
     end
-  
-  attributename-to-creation-property : x_name -> ObjectPropertyAssignment(x_name, Var(x_name))
-
-  attributename-to-webdsl-assignedit : x_name -> result
-  with
-    if <attributename-is-default>x_name then
-      if <_get-type;String()>x_name then
-        result := stat |[
-          if(x_name.trim() != "") {
-            temp.x_name := x_name;
-          } else {
-            temp.x_name := null;
-          }
-        ]|
-      else
-        result := stat |[
-          if(x_name != null) {
-              temp.x_name := x_name;
-          } else {
-              temp.x_name := null;
-          }
-        ]|
-      end
-    else
-      result := stat |[temp.x_name := x_name;]|
-    end
     
-  attributename-to-webdsl-varedit: x_name -> result
-  with
-    ux_name := <ucfirst>x_name;
-    if <attributename-is-default>x_name then
-      x_nameRightHand := $[temp.[x_name]];
-      result := def |[
-        var x_name := x_nameRightHand
-      ]|
-    else
-      x_nameRightHand := $[temp.get[ux_name]()];
-      result := def |[
-        var x_name := x_nameRightHand
-      ]|
-    end
-    
-    attributename-to-webdsl-output: x_name ->  result
+  attributename-to-webdsl-output: x_name ->  result
   with
     x_getname := <name-get> x_name;
     if <_get-type;Datetime()>x_name then
@@ -476,13 +378,4 @@ rules //crud rules
     else
       result := elem |[output(temp.x_getname())]|
     end
-    
-  attributename-to-webdsl-outputview: x_name ->  result
-  with
-    x_qname := <double-quote> x_name;
-    if <_get-type;Datetime()>x_name then
-      result := elem* |["" x_qname ": " output(temp.x_name) br{}]|
-    else
-      x_getname := <name-get> x_name;
-      result := elem* |["" x_qname ": " output(temp.x_getname()) br{}]|
-    end
+
