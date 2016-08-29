@@ -113,4 +113,18 @@ section attribute inputs
       }
     }
   }
+  
+  template relationEdit(name:String, value:TemplateElements, nav:TemplateElements){
+    div[class="ice-attr"]{
+      div[class="ice-attr-name"]{
+        "" output(name) ":"
+      }
+      div[class="ice-rel-val"]{
+        value()
+      }
+      div[class="ice-rel-edit"]{
+        nav()
+      }
+    }
+  }
 

@@ -177,17 +177,7 @@ rules //crud rules
     x_s := <double-quote> x_name;
     x_getname := <name-get> x_name;
     result := elem* |[
-      div[class="ice-attr"]{
-        div[class="ice-attr-name"]{
-          "" x_namestr ":"
-        }
-        div[class="ice-rel-val"]{
-          "" output(temp.x_getname())
-        }
-        div[class="ice-rel-edit"]{
-          navigate x_setname(temp) [] { "Edit " }
-        }
-      }
+      relationEdit(x_namestr, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
     ]|
     
   relationname-to-setter(|x_entityName) : x_name -> result
