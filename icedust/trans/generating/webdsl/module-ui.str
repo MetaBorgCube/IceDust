@@ -512,7 +512,7 @@ rules //crud rules
   with
     x_getname := <name-get> x_name;
     if <_get-type;Datetime()>x_name then
-      result := elem |[output(temp.x_name)]|
+      result := elem |[outputNonRef(temp.x_getname())]|
     else
       result := elem |[output(temp.x_getname())]|
     end

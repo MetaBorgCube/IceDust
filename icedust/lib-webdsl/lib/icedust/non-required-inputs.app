@@ -249,5 +249,24 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
   }
 }
 
+section string-output
 
-
+  template outputNonRef( d: DateTime ){
+    var default := DateType.getDefaultDateTimeFormat()
+    if( d != null ){
+      dateoutputgenericNonRef( d as Date, default )[ all attributes ]
+    }
+  }
+  
+  template dateoutputgenericNonRef( d: Date, defaultformat: String ){
+    var dateformat := defaultformat
+    init{
+      var attr := attribute( "format" );
+      if(    attr != null
+          && attr != ""
+      ){
+        dateformat := attr;
+      }
+    }
+    output( d.format( dateformat ) )
+  }
