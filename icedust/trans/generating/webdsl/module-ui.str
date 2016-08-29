@@ -76,7 +76,7 @@ rules //crud
           define body() {
             header{ elem_nameString }
             navigate x_createEntity() [class="ice-ent-create"] { "Create " }
-            <br/>
+            br{}
             for(entity: x_entityName order by entity.name asc) {
               div[class="ice-ent"]{
                 div[class="ice-ent-name"]{
@@ -103,7 +103,7 @@ rules //crud
               form {
                 elem_deriveRowsInputCreate
                 x_editEntity(temp)
-                <br/>
+                br{}
                 action("Save", save())
               }
             }
@@ -126,7 +126,7 @@ rules //crud
               form {
                 elem_editRelations
                 x_editEntity(temp)
-                <br/>
+                br{}
                 submit action {
                   stat_createDefaultWrap*
                   temp.save();
@@ -165,13 +165,14 @@ rules //crud rules
       x_strtype := <double-quote> type;
       x_getname := <name-get> name;
       result := elem |[
-        <div
-          data-partial-var="true"
-          data-name=x_strname
-          data-type=x_strtype
-          style="display:none">
+        div[
+          data-partial-var="true",
+          data-name=x_strname,
+          data-type=x_strtype,
+          style="display:none"
+        ]{
           output(temp.x_getname().toString())
-        </div>
+        }
       ]|
 
   create-wrap-default : x_name -> result
@@ -205,17 +206,17 @@ rules //crud rules
     x_s := <double-quote> x_name;
     x_getname := <name-get> x_name;
     result := elem* |[
-      <div class="ice-attr">
-        <div class="ice-attr-name">
+      div[class="ice-attr"]{
+        div[class="ice-attr-name"]{
           "" x_namestr ":"
-        </div>
-        <div class="ice-rel-val">
+        }
+        div[class="ice-rel-val"]{
           "" output(temp.x_getname())
-        </div>
-        <div class="ice-rel-edit">
+        }
+        div[class="ice-rel-edit"]{
           navigate x_setname(temp) [] { "Edit " }
-        </div>
-      </div>
+        }
+      }
     ]|
     
   relationname-to-output : x_name -> result
@@ -225,14 +226,14 @@ rules //crud rules
     x_getname := <name-get> x_name;
     if <?ZeroOrMore()> mult then // *
       result := elem* |[
-        <b>x_s ": "</b> <br/>
+        <b>x_s ": "</b> br{}
         for(s in temp.x_getname()) {
-          output(s.name) <br/>
+          output(s.name) br{}
         }
       ]|
     else // 1 ?
       result := elem* |[
-        x_s ": " output(temp.x_getname().name) <br/>
+        x_s ": " output(temp.x_getname().name) br{}
       ]|
     end  
   
@@ -252,17 +253,17 @@ rules //crud rules
           main()
           define body() {
             header{ "Edit " output(ent.name) " " x_stringifiedname }
-            <div class="ice-form">
-              <div class="ice-attr">
-                <div class="ice-attr-name">
+            div[class="ice-form"]{
+              div[class="ice-attr"]{
+                div[class="ice-attr-name"]{
                   "" x_stringifiedname ":"
-                </div>
-                <div class="ice-rel-val">
+                }
+                div[class="ice-rel-val"]{
                   "" output(ent.x_getname())
-                </div>
-              </div>
-            </div>
-            <div class="ice-form2">
+                }
+              }
+            }
+            div[class="ice-form2"]{
               for(s: x_entname order by s.name asc) {
                 if(ent.x_getname() != s) {
                   div[class="ice-ent"]{
@@ -276,7 +277,7 @@ rules //crud rules
                   }
                 }
               }
-            </div>
+            }
           }
         }
       ]|
@@ -287,25 +288,25 @@ rules //crud rules
             main()
             define body() {
               header{ "Edit " output(ent.name) " " x_stringifiedname }
-              <div class="ice-form">
-                <div class="ice-attr">
-                  <div class="ice-attr-name">
+              div[class="ice-form"]{
+                div[class="ice-attr"]{
+                  div[class="ice-attr-name"]{
                     "" x_stringifiedname ":"
-                  </div>
-                  <div class="ice-rel-val">
+                  }
+                  div[class="ice-rel-val"]{
                     "" output(ent.x_getname())
-                  </div>
+                  }
                   if(ent.x_getname() != null){
-                    <div class="ice-rel-edit">
+                    div[class="ice-rel-edit"]{
                       submit action {
                         ent.x_name := null;
                         ent.save();
                       } { "Remove" }
-                    </div>
+                    }
                   }
-                </div>
-              </div>
-              <div class="ice-form2">
+                }
+              }
+              div[class="ice-form2"]{
                 for(s: x_entname order by s.name asc) {
                   if(ent.x_getname() != s) {
                     div[class="ice-ent"]{
@@ -319,7 +320,7 @@ rules //crud rules
                     }
                   }
                 }
-              </div>
+              }
             }
           }
         ]|
@@ -329,28 +330,28 @@ rules //crud rules
             main()
             define body() {
               header{ "Edit " output(ent.name) " " x_stringifiedname }
-              <div class="ice-form">
-                <div class="ice-attr">
-                  <div class="ice-attr-name">
+              div[class="ice-form"]{
+                div[class="ice-attr"]{
+                  div[class="ice-attr-name"]{
                     "" x_stringifiedname ":"
-                  </div>
-                  <div class="ice-rel-vals">
+                  }
+                  div[class="ice-rel-vals"]{
                     for(s in ent.x_getname()) {
-                      <div class="ice-rel-val">
+                      div[class="ice-rel-val"]{
                         "" output(s)
-                      </div>
-                      <div class="ice-rel-edit">
+                      }
+                      div[class="ice-rel-edit"]{
                         submit action {
                           ent.x_name.remove(s);
                           ent.save();
                         } { "Remove" }
-                      </div>
-                      <br/>
+                      }
+                      br{}
                     }
-                  </div>
-                </div>
-              </div>
-              <div class="ice-form2">
+                  }
+                }
+              }
+              div[class="ice-form2"]{
                 for(s: x_entname order by s.name asc) {
                   if(ent.x_getname().indexOf(s) == -1) {
                     div[class="ice-ent"]{
@@ -364,7 +365,7 @@ rules //crud rules
                     }
                   }
                 }
-              </div>
+              }
             }
           }
         ]|
@@ -379,7 +380,7 @@ rules //crud rules
   with
     x_qname := <double-quote> x_name;
     elem_input := <name-to-webdsl-input> x_name;
-    result := elem* |[ "" x_qname ": " elem_input <br/> ]|
+    result := elem* |[ "" x_qname ": " elem_input br{} ]|
   
   name-to-webdsl-input : x_name -> result
   with
@@ -480,8 +481,8 @@ rules //crud rules
   with
     x_qname := <double-quote> x_name;
     if <_get-type;Datetime()>x_name then
-      result := elem* |["" x_qname ": " output(temp.x_name) <br/>]|
+      result := elem* |["" x_qname ": " output(temp.x_name) br{}]|
     else
       x_getname := <name-get> x_name;
-      result := elem* |["" x_qname ": " output(temp.x_getname()) <br/>]|
+      result := elem* |["" x_qname ": " output(temp.x_getname()) br{}]|
     end
