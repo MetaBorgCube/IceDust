@@ -15,6 +15,7 @@ imports // functions
   generating/webdsl/model
   generating/webdsl/data
   generating/webdsl/types
+  generating/webdsl/webdsl-helper
   api/model-names-api
   api/module-api
   api/module-names-api
@@ -25,7 +26,7 @@ rules //crud
   
   entityname-to-webdsl-defs: x_entityName -> result
     with
-      elem_nameString       := String(x_entityName); //TODO: strings in concrete webdsl syntax?
+      elem_entityName       := <webdsl-elem>x_entityName;
       x_manageEntity        := <name-manage>x_entityName;
       x_createEntity        := <name-create>x_entityName;
       x_editEntity          := <name-edit>x_entityName;
@@ -41,7 +42,7 @@ rules //crud
         page x_manageEntity(){
           main()
           define body() {
-            header{ elem_nameString }
+            header{ elem_entityName}
             navigate x_createEntity() [class="ice-ent-create"] { "Create " }
             br{}
             for(entity: x_entityName order by entity.name asc) {
@@ -65,7 +66,7 @@ rules //crud
           includeJS("derivations.js")
           main()
           define body() {
-            header{ "Create " elem_nameString }
+            header{ "Create " elem_entityName }
             div[class="ice-form"] {
               form {
                 elem_relationInputs*
@@ -111,25 +112,24 @@ rules //crud
     
   entityname-to-webdsl-elem: x_entityName -> result
     with
-      x_manageName := <name-manage>x_entityName;
-      $text        := Text(x_entityName) //TODO: strings in concrete webdsl syntax?
+      x_manageName    := <name-manage>x_entityName;
+      elem_entityName := <webdsl-elem>x_entityName
     with
       result := elem |[
-        navbaritem{navigate x_manageName(){$text}}
+        navbaritem{navigate x_manageName(){elem_entityName}}
       ]|
   
   var-to-hidden-elem: TierSplit(name, expr) -> result
     with
-      type      := <attributename-pp2-type-multiplicity>expr;
-      x_strname := <double-quote>name; //TODO: strings in concrete webdsl syntax?
-      x_strtype := <double-quote>type; //TODO: strings in concrete webdsl syntax?
+      e_name    := <webdsl-expr>name;
+      e_type    := <attributename-pp2-type-multiplicity;webdsl-expr>expr;
       x_getname := <name-get>name
     with
       result := elem |[
         div[
           data-partial-var="true",
-          data-name=x_strname,
-          data-type=x_strtype,
+          data-name=e_name,
+          data-type=e_type,
           style="display:none"
         ]{
           output(temp.x_getname().toString())
@@ -138,12 +138,12 @@ rules //crud
   
   relationname-to-output-elem : x_name -> result
     with
-      x_namestr := String(<ucfirst>x_name); //TODO: strings in concrete webdsl syntax?
+      e_name    := <ucfirst;webdsl-expr>x_name;
       x_setname := <attributename-entityname-set>x_name;
       x_getname := <name-get> x_name
     with
       result := elem |[
-        relationEdit(x_namestr, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
+        relationEdit(e_name, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
       ]|
     
   relationname-to-page-def: x_name -> result
@@ -155,18 +155,18 @@ rules //crud
       x_getname         := <name-get>x_name;
       x_editEntity      := <name-edit>x_entityName;
       x_viewEntity      := <name-view>x_entityName;
-      x_stringifiedname := <double-quote>x_name //TODO: strings in concrete webdsl syntax?
+      elem_name         := <webdsl-elem>x_name
     with
       if <name-is-one>x_name then // 1
         result := def |[
           page x_setname(ent: x_entityName) {
             main()
             define body() {
-              header{ "Edit " output(ent.name) " " x_stringifiedname }
+              header{ "Edit " output(ent.name) " " elem_name }
               div[class="ice-form"]{
                 div[class="ice-attr"]{
                   div[class="ice-attr-name"]{
-                    "" x_stringifiedname ":"
+                    "" elem_name ":"
                   }
                   div[class="ice-rel-val"]{
                     "" output(ent.x_getname())
@@ -197,11 +197,11 @@ rules //crud
             page x_setname(ent: x_entityName) {
               main()
               define body() {
-                header{ "Edit " output(ent.name) " " x_stringifiedname }
+                header{ "Edit " output(ent.name) " " elem_name }
                 div[class="ice-form"]{
                   div[class="ice-attr"]{
                     div[class="ice-attr-name"]{
-                      "" x_stringifiedname ":"
+                      "" elem_name ":"
                     }
                     div[class="ice-rel-val"]{
                       "" output(ent.x_getname())
@@ -239,11 +239,11 @@ rules //crud
             page x_setname(ent: x_entityName) {
               main()
               define body() {
-                header{ "Edit " output(ent.name) " " x_stringifiedname }
+                header{ "Edit " output(ent.name) " " elem_name }
                 div[class="ice-form"]{
                   div[class="ice-attr"]{
                     div[class="ice-attr-name"]{
-                      "" x_stringifiedname ":"
+                      "" elem_name ":"
                     }
                     div[class="ice-rel-vals"]{
                       for(s in ent.x_getname()) {
@@ -284,25 +284,25 @@ rules //crud
  
   attributename-to-input-elem : x_name -> result
     with
-      x_namestr     := String(<ucfirst>x_name); //TODO: strings in concrete webdsl syntax?
-      x_derivedname := <attributename-entityname;double-quote>x_name; //TODO: strings in concrete webdsl syntax?
-      x_typestr     := <attributename-pp2-type-multiplicity;double-quote> x_name; //TODO: strings in concrete webdsl syntax?
-      x_flows       := <name-get-flowsto-paths;filter(dataflowpath-direct-ref);map(attributename-entityname);concat-strings(|" ");double-quote> x_name;  //TODO: strings in concrete webdsl syntax?
+      e_name        := <ucfirst;webdsl-expr>x_name;
+      e_derivedname := <attributename-entityname;webdsl-expr>x_name;
+      e_typestr     := <attributename-pp2-type-multiplicity;webdsl-expr>x_name;
+      e_flows       := <name-get-flowsto-paths;filter(dataflowpath-direct-ref);map(attributename-entityname);concat-strings(|" ");webdsl-expr>x_name;
       elem_input    := <name-to-input-elem> x_name;
       elem_output   := <name-to-output-elem>x_name
     with
       if <attributename-is-derivation>x_name then
         result := elem |[
-          attributeDerived(x_namestr,x_derivedname,x_typestr,x_flows){""elem_output}
+          attributeDerived(e_name, e_derivedname, e_typestr, e_flows){""elem_output}
         ]|
       else
       if <attributename-is-default> x_name then
           result := elem |[
-            attributeDefault(x_namestr,x_derivedname,x_typestr,x_flows,{""elem_input}){""elem_output}
+            attributeDefault(e_name, e_derivedname, e_typestr, e_flows,{""elem_input}){""elem_output}
           ]|
         else
           result := elem |[
-            attributeNormal(x_namestr,x_derivedname,x_typestr,x_flows){""elem_input}
+            attributeNormal(e_name, e_derivedname, e_typestr, e_flows){""elem_input}
           ]|
         end
       end
