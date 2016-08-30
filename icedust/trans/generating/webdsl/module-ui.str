@@ -143,7 +143,7 @@ rules //crud
       x_getname := <name-get> x_name
     with
       result := elem |[
-        relationEdit(e_name, {""output(temp.x_getname())}, {navigate x_setname(temp)[]{"Edit "}})
+        relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp)[]{"Edit "}})
       ]|
     
   relationname-to-page-def: x_name -> result
