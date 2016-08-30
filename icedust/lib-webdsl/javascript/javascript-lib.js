@@ -105,7 +105,9 @@ types.Type.prototype.refresh = function() {
       this.set(this.derived());
     }
   }
-  var err = this.check();
+  if(!this.derived){
+    var err = this.check();
+  }
   if(err) this.setError(err);
   else {
     this.setError('');
