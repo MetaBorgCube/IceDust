@@ -249,6 +249,39 @@ template inputNonRequiredBoolInternal( b: ref Bool, rname: String ){
   }
 }
 
+section string-input
+
+  // added: if(s.trim() == "") { s := null; }
+  override template inputStringInternal( s: ref String, tname: String ){
+    var req := getRequestParameter( tname )
+    <input
+      if( getPage().inLabelContext() ){
+        id = getPage().getLabelString()
+      }
+      name = tname
+      if( attribute( "type" ) == "" ){
+        type = "text"
+      }
+      if( req != null ){
+        value = req
+      }
+      else{
+        value = s
+      }
+      inputString attributes
+      all attributes
+    />
+  
+    databind{
+      if( req != null ){
+        s := req;
+        if(s.trim() == "") {
+          s := null;
+        }
+      }
+    }
+  }
+
 section string-output
 
   template outputNonRef( d: DateTime ){

@@ -37,6 +37,7 @@ rules // generic names
   name-flagdirtyasync:     name -> $[flagDirtyAsync[<ucfirst>name]]
   name-receivedirtyasync:  name -> $[receiveDirtyAsync[<ucfirst>name]]
   name-receiveonedirtyasync:name-> $[receiveOneDirtyAsync[<ucfirst>name]]
+  name-view:               name -> $[[<lcfirst>name]]
 
 rules // prefixed names
   
@@ -53,6 +54,10 @@ rules // prefixed names
       entityname := <attributename-get-entityname>attributename
       
   attributename-entityname-queue: attributename -> $[[entityname][<ucfirst>attributename]Queue]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-set: attributename -> $[set_[entityname]_[attributename]]
     with
       entityname := <attributename-get-entityname>attributename
       

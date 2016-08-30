@@ -235,3 +235,8 @@ rules // Path -> [Path]
   
   path-all-tails : Path(_,PathExpr([])) -> []
   path-all-tails : path                 -> [path|<path-tail;path-all-tails>path]
+
+rules // DataflowPath -> String
+
+  dataflowpath-direct-ref: DataflowPath(_, Ref(y)) -> y
+  
