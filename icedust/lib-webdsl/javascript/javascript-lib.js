@@ -1,4 +1,8 @@
 // lib
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 var vals = {};
 
 vals.Output = function(el) {this.el = el};
@@ -111,8 +115,8 @@ types.Type.prototype.refresh = function() {
   if(err) this.setError(err);
   else {
     this.setError('');
-    this.flow();
   }
+  this.flow();
 };
 types.Type.prototype.setError = function(msg) {
   if(this.errEl) this.errEl.innerHTML = msg;
@@ -147,15 +151,15 @@ var defType = function(name, check, parse) {
 var partialVars = {};
 
 var parsePartialVar = function(val, type) {
-  if(type === 'String') return val || '';
-  if(type === 'String?') return !val || val.trim('').length === 0? null: val;
-  if(type === 'Int') return Math.floor(+val);
-  if(type === 'Int?') return val === '' || val === null || val === 'null'? null: Math.floor(+val);
-  if(type === 'Float') return +val;
-  if(type === 'Float?') return val === '' || val === null || val === 'null'? null: +val;
-  if(type === 'Boolean') return val === 'true';
-  if(type === 'Boolean?') return val === '' || val === null || val === 'null'? null: val === 'true';
-  if(type === 'Datetime') return parseDate(val);
+  if(type === 'String')    return !val || val.trim('').length === 0? null: val;
+  if(type === 'String?')   return !val || val.trim('').length === 0? null: val;
+  if(type === 'Int')       return val === '' || val === null || val === 'null'? null: Math.floor(+val);
+  if(type === 'Int?')      return val === '' || val === null || val === 'null'? null: Math.floor(+val);
+  if(type === 'Float')     return val === '' || val === null || val === 'null'? null: +val;
+  if(type === 'Float?')    return val === '' || val === null || val === 'null'? null: +val;
+  if(type === 'Boolean')   return val === 'true';
+  if(type === 'Boolean?')  return val === '' || val === null || val === 'null'? null: val === 'true';
+  if(type === 'Datetime')  return val === '' || val === null || val === 'null'? null: parseDate(val);
   if(type === 'Datetime?') return val === '' || val === null || val === 'null'? null: parseDate(val);
   return null
 };
@@ -191,22 +195,22 @@ defType('Int', function() {
   var v = this.get();
   if(isNaN(v)) return this.name + ' must be a number!';
   if(Math.floor(v) !== v) return this.name + ' must be an integer!';
-}, function(v) {return +v});
+}, function(v) {return v.trim().length === 0 || !isNumeric(v) ? null : +v});
 defType('Int?', function() {
   if(this.getRaw().trim().length === 0) return null;
   var v = this.get();
   if(isNaN(v)) return this.name + ' must be a number!';
   if(Math.floor(v) !== v) return this.name + ' must be an integer!';
-}, function(v) {return v.trim().length === 0? null: +v});
+}, function(v) {return v.trim().length === 0 || !isNumeric(v) ? null : +v});
 defType('Float', function() {
   if(!this.isDefault && this.getRaw().trim().length === 0)
     return this.name + ' cannot be empty!';
   if(isNaN(this.get())) return this.name + ' must be a number!';
-}, function(v) {return +v});
+}, function(v) {return v.trim().length === 0 || !isNumeric(v) ? null : +v});
 defType('Float?', function() {
   if(this.getRaw().trim().length === 0) return null;
   if(isNaN(this.get())) return this.name + ' must be a number!';
-}, function(v) {return v.trim().length === 0? null: +v});
+}, function(v) {return v.trim().length === 0 || !isNumeric(v) ? null : +v});
 defType('Boolean');
 defType('Boolean?');
 
