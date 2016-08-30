@@ -132,6 +132,7 @@ span.navbaritem a:hover {
 
 .error-msg {
   color: red;
+  margin-left: 5px;
 }
 
 .ice-form {
@@ -160,10 +161,6 @@ span.navbaritem a:hover {
 
 .ice-attr div {
   display: inline-block;
-}
-
-.default-output {
-  margin-left: 5px;
 }
 
 .ice-attr ul {
