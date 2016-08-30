@@ -2,35 +2,37 @@ module syntax-data
 
 language IceDust
 
-setup Common [[
-	module test
-	
-	model
-	entity User{
-		name : String
-	}
-	entity Post{
-		title: String
-		body : String
-	}
-	relation UserPost{
-		User *
-		Post 1
-	}
-	
-	data
+fixture [[
+  module test
+  
+  model
+  entity User{
+    name : String
+  }
+  entity Post{
+    title: String
+    body : String
+  }
+  relation UserPost{
+    User *
+    Post 1
+  }
+  
+  data
+  
+    [[...]]
 ]]
 
 test Blog data [[
-	alice : User{
-		name = "Alice"
-	}
-	bob : User{
-		name = "Bob"
-		post = 
+  alice : User{
+    name = "Alice"
+  }
+  bob : User{
+    name = "Bob"
+    post = 
       p1 : Post{
         title="First Post"
         body="Some text"
       }
-	}
+  }
 ]] parse succeeds

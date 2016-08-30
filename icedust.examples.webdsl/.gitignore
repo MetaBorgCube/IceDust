@@ -15,3 +15,6 @@ icedustWebDSL clean-project.xml.launch
 .classpath
 application.ini
 .saved-but-not-built
+javascript/*
+javascript
+.webdsl-fragment-cache

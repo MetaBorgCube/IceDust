@@ -1,0 +1,326 @@
+module generating/webdsl/module-ui
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
+  tiersplit/constructors
+
+imports // functions
+  
+  generating/_ir/model 
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+  generating/webdsl/webdsl-helper
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+
+rules //crud
+  
+  entityname-to-webdsl-defs: x_entityName -> result
+    with
+      elem_entityName       := <webdsl-elem>x_entityName;
+      x_manageEntity        := <name-manage>x_entityName;
+      x_createEntity        := <name-create>x_entityName;
+      x_editEntity          := <name-edit>x_entityName;
+      x_removeEntity        := <name-remove>x_entityName;
+      x_viewEntity          := <name-view>x_entityName;
+      elem_attributeInputs* := <entityname-get-attributenames2;map(attributename-to-input-elem)>x_entityName;
+      elem_hiddenvars*      := <entityname-get-attributenames2-default-derivation;fmap(attributename-get-expr-tiersplit-vars);map(var-to-hidden-elem)>x_entityName;
+      elem_relationInputs*  := <entityname-get-relroleinvnames;filter(name-is-one);map(attributename-to-input-elem)>x_entityName; //TODO: add roles/inverses
+      elem_relationOutputs* := <entityname-get-relroleinvnames;map(relationname-to-output-elem)>x_entityName;
+      def_relationPages*    := <entityname-get-relroleinvnames;map(relationname-to-page-def)>x_entityName
+    with
+      result := def* |[
+        page x_manageEntity(){
+          main()
+          define body() {
+            header{ elem_entityName}
+            navigate x_createEntity() [class="ice-ent-create"] { "Create " }
+            br{}
+            for(entity: x_entityName order by entity.name asc) {
+              div[class="ice-ent"]{
+                div[class="ice-ent-name"]{
+                  navigate x_viewEntity(entity) [] { output(entity.name) }
+                }
+                action("Delete", x_removeEntity(entity))
+              }
+            }
+            action x_removeEntity(entity: x_entityName) {
+              entity.delete();
+            }
+          }
+        }
+        
+        page x_createEntity(){
+          var temp := x_entityName{}
+          includeJS("Expressions.js")
+          includeJS("javascript-lib.js")
+          includeJS("derivations.js")
+          main()
+          define body() {
+            header{ "Create " elem_entityName }
+            div[class="ice-form"] {
+              form {
+                elem_relationInputs*
+                x_editEntity(temp)
+                br{}
+                action("Save", save())
+              }
+            }
+            action save() {
+              temp.save();
+              return x_viewEntity(temp);
+            }
+          }
+        }
+        
+        page x_viewEntity(temp: x_entityName){
+          includeJS("Expressions.js")
+          includeJS("javascript-lib.js")
+          includeJS("derivations.js")
+          main()
+          define body() {
+            header{"Edit " output(temp.name)}
+            div[class="ice-form"] {
+              form {
+                elem_relationOutputs*
+                x_editEntity(temp)
+                br{}
+                submit action {
+                  temp.save();
+                } { "Save" }
+              }
+            }
+          }
+        }
+        
+        template x_editEntity(temp: x_entityName){
+          elem_hiddenvars*
+          elem_attributeInputs*
+        }
+
+        def_relationPages*
+      ]|
+    
+  entityname-to-webdsl-elem: x_entityName -> result
+    with
+      x_manageName    := <name-manage>x_entityName;
+      elem_entityName := <webdsl-elem>x_entityName
+    with
+      result := elem |[
+        navbaritem{navigate x_manageName(){elem_entityName}}
+      ]|
+  
+  var-to-hidden-elem: TierSplit(name, expr) -> result
+    with
+      e_name    := <webdsl-expr>name;
+      e_type    := <attributename-pp2-type-multiplicity;webdsl-expr>expr;
+      x_getname := <name-get>name
+    with
+      result := elem |[
+        div[
+          data-partial-var="true",
+          data-name=e_name,
+          data-type=e_type,
+          style="display:none"
+        ]{
+          output(temp.x_getname().toString())
+        }
+      ]|
+  
+  relationname-to-output-elem : x_name -> result
+    with
+      e_name    := <ucfirst;webdsl-expr>x_name;
+      x_setname := <attributename-entityname-set>x_name;
+      x_getname := <name-get> x_name
+    with
+      result := elem |[
+        relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp)[]{"Edit "}})
+      ]|
+    
+  relationname-to-page-def: x_name -> result
+    with
+      x_entityName      := <attributename-get-entityname>x_name;
+      x_inverseName     := <name-get-inversename>x_name;
+      x_entity2Name     := <attributename-get-entityname>x_inverseName;
+      x_setname         := <attributename-entityname-set>x_name;
+      x_getname         := <name-get>x_name;
+      x_editEntity      := <name-edit>x_entityName;
+      x_viewEntity      := <name-view>x_entityName;
+      elem_name         := <webdsl-elem>x_name
+    with
+      if <name-is-one>x_name then // 1
+        result := def |[
+          page x_setname(ent: x_entityName) {
+            main()
+            define body() {
+              header{ "Edit " output(ent.name) " " elem_name }
+              div[class="ice-form"]{
+                div[class="ice-attr"]{
+                  div[class="ice-attr-name"]{
+                    "" elem_name ":"
+                  }
+                  div[class="ice-rel-val"]{
+                    "" output(ent.x_getname())
+                  }
+                }
+              }
+              div[class="ice-form2"]{
+                for(s: x_entity2Name order by s.name asc) {
+                  if(ent.x_getname() != s) {
+                    div[class="ice-ent"]{
+                      div[class="ice-ent-name"]{
+                        output(s)
+                      }
+                      submit action {
+                        ent.x_name := s;
+                        ent.save();
+                      } { "Set" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]|
+      else
+        if <name-is-zeroorone>x_name then // ?
+          result := def |[
+            page x_setname(ent: x_entityName) {
+              main()
+              define body() {
+                header{ "Edit " output(ent.name) " " elem_name }
+                div[class="ice-form"]{
+                  div[class="ice-attr"]{
+                    div[class="ice-attr-name"]{
+                      "" elem_name ":"
+                    }
+                    div[class="ice-rel-val"]{
+                      "" output(ent.x_getname())
+                    }
+                    if(ent.x_getname() != null){
+                      div[class="ice-rel-edit"]{
+                        submit action {
+                          ent.x_name := null;
+                          ent.save();
+                        } { "Remove" }
+                      }
+                    }
+                  }
+                }
+                div[class="ice-form2"]{
+                  for(s: x_entity2Name order by s.name asc) {
+                    if(ent.x_getname() != s) {
+                      div[class="ice-ent"]{
+                        div[class="ice-ent-name"]{
+                          output(s)
+                        }
+                        submit action {
+                          ent.x_name := s;
+                          ent.save();
+                        } { "Set" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]|
+        else // * and +
+          result := def |[
+            page x_setname(ent: x_entityName) {
+              main()
+              define body() {
+                header{ "Edit " output(ent.name) " " elem_name }
+                div[class="ice-form"]{
+                  div[class="ice-attr"]{
+                    div[class="ice-attr-name"]{
+                      "" elem_name ":"
+                    }
+                    div[class="ice-rel-vals"]{
+                      for(s in ent.x_getname()) {
+                        div[class="ice-rel-val"]{
+                          "" output(s)
+                        }
+                        div[class="ice-rel-edit"]{
+                          submit action {
+                            ent.x_name.remove(s);
+                            ent.save();
+                          } { "Remove" }
+                        }
+                        br{}
+                      }
+                    }
+                  }
+                }
+                div[class="ice-form2"]{
+                  for(s: x_entity2Name order by s.name asc) {
+                    if(ent.x_getname().indexOf(s) == -1) {
+                      div[class="ice-ent"]{
+                        div[class="ice-ent-name"]{
+                          output(s)
+                        }
+                        submit action {
+                          ent.x_name.add(s);
+                          ent.save();
+                        } { "Add" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]|
+        end
+      end
+ 
+  attributename-to-input-elem : x_name -> result
+    with
+      e_name        := <ucfirst;webdsl-expr>x_name;
+      e_derivedname := <attributename-entityname;webdsl-expr>x_name;
+      e_typestr     := <attributename-pp2-type-multiplicity;webdsl-expr>x_name;
+      e_flows       := <name-get-flowsto-paths;filter(dataflowpath-direct-ref);map(attributename-entityname);concat-strings(|" ");webdsl-expr>x_name;
+      elem_input    := <name-to-input-elem> x_name;
+      elem_output   := <name-to-output-elem>x_name
+    with
+      if <attributename-is-derivation>x_name then
+        result := elem |[
+          attributeDerived(e_name, e_derivedname, e_typestr, e_flows){""elem_output}
+        ]|
+      else
+      if <attributename-is-default> x_name then
+          result := elem |[
+            attributeDefault(e_name, e_derivedname, e_typestr, e_flows,{""elem_input}){""elem_output}
+          ]|
+        else
+          result := elem |[
+            attributeNormal(e_name, e_derivedname, e_typestr, e_flows){""elem_input}
+          ]|
+        end
+      end
+  
+  name-to-input-elem: x_name -> result
+    with
+      if _get-type;Boolean(); !x_name;(attributename-is-default<+name-is-zeroorone) then
+        result := elem |[ inputNonRequiredBool(temp.x_name) ]|
+      else
+        result := elem |[ input(temp.x_name) ]|
+      end
+      
+  name-to-output-elem: x_name ->  result
+    with
+      x_getname := <name-get>x_name
+    with
+      if <_get-type;Datetime()>x_name then
+        result := elem |[outputNonRef(temp.x_getname())]|
+      else
+        result := elem |[output(temp.x_getname())]|
+      end

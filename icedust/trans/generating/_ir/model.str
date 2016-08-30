@@ -32,10 +32,12 @@ rules // generic names
   name-remove-trigger:     name -> $[removeFrom[<ucfirst>name]]
   name-manage:             name -> $[manage[<ucfirst>name]]
   name-create:             name -> $[create[<ucfirst>name]]
+  name-remove:             name -> $[remove[<ucfirst>name]]
   name-edit:               name -> $[edit[<ucfirst>name]]
   name-flagdirtyasync:     name -> $[flagDirtyAsync[<ucfirst>name]]
   name-receivedirtyasync:  name -> $[receiveDirtyAsync[<ucfirst>name]]
   name-receiveonedirtyasync:name-> $[receiveOneDirtyAsync[<ucfirst>name]]
+  name-view:               name -> $[[<lcfirst>name]]
 
 rules // prefixed names
   
@@ -52,6 +54,18 @@ rules // prefixed names
       entityname := <attributename-get-entityname>attributename
       
   attributename-entityname-queue: attributename -> $[[entityname][<ucfirst>attributename]Queue]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-set: attributename -> $[set_[entityname]_[attributename]]
+    with
+      entityname := <attributename-get-entityname>attributename
+      
+  attributename-entityname-prefix: attributename -> $[[entityname]_[attributename]_]
+    with
+      entityname := <attributename-get-entityname>attributename
+      
+  attributename-entityname: attributename -> $[[entityname]_[attributename]]
     with
       entityname := <attributename-get-entityname>attributename
   

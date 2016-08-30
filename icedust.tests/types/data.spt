@@ -2,37 +2,38 @@ module types-data
 
 language IceDust
 
-setup Common [[
-	module test
+fixture [[
+  module test
+  [[...]]
 ]]
 
 
 test error on omitting required attribute [[
-	model
-	entity X{
-		i : Int
-	}
-	data
-	[[x]] : X {}
-]] 1 error
+  model
+  entity X{
+    i : Int
+  }
+  data
+  [[x]] : X {}
+]] 1 error at #1
 
 test error on omitting required attribute multiple [[
-	model
-	entity X{
-		i : Int
-		j : String
-	}
-	data
-	[[x]] : X {}
-]] 1 errors
+  model
+  entity X{
+    i : Int
+    j : String
+  }
+  data
+  [[x]] : X {}
+]] 1 errors at #1
 
 test no error on omitting optional attribute[[
-	model
-	entity X{
-		i : Int ?
-	}
-	data
-	x : X {}
+  model
+  entity X{
+    i : Int ?
+  }
+  data
+  x : X {}
 ]] 0 errors
 
 test no error on omitting derived attribute[[
@@ -53,7 +54,7 @@ test error on supplying derived attribute[[
   x : X {
     [[i]] = 5900
   }
-]] 1 error
+]] 1 error at #1
 
 test error on omitting required attribute[[
   model
@@ -67,7 +68,7 @@ test error on omitting required attribute[[
       y =
         [[x1]] {}
     }
-]] 1 error
+]] 1 error at #1
 
 test infer enitity instance type [[
   model
@@ -82,7 +83,7 @@ test infer enitity instance type [[
         <rel { } >
         [[x1]] {i=4}
     }
-]] run get-type to "X"{_}
+]] run get-type on #1 to "X"
 
 test infer relation instance type [[
   model
@@ -97,6 +98,6 @@ test infer relation instance type [[
         <[[rel]] { } >
         x1 {i=4}
     }
-]] run get-type to "XYRelation"{_}
+]] run get-type on #1 to "XYRelation"
 
 //TODO: add testcases for relations

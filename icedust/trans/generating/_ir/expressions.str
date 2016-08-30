@@ -5,6 +5,7 @@ imports // constructors
   java/Java
   signatures/Expressions-sig
   signatures/Types-sig
+  tiersplit/constructors
 
 imports // functions
 
@@ -12,7 +13,7 @@ imports // functions
   lib/lists-tuples
   lib/string
   lib/traverse
-   names/naming/names
+  names/naming/names
 
 rules // math
 
@@ -62,11 +63,12 @@ rules // rel-expr -> String
   lib-method-name: e -> x_methodpostfix
     with
       x_method        := <lib-call>e;
-	    arg-type*       := <method-type-postfix>e;
-	    arg-mult*       := <method-mult-postfix>e;
-	    x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
+      arg-type*       := <method-type-postfix>e;
+      arg-mult*       := <method-mult-postfix>e;
+      x_methodpostfix := <concat-strings(|"_")>[x_method, arg-type*, arg-mult*]
 
 rules // rel-expr -> List(String)
+
 
   method-type-postfix: e -> []
     where <not(lib-call-postfix-type)>e

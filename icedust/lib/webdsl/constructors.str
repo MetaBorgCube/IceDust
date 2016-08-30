@@ -36,6 +36,7 @@ signature constructors		// template call
 signature constructors //Function
   Function : Term * Term * Term * Term -> Term
   ExtendFunction : Term -> Term
+  CachedFunction : Term -> Term
 
 signature constructors //Function Exp
   FunctionExp : Term * Term * Term -> Exp
@@ -63,8 +64,23 @@ signature constructors
 
 signature constructors // these use ast("Placeholder(<2>,<3>)") in the syntax definition, which breaks automatic signature generation
   Placeholder : Term * Term -> Term
+  Placeholder : Term * Term * Term -> Term
   PlaceholderWithAjaxCall : Term * Term -> Term
+  PlaceholderWithAjaxCall : Term * Term * Term -> Term
   PlaceholderVar : Term -> Term
 
 signature constructors
   EntityDeriveTemplateCall : Term
+
+signature constructors
+  XMLComment : Term -> Term
+
+signature constructors
+  TemplateElementsArgumentReplaced : Term
+
+signature constructors // template var args
+  FieldAccessVarArgIndex : Term * Term * Term * Term -> Term
+  MemberTemplateCallIndex : Term * Term * Term -> Term
+  ExpVarArgForDesugared : Term * Term -> Term
+  TemplateCallExpression : Term * Term * Term * Term -> Term
+  TemplateVarArgSortInner : List(FormalVarArg) -> Sort

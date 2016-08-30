@@ -2,16 +2,16 @@ module naming/names
 
 imports // constructors
 
-	signatures/Data-sig
-	signatures/Execute-sig
-	signatures/Expressions-sig
-	signatures/Model-sig
-	signatures/Modules-sig
-	signatures/Types-sig
-	api/constructors
+  signatures/Data-sig
+  signatures/Execute-sig
+  signatures/Expressions-sig
+  signatures/Model-sig
+  signatures/Modules-sig
+  signatures/Types-sig
+  api/constructors
   desugaring/constructors
   naming/_notNaBL
-	
+  
 // imports // use custom runtime libraries
 // 
 //   lib/nabl/-
@@ -20,55 +20,55 @@ imports // constructors
 //   lib/types/-
 //   lib/icedust/-
 //   lib/editor/-
-	
+  
 namespaces
-	
-	Module
-	Entity
-	Entity2                            //Nasty Hack to enforce no duplicate entity types
-	EntityInstance
-	Attribute
-	Relation
-	Role
-	Inverse
-	Shortcut
-	This
+  
+  Module
+  Entity
+  Entity2                            //Nasty Hack to enforce no duplicate entity types
+  EntityInstance
+  Attribute
+  Relation
+  Role
+  Inverse
+  Shortcut
+  This
   MemberType
   MemberValue
 
 properties
 
-	derivation-type 		 of Attribute	  : DerivationType	//Derivation(), DefaultValue() or Normal()
-	multiplicity				 of Attribute	  : Multiplicity
-	multiplicity-inverse of Role        : Multiplicity
-	ordering             of Role        : Ordering
-	ordering-inverse     of Role        : Ordering
-	inverse   					 of Role  		  : Inverse
-	origin-role					 of Inverse		  : Role
-	origin-role2				 of Shortcut	  : Role
-	rel-ty               of Shortcut    : Entity
-	side                 of Relation    : Term
-	member-origin        of MemberValue : Term
-	
+  derivation-type      of Attribute    : DerivationType  //Derivation(), DefaultValue() or Normal()
+  multiplicity         of Attribute    : Multiplicity
+  multiplicity-inverse of Role        : Multiplicity
+  ordering             of Role        : Ordering
+  ordering-inverse     of Role        : Ordering
+  inverse              of Role        : Inverse
+  origin-role           of Inverse      : Role
+  origin-role2         of Shortcut    : Role
+  rel-ty               of Shortcut    : Entity
+  side                 of Relation    : Term
+  member-origin        of MemberValue : Term
+  
 binding rules // modules
 
-	ModuleDesugared(m, _) : 
-		defines Module m
-		scopes Entity
-		scopes Entity2
-		scopes EntityInstance
+  ModuleDesugared(m, _) : 
+    defines Module m
+    scopes Entity
+    scopes Entity2
+    scopes EntityInstance
 
 binding rules // model
 
-	Entity(e-ty, _) :
-		defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
-		defines non-unique Entity e-ty
-		scopes Attribute
-		scopes Role
-		scopes This
-		implicitly defines This This()
-			of type e-ty
-			
+  Entity(e-ty, _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
+      
   FirstClassRelation(e-ty, _) :
     defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
     defines non-unique Entity e-ty
@@ -78,12 +78,12 @@ binding rules // model
     implicitly defines This This()
       of type e-ty
 
-	Attribute(a, a-ty, a-mu) :
-		defines Attribute a
-			of type a-ty
-			of multiplicity a-mu
-			of ordering Ordered()
-			of derivation-type Normal()
+  Attribute(a, a-ty, a-mu) :
+    defines Attribute a
+      of type a-ty
+      of multiplicity a-mu
+      of ordering Ordered()
+      of derivation-type Normal()
       
   DerivationAttribute(a, a-ty, a-mu, _) :
     defines Attribute a
@@ -99,56 +99,56 @@ binding rules // model
       of ordering Ordered()
       of derivation-type DefaultValue()
 
-	Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
-		refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
-		defines Role role
-			of type role-ty2
-			of multiplicity One()
-			of multiplicity-inverse role-mu
-			of ordering Ordered()
-			of ordering-inverse role-ord
-			of inverse inverseName
-			of rel-ty this-ty2
+  Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
+    refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
+    defines Role role
+      of type role-ty2
+      of multiplicity One()
+      of multiplicity-inverse role-mu
+      of ordering Ordered()
+      of ordering-inverse role-ord
+      of inverse inverseName
+      of rel-ty this-ty2
       where This() resolves to This this2
       and this2 has type this-ty2
-		defines non-unique Entity role-ty2
-		  scopes Inverse
-		defines Inverse inverseName
-			of multiplicity role-mu
+    defines non-unique Entity role-ty2
+      scopes Inverse
+    defines Inverse inverseName
+      of multiplicity role-mu
       of multiplicity-inverse One()
-			of ordering role-ord
+      of ordering role-ord
       of ordering-inverse Ordered()
-			of type this-ty
-			of origin-role role
-			where This() resolves to This this
-			and this has type this-ty
+      of type this-ty
+      of origin-role role
+      where This() resolves to This this
+      and this has type this-ty
 
-	Shortcut(NaBLHelp(RoleRef(role1), type1), shortcut1, NaBLHelp(RoleRef(role2), type2), shortcut2):
-		defines non-unique Entity type1
-			scopes Shortcut
-		defines Shortcut shortcut1
-			of type type2
-			of multiplicity mu1
-			of ordering or1
-			of origin-role role1
-			of origin-role2 role2
-			of rel-ty rel-ty1
-			where role1 resolves to Role role1def
-			and role1def has multiplicity-inverse mu1
-			and role1def has ordering-inverse or1
+  Shortcut(NaBLHelp(RoleRef(role1), type1), shortcut1, NaBLHelp(RoleRef(role2), type2), shortcut2):
+    defines non-unique Entity type1
+      scopes Shortcut
+    defines Shortcut shortcut1
+      of type type2
+      of multiplicity mu1
+      of ordering or1
+      of origin-role role1
+      of origin-role2 role2
+      of rel-ty rel-ty1
+      where role1 resolves to Role role1def
+      and role1def has multiplicity-inverse mu1
+      and role1def has ordering-inverse or1
       and role1def has rel-ty rel-ty1
-		defines non-unique Entity type2
-			scopes Shortcut
-		defines Shortcut shortcut2
-			of type type1
-			of multiplicity mu2
-			of ordering or2
-			of origin-role role2
-			of origin-role2 role1
-			of rel-ty rel-ty2
-			where role2 resolves to Role role2def
-			and role2def has multiplicity-inverse mu2
-			and role2def has ordering-inverse or2
+    defines non-unique Entity type2
+      scopes Shortcut
+    defines Shortcut shortcut2
+      of type type1
+      of multiplicity mu2
+      of ordering or2
+      of origin-role role2
+      of origin-role2 role1
+      of rel-ty rel-ty2
+      where role2 resolves to Role role2def
+      and role2def has multiplicity-inverse mu2
+      and role2def has ordering-inverse or2
       and role2def has rel-ty rel-ty2
 
   Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
@@ -239,12 +239,12 @@ binding rules // data
 
 binding rules // references
 
-	Ref(x) :
-		refers to EntityInstance x
-	otherwise
-		refers to Attribute x	in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
+  Ref(x) :
+    refers to EntityInstance x
+  otherwise
+    refers to Attribute x  in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
   otherwise
     refers to Relation x in Entity e-ty
     where This() resolves to This this
@@ -253,43 +253,43 @@ binding rules // references
     refers to Role x in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
-	otherwise
-	  refers to Inverse x in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
-	otherwise
-	  refers to Shortcut x in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
+  otherwise
+    refers to Inverse x in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
+  otherwise
+    refers to Shortcut x in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 
-	MemberAccess(exp, a) :
-		refers to Attribute a in Entity e-ty
-		where exp has type e-ty
+  MemberAccess(exp, a) :
+    refers to Attribute a in Entity e-ty
+    where exp has type e-ty
   otherwise
     refers to Relation a in Entity e-ty
     where exp has type e-ty
   otherwise
     refers to Role a in Entity e-ty
     where exp has type e-ty
-	otherwise
-	  refers to Inverse a in Entity e-ty
-	  where exp has type e-ty
-	otherwise
-	  refers to Shortcut a in Entity e-ty
-	  where exp has type e-ty
+  otherwise
+    refers to Inverse a in Entity e-ty
+    where exp has type e-ty
+  otherwise
+    refers to Shortcut a in Entity e-ty
+    where exp has type e-ty
 
-	EntityRef(e) :
-		refers to Entity e
+  EntityRef(e) :
+    refers to Entity e
   
   AttributeRef(a):
     refers to Attribute a in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
-	
-	RoleRef(r):
-		refers to Role r in Entity e-ty
-		where This() resolves to This this
-		and this has type e-ty
+  
+  RoleRef(r):
+    refers to Role r in Entity e-ty
+    where This() resolves to This this
+    and this has type e-ty
 
   MemberRef(m):
     refers to Attribute m in Entity e-ty
@@ -312,10 +312,10 @@ binding rules // references
     where This() resolves to This this
     and this has type e-ty
 
-	EntityInstanceRef(e) :
-		refers to EntityInstance e
-	
-	This() :
-		refers to This This()
+  EntityInstanceRef(e) :
+    refers to EntityInstance e
+  
+  This() :
+    refers to This This()
 
 

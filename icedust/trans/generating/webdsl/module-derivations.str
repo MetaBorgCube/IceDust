@@ -1,0 +1,147 @@
+module generating/webdsl/module-derivations
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
+  tiersplit/constructors
+
+imports // functions
+  
+  generating/_ir/model 
+  generating/webdsl/module-ui
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+
+rules // derivations
+  
+  attributename-to-webdsl-def: x_attributeName -> result
+    with
+      x_entityName := <attributename-get-entityname>x_attributeName;
+      x_dirty      := <attributename-entityname-dirty>x_attributeName
+    with
+      result := def |[
+        request var x_dirty := Set<x_entityName>()
+      ]|
+      
+  attributename-to-webdsl-stat: x_attributeName -> result
+    with
+      x_entityName                := <attributename-get-entityname>x_attributeName;
+      x_flagAttributeDirtyAsync   := <name-flagdirtyasync>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_flagAttributeDirtyAsync();
+      ]|
+      
+  attributename-to-webdsl-native: x_attributeName -> result
+    with
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+    with
+      result := native |[
+        static x_attributeGetQueue() : Queue
+      ]|
+
+rules
+  
+  cache-modulename-to-webdsl-stms: x_moduleName -> result
+    with
+      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
+        result := stat* |[
+          var notEmpty : Bool;
+          stat_updat*
+        ]|
+      else
+        result := []
+      end
+      
+  cache-attributenames-to-webdsl-stms: attributeNames -> result
+    with
+      stat_updat* := <map(cache-attributename-to-webdsl-stm-update)>attributeNames;
+      stat_empty* := <map(cache-attributename-to-webdsl-stm-empty)>attributeNames
+    with
+      result := stat* |[
+        notEmpty := true;
+        while(notEmpty){
+          stat_updat*
+          notEmpty := false;
+          stat_empty*
+        }
+      ]|
+      
+  cache-attributename-to-webdsl-stm-update: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_updateAllAttributeCache := <name-updateallcache>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_updateAllAttributeCache();
+      ]|
+      
+  cache-attributename-to-webdsl-stm-empty: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_hasDirty                := <name-hasdirty>x_attributeName
+    with
+      result := stat |[
+        notEmpty := notEmpty || x_entityName.x_hasDirty();
+      ]|
+
+rules
+  
+  cache-async-modulename-to-webdsl-stms: x_moduleName -> result
+    with
+      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
+        result := stat* |[
+          var notEmpty : Bool;
+          stat_updat*
+        ]|
+      else
+        result := []
+      end
+      
+  cache-async-attributenames-to-webdsl-stms: attributeNames -> result
+    with
+      stat_updat* := <map(cache-async-attributename-to-webdsl-stm-update)>attributeNames;
+      stat_empty* := <map(cache-async-attributename-to-webdsl-stm-empty)>attributeNames
+    with
+      result := stat* |[
+        notEmpty := true;
+        while(notEmpty){
+          stat_updat*
+          notEmpty := false;
+          stat_empty*
+        }
+      ]|
+      
+  cache-async-attributename-to-webdsl-stm-update: x_attributeName -> result
+    with
+      x_entityName                   := <attributename-get-entityname>x_attributeName;
+      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName
+    with
+      result := stat |[
+        x_entityName.x_updateAllAttributeCacheAsync();
+      ]|
+      
+  cache-async-attributename-to-webdsl-stm-empty: x_attributeName -> result
+    with
+      x_entityName              := <attributename-get-entityname>x_attributeName;
+      x_hasDirtyAsync           := <name-hasdirtyasync>x_attributeName
+    with
+      result := stat |[
+        notEmpty := notEmpty || x_entityName.x_hasDirtyAsync();
+      ]|

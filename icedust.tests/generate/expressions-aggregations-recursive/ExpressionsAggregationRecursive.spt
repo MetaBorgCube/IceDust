@@ -2,8 +2,8 @@ module generate-expressions-aggregation-recursive
 
 language IceDust
 
-setup Common [[
-	module ExpressionsAggregationRecursive
+fixture [[
+  module ExpressionsAggregationRecursive
 
   model
   
@@ -25,10 +25,11 @@ setup Common [[
   execute
   
     root.value
+    [[...]] 
 ]]
 
-test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
+//test Expressions Aggregation Recursive generate-java [[ ]] run generate-java-test
+//
+//test Expressions Aggregation Recursive compile-java [[ ]] run compile-java-test
 
-test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
-
-test Expressions Aggregation Recursive execute-java [[ ]] build execute-java-test to "3"
+test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-test to "3"

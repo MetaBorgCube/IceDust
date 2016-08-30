@@ -1,9 +1,9 @@
 module Data
 
 imports
-	Common
-	Model
-	Expressions
+  Common
+  Model
+  Expressions
 
 context-free syntax   // entity instances
 
@@ -41,5 +41,5 @@ context-free syntax   // entity instances
   EntityInstanceValue = EntityInstance
 
 context-free syntax // specific references
-	
-	EntityInstanceRef.EntityInstanceRef = <<ID>>
+  
+  EntityInstanceRef.EntityInstanceRef = <<ID>>

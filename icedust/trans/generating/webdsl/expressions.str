@@ -7,6 +7,7 @@ imports // constructors
   signatures/Data-sig
   signatures/Expressions-sig  
   desugaring/constructors
+  tiersplit/constructors
 
 imports // functions
 
@@ -16,7 +17,8 @@ imports // functions
   generating/webdsl/model
   generating/webdsl/data
   generating/webdsl/types
-   names/naming/names
+  names/naming/names
+  generating/_ir/model
 
 rules // WebDSL specific: no generics, explicit casts
   
@@ -30,31 +32,20 @@ rules // lib expression calls
   expr-to-webdsl-expr(err): e -> result
     where
       lib-call
-    where
-      not(webdsl-lib-call-cast)
-    with
-      arg*            := <get-arguments>e;
-      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
-      x_methodpostfix := <lib-method-name>e
-    with
-      result := exp |[
-        Expressions.x_methodpostfix(e1*)
-      ]|
-      
-  expr-to-webdsl-expr(err): e -> result
-    where
-      lib-call
-    where
-      webdsl-lib-call-cast
     with
       arg*            := <get-arguments>e;
       e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
-      srt1            := <name-to-webdsl-srt(err)>e
-    with
-      result := exp |[
-        Expressions.x_methodpostfix(e1*) as srt1
-      ]|
+      if <webdsl-lib-call-cast> e then
+        srt1          := <name-to-webdsl-srt(err)>e;
+        result := exp |[
+          Expressions.x_methodpostfix(e1*) as srt1
+        ]|
+      else
+        result := exp |[
+          Expressions.x_methodpostfix(e1*)
+        ]|
+      end
   
 rules // literals
   
@@ -74,6 +65,3 @@ rules // casts
     with
       e1 := <expr-to-webdsl-expr(err)>ex1;
       x_method := $[as[<postfix-id>ex1-ty]]
-
-rules
-  

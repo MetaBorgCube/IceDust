@@ -12,7 +12,6 @@ signature constructors
   WebDSL             : TargetLanguage
   WebDSLEager        : TargetLanguage
   WebDSLEventual     : TargetLanguage
-  WebDSLEventualNoUI : TargetLanguage
   
   ImplStrategy : CompilerOptions
   UIStyle      : CompilerOptions
@@ -21,5 +20,5 @@ signature constructors
   CalcOnWrite          : ImplStrategy
   EventuallyConsistent : ImplStrategy
   
-  NoUI   : UIStyle
-  CrudUI : UIStyle
+  NoUI       : UIStyle
+  ExplorerUI : UIStyle

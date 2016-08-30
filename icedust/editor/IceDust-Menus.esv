@@ -31,7 +31,7 @@ menus
 
   menu: "Analysis" 
     action: "5) Topological Sorting"       = debug-toposort
-		action: "Properties (Selection)"       = debug-properties (openeditor)
+    action: "Properties (Selection)"       = debug-properties (openeditor)
     submenu: "Index" (openeditor) 
       action: "File"                       = debug-index-selection-partition
       action: "File (unresolved tasks)"    = debug-index-partition
@@ -65,18 +65,23 @@ menus
     end
     submenu: "to WebDSL"
       submenu: "Calculate On Read"
-        action: "Standalone Application (CRUD UI)"        = generate-webdsl (openeditor)
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-noui (openeditor)
+        action: "Model Explorer"                          = generate-webdsl-explorerui (openeditor)     
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl (openeditor)
       end
       submenu: "Calculate On Write"
-        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eager (openeditor)
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager-noui (openeditor)
+        action: "Model Explorer"                          = generate-webdsl-eager-explorerui (openeditor) 
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eager (openeditor) 
       end
       submenu: "Eventually Consistent"
-        action: "Standalone Application (CRUD UI)"        = generate-webdsl-eventual (openeditor)
-        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual-noui (openeditor)
+        action: "Model Explorer"                          = generate-webdsl-eventual-explorerui (openeditor)  
+        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual (openeditor)
       end
     end
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
+  menu: "SPT" (meta)
+    action: "generate-java-test" = generate-java-test (openeditor)
+    action: "execute-java-incr-test" = execute-java-incr-test
+    
+    

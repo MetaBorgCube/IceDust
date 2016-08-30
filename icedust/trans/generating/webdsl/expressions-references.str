@@ -2,19 +2,19 @@ module generating/webdsl/expressions-references
 
 imports // constructors
 
-	webdsl/constructors
-	webdsl/WebDSL
-	signatures/Expressions-sig
+  webdsl/constructors
+  webdsl/WebDSL
+  signatures/Expressions-sig
 
 imports // functions
 
-	api/_runtime
+  api/_runtime
   api/data-names-api
-	api/model-names-api
-	generating/_ir/model
-	generating/webdsl/types
+  api/model-names-api
+  generating/_ir/model
+  generating/webdsl/types
   names/naming/names
-	naming/_notNaBL
+  naming/_notNaBL
 
 rules // member access
       
@@ -38,3 +38,9 @@ rules // direct references
 rules // references : this
 
   expr-to-webdsl-expr(err): This() -> webdsl:e |[this]|
+
+rules // references : tiersplit
+
+  expr-to-webdsl-expr(err): TierSplit(name) -> exp |[ x_name() ]|
+    with
+      x_name := <name-get> name

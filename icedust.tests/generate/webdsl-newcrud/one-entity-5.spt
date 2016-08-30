@@ -1,0 +1,31 @@
+module one-entity-5
+
+language IceDust
+
+
+fixture [[
+
+module oneentity5
+
+model
+
+  entity Message {
+    text : String
+    int : Int
+    float : Float
+    bool : Boolean
+    
+    text : String?
+    int : Int?
+    float : Float?
+    bool : Boolean?
+    
+    derived : String = text
+    derivedDefault : String = text (default)
+  }
+
+[[...]]
+
+]]
+
+test one-entity-5 generate new crud test [[ ]] run generate-webdsl-newcrudui-test

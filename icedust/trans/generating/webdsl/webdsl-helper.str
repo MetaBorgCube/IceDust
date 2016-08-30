@@ -1,0 +1,11 @@
+module generating/webdsl/webdsl-helper
+
+imports
+
+  webdsl/constructors
+  webdsl/WebDSL
+
+rules
+
+  webdsl-elem: t -> Text(t)   where is-string
+  webdsl-expr: s -> String(s) where is-string

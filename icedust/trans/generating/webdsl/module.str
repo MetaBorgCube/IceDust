@@ -2,36 +2,45 @@ module generating/webdsl/module
 
 imports // constructors
 
-	webdsl/constructors
-	webdsl/WebDSL
-	desugaring/constructors
+  webdsl/constructors
+  webdsl/WebDSL
+  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
+  tiersplit/constructors
 
 imports // functions
   
   generating/_ir/model 
+  generating/webdsl/module-derivations
+  generating/webdsl/module-ui
   generating/webdsl/model
-	generating/webdsl/data
+  generating/webdsl/data
+  generating/webdsl/types
   api/model-names-api
-	api/module-api
+  api/module-api
   api/module-names-api
   lib/lists-tuples
   lib/string
 
 rules // module
 
-	modulename-to-webdsl-application(err): x_moduleName -> result
-		where
-			is-modulename
-		with
-			def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
-			def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
-			elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName;
-			stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
-		with
-		  if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-		    def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
-		    stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
-		  end
+  modulename-to-webdsl-application(err): x_moduleName -> result
+    where
+      <is-modulename> x_moduleName
+    with
+      def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
+      stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
+    with
+      if modulename-is-explorerui then
+        def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
+        elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName
+      end
+    with
+      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
+        def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
+        stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
+      end
     with
       if modulename-is-eventuallyconsistent then
         stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
@@ -39,7 +48,7 @@ rules // module
         stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
       end
     with
-      sec_modelDataUi* := section* |[
+      sec_modelData* := section* |[
         section data
           
           init {
@@ -49,15 +58,19 @@ rules // module
         section model
         
           def_model*
-        
-        section ui
-        
-          define applicationmenu() {
-            elem_menu*
-          }
-          
-          def_crud*
       ]|
+    with
+      if modulename-is-explorerui then
+        sec_ui* := section* |[
+          section ui
+          
+            define applicationmenu() {
+              elem_menu*
+            }
+            
+            def_crud*
+        ]|
+      end
     with
       if modulename-is-calconwrite  then  
         sec_cachesDirtyflag* := section* |[
@@ -130,264 +143,55 @@ rules // module
       else
         sec_hibernateTriggers* := []
       end end
-	  with
-	    if modulename-is-noui then
-      result := application |[
-        application x_moduleName
-        
-        imports lib/icedust/crud-ui
-        imports lib/icedust/Expressions
-      
-        sec_modelDataUi*
-        
-        sec_cachesDirtyflag*
-        
-        sec_asyncDirtyflag*
-        
-        sec_hibernateTriggers*
-      ]|
-    else
-      result := module |[
-        module x_moduleName
-        
-        imports lib/icedust/crud-ui
-        imports lib/icedust/Expressions
-      
-        sec_modelDataUi*
-        
-        sec_cachesDirtyflag*
-        
-        sec_asyncDirtyflag*
-        
-        sec_hibernateTriggers*
-      ]|
-    end
-
-rules //crud
-	
-  entityname-to-webdsl-defs: x_entityName -> result
     with
-      x_manageEntity := <name-manage>x_entityName;
-      x_createEntity := <name-create>x_entityName;
-      x_editEntity   := <name-edit>x_entityName;
-      x_viewEntity   := <lcfirst>x_entityName;
-      form-fields :=
-        <concat(
-          entityname-get-attributenames-normal-default,
-          entityname-get-rolenames,
-          entityname-get-inversenames
-        );map(attributename-to-webdsl)>x_entityName;
-      elem_deriveEditRowsTemp := Derive("editRows", Var("temp"), form-fields);
-      elem_deriveEditRowsArg  := Derive("editRows", Var("arg"),  form-fields)
-    with
-      if entityname-is-calconread then
-        result := [DeriveCrud(x_entityName)]
-      else
-        result := def* |[
-          define page x_createEntity(){
-            //derive createPage from temp
-            main()
-            define body() {
-              var temp := x_entityName{}
-              header{"Create " output(temp.name) } 
-              form { 
-                <fieldset>
-                  <legend>
-                    output("Details")
-                  </legend>
-                  <table>
-                    elem_deriveEditRowsTemp
-                    // derive editRows from temp
-                  </table>
-                </fieldset>      
-                action("Save", save())
-              }
-              action save() { 
-                temp.save();
-                return x_manageEntity();
-              }
-            }
-          }
-          define page x_viewEntity(arg : x_entityName){
-            derive viewPage from arg
-          }
-          define page x_editEntity(arg : x_entityName){
-            //derive editPage from arg
-            main()
-            define body() {
-              header{"Edit " output(arg.name) } 
-              form { 
-                <fieldset>
-                  <legend>
-                    output("Details")
-                  </legend>
-                  <table>
-                    elem_deriveEditRowsArg
-                    // derive editRows from arg
-                  </table>
-                </fieldset>  
-                action("Save", save())
-              }
-              action save() { 
-                arg.save();
-                return x_manageEntity();
-              }
-            }
-          }
-          define page x_manageEntity(){
-            main()
-            define body(){
-              navigate(x_createEntity()){ "create" }
-              <list>
-                for(elem : x_entityName){
-                  <li> 
-                    output(elem)
-                    " "
-                    navigate(x_editEntity(elem)){ "edit" }
-                    " "
-                    form{action("remove",remove(elem))}
-                  </li>
-                }
-              </list>
-              action remove(arg : x_entityName){
-                arg.delete();
-              }
-            }
-          }
+      if modulename-is-explorerui then
+        result := application |[
+          application x_moduleName
+        
+          imports lib/icedust/modelexplorer-ui
+          imports lib/icedust/non-required-inputs
+          imports lib/icedust/Expressions
+      
+          sec_modelData*
+          
+          sec_ui*
+        
+          sec_cachesDirtyflag*
+        
+          sec_asyncDirtyflag*
+        
+          sec_hibernateTriggers*
         ]|
+      else //embedded model
+        if not(modulename-is-eventuallyconsistent) then
+          result := module |[
+            module x_moduleName
+          
+            imports lib/icedust/Expressions
+        
+            sec_modelData*
+          
+            sec_cachesDirtyflag*
+          
+            sec_asyncDirtyflag*
+          
+            sec_hibernateTriggers*
+          ]|
+        else
+          result := module |[
+            module x_moduleName
+          
+//            imports lib/icedust/eventually-consistent
+//            imports lib/icedust/eventually-consistent-ac
+            imports lib/icedust/Expressions
+        
+            sec_modelData*
+          
+            sec_cachesDirtyflag*
+          
+            sec_asyncDirtyflag*
+          
+            sec_hibernateTriggers*
+          ]|
+        end
       end
-	
-  attributename-to-webdsl: x_name -> DeriveDefault(x_name)
-	
-	entityname-to-webdsl-elem: x_entityName -> result
-		with
-			x_manageName := $[manage[x_entityName]];
-			$text := Text(x_entityName)
-		with
-		  result := elem |[
-		    navbaritem{navigate x_manageName(){$text}}
-		  ]|
-	
-rules // derivations
-  
-  attributename-to-webdsl-def: x_attributeName -> result
-    with
-      x_entityName := <attributename-get-entityname>x_attributeName;
-      x_dirty      := <attributename-entityname-dirty>x_attributeName
-    with
-      result := def |[
-        request var x_dirty := Set<x_entityName>()
-      ]|
-      
-  attributename-to-webdsl-stat: x_attributeName -> result
-    with
-      x_entityName                := <attributename-get-entityname>x_attributeName;
-      x_flagAttributeDirtyAsync   := <name-flagdirtyasync>x_attributeName
-    with
-      result := stat |[
-        x_entityName.x_flagAttributeDirtyAsync();
-      ]|
-      
-  attributename-to-webdsl-native: x_attributeName -> result
-    with
-      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
-    with
-      result := native |[
-        static x_attributeGetQueue() : Queue
-      ]|
-
-rules
-  
-  cache-modulename-to-webdsl-stms: x_moduleName -> result
-    with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
-      stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
-    with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        result := stat* |[
-          var notEmpty : Bool;
-          stat_updat*
-        ]|
-      else
-        result := []
-      end
-      
-  cache-attributenames-to-webdsl-stms: attributeNames -> result
-    with
-      stat_updat* := <map(cache-attributename-to-webdsl-stm-update)>attributeNames;
-      stat_empty* := <map(cache-attributename-to-webdsl-stm-empty)>attributeNames
-    with
-      result := stat* |[
-        notEmpty := true;
-        while(notEmpty){
-          stat_updat*
-          notEmpty := false;
-          stat_empty*
-        }
-      ]|
-      
-  cache-attributename-to-webdsl-stm-update: x_attributeName -> result
-    with
-      x_entityName              := <attributename-get-entityname>x_attributeName;
-      x_updateAllAttributeCache := <name-updateallcache>x_attributeName
-    with
-      result := stat |[
-        x_entityName.x_updateAllAttributeCache();
-      ]|
-      
-  cache-attributename-to-webdsl-stm-empty: x_attributeName -> result
-    with
-      x_entityName              := <attributename-get-entityname>x_attributeName;
-      x_hasDirty                := <name-hasdirty>x_attributeName
-    with
-      result := stat |[
-        notEmpty := notEmpty || x_entityName.x_hasDirty();
-      ]|
-
-rules
-  
-  cache-async-modulename-to-webdsl-stms: x_moduleName -> result
-    with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
-      stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
-    with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        result := stat* |[
-          var notEmpty : Bool;
-          stat_updat*
-        ]|
-      else
-        result := []
-      end
-      
-  cache-async-attributenames-to-webdsl-stms: attributeNames -> result
-    with
-      stat_updat* := <map(cache-async-attributename-to-webdsl-stm-update)>attributeNames;
-      stat_empty* := <map(cache-async-attributename-to-webdsl-stm-empty)>attributeNames
-    with
-      result := stat* |[
-        notEmpty := true;
-        while(notEmpty){
-          stat_updat*
-          notEmpty := false;
-          stat_empty*
-        }
-      ]|
-      
-  cache-async-attributename-to-webdsl-stm-update: x_attributeName -> result
-    with
-      x_entityName                   := <attributename-get-entityname>x_attributeName;
-      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName
-    with
-      result := stat |[
-        x_entityName.x_updateAllAttributeCacheAsync();
-      ]|
-      
-  cache-async-attributename-to-webdsl-stm-empty: x_attributeName -> result
-    with
-      x_entityName              := <attributename-get-entityname>x_attributeName;
-      x_hasDirtyAsync           := <name-hasdirtyasync>x_attributeName
-    with
-      result := stat |[
-        notEmpty := notEmpty || x_entityName.x_hasDirtyAsync();
-      ]|

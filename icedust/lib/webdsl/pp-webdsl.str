@@ -2,8 +2,8 @@ module org/webdsl/dsl/syntax/pp-webdsl
 
 imports
   libstratego-gpp
-	webdsl/WebDSL
-	webdsl/pp-hql
+  webdsl/WebDSL
+  webdsl/pp-hql
 
 strategies
 // 

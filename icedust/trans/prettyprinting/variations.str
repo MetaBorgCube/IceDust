@@ -4,10 +4,12 @@ imports // constructors
 
   signatures/_PrettyPrint-sig
   signatures/Data-sig
+  signatures/Expressions-sig
   signatures/Model-sig
 
 imports // functions
 
+  libstratego-gpp
   api/data-api
   api/model-api
   lib/lists-tuples
@@ -15,6 +17,7 @@ imports // functions
   pp/Expressions-pp
   pp/Model-pp
   pp/Types-pp
+  prettyprinting/pp
 
 rules
 

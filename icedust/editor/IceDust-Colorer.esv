@@ -5,23 +5,23 @@ imports
   completion/colorer/IceDust-cc-esv
 
 colorer Entity and Role namespaces
-	
-	// _.Entity : 0 64 128 italic bold	//how to only color the name?
+  
+  // _.Entity : 0 64 128 italic bold  //how to only color the name?
   _.EntityRef: 0 64 128 italic bold
   _.RoleRef: 0 64 128 italic
   _.MemberRef: 0 64 128 italic
 
-	_.LHSTsHelp: 0 64 128 italic
-	_.NHSTsHelp: 0 64 128 italic
-	_.RHSTsHelp: 0 64 128 italic
-	_.LHSNode: 0 0 0
-	_.NHSNode: 0 0 0
-	_.RHSNode: 0 0 0
-	
+  _.LHSTsHelp: 0 64 128 italic
+  _.NHSTsHelp: 0 64 128 italic
+  _.RHSTsHelp: 0 64 128 italic
+  _.LHSNode: 0 0 0
+  _.NHSNode: 0 0 0
+  _.RHSNode: 0 0 0
+  
 colorer Multiplicity
 
-	Multiplicity: 160 0 0 bold
-	MultiplicityZ:160 0 0 bold
+  Multiplicity: 160 0 0 bold
+  MultiplicityZ:160 0 0 bold
 
 colorer Primitive types
   _.LitString: 0 0 255 

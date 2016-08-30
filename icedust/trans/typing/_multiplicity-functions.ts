@@ -1,11 +1,11 @@
 module typing/_multiplicity-functions
 
 imports
-	
-	// constructors
-	src-gen/signatures/Types-sig
-	
-	// // use custom runtime libraries  
+  
+  // constructors
+  src-gen/signatures/Types-sig
+  
+  // // use custom runtime libraries  
  //  lib/nabl/-
  //  lib/task/-
  //  lib/types/-
@@ -25,9 +25,9 @@ type functions
        or                                                   OneOrMore()  => mu
 
   lowerbound-zero:
-  	(x-mu) -> mu
-  	where (x-mu == ZeroOrOne() or x-mu == One()) and ZeroOrOne()  => mu
-  	   or                                            ZeroOrMore() => mu
+    (x-mu) -> mu
+    where (x-mu == ZeroOrOne() or x-mu == One()) and ZeroOrOne()  => mu
+       or                                            ZeroOrMore() => mu
 
   upperbound-one:
     (x-mu) -> mu

@@ -2,40 +2,42 @@ module generating/webdsl/model
 
 imports // constructors
 
-	api/constructors
+  api/constructors
   desugaring/constructors
-	webdsl/WebDSL
-	signatures/Model-sig
-	signatures/Modules-sig
+  webdsl/WebDSL
+  signatures/Model-sig
+  signatures/Modules-sig
+  signatures/Expressions-sig
 
 imports // functions
 
   analysis2/path
-	api/_runtime
-	api/model-api
-	api/model-names-api
+  api/_runtime
+  api/model-api
+  api/model-names-api
   generating/_ir/model
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
-	lib/search
+  lib/search
   names/naming/names
-	naming/_notNaBL
+  naming/_notNaBL
+  tiersplit/intra-object
 
 rules // entities
-	
+
   model-entityname-to-webdsl-def(err): x_entityName -> result
-  	where
-  		is-entityname
-  	with
-  		ebd_attributes* := <entityname-get-attributenames;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
+    where
+      <is-entityname> x_entityName
+    with
+      ebd_attributes* := <entityname-get-attributenames2;fmap(model-attributename-to-webdsl-ebds(err)    )>x_entityName;
       ebd_relations*  := <entityname-get-relationnames; fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
       ebd_roles*      := <entityname-get-rolenames;     fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
-  		ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
-  		ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
-  	with
-  	  if entityname-is-noui then
-    	  result := def |[
+      ebd_inverses*   := <entityname-get-inversenames;  fmap(model-roleOrInversename-to-webdsl-ebds(err))>x_entityName;
+      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
+    with
+      if entityname-is-explorerui then
+        result := def |[
           entity x_entityName {
             ebd_attributes*
             ebd_relations*
@@ -55,8 +57,20 @@ rules // entities
           }
         ]|
       end
-
+      
 rules
+      
+  var-to-webdsl-function(err): TierSplit(name, expr) -> result
+    with
+      x_getVar := <name-get> name;
+      type := <_get-type> expr;
+      srt_type := <type-to-webdsl-srt(err)> type;
+      e_calculate := <expr-to-webdsl-expr(err)> expr;
+      result := ebd |[
+        function x_getVar() : srt_type {
+          return e_calculate;
+        }
+      ]|
 
   model-attributename-to-webdsl-ebds(err): x_attributeName -> result
     where
@@ -87,7 +101,13 @@ rules
       e_entityNameAttributeName   := String($[[x_entityName].[x_attributeName]]);
       e_entityName                := String(x_entityName)
     with
-      if attributename-is-default-derivation then
+      if <attributename-is-explorerui;attributename-is-default-derivation> x_attributeName then
+        ebd_varsfns := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_attributeName
+      else
+        ebd_varsfns := []
+      end
+    with
+      if <attributename-is-default-derivation> x_attributeName then
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_attributeName
       end
     with
@@ -96,9 +116,26 @@ rules
       end
     with
       if attributename-is-normal-default then
-        ebd_attributeField* := ebd* |[
-          x_attributeName : srt_attributeType (default=null)
-        ]|
+        if <name-is-zeroorone <+ attributename-is-default-derivation>x_attributeName then
+          ebd_attributeField* := ebd* |[
+            x_attributeName : srt_attributeType (default=null)
+          ]|
+        else
+          e1 := String(x_attributeName);
+          if <_get-type ; String()> x_attributeName then
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (default=null, validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
+            ]|
+          else  if <_get-type ; Boolean()> x_attributeName then
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+            ]|
+          else
+            ebd_attributeField* := ebd* |[
+              x_attributeName : srt_attributeType (default=null, validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
+            ]|
+          end end
+        end
       else
         ebd_attributeField* := ebd* |[
           x_attributeName : srt_attributeType := x_calculateAttribute()
@@ -279,6 +316,7 @@ rules
         ebd_dirtyFlagFlowsto*
         ebd_attributeCacheAndCacheFunctions*
         ebd_flagAttributeDirtyAsync*
+        ebd_varsfns
       ]|
 
 rules
@@ -323,31 +361,53 @@ rules
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_roleName
       end
     with
-      if name-is-left; name-is-to-one then
-        ebd_roleField* := ebd* |[
-          x_roleName : x_inverseEntityName (inverse=x_inverseName)
-        ]|
-      else if name-is-left; name-is-to-many-ordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : [x_inverseEntityName] (inverse=x_inverseName)
-        ]|
-      else if name-is-left; name-is-to-many-unordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : {x_inverseEntityName} (inverse=x_inverseName)
-        ]|
-      else if name-is-to-one then
-        ebd_roleField* := ebd* |[
-          x_roleName : x_inverseEntityName
-        ]|
-      else if name-is-to-many-ordered then
-        ebd_roleField* := ebd* |[
-          x_roleName : [x_inverseEntityName]
-        ]|
-      else // right unordered
-        ebd_roleField* := ebd* |[
-          x_roleName : {x_inverseEntityName}
-        ]|
-      end end end end end
+      if name-is-left then
+        if where(get-multiplicity; ?One()) then
+          x_roleNameStr := <double-quote> x_roleName;
+          ebd_roleField* := ebd* |[
+            x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null"), inverse=x_inverseEntityName.x_inverseName )
+          ]|
+        else
+          if name-is-to-one then
+            ebd_roleField* := ebd* |[
+              x_roleName : x_inverseEntityName ( inverse=x_inverseEntityName.x_inverseName )
+            ]|
+          else
+            if name-is-to-many-ordered then
+              ebd_roleField* := ebd* |[
+                x_roleName : [x_inverseEntityName] (inverse=x_inverseEntityName.x_inverseName)
+              ]|
+            else
+              ebd_roleField* := ebd* |[
+                x_roleName : {x_inverseEntityName} (inverse=x_inverseEntityName.x_inverseName)
+              ]|
+            end
+          end
+        end
+      else
+        if where(get-multiplicity; ?One()) then
+          x_roleNameStr := <double-quote> x_roleName;
+          ebd_roleField* := ebd* |[
+            x_roleName : x_inverseEntityName ( validate(x_roleName != null, x_roleNameStr + " cannot be null") )
+          ]|
+        else
+          if name-is-to-one then
+            ebd_roleField* := ebd* |[
+              x_roleName : x_inverseEntityName
+            ]|
+          else
+            if name-is-to-many-ordered then
+              ebd_roleField* := ebd* |[
+                x_roleName : [x_inverseEntityName]
+              ]|
+            else
+              ebd_roleField* := ebd* |[
+                x_roleName : {x_inverseEntityName}
+              ]|
+            end
+          end
+        end
+      end
     with
       if name-is-to-one then
         ebd_getRole* := ebd* |[

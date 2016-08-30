@@ -1,9 +1,9 @@
 module Execute
 
 imports
-	Expressions
-	Common
+  Expressions
+  Common
 
 context-free syntax
 
-	Execute = Exp {longest-match}
+  Execute = Exp {longest-match}

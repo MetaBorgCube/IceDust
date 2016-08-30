@@ -2,14 +2,14 @@ module typing/literals
 
 imports
 
-	// constructors
-	src-gen/signatures/Expressions-sig
-	src-gen/signatures/Types-sig
-	
-	// functions
+  // constructors
+  src-gen/signatures/Expressions-sig
+  src-gen/signatures/Types-sig
+  
+  // functions
   names/naming/names
-	
-	// // use custom runtime libraries  
+  
+  // // use custom runtime libraries  
  //  lib/nabl/-
  //  lib/task/-
  //  lib/types/-
@@ -18,30 +18,30 @@ imports
 
 type rules
 
-	Int(x) : Int()
-	Int(x) has multiplicity One()
-	Int(x) has ordering Ordered()
+  Int(x) : Int()
+  Int(x) has multiplicity One()
+  Int(x) has ordering Ordered()
 
-	Float(x) : Float()
-	Float(x) has multiplicity One()
-	Float(x) has ordering Ordered()
-	
-	LitString(x) : String()
-	LitString(x) has multiplicity One()
-	LitString(x) has ordering Ordered()
-	
-	True() : Boolean()
-	True() has multiplicity One()
-	True() has ordering Ordered()
-	
-	False() : Boolean()
-	False() has multiplicity One()
-	False() has ordering Ordered()
-	
-	Datetime(x) : Datetime()
-	Datetime(x) has multiplicity One()
-	Datetime(x) has ordering Ordered()
-	
-	NoValue() : NoValue()
-	NoValue() has multiplicity ZeroOrOne()
-	NoValue() has ordering Ordered()
+  Float(x) : Float()
+  Float(x) has multiplicity One()
+  Float(x) has ordering Ordered()
+  
+  LitString(x) : String()
+  LitString(x) has multiplicity One()
+  LitString(x) has ordering Ordered()
+  
+  True() : Boolean()
+  True() has multiplicity One()
+  True() has ordering Ordered()
+  
+  False() : Boolean()
+  False() has multiplicity One()
+  False() has ordering Ordered()
+  
+  Datetime(x) : Datetime()
+  Datetime(x) has multiplicity One()
+  Datetime(x) has ordering Ordered()
+  
+  NoValue() : NoValue()
+  NoValue() has multiplicity ZeroOrOne()
+  NoValue() has ordering Ordered()

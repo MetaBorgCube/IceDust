@@ -2,28 +2,29 @@ module api/data-names-api
 
 imports // constructors
 
-	signatures/Model-sig
-	api/_runtime-constructors
-	desugaring/constructors
+  signatures/Model-sig
+  api/_runtime-constructors
+  desugaring/constructors
   names/naming/names
-	analysis2/constructors
+  analysis2/constructors
 
 imports // functions
 
   api/_runtime
   api/model-names-api
-	lib/origin
-	lib/search
-	lib/index
-	lib/nabl-ext
-	lib/lists-tuples
+  lib/origin
+  lib/search
+  lib/index
+  lib/nabl-ext
+  lib/lists-tuples
+  lib/string
 
 rules // entity instance
 
-	is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
+  is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
 
-	entityinstancename-get-exprs = index-get-prop(|AST());Hd
-	entityinstancename-get-membervalues = index-get-prop(|AST())
+  entityinstancename-get-exprs = index-get-prop(|AST());Hd
+  entityinstancename-get-membervalues = index-get-prop(|AST())
 
   entityinstancename-get-membervaluenames = _nabl-get-child-definitions(|NablNsMemberValue()) ;map(def-to-name); string-sort-anno
 

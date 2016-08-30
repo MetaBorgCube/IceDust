@@ -2,9 +2,9 @@ module generate-expressions-roles-inverses
 
 language IceDust
 
-setup Common [[
-	module ExpressionsRolesInverses
-	
+fixture [[
+  module ExpressionsRolesInverses
+  
   model
   
     entity Person {
@@ -40,10 +40,11 @@ setup Common [[
   
   
     man.marriage.counseling.counselor.name // and then get the counselor of this marriage
+    [[...]]
 ]]
 
-test Expressions Roles Inverses generate-java [[ ]] build generate-java-test
+//test Expressions Roles Inverses generate-java [[ ]] run generate-java-test
+//
+//test Expressions Roles Inverses compile-java [[ ]] run compile-java-test
 
-test Expressions Roles Inverses compile-java [[ ]] build compile-java-test
-
-test Expressions Roles Inverses execute-java [[ ]] build execute-java-test to "Charles"
+test Expressions Roles Inverses execute-java [[ ]] run execute-java-test to "Charles"

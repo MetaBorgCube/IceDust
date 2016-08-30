@@ -1,12 +1,13 @@
-id: org.metaborg:icedust:0.4.3-SNAPSHOT
+id: org.metaborg:icedust:0.5.0
 name: IceDust
-metaborgVersion: 2.0.0-SNAPSHOT
+metaborgVersion: 2.0.0
 dependencies:
   compile:
   - org.metaborg:org.metaborg.meta.lang.nabl:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.lang.template:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.lang.ts:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.lang.esv:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lang.stratego:${metaborgVersion}
   source:
   - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
 exports:
@@ -24,7 +25,7 @@ pardonedLanguages:
 - NameBindingLanguage
 language:
   stratego:
-    format: jar
+    format: ctree
     args:
     - -la
     - stratego-lib
@@ -40,3 +41,5 @@ language:
     - stratego-sdf
     - -la
     - strc
+#debug:
+#  typesmart: true

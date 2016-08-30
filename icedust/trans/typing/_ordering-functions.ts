@@ -1,11 +1,11 @@
 module typing/_ordering-functions
 
 imports
-	
-	// constructors
-	src-gen/signatures/Types-sig
-	
-	// // use custom runtime libraries  
+  
+  // constructors
+  src-gen/signatures/Types-sig
+  
+  // // use custom runtime libraries  
  //  lib/nabl/-
  //  lib/task/-
  //  lib/types/-

@@ -2,16 +2,16 @@ module generating/webdsl/data
 
 imports // constructors
 
-	webdsl/WebDSL
+  webdsl/WebDSL
 
 imports // functions
 
   api/data-names-api
   api/model-names-api
   api/module-names-api
-	lib/search
-	generating/webdsl/expressions
-	naming/_notNaBL
+  lib/search
+  generating/webdsl/expressions
+  naming/_notNaBL
 
 rules
 
@@ -30,10 +30,10 @@ rules
 
 rules // entity instances
 
-	entityinstancename-to-webdsl-stm(err): x_eiName -> result
-		with
-			srt1 := <_get-type>x_eiName
-		with
+  entityinstancename-to-webdsl-stm(err): x_eiName -> result
+    with
+      srt1 := <_get-type>x_eiName
+    with
       result := stat |[
         var x_eiName := srt1 {};
       ]|
@@ -52,9 +52,9 @@ rules // entity instances
         stat_inverses*
       ]|
 
-	entityinstancename-to-webdsl-stm3(err): x_eiName -> result
-		where
-			is-entityinstancename
+  entityinstancename-to-webdsl-stm3(err): x_eiName -> result
+    where
+      is-entityinstancename
     with
       result := stat |[
         x_eiName.save();

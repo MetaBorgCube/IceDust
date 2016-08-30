@@ -2,7 +2,7 @@ module generating/java/data
 
 imports // constructors
 
-	java/Java
+  java/Java
 
 imports // functions
 
@@ -10,7 +10,7 @@ imports // functions
   api/model-names-api
   api/module-names-api
   generating/_ir/model
-	generating/java/expressions
+  generating/java/expressions
   names/naming/names
   naming/_notNaBL
 

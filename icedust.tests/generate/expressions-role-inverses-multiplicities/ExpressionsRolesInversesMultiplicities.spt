@@ -2,16 +2,16 @@ module generate-expressions-roles-inverse-multiplicities
 
 language IceDust
 
-setup Common [[
+fixture [[
 module ExpressionsRolesInversesMultiplicities
 
 model
 entity Node{
-	a : Int  = 1
+  a : Int  = 1
 }
 relation Tree{
-	Node.parentTree * -> parent
-	Node.childTree ?  -> child
+  Node.parentTree * -> parent
+  Node.childTree ?  -> child
 }
 
 data
@@ -20,13 +20,14 @@ n2 : Node { parent = n1 }
 
 
 execute
+[[...]]
 ]]
 
-test Expressions Roles Inverses Multiplicities generate-java [[ ]] build generate-java-test
+//test Expressions Roles Inverses Multiplicities generate-java [[ ]] run generate-java-test
+//
+//test Expressions Roles Inverses Multiplicities compile-java [[ ]] run compile-java-test
 
-test Expressions Roles Inverses Multiplicities compile-java [[ ]] build compile-java-test
-
-test Expressions Roles Inverses Multiplicities execute-java 1 in single [[ n2.childTree.parent . a ]] build execute-java-test to "1"
-test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.childTree.parent . a ]] build execute-java-test to "null"
-test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.parentTree.child . a ]] build execute-java-test to "[1]"
-test Expressions Roles Inverses Multiplicities execute-java 0 in single [[ n2.parentTree.child . a ]] build execute-java-test to "[]"
+test Expressions Roles Inverses Multiplicities execute-java 1 in single [[ n2.childTree.parent . a ]] run execute-java-test to "1"
+test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.childTree.parent . a ]] run execute-java-test to "null"
+test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.parentTree.child . a ]] run execute-java-test to "[1]"
+test Expressions Roles Inverses Multiplicities execute-java 0 in single [[ n2.parentTree.child . a ]] run execute-java-test to "[]"

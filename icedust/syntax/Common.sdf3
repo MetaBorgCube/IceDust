@@ -6,8 +6,8 @@ lexical syntax // IDs
   ID = Keyword {reject}        
                 
 lexical restrictions
-	
-	ID -/- [a-zA-Z0-9\_]
+  
+  ID -/- [a-zA-Z0-9\_]
 
 lexical syntax // Keywords
 
@@ -49,45 +49,45 @@ lexical syntax // Keywords
 
 lexical restrictions
 
-	Keyword -/- [a-zA-Z0-9\_]
+  Keyword -/- [a-zA-Z0-9\_]
 
 lexical syntax // literals
 
-  INT 					= "-"? [0-9]+
+  INT           = "-"? [0-9]+
   FLOAT         = "-"? [0-9]+ "." [0-9]+
-  STRING 				= StringChar* 
-  StringChar 		= ~[\"\n] 
-  StringChar 		= "\\\"" 
-  StringChar 		= BackSlashChar 
+  STRING        = StringChar* 
+  StringChar    = ~[\"\n] 
+  StringChar    = "\\\"" 
+  StringChar    = BackSlashChar 
   BackSlashChar = "\\"
   DATETIME      = [0-9][0-9][0-9][0-9] "-" [0-9][0-9]? "-" [0-9][0-9]? LAYOUT [0-9][0-9]? ":" [0-9][0-9] ":" [0-9][0-9] 
 
 lexical syntax // layout
 
-  LAYOUT 				= [\ \t\n\r] 
-  CommentChar 	= [\*] 
-  LAYOUT 				= "/*" ~[\*] | CommentChar* "*/" 
-  LAYOUT 				= "//" ~[\n\r]* [\n\r] | EOF 
-  EOF 					=  
+  LAYOUT        = [\ \t\n\r] 
+  CommentChar   = [\*] 
+  LAYOUT        = "/*" ~[\*] | CommentChar* "*/" 
+  LAYOUT        = "//" ~[\n\r]* [\n\r] | EOF 
+  EOF           =  
 
 lexical restrictions
 
-	// Ensure greedy matching for lexicals
-	
-	CommentChar   -/- [\/]
-	INT           -/- [0-9]
-	FLOAT         -/- [0-9\.]
-	DATETIME      -/- [0-9]
+  // Ensure greedy matching for lexicals
+  
+  CommentChar   -/- [\/]
+  INT           -/- [0-9]
+  FLOAT         -/- [0-9\.]
+  DATETIME      -/- [0-9]
 
-	EOF           -/- ~[]
-	
-	BackSlashChar -/- [\"]
+  EOF           -/- ~[]
+  
+  BackSlashChar -/- [\"]
 
 context-free restrictions
 
-	// Ensure greedy matching for comments
-	
-	LAYOUT? -/- [\ \t\n\r]
-	LAYOUT? -/- [\/].[\/]
-	LAYOUT? -/- [\/].[\*]
+  // Ensure greedy matching for comments
+  
+  LAYOUT? -/- [\ \t\n\r]
+  LAYOUT? -/- [\/].[\/]
+  LAYOUT? -/- [\/].[\*]
 

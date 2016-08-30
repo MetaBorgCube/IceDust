@@ -65,11 +65,14 @@ model
                            <+
                            count(deadline)==0 || count(date)==1 // no deadline is always on time
 
-    onExtension: Boolean = date <= extension
+    onExtension: Boolean = !onTime && date <= extension
                            <+
                            false // no extension means late, no submission date also means late
 
-    latePenalty: Float   = (date - deadline) / (extension - deadline) * assignment.latePenalty
+    latePenalty: Float   = if(onExtension)
+                             (date - deadline) / (extension - deadline) * assignment.latePenalty
+                           else
+                             0.0
                            <+
                            0.0
     
