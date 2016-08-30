@@ -29,10 +29,6 @@ signature
     ArgEntityDerivePropArg                : Id * Sort -> ArgEntityDerivePropArg
     ArgEntityDeriveProp                   : Id * ListStarOfUNDEFINED0 -> ArgEntityDeriveProp
     ArgEntityDeriveProp                   : Id * List(ArgEntityDerivePropArg) -> ArgEntityDeriveProp
-                                          : RefSort -> Sort
-                                          : GenericSort -> Sort
-                                          : SimpleSort -> Sort
-    ArgEntityDerive                       : Id * ArgEntityDeriveProp -> Sort
     ExpEntityDeriveProp                   : Id * ListStarOfUNDEFINED0 -> ExpEntityDeriveProp
     ExpEntityDeriveProp                   : Id * List(Exp) -> ExpEntityDeriveProp
     AttributeIgnoreDefault                : AttributeId -> AttributeSelection
@@ -42,6 +38,7 @@ signature
     None                                  : AttributeCollectionOverride
     AttributeIncludeIgnore                : List(AttributeId) -> AttributeIncludeIgnore
     None                                  : AttributeIncludeIgnore
+    AttributeIgnore                       : AttributeId -> AttributeElem
     AttributeInclude                      : AttributeId * AttributeIncludeIgnore -> AttributeElem
     AttributeAssign                       : AttributeId * Exp -> AttributeElem
     None                                  : OptRoutingArgs
@@ -259,6 +256,7 @@ signature
     DeriveBody                            : List(DeriveBodyElement) -> DeriveBody
     DeriveMode                            : Id * Id -> DeriveProperty
     DeriveDefault                         : Id -> DeriveProperty
+                                          : String -> DeriveId
     RegexId                               : RegexID -> RegexId
                                           : String -> RegexID
                                           : String -> ControlValue
@@ -370,10 +368,10 @@ signature
     TupleBranch                           : Pattern * Pattern -> Pattern
     SingleBranch                          : Branche -> Pattern
     RegexPattern                          : Pattern -> RegexExp
-                                          : String -> JSString
     JSTilde                               : JSPart
+    JSString                              : String -> JSPart
     JSExp                                 : Exp -> JSPart
-    JSString                              : JSString -> JSPart
+                                          : List(JSPart) -> JSParts
     AttributesExp                         : Exp -> CommonAttribute
     AllAttributeExceptExp                 : Exp -> CommonAttribute
     AllAttributes                         : CommonAttribute
@@ -383,6 +381,8 @@ signature
     XMLAttributesIfElse                   : Exp * List(Attribute) * List(Attribute) -> Attribute
     XMLAttributesIf                       : Exp * List(Attribute) -> Attribute
                                           : String -> QualName
+                                          : String -> XMLComment
+                                          : String -> HTML5VoidElement
     PolicyOr                              : PolicyExp * PolicyExp -> PolicyExp
     PolicyAnd                             : PolicyExp * PolicyExp -> PolicyExp
     Name                                  : Id -> PolicyExp
@@ -459,6 +459,22 @@ signature
     AjaxVisibility                        : Exp * AjaxVisibility -> AjaxStatement
     AjaxAppend                            : Exp * TemplateCall -> AjaxStatement
     AjaxReplace                           : Exp * TemplateCall -> AjaxStatement
+    TemplateId                            : TemplateId
+    HTMLWrapperBody                       : Id * Id * HTMLWrapperAssigns -> HTMLWrapperBody
+    HTMLWrapperAssigns                    : List(Attribute) -> HTMLWrapperAssigns
+    HTMLWrapperAssigns                    : List(Attribute) -> HTMLWrapperAssigns
+    HTMLWrapper                           : Id * Id * HTMLWrapperAssigns -> HTMLWrapper
+    ExpVarArgForCount                     : Id * Exp * Exp * List(ExpVarArg) -> ExpVarArg
+    ExpVarArgForAll                       : Id * Sort * OptFilter * List(ExpVarArg) -> ExpVarArg
+    ExpVarArgForInferred                  : Id * Exp * OptFilter * List(ExpVarArg) -> ExpVarArg
+    ExpVarArgFor                          : Id * Sort * Exp * OptFilter * List(ExpVarArg) -> ExpVarArg
+    ExpVarArg                             : List(Exp) -> ExpVarArg
+    FormalVarArg                          : Id * Sort -> FormalVarArg
+                                          : RefSort -> Sort
+                                          : GenericSort -> Sort
+                                          : SimpleSort -> Sort
+    ArgEntityDerive                       : Id * ArgEntityDeriveProp -> Sort
+    TemplateVarArgSort                    : List(FormalVarArg) -> Sort
     ActionModifierIgnoreValidation        : ActionModifier
     Action                                : List(ActionModifier) * Id * List(FormalArg) * Block -> Action
     InitAction                            : Block -> InitAction
@@ -497,6 +513,7 @@ signature
     ThrowTemplate                         : List(Exp) -> TemplateCall
     ValidationErrors                      : TemplateCall
     ValidationErrors                      : Id -> TemplateCall
+    MemberTemplateCall                    : Id * TemplateCall -> TemplateCall
                                           : TemplateCallBody -> TemplateCall
                                           : TemplateCallPropsNoArgs -> TemplateCall
                                           : TemplateCallProps -> TemplateCall
@@ -539,7 +556,10 @@ signature
     Derive                                : Id * Exp * List(DeriveProperty) * DeriveBody -> TemplateElement
     Derive                                : Id * Exp -> TemplateElement
     Derive                                : Id * Exp * List(DeriveProperty) -> TemplateElement
-    JSElement                             : List(Attribute) * List(JSPart) -> TemplateElement
+    StyleElement                          : List(Attribute) * JSParts -> TemplateElement
+    JSElement                             : List(Attribute) * JSParts -> TemplateElement
+    XMLComment                            : XMLComment -> TemplateElement
+    XMLEmptyElementUnclosed               : HTML5VoidElement * List(Attribute) -> TemplateElement
     XMLElement                            : QualName * List(Attribute) * List(TemplateElement) * QualName -> TemplateElement
     XMLEmptyElement                       : QualName * List(Attribute) -> TemplateElement
     AccessControlImportRules              : Id * List(AccessControlImportRulesArg) -> TemplateElement
@@ -599,6 +619,8 @@ signature
     TemplateArg                           : Id * List(Sort) -> TemplateArg
     None                                  : TemplateArgs
     TemplateArgs                          : List(TemplateArg) -> TemplateArgs
+    HTMLWrapperMultiple                   : List(HTMLWrapperBody) -> TemplateDefinition
+                                          : HTMLWrapper -> TemplateDefinition
     DefineTemplate                        : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
     DefinePage                            : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
     LocalRedefine                         : List(Modifier) * Id * List(FormalArg) * Id * OptLocalRedefineArgs -> TemplateDefinition
@@ -619,7 +641,7 @@ signature
     Test                                  : Id * Block -> Definition
     TypeDef                               : Id * List(TypeProperty) -> Definition
     DeriveTemplateDefinition              : Id * Id * List(Definition) -> Definition
-    DeriveTemplateCall                    : Id * Id -> Definition
+    DeriveTemplateCall                    : Id * DeriveId -> Definition
     DeriveCrud                            : Id -> Definition
     Enum                                  : Id * ListStarOfEnumValue0 -> Definition
     Predicate                             : Id * List(FormalArg) * Exp -> Definition
@@ -648,6 +670,7 @@ signature
     ObjectPropertyAssignment              : Id * Exp -> ObjectPropertyAssignment
     ObjectCreation                        : Sort * List(ObjectPropertyAssignment) -> ObjectCreation
     ObjectCreation                        : Sort * List(ObjectPropertyAssignment) -> ObjectCreation
+                                          : Id -> VarId
     Float                                 : Float -> ConstValue
     Long                                  : Long -> ConstValue
     Int                                   : Int -> ConstValue
@@ -655,6 +678,9 @@ signature
                                           : RetrievalExp -> Exp
                                           : SearcherDef -> Exp
     Call                                  : RegexExp * Id * List(Exp) -> Exp
+                                          : TemplateId -> Exp
+    TemplateVarArgExp                     : List(ExpVarArg) -> Exp
+    TemplateElementsArgument              : List(TemplateElement) -> Exp
     ValidateTemplateFunctionCall          : TemplateCall -> Exp
     RenderTemplateFunctionCall            : TemplateCall -> Exp
     SendEmailFunctionCall                 : EmailCall -> Exp
@@ -696,11 +722,12 @@ signature
     FieldAccess                           : Exp * Id -> Exp
     SessionVar                            : Id -> Exp
     GlobalVar                             : Id -> Exp
-    Var                                   : Id -> Exp
+    Var                                   : VarId -> Exp
                                           : ConstValue -> Exp
     IfExp                                 : Exp * Exp * Exp -> Exp
     CaseDefault                           : Block -> Case
     CaseAlt                               : ConstValue * Block -> Case
+    ElseIf                                : Exp * Block -> ElseIfStatement
     VarDeclInitInferred                   : Id * Exp -> VarDeclStat
     VarDeclInit                           : Id * Sort * Exp -> VarDeclStat
     VarDecl                               : Id * Sort -> VarDeclStat
@@ -718,6 +745,7 @@ signature
     ForStmtInferred                       : Id * Exp * OptFilter * Block -> Statement
     ForStmt                               : Id * Sort * Exp * OptFilter * Block -> Statement
     Case                                  : Exp * List(Case) -> Statement
+    IfWithElseIf                          : Exp * Block * List(ElseIfStatement) * Block -> Statement
     IfNoElse                              : Exp * Block -> Statement
     If                                    : Exp * Block * Block -> Statement
                                           : VarDeclStat -> Statement
@@ -778,6 +806,7 @@ signature
                                           : Path_HQL -> Expression_HQL
     Indices                               : Path_HQL -> Expression_HQL
     Elements                              : Path_HQL -> Expression_HQL
+    Size                                  : Expression_HQL -> Expression_HQL
     Count                                 : Expression_HQL -> Expression_HQL
     CountStar                             : Expression_HQL
     Max                                   : Expression_HQL -> Expression_HQL

@@ -9,10 +9,6 @@ imports // constructors
   analysis2/path
   tiersplit/constructors
 
-signature constructors
-
-  TemplateElementsArgument: Term -> Term //TODO: update WebDSL constructors
-
 imports // functions
   
   generating/_ir/model 
