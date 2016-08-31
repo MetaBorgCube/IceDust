@@ -30,10 +30,10 @@ type rules
     and <mu-choice> (x-mu, y-mu) => mu
     
   Comma(x,y)
-+ Merge(x,y) : x-ty
++ Merge(x,y) : lup-ty
   where  x  : x-ty
     and  y  : y-ty
-    and  x-ty == y-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Merge] on y
+    and <least-upper-bound>(x-ty, y-ty) => lup-ty else error $[Type mismatch: expected [x-ty] got [y-ty] in Merge] on y
     
   Comma(x,y)
 + Merge(x,y) has multiplicity mu

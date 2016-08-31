@@ -12,13 +12,28 @@ context-free syntax // entities
       <{Member "\n"}*>
     }
   >
+  Model.Entity = <
+    entity <ID> extends <{Extends ", "}*> {
+      <{Member "\n"}*>
+    }
+  >
+  Model.Interface = <
+    interface <ID> {
+      <{Member "\n"}*>
+    }
+  >
+  Model.Interface = <
+    interface <ID> extends <{Extends "\n"}*> {
+      <{Member "\n"}*>
+    }
+  >
   Model.FirstClassRelation = <
     relation <ID> {
       <{Member "\n"}*>
     }
   >
-  EntityOrRelation.EntityType = <entity>
-  EntityOrRelation.RelationType = <relation>
+  
+  Extends.Extends = <<ID>>
 
 context-free syntax // shortcut relations
 
@@ -31,7 +46,7 @@ context-free syntax // shortcut relations
 context-free syntax // non-first-class relation
 
   Model.Relation = [
-    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID]
+    relation [EntityRef][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef][DotID?]
   ]
   
   SpaceMultiplicity             = [ [Multiplicity]]

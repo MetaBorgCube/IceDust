@@ -38,3 +38,16 @@ rules
   pp2-multiplicity = ?ZeroOrMore();!"*"
   
   pp2-type-multiplicity = ?(type, multiplicity);!$[[<pp2-type>type][<pp2-multiplicity>multiplicity]]
+
+rules
+
+  upper-one: ZeroOrOne() -> <id>
+  upper-one: One() -> <id>
+  upper-many: ZeroOrMore() -> <id>
+  upper-many: OneOrMore() -> <id>
+  lower-zero: ZeroOrOne() -> <id>
+  lower-zero: ZeroOrMore() -> <id>
+  lower-one: One() -> <id>
+  lower-one: OneOrMore() -> <id>
+  nullable = lower-zero
+  

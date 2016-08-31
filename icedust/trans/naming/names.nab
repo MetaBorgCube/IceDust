@@ -38,13 +38,13 @@ namespaces
 
 properties
 
-  derivation-type      of Attribute    : DerivationType  //Derivation(), DefaultValue() or Normal()
-  multiplicity         of Attribute    : Multiplicity
+  derivation-type      of Attribute   : DerivationType  //Derivation(), DefaultValue() or Normal()
+  multiplicity         of Attribute   : Multiplicity
   multiplicity-inverse of Role        : Multiplicity
   ordering             of Role        : Ordering
   ordering-inverse     of Role        : Ordering
   inverse              of Role        : Inverse
-  origin-role           of Inverse      : Role
+  origin-role          of Inverse     : Role
   origin-role2         of Shortcut    : Role
   rel-ty               of Shortcut    : Entity
   side                 of Relation    : Term
@@ -68,6 +68,36 @@ binding rules // model
     scopes This
     implicitly defines This This()
       of type e-ty
+      
+  Entity(e-ty, _, _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
+
+  Interface(e-ty, _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
+      
+  Interface(e-ty, _, _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
+      
+  Extends(c):
+    imports Attribute, imported Attribute, Relation, imported Relation, Role, imported Role, Shortcut, imported Shortcut from Entity c
       
   FirstClassRelation(e-ty, _) :
     defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types

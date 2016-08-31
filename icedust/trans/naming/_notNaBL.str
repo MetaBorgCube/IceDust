@@ -120,6 +120,9 @@ rules
   
   // FIXME: NaBL should have generated this  
   nabl-get-name : Entity(a, _) -> a
+  nabl-get-name : Entity(a, _, _) -> a
+  nabl-get-name : Interface(a, _) -> a
+  nabl-get-name : Interface(a, _, _) -> a
   nabl-get-name : FirstClassRelation(a, _) -> a
   
 rules // disable messages for duplicate This (inside duplicate entities)

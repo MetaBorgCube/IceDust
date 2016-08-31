@@ -11,11 +11,11 @@ imports // functions
 
 rules // query
   
-  entity-get-type: Entity            (_,_) -> EntityType()
-  entity-get-type: FirstClassRelation(_,_) -> RelationType()
-  entity-get-name    = ?Entity            (<id>,_)
-  entity-get-name    = ?FirstClassRelation(<id>,_)
+  entity-get-name    = ?Entity            (<id>, _)
+  entity-get-name    = ?Entity            (<id>, _, _)
+  entity-get-name    = ?FirstClassRelation(<id>, _)
   entity-get-members = ?Entity            (_, <id>)
+  entity-get-members = ?Entity            (_, _, <id>)
   entity-get-members = ?FirstClassRelation(_, <id>)
 
   attr-get-name       = ?Attribute(<id>, _, _)
@@ -50,13 +50,22 @@ rules // query
   shortcut-get-types: Shortcut(NaBLHelp(_,type1),_,NaBLHelp(_,type2),_) -> (type1, type2)
   shortcut-get-type1 = shortcut-get-types;Fst
   shortcut-get-type2 = shortcut-get-types;Snd
+  
+  relation-get-name1 = ?Relation(_, <id>, _, _, _, _, _, _)
+  relation-get-name2 = ?Relation(_, _, _, _, _, _, _, <id>)
+  relation-get-type1 = ?Relation(EntityRef(<id>), _, _, _, _, _, _, _)
+  relation-get-type2 = ?Relation(_, _, _, _, _, _, EntityRef(<id>), _)
+  relation-get-mult1 = ?Relation(_, _, <id>, _, _, _, _, _)
+  relation-get-mult2 = ?Relation(_, _, _, _, <id>, _, _, _)
 
 rules // properties
   
   is-entity = ?Entity            (_,_)
+  is-entity = ?Entity            (_,_,_)
   is-entity = ?FirstClassRelation(_,_)
   
-  entity-is-entitytype = entity-get-type;?EntityType()
+  entity-is-entitytype = where(?Entity(_,_))
+  entity-is-entitytype = where(?Entity(_,_,_))
   
   is-attr = ?Attribute(_, _, _)
   is-attr = ?DerivationAttribute(_, _, _, _)
@@ -76,11 +85,15 @@ rules // properties
   
   is-relation = ?Relation(_, _, _, _, _, _, _, _)
   
+  relation-has-no-name1 = ?Relation(_, None(), _, _, _, _, _, _)
+  relation-has-no-name2 = ?Relation(_, _, _, _, _, _, _, None())
+  
 rules // manipulation
 
   entity-set-members(|members) = entity-set-members(!members)
   
   entity-set-members(members) = Entity            (id, members)
+  entity-set-members(members) = Entity            (id, id, members)
   entity-set-members(members) = FirstClassRelation(id, members)
 
   attr-set-mult(|mult)                = Attribute(id, id, !mult)
@@ -99,6 +112,9 @@ rules // manipulation
   
   relation-set-type1(type) = Relation(type, id, id, id, id ,id, id, id)
   relation-set-type2(type) = Relation(id, id, id, id, id ,id, type, id)
+  
+  relation-set-name1(name) = Relation(id, name, id, id, id ,id, id, id)
+  relation-set-name2(name) = Relation(id, id, id, id, id ,id, id, name)
   
   relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
   relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)

@@ -9,6 +9,7 @@ imports
   types/typing/literals
   types/typing/logic
   types/typing/math
+  types/typing/model
   types/typing/multiplicity-operators
   types/typing/references
   types/typing/_multiplicity-functions

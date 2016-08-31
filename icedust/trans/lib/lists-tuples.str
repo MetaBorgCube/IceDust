@@ -53,3 +53,7 @@ rules // List(a) -> a
   lFst:   [x | xs] -> x
   lSnd:   [x, y | xs] -> y
   lThird: [x, y, z | xs] -> z
+  
+rules // List(a) -> List(a)/fail
+
+  is-empty = where(?[])

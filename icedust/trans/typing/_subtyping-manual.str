@@ -22,14 +22,17 @@ rules
       
   task-rewrite : ("least-upper-bound", t) -> <least-upper-bound>t
   
-  least-upper-bound: LeastUpperBound(t1*, sup1*, t2*, sup2*) -> least-com
+  least-upper-bound: LeastUpperBound(t1*, sup1*, t2*, sup2*) -> result
     with
       sup1'* := [t1*, sup1*];
       sup2'* := [t2*, sup2*];
       common-sup* := <isect>(sup1'*,sup2'*)
     where
-      least-com   := <Hd>common-sup*
+      least-com   := <Hd>common-sup*;
+      result      := <try(url-to-classt)>least-com    //transitive relations ignore all constructors and only store URLs
 
   move-last-elem-to-front: list -> [last|rest]
     with
       <split-last>list => (rest,last)
+      
+  url-to-classt: u@URI(_,[ID(_,name,_)|_]) -> name{Def(u)}

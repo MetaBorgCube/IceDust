@@ -9,6 +9,7 @@ imports // functions
   
   api/model-api
   api/data-api
+  api/types-api
   lib/origin
   lib/new-name
   lib/string
@@ -31,6 +32,7 @@ rules
   omitted2 = role-generate-ord                // matches same as role-generate-name
   omitted2 = entity-generate-shortcuts        // requires role-generate-name
   omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
+  omitted2 = rel-generate-names               // rel-generate-mult
 
 rules // generate omitted multiplicities
 
@@ -91,14 +93,14 @@ rules // generate omitted shortcuts
     where
       is-entity
     with
-      members        := <entity-get-members>e;
+      members       := <entity-get-members>e;
       roles         := <filter(role-get-name);keep-origin(string-sort)>members;
-      shortcuts      := <filter(shortcut-get-roles-ordered)>members;
+      shortcuts     := <filter(shortcut-get-roles-ordered)>members;
       shortcuts-all := <join-half>roles;
       shortcuts-add := <diff>(shortcuts-all, shortcuts);
-      members-new    := <map(create-shortcut-with-same-name)>shortcuts-add;
+      members-new   := <map(create-shortcut-with-same-name)>shortcuts-add;
       members'      := <conc>(members,members-new);
-      members''      := <custom-origin(|members)>members'
+      members''     := <custom-origin(|members)>members'
   
   join-half: [] -> []
   
@@ -140,5 +142,19 @@ rules
         invname1 := <custom-origin(|e1)>$[[s2]Relation];
         invname2 := <custom-origin(|e2)>$[[s1]Relation]
 
-  
+rules
+
+  rel-generate-names = try(rel-generate-name1);try(rel-generate-name2)
+
+  rel-generate-name1: relation -> relation'
+    where
+      relation-has-no-name1
+    with
+      relation' := <relation-set-name1(<relation-get-type2;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult2;upper-one;!"s"))>relation)>relation
+    
+  rel-generate-name2: relation -> relation'
+    where
+      relation-has-no-name2
+    with
+      relation' := <relation-set-name2(<relation-get-type1;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult1;upper-one;!"s"))>relation)>relation
   
