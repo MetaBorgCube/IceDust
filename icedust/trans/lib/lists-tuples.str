@@ -57,3 +57,21 @@ rules // List(a) -> a
 rules // List(a) -> List(a)/fail
 
   is-empty = where(?[])
+
+rules // List(a) -> List(a)
+
+  remove-duplicates = make-set
+  
+  remove-duplicates(s): list -> list'
+    with
+      (list', carry) := <foldl(remove-duplicates-i(s))>(list, ([],[]))
+      
+  remove-duplicates-i(s): (elem, (list*, carry*)) -> (list'*, carry'*)
+    with
+      elem-car := <s>elem;
+      if <elem>(elem-car, carry*) then
+        (list'*, carry'*) := (list*, carry*)
+      else
+        (list'*, carry'*) :=  ([list*, elem], [carry*, elem-car])
+      end
+  

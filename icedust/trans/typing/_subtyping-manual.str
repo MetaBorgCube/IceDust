@@ -29,10 +29,10 @@ rules
       common-sup* := <isect>(sup1'*,sup2'*)
     where
       least-com   := <Hd>common-sup*;
-      result      := <try(url-to-classt)>least-com    //transitive relations ignore all constructors and only store URLs
+      result      := <try(url-to-name)>least-com    //transitive relations ignore all constructors and only store URLs
 
   move-last-elem-to-front: list -> [last|rest]
     with
       <split-last>list => (rest,last)
       
-  url-to-classt: u@URI(_,[ID(_,name,_)|_]) -> name{Def(u)}
+  url-to-name: u@URI(_,[ID(_,name,_)|_]) -> name{Def(u)}

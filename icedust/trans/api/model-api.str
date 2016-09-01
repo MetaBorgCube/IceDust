@@ -13,9 +13,13 @@ rules // query
   
   entity-get-name    = ?Entity            (<id>, _)
   entity-get-name    = ?Entity            (<id>, _, _)
+  entity-get-name    = ?Interface         (<id>, _)
+  entity-get-name    = ?Interface         (<id>, _, _)
   entity-get-name    = ?FirstClassRelation(<id>, _)
   entity-get-members = ?Entity            (_, <id>)
   entity-get-members = ?Entity            (_, _, <id>)
+  entity-get-members = ?Interface         (_, <id>)
+  entity-get-members = ?Interface         (_, _, <id>)
   entity-get-members = ?FirstClassRelation(_, <id>)
 
   attr-get-name       = ?Attribute(<id>, _, _)
@@ -62,6 +66,8 @@ rules // properties
   
   is-entity = ?Entity            (_,_)
   is-entity = ?Entity            (_,_,_)
+  is-entity = ?Interface         (_,_)
+  is-entity = ?Interface         (_,_,_)
   is-entity = ?FirstClassRelation(_,_)
   
   entity-is-entitytype = where(?Entity(_,_))
@@ -94,6 +100,8 @@ rules // manipulation
   
   entity-set-members(members) = Entity            (id, members)
   entity-set-members(members) = Entity            (id, id, members)
+  entity-set-members(members) = Interface         (id, members)
+  entity-set-members(members) = Interface         (id, id, members)
   entity-set-members(members) = FirstClassRelation(id, members)
 
   attr-set-mult(|mult)                = Attribute(id, id, !mult)

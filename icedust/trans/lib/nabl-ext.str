@@ -9,6 +9,8 @@ imports // functions
   api/_runtime
   lib/string
   lib/traverse
+  lib/debug
+  lib/lists-tuples
 
 rules // api for unresolved references error messages
   
@@ -70,6 +72,8 @@ rules // api for conflicting nses error messages
 signature constructors
   
   ContainsAll : Term * Term * Term * Term * Term -> Term
+  
+  ShadowChildren : List(Def) -> List(Def)
 
 rules // api for checking something contains all of def
 
@@ -93,16 +97,26 @@ rules // api for checking something contains all of def
     where
       <eval(|f-on)>a
     with
-      a-ty                    := <_get-or-create-property-task(|ctx, Type())>a;
-      a-ty-def                 := <_nabl-create-collectdefs(|ctx)> a-ty;
-      [a-ty-def-children]     := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def];
-      a-children              := <eval(|f-ast-children)>a;
-      a-children-defs         := <map(_nabl-create-collectdefs(|ctx));_task-create-combine(|ctx)>a-children;
-      diff                    := <_task-create-diff(|ctx)> (a-ty-def-children, a-children-defs);
-      diff-filtered           := <filter-propconstraints(|ctx,filters)>diff;
-      a-msg-on                := <eval(|f-msg-on)>a;
-      msg                     := ["Provide all required ", <_pp-ns>def-child-ns, "s: ", diff-filtered];
+      a-ty                        := <_get-or-create-property-task(|ctx, Type())>a;
+      a-ty-def                    := <_nabl-create-collectdefs(|ctx)> a-ty;
+      [a-ty-def-children]         := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def];
+      a-ty-def-parents            := <_relation-create-lookup(|ctx, "<sub:")>a-ty-def;
+      [a-ty-def-parents-children] := <_nabl-resolve-all-tasks(|ctx, def-child-ns, [])> [a-ty-def-parents];
+      a-ty-def-children-all       := <_task-create-combine(|ctx)>[a-ty-def-children, a-ty-def-parents-children];
+      a-ty-def-children-shadowed  := <_new-task(|ctx, <_task-combinator-type>, <_task-auto-storage>);_task-create-combine(|ctx)> Rewrite("shadow-children", ShadowChildren(a-ty-def-children-all));
+      a-children                  := <eval(|f-ast-children)>a;
+      a-children-defs             := <map(_nabl-create-collectdefs(|ctx));_task-create-combine(|ctx)>a-children;
+      diff                        := <_task-create-diff(|ctx)> (a-ty-def-children-shadowed, a-children-defs);
+      diff-filtered               := <filter-propconstraints(|ctx,filters)>diff;
+      a-msg-on                    := <eval(|f-msg-on)>a;
+      msg                         := ["Provide all required ", <_pp-ns>def-child-ns, "s: ", diff-filtered];
       <_task-create-error-on-success(|ctx, diff-filtered, msg)> a-msg-on
+
+  task-rewrite : ("shadow-children", t) -> <shadow-children>t
+  
+  shadow-children: ShadowChildren(defs) -> defs'
+    with
+      defs' := <remove-duplicates(def-to-name;rm-annotations)>defs
 
   filter-propconstraints(|ctx, filters) = where(!(filters, []);equal);id
   filter-propconstraints(|ctx, filters): def-list -> def-list-filtered-rec
