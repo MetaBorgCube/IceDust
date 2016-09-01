@@ -171,3 +171,9 @@ rules
       error'* := [error*, new-error*];
       file-result'* := [FileResult(source, initial-ast, analyzed-ast, error'*, warning*, note*)]; 
       result':= Result(file-result'*, message-result*, affected-source*, debug-result, time-result)
+
+rules
+
+  name-relation-names(|rel) = _relation-lookup(|rel);map(uri-to-name)
+
+  

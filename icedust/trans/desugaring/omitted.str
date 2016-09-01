@@ -150,11 +150,11 @@ rules
     where
       relation-has-no-name1
     with
-      relation' := <relation-set-name1(<relation-get-type2;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult2;upper-one;!"s"))>relation)>relation
+      relation' := <relation-set-name1(<relation-get-type2;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult1;upper-many;!"s"))>relation)>relation
     
   rel-generate-name2: relation -> relation'
     where
       relation-has-no-name2
     with
-      relation' := <relation-set-name2(<relation-get-type1;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult1;upper-one;!"s"))>relation)>relation
+      relation' := <relation-set-name2(<relation-get-type1;keep-origin(lcfirst;string-append-cond(!relation;relation-get-mult2;upper-many;!"s"))>relation)>relation
   

@@ -22,13 +22,14 @@ imports // functions
   lib/index
   lib/nabl-ext
   lib/lists-tuples
+  lib/traverse
   analysis2/path
 
 rules // entity
 
   is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
 
-  entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
+  entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno //TODO: make inheritance versions of this
   entityname-get-attributenames2= _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); origin-sort-anno
   entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
   entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
@@ -55,7 +56,24 @@ rules // entity
   entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
   
   entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
-  
+
+rules // entity + extends
+
+  entity-get-extends: e -> [exts*, e]
+    with
+      exts* := <name-relation-names(|"<sub:")>e
+
+  entityname-get-ext-attributenames = entity-get-extends;fmap(_nabl-get-child-definitions(|NablNsAttribute())) ;map(def-to-name); string-sort-anno
+  entityname-get-ext-relationnames  = entity-get-extends;fmap(_nabl-get-child-definitions(|NablNsRelation()))  ;map(def-to-name); string-sort-anno
+  entityname-get-ext-rolenames      = entity-get-extends;fmap(_nabl-get-child-definitions(|NablNsRole()))      ;map(def-to-name); string-sort-anno
+  entityname-get-ext-inversenames   = entity-get-extends;fmap(_nabl-get-child-definitions(|NablNsInverse()))   ;map(def-to-name); string-sort-anno
+  entityname-get-ext-shortcutnames  = entity-get-extends;fmap(_nabl-get-child-definitions(|NablNsShortcut()))  ;map(def-to-name); string-sort-anno
+
+  entityname-get-ext-relroleinvnames = concat(entityname-get-ext-relationnames, entityname-get-ext-rolenames, entityname-get-ext-inversenames)
+  entityname-get-ext-membernames = concat(entityname-get-ext-attributenames, entityname-get-ext-relationnames, entityname-get-ext-rolenames, entityname-get-ext-inversenames, entityname-get-ext-shortcutnames)
+
+  entityname-get-ext-membername(|memberName) = entityname-get-ext-membernames;filter(eq-no-anno(|memberName));Hd
+
 rules // attributes
   
   is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())

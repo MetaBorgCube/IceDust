@@ -23,6 +23,7 @@ imports // generated runtime
   runtime/nabl/query
   runtime/nabl/uri
   runtime/relations/tasks
+  runtime/relations/query
   runtime/task/core
   runtime/task/create
   runtime/task/insert
@@ -144,4 +145,6 @@ rules
   _nabl-nonunique-uri = nabl-nonunique-uri
   
   _nabl-prop-match(|kind, partition, relation, expected) = nabl-prop-match(|kind, partition, relation, expected)
+  
+  _relation-lookup(|rel) = relation-lookup(|rel)
   

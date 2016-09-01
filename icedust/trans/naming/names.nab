@@ -97,7 +97,7 @@ binding rules // model
       of type e-ty
       
   Extends(c):
-    imports Attribute, imported Attribute, Relation, imported Relation, Role, imported Role, Shortcut, imported Shortcut from Entity c
+    imports Attribute, imported Attribute, Relation, imported Relation, Role, imported Role, Inverse, imported Inverse, Shortcut, imported Shortcut from Entity c
       
   FirstClassRelation(e-ty, _) :
     defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types

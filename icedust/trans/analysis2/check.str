@@ -43,7 +43,7 @@ rules
   einame-check-multiplicities: eiName -> result
     with
       entityName       := <_get-type>eiName;
-      relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
+      relRoleInvNames  := <entityname-get-ext-relroleinvnames>entityName;
       memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
       result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
       
@@ -51,7 +51,7 @@ rules
     with
       values       := <membervaluename-get-values-all>memvName;
       num          := <length>values;
-      memberName   := <membervaluename-get-entityinstancename;_get-type;entityname-get-membername(|memvName)>memvName;
+      memberName   := <membervaluename-get-entityinstancename;_get-type;entityname-get-ext-membername(|memvName)>memvName;
       multiplicity := <get-multiplicity>memberName;
       if <mult-inbounds(|multiplicity)>num then
         result := []

@@ -23,11 +23,11 @@ rules // unresolved references manual messages
 
   nabl-check-disable-unresolved = id
       
-  unresolved-error: Ref(e)                      -> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
-  unresolved-error: MemberAccess(_, e)          -> (e, [NablNsAttribute(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+  unresolved-error: Ref(e)                      -> (e, [NablNsEntityInstance(), NablNsAttribute(), NablNsRelation(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
+  unresolved-error: MemberAccess(_, e)          -> (e, [NablNsAttribute(), NablNsRelation(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
   unresolved-error: AttributeRef(e)             -> (e, [NablNsAttribute()])
   unresolved-error: RoleRef(e)                  -> (e, [NablNsRole()])
-  unresolved-error: MemberRef(e)                -> (e, [NablNsAttribute(),NablNsShortcut()])
+  unresolved-error: MemberRef(e)                -> (e, [NablNsAttribute(), NablNsRelation(), NablNsRole(), NablNsInverse(), NablNsShortcut()])
   unresolved-error: EntityRef(e)                -> (e, [NablNsEntity()])
   unresolved-error: EntityInstanceRef(e)        -> (e, [NablNsEntityInstance()])
 
