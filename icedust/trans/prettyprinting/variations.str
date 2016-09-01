@@ -57,8 +57,8 @@ rules // newline a derivation expression if subexpression is multiline + align c
 
   pp-type-and-multiplicity: (ty, mu) -> $[[pp-ty][pp-mu]]
     with
-      pp-ty := <          prettyprint-PrimitiveType ;!V([], <id>);box2text-string(|120)>ty;
-      pp-mu := <pp-option(prettyprint-Multiplicity );!V([], <id>);box2text-string(|120)>mu
+      pp-ty := <          prettyprint-IceDust-PrimitiveType ;!V([], <id>);box2text-string(|120)>ty;
+      pp-mu := <pp-option(prettyprint-IceDust-Multiplicity );!V([], <id>);box2text-string(|120)>mu
 
 rules // multiline an expression if one of the subexpressions is multiline or long
 
@@ -69,12 +69,12 @@ rules
   
   multiline-expression: e -> e
     where
-      e-pp := <prettyprint-Exp;!V([], <id>);box2text-string(|120)>e;
+      e-pp := <prettyprint-IceDust-Exp;!V([], <id>);box2text-string(|120)>e;
       [_, _ | _ ] := <get-lines>e-pp // minimal two lines
 
   long-expression: e -> e
     where
-      e-pp := <prettyprint-Exp;!V([], <id>);box2text-string(|120)>e;
+      e-pp := <prettyprint-IceDust-Exp;!V([], <id>);box2text-string(|120)>e;
       e-pp-len := <strlen>e-pp;
       <gt>(e-pp-len, 80)
       
