@@ -6,11 +6,11 @@ imports
 
 rules
   
-  [[ Addition(e1, e2) ^ (s) : TTuple(e1_type, out_mult) ]] :=
+  [[ Addition(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
     AdditionType(e1_type) == None(),
-    e1_type == e2_type, // TODO: least upper bound
-    CartesianProduct(e1_mult, e1_mult) == out_mult.
+    LeastUpperBound(e1_type, e2_type) == out_type,
+    CartesianProduct(e1_mult, e2_mult) == out_mult.
  
  

@@ -10,6 +10,7 @@ imports
   pp
 
   analysis/_multiplicity-functions
+  analysis/_type-functions
   analysis/expressions-math
 
 rules // Analysis

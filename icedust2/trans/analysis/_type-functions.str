@@ -1,0 +1,17 @@
+module analysis/_type-functions
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  LeastUpperBound : Type * Type -> TypeOp
+
+rules
+
+  is-op = ?LeastUpperBound(_,_)
+  
+  reduce-op(|sol): LeastUpperBound(a         , a         ) -> a
+  reduce-op(|sol): LeastUpperBound(a         , TNoValue()) -> a
+  reduce-op(|sol): LeastUpperBound(TNoValue(), a         ) -> a
