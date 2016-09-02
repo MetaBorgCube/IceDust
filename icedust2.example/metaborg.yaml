@@ -1,0 +1,4 @@
+---
+dependencies:
+  compile:
+  - org.metaborg.lang:icedust2:0.1.0-SNAPSHOT

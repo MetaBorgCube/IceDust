@@ -1,0 +1,13 @@
+module icedust2
+
+imports
+  
+  Common
+
+context-free start-symbols
+  
+  Start
+
+context-free syntax
+  
+  Start.Empty = <>

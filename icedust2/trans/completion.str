@@ -1,0 +1,39 @@
+module completion
+
+imports
+  
+  runtime/completion/-
+  completion/icedust2-cp
+  pp/-
+  pp
+ 
+  
+rules
+  
+  get-proposals-empty-program-icedust2                         = get-proposals-empty-program(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-left-recursive-icedust2                        = get-proposals-left-recursive(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-right-recursive-icedust2                       = get-proposals-right-recursive(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-placeholder-icedust2                           = get-proposals-placeholder(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-optional-icedust2                              = get-proposals-optional(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-list-icedust2                                  = get-proposals-list(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-incorrect-programs-icedust2                    = get-proposals-incorrect-programs(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-incorrect-programs-nested-icedust2             = get-proposals-incorrect-programs-nested(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)
+  get-proposals-incorrect-programs-single-placeholder-icedust2 = get-proposals-incorrect-programs-single-placeholder(pp-partial-icedust2-string, parenthesize-icedust2, 
+                                                                                             icedust2-get-indent, icedust2-get-leading-ws, 
+                                                                                             icedust2-get-separator)

@@ -1,0 +1,42 @@
+module pp
+
+imports
+
+  libstratego-gpp
+  runtime/refactoring/-
+  pp/icedust2-parenthesize
+  pp/icedust2-pp
+
+rules
+
+  editor-format:
+    (node, _, ast, path, project-path) -> (filename, result)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[pp.[ext]])> path
+    ; result   := <pp-debug> node
+
+rules
+  
+  pp-icedust2-string =
+    parenthesize-icedust2
+    ; prettyprint-icedust2-start-symbols
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-partial-icedust2-string =
+    parenthesize-icedust2
+    ; prettyprint-icedust2
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-debug :
+    ast -> result
+    with
+       result := <pp-icedust2-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-icedust2-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+
+rules
+  
+  construct-textual-change = construct-textual-change(pp-partial-icedust2-string, parenthesize, override-reconstruction, resugar)
