@@ -42,3 +42,44 @@ context-free restrictions
   LAYOUT? -/- [\ \t\n\r]
   LAYOUT? -/- [\/].[\/]
   LAYOUT? -/- [\/].[\*]
+
+lexical syntax // Keywords
+
+  Keyword = "and"
+  Keyword = "as"
+  Keyword = "avg"
+  Keyword = "Boolean"
+  Keyword = "case"
+  Keyword = "concat"
+  Keyword = "conj"
+  Keyword = "count"
+  Keyword = "data"
+  Keyword = "Datetime"
+  Keyword = "default"
+  Keyword = "disj"
+  Keyword = "else"
+  Keyword = "entity"
+  Keyword = "execute"
+  Keyword = "false"
+  Keyword = "Float"
+  Keyword = "if"
+  Keyword = "Int"
+  Keyword = "max"
+  Keyword = "match"
+  Keyword = "min"
+  Keyword = "model"
+  Keyword = "module"
+  Keyword = "no"
+  Keyword = "not"
+  Keyword = "or"
+  Keyword = "ordered"
+  Keyword = "relation"
+  Keyword = "String"
+  Keyword = "sum"
+  Keyword = "switch"
+  Keyword = "this"
+  Keyword = "true"
+  Keyword = "unordered"
+  
+  ID = Keyword {reject}
+  

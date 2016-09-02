@@ -24,21 +24,28 @@ context-free syntax
   >
   
   Definition.Relation = [
-    relation [ID].[ID] <-> [ID].[ID]
+    relation [ID].[ID] [Multiplicity] <-> [Multiplicity] [ID].[ID]
   ]
   
   Attribute.Attribute = <
-    <ID> : <EntityType>
+    <ID> : <Type> <Multiplicity>
   >
   
   Attribute.Attribute = <
-    <ID> : <EntityType> = <Expr>
+    <ID> : <Type> <Multiplicity> = <Expr>
   >
   
-  EntityType.EntityType = <<ID>>
+  Type.Boolean  = <Boolean>
+  Type.Datetime = <Datetime>
+  Type.Float    = <Float>
+  Type.Int      = <Int>
+  Type.String   = <String>
+  Type.EntityType = <<ID>>
+
+  Multiplicity.One        = <1>
+  Multiplicity.ZeroOrOne  = <?>
+  Multiplicity.OneOrMore  = <+>
+  Multiplicity.ZeroOrMore = <*>
   
   Expr.Ref = <<ID>>
   Expr.Ref = <<Expr>.<ID>>
-  
-  Expr.RelNav = <!<ID>>
-  Expr.RelNav = <<Expr>.!<ID>>

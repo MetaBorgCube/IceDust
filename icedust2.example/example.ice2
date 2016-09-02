@@ -1,25 +1,10 @@
 module example
 
-//entity X {
-//  y : Y
-//  i : X = y.x.y.x
-////  j : X = y.x.y
-//}
-
-entity Y {
-  x : Y = !a.x.!a.x
-  y : Y = !b
+entity Student {
+  name   : String 1
+  age    : Int 1
+  bornIn : Int 1 = age
+  ages   : Int 1 = knows.knows2.knows.age
 }
 
-relation Y.a <-> Y.x
-
-//relation X.c <-> Y.d
-
-//entity A {
-////  x : Y
-////  x : Y
-//}
-//
-//entity A {
-//
-//}
+relation Student.knows + <-> * Student.knows2

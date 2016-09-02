@@ -8,7 +8,19 @@ signature
 
   types
 
+    TBoolean()
+    TDatetime()
+    TFloat()
+    TInt()
+    TString()
     TEntity(occurrence)
+    
+    TOne()
+    TZeroOrOne()
+    TOneOrMore()
+    TZeroOrMore()
+    
+    TTuple(type, type)
 
 rules
 
@@ -35,69 +47,69 @@ rules
     Entity2{e} <=I= entity_scope, // import all from that reference
     new entity_scope.
     
-  [[ Relation(e1, r1, e2, r2) ^ (module_scope) ]] :=
+  [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
     Entity2{e1} ===> entity1_scope,
-    Relation{r1} <- entity1_scope,
+    Member{r1} <- entity1_scope,
     Entity{e1} -> module_scope,
     Entity{e1} |-> e1_def,
     e1_def : e1_type,
-    Relation{r1} : e2_type,
+    [[m1 ^ (module_scope) : m1_mult ]],
+    Member{r1} : TTuple(e2_type, m1_mult),
     Entity2{e2} <- module_scope,
     Entity2{e2} ===> entity2_scope,
-    Relation{r2} <- entity2_scope,
+    Member{r2} <- entity2_scope,
     Entity{e2} -> module_scope,
     Entity{e2} |-> e2_def,
     e2_def : e2_type,
-    Relation{r2} : e1_type,
+    [[m2 ^ (module_scope) : m2_mult ]],
+    Member{r2} : TTuple(e1_type, m2_mult),
     new entity1_scope,
     new entity2_scope.
     
-  [[ Attribute(a, t) ^ (entity_scope) ]] :=
-    Attribute{a} <- entity_scope,
-    Attribute{a} : a_type,
-    [[ t ^ (entity_scope) : a_type ]].
-    
-  [[ Attribute(a, t, e) ^ (entity_scope) ]] :=
-    Attribute{a} <- entity_scope,
-    Attribute{a} : a_type,
+  [[ Attribute(a, t, m) ^ (entity_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
     [[ t ^ (entity_scope) : a_type ]],
-    [[ e ^ (entity_scope) : e_type ]],
-    e_type == a_type | error $[expected [a_type] got [e_type]]@e.
+    [[ m ^ (entity_scope) : a_mult ]].
+    
+  [[ Attribute(a, t, m, e) ^ (entity_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]],
+    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
+    e_type == a_type | error $[Type error: expected [a_type] got [e_type].]@e,
+    e_mult == a_mult | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
   
   [[ Ref(r) ^ (s) : r_def_ty ]] :=
-    Attribute{r} -> s,
-    Attribute{r} |-> r_def,
+    Member{r} -> s,
+    Member{r} |-> r_def,
     r_def : r_def_ty.
       
-  [[ Ref(expr, r) ^ (s) : r_def_type ]] :=
-    [[expr ^ (s) : expr_type ]],
+  [[ Ref(expr, r) ^ (s) : TTuple(r_def_type, ref_mult) ]] :=
+    [[expr ^ (s) : TTuple(expr_type, expr_mult) ]],
     expr_type == TEntity(expr_type_entity),
-    expr_type_entity ?=I=> entity_scope, // ?=I=> means match =I=> instead of create?
+    expr_type_entity ?=I=> entity_scope,
     new_scope -I-> entity_scope,
-    Attribute{r} -> new_scope,
-    Attribute{r} |-> r_def,
-    r_def : r_def_type,
+    Member{r} -> new_scope,
+    Member{r} |-> r_def,
+    r_def : TTuple(r_def_type, r_def_mult),
+    ref_mult == r_def_mult, //TODO r_def_mult * expr_mult
     new new_scope.
   
-  // TODO: let RelNav be same as Ref
-  [[ RelNav(r) ^ (s) : r_def_ty ]] :=
-    Relation{r} -> s,
-    Relation{r} |-> r_def,
-    r_def : r_def_ty.
-      
-  [[ RelNav(expr, r) ^ (s) : r_def_type ]] :=
-    [[expr ^ (s) : expr_type ]],
-    expr_type == TEntity(expr_type_entity),
-    expr_type_entity ?=I=> entity_scope, // ?=I=> means match =I=> instead of create?
-    new_scope -I-> entity_scope,
-    Relation{r} -> new_scope,
-    Relation{r} |-> r_def,
-    r_def : r_def_type,
-    new new_scope.
-    
   [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
     Entity{e} -> s,
     Entity{e} |-> e_def.
 
-  
+  [[ Boolean()    ^ (s) : ty ]] := ty == TBoolean().
+  [[ Datetime()   ^ (s) : ty ]] := ty == TDatetime().
+  [[ Float()      ^ (s) : ty ]] := ty == TFloat().
+  [[ Int()        ^ (s) : ty ]] := ty == TInt().
+  [[ String()     ^ (s) : ty ]] := ty == TString().
+
+  [[ One()        ^ (s) : ty ]] := ty == TOne().
+  [[ ZeroOrOne()  ^ (s) : ty ]] := ty == TZeroOrOne().
+  [[ OneOrMore()  ^ (s) : ty ]] := ty == TOneOrMore().
+  [[ ZeroOrMore() ^ (s) : ty ]] := ty == TZeroOrMore().
+   
