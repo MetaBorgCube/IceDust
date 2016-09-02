@@ -5,6 +5,7 @@ imports
   signatures/-
   
   expressions
+  expressions-math
   model
   types
 
@@ -17,6 +18,7 @@ signature
     TFloat()
     TInt()
     TString()
+    TNoValue()
     TEntity(occurrence)
     
     TOne()

@@ -2,8 +2,8 @@ module example
 
 entity Student {
   name   : String 1
-  age    : Int 1
-  bornIn : Int 1 = age
+  age    : Int 1 
+  bornIn : Int 1 = age + 1 + 4
   ages   : Int * = knows2.age
 }
 

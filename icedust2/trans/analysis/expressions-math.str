@@ -1,0 +1,19 @@
+module analysis/expressions-math
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  AdditionType : Type -> TypeOp
+
+rules
+
+  is-op = ?AdditionType(_)
+  
+  reduce-op(|sol): AdditionType(TInt()    ) -> None()
+  reduce-op(|sol): AdditionType(TFloat()  ) -> None()
+  reduce-op(|sol): AdditionType(TString() ) -> None()
+  reduce-op(|sol): AdditionType(TNoValue()) -> None()
+

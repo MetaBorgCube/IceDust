@@ -21,4 +21,12 @@ rules
     r_def : TTuple(r_def_type, r_def_mult),
     CartesianProduct(expr_mult, r_def_mult) == ref_mult,
     new new_scope.
-   
+
+  [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ) ]] := true.
+  [[ Float(_)     ^ (s) : TTuple(TFloat()   , TOne()      ) ]] := true.
+  [[ True()       ^ (s) : TTuple(TBoolean() , TOne()      ) ]] := true.
+  [[ False()      ^ (s) : TTuple(TBoolean() , TOne()      ) ]] := true.
+  [[ Datetime(_)  ^ (s) : TTuple(TDatetime(), TOne()      ) ]] := true.
+  [[ LitString(_) ^ (s) : TTuple(TString()  , TOne()      ) ]] := true.
+  [[ NoValue()    ^ (s) : TTuple(TNoValue() , TZeroOrOne()) ]] := true.
+  

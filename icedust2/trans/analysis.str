@@ -9,22 +9,8 @@ imports
 
   pp
 
-signature constructors
-  
-  CartesianProduct : Type * Type -> TypeOp
-
-rules
-
-  is-op = ?CartesianProduct(_,_)
-  
-  reduce-op(|sol): CartesianProduct(TOne()       , a            ) -> a
-  reduce-op(|sol): CartesianProduct(a            , TOne()       ) -> a
-  reduce-op(|sol): CartesianProduct(TZeroOrMore(), _            ) -> TZeroOrMore()
-  reduce-op(|sol): CartesianProduct(_            , TZeroOrMore()) -> TZeroOrMore()
-  reduce-op(|sol): CartesianProduct(TOneOrMore() , TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): CartesianProduct(TOneOrMore() , TZeroOrOne() ) -> TOneOrMore()
-  reduce-op(|sol): CartesianProduct(TZeroOrOne() , TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): CartesianProduct(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrOne()
+  analysis/_multiplicity-functions
+  analysis/expressions-math
 
 rules // Analysis
 
