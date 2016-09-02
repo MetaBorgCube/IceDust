@@ -10,4 +10,35 @@ context-free start-symbols
 
 context-free syntax
   
-  Start.Empty = <>
+  Start.Module = <
+    module <ID>
+    
+    <{Definition "\n\n"}*>
+      
+  >
+
+  Definition.Entity = <
+    entity <ID> {
+      <{Attribute "\n"}*>
+    }
+  >
+  
+  Definition.Relation = [
+    relation [ID].[ID] <-> [ID].[ID]
+  ]
+  
+  Attribute.Attribute = <
+    <ID> : <EntityType>
+  >
+  
+  Attribute.Attribute = <
+    <ID> : <EntityType> = <Expr>
+  >
+  
+  EntityType.EntityType = <<ID>>
+  
+  Expr.Ref = <<ID>>
+  Expr.Ref = <<Expr>.<ID>>
+  
+  Expr.RelNav = <!<ID>>
+  Expr.RelNav = <<Expr>.!<ID>>

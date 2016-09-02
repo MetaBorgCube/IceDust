@@ -4,10 +4,100 @@ imports
 
   signatures/-
 
+signature
+
+  types
+
+    TEntity(occurrence)
+
 rules
 
-  init ^ (s) := new s.
+  init ^ (init_scope) :=
+    new init_scope.
+    
+  [[ Module(m, es) ^ (init_scope) ]] :=
+    !D(module_scope)/Entity | error "Duplicate entity" @NAMES,
+    Module{m} <- init_scope,
+    module_scope ---> init_scope,
+    Module{m} ===> module_scope,
+    false | note "Some message on the module name..." @m,
+    Map1 [[ es ^ (module_scope) ]],
+    new module_scope. 
 
-  [[ Empty() ^ (s) ]] :=
-    false | note "Specify name binding and typing rules in static-semantics.nabl2".
+  [[ Entity(e, as) ^ (module_scope) ]] :=
+    !D(entity_scope)/Attribute | error "Duplicate attribute" @NAMES,
+    Entity{e} <- module_scope,
+    entity_scope ---> module_scope,
+    Entity{e} ===> entity_scope,
+    Entity{e} : TEntity(Entity{e}),
+    Map1 [[ as ^ (entity_scope) ]],
+    Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
+    Entity2{e} <=I= entity_scope, // import all from that reference
+    new entity_scope.
+    
+  [[ Relation(e1, r1, e2, r2) ^ (module_scope) ]] :=
+    Entity2{e1} <- module_scope,
+    Entity2{e1} ===> entity1_scope,
+    Relation{r1} <- entity1_scope,
+    Entity{e1} -> module_scope,
+    Entity{e1} |-> e1_def,
+    e1_def : e1_type,
+    Relation{r1} : e2_type,
+    Entity2{e2} <- module_scope,
+    Entity2{e2} ===> entity2_scope,
+    Relation{r2} <- entity2_scope,
+    Entity{e2} -> module_scope,
+    Entity{e2} |-> e2_def,
+    e2_def : e2_type,
+    Relation{r2} : e1_type,
+    new entity1_scope,
+    new entity2_scope.
+    
+  [[ Attribute(a, t) ^ (entity_scope) ]] :=
+    Attribute{a} <- entity_scope,
+    Attribute{a} : a_type,
+    [[ t ^ (entity_scope) : a_type ]].
+    
+  [[ Attribute(a, t, e) ^ (entity_scope) ]] :=
+    Attribute{a} <- entity_scope,
+    Attribute{a} : a_type,
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ e ^ (entity_scope) : e_type ]],
+    e_type == a_type | error $[expected [a_type] got [e_type]]@e.
+  
+  [[ Ref(r) ^ (s) : r_def_ty ]] :=
+    Attribute{r} -> s,
+    Attribute{r} |-> r_def,
+    r_def : r_def_ty.
+      
+  [[ Ref(expr, r) ^ (s) : r_def_type ]] :=
+    [[expr ^ (s) : expr_type ]],
+    expr_type == TEntity(expr_type_entity),
+    expr_type_entity ?=I=> entity_scope, // ?=I=> means match =I=> instead of create?
+    new_scope -I-> entity_scope,
+    Attribute{r} -> new_scope,
+    Attribute{r} |-> r_def,
+    r_def : r_def_type,
+    new new_scope.
+  
+  // TODO: let RelNav be same as Ref
+  [[ RelNav(r) ^ (s) : r_def_ty ]] :=
+    Relation{r} -> s,
+    Relation{r} |-> r_def,
+    r_def : r_def_ty.
+      
+  [[ RelNav(expr, r) ^ (s) : r_def_type ]] :=
+    [[expr ^ (s) : expr_type ]],
+    expr_type == TEntity(expr_type_entity),
+    expr_type_entity ?=I=> entity_scope, // ?=I=> means match =I=> instead of create?
+    new_scope -I-> entity_scope,
+    Relation{r} -> new_scope,
+    Relation{r} |-> r_def,
+    r_def : r_def_type,
+    new new_scope.
+    
+  [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
+    Entity{e} -> s,
+    Entity{e} |-> e_def.
 
+  
