@@ -1,0 +1,33 @@
+module static-semantics
+
+imports
+
+  signatures/-
+  
+  expressions
+  model
+  types
+
+signature
+
+  types
+
+    TBoolean()
+    TDatetime()
+    TFloat()
+    TInt()
+    TString()
+    TEntity(occurrence)
+    
+    TOne()
+    TZeroOrOne()
+    TOneOrMore()
+    TZeroOrMore()
+    
+    TTuple(type, type)
+
+rules
+
+  init ^ (init_scope) :=
+    new init_scope.
+   

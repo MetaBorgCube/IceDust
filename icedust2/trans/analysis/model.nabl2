@@ -1,31 +1,10 @@
-module static-semantics
+module model
 
 imports
 
   signatures/-
 
-signature
-
-  types
-
-    TBoolean()
-    TDatetime()
-    TFloat()
-    TInt()
-    TString()
-    TEntity(occurrence)
-    
-    TOne()
-    TZeroOrOne()
-    TOneOrMore()
-    TZeroOrMore()
-    
-    TTuple(type, type)
-
 rules
-
-  init ^ (init_scope) :=
-    new init_scope.
     
   [[ Module(m, es) ^ (init_scope) ]] :=
     !D(module_scope)/Entity | error "Duplicate entity" @NAMES,
@@ -81,35 +60,4 @@ rules
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
     e_type == a_type | error $[Type error: expected [a_type] got [e_type].]@e,
     e_mult == a_mult | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
-  
-  [[ Ref(r) ^ (s) : r_def_ty ]] :=
-    Member{r} -> s,
-    Member{r} |-> r_def,
-    r_def : r_def_ty.
-      
-  [[ Ref(expr, r) ^ (s) : TTuple(r_def_type, ref_mult) ]] :=
-    [[expr ^ (s) : TTuple(expr_type, expr_mult) ]],
-    expr_type == TEntity(expr_type_entity),
-    expr_type_entity ?=I=> entity_scope,
-    new_scope -I-> entity_scope,
-    Member{r} -> new_scope,
-    Member{r} |-> r_def,
-    r_def : TTuple(r_def_type, r_def_mult),
-    CartesianProduct(expr_mult, r_def_mult) == ref_mult,
-    new new_scope.
-  
-  [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
-    Entity{e} -> s,
-    Entity{e} |-> e_def.
-
-  [[ Boolean()    ^ (s) : ty ]] := ty == TBoolean().
-  [[ Datetime()   ^ (s) : ty ]] := ty == TDatetime().
-  [[ Float()      ^ (s) : ty ]] := ty == TFloat().
-  [[ Int()        ^ (s) : ty ]] := ty == TInt().
-  [[ String()     ^ (s) : ty ]] := ty == TString().
-
-  [[ One()        ^ (s) : ty ]] := ty == TOne().
-  [[ ZeroOrOne()  ^ (s) : ty ]] := ty == TZeroOrOne().
-  [[ OneOrMore()  ^ (s) : ty ]] := ty == TOneOrMore().
-  [[ ZeroOrMore() ^ (s) : ty ]] := ty == TZeroOrMore().
    

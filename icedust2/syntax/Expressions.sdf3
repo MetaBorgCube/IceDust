@@ -1,0 +1,144 @@
+module Expressions
+
+imports
+  Common
+  Types
+
+context-free syntax // brackets
+
+  Exp                    = <(<Exp>)>               {bracket}
+
+context-free syntax // operators
+
+  Exp.MemberAccess       = <<Exp>.<ID>>            {left}
+  Exp.Not                = <not <Exp>>             {right}
+  Exp.Not2               = <!<Exp>>                {right}
+  
+  Exp.Cast               = <<Exp> as <PrimitiveType>> {left}
+
+  Exp.Multiplication     = <<Exp> * <Exp>>         {left}
+  Exp.Division           = <<Exp> / <Exp>>         {left}
+  Exp.FloorDivision      = <<Exp> /. <Exp>>        {left}
+  Exp.Modulo             = <<Exp> % <Exp>>         {left}
+  Exp.Addition           = <<Exp> + <Exp>>         {left}
+  Exp.Subtraction        = <<Exp> - <Exp>>         {left}
+
+  Exp.LessThan           = <<Exp> \< <Exp>>        {left}
+  Exp.LessThanEqual      = <<Exp> \<= <Exp>>       {left}
+  Exp.GreaterThan        = <<Exp> \> <Exp>>        {left}
+  Exp.GreaterThanEqual   = <<Exp> \>= <Exp>>       {left}
+  Exp.Equal              = <<Exp> == <Exp>>        {left}
+  Exp.Inequal            = <<Exp> != <Exp>>        {left}
+  Exp.And                = <<Exp> and <Exp>>       {left}
+  Exp.And2               = <<Exp> && <Exp>>        {left}
+  Exp.Or                 = <<Exp> or <Exp>>        {left}
+  Exp.Or2                = <<Exp> || <Exp>>        {left}
+  Exp.If                 = <if(<Exp>) <Exp> else <Exp>> {right}
+  Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
+
+  Exp.Merge              = <<Exp> ++ <Exp>>        {left}
+  Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
+
+   Exp.If3 = <
+    switch {
+      case <Exp> =\> <Exp>
+      <Case>
+    }
+  >
+   Exp.If4 = <
+    switch {
+      case <Exp> =\> <Exp>
+      default =\> <Exp>
+    }
+  >
+  Case.If5 = <
+    case <Exp> =\> <Exp>
+    <Case>
+  >
+  Case.If6 = <
+    case <Exp> =\> <Exp>
+    default =\> <Exp>
+  >
+
+context-free syntax // built-in functions
+
+  Exp.Min                = <min(<Exp>)>
+  Exp.Max                = <max(<Exp>)>
+  Exp.Avg                = <avg(<Exp>)>
+  Exp.Sum                = <sum(<Exp>)>
+  Exp.Concat             = <concat(<Exp>)>
+  Exp.Count              = <count(<Exp>)>
+  Exp.Conj               = <conj(<Exp>)>
+  Exp.Disj               = <disj(<Exp>)>
+
+context-free syntax // references
+
+  Exp.This               = <this>
+  Exp.Ref                = <<ID>>
+  
+context-free syntax // literal values
+
+  Exp                    = <<LitVal>>
+  LitVal.Int             = <<INT>>
+  LitVal.Float           = <<FLOAT>>
+  LitVal.True            = <true>
+  LitVal.False           = <false>
+  LitVal.Datetime        = <<DATETIME>>
+  LitVal.NoValue         = <no value>
+
+syntax // literal values: use kernel syntax to make sure " abc " is parsed as String(" abc ") instead of String("abc")
+
+  LitVal-CF.LitString = "\"" STRING-LEX "\""
+
+context-free priorities
+
+  { left:
+    Exp.MemberAccess
+  } >  
+  { right:
+    Exp.Not
+    Exp.Not2
+  } >
+  { left:
+    Exp.Cast
+  } >
+  { left:
+    Exp.Multiplication
+    Exp.Division
+    Exp.FloorDivision
+    Exp.Modulo
+  } >
+  { left:
+    Exp.Addition
+    Exp.Subtraction
+  } >
+  { left:
+    Exp.LessThan
+    Exp.LessThanEqual
+    Exp.GreaterThan
+    Exp.GreaterThanEqual
+  } >
+  { left:
+    Exp.Equal
+    Exp.Inequal
+  } >
+  { left:
+    Exp.And
+    Exp.And2
+  } >
+  { left:
+    Exp.Or
+    Exp.Or2
+  } >
+  { right:
+    Exp.If
+    Exp.If2
+    Exp.If3
+    Exp.If4
+  } >
+  { left:
+    Exp.Merge
+  } >
+  { left:
+    Exp.ChoiceLeft
+  }

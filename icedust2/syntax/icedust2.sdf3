@@ -3,6 +3,8 @@ module icedust2
 imports
   
   Common
+  Expressions
+  Types
 
 context-free start-symbols
   
@@ -32,20 +34,5 @@ context-free syntax
   >
   
   Attribute.Attribute = <
-    <ID> : <Type> <Multiplicity> = <Expr>
+    <ID> : <Type> <Multiplicity> = <Exp>
   >
-  
-  Type.Boolean  = <Boolean>
-  Type.Datetime = <Datetime>
-  Type.Float    = <Float>
-  Type.Int      = <Int>
-  Type.String   = <String>
-  Type.EntityType = <<ID>>
-
-  Multiplicity.One        = <1>
-  Multiplicity.ZeroOrOne  = <?>
-  Multiplicity.OneOrMore  = <+>
-  Multiplicity.ZeroOrMore = <*>
-  
-  Expr.Ref = <<ID>>
-  Expr.Ref = <<Expr>.<ID>>
