@@ -21,10 +21,14 @@ signature
     TZeroOrMore()
     
     TTuple(type, type)
+    
+//    CartesianProduct(type, type)
 
 rules
 
   init ^ (init_scope) :=
+//    CartesianProduct{(TOne(),        TOne())} <- init_scope, CartesianProduct{(TOne(),        TOne())}  : TOne(), 
+//    CartesianProduct{(TZeroOrMore(), TOne())} <- init_scope, CartesianProduct{(TZeroOrMore(), TOne())}  : TZeroOrMore(), 
     new init_scope.
     
   [[ Module(m, es) ^ (init_scope) ]] :=
@@ -96,6 +100,9 @@ rules
     Member{r} |-> r_def,
     r_def : TTuple(r_def_type, r_def_mult),
     ref_mult == r_def_mult, //TODO r_def_mult * expr_mult
+//    CartesianProduct(r_def_mult, expr_mult, ref_mult) == CartesianProduct(r_def_mult, expr_mult, ref_mult),
+//    cp == CartesianProduct{(r_def_mult, expr_mult)},
+//    CartesianProduct{(r_def_mult, expr_mult)} : ref_mult,
     new new_scope.
   
   [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
@@ -112,4 +119,38 @@ rules
   [[ ZeroOrOne()  ^ (s) : ty ]] := ty == TZeroOrOne().
   [[ OneOrMore()  ^ (s) : ty ]] := ty == TOneOrMore().
   [[ ZeroOrMore() ^ (s) : ty ]] := ty == TZeroOrMore().
+   
+//  [[ CartesianProduct(TOne(),        TOne()        ) ^ (s) : TOne()        ]] := true.
+//  [[ CartesianProduct(TOne(),        TZeroOrOne()  ) ^ (s) : TZeroOrOne()  ]] := true.
+//  [[ CartesianProduct(TOne(),        TOneOrMore()  ) ^ (s) : TOneOrMore()  ]] := true.
+//  [[ CartesianProduct(TOne(),        TZeroOrMore() ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TOne()        ) ^ (s) : TZeroOrOne()  ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TZeroOrOne()  ) ^ (s) : TZeroOrOne()  ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TOneOrMore()  ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TZeroOrMore() ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TOne()        ) ^ (s) : TOneOrMore()  ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TZeroOrOne()  ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TOneOrMore()  ) ^ (s) : TOneOrMore()  ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TZeroOrMore() ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TOne()        ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TZeroOrOne()  ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TOneOrMore()  ) ^ (s) : TZeroOrMore() ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TZeroOrMore() ) ^ (s) : TZeroOrMore() ]] := true.
+  
+//  [[ CartesianProduct(TOne(),        TOne(),        TOne()       ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOne(),        TZeroOrOne(),  TZeroOrOne() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOne(),        TOneOrMore(),  TOneOrMore() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOne(),        TZeroOrMore(), TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TOne(),        TZeroOrOne() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TZeroOrOne(),  TZeroOrOne() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TOneOrMore(),  TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrOne(),  TZeroOrMore(), TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TOne(),        TOneOrMore() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TZeroOrOne(),  TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TOneOrMore(),  TOneOrMore() ) ^ (s) ]] := true.
+//  [[ CartesianProduct(TOneOrMore(),  TZeroOrMore(), TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TOne(),        TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TZeroOrOne(),  TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TOneOrMore(),  TZeroOrMore()) ^ (s) ]] := true.
+//  [[ CartesianProduct(TZeroOrMore(), TZeroOrMore(), TZeroOrMore()) ^ (s) ]] := true.
    
