@@ -15,3 +15,15 @@ rules
   reduce-op(|sol): LeastUpperBound(a         , a         ) -> a
   reduce-op(|sol): LeastUpperBound(a         , TNoValue()) -> a
   reduce-op(|sol): LeastUpperBound(TNoValue(), a         ) -> a
+
+  signature constructors
+  
+  IsSubtype : Type * Type -> TypeOp // super type * sub type
+
+rules
+
+  is-op = ?IsSubtype(_,_)
+
+  reduce-op(|sol): IsSubtype(a            , a         ) -> None()
+  reduce-op(|sol): IsSubtype(_            , TNoValue()) -> None()
+  

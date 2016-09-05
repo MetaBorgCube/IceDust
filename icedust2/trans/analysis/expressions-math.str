@@ -4,6 +4,8 @@ imports
  
   static-semantics
 
+  signatures/Expressions-sig
+
 signature constructors
   
   AdditionType : Type -> TypeOp
@@ -17,3 +19,45 @@ rules
   reduce-op(|sol): AdditionType(TString() ) -> None()
   reduce-op(|sol): AdditionType(TNoValue()) -> None()
 
+signature constructors
+  
+  SubtractionType : Type -> TypeOp
+  
+rules
+
+  is-op = ?SubtractionType(_)
+  
+  reduce-op(|sol): SubtractionType(TInt()     ) -> None()
+  reduce-op(|sol): SubtractionType(TFloat()   ) -> None()
+  reduce-op(|sol): SubtractionType(TDatetime()) -> None()
+  reduce-op(|sol): SubtractionType(TNoValue() ) -> None()
+
+signature constructors
+  
+  DivisionType : Type -> TypeOp
+  
+rules
+
+  is-op = ?DivisionType(_)
+  
+  reduce-op(|sol): DivisionType(TInt()     ) -> None()
+  reduce-op(|sol): DivisionType(TFloat()   ) -> None()
+  reduce-op(|sol): DivisionType(TNoValue() ) -> None()
+
+signature constructors
+  
+  DivisionMult : Type * Term -> TypeOp //least-upper-bound mult * division term
+  
+rules
+
+  is-op = ?DivisionMult(_, _)
+  
+  reduce-op(|sol): DivisionMult(TZeroOrOne() , _) -> TZeroOrOne()
+  reduce-op(|sol): DivisionMult(TZeroOrMore(), _) -> TZeroOrMore()
+  reduce-op(|sol): DivisionMult(TOne()       , t) -> TOne()        where <non-zero-const>t
+  reduce-op(|sol): DivisionMult(TOneOrMore() , t) -> TOneOrMore()  where <non-zero-const>t
+  reduce-op(|sol): DivisionMult(TOne()       , t) -> TZeroOrOne()  where <not(non-zero-const)>t
+  reduce-op(|sol): DivisionMult(TOneOrMore() , t) -> TZeroOrMore() where <not(non-zero-const)>t
+  
+  non-zero-const = ?Int(c)  ;where(!c;not(?"0"))
+  non-zero-const = ?Float(c);where(!c;not(?"0.0"))

@@ -20,3 +20,15 @@ rules
   reduce-op(|sol): CartesianProduct(TOneOrMore() , TZeroOrOne() ) -> TOneOrMore()
   reduce-op(|sol): CartesianProduct(TZeroOrOne() , TOneOrMore() ) -> TOneOrMore()
   reduce-op(|sol): CartesianProduct(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrOne()
+  
+signature constructors
+  
+  InBounds : Type * Type -> TypeOp // bounds * fits in bound?
+
+rules
+
+  is-op = ?InBounds(_,_)
+
+  reduce-op(|sol): InBounds(a            , a     ) -> None()
+  reduce-op(|sol): InBounds(TZeroOrMore(), _     ) -> None()
+  reduce-op(|sol): InBounds(_            , TOne()) -> None()

@@ -58,6 +58,6 @@ rules
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
-    e_type == a_type | error $[Type error: expected [a_type] got [e_type].]@e,
-    e_mult == a_mult | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
+    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
+    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
    
