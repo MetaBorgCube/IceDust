@@ -16,8 +16,8 @@ rules
   [[ Subtraction(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
-    SubtractionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
+    LeastUpperBound(e1_type, e2_type) == lup_type,
+    SubtractionType(lup_type) == out_type,
     CartesianProduct(e1_mult, e2_mult) == out_mult.
   
   [[ Division(e1, e2) ^ (s) : TTuple(TFloat(), out_mult) ]] :=

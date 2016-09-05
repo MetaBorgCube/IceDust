@@ -1,0 +1,200 @@
+module neverwinter
+
+//  entity Character {
+//    name : String 1
+//    
+//    // ability scores
+//    baseStrength     : Int 1
+//    baseConstitution : Int 1
+//    baseDexterity    : Int 1
+//    baseIntelligence : Int 1
+//    baseWisdom       : Int 1
+//    baseCharisma     : Int 1
+//    
+//    levelStrength     : Int 1 = 0 (default)
+//    levelConstitution : Int 1 = 0 (default)
+//    levelDexterity    : Int 1 = 0 (default)
+//    levelIntelligence : Int 1 = 0 (default)
+//    levelWisdom       : Int 1 = 0 (default)
+//    levelCharisma     : Int 1 = 0 (default)
+//    
+//    raceStrength     : Int 1 = 0 (default)
+//    raceConstitution : Int 1 = 0 (default)
+//    raceDexterity    : Int 1 = 0 (default)
+//    raceIntelligence : Int 1 = 0 (default)
+//    raceWisdom       : Int 1 = 0 (default)
+//    raceCharisma     : Int 1 = 0 (default)
+//    
+//    strength     : Int 1 = baseStrength     + 2 + levelStrength     + raceStrength     + sum(items.strength)
+//    constitution : Int 1 = baseConstitution + 2 + levelConstitution + raceConstitution + sum(items.constitution)
+//    dexterity    : Int 1 = baseDexterity    + 2 + levelDexterity    + raceDexterity    + sum(items.dexterity)
+//    intelligence : Int 1 = baseIntelligence + 2 + levelIntelligence + raceIntelligence + sum(items.intelligence)
+//    wisdom       : Int 1 = baseWisdom       + 2 + levelWisdom       + raceWisdom       + sum(items.wisdom)
+//    charisma     : Int 1 = baseCharisma     + 2 + levelCharisma     + raceCharisma     + sum(items.charisma)
+//    
+//    // armor class, hit points and total item level
+//    armorClass           : Int 1 = sum(items.armorClass)
+//    maximumHitPoints     : Int 1 = sum(items.maximumHitPoints)     + sum(boons.maximumHitPoints)
+//    totalItemLevel       : Int 1 = sum(items.itemLevel)
+//    
+//    // ratings
+//    power                : Int 1 = sum(items.power)                + sum(boons.power)
+//    criticalStrike       : Int 1 = sum(items.criticalStrike)       + sum(boons.criticalStrike)
+//    armorPenetration     : Int 1 = sum(items.armorPenetration)     + sum(boons.armorPenetration)
+//    recovery             : Int 1 = sum(items.recovery)             + sum(boons.recovery)
+//    actionPointGain      : Int 1 = sum(items.actionPointGain)      + sum(boons.actionPointGain)
+//    combatAdvantageBonus : Int 1 = sum(items.combatAdvantageBonus) + sum(boons.combatAdvantageBonus)
+//    controlBonus         : Int 1 = sum(items.controlBonus)         + sum(boons.controlBonus)
+//    defense              : Int 1 = sum(items.defense)              + sum(boons.defense)
+//    deflect              : Int 1 = sum(items.deflect)              + sum(boons.deflect)
+//    regeneration         : Int 1 = sum(items.regeneration)         + sum(boons.regeneration)
+//    lifeSteal            : Int 1 = sum(items.lifeSteal)            + sum(boons.lifeSteal)
+//    tenacity             : Int 1 = sum(items.tenacity)             + sum(boons.tenacity)
+//    staminaGain          : Int 1 = sum(items.staminaGain)          + sum(boons.staminaGain)
+//    incomingHealingBonus : Int 1 = sum(items.incomingHealingBonus) + sum(boons.incomingHealingBonus)
+//    aoeResist            : Int 1 = sum(items.aoeResist)            + sum(boons.aoeResist)
+//    controlResist        : Int 1 = sum(items.controlResist)        + sum(boons.controlResist)
+//    movement             : Int 1 = sum(items.movement)             + sum(boons.movement)
+//    companionInfluence   : Int 1 = sum(items.companionInfluence)   + sum(boons.companionInfluence)
+//    goldGain             : Int 1 = sum(items.goldGain)             + sum(boons.goldGain)
+//    
+//    // stats
+//  }
+//
+//  entity Item {
+//    name : String 1
+//    
+//    // ability scores
+//    strength     : Int 1 = 0 (default)
+//    constitution : Int 1 = 0 (default)
+//    dexterity    : Int 1 = 0 (default)
+//    intelligence : Int 1 = 0 (default)
+//    wisdom       : Int 1 = 0 (default)
+//    charisma     : Int 1 = 0 (default)
+//    
+//    // armor class, hit points and total item level
+//    armorClass           : Int 1 = 0 (default)
+//    maximumHitPoints     : Int 1 = 0 (default)
+//    itemLevel            : Int 1
+//    
+//    // ratings
+//    power                : Int 1 = 0 (default)
+//    criticalStrike       : Int 1 = 0 (default)
+//    armorPenetration     : Int 1 = 0 (default)
+//    recovery             : Int 1 = 0 (default)
+//    actionPointGain      : Int 1 = 0 (default)
+//    combatAdvantageBonus : Int 1 = 0 (default)
+//    controlBonus         : Int 1 = 0 (default)
+//    defense              : Int 1 = 0 (default)
+//    deflect              : Int 1 = 0 (default)
+//    regeneration         : Int 1 = 0 (default)
+//    lifeSteal            : Int 1 = 0 (default)
+//    tenacity             : Int 1 = 0 (default)
+//    staminaGain          : Int 1 = 0 (default)
+//    incomingHealingBonus : Int 1 = 0 (default)
+//    aoeResist            : Int 1 = 0 (default)
+//    controlResist        : Int 1 = 0 (default)
+//    movement             : Int 1 = 0 (default)
+//    companionInfluence   : Int 1 = 0 (default)
+//    goldGain             : Int 1 = 0 (default)
+//    
+//    // stats
+//  }
+//  
+//  entity ItemInstance {
+//    name : String 1 = item.name
+//    
+//    rank : Int?
+//    
+//    // ability scores
+//    strength     : Int 1 = item.strength
+//    constitution : Int 1 = item.constitution
+//    dexterity    : Int 1 = item.dexterity
+//    intelligence : Int 1 = item.intelligence
+//    wisdom       : Int 1 = item.wisdom
+//    charisma     : Int 1 = item.charisma
+//    
+//    // armor class, hit points and total item level
+//    armorClass           : Int 1 = item.armorClass           + sum(enchantments.armorClass)
+//    itemLevel            : Int 1 = item.itemLevel            + sum(enchantments.itemLevel)
+//    maximumHitPoints     : Int 1 = item.maximumHitPoints     + sum(enchantments.maximumHitPoints)
+//    
+//    // ratings
+//    power                : Int 1 = item.power                + sum(enchantments.power)
+//    criticalStrike       : Int 1 = item.criticalStrike       + sum(enchantments.criticalStrike)
+//    armorPenetration     : Int 1 = item.armorPenetration     + sum(enchantments.armorPenetration)
+//    recovery             : Int 1 = item.recovery             + sum(enchantments.recovery)
+//    actionPointGain      : Int 1 = item.actionPointGain      + sum(enchantments.actionPointGain)
+//    combatAdvantageBonus : Int 1 = item.combatAdvantageBonus + sum(enchantments.combatAdvantageBonus)
+//    controlBonus         : Int 1 = item.controlBonus         + sum(enchantments.controlBonus)
+//    defense              : Int 1 = item.defense              + sum(enchantments.defense)
+//    deflect              : Int 1 = item.deflect              + sum(enchantments.deflect)
+//    regeneration         : Int 1 = item.regeneration         + sum(enchantments.regeneration)
+//    lifeSteal            : Int 1 = item.lifeSteal            + sum(enchantments.lifeSteal)
+//    tenacity             : Int 1 = item.tenacity             + sum(enchantments.tenacity)
+//    staminaGain          : Int 1 = item.staminaGain          + sum(enchantments.staminaGain)
+//    incomingHealingBonus : Int 1 = item.incomingHealingBonus + sum(enchantments.incomingHealingBonus)
+//    aoeResist            : Int 1 = item.aoeResist            + sum(enchantments.aoeResist)
+//    controlResist        : Int 1 = item.controlResist        + sum(enchantments.controlResist)
+//    movement             : Int 1 = item.movement             + sum(enchantments.movement)
+//    companionInfluence   : Int 1 = item.companionInfluence   + sum(enchantments.companionInfluence)
+//    goldGain             : Int 1 = item.goldGain             + sum(enchantments.goldGain)
+//    
+//    // stats
+//  }
+//  relation ItemInstance.item 1 <-> * Item.instances
+//  relation ItemInstance.enchantments * <-> * ItemInstance.enchants
+//  
+//  relation Character.items * <-> ? ItemInstance.character
+//
+//  entity Boon {
+////    name : String 1
+//    
+//    // hit points
+//    maximumHitPoints     : Int 1 = 0 (default)
+//    
+//    // ratings
+//    power                : Int 1 = 0 (default)
+//    criticalStrike       : Int 1 = 0 (default)
+//    armorPenetration     : Int 1 = 0 (default)
+//    recovery             : Int 1 = 0 (default)
+//    actionPointGain      : Int 1 = 0 (default)
+//    combatAdvantageBonus : Int 1 = 0 (default)
+//    controlBonus         : Int 1 = 0 (default)
+//    defense              : Int 1 = 0 (default)
+//    deflect              : Int 1 = 0 (default)
+//    regeneration         : Int 1 = 0 (default)
+//    lifeSteal            : Int 1 = 0 (default)
+//    tenacity             : Int 1 = 0 (default)
+//    staminaGain          : Int 1 = 0 (default)
+//    incomingHealingBonus : Int 1 = 0 (default)
+//    aoeResist            : Int 1 = 0 (default)
+//    controlResist        : Int 1 = 0 (default)
+//    movement             : Int 1 = 0 (default)
+//    companionInfluence   : Int 1 = 0 (default)
+//    goldGain             : Int 1 = 0 (default)
+//    
+//    // stats
+//    criticalChance                : Float 1 = 0.0 (default)
+//    criticalSeverity              : Float 1 = 0.0 (default)
+//    resistanceIgnored             : Float 1 = 0.0 (default)
+//    rechargeSpeedIncrease         : Float 1 = 0.0 (default)
+//    actionPointGainStat           : Float 1 = 0.0 (default)
+//    damageResistance              : Float 1 = 0.0 (default)
+//    deflectionChance              : Float 1 = 0.0 (default)
+//    deflectionSeverity            : Float 1 = 0.0 (default)
+//    healthRegeneration            : Float 1 = 0.0 (default)
+//    bonusIncomingHealing          : Float 1 = 0.0 (default)
+//    lifeStealChance               : Float 1 = 0.0 (default)
+//    lifeStealSeverity             : Float 1 = 0.0 (default)
+//    damageResistancePvP           : Float 1 = 0.0 (default)
+//    armorPenetrationResistancePvP : Float 1 = 0.0 (default)
+//    criticalStrikeResistancePvP   : Float 1 = 0.0 (default)
+//    controlResistancePvP          : Float 1 = 0.0 (default)
+//    xpBonus                       : Float 1 = 0.0 (default)
+//    goldBonus                     : Float 1 = 0.0 (default)
+//    gloryBonus                    : Float 1 = 0.0 (default)
+//    runSpeedBonus                 : Float 1 = 0.0 (default)
+//  }
+//
+//  relation Character.boons * <-> * Boon.characters

@@ -1,0 +1,19 @@
+module relationsbetweenrelations
+
+  entity Person {
+    name : String 1
+  }
+
+  relation Marriage {
+    Person.marriage  ? -> husband 
+    Person.marriage2 ? -> wife
+    
+    name : String 1 = husband.name + " is married to " + wife.name
+  }
+
+  relation Counseling {
+    Person.counseling *   -> counselor
+    Marriage.counseling 1 -> counselled
+    
+    name : String 1 = counselor.name + " is counseling " + counselled.husband.name + " and " + counselled.wife.name
+  }

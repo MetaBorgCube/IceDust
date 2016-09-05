@@ -1,0 +1,8 @@
+module directedgraph
+
+  entity Node {
+    name : String 1  
+  }
+  
+  relation Node.from * <-> * Node.to
+  

@@ -1,0 +1,12 @@
+module blog
+
+entity User {
+  name : String 1  = "my name" 
+}
+
+entity Post {
+  title : String 1  
+  body : String 1  = title (default)
+}
+
+relation Post.author 1 <-> * User.posts

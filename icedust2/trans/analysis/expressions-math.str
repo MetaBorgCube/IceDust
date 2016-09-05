@@ -27,10 +27,10 @@ rules
 
   is-op = ?SubtractionType(_)
   
-  reduce-op(|sol): SubtractionType(TInt()     ) -> None()
-  reduce-op(|sol): SubtractionType(TFloat()   ) -> None()
-  reduce-op(|sol): SubtractionType(TDatetime()) -> None()
-  reduce-op(|sol): SubtractionType(TNoValue() ) -> None()
+  reduce-op(|sol): SubtractionType(TInt()     ) -> TInt()
+  reduce-op(|sol): SubtractionType(TFloat()   ) -> TFloat()
+  reduce-op(|sol): SubtractionType(TDatetime()) -> TInt()
+  reduce-op(|sol): SubtractionType(TNoValue() ) -> TNoValue()
 
 signature constructors
   
