@@ -13,6 +13,7 @@ imports
   analysis/_type-functions
   analysis/expressions-logic
   analysis/expressions-math
+  analysis/expressions-multiplicity-operators
 
 rules // Analysis
 

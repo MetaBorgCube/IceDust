@@ -1,0 +1,39 @@
+module analysis/expressions-multiplicity-operators
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  ChoiceLeftMult : Type * Type -> TypeOp
+
+rules
+
+  is-op = ?ChoiceLeftMult(_,_)
+  
+  reduce-op(|sol): ChoiceLeftMult(TOne()       , _            ) -> TOne()
+  reduce-op(|sol): ChoiceLeftMult(TOneOrMore() , _            ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrOne() , a            ) -> a
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOne()       ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOneOrMore() ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrMore()) -> TZeroOrOne()
+
+signature constructors
+  
+  ChoiceLeftMerge : Type * Type -> TypeOp
+
+rules
+
+  is-op = ?ChoiceLeftMerge(_,_)
+  
+  reduce-op(|sol): ChoiceLeftMerge(TOne()       , _            ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(TOneOrMore() , _            ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(_            , TOne()       ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(_            , TOneOrMore() ) -> TOneOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore()
+  reduce-op(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+  

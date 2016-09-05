@@ -7,6 +7,7 @@ imports
   expressions
   expressions-logic
   expressions-math
+  expressions-multiplicity-operators
   model
   types
 

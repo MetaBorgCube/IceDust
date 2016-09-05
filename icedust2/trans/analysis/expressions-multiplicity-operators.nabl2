@@ -1,0 +1,25 @@
+module expressions-multiplicity-operators
+
+imports
+
+  signatures/-
+
+rules
+
+  [[ ChoiceLeft(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
+    LeastUpperBound(e1_type, e2_type) == out_type,
+    ChoiceLeftMult(e1_mult, e2_mult) == out_mult.
+
+  [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
+    LeastUpperBound(e1_type, e2_type) == out_type,
+    ChoiceLeftMerge(e1_mult, e2_mult) == out_mult.
+
+//  [[ Comma(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] := // identical to Merge
+//    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+//    [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
+//    LeastUpperBound(e1_type, e2_type) == out_type,
+//    ChoiceLeftMerge(e1_mult, e2_mult) == out_mult.
