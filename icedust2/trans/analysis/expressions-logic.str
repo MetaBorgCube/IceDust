@@ -1,0 +1,31 @@
+module analysis/expressions-logic
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  BooleanType : Type -> TypeOp
+
+rules
+
+  is-op = ?BooleanType(_)
+  
+  reduce-op(|sol): BooleanType(TBoolean()) -> None()
+  reduce-op(|sol): BooleanType(TNoValue()) -> None()
+  
+signature constructors
+  
+  NotBooleanType : Type -> TypeOp
+
+rules
+
+  is-op = ?NotBooleanType(_)
+  
+  reduce-op(|sol): NotBooleanType(TDatetime()) -> None()
+  reduce-op(|sol): NotBooleanType(TFloat()   ) -> None()
+  reduce-op(|sol): NotBooleanType(TInt()     ) -> None()
+  reduce-op(|sol): NotBooleanType(TString()  ) -> None()
+  reduce-op(|sol): NotBooleanType(TNoValue() ) -> None()
+  reduce-op(|sol): NotBooleanType(TEntity(_) ) -> None()

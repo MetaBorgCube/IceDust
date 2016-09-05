@@ -16,7 +16,7 @@ rules
   reduce-op(|sol): LeastUpperBound(a         , TNoValue()) -> a
   reduce-op(|sol): LeastUpperBound(TNoValue(), a         ) -> a
 
-  signature constructors
+signature constructors
   
   IsSubtype : Type * Type -> TypeOp // super type * sub type
 
@@ -27,3 +27,18 @@ rules
   reduce-op(|sol): IsSubtype(a            , a         ) -> None()
   reduce-op(|sol): IsSubtype(_            , TNoValue()) -> None()
   
+signature constructors
+  
+  IsType : Type -> TypeOp // super type * sub type
+
+rules
+
+  is-op = ?IsType(_)
+
+  reduce-op(|sol): IsType(TBoolean() ) -> None()
+  reduce-op(|sol): IsType(TDatetime()) -> None()
+  reduce-op(|sol): IsType(TFloat()   ) -> None()
+  reduce-op(|sol): IsType(TInt()     ) -> None()
+  reduce-op(|sol): IsType(TString()  ) -> None()
+  reduce-op(|sol): IsType(TNoValue() ) -> None()
+  reduce-op(|sol): IsType(TEntity(_) ) -> None()

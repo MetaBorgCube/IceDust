@@ -5,6 +5,7 @@ imports
   signatures/-
   
   expressions
+  expressions-logic
   expressions-math
   model
   types

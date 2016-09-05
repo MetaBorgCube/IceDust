@@ -25,7 +25,7 @@ rules
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
     DivisionType(e1_type) == None(),
     LeastUpperBound(e1_type, e2_type) == out_type, // don't use out-type, because division of ints is also float
-    DivisionType(out_type) == None(),              // but make sure it evaluates to something
+    IsType(out_type) == None(),                    // but make sure it evaluates to something
     DivisionMult(CartesianProduct(e1_mult, e2_mult), e2) == out_mult.
   
   [[ FloorDivision(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
