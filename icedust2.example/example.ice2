@@ -1,11 +1,11 @@
 module example
 
 entity Student {
-  name   : String 1 = concat("Foo" ++ "Bar")
+  name   : String 1 = concat("Foo" ++ "Bar" + f as String)
   age    : Int 1 
   bornIn : Int 1 = age + 1 + 4 * 7 % 2
   ages   : Int * = knows2.age
-  f      : Float ? = 3.4 / 2.0
+  f      : Float ? = 3.4 / (2 as Float)
   f2     : Float ? = no value + no value
   b      : Boolean 1 = not (3 == 3)
   i      : Int 1 = if(b and not(b)) 3 else 4

@@ -6,6 +6,7 @@ imports
   
   expressions
   expressions-aggregation
+  expressions-casts
   expressions-logic
   expressions-math
   expressions-multiplicity-operators

@@ -1,0 +1,19 @@
+module analysis/expressions-casts
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  CastType : Type * Type -> TypeOp // to * from
+
+rules
+
+  is-op = ?CastType(_,_)
+  
+  reduce-op(|sol): CastType(TInt()   , TFloat()  ) -> None()
+  reduce-op(|sol): CastType(TInt()   , TNoValue()) -> None()
+  reduce-op(|sol): CastType(TFloat() , TInt()    ) -> None()
+  reduce-op(|sol): CastType(TFloat() , TNoValue()) -> None()
+  reduce-op(|sol): CastType(TString(), a         ) -> None() where <not(?TString())>a
