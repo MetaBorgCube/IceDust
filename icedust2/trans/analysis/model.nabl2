@@ -99,5 +99,26 @@ rules
     Member{inverse} <- entity2_scope,
     Member{inverse} : TTuple(this_type, inverse_mult),
     new entity2_scope,
+    Member2{role} -> entity_scope,
+    Member2{role} <=I= entity2_scope, // import all shortcut definitions from the role associated scope into the entity2 scope
+    true.
+    
+  [[ Shortcut(role1, shortcut1, role2, shortcut2) ^ (entity_scope, module_scope) ]] :=
+    Member{role1} -> entity_scope,
+    Member{role1} |-> role1_def,
+    role1_def : TTuple(role1_type, role1_mult),
+    Member2{role1} <- entity_scope,
+    Member2{role1} ===> role1_scope,
+    Member{shortcut1} <- role1_scope,
+    Member{shortcut1} : TTuple(role2_type, role1_mult), //TODO: fix mult, requires storing inv-mult on role type
+    new role1_scope,
+    Member{role2} -> entity_scope,
+    Member{role2} |-> role2_def,
+    role2_def : TTuple(role2_type, role2_mult),
+    Member2{role2} <- entity_scope,
+    Member2{role2} ===> role2_scope,
+    Member{shortcut2} <- role2_scope,
+    Member{shortcut2} : TTuple(role1_type, role2_mult), //TODO: fix mult, requires storing inv-mult on role type
+    new role2_scope,
     true.
    
