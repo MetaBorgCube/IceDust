@@ -11,7 +11,6 @@ rules
     Module{m} <- init_scope,
     module_scope ---> init_scope,
     Module{m} ===> module_scope,
-    false | note "Some message on the module name..." @m,
     Map1 [[ es ^ (module_scope) ]],
     new module_scope. 
 
@@ -52,7 +51,16 @@ rules
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ Attribute(a, t, m, e) ^ (entity_scope) ]] :=
+  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]],
+    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
+    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
+    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
+    
+  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     [[ t ^ (entity_scope) : a_type ]],

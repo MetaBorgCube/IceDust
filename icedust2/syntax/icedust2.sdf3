@@ -33,6 +33,10 @@ context-free syntax
     <ID> : <Type> <Multiplicity>
   >
   
-  Attribute.Attribute = <
+  Attribute.DerivationAttribute = <
     <ID> : <Type> <Multiplicity> = <Exp>
+  >
+  
+  Attribute.DefaultAttribute = <
+    <ID> : <Type> <Multiplicity> = <Exp> (default)
   >
