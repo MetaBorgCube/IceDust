@@ -14,7 +14,8 @@ rules
   [[ Ref(r) ^ (s) : r_def_ty ]] :=
     Member{r} -> s,
     Member{r} |-> r_def,
-    r_def : r_def_ty.
+    r_def : r_def_ty_dirty,
+    GetType(r_def_ty_dirty) == r_def_ty.  // this is a hack to get the type of roles
       
   [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, ref_mult) ]] :=
     [[expr ^ (s) : TTuple(expr_type, expr_mult) ]],
@@ -23,7 +24,9 @@ rules
     new_scope -I-> entity_scope,
     Member{r} -> new_scope,
     Member{r} |-> r_def,
-    r_def : TTuple(r_def_type, r_def_mult),
+    r_def : r_def_ty_dirty,
+    GetType(r_def_ty_dirty) == r_def_ty,  // this is a hack to get the type of roles
+    r_def_ty == TTuple(r_def_type, r_def_mult),
     CartesianProduct(expr_mult, r_def_mult) == ref_mult,
     new new_scope.
 
