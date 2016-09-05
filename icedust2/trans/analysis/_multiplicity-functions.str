@@ -32,3 +32,17 @@ rules
   reduce-op(|sol): InBounds(a            , a     ) -> None()
   reduce-op(|sol): InBounds(TZeroOrMore(), _     ) -> None()
   reduce-op(|sol): InBounds(_            , TOne()) -> None()
+  
+signature constructors
+  
+  UpperboundOne : Type -> TypeOp
+
+rules
+
+  is-op = ?UpperboundOne(_)
+
+  reduce-op(|sol): UpperboundOne(TOne()       ) -> TOne()
+  reduce-op(|sol): UpperboundOne(TZeroOrOne() ) -> TZeroOrOne()
+  reduce-op(|sol): UpperboundOne(TOneOrMore() ) -> TOne()
+  reduce-op(|sol): UpperboundOne(TZeroOrMore()) -> TZeroOrOne()
+  

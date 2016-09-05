@@ -1,0 +1,29 @@
+module analysis/expressions-aggregation
+
+imports
+ 
+  static-semantics
+
+signature constructors
+  
+  NumericType : Type -> TypeOp
+
+rules
+
+  is-op = ?NumericType(_)
+  
+  reduce-op(|sol): NumericType(TFloat()  ) -> None()
+  reduce-op(|sol): NumericType(TInt()    ) -> None()
+  reduce-op(|sol): NumericType(TNoValue()) -> None()
+  
+signature constructors
+  
+  StringType : Type -> TypeOp
+
+rules
+
+  is-op = ?StringType(_)
+  
+  reduce-op(|sol): StringType(TString() ) -> None()
+  reduce-op(|sol): StringType(TNoValue()) -> None()
+  
