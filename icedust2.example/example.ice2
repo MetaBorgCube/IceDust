@@ -1,16 +1,26 @@
 module example
 
 entity Student {
-  name   : String 1 = concat("Foo" ++ "Bar" + f as String)
-  age    : Int 1 
-  bornIn : Int 1 = age + 1 + 4 * 7 % 2
-  ages   : Int * = knows2.age
-  f      : Float ? = 3.4 / (2 as Float)
-  f2     : Float ? = no value + no value
-  b      : Boolean 1 = not (3 == 3)
-  i      : Int 1 = if(b and not(b)) 3 else 4 (default)
-  a      : Float 1 = f <+ f2 <+ 0.0
-  fdsa   : Float 1 =  min((knows2).f ++ 1.0) 
+//  name   : String 1 = concat("Foo" ++ "Bar" + f as String)
+//  age    : Int 1 
+//  bornIn : Int 1 = age + 1 + 4 * 7 % 2
+//  ages   : Int * = knows2.age
+//  f      : Float ? = 3.4 / (2 as Float)
+//  f2     : Float ? = no value + no value
+//  b      : Boolean 1 = not (3 == 3)
+//  i      : Int 1 = if(b and not(b)) 3 else 4 (default)
+//  a      : Float 1 = f <+ f2 <+ 0.0
+//  fdsa   : Float 1 =  min((knows2).f ++ 1.0) 
 }
 
 relation Student.knows + <-> * Student.knows2
+
+relation Enrollment {
+  Course.enrollments * -> course
+  f : Int 1 = course.i
+}
+
+entity Course {
+  i : Int 1 = enrollments
+}
+

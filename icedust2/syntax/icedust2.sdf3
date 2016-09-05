@@ -4,6 +4,7 @@ imports
   
   Common
   Expressions
+  Model
   Types
 
 context-free start-symbols
@@ -15,28 +16,6 @@ context-free syntax
   Start.Module = <
     module <ID>
     
-    <{Definition "\n\n"}*>
+    <{Model "\n\n"}*>
       
-  >
-
-  Definition.Entity = <
-    entity <ID> {
-      <{Attribute "\n"}*>
-    }
-  >
-  
-  Definition.Relation = [
-    relation [ID].[ID] [Multiplicity] <-> [Multiplicity] [ID].[ID]
-  ]
-  
-  Attribute.Attribute = <
-    <ID> : <Type> <Multiplicity>
-  >
-  
-  Attribute.DerivationAttribute = <
-    <ID> : <Type> <Multiplicity> = <Exp>
-  >
-  
-  Attribute.DefaultAttribute = <
-    <ID> : <Type> <Multiplicity> = <Exp> (default)
   >

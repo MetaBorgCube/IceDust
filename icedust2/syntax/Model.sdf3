@@ -1,0 +1,46 @@
+module Model
+
+imports
+
+  Common
+  Expressions
+  Types
+  
+context-free syntax
+
+  Model.Entity = <
+    entity <ID> {
+      <{Member "\n"}*>
+    }
+  >
+  
+  Model.Relation = [
+    relation [ID].[ID] [Multiplicity] <-> [Multiplicity] [ID].[ID]
+  ]
+  
+  Model.FirstClassRelation = <
+    relation <ID> {
+      <{Member "\n"}*>
+    }
+  >
+  
+  Member.Attribute = <
+    <ID> : <Type> <Multiplicity>
+  >
+  
+  Member.DerivationAttribute = <
+    <ID> : <Type> <Multiplicity> = <Exp>
+  >
+  
+  Member.DefaultAttribute = <
+    <ID> : <Type> <Multiplicity> = <Exp> (default)
+  >
+
+  Member.Role = [
+    [ID].[ID] [Multiplicity] -> [ID]
+  ]
+
+  Member.Shortcut = [
+    [ID].[ID] <-> [ID].[ID]
+  ] // requires types in there as well with NaBL2?
+  

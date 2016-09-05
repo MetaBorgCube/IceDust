@@ -20,9 +20,20 @@ rules
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
     Entity{e} : TEntity(Entity{e}),
-    Map1 [[ as ^ (entity_scope) ]],
+    Map2 [[ as ^ (entity_scope, module_scope) ]],
     Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
     Entity2{e} <=I= entity_scope, // import all from that reference
+    new entity_scope.
+
+  [[ FirstClassRelation(e, as) ^ (module_scope) ]] := // identical to Entity
+    !D(entity_scope)/Attribute | error "Duplicate attribute" @NAMES,
+    Entity{e} <- module_scope,
+    entity_scope ---> module_scope,
+    Entity{e} ===> entity_scope,
+    Entity{e} : TEntity(Entity{e}),
+    Map2 [[ as ^ (entity_scope, module_scope) ]],
+    Entity2{e} -> module_scope,
+    Entity2{e} <=I= entity_scope,
     new entity_scope.
     
   [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
@@ -45,13 +56,13 @@ rules
     new entity1_scope,
     new entity2_scope.
     
-  [[ Attribute(a, t, m) ^ (entity_scope) ]] :=
+  [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope) ]] :=
+  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     [[ t ^ (entity_scope) : a_type ]],
@@ -60,7 +71,7 @@ rules
     IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
     InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
     
-  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope) ]] :=
+  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     [[ t ^ (entity_scope) : a_type ]],
@@ -68,4 +79,18 @@ rules
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
     IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
     InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
+    
+  [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
+    [[ mult ^ (entity_scope) : inverse_mult ]],
+    Member{role} <- entity_scope,
+    Member{role} : TTuple(entity_type, TOne()),
+    Entity{entity} -> entity_scope,
+    Entity{entity} |-> entity_def,
+    entity_def : entity_type,
+    Entity2{entity} <- module_scope,
+    Entity2{entity} ===> entity2_scope,
+    Member{inverse} <- entity2_scope,
+    Member{inverse} : TTuple(entity_type, inverse_mult), //TODO: type should be type of this
+    new entity2_scope,
+    true.
    
