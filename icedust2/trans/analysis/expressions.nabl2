@@ -6,6 +6,11 @@ imports
 
 rules
 
+  [[ This() ^ (s) : TTuple(this_type, TOne()) ]] :=
+    Implicit{"this"} -> s,
+    Implicit{"this"} |-> this_def,
+    this_def : this_type.
+
   [[ Ref(r) ^ (s) : r_def_ty ]] :=
     Member{r} -> s,
     Member{r} |-> r_def,
