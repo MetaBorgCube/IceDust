@@ -36,3 +36,8 @@ rules
   [[ Concat(e1) ^ (s) : TTuple(e1_type, TOne()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
     StringType(e1_type) == None().
+
+  [[ Count(e1) ^ (s) : TTuple(TInt(), TOne()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+    IsType(e1_type) == None(). // make sure this evaluates
+    
