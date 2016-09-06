@@ -34,8 +34,8 @@ data
 
   math : Course {
     students =
-      < mathAlice : Enrollment { } > alice {
-      
+      < mathAlice : Student { courses = ai } > alice { //TODO: should be the relation object type, not the target object type
+        courses = ai
       },
       bob {
         

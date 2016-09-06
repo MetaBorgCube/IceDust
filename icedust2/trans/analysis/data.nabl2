@@ -28,6 +28,33 @@ rules
     Implicit{"this"} : member_value_def_type,
     Map2 [[ ms ^ (entity_instance_scope, module_scope) ]].
     
+  [[ RelationInstance(name, type, ms) ^ (member_value_scope, module_scope) : type_type ]] :=
+    EntityInstance{name} <- module_scope,
+    EntityInstance{name} ===> entity_instance_scope,
+    new entity_instance_scope,
+    [[ type ^ (module_scope) : type_type ]],
+    EntityInstance{name} : type_type,
+    Implicit{"this"} <- entity_instance_scope,
+    Implicit{"this"} : type_type,
+    Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
+    Implicit{"membervalue"} -> member_value_scope,
+    Implicit{"membervalue"} |-> member_value_def,
+    member_value_def : member_value_def_type,
+    member_value_def_type == type_type. //TODO: should be the relation object type, not the target object type
+    
+  [[ RelationInstanceNoType(name, ms) ^ (member_value_scope, module_scope) : member_value_def_type ]] :=
+    EntityInstance{name} <- module_scope,
+    EntityInstance{name} ===> entity_instance_scope,
+    new entity_instance_scope,
+    Implicit{"membervalue"} -> member_value_scope,
+    Implicit{"membervalue"} |-> member_value_def,
+    member_value_def : member_value_def_type,
+    EntityInstance{name} : member_value_def_type, //TODO: should be the relation object type, not the target object type
+    Implicit{"this"} <- entity_instance_scope,
+    Implicit{"this"} : member_value_def_type,
+    Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
+    true.
+    
   [[ MemberValue(member, vs) ^ (entity_instance_scope, module_scope) ]] :=
     Map2T [[ vs ^ (member_value_scope, module_scope) : ei_types ]],
     Implicit{"this"} -> entity_instance_scope,
@@ -39,13 +66,15 @@ rules
     new_scope -I-> entity_scope,
     Member{member} -> new_scope,
     Member{member} |-> member_def,
-    member_def : TTuple(member_def_type, member_def_mult),
+    member_def : member_def_type_dirty,
+    GetType(member_def_type_dirty) == TTuple(member_def_type, member_def_mult),
     IsSubtype(member_def_type, ei_types) == None(),
     new member_value_scope,
     Implicit{"membervalue"} <- member_value_scope,
     Implicit{"membervalue"} : member_def_type.
 
   [[ EntityInstanceWrapper(ri, ei) ^ (member_value_scope, module_scope) : ei_type ]] :=
+    [[ ri ^ (member_value_scope, module_scope) : ri_type ]],
     [[ ei ^ (member_value_scope, module_scope) : ei_type ]].
   
   [[ EntityInstanceRef(ei) ^  (member_value_scope, module_scope) : ei_type ]] :=
