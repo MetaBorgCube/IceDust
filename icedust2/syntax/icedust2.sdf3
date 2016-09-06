@@ -4,6 +4,7 @@ imports
   
   Common
   Data
+  Execute
   Expressions
   Model
   Types
@@ -32,3 +33,10 @@ context-free syntax
     
       <{Data "\n"}*>
   >
+  
+  ModuleSection.ExecuteSection = <
+    execute
+    
+      <{Execute "\n"}*>
+  >
+  

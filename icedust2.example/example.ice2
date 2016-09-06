@@ -47,5 +47,11 @@ data
     i = 5
   }
   
+execute
+
+  3 + 5
   
+  7 * (7 ++ 9)
+  
+  math
   

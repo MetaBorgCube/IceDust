@@ -12,7 +12,7 @@ rules
     module_scope ---> init_scope,
     Module{m} ===> module_scope,
     Map1 [[ es ^ (module_scope) ]],
-    new module_scope. 
+    new module_scope. //TODO: make a model_scope with a nested data_execute_scope such that in model-expressions entity instances cannot be resolved
 
   [[ ModelSection(es) ^ (module_scope) ]] :=
     Map1 [[ es ^ (module_scope) ]].
@@ -20,4 +20,7 @@ rules
   [[ DataSection(es) ^ (module_scope) ]] :=
     Map2T [[ es ^ (empty_scope, module_scope) : es_types ]],
     new empty_scope.
+
+  [[ ExecuteSection(es) ^ (module_scope) ]] :=
+    Map1T [[ es ^ (module_scope) : es_types ]].
     
