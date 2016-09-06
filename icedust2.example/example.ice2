@@ -34,7 +34,7 @@ data
 
   math : Course {
     students =
-      < mathAlice : Student { courses = ai } > alice { //TODO: should be the relation object type, not the target object type
+      < mathAlice : Enrollment { } > alice { //TODO: should be the relation object type, not the this object type. Need to fetch this from the member somewhere
         courses = ai
       },
       bob {

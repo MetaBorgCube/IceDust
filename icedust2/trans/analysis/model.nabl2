@@ -102,7 +102,7 @@ rules
     Member2{role1} <- entity_scope,
     Member2{role1} ===> role1_scope,
     Member{shortcut1} <- role1_scope,
-    Member{shortcut1} : TTuple(role2_type, role1_inverse_mult),
+    Member{shortcut1} : TShortcut(TTuple(role2_type, role1_inverse_mult), this_type),
     new role1_scope,
     Member{role2} -> entity_scope,
     Member{role2} |-> role2_def,
@@ -110,7 +110,10 @@ rules
     Member2{role2} <- entity_scope,
     Member2{role2} ===> role2_scope,
     Member{shortcut2} <- role2_scope,
-    Member{shortcut2} : TTuple(role1_type, role2_inverse_mult),
+    Member{shortcut2} : TShortcut(TTuple(role1_type, role2_inverse_mult), this_type),
     new role2_scope,
+    Implicit{"this"} -> entity_scope,
+    Implicit{"this"} |-> this_def,
+    this_def : this_type,
     true.
    
