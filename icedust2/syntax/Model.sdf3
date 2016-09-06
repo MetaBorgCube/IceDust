@@ -42,5 +42,5 @@ context-free syntax
 
   Member.Shortcut = [
     [ID].[ID] <-> [ID].[ID]
-  ] // requires types in there as well with NaBL2?
+  ]
   

@@ -3,6 +3,7 @@ module icedust2
 imports
   
   Common
+  Data
   Expressions
   Model
   Types
@@ -16,6 +17,18 @@ context-free syntax
   Start.Module = <
     module <ID>
     
-    <{Model "\n\n"}*>
-      
+    <{ModuleSection "\n\n"}*>
+    
+  >
+
+  ModuleSection.ModelSection = <
+    model
+    
+      <{Model "\n\n"}*>
+  >
+  
+  ModuleSection.DataSection = <
+    data
+    
+      <{Data "\n"}*>
   >

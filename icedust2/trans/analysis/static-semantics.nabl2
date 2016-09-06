@@ -4,6 +4,7 @@ imports
 
   signatures/-
   
+  data
   expressions
   expressions-aggregation
   expressions-casts
@@ -11,6 +12,7 @@ imports
   expressions-math
   expressions-multiplicity-operators
   model
+  module
   types
 
 signature

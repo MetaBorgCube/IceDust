@@ -1,0 +1,23 @@
+module module
+
+imports
+
+  signatures/-
+
+rules
+    
+  [[ Module(m, es) ^ (init_scope) ]] :=
+    !D(module_scope)/Entity | error "Duplicate entity" @NAMES,
+    Module{m} <- init_scope,
+    module_scope ---> init_scope,
+    Module{m} ===> module_scope,
+    Map1 [[ es ^ (module_scope) ]],
+    new module_scope. 
+
+  [[ ModelSection(es) ^ (module_scope) ]] :=
+    Map1 [[ es ^ (module_scope) ]].
+
+  [[ DataSection(es) ^ (module_scope) ]] :=
+    Map2T [[ es ^ (empty_scope, module_scope) : es_types ]],
+    new empty_scope.
+    

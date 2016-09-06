@@ -29,6 +29,18 @@ rules
   
 signature constructors
   
+  IsSubtype : Type * List(Type) -> TypeOp // super type * List(sub type)
+
+rules
+
+  is-op = ?IsSubtype(_,_)
+
+  reduce-op(|sol): IsSubtype(a, []               ) -> None()
+  reduce-op(|sol): IsSubtype(a, [a | bs]         ) -> None() where <reduce-op(|sol)>IsSubtype(a, bs)
+  reduce-op(|sol): IsSubtype(a, [TNoValue() | bs]) -> None() where <reduce-op(|sol)>IsSubtype(a, bs)
+  
+signature constructors
+  
   IsType : Type -> TypeOp // super type * sub type
 
 rules

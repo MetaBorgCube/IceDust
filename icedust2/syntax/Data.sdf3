@@ -1,0 +1,75 @@
+module Data
+
+imports
+
+  Common
+  Expressions
+  Types
+
+context-free syntax
+
+  Data = EntityInstance
+
+  EntityInstance.EntityInstance = <
+    <ID> : <Type> {
+      <{MemberValue "\n"}*>
+    }
+  >
+  
+//  EntityInstance.EntityInstanceNoType = <
+//    <ID> {
+//      <{MemberValue "\n"}*>
+//    }
+//  >
+//  
+//  EntityInstance.EntityInstanceNoName = <
+//    : <ID> {
+//      <{MemberValue "\n"}*>
+//    }
+//  >
+//  
+//  EntityInstance.EntityInstanceNoNameNoType = <
+//    {
+//      <{MemberValue "\n"}*>
+//    }
+//  >
+  
+  RelationInstance.RelationInstance = [
+    < [ID] : [Type] {
+      [{MemberValue "\n"}*]
+    } >
+  ]
+  
+//  RelationInstance.RelationInstanceNoType = [
+//    < [ID] {
+//      [{MemberValue "\n"}*]
+//    } >
+//  ]
+//  
+//  RelationInstance.RelationInstanceNoName = [
+//    < : [ID] {
+//      [{MemberValue "\n"}*]
+//    } >
+//  ]
+//  
+//  RelationInstance.RelationInstanceNoNameNoType = [
+//    < {
+//      [{MemberValue "\n"}*]
+//    } >
+//  ]
+  
+  MemberValue.MemberValue = <
+    <ID> = <{Value ","}+>
+  >
+  
+//  Value.Comma = <
+//    <Value>,
+//    <Value>
+//  > {right}
+  
+  Value = LitVal
+  
+  Value.EntityInstanceWrapper = <<RelationInstance?><EntityInstanceValue>>
+  
+  EntityInstanceValue.EntityInstanceRef = ID
+  EntityInstanceValue = EntityInstance

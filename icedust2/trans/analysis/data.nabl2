@@ -1,0 +1,43 @@
+module data
+
+imports
+
+  signatures/-
+
+rules
+
+  [[ EntityInstance(name, type, ms) ^ (parent_entity_instance_scope, module_scope) : type_type ]] :=
+    EntityInstance{name} <- module_scope,
+    EntityInstance{name} ===> entity_instance_scope,
+    new entity_instance_scope,
+    [[ type ^ (module_scope) : type_type ]],
+    EntityInstance{name} : type_type,
+    Implicit{"this"} <- entity_instance_scope,
+    Implicit{"this"} : type_type,
+    Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
+    true.
+    
+  [[ MemberValue(member, vs) ^ (entity_instance_scope, module_scope) ]] :=
+    Map2T [[ vs ^ (entity_instance_scope, module_scope) : ei_types ]],
+    Implicit{"this"} -> entity_instance_scope,
+    Implicit{"this"} |-> this_def,
+    this_def : this_type,
+    this_type == TEntity(this_type_entity),
+    this_type_entity ?=I=> entity_scope,
+    new new_scope,
+    new_scope -I-> entity_scope,
+    Member{member} -> new_scope,
+    Member{member} |-> member_def,
+    member_def : TTuple(member_def_type, member_def_mult),
+    IsSubtype(member_def_type, ei_types) == None(),
+    true.
+
+  [[ EntityInstanceWrapper(ri, ei) ^ (entity_instance_scope, module_scope) : ei_type ]] :=
+    [[ ei ^ (entity_instance_scope, module_scope) : ei_type ]],
+    true.
+  
+  [[ EntityInstanceRef(ei) ^  (entity_instance_scope, module_scope) : ei_type ]] :=
+    EntityInstance{ei} -> module_scope,
+    EntityInstance{ei} |-> ei_def,
+    ei_def : ei_type,
+    true.
