@@ -22,54 +22,27 @@ context-free syntax
     }
   >
   
-//  EntityInstance.EntityInstanceNoName = <
-//    : <ID> {
-//      <{MemberValue "\n"}*>
-//    }
-//  >
-//  
-//  EntityInstance.EntityInstanceNoNameNoType = <
-//    {
-//      <{MemberValue "\n"}*>
-//    }
-//  >
-  
   RelationInstance.RelationInstance = [
     < [ID] : [Type] {
       [{MemberValue "\n"}*]
     } >
   ]
   
-//  RelationInstance.RelationInstanceNoType = [
-//    < [ID] {
-//      [{MemberValue "\n"}*]
-//    } >
-//  ]
-//  
-//  RelationInstance.RelationInstanceNoName = [
-//    < : [ID] {
-//      [{MemberValue "\n"}*]
-//    } >
-//  ]
-//  
-//  RelationInstance.RelationInstanceNoNameNoType = [
-//    < {
-//      [{MemberValue "\n"}*]
-//    } >
-//  ]
+  RelationInstance.RelationInstanceNoType = [
+    < [ID] {
+      [{MemberValue "\n"}*]
+    } >
+  ]
   
   MemberValue.MemberValue = <
-    <ID> = <{Value ","}+>
+    <ID> = <{Value ",\n  "}+>
   >
-  
-//  Value.Comma = <
-//    <Value>,
-//    <Value>
-//  > {right}
   
   Value = LitVal
   
-  Value.EntityInstanceWrapper = <<RelationInstance?><EntityInstanceValue>>
+  Value = EntityInstanceValue
+  
+  Value.EntityInstanceWrapper = <<RelationInstance> <EntityInstanceValue>>
   
   EntityInstanceValue.EntityInstanceRef = ID
   EntityInstanceValue = EntityInstance

@@ -17,28 +17,28 @@ model
   
 //  relation Student.knows + <-> * Student.knows2
   
-//  relation Enrollment {
-//    Course.enrollments + -> course
-//    Student.enrollments * -> student
-//    student.courses <-> course.students
-//    f : Int 1 = course.i
-//  }
+  relation Enrollment {
+    Course.enrollments + -> course
+    Student.enrollments * -> student
+    student.courses <-> course.students
+    f : Int 1 //= course.i
+  }
   
-  relation Student.courses * <-> + Course.students
+//  relation Student.courses * <-> + Course.students
   
   entity Course {
-    i : Int 1 = count(this.students)
+    i : Int 1 //= count(this.students)
   }
 
 data
 
   math : Course {
     students =
-      alice {
+      < mathAlice : Enrollment { } > alice {
       
       },
       bob {
-      
+        
       }
   }
 

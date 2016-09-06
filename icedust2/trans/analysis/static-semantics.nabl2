@@ -5,12 +5,13 @@ imports
   signatures/-
   
   data
-  expressions
   expressions-aggregation
   expressions-casts
+  expressions-literals
   expressions-logic
   expressions-math
   expressions-multiplicity-operators
+  expressions-references
   model
   module
   types
