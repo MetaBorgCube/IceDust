@@ -6,7 +6,7 @@ imports
 
 rules
 
-  [[ EntityInstance(name, type, ms) ^ (parent_entity_instance_scope, module_scope) : type_type ]] :=
+  [[ EntityInstance(name, type, ms) ^ (member_value_scope, module_scope) : type_type ]] :=
     EntityInstance{name} <- module_scope,
     EntityInstance{name} ===> entity_instance_scope,
     new entity_instance_scope,
@@ -16,9 +16,22 @@ rules
     Implicit{"this"} : type_type,
     Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
     true.
+
+  [[ EntityInstanceNoType(name, ms) ^ (member_value_scope, module_scope) : member_value_def_type ]] :=
+    EntityInstance{name} <- module_scope,
+    EntityInstance{name} ===> entity_instance_scope,
+    new entity_instance_scope,
+    Implicit{"membervalue"} -> member_value_scope,
+    Implicit{"membervalue"} |-> member_value_def,
+    member_value_def : member_value_def_type,
+    EntityInstance{name} : member_value_def_type,
+    Implicit{"this"} <- entity_instance_scope,
+    Implicit{"this"} : member_value_def_type,
+    Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
+    true.
     
   [[ MemberValue(member, vs) ^ (entity_instance_scope, module_scope) ]] :=
-    Map2T [[ vs ^ (entity_instance_scope, module_scope) : ei_types ]],
+    Map2T [[ vs ^ (member_value_scope, module_scope) : ei_types ]],
     Implicit{"this"} -> entity_instance_scope,
     Implicit{"this"} |-> this_def,
     this_def : this_type,
@@ -30,13 +43,18 @@ rules
     Member{member} |-> member_def,
     member_def : TTuple(member_def_type, member_def_mult),
     IsSubtype(member_def_type, ei_types) == None(),
+//    MemberValue{member} <- entity_instance_scope, // might need this later when querying
+//    MemberValue{member} ===> member_value_scope,
+    new member_value_scope,
+    Implicit{"membervalue"} <- member_value_scope,
+    Implicit{"membervalue"} : member_def_type,
     true.
 
-  [[ EntityInstanceWrapper(ri, ei) ^ (entity_instance_scope, module_scope) : ei_type ]] :=
-    [[ ei ^ (entity_instance_scope, module_scope) : ei_type ]],
+  [[ EntityInstanceWrapper(ri, ei) ^ (member_value_scope, module_scope) : ei_type ]] :=
+    [[ ei ^ (member_value_scope, module_scope) : ei_type ]],
     true.
   
-  [[ EntityInstanceRef(ei) ^  (entity_instance_scope, module_scope) : ei_type ]] :=
+  [[ EntityInstanceRef(ei) ^  (member_value_scope, module_scope) : ei_type ]] :=
     EntityInstance{ei} -> module_scope,
     EntityInstance{ei} |-> ei_def,
     ei_def : ei_type,

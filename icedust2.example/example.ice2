@@ -34,8 +34,12 @@ data
 
   math : Course {
     students =
-      alice : Student {},
-      bob : Student {}
+      alice {
+      
+      },
+      bob {
+      
+      }
   }
 
   ai : Course {

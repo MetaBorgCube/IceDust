@@ -16,12 +16,12 @@ context-free syntax
     }
   >
   
-//  EntityInstance.EntityInstanceNoType = <
-//    <ID> {
-//      <{MemberValue "\n"}*>
-//    }
-//  >
-//  
+  EntityInstance.EntityInstanceNoType = <
+    <ID> {
+      <{MemberValue "\n"}*>
+    }
+  >
+  
 //  EntityInstance.EntityInstanceNoName = <
 //    : <ID> {
 //      <{MemberValue "\n"}*>
