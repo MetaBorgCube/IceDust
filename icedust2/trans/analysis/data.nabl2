@@ -81,3 +81,6 @@ rules
     EntityInstance{ei} -> module_scope,
     EntityInstance{ei} |-> ei_def,
     ei_def : ei_type.
+    
+  [[ LitVal(e) ^  (member_value_scope, module_scope) : e_type ]] :=
+    [[ e ^ (module_scope) : TTuple(e_type, e_mult) ]].

@@ -38,7 +38,7 @@ context-free syntax
     <ID> = <{Value ",\n  "}+>
   >
   
-  Value = LitVal
+  Value.LitVal = LitVal
   
   Value = EntityInstanceValue
   
