@@ -7,7 +7,7 @@ imports
 rules
 
   [[ Entity(e, as) ^ (module_scope) ]] :=
-    !D(entity_scope)/Attribute | error "Duplicate attribute" @NAMES,
+    !D(entity_scope)/Member | error "Duplicate attribute" @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
@@ -20,7 +20,7 @@ rules
     new entity_scope.
 
   [[ FirstClassRelation(e, as) ^ (module_scope) ]] := // identical to Entity
-    !D(entity_scope)/Attribute | error "Duplicate attribute" @NAMES,
+    !D(entity_scope)/Member | error "Duplicate attribute" @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
