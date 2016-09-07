@@ -11,25 +11,25 @@ context-free syntax
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID> : <Type> {
+    <ID?> : <Type> {
       <{MemberValue "\n"}*>
     }
   >
   
   EntityInstance.EntityInstanceNoType = <
-    <ID> {
+    <ID?> {
       <{MemberValue "\n"}*>
     }
   >
   
   RelationInstance.RelationInstance = [
-    < [ID] : [Type] {
+    < [ID?] : [Type] {
       [{MemberValue "\n"}*]
     } >
   ]
   
   RelationInstance.RelationInstanceNoType = [
-    < [ID] {
+    < [ID?] {
       [{MemberValue "\n"}*]
     } >
   ]

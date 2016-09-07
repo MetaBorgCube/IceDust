@@ -8,11 +8,11 @@ imports // constructors
 imports // functions
 
   api/model-api
-//  api/data-api
+  api/data-api
   lib/origin
-//  lib/new-name
+  lib/new-name
   lib/string
-//  lib/traverse
+  lib/traverse
   lib/lists-tuples
   
 
@@ -25,7 +25,7 @@ rules
   omitted1 = attr-generate-mult
   omitted1 = role-generate-name
   omitted1 = entity-generate-inverse-names
-//  omitted1 = datadef-generate-entity-names
+  omitted1 = datadef-generate-entity-names
 //  omitted1 = shortcutrel-generate-mult
   omitted1 = rel-generate-mult
   
@@ -67,23 +67,23 @@ rules // generate omitted inverse names //TODO: plural names
     
   entity-duplicate-role-types = entity-get-members;filter(is-role);map(role-get-type);list-duplicates;make-set
 
-//rules  // generate omitted entity names
-//
-//  datadef-generate-entity-names: d -> <datadef-set-data(|c'')>d
-//    where
-//      is-datadef
-//    with
-//      c := <datadef-get-data>d;
-//      (c', _) := <topdown-fold(try(generate-entity-name))>(c, []);
-//      c'' := <custom-origin(|c)>c'
-//
-//  generate-entity-name: (ei, history) -> (ei', history')
-//    where
-//      <entityinstance-has-no-name>ei
-//    with
-//      (e, history') := <new-name>("noname", history);
-//      ei' := <entityinstance-set-name(|<custom-origin(|ei)>e)>ei
-//  
+rules  // generate omitted entity names
+
+  datadef-generate-entity-names: d -> <datadef-set-data(|c'')>d
+    where
+      is-datadef
+    with
+      c := <datadef-get-data>d;
+      (c', _) := <topdown-fold(try(generate-entity-name))>(c, []);
+      c'' := <custom-origin(|c)>c'
+
+  generate-entity-name: (ei, history) -> (ei', history')
+    where
+      <entityinstance-has-no-name>ei
+    with
+      (e, history') := <new-name>("noname", history);
+      ei' := <entityinstance-set-name(|<custom-origin(|ei)>e)>ei
+  
 rules // generate omitted shortcuts //TODO: plural names
 
   entity-generate-shortcuts: e -> <entity-set-members(|members'')>e
