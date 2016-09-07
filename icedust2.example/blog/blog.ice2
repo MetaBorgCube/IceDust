@@ -1,12 +1,28 @@
-module blog
+module blog // >>> Solving constraints <<< Finished in 2.11s
 
-entity User {
-  name : String 1  = "my name" 
-}
+model
 
-entity Post {
-  title : String 1  
-  body : String 1  = title (default)
-}
+  entity User {
+    name : String  = "my name" 
+  }
 
-relation Post.author 1 <-> * User.posts
+  entity Post {
+    title : String  
+    body : String  = title (default)
+  }
+
+  relation Post.author 1 <-> * User.posts
+
+data
+
+  me : User {
+    posts =
+      p1 {title = "First post"},
+      p2 {title = "Second post" body = "Some text"}
+  }
+
+execute
+
+  me.posts // give Posts that are authored by me
+
+  me.posts.title // my blogpost titles
