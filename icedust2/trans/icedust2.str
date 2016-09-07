@@ -24,3 +24,30 @@ rules // Debugging
       filename := <guarantee-extension(|"desugared.aterm")> path;
       result   := ast'
     
+    
+    
+    
+    
+    
+  get-ast-value(|sg) = debug;build-occurrence;debug;my-lookup(|sg);debug
+  
+  build-occurrence = ?Attribute(x,_,_);!Occurrence(Namespace("Member"),x,<get-ast-index>x)
+
+  my-lookup(|sg): occurrence -> result
+    with
+      result := <lookup> (occurrence, sg)
+
+signature constructors 
+
+  Value : Term
+  
+rules
+
+  debug-get-ast-value:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      <debug>selected;
+      sg := <get-analysis;sol-v>$[[project-path]/[path]];
+      attr := <collect-all(?Attribute(_,_,_))>ast;
+      <debug> attr;
+      <map(get-ast-value(|sg);get-ast-value(|sg);get-ast-value(|sg))>attr

@@ -21,6 +21,11 @@ menus
     action: "Format"          = editor-format (source)
     action: "Show parsed AST" = debug-show-aterm (source)
     action: "Show desugared AST" = debug-show-desugared (source)
+    
+    
+  menu: "Debug"
+
+    action: "debug-get-ast-value" = debug-get-ast-value
 
 views
   

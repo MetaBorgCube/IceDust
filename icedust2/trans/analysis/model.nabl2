@@ -55,6 +55,7 @@ rules
   [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
+    Member{a} := Attribute(a, t, m),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
