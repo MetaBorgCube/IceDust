@@ -37,8 +37,9 @@ context-free syntax
   >
 
   Member.Role = [
-    [ID].[ID] [Multiplicity][SpaceArrowID?]
+    [ID][DotID?] [Multiplicity][SpaceArrowID?]
   ]
+  DotID        = <.<ID>>
   SpaceArrowID = [ -> [ID]]
 
   Member.Shortcut = [

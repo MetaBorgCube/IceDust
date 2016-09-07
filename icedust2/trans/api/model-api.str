@@ -91,6 +91,5 @@ rules // manipulation
   
 rules // creation
   
-//  create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)
-//  create-shortcut(|role1, type1, shortcut1, role2, type2, shortcut2) = !Shortcut(NaBLHelp(<custom-origin(|role1)>RoleRef(role1), type1), shortcut1, NaBLHelp(<custom-origin(|role2)>RoleRef(role2), type2), shortcut2)
+  create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(role1, shortcut1, role2, shortcut2)
   

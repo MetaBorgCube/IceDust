@@ -18,9 +18,9 @@ model
 //  relation Student.knows + <-> Student.knows2
   
   relation Enrollment {
-    Course.enrollments + -> course
-    Student.enrollments * -> student
-    student.courses <-> course.students
+    Course +
+    Student *
+//    student.courses <-> course.students
     f : Int //= course.i
   }
   
@@ -33,9 +33,9 @@ model
 data
 
   math : Course {
-    students =
+    student =
       alice {
-        courses = ai
+        course = ai
       },
       bob {
         
@@ -43,7 +43,7 @@ data
   }
 
   ai : Course {
-    students = alice, bob
+    student = alice, bob
     i = 5
   }
   
@@ -53,4 +53,6 @@ execute
   
   7 * (7 ++ 9)
   
-  math.students.courses.i
+  math.student.course.i
+  math.enrollment.f
+  
