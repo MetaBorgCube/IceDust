@@ -1,0 +1,96 @@
+module api/model-api
+
+imports // constructors
+
+  signatures/Model-sig
+//  desugaring/constructors
+
+imports // functions
+
+//  lib/origin
+
+rules // query
+  
+//  entity-get-type: Entity            (_,_) -> EntityType()
+//  entity-get-type: FirstClassRelation(_,_) -> RelationType()
+  entity-get-name    = ?Entity            (<id>,_)
+  entity-get-name    = ?FirstClassRelation(<id>,_)
+  entity-get-members = ?Entity            (_, <id>)
+  entity-get-members = ?FirstClassRelation(_, <id>)
+
+  attr-get-name       = ?Attribute(<id>, _, _)
+  attr-get-type       = ?Attribute(_, <id>, _)
+  attr-get-mult       = ?Attribute(_, _, <id>)
+  attr-get-name       = ?DerivationAttribute(<id>, _, _, _)
+  attr-get-type       = ?DerivationAttribute(_, <id>, _, _)
+  attr-get-mult       = ?DerivationAttribute(_, _, <id>, _)
+  attr-get-derivation = ?DerivationAttribute(_, _, _, <id>)
+  attr-get-name       = ?DefaultAttribute(<id>, _, _, _)
+  attr-get-type       = ?DefaultAttribute(_, <id>, _, _)
+  attr-get-mult       = ?DefaultAttribute(_, _, <id>, _)
+  attr-get-derivation = ?DefaultAttribute(_, _, _, <id>)
+
+  role-get-type           = ?Role(<id>, _, _, _)
+  role-get-inv            = ?Role(_, <id>, _, _)
+  role-get-mult           = ?Role(_, _, <id>, _)
+  role-get-name           = ?Role(_, _, _, <id>)
+
+  shortcut-get-roles: Shortcut(role1, _, role2, _) -> (role1, role2)
+  shortcut-get-role1 = shortcut-get-roles;Fst
+  shortcut-get-role2 = shortcut-get-roles;Snd
+  shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
+  
+  shortcut-get-shortcuts: Shortcut(_, shortcut1, _, shortcut2) -> (shortcut1, shortcut2)
+  shortcut-get-shortcut1 = shortcut-get-shortcuts;Fst
+  shortcut-get-shortcut2 = shortcut-get-shortcuts;Snd
+
+rules // properties
+  
+  is-entity = ?Entity            (_,_)
+  is-entity = ?FirstClassRelation(_,_)
+  
+//  entity-is-entitytype = entity-get-type;?EntityType()
+  
+  is-attr = ?Attribute(_, _, _)
+  is-attr = ?DerivationAttribute(_, _, _, _)
+  is-attr = ?DefaultAttribute(_, _, _, _)
+  
+  attr-has-no-mult        = ?Attribute(_, _, None())
+  attr-has-no-mult        = ?DerivationAttribute(_, _, None(), _)
+  attr-has-no-mult        = ?DefaultAttribute(_, _, None(), _)
+  
+  is-role = ?Role(_, _, _, _)
+  
+  role-has-no-name        = ?Role(_, _, _, None())
+  role-has-no-inversename = ?Role(_, None(), _, _)
+  
+  is-shortcut = ?Shortcut(_, _, _, _)
+  
+  is-relation = ?Relation(_, _, _, _, _, _)
+  
+rules // manipulation
+
+  entity-set-members(|members) = entity-set-members(!members)
+  
+  entity-set-members(members) = Entity            (id, members)
+  entity-set-members(members) = FirstClassRelation(id, members)
+
+  attr-set-mult(|mult)                = Attribute(id, id, !mult)
+  attr-set-mult(|mult)                = DerivationAttribute(id, id, !mult, id)
+  attr-set-mult(|mult)                = DefaultAttribute(id, id, !mult, id)
+  
+  role-set-type(|type)                = role-set-type(!type)
+  role-set-name(|name)                = Role(id, id, id, !name)
+  role-set-inversename(|inversename)  = Role(id, !inversename, id, id)
+  
+  role-set-type(type)                  = Role(type, id, id, id)
+
+  
+  relation-set-type1(type) = Relation(type, id, id, id, id, id)
+  relation-set-type2(type) = Relation(id, id, id, id, type, id)
+  
+rules // creation
+  
+//  create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)
+//  create-shortcut(|role1, type1, shortcut1, role2, type2, shortcut2) = !Shortcut(NaBLHelp(<custom-origin(|role1)>RoleRef(role1), type1), shortcut1, NaBLHelp(<custom-origin(|role2)>RoleRef(role2), type2), shortcut2)
+  

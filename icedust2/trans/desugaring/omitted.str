@@ -5,6 +5,17 @@ imports // constructors
   signatures/Model-sig
   signatures/Types-sig
 
+imports // functions
+
+  api/model-api
+//  api/data-api
+  lib/origin
+//  lib/new-name
+  lib/string
+//  lib/traverse
+//  lib/lists-tuples
+  
+
 rules
   
   generate-omitted =
@@ -12,7 +23,7 @@ rules
 //    bottomup(try(omitted2))
   
   omitted1 = attr-generate-mult
-//  omitted1 = role-generate-name
+  omitted1 = role-generate-name
 //  omitted1 = entity-generate-inverse-names
 //  omitted1 = datadef-generate-entity-names
 //  omitted1 = shortcutrel-generate-mult
@@ -24,20 +35,20 @@ rules
 
 rules // generate omitted multiplicities
 
-//  attr-generate-mult: attr -> attr'
-//    where  attr-has-no-mult
-//    with attr':= <attr-set-mult(|One())>attr
+  attr-generate-mult: attr -> attr'
+    where  attr-has-no-mult
+    with attr':= <attr-set-mult(|One())>attr
     
-  attr-generate-mult: Attribute          (n, t, None()   ) -> Attribute          (n, t, One()   )
-  attr-generate-mult: DerivationAttribute(n, t, None(), e) -> DerivationAttribute(n, t, One(), e)
-  attr-generate-mult: DefaultAttribute   (n, t, None(), e) -> DefaultAttribute   (n, t, One(), e)
+//  attr-generate-mult: Attribute          (n, t, None()   ) -> Attribute          (n, t, One()   )
+//  attr-generate-mult: DerivationAttribute(n, t, None(), e) -> DerivationAttribute(n, t, One(), e)
+//  attr-generate-mult: DefaultAttribute   (n, t, None(), e) -> DefaultAttribute   (n, t, One(), e)
 
-//rules // generate omitted role names
-//
-//  role-generate-name: role -> role'
-//    where role-has-no-name
-//    with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
-//
+rules // generate omitted role names
+
+  role-generate-name: role -> role'
+    where role-has-no-name
+    with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
+
 //rules // generate omitted inverse names
 //  
 //  entity-generate-inverse-names:

@@ -1,0 +1,60 @@
+module lib/debug
+
+imports // functions
+  
+  api/_runtime
+  api/_runtime-constructors
+  lib/traverse
+
+rules // debug tasks
+  
+  debug-task = debug-task-s;debug
+
+  debug-task-s: a -> result
+    with
+      a-nr := <try(task-number)> a;
+      a-result := <_insert-results-or-delay <+ id> a;
+      a-pp := <pp-uris>a-result;
+      result := $[Task [<to-string>a-nr]: [<to-string;unescape>a-pp]]
+
+  task-number: Result(a) -> a
+  
+  pp-tasks = bottomup-anno(try(debug-task-s))
+  
+  pp-uris = bottomup-anno(try(_pp-uri))
+
+rules // debug with prefix
+  
+  debug(|info): a -> a
+    with
+      <debug>$[[<to-string>info]: [<to-string>a]]
+  
+  debug-task(|info) = debug-task-s;debug(|info)
+
+rules // strings
+
+  to-string: a -> <id>
+    where
+      is-string
+  
+  to-string: a -> <write-to-string>a
+    where
+      not(is-string)
+
+rules // debug-pp
+  
+  debug-pp: t -> t
+    with
+      pp-uris;debug
+      
+  debug-pp(|info): t -> t
+    with
+      pp-uris;debug(|info)
+
+rules // debug-no-anno
+
+  debugn = debug-no-anno
+
+  debug-no-anno = strip-annos;debug
+
+  debug-no-anno(|info) = strip-annos;debug(|info)
