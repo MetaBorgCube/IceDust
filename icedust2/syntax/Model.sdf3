@@ -15,7 +15,7 @@ context-free syntax
   >
   
   Model.Relation = [
-    relation [ID].[ID] [Multiplicity] <-> [Multiplicity] [ID].[ID]
+    relation [ID].[ID] [Multiplicity?] <-> [Multiplicity?] [ID].[ID]
   ]
   
   Model.FirstClassRelation = <
@@ -25,15 +25,15 @@ context-free syntax
   >
   
   Member.Attribute = <
-    <ID> : <Type> <Multiplicity>
+    <ID> : <Type> <Multiplicity?>
   >
   
   Member.DerivationAttribute = <
-    <ID> : <Type> <Multiplicity> = <Exp>
+    <ID> : <Type> <Multiplicity?> = <Exp>
   >
   
   Member.DefaultAttribute = <
-    <ID> : <Type> <Multiplicity> = <Exp> (default)
+    <ID> : <Type> <Multiplicity?> = <Exp> (default)
   >
 
   Member.Role = [

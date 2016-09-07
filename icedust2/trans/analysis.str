@@ -17,9 +17,11 @@ imports
   analysis/expressions-math
   analysis/expressions-multiplicity-operators
 
+  desugaring/desugar
+
 rules // Analysis
 
-  editor-analyze = analyze(id)
+  editor-analyze = analyze(desugar-before-analysis)
 
 rules // Debugging
   
