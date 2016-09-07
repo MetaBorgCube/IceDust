@@ -24,6 +24,12 @@ context-free syntax
     }
   >
   
+  Model.ShortcutRelation = [
+    relation [ID].[ID] [Multiplicity?] <-> [Multiplicity?] [ID].[ID] {
+      [{Member "\n"}*]
+    }
+  ]
+  
   Member.Attribute = <
     <ID> : <Type> <Multiplicity?>
   >

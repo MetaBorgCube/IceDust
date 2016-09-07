@@ -15,7 +15,6 @@ imports // functions
   lib/traverse
   lib/lists-tuples
   
-
 rules
   
   generate-omitted =
@@ -26,12 +25,12 @@ rules
   omitted1 = role-generate-name
   omitted1 = entity-generate-inverse-names
   omitted1 = datadef-generate-entity-names
-//  omitted1 = shortcutrel-generate-mult
+  omitted1 = shortcutrel-generate-mult
   omitted1 = rel-generate-mult
   
 //  omitted2 = role-generate-ord                // matches same as role-generate-name
   omitted2 = entity-generate-shortcuts        // requires role-generate-name
-//  omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
+  omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
 
 rules // generate omitted multiplicities
 
@@ -110,11 +109,11 @@ rules // generate omitted shortcuts //TODO: plural names
 
   create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
 
-//rules
-//
-//  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, ZeroOrMore(), o2, e2, s2, attrs)
-//  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, m2    , o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2, attrs)
-//  shortcutrel-generate-mult: ShortcutRelation(e1, s1, m1,     o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2, attrs)
+rules
+
+  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), None(), e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), ZeroOrMore(), e2, s2, attrs)
+  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), m2    , e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), m2,           e2, s2, attrs)
+  shortcutrel-generate-mult: ShortcutRelation(e1, s1, m1,     None(), e2, s2, attrs) -> ShortcutRelation(e1, s1, m1,           ZeroOrMore(), e2, s2, attrs)
 
 rules
 
@@ -122,22 +121,20 @@ rules
   rel-generate-mult: Relation(e1, s1, None(), m2    , e2, s2) -> Relation(e1, s1, ZeroOrMore(), m2,           e2, s2)
   rel-generate-mult: Relation(e1, s1, m1,     None(), e2, s2) -> Relation(e1, s1, m1,           ZeroOrMore(), e2, s2)
 
-//rules
-//
-//  shortcutrel-to-rel:
-//    scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, attrs) ->
-//    <custom-origin(|scr)>FirstClassRelation(
-//      relname
-//    , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
-//      , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
-//      , <custom-origin(|e1)>Shortcut(<custom-origin(|s1)>RoleRef(s1), s2, <custom-origin(|s2)>RoleRef(s2), s1)
-//      | attrs
-//      ]
-//    )
-//      with
-//        relname := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
-//        invname1 := <custom-origin(|e1)>$[[s2]Relation];
-//        invname2 := <custom-origin(|e2)>$[[s1]Relation]
+rules
 
-  
+  shortcutrel-to-rel:
+    scr@ShortcutRelation(e1, s1, m1, m2, e2, s2, attrs) ->
+    <custom-origin(|scr)>FirstClassRelation(
+      relname
+    , [ <custom-origin(|e2)>Role(e1, invname2, m1, s2)
+      , <custom-origin(|e1)>Role(e2, invname1, m2, s1)
+      , <custom-origin(|e1)>Shortcut(s1, s2, s2, s1)
+      | attrs
+      ]
+    )
+      with
+        relname := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
+        invname1 := <custom-origin(|e1)>$[[s2]Relation];
+        invname2 := <custom-origin(|e2)>$[[s1]Relation]
   

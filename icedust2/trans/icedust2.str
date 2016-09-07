@@ -6,6 +6,7 @@ imports
   pp
   outline
   analysis
+  desugaring/desugar
 
 rules // Debugging
   
@@ -14,3 +15,12 @@ rules // Debugging
     with
       filename := <guarantee-extension(|"aterm")> path
     ; result   := node
+
+  // Prints the analyzed annotated abstract syntax ATerm of a selection.
+  debug-show-desugared:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.aterm")> path;
+      result   := ast'
+    

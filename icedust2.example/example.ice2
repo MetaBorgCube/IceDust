@@ -20,9 +20,18 @@ model
   relation Enrollment {
     Course +
     Student *
-//    student.courses <-> course.students
     f : Int //= course.i
   }
+  
+//  relation Student.course <-> + Course.student { f : Int } // Triggers NaBL2 bug
+  
+//  relation StudentCourseRelation { // is exact same definition as above relation, but desugared, does not trigger NaBL2 bug
+//    Student.courseRelation * -> student
+//    Course.studentRelation + -> course
+//    course.student <-> student.course
+//    f : Int
+//  }
+  
   
 //  relation Student.courses <-> + Course.students
   
@@ -50,9 +59,9 @@ data
     i = 5
   }
   
-  : Enrollment {
-    student = bob
-  }
+//  : Enrollment {
+//    student = bob
+//  }
   
 execute
 
@@ -61,5 +70,5 @@ execute
   7 * (7 ++ 9)
   
   math.student.course.i
-  math.enrollment.f
+//  math.enrollment.f
   
