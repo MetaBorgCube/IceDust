@@ -1,0 +1,15 @@
+module api/_generated
+
+imports // generated language file
+    
+  stratego/metaborg
+  
+rules
+  
+  _language = language
+  _project-path = project-path
+  
+  _parse-file = parse-file
+  _refresh-workspace-file = refresh-workspace-file
+  
+  _parent-at-position(|position) = parent-at-position(|position)

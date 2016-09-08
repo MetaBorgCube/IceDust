@@ -1,0 +1,27 @@
+module lib/nabl2
+
+imports // functions
+
+  api/_generated
+  api/_runtime
+  lib/debug
+
+signature constructors
+
+  Occurrence : Namespace * String * TermIndex -> Occurrence
+  Namespace : String -> Namespace
+  TermIndex : String * Int -> TermIndex
+
+rules
+
+  get-scopegraph = ?path;!$[[<_project-path>]/[path]];_get-analysis;_sol-v
+
+rules // String (with attachment) -> Ast
+
+  string-get-ast(|scopegraph, namespace) = string-get-occurrence(|namespace);occurence-get-ast(|scopegraph)
+  
+  string-get-occurrence(|namespace) = ?x;!Occurrence(Namespace(namespace),x,<_get-ast-index>x)
+  
+  occurence-get-ast(|scopegraph): occurrence -> <lookup> (occurrence, scopegraph)
+  
+  

@@ -2,6 +2,9 @@ module api/_runtime
 
 imports // generated runtime
     
+  nabl2/runtime/analysis/query
+  nabl2/runtime/solver/solution
+  nabl2/shared/ast
   runtime/analysis/complete  
   runtime/analysis/debug
 //  runtime/analysis/legacy
@@ -145,3 +148,6 @@ rules
   
   _nabl-prop-match(|kind, partition, relation, expected) = nabl-prop-match(|kind, partition, relation, expected)
   
+  _get-analysis = get-analysis
+  _sol-v = sol-v
+  _get-ast-index = get-ast-index
