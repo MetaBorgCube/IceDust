@@ -15,8 +15,20 @@ signature constructors
 rules
 
   get-scopegraph = ?path;!$[[<_project-path>]/[path]];_get-analysis;_sol-v
+  
+rules
+  
+  store-scopegraph: path -> None()
+    with
+      scopegraph := <get-scopegraph>path;
+      rules(StoredScopeGraph : None() -> scopegraph)
+      
+  get-stored-scopegraph = !None();StoredScopeGraph <+ (!"Error: Scopegraph is not stored, store with <store-scopegraph>path.";debug;fail)
+    
 
 rules // String (with attachment) -> Ast
+
+  string-get-ast(|namespace) = ?x;get-stored-scopegraph;?scopegraph;!x;string-get-ast(|scopegraph, namespace)
 
   string-get-ast(|scopegraph, namespace) = string-get-occurrence(|namespace);occurence-get-ast(|scopegraph)
   

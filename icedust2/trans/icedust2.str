@@ -34,6 +34,7 @@ rules
   debug-get-ast-value:
     (selected, position, ast, path, project-path) -> None()
     with
-      scopegraph := <get-scopegraph>path;
+      <store-scopegraph>path
+    with
       attrnames := <collect-all(is-attr;attr-get-name)>ast;
-      <map(debug;string-get-ast(|scopegraph, "Member");debug;attr-get-name;debug;string-get-ast(|scopegraph, "Member");debug)>attrnames
+      <map(debug;string-get-ast(|"Member");debug;attr-get-name;debug;string-get-ast(|"Member");debug)>attrnames
