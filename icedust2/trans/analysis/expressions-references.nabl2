@@ -1,9 +1,5 @@
 module expressions-references
 
-imports
-
-  signatures/-
-
 rules
 
   [[ This() ^ (s) : TTuple(this_type, TOne()) ]] :=

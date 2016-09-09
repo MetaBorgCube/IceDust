@@ -1,9 +1,5 @@
 module expressions-casts
 
-imports
-
-  signatures/-
-
 rules
   
   [[ Cast(e1, t) ^ (s) : TTuple(t_type, e1_mult) ]] :=

@@ -1,9 +1,5 @@
 module model
 
-imports
-
-  signatures/-
-
 rules
 
   [[ Entity(e, as) ^ (module_scope) ]] :=

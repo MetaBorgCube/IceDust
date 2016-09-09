@@ -1,9 +1,5 @@
 module data
 
-imports
-
-  signatures/-
-
 rules
 
   [[ EntityInstance(name, type, ms) ^ (member_value_scope, module_scope) : type_type ]] :=

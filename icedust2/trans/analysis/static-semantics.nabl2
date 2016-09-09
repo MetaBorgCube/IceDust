@@ -2,8 +2,6 @@ module static-semantics
 
 imports
 
-  signatures/-
-  
   data
   expressions-aggregation
   expressions-casts

@@ -1,9 +1,5 @@
 module expressions-math
 
-imports
-
-  signatures/-
-
 rules
   
   [[ Addition(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=

@@ -1,9 +1,5 @@
 module expressions-literals
 
-imports
-
-  signatures/-
-
 rules
   [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ) ]] := true.
   [[ Float(_)     ^ (s) : TTuple(TFloat()   , TOne()      ) ]] := true.

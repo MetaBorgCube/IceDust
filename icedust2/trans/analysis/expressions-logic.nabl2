@@ -1,9 +1,5 @@
 module expressions-logic
 
-imports
-
-  signatures/-
-
 rules
   
   [[ Not(e1) ^ (s) : TTuple(e1_type, e1_mult) ]] :=

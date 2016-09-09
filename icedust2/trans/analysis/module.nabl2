@@ -1,9 +1,5 @@
 module module
 
-imports
-
-  signatures/-
-
 rules
     
   [[ Module(m, es) ^ (init_scope) ]] :=

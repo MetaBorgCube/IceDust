@@ -1,9 +1,5 @@
 module types
 
-imports
-
-  signatures/-
-
 rules
   
   [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
