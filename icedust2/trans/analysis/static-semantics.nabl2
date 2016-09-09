@@ -34,7 +34,7 @@ signature
     TZeroOrMore()
     
     TTuple(type, type)        // type, mult
-    TRole(type, type)         // TTuple, inv-mult              // this is a hack to get the type of roles
+//    TRole(type, type)         // TTuple, inv-mult              // this is a hack to get the type of roles
     TShortcut(type, type)     // TTuple, relation-object-type  // this is a hack to get the type of relation-objects
     TMemberValue(type, type)  // TTuple, relation-object-type  // this is a hack to get the type of relation-objects
 

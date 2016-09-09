@@ -52,27 +52,27 @@ rules
     new entity1_scope,
     new entity2_scope.
     
-  [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := Attribute(a, t, m),
+    Member{a}.ast := ast,
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := DerivationAttribute(a, t, m, e),
+    Member{a}.ast := ast,
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
     IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
     InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
     
-  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := DefaultAttribute(a, t, m, e),
+    Member{a}.ast := ast,
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
@@ -85,7 +85,9 @@ rules
     Implicit{"this"} |-> this_def,
     this_def : this_type,
     Member{role} <- entity_scope,
-    Member{role} : TRole(TTuple(entity_type, TOne()), inverse_mult),
+//    Member{role} : TRole(TTuple(entity_type, TOne()), inverse_mult),
+    Member{role} : TTuple(entity_type, TOne()),
+    Member{role}.invmult := inverse_mult,
     Entity{entity} -> entity_scope,
     Entity{entity} |-> entity_def,
     entity_def : entity_type,
@@ -101,7 +103,9 @@ rules
   [[ Shortcut(role1, shortcut1, role2, shortcut2) ^ (entity_scope, module_scope) ]] :=
     Member{role1} -> entity_scope,
     Member{role1} |-> role1_def,
-    role1_def : TRole(TTuple(role1_type, role1_mult), role1_inverse_mult),
+//    role1_def : TRole(TTuple(role1_type, role1_mult), role1_inverse_mult_asdf),
+    role1_def : TTuple(role1_type, role1_mult),
+    role1_def.invmult := role1_inverse_mult,
     Member2{role1} <- entity_scope,
     Member2{role1} ===> role1_scope,
     Member{shortcut1} <- role1_scope,
@@ -109,7 +113,9 @@ rules
     new role1_scope,
     Member{role2} -> entity_scope,
     Member{role2} |-> role2_def,
-    role2_def : TRole(TTuple(role2_type, role2_mult), role2_inverse_mult),
+//    role2_def : TRole(TTuple(role2_type, role2_mult), role2_inverse_mult_asdf),
+    role2_def : TTuple(role2_type, role2_mult),
+    role2_def.invmult := role2_inverse_mult,
     Member2{role2} <- entity_scope,
     Member2{role2} ===> role2_scope,
     Member{shortcut2} <- role2_scope,
