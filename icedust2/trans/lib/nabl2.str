@@ -11,6 +11,7 @@ signature constructors
   Occurrence : Namespace * String * TermIndex -> Occurrence
   Namespace : String -> Namespace
   TermIndex : String * Int -> TermIndex
+  Key : String -> Key
 
 rules
 
@@ -34,6 +35,9 @@ rules // String (with attachment) -> Ast
   
   string-get-occurrence(|namespace) = ?x;!Occurrence(Namespace(namespace),x,<_get-ast-index>x)
   
-  occurence-get-ast(|scopegraph): occurrence -> <lookup> (occurrence, scopegraph)
+  occurence-get-ast(|scopegraph): occurrence -> value
+    with
+      decl-values := <lookup> (occurrence, scopegraph);
+      value := <lookup> (Key("ast"), decl-values)
   
   
