@@ -17,9 +17,9 @@ imports // functions
 //  api/module-names-api
 //  api/types-api
 //  lib/eq
-//  lib/origin
+  lib/origin
 //  lib/search
-//  lib/string
+  lib/string
 //  lib/index
 //  lib/nabl-ext
 //  lib/lists-tuples
@@ -29,15 +29,14 @@ imports // functions
 rules // entity
 
   is-entityname = where(is-string;string-get-prop(|"Entity","ns");?Entity())
-//  is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
-//
-//  entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
-//  entityname-get-attributenames2= _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); origin-sort-anno
-//  entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
-//  entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
-//  entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
-//  entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
-//
+
+  entityname-get-attributenames  = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-attributename);string-sort-anno
+  entityname-get-attributenames2 = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-attributename);origin-sort-anno
+  entityname-get-relationnames   = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-relationname );string-sort-anno
+  entityname-get-rolenames       = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-rolename     );string-sort-anno
+  entityname-get-inversenames    = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-inversename  );string-sort-anno
+  entityname-get-shortcutnames   = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-shortcutname );string-sort-anno
+
 //  entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
 //  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
 //  

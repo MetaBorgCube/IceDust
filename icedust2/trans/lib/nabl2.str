@@ -15,7 +15,7 @@ signature constructors
 
 rules
 
-  get-scopegraph = ?path;!$[[<_project-path>]/[path]];_get-analysis;_sol-v
+  get-scopegraph = ?path;!$[[<_project-path>]/[path]];_get-analysis
   
 rules
   
@@ -23,21 +23,53 @@ rules
     with
       scopegraph := <get-scopegraph>path;
       rules(StoredScopeGraph : None() -> scopegraph)
-      
-  get-stored-scopegraph = !None();StoredScopeGraph <+ (!"Error: Scopegraph is not stored, store with <store-scopegraph>path.";debug;fail)
-    
+  
+  get-stored-analysis = !None();StoredScopeGraph <+ (!"Error: Scopegraph is not stored, store with <store-scopegraph>path.";debug;fail)    
+  get-stored-analysis-v = get-stored-analysis;_sol-v
+  get-stored-analysis-g = get-stored-analysis;sol-g
 
 rules // String (with attachment) -> Ast
 
-  string-get-prop(|namespace, key) = ?x;get-stored-scopegraph;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
+  string-get-prop(|namespace, key) = ?x;get-stored-analysis-v;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
 
   string-get-prop(|scopegraph, namespace, key) = string-get-occurrence(|namespace);occurence-get-prop(|scopegraph, key)
   
   string-get-occurrence(|namespace) = ?x;!Occurrence(Namespace(namespace),x,<_get-ast-index>x)
+  
+  occurrence-get-string = ?Occurrence(_, <id>, _)
+  name-get-string       = ?Name(_ ,<id>)
   
   occurence-get-prop(|scopegraph, key): occurrence -> value
     where
       decl-values := <lookup> (occurrence, scopegraph);
       value := <lookup> (Key(key), decl-values)
   
+rules
+
+  string-get-assoc-scope(|namespace) = string-get-occurrence(|namespace);occurrence-get-assoc-scope
   
+  occurrence-get-assoc-scope = ?o;get-stored-analysis-g;?g;!(g,o);G-assocs;Hd;Snd
+  
+  scope-get-decls            = ?s;get-stored-analysis-g;?g;!(g,s);G-decls;map(occurrence-get-string)
+  
+  scope-get-reachables(|ns)  = ?s;get-stored-analysis-g;?g;!Reachables(s,Namespace(ns));get-names(|g);map(name-get-string)
+  
+
+  
+rules // TODO remove
+
+  G-refs             = ?G(<id>,_) ; map(?(_,<id>);?S(_,<id>,_,_)) ; concat
+  G-scope            = ?(G(<id>,_),r) ; getfirst(G-scope_exists(|r))
+  G-scope_exists(|r) = ?(s,S(_,r*,_,_)) ; <elem> (r,r*) ; !s
+  G-decls            = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(<id>,_,_,_)
+  G-refs             = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(_,<id>,_,_)
+  G-direct-edges     = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(_,_,<id>,_)
+  G-named-edges      = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(_,_,_,<id>)
+  G-assocs           = ?(G(_,a*),d) ; <lookup> (d,a*)
+  
+  get-names(|g): Reachables(s,ns) -> n*
+    where <is-ground> s;
+          (Total(),e*) := <env(empty-lt|<labels-wf>,g,[],[])> s
+    with  n* := <values;concat;map(Fst);
+                 filter-ns(|ns);
+                 map(occurrence-atom)> e*

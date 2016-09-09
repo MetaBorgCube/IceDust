@@ -38,7 +38,12 @@ rules
       <store-scopegraph>path
     with
       entitynames := <collect-all(is-entityname,conc)>ast;
-      <debug>entitynames
+      <debug>entitynames;
+      <map(debug;entityname-get-attributenames;debug)>entitynames;
+      <map(debug;entityname-get-relationnames ;debug)>entitynames;
+      <map(debug;entityname-get-rolenames     ;debug)>entitynames;
+      <map(debug;entityname-get-inversenames  ;debug)>entitynames;
+      <map(debug;entityname-get-shortcutnames ;debug)>entitynames
     with
       attrnames := <collect-all(is-attributename,conc)>ast;
       <debug>attrnames
