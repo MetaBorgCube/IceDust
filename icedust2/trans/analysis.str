@@ -24,6 +24,8 @@ rules // Analysis
 
   editor-analyze = analyze(desugar-before-analysis)
 
+  ignore-unused-references = debug; ?Namespace("Entity2")
+
 rules // Debugging
   
   // Prints the abstract syntax ATerm of a selection.

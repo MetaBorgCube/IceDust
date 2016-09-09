@@ -25,12 +25,12 @@ rules
       rules(StoredScopeGraph : None() -> scopegraph)
   
   get-stored-analysis = !None();StoredScopeGraph <+ (!"Error: Scopegraph is not stored, store with <store-scopegraph>path.";debug;fail)    
-  get-stored-analysis-v = get-stored-analysis;_sol-v
+  get-stored-analysis-p = get-stored-analysis;_sol-p
   get-stored-analysis-g = get-stored-analysis;sol-g
 
 rules // String (with attachment) -> Ast
 
-  string-get-prop(|namespace, key) = ?x;get-stored-analysis-v;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
+  string-get-prop(|namespace, key) = ?x;get-stored-analysis-p;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
 
   string-get-prop(|scopegraph, namespace, key) = string-get-occurrence(|namespace);occurence-get-prop(|scopegraph, key)
   
@@ -39,11 +39,8 @@ rules // String (with attachment) -> Ast
   occurrence-get-string = ?Occurrence(_, <id>, _)
   name-get-string       = ?Name(_ ,<id>)
   
-  occurence-get-prop(|scopegraph, key): occurrence -> value
-    where
-      decl-values := <lookup> (occurrence, scopegraph);
-      value := <lookup> (Key(key), decl-values)
-  
+  occurence-get-prop(|scopegraph, key) = get-property(|scopegraph, key)
+
 rules
 
   string-get-assoc-scope(|namespace) = string-get-occurrence(|namespace);occurrence-get-assoc-scope

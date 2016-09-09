@@ -149,5 +149,5 @@ rules
   _nabl-prop-match(|kind, partition, relation, expected) = nabl-prop-match(|kind, partition, relation, expected)
   
   _get-analysis = get-analysis
-  _sol-v = sol-v
+  _sol-p = sol-p
   _get-ast-index = get-ast-index
