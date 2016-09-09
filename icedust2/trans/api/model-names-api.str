@@ -1,0 +1,154 @@
+module api/model-names-api
+
+imports // constructors
+
+//  signatures/Model-sig
+//  api/_runtime-constructors
+//  api/constructors
+//  desugaring/constructors
+//  names/naming/names
+//  naming/_notNaBL
+//  analysis2/constructors
+  analysis/_constructors
+
+imports // functions
+
+//  api/_runtime
+//  api/module-names-api
+//  api/types-api
+//  lib/eq
+//  lib/origin
+//  lib/search
+//  lib/string
+//  lib/index
+//  lib/nabl-ext
+//  lib/lists-tuples
+//  analysis2/path
+  lib/nabl2
+
+rules // entity
+
+  is-entityname = where(is-string;string-get-prop(|"Entity","ns");?Entity())
+//  is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
+//
+//  entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
+//  entityname-get-attributenames2= _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); origin-sort-anno
+//  entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
+//  entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
+//  entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
+//  entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
+//
+//  entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+//  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+//  
+//  entityname-get-modulename = nabl-name-parent
+//  
+//  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
+//  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
+//  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
+//  
+//  entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
+//  entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)  
+//  
+//  entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+//  entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
+//  
+//  entityname-get-attributenames2-default = entityname-get-attributenames2;filter(attributename-is-default)
+//  entityname-get-attributenames2-normal-default = entityname-get-attributenames2;filter(attributename-is-normal-default)
+//  entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
+//  
+//  entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
+  
+rules // attributes
+
+  is-attributename = where(is-string;string-get-prop(|"Member","ns");?Attribute())
+//  is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
+//  
+//  attributename-is-derivation = where(get-derivation-type;?Derivation())
+//  attributename-is-default    = where(get-derivation-type;?DefaultValue())
+//  attributename-is-normal     = where(get-derivation-type;?Normal())
+//  
+//  attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
+//  attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
+//  
+//  attributename-get-entityname = nabl-name-parent
+//  
+//  attributename-get-expr = index-get-prop(|AST());Hd
+//  
+//  attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
+//  
+//  attributename-pp2-type-multiplicity: attrName -> x
+//    with
+//      x := <pp2-type-multiplicity>(<_get-type>attrName, <get-multiplicity>attrName)
+
+rules // relations
+
+  is-relationname = where(is-string;string-get-prop(|"Member","ns");?Relation())
+//  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
+//  
+//  relationname-get-inversename = get-inverse
+//  
+//  relationname-is-left = where(get-side;?Left())
+
+rules // roles
+  
+  is-rolename = where(is-string;string-get-prop(|"Member","ns");?Role())
+//  is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
+//  
+//  rolename-get-inversename = get-inverse
+  
+rules // inverses
+  
+  is-inversename = where(is-string;string-get-prop(|"Member","ns");?Inverse())
+//  is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
+//
+//  inversename-get-rolename = get-origin-role
+//
+//rules
+//
+//  name-get-inversename = where(is-relationname);relationname-get-inversename
+//  name-get-inversename = where(is-rolename)    ;rolename-get-inversename
+//  name-get-inversename = where(is-inversename) ;inversename-get-rolename
+//  
+//  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
+//  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
+//  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
+//  
+//  name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
+//  
+//  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
+//  
+//  name-is-one                = where(get-multiplicity;lower-one;upper-one)
+//  name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
+//  
+//  name-is-to-one             = where(get-multiplicity;upper-one)
+//  name-is-to-many            = where(get-multiplicity;upper-many)
+//  name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)
+//  name-is-to-many-unordered  = where(name-is-to-many; get-ordering;unordered)
+//  
+//  name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
+//  name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
+//  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
+//  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
+
+rules // shortcuts
+
+  is-shortcutname = where(is-string;string-get-prop(|"Member","ns");?Shortcut())
+//  is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
+//  
+//  shortcutname-get-rolename1          = get-origin-role
+//  shortcutname-get-rolename2          = get-origin-role2
+//  
+//  shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
+//  shortcutname-get-rolename           = shortcutname-get-rolename2
+//  shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
+//
+//rules // combined
+//  
+//  name-get-flowsto-paths = index-get-prop(|FlowsTo())
+//  
+//  name-get-flowsto-pathexprs = name-get-flowsto-paths;map(path-pathexpr)
+//
+//rules // helper
+//
+//  def-to-name: d@Def(uri) -> name{d} with  name := <_nabl-uri-name>uri

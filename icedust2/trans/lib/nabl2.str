@@ -29,15 +29,15 @@ rules
 
 rules // String (with attachment) -> Ast
 
-  string-get-ast(|namespace) = ?x;get-stored-scopegraph;?scopegraph;!x;string-get-ast(|scopegraph, namespace)
+  string-get-prop(|namespace, key) = ?x;get-stored-scopegraph;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
 
-  string-get-ast(|scopegraph, namespace) = string-get-occurrence(|namespace);occurence-get-ast(|scopegraph)
+  string-get-prop(|scopegraph, namespace, key) = string-get-occurrence(|namespace);occurence-get-prop(|scopegraph, key)
   
   string-get-occurrence(|namespace) = ?x;!Occurrence(Namespace(namespace),x,<_get-ast-index>x)
   
-  occurence-get-ast(|scopegraph): occurrence -> value
-    with
+  occurence-get-prop(|scopegraph, key): occurrence -> value
+    where
       decl-values := <lookup> (occurrence, scopegraph);
-      value := <lookup> (Key("ast"), decl-values)
+      value := <lookup> (Key(key), decl-values)
   
   

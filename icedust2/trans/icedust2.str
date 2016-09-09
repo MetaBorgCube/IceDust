@@ -28,6 +28,7 @@ imports
   
   api/model-api
   lib/nabl2
+  api/model-names-api
   
 rules
 
@@ -36,5 +37,25 @@ rules
     with
       <store-scopegraph>path
     with
-      attrnames := <collect-all(is-attr;attr-get-name)>ast;
-      <map(debug;string-get-ast(|"Member");debug;attr-get-name;debug;string-get-ast(|"Member");debug)>attrnames
+      entitynames := <collect-all(is-entityname,conc)>ast;
+      <debug>entitynames
+    with
+      attrnames := <collect-all(is-attributename,conc)>ast;
+      <debug>attrnames
+    with
+      relationnames := <collect-all(is-relationname,conc)>ast;
+      <debug>relationnames
+    with
+      rolenames := <collect-all(is-rolename,conc)>ast;
+      <debug>rolenames
+    with
+      inversnames := <collect-all(is-inversename,conc)>ast;
+      <debug>inversnames
+    with
+      shortcutnames := <collect-all(is-shortcutname,conc)>ast;
+      <debug>shortcutnames
+//    with
+//      attrnames := <collect-all(is-attr;attr-get-name)>ast;
+//      <debug;filter(is-entityname);debug>attrnames;
+//      <map(debug;string-get-prop(|"Member","ast");debug;attr-get-name;debug;string-get-prop(|"Member","ast");debug)>attrnames
+    
