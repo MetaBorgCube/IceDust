@@ -52,7 +52,7 @@ rules
     new entity1_scope,
     new entity2_scope.
     
-  [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
@@ -60,7 +60,7 @@ rules
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
@@ -71,7 +71,7 @@ rules
     IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
     InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
     
-  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+  [[ ast@DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
