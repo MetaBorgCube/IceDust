@@ -24,7 +24,8 @@ rules // Analysis
 
   editor-analyze = analyze(desugar-before-analysis)
 
-  ignore-unused-references = debug; ?Namespace("Entity2")
+  ignore-unused-references = ?Namespace("Entity2")
+  ignore-unused-references = ?Namespace("Member2")
 
 rules // Debugging
   
