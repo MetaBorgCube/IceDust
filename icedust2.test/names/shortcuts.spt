@@ -12,18 +12,18 @@ fixture [[
     [[...]]
 ]]
 
-//test Resolve shortcut [[
-//  entity Student{
-//    numCourses : Int = count(this.[[courses]])
-//  }
-//  
-//  relation Enrollment{
-//    Student *
-//    Course  +
-//    
-//    student.[[courses]] <-> course.students
-//  }
-//]] resolve #1 to #2
+test Resolve shortcut [[
+  entity Student{
+    numCourses : Int = count(this.[[courses]])
+  }
+  
+  relation Enrollment{
+    Student *
+    Course  +
+    
+    student.[[courses]] <-> course.students
+  }
+]] resolve #1 to #2
 
 test Resolve invalid shortcut fails [[
   entity Student{
@@ -38,17 +38,17 @@ test Resolve invalid shortcut fails [[
   }
 ]] 4 errors at #1
 
-//test Resolve role in shortcut [[
-//  entity Student{
-//  }
-//  
-//  relation Enrollment{
-//    Student.y * -> [[student]]
-//    Course.x  + -> course
-//    
-//    student.abc <-> [[student]].bcd
-//  }
-//]] resolve #2 to #1
+test Resolve role in shortcut [[
+  entity Student{
+  }
+  
+  relation Enrollment{
+    Student.y * -> [[student]]
+    Course.x  + -> course
+    
+    student.abc <-> [[student]].bcd
+  }
+]] resolve #2 to #1
 
 test Resolve invalid role in shortcut fails [[
   entity Student{

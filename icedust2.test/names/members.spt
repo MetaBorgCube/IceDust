@@ -20,7 +20,7 @@ test error on attribute and role with same name [[
   }
 ]] 2 errors at #1,#2
 
-//test error on attribute and inverse with same name [[ //NaBL2 bug, W doesnt give reachable but visible
+//test error on attribute and inverse with same name [[ //TODO: NaBL2 bug, W doesnt give reachable but visible
 //  entity Student{
 //    [[enrollment]] : Int
 //  }
@@ -30,7 +30,7 @@ test error on attribute and role with same name [[
 //  }
 //]] 2 errors at #1,#2
 //
-//test error on attribute and shortcut with same name [[ //NaBL2 bug, W doesnt give reachable but visible
+//test error on attribute and shortcut with same name [[ //TODO: NaBL2 bug, W doesnt give reachable but visible
 //  entity Student{
 //    [[course]] : Int
 //  }
@@ -47,7 +47,7 @@ test error on attribute and role with same name [[
 //  }
 //]] 2 errors at #1,#2
 //
-//test error on role and inverse with same name [[ //NaBL2 bug, W doesnt give reachable but visible
+//test error on role and inverse with same name [[ //TODO: NaBL2 bug, W doesnt give reachable but visible
 //  relation Student{
 //    Enrollment.x * -> [[enrollment]]
 //  }
@@ -57,7 +57,7 @@ test error on attribute and role with same name [[
 //  }
 //]] 2 errors at #1,#2
 //
-//test error on role and shortcut with same name [[ //NaBL2 bug, W doesnt give reachable but visible
+//test error on role and shortcut with same name [[ //TODO: NaBL2 bug, W doesnt give reachable but visible
 //  relation Student{
 //    Course.x * -> [[course]]
 //  }

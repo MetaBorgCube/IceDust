@@ -7,34 +7,14 @@ fixture [[
   [[...]]
 ]]
 
-//test Resolve to shortcut [[
-//   model
-//  
-//    entity Node{
-//    
-//    }
-//    
-//    relation Node.[[parent]] ? <-> * Node.children {
-//      weight : Int
-//    }
-//  
-//  data
-//  
-//    node1 : Node {}
-//    
-//  execute
-//  
-//    node1.[[parent]]
-//]] resolve #2 to #1
-
-test Resolve invalid role in shortcut fails [[
+test Resolve to shortcut [[
    model
   
     entity Node{
     
     }
     
-    relation [[Node]].parent ? <-> * Node.children { //string sharing Stratego/NaBL2 issue
+    relation Node.[[parent]] ? <-> * Node.children {
       weight : Int
     }
   
@@ -44,5 +24,25 @@ test Resolve invalid role in shortcut fails [[
     
   execute
   
-    [[node1.iDoNotExist]]
-]] 5 errors at #1, #2
+    node1.[[parent]]
+]] resolve #2 to #1
+
+//test Resolve invalid role in shortcut fails [[ //TODO: string sharing Stratego/NaBL2 issue
+//   model
+//  
+//    entity Node{
+//    
+//    }
+//    
+//    relation [[Node]].parent ? <-> * Node.children {
+//      weight : Int
+//    }
+//  
+//  data
+//  
+//    node1 : Node {}
+//    
+//  execute
+//  
+//    [[node1.iDoNotExist]]
+//]] 5 errors at #1, #2

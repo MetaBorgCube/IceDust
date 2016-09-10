@@ -2,22 +2,22 @@ module names-data
 
 language IceDust
 
-//test Resolve attribute in entity instance without type [[
-//  module test
-//  model
-//    entity Foo {
-//      [[i]] : Int
-//    }
-//    relation Foo.foreward <-> Foo.backward {}
-//  data
-//    foo : Foo {
-//      i = 5
-//      foreward = 
-//        innerFoo {
-//          [[i]] = 7
-//        }
-//    }
-//]] resolve #2 to #1
+test Resolve attribute in entity instance without type [[
+  module test
+  model
+    entity Foo {
+      [[i]] : Int
+    }
+    relation Foo.foreward <-> Foo.backward {}
+  data
+    foo : Foo {
+      i = 5
+      foreward = 
+        innerFoo {
+          [[i]] = 7
+        }
+    }
+]] resolve #2 to #1
 
 test Error on non existing attribute in entity instance without type [[
   module test

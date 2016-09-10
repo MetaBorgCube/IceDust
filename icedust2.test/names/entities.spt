@@ -16,12 +16,12 @@ test Duplicate entity fails [[
   [[u]] : User {}
 ]] 2 errors at #1,#2
 
-//test Resolve Identifier to entity [[
-//  data
-//  [[u]] : User {}
-//  execute
-//  [[u]]
-//]] resolve #2 to #1
+test Resolve Identifier to entity [[
+  data
+  [[u]] : User {}
+  execute
+  [[u]]
+]] resolve #2 to #1
 
 test Resolve invalid Identifier fails [[
   data

@@ -19,27 +19,27 @@ test Duplicate role fails [[
   }
 ]] 4 errors at #1,#2, #3, #4 // also triggers errors on shortcut definitions
 
-//test Resolve role  [[
-//  entity Node {
-//    name : String = concat(this.in.[[out]].name)
-//  }
-//  relation Edge{
-//    Node.in +  -> in
-//    Node.out * -> [[out]]
-//    in.a <-> out.b
-//  }
-//]] resolve #1 to #2
-//
-//test Resolve inverse  [[
-//  entity Node {
-//    name : String = concat(this.[[in]].out.name)
-//  }
-//  relation Edge{
-//    Node.[[in]] + -> in 
-//    Node.out *    -> out
-//    in.a <-> out.b
-//  }
-//]] resolve #1 to #2
+test Resolve role  [[
+  entity Node {
+    name : String = concat(this.in.[[out]].name)
+  }
+  relation Edge{
+    Node.in +  -> in
+    Node.out * -> [[out]]
+    in.a <-> out.b
+  }
+]] resolve #1 to #2
+
+test Resolve inverse  [[
+  entity Node {
+    name : String = concat(this.[[in]].out.name)
+  }
+  relation Edge{
+    Node.[[in]] + -> in 
+    Node.out *    -> out
+    in.a <-> out.b
+  }
+]] resolve #1 to #2
 
 test error on duplicate role [[
   entity Node {}

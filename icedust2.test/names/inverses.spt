@@ -12,16 +12,16 @@ fixture [[
     [[...]]
 ]]
 
-//test Resolve inverse [[
-//  entity Student{
-//    numCourses : Int = count(this.[[enrollments]])
-//  }
-//  
-//  relation Enrollment{
-//    Student.[[enrollments]] * -> student
-//    Course.enrollments +      -> course
-//  }
-//]] resolve #1 to #2
+test Resolve inverse [[
+  entity Student{
+    numCourses : Int = count(this.[[enrollments]])
+  }
+  
+  relation Enrollment{
+    Student.[[enrollments]] * -> student
+    Course.enrollments +      -> course
+  }
+]] resolve #1 to #2
 
 test Resolve invalid inverse fails [[
   entity Student{
