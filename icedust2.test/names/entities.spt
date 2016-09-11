@@ -28,4 +28,4 @@ test Resolve invalid Identifier fails [[
   u : User {}
   execute
   [[v]]
-]] 3 errors at #1
+]] 2 errors at #1
