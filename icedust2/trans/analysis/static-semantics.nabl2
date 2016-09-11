@@ -32,7 +32,6 @@ signature
     TZeroOrMore()
     
     TTuple(type, type)        // type, mult
-    TShortcut(type, type)     // TTuple, relation-object-type  // this is a hack to get the type of relation-objects
     TMemberValue(type, type)  // TTuple, relation-object-type  // this is a hack to get the type of relation-objects
 
 rules

@@ -61,13 +61,12 @@ rules
     new_scope -I-> entity_scope,
     Member{member} -> new_scope,
     Member{member} |-> member_def,
-    member_def : member_def_type_dirty,
-    GetType(member_def_type_dirty) == TTuple(member_def_type, member_def_mult),
+    member_def : TTuple(member_def_type, member_def_mult),
+    member_def.reltype := relation_object_type,
     IsSubtype(member_def_type, ei_types) == None(),
     new member_value_scope,
     Implicit{"membervalue"} <- member_value_scope,
-    Implicit{"membervalue"} : TMemberValue(member_def_type, relation_object_type),
-    GetShortcut(member_def_type_dirty) == relation_object_type.
+    Implicit{"membervalue"} : TMemberValue(member_def_type, relation_object_type).
 
   [[ EntityInstanceWrapper(ri, ei) ^ (member_value_scope, module_scope) : ei_type ]] :=
     [[ ri ^ (member_value_scope, module_scope) : ri_type ]],
