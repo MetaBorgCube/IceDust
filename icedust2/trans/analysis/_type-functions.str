@@ -63,7 +63,6 @@ rules // this is a hack to get the type of roles/shortcuts
 
   is-op = ?GetType(_)
 
-  reduce-op(|sol): GetType(  TRole    (a, _)) -> a
   reduce-op(|sol): GetType(  TShortcut(a, _)) -> a
   reduce-op(|sol): GetType(a@TTuple   (_, _)) -> a
   
@@ -76,5 +75,4 @@ rules // this is a hack to do optional pattern matching... return None() if not 
   is-op = ?GetShortcut(_)
 
   reduce-op(|sol): GetShortcut(TShortcut(_, a)) -> a
-  reduce-op(|sol): GetShortcut(TRole    (_, _)) -> None()
   reduce-op(|sol): GetShortcut(TTuple   (_, _)) -> None() 
