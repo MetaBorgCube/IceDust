@@ -18,7 +18,7 @@ rules
   reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOne()       ) -> TOneOrMore()
   reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
   reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrMore()) -> TZeroOrOne()
+  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
 
 signature constructors
   

@@ -1,0 +1,17 @@
+module types-logic
+
+language icedust2
+
+fixture [[
+  module test
+  execute
+  3
+  [[...]]
+]]
+
+test type of as Float [[5   as Float ]] run get-type to Float()
+test type of as Int   [[5.0 as Int   ]] run get-type to Int()
+test type of as String[[5.0 as String]] run get-type to String()
+
+test error on cast to same type [[ [[5 as Int]]     ]] 1 error at #1
+test error on cast to boolean   [[ [[5 as Boolean]] ]] 1 error at #1

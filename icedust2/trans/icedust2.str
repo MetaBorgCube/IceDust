@@ -23,6 +23,13 @@ rules // Debugging
       ast'                    := <desugar-before-analysis> ast;
       filename := <guarantee-extension(|"desugared.aterm")> path;
       result   := ast'
+      
+  debug-show-desugared-pp:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.ice2")> path;
+      result   := <pp-debug> ast'
     
 imports
   

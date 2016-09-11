@@ -21,6 +21,7 @@ menus
     action: "Format"          = editor-format (source)
     action: "Show parsed AST" = debug-show-aterm (source)
     action: "Show desugared AST" = debug-show-desugared (source)
+    action: "Show desugared prettyprint" = debug-show-desugared-pp (source)
     
     
   menu: "Debug"
