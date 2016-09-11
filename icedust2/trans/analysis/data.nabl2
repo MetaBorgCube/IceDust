@@ -18,7 +18,8 @@ rules
     new entity_instance_scope,
     Implicit{"membervalue"} -> member_value_scope,
     Implicit{"membervalue"} |-> member_value_def,
-    member_value_def : TMemberValue(member_value_def_type, relation_object_type),
+    member_value_def : member_value_def_type,
+    member_value_def.reltype := relation_object_type,
     Member{name} : TTuple(member_value_def_type, TOne()),
     Implicit{"this"} <- entity_instance_scope,
     Implicit{"this"} : member_value_def_type,
@@ -35,7 +36,8 @@ rules
     Map2 [[ ms ^ (entity_instance_scope, module_scope) ]],
     Implicit{"membervalue"} -> member_value_scope,
     Implicit{"membervalue"} |-> member_value_def,
-    member_value_def : TMemberValue(member_value_def_type, relation_object_type),
+    member_value_def : member_value_def_type,
+    member_value_def.reltype := relation_object_type,
     relation_object_type == type_type.
     
   [[ RelationInstanceNoType(name, ms) ^ (member_value_scope, module_scope) : relation_object_type ]] :=
@@ -44,7 +46,8 @@ rules
     new entity_instance_scope,
     Implicit{"membervalue"} -> member_value_scope,
     Implicit{"membervalue"} |-> member_value_def,
-    member_value_def : TMemberValue(member_value_def_type, relation_object_type),
+    member_value_def : member_value_def_type,
+    member_value_def.reltype := relation_object_type,
     Member{name} : TTuple(relation_object_type, TOne()),
     Implicit{"this"} <- entity_instance_scope,
     Implicit{"this"} : relation_object_type,
@@ -66,7 +69,8 @@ rules
     IsSubtype(member_def_type, ei_types) == None(),
     new member_value_scope,
     Implicit{"membervalue"} <- member_value_scope,
-    Implicit{"membervalue"} : TMemberValue(member_def_type, relation_object_type).
+    Implicit{"membervalue"} : member_def_type,
+    Implicit{"membervalue"}.reltype := relation_object_type.
 
   [[ EntityInstanceWrapper(ri, ei) ^ (member_value_scope, module_scope) : ei_type ]] :=
     [[ ri ^ (member_value_scope, module_scope) : ri_type ]],
