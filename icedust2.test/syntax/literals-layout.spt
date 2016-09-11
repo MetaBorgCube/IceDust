@@ -1,0 +1,16 @@
+module literals-layout
+
+
+language icedust2
+
+fixture [[
+  module test
+  
+  execute
+  
+    3
+    [[...]]
+]]
+
+test literal String whitespace [[  [[" Asdf "]] ]]  run rm-annotations to LitString(" Asdf ")
+

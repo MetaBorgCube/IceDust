@@ -1,0 +1,147 @@
+module syntax-model
+
+language icedust2
+
+test Blog model [[
+  module Blog
+  model
+  entity BlogUser{}
+  entity BlogPost{}
+  relation Posting{
+    BlogUser *
+    BlogPost 1
+  }
+]] parse succeeds
+
+test Exam prerequisites model [[
+  module Exam
+  model
+  entity Exam{}
+  entity Student{}
+  entity Requirement{}
+  relation Enrollment{
+    Exam *
+    Student *
+  }
+  relation Prerequisite{
+    Exam *
+    Requirement *
+  }
+  relation Passed{
+    Student *
+    Exam *
+  }
+]] parse succeeds
+
+test Supply model [[
+  module Supply
+  model
+  entity Part{}
+  entity Project{}
+  entity Supplier{}
+  relation Supply{
+    Part *
+    Project *
+    Supplier *
+  }
+]] parse succeeds
+
+test Marriage model [[
+  module Mariage
+  model
+  entity Person{}
+  relation Marriage{
+    Person 1 -> husband
+    Person 1 -> wife
+  }
+]] parse succeeds
+
+test Marriage counseling model [[
+  module Mariage
+  model
+  entity Person{}
+  relation Marriage{
+    Person 1 -> husband
+    Person 1 -> wife
+  }
+  relation Counseling{
+    Person *   -> counselor
+    Marriage *
+  }
+]] parse succeeds
+
+//FIXME: specify symmetry
+test Friend model [[
+  module Friend
+  model
+  entity Person{}
+  relation Friendship{
+    Person 1 -> personA
+    Person 1 -> personB
+  }
+]] parse succeeds
+
+// would probably specify a marriage as relation and derive parents with derivations
+test Family tree model [[
+  module Family
+  model
+  entity Person{}
+  relation Parent{
+    Person 1 -> child  //has 1 father and mother
+    Person * -> father  //can have multiple children
+    Person * -> mother  //can have multiple children
+  }
+]] parse succeeds
+
+//NOTE: these multiplicities do not enforce a tree (is closest normal models can get to it)
+test Tree partial model [[
+  module Tree
+  model
+  entity TreeNode{}
+  relation TreeEdge{
+    TreeNode * -> parent  //parent has multiple edges to children
+    TreeNode 1 -> child  //child has edge to parent
+  }
+]] parse succeeds
+
+//FIXME: use a hierarchy pattern for the tree
+test Tree model [[
+  module Tree
+  model
+  entity TreeNode{}
+  relation TreeEdge{
+    TreeNode * -> parent
+    TreeNode 1 -> child
+  }
+]] parse succeeds
+
+//TODO: add derivation and constraint examples
+
+
+test Inverse definitions [[
+  module inverses
+
+  model
+    
+    entity Student{}
+    
+    entity Course{}
+    
+    relation Enrollment{
+      Student.enrollments * -> student
+      Course.enrollments  + -> course
+    }
+]] parse succeeds
+
+
+//test error on role in relation[[ //TODO: implement check
+//  module stuff
+//
+//  model
+//    
+//    entity Student{}
+//    
+//    entity Enrollment{
+//      [[Student.enrollments * -> student]]
+//    }
+//]] 1 error at #1
