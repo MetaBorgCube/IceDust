@@ -54,14 +54,3 @@ rules
   reduce-op(|sol): IsType(TString()  ) -> None()
   reduce-op(|sol): IsType(TNoValue() ) -> None()
   reduce-op(|sol): IsType(TEntity(_) ) -> None()
-  
-signature constructors
-  
-  GetType : Type -> TypeOp
-
-rules // this is a hack to get the type of roles/shortcuts
-
-  is-op = ?GetType(_)
-
-  reduce-op(|sol): GetType(a@TTuple   (_, _)) -> a
-  
