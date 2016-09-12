@@ -33,9 +33,25 @@ rules // String (with attachment) -> Ast
 rules
 
   string-get-assoc-scope(|namespace) = nabl2-mk-occurrence(|namespace);occurrence-get-assoc-scope
+  
+  occurrence-get-assoc-scope = nabl2-get-decl-assocs(|<get-stored-analysis>);Hd;Snd
+  
+  scope-get-decls            = nabl2-get-scope-decls(|<get-stored-analysis>);map(nabl2-get-occurrence-name)
+  
+rules
+
+  string-get-scope(|namespace) = nabl2-mk-occurrence(|namespace);occurrence-get-scope
+  
+  occurrence-get-scope = nabl2-get-decl-scope(|<get-stored-analysis>) + nabl2-get-ref-scope(|<get-stored-analysis>)
+
+rules
+
+  scope-get-assoc-occurrence = nabl2-get-scope-assocs(|<get-stored-analysis>);Hd;Fst
+  
+  scope-get-assoc-string = scope-get-assoc-occurrence;nabl2-get-occurrence-name
 
   occurrence-get-assoc-scope = nabl2-get-decl-assocs(|<get-stored-analysis>);Hd;Snd
 
-  scope-get-decls            = nabl2-get-all-decls(|<get-stored-analysis>);map(nabl2-occurrence-name)
+  scope-get-decls            = nabl2-get-all-decls(|<get-stored-analysis>);map(nabl2-get-occurrence-name)
 
-  scope-get-reachables(|ns)  = ?s;get-stored-analysis;nabl2--sol-g;?g;!Reachables(s,Namespace(ns));nabl2--get-names(|g);map(nabl2-occurrence-name)
+  scope-get-reachables(|ns)  = ?s;get-stored-analysis;nabl2--sol-g;?g;!Reachables(s,Namespace(ns));nabl2--get-names(|g);map(nabl2-get-occurrence-name)

@@ -69,8 +69,8 @@ rules // attributes
   attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
   attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
   
-//  attributename-get-entityname = nabl-name-parent
-//  
+  attributename-get-entityname = string-get-scope(|"Member");scope-get-assoc-string
+  
 //  attributename-get-expr = index-get-prop(|AST());Hd
 //  
 //  attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
