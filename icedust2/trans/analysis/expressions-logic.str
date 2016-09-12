@@ -10,10 +10,10 @@ signature constructors
 
 rules
 
-  is-op = ?BooleanType(_)
+  nabl2-is-op-hook = ?BooleanType(_)
   
-  reduce-op(|sol): BooleanType(TBoolean()) -> None()
-  reduce-op(|sol): BooleanType(TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): BooleanType(TBoolean()) -> None()
+  nabl2-reduce-op-hook(|sol): BooleanType(TNoValue()) -> None()
   
 signature constructors
   
@@ -21,11 +21,11 @@ signature constructors
 
 rules
 
-  is-op = ?NotBooleanType(_)
+  nabl2-is-op-hook = ?NotBooleanType(_)
   
-  reduce-op(|sol): NotBooleanType(TDatetime()) -> None()
-  reduce-op(|sol): NotBooleanType(TFloat()   ) -> None()
-  reduce-op(|sol): NotBooleanType(TInt()     ) -> None()
-  reduce-op(|sol): NotBooleanType(TString()  ) -> None()
-  reduce-op(|sol): NotBooleanType(TNoValue() ) -> None()
-  reduce-op(|sol): NotBooleanType(TEntity(_) ) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TDatetime()) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TFloat()   ) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TInt()     ) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TString()  ) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TNoValue() ) -> None()
+  nabl2-reduce-op-hook(|sol): NotBooleanType(TEntity(_) ) -> None()

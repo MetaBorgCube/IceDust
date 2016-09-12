@@ -10,11 +10,11 @@ signature constructors
 
 rules
 
-  is-op = ?NumericType(_)
+  nabl2-is-op-hook = ?NumericType(_)
   
-  reduce-op(|sol): NumericType(TFloat()  ) -> None()
-  reduce-op(|sol): NumericType(TInt()    ) -> None()
-  reduce-op(|sol): NumericType(TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): NumericType(TFloat()  ) -> None()
+  nabl2-reduce-op-hook(|sol): NumericType(TInt()    ) -> None()
+  nabl2-reduce-op-hook(|sol): NumericType(TNoValue()) -> None()
   
 signature constructors
   
@@ -22,8 +22,8 @@ signature constructors
 
 rules
 
-  is-op = ?StringType(_)
+  nabl2-is-op-hook = ?StringType(_)
   
-  reduce-op(|sol): StringType(TString() ) -> None()
-  reduce-op(|sol): StringType(TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): StringType(TString() ) -> None()
+  nabl2-reduce-op-hook(|sol): StringType(TNoValue()) -> None()
   

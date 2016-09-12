@@ -12,12 +12,12 @@ signature constructors
 
 rules
 
-  is-op = ?AdditionType(_)
+  nabl2-is-op-hook = ?AdditionType(_)
   
-  reduce-op(|sol): AdditionType(TInt()    ) -> None()
-  reduce-op(|sol): AdditionType(TFloat()  ) -> None()
-  reduce-op(|sol): AdditionType(TString() ) -> None()
-  reduce-op(|sol): AdditionType(TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): AdditionType(TInt()    ) -> None()
+  nabl2-reduce-op-hook(|sol): AdditionType(TFloat()  ) -> None()
+  nabl2-reduce-op-hook(|sol): AdditionType(TString() ) -> None()
+  nabl2-reduce-op-hook(|sol): AdditionType(TNoValue()) -> None()
 
 signature constructors
   
@@ -25,12 +25,12 @@ signature constructors
   
 rules
 
-  is-op = ?SubtractionType(_)
+  nabl2-is-op-hook = ?SubtractionType(_)
   
-  reduce-op(|sol): SubtractionType(TInt()     ) -> TInt()
-  reduce-op(|sol): SubtractionType(TFloat()   ) -> TFloat()
-  reduce-op(|sol): SubtractionType(TDatetime()) -> TInt()
-  reduce-op(|sol): SubtractionType(TNoValue() ) -> TNoValue()
+  nabl2-reduce-op-hook(|sol): SubtractionType(TInt()     ) -> TInt()
+  nabl2-reduce-op-hook(|sol): SubtractionType(TFloat()   ) -> TFloat()
+  nabl2-reduce-op-hook(|sol): SubtractionType(TDatetime()) -> TInt()
+  nabl2-reduce-op-hook(|sol): SubtractionType(TNoValue() ) -> TNoValue()
 
 signature constructors
   
@@ -38,11 +38,11 @@ signature constructors
   
 rules
 
-  is-op = ?DivisionType(_)
+  nabl2-is-op-hook = ?DivisionType(_)
   
-  reduce-op(|sol): DivisionType(TInt()     ) -> None()
-  reduce-op(|sol): DivisionType(TFloat()   ) -> None()
-  reduce-op(|sol): DivisionType(TNoValue() ) -> None()
+  nabl2-reduce-op-hook(|sol): DivisionType(TInt()     ) -> None()
+  nabl2-reduce-op-hook(|sol): DivisionType(TFloat()   ) -> None()
+  nabl2-reduce-op-hook(|sol): DivisionType(TNoValue() ) -> None()
 
 signature constructors
   
@@ -50,14 +50,14 @@ signature constructors
   
 rules
 
-  is-op = ?DivisionMult(_, _)
+  nabl2-is-op-hook = ?DivisionMult(_, _)
   
-  reduce-op(|sol): DivisionMult(TZeroOrOne() , _) -> TZeroOrOne()
-  reduce-op(|sol): DivisionMult(TZeroOrMore(), _) -> TZeroOrMore()
-  reduce-op(|sol): DivisionMult(TOne()       , t) -> TOne()        where <non-zero-const>t
-  reduce-op(|sol): DivisionMult(TOneOrMore() , t) -> TOneOrMore()  where <non-zero-const>t
-  reduce-op(|sol): DivisionMult(TOne()       , t) -> TZeroOrOne()  where <not(non-zero-const)>t
-  reduce-op(|sol): DivisionMult(TOneOrMore() , t) -> TZeroOrMore() where <not(non-zero-const)>t
+  nabl2-reduce-op-hook(|sol): DivisionMult(TZeroOrOne() , _) -> TZeroOrOne()
+  nabl2-reduce-op-hook(|sol): DivisionMult(TZeroOrMore(), _) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): DivisionMult(TOne()       , t) -> TOne()        where <non-zero-const>t
+  nabl2-reduce-op-hook(|sol): DivisionMult(TOneOrMore() , t) -> TOneOrMore()  where <non-zero-const>t
+  nabl2-reduce-op-hook(|sol): DivisionMult(TOne()       , t) -> TZeroOrOne()  where <not(non-zero-const)>t
+  nabl2-reduce-op-hook(|sol): DivisionMult(TOneOrMore() , t) -> TZeroOrMore() where <not(non-zero-const)>t
   
   non-zero-const = ?Int(c)  ;where(!c;not(?"0"))
   non-zero-const = ?Float(c);where(!c;not(?"0.0"))

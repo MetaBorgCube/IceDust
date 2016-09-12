@@ -10,11 +10,11 @@ signature constructors
 
 rules
 
-  is-op = ?LeastUpperBound(_,_)
+  nabl2-is-op-hook = ?LeastUpperBound(_,_)
   
-  reduce-op(|sol): LeastUpperBound(a         , a         ) -> a
-  reduce-op(|sol): LeastUpperBound(a         , TNoValue()) -> a
-  reduce-op(|sol): LeastUpperBound(TNoValue(), a         ) -> a
+  nabl2-reduce-op-hook(|sol): LeastUpperBound(a         , a         ) -> a
+  nabl2-reduce-op-hook(|sol): LeastUpperBound(a         , TNoValue()) -> a
+  nabl2-reduce-op-hook(|sol): LeastUpperBound(TNoValue(), a         ) -> a
 
 signature constructors
   
@@ -22,10 +22,10 @@ signature constructors
 
 rules
 
-  is-op = ?IsSubtype(_,_)
+  nabl2-is-op-hook = ?IsSubtype(_,_)
 
-  reduce-op(|sol): IsSubtype(a            , a         ) -> None()
-  reduce-op(|sol): IsSubtype(_            , TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): IsSubtype(a            , a         ) -> None()
+  nabl2-reduce-op-hook(|sol): IsSubtype(_            , TNoValue()) -> None()
   
 signature constructors
   
@@ -33,11 +33,11 @@ signature constructors
 
 rules
 
-  is-op = ?IsSubtype(_,_)
+  nabl2-is-op-hook = ?IsSubtype(_,_)
 
-  reduce-op(|sol): IsSubtype(a, []               ) -> None()
-  reduce-op(|sol): IsSubtype(a, [a | bs]         ) -> None() where <reduce-op(|sol)>IsSubtype(a, bs)
-  reduce-op(|sol): IsSubtype(a, [TNoValue() | bs]) -> None() where <reduce-op(|sol)>IsSubtype(a, bs)
+  nabl2-reduce-op-hook(|sol): IsSubtype(a, []               ) -> None()
+  nabl2-reduce-op-hook(|sol): IsSubtype(a, [a | bs]         ) -> None() where <nabl2-reduce-op-hook(|sol)>IsSubtype(a, bs)
+  nabl2-reduce-op-hook(|sol): IsSubtype(a, [TNoValue() | bs]) -> None() where <nabl2-reduce-op-hook(|sol)>IsSubtype(a, bs)
   
 signature constructors
   
@@ -45,12 +45,12 @@ signature constructors
 
 rules
 
-  is-op = ?IsType(_)
+  nabl2-is-op-hook = ?IsType(_)
 
-  reduce-op(|sol): IsType(TBoolean() ) -> None()
-  reduce-op(|sol): IsType(TDatetime()) -> None()
-  reduce-op(|sol): IsType(TFloat()   ) -> None()
-  reduce-op(|sol): IsType(TInt()     ) -> None()
-  reduce-op(|sol): IsType(TString()  ) -> None()
-  reduce-op(|sol): IsType(TNoValue() ) -> None()
-  reduce-op(|sol): IsType(TEntity(_) ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TBoolean() ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TDatetime()) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TFloat()   ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TInt()     ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TString()  ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TNoValue() ) -> None()
+  nabl2-reduce-op-hook(|sol): IsType(TEntity(_) ) -> None()

@@ -22,10 +22,10 @@ imports
 
 rules // Analysis
 
-  editor-analyze = analyze(desugar-before-analysis)
+  editor-analyze = nabl2-analyze(desugar-before-analysis)
 
-  ignore-unused-references = ?Namespace("Entity2")
-  ignore-unused-references = ?Namespace("Member2")
+  nabl2-ignore-unused-references-hook = ?Namespace("Entity2")
+  nabl2-ignore-unused-references-hook = ?Namespace("Member2")
 
 rules // Debugging
   
@@ -41,8 +41,8 @@ rules // Debugging
 
 //  debug-generate-constraint = id
   
-  get-type         = get-ast-type;?TTuple(<id>,_);normalize-type
-  get-multiplicity = get-ast-type;?TTuple(_,<id>);normalize-multiplicity
+  get-type         = nabl2-get-ast-type;?TTuple(<id>,_);normalize-type
+  get-multiplicity = nabl2-get-ast-type;?TTuple(_,<id>);normalize-multiplicity
   
   normalize-type = ?TInt();!Int()
   normalize-type = ?TFloat();!Float()

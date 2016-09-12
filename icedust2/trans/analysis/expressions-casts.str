@@ -10,10 +10,10 @@ signature constructors
 
 rules
 
-  is-op = ?CastType(_,_)
+  nabl2-is-op-hook = ?CastType(_,_)
   
-  reduce-op(|sol): CastType(TInt()   , TFloat()  ) -> None()
-  reduce-op(|sol): CastType(TInt()   , TNoValue()) -> None()
-  reduce-op(|sol): CastType(TFloat() , TInt()    ) -> None()
-  reduce-op(|sol): CastType(TFloat() , TNoValue()) -> None()
-  reduce-op(|sol): CastType(TString(), a         ) -> None() where <not(?TString())>a
+  nabl2-reduce-op-hook(|sol): CastType(TInt()   , TFloat()  ) -> None()
+  nabl2-reduce-op-hook(|sol): CastType(TInt()   , TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): CastType(TFloat() , TInt()    ) -> None()
+  nabl2-reduce-op-hook(|sol): CastType(TFloat() , TNoValue()) -> None()
+  nabl2-reduce-op-hook(|sol): CastType(TString(), a         ) -> None() where <not(?TString())>a

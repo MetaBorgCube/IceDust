@@ -10,16 +10,16 @@ signature constructors
 
 rules
 
-  is-op = ?CartesianProduct(_,_)
+  nabl2-is-op-hook = ?CartesianProduct(_,_)
   
-  reduce-op(|sol): CartesianProduct(TOne()       , a            ) -> a
-  reduce-op(|sol): CartesianProduct(a            , TOne()       ) -> a
-  reduce-op(|sol): CartesianProduct(TZeroOrMore(), _            ) -> TZeroOrMore()
-  reduce-op(|sol): CartesianProduct(_            , TZeroOrMore()) -> TZeroOrMore()
-  reduce-op(|sol): CartesianProduct(TOneOrMore() , TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): CartesianProduct(TOneOrMore() , TZeroOrOne() ) -> TZeroOrMore()
-  reduce-op(|sol): CartesianProduct(TZeroOrOne() , TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): CartesianProduct(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrOne()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TOne()       , a            ) -> a
+  nabl2-reduce-op-hook(|sol): CartesianProduct(a            , TOne()       ) -> a
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TZeroOrMore(), _            ) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(_            , TZeroOrMore()) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TOneOrMore() , TOneOrMore() ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TOneOrMore() , TZeroOrOne() ) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TZeroOrOne() , TOneOrMore() ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrOne()
   
 signature constructors
   
@@ -27,11 +27,11 @@ signature constructors
 
 rules
 
-  is-op = ?InBounds(_,_)
+  nabl2-is-op-hook = ?InBounds(_,_)
 
-  reduce-op(|sol): InBounds(a            , a     ) -> None()
-  reduce-op(|sol): InBounds(TZeroOrMore(), _     ) -> None()
-  reduce-op(|sol): InBounds(_            , TOne()) -> None()
+  nabl2-reduce-op-hook(|sol): InBounds(a            , a     ) -> None()
+  nabl2-reduce-op-hook(|sol): InBounds(TZeroOrMore(), _     ) -> None()
+  nabl2-reduce-op-hook(|sol): InBounds(_            , TOne()) -> None()
   
 signature constructors
   
@@ -39,10 +39,10 @@ signature constructors
 
 rules
 
-  is-op = ?UpperboundOne(_)
+  nabl2-is-op-hook = ?UpperboundOne(_)
 
-  reduce-op(|sol): UpperboundOne(TOne()       ) -> TOne()
-  reduce-op(|sol): UpperboundOne(TZeroOrOne() ) -> TZeroOrOne()
-  reduce-op(|sol): UpperboundOne(TOneOrMore() ) -> TOne()
-  reduce-op(|sol): UpperboundOne(TZeroOrMore()) -> TZeroOrOne()
+  nabl2-reduce-op-hook(|sol): UpperboundOne(TOne()       ) -> TOne()
+  nabl2-reduce-op-hook(|sol): UpperboundOne(TZeroOrOne() ) -> TZeroOrOne()
+  nabl2-reduce-op-hook(|sol): UpperboundOne(TOneOrMore() ) -> TOne()
+  nabl2-reduce-op-hook(|sol): UpperboundOne(TZeroOrMore()) -> TZeroOrOne()
   

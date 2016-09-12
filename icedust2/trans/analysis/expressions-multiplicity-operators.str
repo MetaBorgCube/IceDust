@@ -10,15 +10,15 @@ signature constructors
 
 rules
 
-  is-op = ?ChoiceLeftMult(_,_)
+  nabl2-is-op-hook = ?ChoiceLeftMult(_,_)
   
-  reduce-op(|sol): ChoiceLeftMult(TOne()       , _            ) -> TOne()
-  reduce-op(|sol): ChoiceLeftMult(TOneOrMore() , _            ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrOne() , a            ) -> a
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOne()       ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TOne()       , _            ) -> TOne()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TOneOrMore() , _            ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TZeroOrOne() , a            ) -> a
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TZeroOrMore(), TOne()       ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TZeroOrMore(), TOneOrMore() ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMult(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
 
 signature constructors
   
@@ -26,14 +26,14 @@ signature constructors
 
 rules
 
-  is-op = ?ChoiceLeftMerge(_,_)
+  nabl2-is-op-hook = ?ChoiceLeftMerge(_,_)
   
-  reduce-op(|sol): ChoiceLeftMerge(TOne()       , _            ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(TOneOrMore() , _            ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(_            , TOne()       ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(_            , TOneOrMore() ) -> TOneOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore()
-  reduce-op(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TOne()       , _            ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TOneOrMore() , _            ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(_            , TOne()       ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(_            , TOneOrMore() ) -> TOneOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore()
+  nabl2-reduce-op-hook(|sol): ChoiceLeftMerge(TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
   
