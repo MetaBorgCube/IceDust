@@ -57,6 +57,7 @@ rules
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
     Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := Normal(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
@@ -65,6 +66,7 @@ rules
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
     Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := Derivation(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
@@ -76,6 +78,7 @@ rules
     Member{a} : TTuple(a_type, a_mult),
     Member{a}.ast := ast,
     Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := DefaultValue(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],

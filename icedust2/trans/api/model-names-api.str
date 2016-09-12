@@ -48,28 +48,27 @@ rules // entity
 //  
 //  entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
 //  entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)  
-//  
-//  entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
-//  entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
-//  
-//  entityname-get-attributenames2-default = entityname-get-attributenames2;filter(attributename-is-default)
-//  entityname-get-attributenames2-normal-default = entityname-get-attributenames2;filter(attributename-is-normal-default)
-//  entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
-//  
+  
+  entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+  entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
+  
+  entityname-get-attributenames2-default = entityname-get-attributenames2;filter(attributename-is-default)
+  entityname-get-attributenames2-normal-default = entityname-get-attributenames2;filter(attributename-is-normal-default)
+  entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
+  
 //  entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
   
 rules // attributes
 
   is-attributename = where(is-string;string-get-prop(|"Member","ns");?Attribute())
-//  is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
-//  
-//  attributename-is-derivation = where(get-derivation-type;?Derivation())
-//  attributename-is-default    = where(get-derivation-type;?DefaultValue())
-//  attributename-is-normal     = where(get-derivation-type;?Normal())
-//  
-//  attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
-//  attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
-//  
+
+  attributename-is-derivation = where(is-string;string-get-prop(|"Member","derivationtype");?Derivation())
+  attributename-is-default    = where(is-string;string-get-prop(|"Member","derivationtype");?DefaultValue())
+  attributename-is-normal     = where(is-string;string-get-prop(|"Member","derivationtype");?Normal())
+  
+  attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
+  attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
+  
 //  attributename-get-entityname = nabl-name-parent
 //  
 //  attributename-get-expr = index-get-prop(|AST());Hd

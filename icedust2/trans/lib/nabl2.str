@@ -13,33 +13,30 @@ signature constructors
   TermIndex : String * Int -> TermIndex
   Key : String -> Key
 
-rules
-
-  get-scopegraph = ?path;!$[[<_project-path>]/[path]];_get-analysis
   
 rules
   
-  store-scopegraph: path -> None()
+  store-analysis: path -> None()
     with
-      scopegraph := <get-scopegraph>path;
-      rules(StoredScopeGraph : None() -> scopegraph)
+      analysis := <_get-analysis>$[[<_project-path>]/[path]];
+      rules(StoredAnalysis : None() -> analysis)
   
-  get-stored-analysis = !None();StoredScopeGraph <+ (!"Error: Scopegraph is not stored, store with <store-scopegraph>path.";debug;fail)    
+  get-stored-analysis = !None();StoredAnalysis <+ (!"Error: Analysis is not stored. Please store with <store-analysis>path.";debug;fail)    
   get-stored-analysis-p = get-stored-analysis;_sol-p
   get-stored-analysis-g = get-stored-analysis;sol-g
 
 rules // String (with attachment) -> Ast
 
-  string-get-prop(|namespace, key) = ?x;get-stored-analysis-p;?scopegraph;!x;string-get-prop(|scopegraph, namespace, key)
+  string-get-prop(|namespace, key) = ?x;get-stored-analysis;?analysis;!x;string-get-prop(|analysis, namespace, key)
 
-  string-get-prop(|scopegraph, namespace, key) = string-get-occurrence(|namespace);occurence-get-prop(|scopegraph, key)
+  string-get-prop(|analysis, namespace, key) = string-get-occurrence(|namespace);occurence-get-prop(|analysis, key)
   
   string-get-occurrence(|namespace) = ?x;!Occurrence(Namespace(namespace),x,<_get-ast-index>x)
   
   occurrence-get-string = ?Occurrence(_, <id>, _)
   name-get-string       = ?Name(_ ,<id>)
   
-  occurence-get-prop(|scopegraph, key) = get-property(|scopegraph, key)
+  occurence-get-prop(|analysis, key) = get-property(|analysis, key)
 
 rules
 

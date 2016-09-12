@@ -42,11 +42,13 @@ rules
   debug-get-ast-value:
     (selected, position, ast, path, project-path) -> None()
     with
-      <store-scopegraph>path
+      <store-analysis>path
     with
+      <debug>"debug-get-ast-value";
       entitynames := <collect-all(is-entityname,conc)>ast;
       <debug>entitynames;
       <map(debug;entityname-get-attributenames;debug)>entitynames;
+      <map(debug;entityname-get-attributenames-normal-default;debug)>entitynames;
       <map(debug;entityname-get-relationnames ;debug)>entitynames;
       <map(debug;entityname-get-rolenames     ;debug)>entitynames;
       <map(debug;entityname-get-inversenames  ;debug)>entitynames;
