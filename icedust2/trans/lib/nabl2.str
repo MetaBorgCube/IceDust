@@ -48,6 +48,17 @@ rules
   
   scope-get-reachables(|ns)  = ?s;get-stored-analysis-g;?g;!Reachables(s,Namespace(ns));get-names(|g);map(name-get-string)
   
+rules
+
+  string-get-scope(|namespace) = string-get-occurrence(|namespace);occurrence-get-scope
+  
+  occurrence-get-scope = ?o;get-stored-analysis-g;?g;!(g,o);(G-ref-scope<+G-decl-scope)
+
+rules
+
+  scope-get-assoc-occurrence = ?s;get-stored-analysis-g;?g;!(g,s);G-scope-assocs;Hd;Fst
+  
+  scope-get-assoc-string = scope-get-assoc-occurrence;occurrence-get-string
 
   
 rules // TODO remove
@@ -60,6 +71,9 @@ rules // TODO remove
   G-direct-edges     = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(_,_,<id>,_)
   G-named-edges      = ?(G(s*,_),s) ; <lookup> (s,s*) ; ?S(_,_,_,<id>)
   G-assocs           = ?(G(_,a*),d) ; <lookup> (d,a*)
+  G-ref-scope = ?(G(<id>,_),r) ; getfirst(\ (s,S(_,r*,_,_)) -> s where <elem> (r,r*) \)
+  G-decl-scope = ?(G(<id>,_),d) ; getfirst(\ (s,S(d*,_,_,_)) -> s where <elem> (d,d*) \)
+  G-scope-assocs = ?(G(_,<id>),s) ; filter(\ (d,ls*) -> <filter(\(l,s') -> (d,l) where <eq> (s,s')\)>ls* \);flatten-list
   
   get-names(|g): Reachables(s,ns) -> n*
     where <is-ground> s;

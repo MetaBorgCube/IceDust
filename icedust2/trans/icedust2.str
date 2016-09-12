@@ -55,7 +55,8 @@ rules
       <map(debug;entityname-get-shortcutnames ;debug)>entitynames
     with
       attrnames := <collect-all(is-attributename,conc)>ast;
-      <debug>attrnames
+      <debug>attrnames;
+      <map(debug;attributename-get-entityname;debug)>attrnames
     with
       relationnames := <collect-all(is-relationname,conc)>ast;
       <debug>relationnames
