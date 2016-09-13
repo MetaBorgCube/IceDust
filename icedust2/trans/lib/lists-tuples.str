@@ -53,3 +53,8 @@ rules // List(a) -> a
   lFst:   [x | xs] -> x
   lSnd:   [x, y | xs] -> y
   lThird: [x, y, z | xs] -> z
+
+rules // s1:a->a'   s2:b->b'  (a,b)->(a',b')
+
+  split2(s1,s2) = !(<Fst;s1>,<Snd;s2>) //fixed version of split
+  

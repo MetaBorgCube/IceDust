@@ -5,14 +5,12 @@ imports // functions
   api/_generated
   api/_runtime
   lib/debug
+  lib/lists-tuples
   nabl2/api
 
 signature constructors
 
-  Occurrence : Namespace * String * TermIndex -> Occurrence
   Namespace : String -> Namespace
-  TermIndex : String * Int -> TermIndex
-  Key : String -> Key
 
   
 rules // store analysis to be able to query without passing the analysis
@@ -51,7 +49,7 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-ref-scope(|ns)                = nabl2-mk-occurrence(|ns);get-ref-scope         //@type Term -> Scope
   get-scope(|ns)                    = get-decl-scope(|ns)+get-ref-scope(|ns)         //@type Term -> Scope
   get-scope-decl-names              = get-scope-decls;map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
-  get-scope-assoc-names-with-labels = get-scope-assocs;map(\(o,l)->(<nabl2-get-occurrence-name>o,l)\) //@type Scope -> List((Term,Label))
+  get-scope-assoc-names-with-labels = get-scope-assocs;map(split2(nabl2-get-occurrence-name,id)) //@type Scope -> List((Term,Label))
   get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
   get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
   get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
