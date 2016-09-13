@@ -1,0 +1,13 @@
+module api-entities
+
+language icedust2
+
+fixture [[
+  module test
+  model
+  entity [[...]]{
+    i : Int
+  }
+]]
+
+//test Query entity attribute names [[Foo]] run entityname-get-attributenames to "i" //TODO: <store-analysis> is not called when running testcases. Should store analysis after an analyze.
