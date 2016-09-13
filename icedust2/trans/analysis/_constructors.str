@@ -6,6 +6,7 @@ signature constructors
   Entity         : NameSpace
   EntityInstance : NameSpace
   Inverse        : NameSpace
+  MemberValue    : NameSpace
   Module         : NameSpace
   Relation       : NameSpace
   Role           : NameSpace

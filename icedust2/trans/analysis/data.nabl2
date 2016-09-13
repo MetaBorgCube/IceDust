@@ -16,6 +16,7 @@ rules
   [[ EntityInstanceNoType(name, ms) ^ (member_value_scope, module_scope) : member_value_def_type ]] :=
     Member{name} <- module_scope,
     Member{name} ===> entity_instance_scope,
+    Member{name}.ns := EntityInstance(),
     new entity_instance_scope,
     Implicit{"membervalue"} -> member_value_scope,
     Implicit{"membervalue"} |-> member_value_def,
@@ -29,6 +30,7 @@ rules
   [[ RelationInstance(name, type, ms) ^ (member_value_scope, module_scope) : type_type ]] :=
     Member{name} <- module_scope,
     Member{name} ===> entity_instance_scope,
+    Member{name}.ns := EntityInstance(),
     new entity_instance_scope,
     [[ type ^ (module_scope) : type_type ]],
     Member{name} : TTuple(type_type, TOne()),
@@ -44,6 +46,7 @@ rules
   [[ RelationInstanceNoType(name, ms) ^ (member_value_scope, module_scope) : relation_object_type ]] :=
     Member{name} <- module_scope,
     Member{name} ===> entity_instance_scope,
+    Member{name}.ns := EntityInstance(),
     new entity_instance_scope,
     Implicit{"membervalue"} -> member_value_scope,
     Implicit{"membervalue"} |-> member_value_def,
@@ -56,6 +59,9 @@ rules
     
   [[ MemberValue(member, vs) ^ (entity_instance_scope, module_scope) ]] :=
     Map2T [[ vs ^ (member_value_scope, module_scope) : ei_types ]],
+    MemberValue{member} <- entity_instance_scope,
+    MemberValue{member}.ns := MemberValue(),
+    MemberValue{member}.origin := member_def,
     Implicit{"this"} -> entity_instance_scope,
     Implicit{"this"} |-> this_def,
     this_def : this_type,
