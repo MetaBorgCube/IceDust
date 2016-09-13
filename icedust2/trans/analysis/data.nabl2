@@ -5,6 +5,7 @@ rules
   [[ EntityInstance(name, type, ms) ^ (member_value_scope, module_scope) : type_type ]] :=
     Member{name} <- module_scope,
     Member{name} ===> entity_instance_scope,
+    Member{name}.ns := EntityInstance(),
     new entity_instance_scope,
     [[ type ^ (module_scope) : type_type ]],
     Member{name} : TTuple(type_type, TOne()),

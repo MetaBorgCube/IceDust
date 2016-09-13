@@ -2,12 +2,14 @@ module analysis/_constructors
 
 signature constructors
 
-  Attribute : NameSpace
-  Entity    : NameSpace
-  Inverse   : NameSpace
-  Relation  : NameSpace
-  Role      : NameSpace
-  Shortcut  : NameSpace
+  Attribute      : NameSpace
+  Entity         : NameSpace
+  EntityInstance : NameSpace
+  Inverse        : NameSpace
+  Module         : NameSpace
+  Relation       : NameSpace
+  Role           : NameSpace
+  Shortcut       : NameSpace
 
   Normal       : DerivationType
   Derivation   : DerivationType

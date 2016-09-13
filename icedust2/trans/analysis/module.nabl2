@@ -9,6 +9,7 @@ rules
     module_scope ---> init_scope,
     module_data_scope ---> module_scope,
     Module{m} ===> module_scope,
+    Entity{m}.ns := Module(),
     Map2 [[ es ^ (module_scope, module_data_scope) ]],
     new module_scope,
     new module_data_scope.

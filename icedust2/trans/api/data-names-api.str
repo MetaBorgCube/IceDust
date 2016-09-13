@@ -1,0 +1,61 @@
+module api/data-names-api
+
+imports // constructors
+
+//  signatures/Model-sig
+//  api/_runtime-constructors
+//  desugaring/constructors
+//  names/naming/names
+//  analysis2/constructors
+  analysis/_constructors
+
+imports // functions
+
+//  api/_runtime
+//  api/model-names-api
+//  lib/origin
+//  lib/search
+//  lib/index
+//  lib/nabl-ext
+//  lib/lists-tuples
+//  lib/string
+  lib/nabl2
+
+rules // entity instance
+
+  is-entityinstancename = where(is-string;get-property(|"Member","ns");?EntityInstance())
+//  is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
+//
+//  entityinstancename-get-exprs = index-get-prop(|AST());Hd
+//  entityinstancename-get-membervalues = index-get-prop(|AST())
+//
+//  entityinstancename-get-membervaluenames = _nabl-get-child-definitions(|NablNsMemberValue()) ;map(def-to-name); string-sort-anno
+//
+//  entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
+//  entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
+//  entityinstancename-get-rolevaluenames      = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
+//  entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
+//  entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+//  
+//  entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
+//  
+//  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+//  
+//  entityinstancename-get-modulename = nabl-name-parent
+//
+//rules // member values
+//
+//  membervaluename-get-expr = index-get-prop(|AST());Hd
+//  membervaluename-get-values = index-get-prop(|Rel())
+//  membervaluename-get-values-inv = index-get-prop(|RelInv())
+//  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
+//  
+//  membervaluename-get-origin = get-member-origin
+//  
+//  membervaluename-is-attribute = where(get-member-origin; is-attributename)
+//  membervaluename-is-relation  = where(get-member-origin; is-relationname)
+//  membervaluename-is-role      = where(get-member-origin; is-rolename)
+//  membervaluename-is-inverse   = where(get-member-origin; is-inversename)
+//  membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
+//  
+//  membervaluename-get-entityinstancename = nabl-name-parent

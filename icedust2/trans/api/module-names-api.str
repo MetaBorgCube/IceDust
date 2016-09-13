@@ -1,0 +1,66 @@
+module api/module-names-api
+
+imports // constructors
+
+//  signatures/Model-sig
+//  api/_runtime-constructors
+//  desugaring/constructors
+//  analysis2/constructors
+//  names/naming/names
+  analysis/_constructors
+
+imports // functions
+
+//  api/_runtime
+  api/model-names-api
+//  lib/index
+//  lib/origin
+//  lib/search
+  lib/string
+//  lib/nabl-ext
+//  lib/lists-tuples
+  lib/traverse
+//  generating/_ir/constructors
+  lib/nabl2
+  
+rules // module
+  
+  modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names;filter(is-entityname);string-sort-anno
+  
+//  modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;map(def-to-name); string-sort-anno
+  
+  // string -> [string]
+  modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
+  
+  modulename-get-attributenames-default-derivation = modulename-get-attributenames;filter(attributename-is-default-derivation)  
+  
+//  // string -> [[string]]
+//  modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
+//
+//  modulename-get-attributenames-topo-default-derivation = modulename-get-attributenames-topo;map(filter(attributename-is-default-derivation));filter(list-not-empty)
+  
+  modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
+  modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
+  
+  modulename-get-rolenames = modulename-get-entitynames;fmap(entityname-get-rolenames)
+  
+//  modulename-get-toposort = index-get-prop(|TopoSort());Hd
+
+  is-modulename = where(is-string;get-property(|"Module","ns");?Module())
+
+//  modulename-get-entityinstancenames = _nabl-get-child-definitions(|NablNsEntityInstance()) ;make-set-ordered ;map(def-to-name); string-sort-anno
+//
+//  modulename-get-exprs = index-get-prop(|AST());flatten-list
+//
+//  modulename-get-implstr = _get-property(|ImplStrategy())
+//  
+//  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
+//  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
+//  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
+//
+//  modulename-get-uistyle = _get-property(|UIStyle())
+//  
+//  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
+//  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
+//  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
+  
