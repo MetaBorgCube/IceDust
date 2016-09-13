@@ -38,6 +38,7 @@ rules // wrap nabl2 api with stored analysis
   get-scope-named-edges(|)  = nabl2-get-scope-named-edges(|<get-stored-analysis>)
   get-decl-assocs(|)        = nabl2-get-decl-assocs(|<get-stored-analysis>)
   get-scope-assocs(|)       = nabl2-get-scope-assocs(|<get-stored-analysis>)
+  get-scope-reachables(|ns) = nabl2-get-scope-reachables(|<get-stored-analysis>, ns)
 
 rules // compose nabl2 calls (hide occurrence behind namespaces)
 
@@ -54,7 +55,14 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
   get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
   get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
+  get-scope-reachable-names(|ns)    = get-scope-reachables(|ns);map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
 
 rules // stuff that depends on nabl2 internals
 
-  scope-get-reachables(|ns)  = ?s;get-stored-analysis;nabl2--sol-g;?g;!Reachables(s,Namespace(ns));nabl2--get-names(|g);map(nabl2-get-occurrence-name)
+  /**
+   * Get reachable declarations of a scope
+   *
+   * @param ns : String
+   * @type Scope -> List(Occurrence)
+   */
+  nabl2-get-scope-reachables(|a, ns) = ?s;!Reachables(s,Namespace(ns));nabl2--get-names(|<nabl2--sol-g>a)
