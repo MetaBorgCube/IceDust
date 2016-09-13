@@ -15,14 +15,15 @@ imports // functions
 
 //  api/_runtime
 //  api/module-names-api
-//  api/types-api
+  api/types-api
+  api/types-names-api
 //  lib/eq
   lib/origin
 //  lib/search
   lib/string
 //  lib/index
 //  lib/nabl-ext
-//  lib/lists-tuples
+  lib/lists-tuples
 //  analysis2/path
   lib/nabl2
 
@@ -37,11 +38,11 @@ rules // entity
   entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-inversename  );string-sort-anno
   entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-shortcutname );string-sort-anno
 
-//  entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
-//  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
-//  
-//  entityname-get-modulename = nabl-name-parent
-//  
+  entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+  
+  entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
+  
 //  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
 //  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
 //  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
@@ -71,8 +72,8 @@ rules // attributes
   
   attributename-get-entityname = get-scope(|"Member");get-scope-assoc-name
   
-//  attributename-get-expr = index-get-prop(|AST());Hd
-//  
+  attributename-get-expr = get-property(|"Member","expr")
+  
 //  attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
 //  
 //  attributename-pp2-type-multiplicity: attrName -> x
@@ -82,65 +83,61 @@ rules // attributes
 rules // relations
 
   is-relationname = where(is-string;get-property(|"Member","ns");?Relation())
-//  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
-//  
-//  relationname-get-inversename = get-inverse
-//  
-//  relationname-is-left = where(get-side;?Left())
+  
+  relationname-get-inversename = get-property(|"Member","inverse")
+  
+  relationname-is-left = where(get-property(|"Member","side");?Left())
 
 rules // roles
   
   is-rolename = where(is-string;get-property(|"Member","ns");?Role())
-//  is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
-//  
-//  rolename-get-inversename = get-inverse
+  
+  rolename-get-inversename = get-property(|"Member","inverse")
   
 rules // inverses
   
   is-inversename = where(is-string;get-property(|"Member","ns");?Inverse())
-//  is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
-//
-//  inversename-get-rolename = get-origin-role
-//
-//rules
-//
-//  name-get-inversename = where(is-relationname);relationname-get-inversename
-//  name-get-inversename = where(is-rolename)    ;rolename-get-inversename
-//  name-get-inversename = where(is-inversename) ;inversename-get-rolename
-//  
+
+  inversename-get-rolename = get-property(|"Member","role")
+
+rules
+
+  name-get-inversename = where(is-relationname);relationname-get-inversename
+  name-get-inversename = where(is-rolename)    ;rolename-get-inversename
+  name-get-inversename = where(is-inversename) ;inversename-get-rolename
+  
 //  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
 //  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
 //  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
 //  
 //  name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
-//  
-//  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
-//  
-//  name-is-one                = where(get-multiplicity;lower-one;upper-one)
-//  name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
-//  
-//  name-is-to-one             = where(get-multiplicity;upper-one)
-//  name-is-to-many            = where(get-multiplicity;upper-many)
+  
+  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
+  
+  name-is-one                = where(get-multiplicity;lower-one;upper-one)
+  name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
+  
+  name-is-to-one             = where(get-multiplicity;upper-one)
+  name-is-to-many            = where(get-multiplicity;upper-many)
 //  name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)
 //  name-is-to-many-unordered  = where(name-is-to-many; get-ordering;unordered)
-//  
-//  name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
-//  name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
+  
+  name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
+  name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
 //  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
 //  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
 rules // shortcuts
 
   is-shortcutname = where(is-string;get-property(|"Member","ns");?Shortcut())
-//  is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
-//  
-//  shortcutname-get-rolename1          = get-origin-role
-//  shortcutname-get-rolename2          = get-origin-role2
-//  
-//  shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
-//  shortcutname-get-rolename           = shortcutname-get-rolename2
-//  shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
-//
+  
+  shortcutname-get-rolename1          = get-property(|"Member","originrole")
+  shortcutname-get-rolename2          = get-property(|"Member","originrole2")
+  
+  shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
+  shortcutname-get-rolename           = shortcutname-get-rolename2
+  shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
+
 //rules // combined
 //  
 //  name-get-flowsto-paths = index-get-prop(|FlowsTo())

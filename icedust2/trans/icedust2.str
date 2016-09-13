@@ -48,18 +48,21 @@ rules
       entitynames := <collect-all(is-entityname,conc)>ast;
       <debug>entitynames;
       <map(debug;entityname-get-attributenames;debug)>entitynames;
-      <map(debug;entityname-get-attributenames-normal-default;debug)>entitynames;
+      <map(debug;entityname-get-attributenames-default-derivation;map(attributename-get-expr);debug)>entitynames;
       <map(debug;entityname-get-relationnames ;debug)>entitynames;
       <map(debug;entityname-get-rolenames     ;debug)>entitynames;
       <map(debug;entityname-get-inversenames  ;debug)>entitynames;
-      <map(debug;entityname-get-shortcutnames ;debug)>entitynames
+      <map(debug;entityname-get-shortcutnames ;debug)>entitynames;
+      <map(debug;entityname-get-modulename    ;debug)>entitynames
     with
       attrnames := <collect-all(is-attributename,conc)>ast;
       <debug>attrnames;
       <map(debug;attributename-get-entityname;debug)>attrnames
     with
       relationnames := <collect-all(is-relationname,conc)>ast;
-      <debug>relationnames
+      <debug>relationnames;
+      <map(debug;relationname-get-inversename;relationname-get-inversename;relationname-get-inversename;debug)>relationnames;
+      <filter(relationname-is-left);debug>relationnames
     with
       rolenames := <collect-all(is-rolename,conc)>ast;
       <debug>rolenames

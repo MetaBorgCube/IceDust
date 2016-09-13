@@ -30,6 +30,38 @@ rules
     Entity2{e} <=I= entity_scope,
     new entity_scope.
     
+  [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
+    Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := Normal(),
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]].
+    
+  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
+    Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := Derivation(),
+    Member{a}.expr := e,
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]],
+    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
+    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
+    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
+    
+  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope,
+    Member{a} : TTuple(a_type, a_mult),
+    Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := DefaultValue(),
+    Member{a}.expr := e,
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]],
+    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
+    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
+    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
+    
   [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
     Entity2{e1} ===> entity1_scope,
@@ -40,6 +72,8 @@ rules
     [[m1 ^ (module_scope) : m1_mult ]],
     Member{r1} : TTuple(e2_type, m1_mult),
     Member{r1}.ns := Relation(),
+    Member{r1}.inverse := r2,
+    Member{r1}.side := Left(),
     Entity2{e2} <- module_scope,
     Entity2{e2} ===> entity2_scope,
     Member{r2} <- entity2_scope,
@@ -49,41 +83,10 @@ rules
     [[m2 ^ (module_scope) : m2_mult ]],
     Member{r2} : TTuple(e1_type, m2_mult),
     Member{r2}.ns := Relation(),
+    Member{r2}.inverse := r1,
+    Member{r2}.side := Right(),
     new entity1_scope,
     new entity2_scope.
-    
-  [[ ast@Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := ast,
-    Member{a}.ns := Attribute(),
-    Member{a}.derivationtype := Normal(),
-    [[ t ^ (entity_scope) : a_type ]],
-    [[ m ^ (entity_scope) : a_mult ]].
-    
-  [[ ast@DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := ast,
-    Member{a}.ns := Attribute(),
-    Member{a}.derivationtype := Derivation(),
-    [[ t ^ (entity_scope) : a_type ]],
-    [[ m ^ (entity_scope) : a_mult ]],
-    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
-    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
-    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
-    
-  [[ ast@DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult),
-    Member{a}.ast := ast,
-    Member{a}.ns := Attribute(),
-    Member{a}.derivationtype := DefaultValue(),
-    [[ t ^ (entity_scope) : a_type ]],
-    [[ m ^ (entity_scope) : a_mult ]],
-    [[ e ^ (entity_scope) : TTuple(e_type, e_mult) ]],
-    IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
-    InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
     
   [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
     [[ mult ^ (entity_scope) : inverse_mult ]],
@@ -94,6 +97,7 @@ rules
     Member{role} : TTuple(entity_type, TOne()),
     Member{role}.ns := Role(),
     Member{role}.inversemult := inverse_mult,
+    Member{role}.inverse := inverse,
     Entity{entity} -> entity_scope,
     Entity{entity} |-> entity_def,
     entity_def : entity_type,
@@ -102,6 +106,7 @@ rules
     Member{inverse} <- entity2_scope,
     Member{inverse} : TTuple(this_type, inverse_mult),
     Member{inverse}.ns := Inverse(),
+    Member{inverse}.role := role,
     new entity2_scope,
     Member2{role} -> entity_scope,
     Member2{role} <=I= entity2_scope, // import all shortcut definitions from the role associated scope into the entity2 scope
@@ -118,6 +123,8 @@ rules
     Member{shortcut1} : TTuple(role2_type, role1_inverse_mult),
     Member{shortcut1}.ns := Shortcut(),
     Member{shortcut1}.reltype := this_type,
+    Member{shortcut1}.originrole := role1,
+    Member{shortcut1}.originrole2 := role2,
     new role1_scope,
     Member{role2} -> entity_scope,
     Member{role2} |-> role2_def,
@@ -129,6 +136,8 @@ rules
     Member{shortcut2} : TTuple(role1_type, role2_inverse_mult),
     Member{shortcut2}.ns := Shortcut(),
     Member{shortcut2}.reltype := this_type,
+    Member{shortcut2}.originrole := role2,
+    Member{shortcut2}.originrole2 := role1,
     new role2_scope,
     Implicit{"this"} -> entity_scope,
     Implicit{"this"} |-> this_def,

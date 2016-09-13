@@ -12,3 +12,7 @@ signature constructors
   Normal       : DerivationType
   Derivation   : DerivationType
   DefaultValue : DerivationType
+
+  Left  : Side
+  Right : Side
+  

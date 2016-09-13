@@ -40,20 +40,3 @@ rules // Debugging
        ; result   := selected
 
 //  debug-generate-constraint = id
-  
-  get-type         = nabl2-get-ast-type;?TTuple(<id>,_);normalize-type
-  get-multiplicity = nabl2-get-ast-type;?TTuple(_,<id>);normalize-multiplicity
-  
-  normalize-type = ?TInt();!Int()
-  normalize-type = ?TFloat();!Float()
-  normalize-type = ?TDatetime();!Datetime()
-  normalize-type = ?TBoolean();!Boolean()
-  normalize-type = ?TString();!String()
-  normalize-type = ?TNoValue();!NoValue()
-  normalize-type = ?TEntity(Occurrence(_,<id>,_))
-  normalize-type = debug
-  
-  normalize-multiplicity = ?TOne();!One()
-  normalize-multiplicity = ?TZeroOrOne();!ZeroOrOne()
-  normalize-multiplicity = ?TZeroOrMore();!ZeroOrMore()
-  normalize-multiplicity = ?TOneOrMore();!OneOrMore()
