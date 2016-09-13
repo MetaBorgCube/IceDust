@@ -34,8 +34,8 @@ rules // Debugging
 imports
   
   api/data-names-api
-  api/model-api
   api/model-names-api
+  api/module-names-api
   lib/nabl2
   
 rules
@@ -46,6 +46,9 @@ rules
       <store-analysis>path
     with
       <debug>"debug-get-ast-value"
+    with
+      modulename := <collect-one(is-modulename)>ast;
+      <debug>modulename
 //    with
 //      entitynames := <collect-all(is-entityname,conc)>ast;
 //      <debug>entitynames;
@@ -75,7 +78,9 @@ rules
 //      shortcutnames := <collect-all(is-shortcutname,conc)>ast;
 //      <debug>shortcutnames
     with
-      einames := <collect-all(is-entityinstancename,conc)>ast;
+      einames := <modulename-get-entityinstancenames>modulename;
       <debug>einames;
-      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug)>einames
+      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug)>einames;
+      <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
+      <filter(entityinstancename-get-modulename);debug>einames
     

@@ -1,0 +1,13 @@
+module lib/eq
+
+rules
+
+  eq-no-anno(|x): y -> y
+    where
+      x2 := <rm-annotations>x;
+      y2 := <rm-annotations>y;
+      <equal(|x2)>y2
+
+rules
+
+  eq(|a) = equal(|a)

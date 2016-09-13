@@ -18,6 +18,7 @@ imports // functions
 //  lib/index
 //  lib/nabl-ext
 //  lib/lists-tuples
+  lib/eq
   lib/string
   lib/nabl2
   nabl2/api
@@ -37,12 +38,11 @@ rules // entity instance
   entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
   
-//  entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
-//  
-//  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq(|membername))
   
-//  entityinstancename-get-modulename = get-scope(|"Entity");get-scope-assoc-name //TODO: call parent scope
-//  entityinstancename-get-modulename = nabl-name-parent
+  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+  
+  entityinstancename-get-modulename = get-scope(|"Member");get-scope-direct-edge-scope;get-scope-assoc-name
 
 rules // member values
 
