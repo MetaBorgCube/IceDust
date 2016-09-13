@@ -15,7 +15,7 @@ signature constructors
   Key : String -> Key
 
   
-rules
+rules // store analysis to be able to query without passing the analysis
   
   store-analysis: path -> None()
     with
@@ -24,34 +24,37 @@ rules
   
   get-stored-analysis = !None();StoredAnalysis <+ fatal-err(|"Error: Analysis is not stored. Please store with <store-analysis>path.")    
 
-rules // String (with attachment) -> Ast
+rules // wrap nabl2 api with stored analysis
 
-  string-get-prop(|namespace, key) = ?x;get-stored-analysis;?analysis;!x;string-get-prop(|analysis, namespace, key)
+  get-property(|prop)       = nabl2-get-property(|<get-stored-analysis>,prop)
+  get-all-decls(|)          = nabl2-get-all-decls(|<get-stored-analysis>)
+  get-all-refs(|)           = nabl2-get-all-refs(|<get-stored-analysis>)
+  get-all-scopes(|)         = nabl2-get-all-scopes(|<get-stored-analysis>)
+  get-ref-scope(|)          = nabl2-get-ref-scope(|<get-stored-analysis>)
+  get-decl-scope(|)         = nabl2-get-decl-scope(|<get-stored-analysis>)
+  get-scope-decls(|)        = nabl2-get-scope-decls(|<get-stored-analysis>)
+  get-scope-refs(|)         = nabl2-get-scope-refs(|<get-stored-analysis>)
+  get-scope-direct-edges(|) = nabl2-get-scope-direct-edges(|<get-stored-analysis>)
+  get-scope-named-edges(|)  = nabl2-get-scope-named-edges(|<get-stored-analysis>)
+  get-decl-assocs(|)        = nabl2-get-decl-assocs(|<get-stored-analysis>)
+  get-scope-assocs(|)       = nabl2-get-scope-assocs(|<get-stored-analysis>)
 
-  string-get-prop(|analysis, namespace, key) = nabl2-mk-occurrence(|namespace);nabl2-get-property(|analysis, key)
-  
-rules
+rules // compose nabl2 calls (hide occurrence behind namespaces)
 
-  string-get-assoc-scope(|namespace) = nabl2-mk-occurrence(|namespace);occurrence-get-assoc-scope
-  
-  occurrence-get-assoc-scope = nabl2-get-decl-assocs(|<get-stored-analysis>);Hd;Snd
-  
-  scope-get-decls            = nabl2-get-scope-decls(|<get-stored-analysis>);map(nabl2-get-occurrence-name)
-  
-rules
+  get-property(|ns, prop)           = nabl2-mk-occurrence(|ns);get-property(|prop)   //@type Term -> Term
+  get-decl-assocs-with-labels(|ns)  = nabl2-mk-occurrence(|ns);get-decl-assocs       //@type Term -> List((Label,Scope))
+  get-decl-assoc-with-labels(|ns)   = get-decl-assocs-with-labels(|ns);Hd            //@type Term -> (Label,Scope)
+  get-decl-assocs(|ns)              = get-decl-assocs-with-labels(|ns);map(Snd)      //@type Term -> List(Scope)
+  get-decl-assoc(|ns)               = get-decl-assocs(|ns);Hd                        //@type Term -> Scope
+  get-decl-scope(|ns)               = nabl2-mk-occurrence(|ns);get-decl-scope        //@type Term -> Scope
+  get-ref-scope(|ns)                = nabl2-mk-occurrence(|ns);get-ref-scope         //@type Term -> Scope
+  get-scope(|ns)                    = get-decl-scope(|ns)+get-ref-scope(|ns)         //@type Term -> Scope
+  get-scope-decl-names              = get-scope-decls;map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-assoc-names-with-labels = get-scope-assocs;map(\(o,l)->(<nabl2-get-occurrence-name>o,l)\) //@type Scope -> List((Term,Label))
+  get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
+  get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
+  get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
 
-  string-get-scope(|namespace) = nabl2-mk-occurrence(|namespace);occurrence-get-scope
-  
-  occurrence-get-scope = nabl2-get-decl-scope(|<get-stored-analysis>) + nabl2-get-ref-scope(|<get-stored-analysis>)
-
-rules
-
-  scope-get-assoc-occurrence = nabl2-get-scope-assocs(|<get-stored-analysis>);Hd;Fst
-  
-  scope-get-assoc-string = scope-get-assoc-occurrence;nabl2-get-occurrence-name
-
-  occurrence-get-assoc-scope = nabl2-get-decl-assocs(|<get-stored-analysis>);Hd;Snd
-
-  scope-get-decls            = nabl2-get-all-decls(|<get-stored-analysis>);map(nabl2-get-occurrence-name)
+rules // stuff that depends on nabl2 internals
 
   scope-get-reachables(|ns)  = ?s;get-stored-analysis;nabl2--sol-g;?g;!Reachables(s,Namespace(ns));nabl2--get-names(|g);map(nabl2-get-occurrence-name)

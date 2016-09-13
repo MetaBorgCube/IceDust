@@ -72,5 +72,5 @@ rules
 //    with
 //      attrnames := <collect-all(is-attr;attr-get-name)>ast;
 //      <debug;filter(is-entityname);debug>attrnames;
-//      <map(debug;string-get-prop(|"Member","ast");debug;attr-get-name;debug;string-get-prop(|"Member","ast");debug)>attrnames
+//      <map(debug;get-property(|"Member","ast");debug;attr-get-name;debug;get-property(|"Member","ast");debug)>attrnames
     

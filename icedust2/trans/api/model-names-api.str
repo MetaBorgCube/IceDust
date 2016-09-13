@@ -28,14 +28,14 @@ imports // functions
 
 rules // entity
 
-  is-entityname = where(is-string;string-get-prop(|"Entity","ns");?Entity())
+  is-entityname = where(is-string;get-property(|"Entity","ns");?Entity())
 
-  entityname-get-attributenames  = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-attributename);string-sort-anno
-  entityname-get-attributenames2 = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-attributename);origin-sort-anno
-  entityname-get-relationnames   = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-relationname );string-sort-anno
-  entityname-get-rolenames       = string-get-assoc-scope(|"Entity");scope-get-decls                ;filter(is-rolename     );string-sort-anno
-  entityname-get-inversenames    = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-inversename  );string-sort-anno
-  entityname-get-shortcutnames   = string-get-assoc-scope(|"Entity");scope-get-reachables(|"Member");filter(is-shortcutname );string-sort-anno
+  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-decl-names           ;filter(is-attributename);string-sort-anno
+  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-decl-names           ;filter(is-attributename);origin-sort-anno
+  entityname-get-relationnames   = get-decl-assoc(|"Entity");scope-get-reachables(|"Member");filter(is-relationname );string-sort-anno
+  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names           ;filter(is-rolename     );string-sort-anno
+  entityname-get-inversenames    = get-decl-assoc(|"Entity");scope-get-reachables(|"Member");filter(is-inversename  );string-sort-anno
+  entityname-get-shortcutnames   = get-decl-assoc(|"Entity");scope-get-reachables(|"Member");filter(is-shortcutname );string-sort-anno
 
 //  entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
 //  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
@@ -49,27 +49,27 @@ rules // entity
 //  entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
 //  entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)  
   
-  entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+  entityname-get-attributenames-normal-default     = entityname-get-attributenames;filter(attributename-is-normal-default)
   entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
   
-  entityname-get-attributenames2-default = entityname-get-attributenames2;filter(attributename-is-default)
-  entityname-get-attributenames2-normal-default = entityname-get-attributenames2;filter(attributename-is-normal-default)
+  entityname-get-attributenames2-default            = entityname-get-attributenames2;filter(attributename-is-default)
+  entityname-get-attributenames2-normal-default     = entityname-get-attributenames2;filter(attributename-is-normal-default)
   entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
   
 //  entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
   
 rules // attributes
 
-  is-attributename = where(is-string;string-get-prop(|"Member","ns");?Attribute())
+  is-attributename = where(is-string;get-property(|"Member","ns");?Attribute())
 
-  attributename-is-derivation = where(is-string;string-get-prop(|"Member","derivationtype");?Derivation())
-  attributename-is-default    = where(is-string;string-get-prop(|"Member","derivationtype");?DefaultValue())
-  attributename-is-normal     = where(is-string;string-get-prop(|"Member","derivationtype");?Normal())
+  attributename-is-derivation = where(is-string;get-property(|"Member","derivationtype");?Derivation())
+  attributename-is-default    = where(is-string;get-property(|"Member","derivationtype");?DefaultValue())
+  attributename-is-normal     = where(is-string;get-property(|"Member","derivationtype");?Normal())
   
   attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
   attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
   
-  attributename-get-entityname = string-get-scope(|"Member");scope-get-assoc-string
+  attributename-get-entityname = get-scope(|"Member");get-scope-assoc-name
   
 //  attributename-get-expr = index-get-prop(|AST());Hd
 //  
@@ -81,7 +81,7 @@ rules // attributes
 
 rules // relations
 
-  is-relationname = where(is-string;string-get-prop(|"Member","ns");?Relation())
+  is-relationname = where(is-string;get-property(|"Member","ns");?Relation())
 //  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
 //  
 //  relationname-get-inversename = get-inverse
@@ -90,14 +90,14 @@ rules // relations
 
 rules // roles
   
-  is-rolename = where(is-string;string-get-prop(|"Member","ns");?Role())
+  is-rolename = where(is-string;get-property(|"Member","ns");?Role())
 //  is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
 //  
 //  rolename-get-inversename = get-inverse
   
 rules // inverses
   
-  is-inversename = where(is-string;string-get-prop(|"Member","ns");?Inverse())
+  is-inversename = where(is-string;get-property(|"Member","ns");?Inverse())
 //  is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
 //
 //  inversename-get-rolename = get-origin-role
@@ -131,7 +131,7 @@ rules // inverses
 
 rules // shortcuts
 
-  is-shortcutname = where(is-string;string-get-prop(|"Member","ns");?Shortcut())
+  is-shortcutname = where(is-string;get-property(|"Member","ns");?Shortcut())
 //  is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
 //  
 //  shortcutname-get-rolename1          = get-origin-role

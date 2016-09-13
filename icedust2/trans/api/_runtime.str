@@ -2,9 +2,9 @@ module api/_runtime
 
 imports // generated runtime
     
-  nabl2/runtime/analysis/query
-  nabl2/runtime/solver/solution
-  nabl2/shared/ast
+//  nabl2/runtime/analysis/query
+//  nabl2/runtime/solver/solution
+//  nabl2/shared/ast
   runtime/analysis/complete  
   runtime/analysis/debug
 //  runtime/analysis/legacy
