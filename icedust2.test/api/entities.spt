@@ -10,4 +10,4 @@ fixture [[
   }
 ]]
 
-//test Query entity attribute names [[Foo]] run entityname-get-attributenames to "i" //TODO: <store-analysis> is not called when running testcases. Should store analysis after an analyze.
+//test Query entity attribute names [[Foo]] run entityname-get-attributenames to !ATerm["i"] //TODO: <store-analysis> is not called when running testcases. Should store analysis after an analyze.
