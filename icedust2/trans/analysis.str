@@ -19,6 +19,8 @@ imports
   analysis/expressions-multiplicity-operators
 
   desugaring/desugar
+  
+  analysis2/analysis2
 
 rules // Analysis
 
