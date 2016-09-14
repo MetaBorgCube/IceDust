@@ -18,7 +18,7 @@ rules // lib expression calls
     with
       arg*            := <get-arguments>expr;
       exp_args*       := <map(expr-to-js)>arg*;
-      exp_call        := <lib-method-name>expr
+      exp_call        := Identifier(<lib-method-name>expr) //TODO: proper js literal syntax
     with
       js := js-ex |[
         exp_call(exp_args*)
@@ -39,7 +39,7 @@ rules // casts
   expr-to-js: Cast(ex1, ex1-ty) -> js-cast
     with
       exp_1    := <expr-to-js>ex1;
-      exp_call := $[as[<postfix-id>ex1-ty]];
+      exp_call := Identifier($[as[<postfix-id>ex1-ty]]); //TODO: proper js literal syntax
       js-cast  := js-ex |[ exp_call(exp_1) ]|
 
 rules // references
