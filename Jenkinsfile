@@ -1,7 +1,13 @@
-node ('linux'){
+node{
   stage 'Build and Test'
-  env.PATH = "${tool 'Maven 3'}/bin:${env.PATH}"
   checkout scm
   sh 'echo "QUALIFIER=$(date +%Y%m%d%H%M)" > build_env'
-  sh 'mvn clean package'
+  withMaven(
+    mavenLocalRepo: '.repository',
+    mavenSettingsConfig: 'org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1430668968947',
+    mavenOpts: '-Xmx1024m -Xss16m'
+  ){
+    // Run the maven build
+    sh "mvn clean verify -B"
+  }
 }
