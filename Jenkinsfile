@@ -15,5 +15,6 @@ node{
       // Run the maven build
       sh "mvn clean verify -B"
     }
+    archiveArtifacts artifacts: 'icedust.eclipse.updatesite/target/site/', excludes: null, onlyIfSuccessful: true
   }
 }
