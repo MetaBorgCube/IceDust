@@ -192,6 +192,6 @@ execute
 
 // test Weblab compile-java [[ ]] run compile-java-test
 
-test Weblab execute-java [[ ]] run execute-java-test to "77"
-
-test Weblab execute-java-incr [[ ]] run execute-java-incr-test to "77"
+//test Weblab execute-java [[ ]] run execute-java-test to "77"
+//
+//test Weblab execute-java-incr [[ ]] run execute-java-incr-test to "77"

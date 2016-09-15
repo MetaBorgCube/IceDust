@@ -26,14 +26,14 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
-test Expressions Aggregation Recursive generate-java [[ ]] transform "SPT -> generate-java-test" to ""
-
-//test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
-
-//test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-test to "3"
-
-//test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-incr-test to "3"
-test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-incr-test to "3"
-test Expressions Aggregation Recursive execute-java-WRONG [[ ]] run execute-java-incr-test to "4" // should fail
-test Expressions Aggregation Recursive execute-java2 [[ ]] transform "SPT -> execute-java-incr-test" to "3"
+////test Expressions Aggregation Recursive generate-java [[ ]] build generate-java-test
+//test Expressions Aggregation Recursive generate-java [[ ]] transform "SPT -> generate-java-test" to ""
+//
+////test Expressions Aggregation Recursive compile-java [[ ]] build compile-java-test
+//
+////test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-test to "3"
+//
+////test Expressions Aggregation Recursive execute-java-incr [[ ]] build execute-java-incr-test to "3"
+//test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-incr-test to "3"
+//test Expressions Aggregation Recursive execute-java-WRONG [[ ]] run execute-java-incr-test to "4" // should fail
+//test Expressions Aggregation Recursive execute-java2 [[ ]] transform "SPT -> execute-java-incr-test" to "3"
