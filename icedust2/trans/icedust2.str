@@ -83,4 +83,8 @@ rules
       <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug)>einames;
       <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
       <filter(entityinstancename-get-modulename);debug>einames
-    
+
+rules // foreward calls to nabl2
+
+  editor-hover = nabl2--editor-hover
+  editor-resolve = nabl2--editor-resolve

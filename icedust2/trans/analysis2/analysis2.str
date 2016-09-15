@@ -31,15 +31,16 @@ imports // functions
 rules
 
   nabl2-after-analysis(|source,ast): analysis -> ([],[],[],analysis)
-    with
-      <debug>source;
-      <debug>ast;
-      <debug>analysis
+//    with
+//      <debug>source;
+//      <debug>ast;
+//      <debug>analysis
     with
       <store-analysis>analysis
     with
-      modulename := <collect-one(is-modulename)>ast;
-      <debug>modulename
+      modulename := <collect-one(is-modulename)>ast
+//      ;
+//      <debug>modulename
 
 //  analysis2 =
 //    analysis2-clear-index;

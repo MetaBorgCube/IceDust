@@ -27,7 +27,7 @@ test Resolve to shortcut [[
     node1.[[parent]]
 ]] resolve #2 to #1
 
-//test Resolve invalid role in shortcut fails [[ //TODO: string sharing Stratego/NaBL2 issue
+//test Resolve invalid role in shortcut fails [[ //TODO: http://yellowgrass.org/issue/NaBL2/11
 //   model
 //  
 //    entity Node{
