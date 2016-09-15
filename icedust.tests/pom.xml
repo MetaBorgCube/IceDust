@@ -18,7 +18,7 @@
   
   <dependencies>
     <dependency>
-      <groupId>org.metaborg.lang</groupId>
+      <groupId>org.metaborg</groupId>
       <artifactId>icedust</artifactId>
       <version>0.5.0-SNAPSHOT</version>
       <type>spoofax-language</type>
@@ -39,7 +39,7 @@
         <artifactId>spoofax-maven-plugin</artifactId>
         <version>${metaborg-version}</version>
         <configuration>
-          <languageUnderTest>org.metaborg.lang:icedust:0.5.0-SNAPSHOT</languageUnderTest>
+          <languageUnderTest>org.metaborg:icedust:0.5.0-SNAPSHOT</languageUnderTest>
         </configuration>
       </plugin>
     </plugins>
