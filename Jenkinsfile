@@ -7,6 +7,7 @@ node{
   ws(getWorkspace()) {
     stage 'Build and Test'
     checkout scm
+    sh "git clean -fXd" // make sure all generated files are removed
     withMaven(
       mavenLocalRepo: '.repository',
       mavenSettingsConfig: 'org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1430668968947',
