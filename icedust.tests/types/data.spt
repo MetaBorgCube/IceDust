@@ -8,14 +8,14 @@ fixture [[
 ]]
 
 
-//test error on omitting required attribute [[ //TODO: tests fails from maven, but not in Eclipse
-//  model
-//  entity X{
-//    i : Int
-//  }
-//  data
-//  [[x]] : X {}
-//]] 1 error at #1
+test error on omitting required attribute [[
+  model
+  entity X{
+    i : Int
+  }
+  data
+  [[x]] : X {}
+]] 1 error at #1
 
 test error on omitting required attribute multiple [[
   model
@@ -56,19 +56,19 @@ test error on supplying derived attribute[[
   }
 ]] 1 error at #1
 
-//test error on omitting required attribute 2[[ //TODO: tests fails from maven, but not in Eclipse
-//  model
-//    entity X{
-//      i : Int
-//    }
-//    relation X.y <-> X.z {}
-//  data
-//    x : X {
-//      i = 5
-//      y =
-//        [[x1]] {}
-//    }
-//]] 1 error at #1
+test error on omitting required attribute 2[[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {}
+    }
+]] 1 error at #1
 
 test infer enitity instance type [[
   model
