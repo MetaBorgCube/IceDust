@@ -27,7 +27,7 @@ execute
 //
 //test Expressions Roles Inverses Multiplicities compile-java [[ ]] run compile-java-test
 
-test Expressions Roles Inverses Multiplicities execute-java 1 in single [[ n2.childTree.parent . a ]] run execute-java-test to "1"
-test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.childTree.parent . a ]] run execute-java-test to "null"
-test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.parentTree.child . a ]] run execute-java-test to "[1]"
-test Expressions Roles Inverses Multiplicities execute-java 0 in single [[ n2.parentTree.child . a ]] run execute-java-test to "[]"
+//test Expressions Roles Inverses Multiplicities execute-java 1 in single [[ n2.childTree.parent . a ]] run execute-java-test to "1"
+//test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.childTree.parent . a ]] run execute-java-test to "null"
+//test Expressions Roles Inverses Multiplicities execute-java 1 in many [[ n1.parentTree.child . a ]] run execute-java-test to "[1]"
+//test Expressions Roles Inverses Multiplicities execute-java 0 in single [[ n2.parentTree.child . a ]] run execute-java-test to "[]"
