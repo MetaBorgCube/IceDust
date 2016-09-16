@@ -7,7 +7,7 @@ node{
   ws(getWorkspace()) {
     stage 'Build and Test'
     checkout scm
-    sh "git clean -fXd" // make sure all generated files are removed
+    sh "git clean -fXd" // make sure generated files are removed (git-ignored files). Use "-fxd" to also remove untracked files, but note that this will also remove .repository forcing mvn to download all artifacts each build
     withMaven(
       mavenLocalRepo: '.repository',
       mavenSettingsConfig: 'org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1430668968947',
