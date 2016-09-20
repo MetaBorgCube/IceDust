@@ -5,17 +5,18 @@ def getWorkspace() {
 
 node{
   ws(getWorkspace()) {
-    stage 'Build and Test'
-    checkout scm
-    sh "git clean -fXd" // make sure generated files are removed (git-ignored files). Use "-fxd" to also remove untracked files, but note that this will also remove .repository forcing mvn to download all artifacts each build
-    withMaven(
-      mavenLocalRepo: '.repository',
-      mavenSettingsConfig: 'org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1430668968947',
-      mavenOpts: '-Xmx1024m -Xss16m'
-    ){
-      // Run the maven build
-      sh "mvn -B -U clean verify -DforceContextQualifier=\$(date +%Y%m%d%H%M) "
+    stage('Build and Test'){
+      checkout scm
+      sh "git clean -fXd" // make sure generated files are removed (git-ignored files). Use "-fxd" to also remove untracked files, but note that this will also remove .repository forcing mvn to download all artifacts each build
+      withMaven(
+        mavenLocalRepo: '.repository',
+        mavenSettingsConfig: 'org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1430668968947',
+        mavenOpts: '-Xmx1024m -Xss16m'
+      ){
+        // Run the maven build
+        sh "mvn -B -U clean verify -DforceContextQualifier=\$(date +%Y%m%d%H%M) "
+      }
+      archiveArtifacts artifacts: 'icedust.eclipse.updatesite/target/site/', excludes: null, onlyIfSuccessful: true
     }
-    archiveArtifacts artifacts: 'icedust.eclipse.updatesite/target/site/', excludes: null, onlyIfSuccessful: true
   }
 }
