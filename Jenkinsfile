@@ -42,5 +42,5 @@ def notifyBuild(String buildStatus) {
   }
 
   // Send notifications
-  slackSend (color: color, message: message, channel: '#webdsl2')
+  slackSend (color: color, message: message, channel: '#webdsl2-dev')
 }
