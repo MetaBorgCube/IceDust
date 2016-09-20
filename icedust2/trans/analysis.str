@@ -42,3 +42,5 @@ rules // Debugging
        ; result   := selected
 
 //  debug-generate-constraint = id
+
+  nabl2-debug-analysis-hook = id

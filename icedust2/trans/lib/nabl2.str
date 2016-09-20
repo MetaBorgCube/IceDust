@@ -65,6 +65,10 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
   get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
 
+imports
+
+  nabl2/runtime/analysis/main
+
 rules // stuff that depends on nabl2 internals
 
   // something similar should be in the public api
@@ -79,27 +83,27 @@ rules // stuff that depends on nabl2 internals
   // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
   nabl2--analyze(pre):
     AnalyzeUnit(source,ast,initial) -> UnitResult(ast',[Constraint(C)])
-    where not(() := ast)
-    with nabl2--report-time(!$[Preprocessing AST [source]],
+    where not(<nabl2--is-empty-ast> ast)
+    with nabl2--analysis-step(!$[Preprocessing AST [source]],
       params := <getfirst(?Params(<id>))> initial;
       ast' := <pre;nabl2--index-ast(|source)> ast
     )
-    with nabl2--report-time(!$[Generating constraints [source]],
+    with nabl2--analysis-step(!$[Generating constraints [source]],
       C := <nabl2--generate-constraint-file(|source,params);nabl2--normalize-constraint> ast'
     )
-    with nabl2--report-time(!$[Storing AST [source]],
+    with nabl2--analysis-step(!$[Storing AST [source]],
       rules(StoredAst : source -> ast)
     )
   
   // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
   nabl2--analyze(pre):
     AnalyzeFinal(source,initial,unit*) -> FinalResult([error*,error2*],[warning*,warning2*],[note*,note2*],analysis2)
-    with nabl2--report-time(!"Normalizing constraints",
+    with nabl2--analysis-step(!"Normalizing constraints",
       C  := <getfirst(?Constraint(<id>))> initial;
       C* := <map(getfirst(?Constraint(<id>)))> unit*;
       C' := <nabl2--normalize-constraint> CConj([C|C*])
     )
-    with nabl2--report-time(!"Solving constraints",
+    with nabl2--analysis-step(!"Solving constraints",
     {| AnalysisTiming:
       lo* := <join(nabl2--label-lt)> (<nabl2--labels>,<nabl2--labels>);
       sol1* := <nabl2--solve-facts> [(<nabl2--initial-solution>,[C'])];
@@ -114,10 +118,10 @@ rules // stuff that depends on nabl2 internals
       sol4* := <map(Fst)> sol3*; // discard constraint part
       timing := <nabl2--get-analysis-timing;qsort(where((Snd;Snd,Snd;Snd);gt))>
     |})
-    where nabl2--report-time(!"Processing solutions",
+    where nabl2--analysis-step(!"Processing solutions",
     with(
       (good,bad) := <partition(not(nabl2--is-erronious));(length,length)> sol4*;
-      with(<debug> $[Found [<int-to-string> good] correct and [<int-to-string> bad] erronious solutions.])
+      try(nabl2-debug-analysis-hook; <debug> $[Found [<int-to-string> good] correct and [<int-to-string> bad] erronious solutions.])
     );
     where(
       sol := <Hd> sol4*
@@ -133,11 +137,11 @@ rules // stuff that depends on nabl2 internals
                   , AlternativeSolutions(<(Tl<+![]);map-with-index(id)> sol4*)
                   | sol
                   ]
-    ));
-    with( nabl2--report-time(!$[Retreiving AST [source]],
+    ))
+    with( nabl2--analysis-step(!$[Retreiving AST [source]],
       ast := <StoredAst>source
     ));
-    where( nabl2--report-time(!"2nd-phase analysis",
+    where( nabl2--analysis-step(!"2nd-phase analysis",
     with(
       (error2*,warning2*,note2*,analysis2) := <nabl2-after-analysis(|source,ast) <+ !([],[],[],analysis)>analysis
     )))
