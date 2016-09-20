@@ -45,9 +45,11 @@ rules // wrap nabl2 api with stored analysis
   get-decl-assocs(|)        = nabl2-get-decl-assocs(|<get-stored-analysis>)
   get-scope-assocs(|)       = nabl2-get-scope-assocs(|<get-stored-analysis>)
   get-scope-reachables(|ns) = nabl2-get-scope-reachables(|<get-stored-analysis>, ns)
+  get-resolved-name(|)      = nabl2-get-resolved-name(|<get-stored-analysis>)
 
 rules // compose nabl2 calls (hide occurrence behind namespaces)
 
+//  get-property(|ns, prop)           = get-decl(|ns);nabl2-mk-occurrence(|ns);get-property(|prop) //@type Term -> Term //TODO: make this work for references as well
   get-property(|ns, prop)           = nabl2-mk-occurrence(|ns);get-property(|prop)   //@type Term -> Term
   get-decl-assocs-with-labels(|ns)  = nabl2-mk-occurrence(|ns);get-decl-assocs       //@type Term -> List((Label,Scope))
   get-decl-assoc-with-labels(|ns)   = get-decl-assocs-with-labels(|ns);Hd            //@type Term -> (Label,Scope)
@@ -64,6 +66,11 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-reachable-names(|ns)    = get-scope-reachables(|ns);map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
   get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
+  get-resolved-name(|ns)            = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@Type Term -> Term
+  is-decl(|ns)                      = where(get-decl-scope(|ns))                     //@type id
+  is-ref(|ns)                       = where(get-ref-scope(|ns))                      //@type id
+  get-decl(|ns)                     = is-decl(|ns)                                   //@Type Term -> Term
+  get-decl(|ns)                     = is-ref(|ns);get-resolved-name(|ns)             //@Type Term -> Term
 
 imports
 

@@ -61,7 +61,8 @@ rules // entity
   
 rules // attributes
 
-  is-attributename = where(is-string;get-property(|"Member","ns");?Attribute())
+  is-attributename = where(is-string;                             get-property(|"Member","ns");?Attribute())
+//  is-attributename = where(is-string;get-resolved-name(|"Member");get-property(|"Member","ns");?Attribute())
 
   attributename-is-derivation = where(is-string;get-property(|"Member","derivationtype");?Derivation())
   attributename-is-default    = where(is-string;get-property(|"Member","derivationtype");?DefaultValue())

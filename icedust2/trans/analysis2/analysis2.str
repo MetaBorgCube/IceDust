@@ -8,14 +8,14 @@ imports // constructors
 
 imports // functions
 
-//  analysis2/path
+  analysis2/path
 //  api/_runtime
 //  api/data-api
 //  api/execute-api
 //  api/data-api
 //  api/data-names-api
 //  api/model-api
-//  api/model-names-api
+  api/model-names-api
 //  api/module-api
   api/module-names-api
 //  lib/nabl-ext
@@ -39,8 +39,10 @@ rules
       <store-analysis>analysis
     with
       modulename := <collect-one(is-modulename)>ast
-//      ;
-//      <debug>modulename
+    with
+      <debug>modulename
+    with
+      <depends-on-and-flows-to-2>modulename
 
 //  analysis2 =
 //    analysis2-clear-index;
@@ -120,27 +122,38 @@ rules
 //      exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
 //      name  := <module-get-modulename>mod;
 //      <index-store-prop(|AST(), name)>exprs
-//
-//rules
-//
-//  depends-on-and-flows-to-2: ast -> ast
+
+rules
+
+  depends-on-and-flows-to-2: modulename -> modulename
+    with
+      attributenames := <modulename-get-attributenames-default-derivation>modulename;
+      <debug>attributenames
+    with
+      <map(attr-depends-on-and-flows-to)>attributenames
+  
+  attr-depends-on-and-flows-to: attrName -> attrName
+    with
+      expr              := <attributename-get-expr>attrName;
+      (p*, q*)          := <expr-pathexprs>expr;
+      pathexprs         := [p*, q*];
+      pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
+      dependencies      := <map(path(|attrName))>all-pathexprs;
+      dataflow          := <map(path-inverse)>dependencies
 //    with
-//      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-//      <map(attr-depends-on-and-flows-to)>attrs
-//      
-//  attr-depends-on-and-flows-to: attr -> attr
-//    with
-//      attrName          := <attr-get-name>attr;
-//      expr              := <attr-get-derivation>attr;
-//      (p*, q*)          := <expr-pathexprs>expr;
-//      pathexprs         := [p*, q*];
-//      pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-//      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
-//      dependencies      := <map(path(|attrName))>all-pathexprs;
-//      dataflow          := <map(path-inverse)>dependencies;
 //      <map(path-store-on-origin)>dependencies;
 //      <map(path-store-on-origin)>dataflow
-//      
+    with
+      <debug(!"attrName          ")>attrName;
+      <debug(!"expr              ")>expr;
+      <debug(!"p*                ")>p*;
+      <debug(!"q*                ")>q*;
+      <debug(!"pathexprs-no-this ")>pathexprs-no-this;
+      <debug(!"all-pathexprs     ")>all-pathexprs;
+      <debug(!"dependencies      ")>dependencies;
+      <debug(!"dataflow          ")>dataflow
+      
 //rules
 //
 //  flows-toposort-2: ast -> ast
