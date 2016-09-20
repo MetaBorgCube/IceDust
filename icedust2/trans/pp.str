@@ -40,3 +40,10 @@ rules
 rules
   
   construct-textual-change = construct-textual-change(pp-partial-icedust2-string, parenthesize, override-reconstruction, resugar)
+
+rules
+
+  pp-option(pp): x -> <pp>x
+    where
+      not(None() := x);
+      not(Some(_) := x)
