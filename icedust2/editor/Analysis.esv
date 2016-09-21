@@ -1,34 +1,10 @@
 module Analysis
 
-//imports
-//
-//  nabl2/Menus
-//  nabl2/References
+imports
+
+  nabl2/Menus
+  nabl2/References
 
 language
 
   observer : editor-analyze (constraint)
-  context  : scopegraph
-
-  
-  
-references
-
-  reference _ : editor-resolve
-  hover _     : editor-hover
-  
-  
-menus
-
-  menu: "Analysis"
-
-    action: "Show File Analysis"                        = show-file-analysis (meta) (realtime) (openeditor)
-    action: "Show File Analysis ATerm"                  = show-file-analysis-aterm (meta) (realtime) (openeditor)
-    action: "Show File Uninterpreted Constraints ATerm" = show-file-uninterpreted-constraints-aterm (meta) (realtime) (openeditor)
-
-    separator
-
-    action: "Show Project Analysis"                        = show-project-analysis (meta) (realtime) (openeditor)
-    action: "Show Project Analysis ATerm"                  = show-project-analysis-aterm (meta) (realtime) (openeditor)
-    action: "Show Project Uninterpreted Constraints ATerm" = show-project-uninterpreted-constraints-aterm (meta) (realtime) (openeditor)
-    
