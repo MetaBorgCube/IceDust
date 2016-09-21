@@ -39,8 +39,8 @@ rules
       <store-analysis>analysis
     with
       modulename := <collect-one(is-modulename)>ast
-    with
-      <debug>modulename
+//    with
+//      <debug>modulename
     with
       <depends-on-and-flows-to-2>modulename
 
@@ -127,12 +127,20 @@ rules
 
   depends-on-and-flows-to-2: modulename -> modulename
     with
-      attributenames := <modulename-get-attributenames-default-derivation>modulename;
-      <debug>attributenames
+      attributenames := <modulename-get-attributenames-default-derivation>modulename
+//    with
+//      <debug>attributenames
     with
-      <map(attr-depends-on-and-flows-to)>attributenames
+      dependencies := <fmap(attrname-dependencies)>attributenames;
+      dataflow     := <map(path-inverse)>dependencies
+    with
+      <debug(!"dependencies ")>dependencies;
+      <debug(!"dataflow     ")>dataflow
+//    with
+//      <map(path-store-on-origin)>dependencies;
+//      <map(path-store-on-origin)>dataflow
   
-  attr-depends-on-and-flows-to: attrName -> attrName
+  attrname-dependencies: attrName -> dependencies
     with
       expr              := <attributename-get-expr>attrName;
       (p*, q*)          := <expr-pathexprs>expr;
@@ -141,18 +149,6 @@ rules
       all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
       dependencies      := <map(path(|attrName))>all-pathexprs;
       dataflow          := <map(path-inverse)>dependencies
-//    with
-//      <map(path-store-on-origin)>dependencies;
-//      <map(path-store-on-origin)>dataflow
-    with
-      <debug(!"attrName          ")>attrName;
-      <debug(!"expr              ")>expr;
-      <debug(!"p*                ")>p*;
-      <debug(!"q*                ")>q*;
-      <debug(!"pathexprs-no-this ")>pathexprs-no-this;
-      <debug(!"all-pathexprs     ")>all-pathexprs;
-      <debug(!"dependencies      ")>dependencies;
-      <debug(!"dataflow          ")>dataflow
       
 //rules
 //

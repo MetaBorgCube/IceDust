@@ -25,8 +25,8 @@ imports // functions
   lib/nabl2
   
 rules // module
-  
-  modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names;filter(is-entityname);string-sort-anno
+
+  modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names(|"Entity");filter(is-entityname);string-sort-anno
   
   modulename-get-entityinstancenames = get-property(|"Module","datascope");get-scope-decl-names;filter(is-entityinstancename);string-sort-anno
   
