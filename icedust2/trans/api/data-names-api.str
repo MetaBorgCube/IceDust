@@ -61,4 +61,8 @@ rules // member values
   membervaluename-is-inverse   = where(membervaluename-get-origin; is-inversename)
   membervaluename-is-shortcut  = where(membervaluename-get-origin; is-shortcutname)
   
+  membervaluename-is-relation-role-inverse = membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
+  
   membervaluename-get-entityinstancename = get-scope(|"MemberValue");get-scope-assoc-name
+  
+  membervaluename-is-left = where(membervaluename-get-origin; name-is-left)

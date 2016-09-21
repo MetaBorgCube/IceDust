@@ -77,18 +77,19 @@ rules
 //    with
 //      shortcutnames := <collect-all(is-shortcutname,conc)>ast;
 //      <debug>shortcutnames
-//    with
-//      einames := <modulename-get-entityinstancenames>modulename;
-//      <debug>einames;
-//      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug)>einames;
-//      <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
-//      <filter(entityinstancename-get-modulename);debug>einames
     with
-      <collect-all(is-decl (|"Member"),conc);debug(!"is-decl  ")>ast;
-      <collect-all(is-ref  (|"Member"),conc);debug(!"is-ref   ")>ast;
-      <collect-all(get-decl(|"Member"),conc);debug(!"get-decl ")>ast;
-      <collect-all(is-decl (|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga1 ")>ast;
-      <collect-all(get-decl(|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga2 ")>ast
+      einames := <modulename-get-entityinstancenames>modulename;
+      <debug>einames;
+      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug;map(get-property(|"Member","ns"));debug)>einames;
+//      <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
+//      <filter(entityinstancename-get-modulename);debug>einames;
+      id
+//    with
+//      <collect-all(is-decl (|"Member"),conc);debug(!"is-decl  ")>ast;
+//      <collect-all(is-ref  (|"Member"),conc);debug(!"is-ref   ")>ast;
+//      <collect-all(get-decl(|"Member"),conc);debug(!"get-decl ")>ast;
+//      <collect-all(is-decl (|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga1 ")>ast;
+//      <collect-all(get-decl(|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga2 ")>ast
 
 rules // foreward calls to nabl2
 
