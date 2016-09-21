@@ -101,6 +101,7 @@ rules // stuff that depends on nabl2 internals
     )
     with nabl2--analysis-step(!$[Storing AST [source]],
       rules(StoredAst : source -> ast)
+      ; <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast
     )
   
   // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
