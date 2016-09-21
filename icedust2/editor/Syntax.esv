@@ -26,6 +26,7 @@ menus
     
   menu: "Debug"
 
+    action: "analysis2-builder"   = analysis2-builder
     action: "debug-get-ast-value" = debug-get-ast-value
 
 views

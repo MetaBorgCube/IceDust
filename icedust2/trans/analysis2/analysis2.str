@@ -44,8 +44,8 @@ rules
       <depends-on-and-flows-to-2>modulename
     with
       <ast-store-membervalues>ast
-    with
-      <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast //TODO: why does nabl2--get-ast-index fail for some strings?
+//    with
+//      <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast //TODO: why does nabl2--get-ast-index fail for some strings?
 
 //  analysis2 =
 //    analysis2-clear-index;

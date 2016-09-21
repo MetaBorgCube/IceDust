@@ -97,6 +97,15 @@ rules
     with
       <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast
 
+  analysis2-builder:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      <store-analysis>path
+    with
+      analysis := <get-stored-analysis>
+    with
+      <nabl2-after-analysis(|path, ast)>analysis
+
 rules // foreward calls to nabl2
 
   editor-hover = nabl2--editor-hover
