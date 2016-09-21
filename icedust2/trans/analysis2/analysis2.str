@@ -94,6 +94,7 @@ rules
   membervalue-s-assocs: memv -> []
     with
       id //TODO: on `foo{rel=foo2}` requires treating as `foo{rel=<noname1{}>foo2}` which requires creating a new definition of EntityInstance in data scope (if I want to NaBL2 based code gen)
+         //TODO: other option is to create a completely new data structure as model, and do AST -> ScopeGraph -> Model -> Java rather than AST -> ScopeGraph as Model -> Java
 
 //  store-expressions: ast -> ast
 //    with
