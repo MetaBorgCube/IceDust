@@ -21,6 +21,7 @@ rules // query
   entityinstance-get-type = ?EntityInstanceNoType(_, _);!None() // no type in concrete syntax (type inferred)
   entityinstance-get-name = ?EntityInstance(<id>, _, _)
   entityinstance-get-name = ?EntityInstanceNoType(<id>, _)
+  entityinstance-get-name = ?EntityInstanceRef(<id>)
   entityinstance-get-membervalues = ?EntityInstance(_, _, <id>)
   entityinstance-get-membervalues = ?EntityInstanceNoType(_, <id>)
   
@@ -53,10 +54,12 @@ rules // manipulate
   membervalue-set-member(member) = MemberValue(member, id)
   
   
-rules // representations    
-  
-  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members) -> EntityInstanceRef(ei)
-  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
+//rules // representations    
+//  
+//  entityinstance-to-entityinstanceref: EntityInstanceRef(ei)             -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members)   -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstanceNoType(ei, members) -> EntityInstanceRef(ei)
+////  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
 
 rules
 

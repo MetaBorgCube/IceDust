@@ -64,9 +64,9 @@ rules
   ast-store-membervalues: ast -> ast
     with
       memvs     := <collect-all(is-membervalue)>ast;
-      memvs-a   := <filter(membervalue-get-name;membervaluename-is-attribute            )>memvs;
-      memvs-rri := <filter(membervalue-get-name;membervaluename-is-relation-role-inverse)>memvs;
-      memvs-s   := <filter(membervalue-get-name;membervaluename-is-shortcut             )>memvs
+      memvs-a   := <filter(where(membervalue-get-name;membervaluename-is-attribute            ))>memvs;
+      memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs;
+      memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
     with
       <debug(!"memvs     ")>memvs;
 //      <map(debug;membervalue-get-name;debug(!"crash? ");nabl2--get-ast-index;debug)>memvs; //TODO: why does abl2--get-ast-index fail here? no attachment?
@@ -75,11 +75,25 @@ rules
       <debug(!"memvs-rri ")>memvs-rri;
       <debug(!"memvs-s   ")>memvs-s
     with
-      <fmap(membervalue-rri-assocs)>memvs-rri
-      
-  membervalue-rri-assocs: memv -> []
+      assoc1* := <fmap(membervalue-rri-assocs)>memvs-rri;
+      assoc2* := <fmap(membervalue-rri-assocs)>memvs-s
     with
-      debug
+      <debug>assoc1*
+      
+  membervalue-rri-assocs: memv -> [assoc1*, assoc2*]
+    with
+      name  := <membervalue-get-name;membervaluename-get-origin>memv;
+      name2 := <name-get-inversename>name;
+      ei    := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
+      expr  := <membervalue-get-expr>memv;
+      ei2*  := <map(entityinstance-get-name)>expr
+    with
+      assoc1* := <map(\ei2->(ei ,name ,ei2)\)>ei2*;
+      assoc2* := <map(\ei2->(ei2,name2,ei )\)>ei2*  //TODO: entityinstancename-get-membervaluename on ei2 with name2 might not exist in scope graph. Can I create a new definition? -> (ei2, name2, ei) can be encoded as (name2', ei) where name2' is a definition in the scope of ei2
+      
+  membervalue-s-assocs: memv -> []
+    with
+      id //TODO: on `foo{rel=foo2}` requires treating as `foo{rel=<noname1{}>foo2}` which requires creating a new definition of EntityInstance in data scope (if I want to NaBL2 based code gen)
 
 //  store-expressions: ast -> ast
 //    with

@@ -38,7 +38,7 @@ rules // entity instance
   entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
   
-  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq(|membername))
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq(|membername));Hd
   
   entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
   
