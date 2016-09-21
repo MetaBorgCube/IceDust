@@ -10,10 +10,9 @@ imports // functions
 
   analysis2/path
 //  api/_runtime
-  api/data-api
 //  api/execute-api
-//  api/data-api
-//  api/data-names-api
+  api/data-api
+  api/data-names-api
 //  api/model-api
   api/model-names-api
 //  api/module-api
@@ -23,7 +22,7 @@ imports // functions
 //  lib/index
 //  lib/lists-tuples
 //  lib/string
-//  lib/traverse
+  lib/traverse
 //  names/naming/names
 //  naming/_notNaBL
   lib/nabl2
@@ -68,6 +67,7 @@ rules
       memvs-s   := <filter(membervalue-get-name;membervaluename-is-shortcut             )>memvs
     with
       <debug(!"memvs     ")>memvs;
+//      <map(debug;membervalue-get-name;debug(!"crash? ");nabl2--get-ast-index;debug)>memvs; //TODO: why does abl2--get-ast-index fail here? no attachment?
 //      <map(debug;membervalue-get-name;debug;membervaluename-get-origin;debug;get-property(|"Member","ns");debug);debug>memvs; //TODO: why does membervaluename-get-origin fail here?
       <debug(!"memvs-a   ")>memvs-a;
       <debug(!"memvs-rri ")>memvs-rri;

@@ -90,6 +90,10 @@ rules
 //      <collect-all(get-decl(|"Member"),conc);debug(!"get-decl ")>ast;
 //      <collect-all(is-decl (|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga1 ")>ast;
 //      <collect-all(get-decl(|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga2 ")>ast
+    with
+      memvs := <collect-all(is-membervalue)>ast;
+      <map(debug;membervalue-get-name;debug(!"crash? ");nabl2--get-ast-index;debug)>memvs; 
+      <map(debug;membervalue-get-name;debug;membervaluename-get-origin;debug;get-property(|"Member","ns");debug);debug>memvs
 
 rules // foreward calls to nabl2
 
