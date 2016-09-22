@@ -23,7 +23,7 @@ imports // functions
   
 rules // Editor services
 
-  editor-resolve-custom:
+  editor-resolve:
     x@(target, position, ast, path, project-path) -> result
     where
       <is-string>target //dont resolve other things
@@ -39,7 +39,7 @@ rules // Editor services
 //  
 //  resolve-child: NaBLHelp(name, _) -> name
 
-  editor-hover-custom:
+  editor-hover:
     x@(target, position, ast, path, project-path) -> result
     with
       result := <debug(!"hover for ");nabl2--editor-hover;debug(!"hover msg ")>x

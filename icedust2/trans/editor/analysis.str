@@ -7,7 +7,7 @@ imports
   
   static-semantics
 
-  pp
+  editor/pp
 
   analysis/_constructors
   analysis/_multiplicity-functions

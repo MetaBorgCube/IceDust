@@ -11,7 +11,7 @@ imports // functions
 //  lib/index
   lib/string
   lib/traverse
-  pp
+  prettyprinting/pp
 //  typing/references-manual
 
 signature constructors

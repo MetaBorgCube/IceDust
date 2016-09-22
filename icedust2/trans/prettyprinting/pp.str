@@ -1,4 +1,4 @@
-module pp
+module prettyprinting/pp
 
 imports
 
@@ -6,15 +6,6 @@ imports
   runtime/refactoring/-
   pp/icedust2-parenthesize
   pp/icedust2-pp
-
-rules
-
-  editor-format:
-    (node, _, ast, path, project-path) -> (filename, result)
-    with
-      ext      := <get-extension> path
-    ; filename := <guarantee-extension(|$[pp.[ext]])> path
-    ; result   := <pp-debug> node
 
 rules
   

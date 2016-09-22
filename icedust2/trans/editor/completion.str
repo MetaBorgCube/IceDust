@@ -11,7 +11,7 @@ imports
   pp/Model-pp
   pp/Types-pp
   pp/icedust2-parenthesize
-  pp
+  prettyprinting/pp
  
   
 rules

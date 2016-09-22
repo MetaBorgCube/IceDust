@@ -10,6 +10,6 @@ language
 
 references
 
-  reference _ : editor-resolve-custom
-  hover _     : editor-hover-custom
+  reference _ : editor-resolve
+  hover _     : editor-hover
   
