@@ -3,6 +3,7 @@ module icedust2
 imports
   
   editor/analysis
+  editor/builders
   editor/completion
   editor/pp
   editor/outline

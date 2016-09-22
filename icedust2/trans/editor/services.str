@@ -15,11 +15,13 @@ imports // functions
 //  analysis2/path
 //  api/_runtime
 //  lib/index
-//  lib/string
-//  prettyprinting/pp
+  lib/nabl2
+  lib/string
+  prettyprinting/pp
 //  names/naming/names
 //  completion/IceDust-cp
 //  runtime/completion/-
+  api/types-names-api
   
 rules // Editor services
 
@@ -30,19 +32,46 @@ rules // Editor services
     with
       result := <nabl2--editor-resolve>x
 
-//  // Resolves a reference when the user control-clicks or presses F3 in the editor.
-//  editor-resolve:
-//    (node, position, ast, path, project-path) -> definition
-//    where
-//      node' := <try(resolve-child)>node;
-//      definition := <_analysis-resolve(|<_language>,path)> node'
-//  
-//  resolve-child: NaBLHelp(name, _) -> name
-
   editor-hover:
     x@(target, position, ast, path, project-path) -> result
     with
-      result := <debug(!"hover for ");nabl2--editor-hover;debug(!"hover msg ")>x
+      path' := <base-filename>project-path; //flakey workaround for http://yellowgrass.org/issue/SpoofaxWithCore/165 only works for files directly in root folder of project
+      <store-analysis>path'
+    with
+      result := <get-editor-properties(pp-partial-icedust2-string;truncate-string(|200));properties-to-html>target
+      
+  get-editor-properties(language-pp) = get-all-editor-properties(language-pp);filter(not(?(_,None())))
+  
+  get-all-editor-properties(language-pp):
+    t ->
+        [
+          ("Target",             <language-pp      <+ !None()>t),
+          ("Target Constructor", <pp-cons          <+ !None()>t),
+          ("Type",               <get-type         <+ !None()>t),
+          ("Multiplicity",       <get-multiplicity <+ !None()>t)
+        ]
+  
+  pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]] where not(is-string)
+  
+  pp-property: a -> a
+    where is-string
+  pp-property: None() -> "-"
+  pp-property: a -> <map(pp-property;\x->("",x)\)>a
+    where is-list
+  pp-property = topdown(try(rm-annotations));write-to-string
+  
+  properties-to-html = map(property-to-html);separate-by(|"<br/>\n");concat-strings
+  property-to-html: ("", prop) -> $[[<property-to-html>prop]]
+  property-to-html: (name, prop) -> $[<b>[name]</b>: [<property-to-html>prop]]
+  property-to-html: list -> $[<div>[<properties-to-html>list]</div>]
+    where is-list
+  property-to-html: prop -> <escape-for-html> $[[<pp-property>prop]]
+
+  escape-for-html =
+    string-replace(|"&", "&amp;") ;
+    string-replace(|"<", "&lt;") ;
+    string-replace(|">", "&gt;") ;
+    string-replace(|"\n", "<br/>")
 
 //  // Returns "hover help" information for a particular node in the editor.
 //  // For references, this rule is invoked using the resolved term.
