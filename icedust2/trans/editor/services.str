@@ -34,6 +34,8 @@ rules // Editor services
 
   editor-hover:
     x@(target, position, ast, path, project-path) -> result
+    where
+      <not(hover-parent-for)>target
     with
       path' := <base-filename>project-path; //flakey workaround for http://yellowgrass.org/issue/SpoofaxWithCore/165 only works for files directly in root folder of project
       <store-analysis>path'
@@ -116,9 +118,9 @@ rules // Editor services
 ////      ext      := <get-extension> path;
 ////      filename := <guarantee-extension(|$[pp.[ext]])> path;
 //      result   := <pp-debug> selected
-//   
-//rules // target of editor services
-//
+   
+rules // target of editor services
+
 //  editor-service-target: (target, position, ast, path, project-path) -> target'
 //    with
 //      if Some(a) := target then
@@ -126,20 +128,15 @@ rules // Editor services
 //      else
 //        target' := target
 //      end
-//
-//  hover-parent-for: a -> a // for constructors with no children hover parent
-//    where
-//      [] := <get-arguments>a;
-//      <not(is-string)>a;
-//      <not(?False())>a;
-//      <not(?True())>a
-//  hover-parent-for: a -> a // for strings, hover parent if it is not a reference
-//    where
-//      <is-string>a;
-//      None() := <_ref-prop>a
-//  hover-parent-for: NaBLHelp(_,_) -> <id>
-//
-//rules // properties for editor services
+
+  hover-parent-for: a -> a // for constructors with no children hover parent, except for literals
+    where
+      [] := <get-arguments>a;
+      <not(?False())>a;
+      <not(?True())>a;
+      <not(?NoValue())>a
+
+rules // properties for editor services
 //  
 //  editor-service-properties(|project-path): target -> properties'
 //    with
