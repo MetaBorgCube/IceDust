@@ -3,8 +3,13 @@ module Analysis
 imports
 
   nabl2/Menus
-  nabl2/References
 
 language
 
   observer : editor-analyze (constraint)
+
+references
+
+  reference _ : editor-resolve-custom
+  hover _     : editor-hover-custom
+  
