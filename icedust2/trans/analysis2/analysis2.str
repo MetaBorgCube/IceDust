@@ -44,6 +44,8 @@ rules
       if <check-nabl2-attachments>ast then
         <ast-store-membervalues>ast
       end
+    with
+      _index-get;debug(!"stored index ")
 
 //  analysis2 =
 //    analysis2-clear-index;
@@ -179,8 +181,6 @@ rules
     with
       <map(path-store-on-origin)>dependencies;
       <map(path-store-on-origin)>dataflow
-    with
-      _index-get;debug
 
   attrname-dependencies: attrName -> dependencies
     with

@@ -112,5 +112,5 @@ rules
     (selected, position, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"index.aterm")> path;
-      result   := <_index-get;debug> //TODO: why is the index empty?
+      result   := <_index-get;debug(!"stored index ")> //TODO: why is the index empty?
       

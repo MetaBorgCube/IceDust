@@ -30,8 +30,8 @@ rules // @type List(String, List(String, List(Term)))
   
 rules // internal storage
 
-  _index-set = ?index; rules(Index: None() -> index)
-  _index-get = !None();Index <+ ![]
+  _index-set = ?index; rules(Index := index)
+  _index-get = Index <+ ![]
 
 rules // internal data structure
   
