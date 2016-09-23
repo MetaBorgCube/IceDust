@@ -19,7 +19,7 @@ imports // functions
   api/module-names-api
 //  lib/nabl-ext
 //  lib/graph
-//  lib/index
+  lib/index
 //  lib/lists-tuples
 //  lib/string
   lib/traverse
@@ -38,14 +38,12 @@ rules
       <store-analysis>analysis
     with
       modulename := <collect-one(is-modulename)>ast
-//    with
-//      <debug>modulename
     with
       <depends-on-and-flows-to-2>modulename
     with
-      <ast-store-membervalues>ast
-//    with
-//      <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast //TODO: why does nabl2--get-ast-index fail for some strings?
+      if <check-nabl2-attachments>ast then
+        <ast-store-membervalues>ast
+      end
 
 //  analysis2 =
 //    analysis2-clear-index;
@@ -61,6 +59,11 @@ rules
 
 rules
 
+  check-nabl2-attachments = where(collect-all(is-string);(map(nabl2--get-ast-index) <+ filter(not(nabl2--get-ast-index));debug(!"The following terms do not have an nabl2 attachment ");fail))
+  nabl2--get-ast-index = fail //is an internal nabl2 strategy
+
+rules
+
   ast-store-membervalues: ast -> ast
     with
       memvs     := <collect-all(is-membervalue)>ast;
@@ -69,16 +72,15 @@ rules
       memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
     with
       <debug(!"memvs     ")>memvs;
-//      <map(debug;membervalue-get-name;debug(!"crash? ");nabl2--get-ast-index;debug)>memvs; //TODO: why does abl2--get-ast-index fail here? no attachment?
-//      <map(debug;membervalue-get-name;debug;membervaluename-get-origin;debug;get-property(|"Member","ns");debug);debug>memvs; //TODO: why does membervaluename-get-origin fail here?
       <debug(!"memvs-a   ")>memvs-a;
       <debug(!"memvs-rri ")>memvs-rri;
       <debug(!"memvs-s   ")>memvs-s
     with
       assoc1* := <fmap(membervalue-rri-assocs)>memvs-rri;
-      assoc2* := <fmap(membervalue-rri-assocs)>memvs-s
+      assoc2* := <fmap(membervalue-s-assocs  )>memvs-s
     with
-      <debug>assoc1*
+      <debug>assoc1*;
+      <debug>assoc2*
       
   membervalue-rri-assocs: memv -> [assoc1*, assoc2*]
     with
@@ -174,13 +176,12 @@ rules
     with
       <debug(!"dependencies ")>dependencies;
       <debug(!"dataflow     ")>dataflow
-//    with
-//      <map(path-store-on-origin)>dependencies;
-//      <map(path-store-on-origin)>dataflow
+    with
+      <map(path-store-on-origin)>dependencies;
+      <map(path-store-on-origin)>dataflow
+    with
+      _index-get;debug
 
-//  path-store-on-origin: path@DependencyPath(origin, _) -> <index-store-prop(|DependsOn(), origin)>path
-//  path-store-on-origin: path@DataflowPath(  origin, _) -> <index-store-prop(|FlowsTo(),   origin)>path
-  
   attrname-dependencies: attrName -> dependencies
     with
       expr              := <attributename-get-expr>attrName;

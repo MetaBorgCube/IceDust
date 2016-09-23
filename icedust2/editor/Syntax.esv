@@ -29,6 +29,10 @@ menus
     action: "analysis2-builder"   = analysis2-builder
     action: "debug-get-ast-value" = debug-get-ast-value
 
+  menu: "Analysis2" (openeditor)
+  
+    action: "Analysis2" = debug-show-index
+
 views
   
   outline view: editor-outline (source)

@@ -57,4 +57,8 @@ rules // List(a) -> a
 rules // s1:a->a'   s2:b->b'  (a,b)->(a',b')
 
   split2(s1,s2) = !(<Fst;s1>,<Snd;s2>) //fixed version of split
+
+rules
+
+  append(|t) = ?t*;![t*,t]
   

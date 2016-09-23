@@ -8,7 +8,7 @@ imports // constructors
 imports // functions
 
   api/model-names-api
-//  lib/index
+  lib/index
   lib/string
   lib/traverse
   prettyprinting/pp
@@ -93,8 +93,8 @@ rules
   path-pp: DependencyPath(origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] <- [<pp-partial-icedust2-string>pathexpr]]
   path-pp: DataflowPath  (origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] -> [<pp-partial-icedust2-string>pathexpr]]
   
-//  path-store-on-origin: path@DependencyPath(origin, _) -> <index-store-prop(|DependsOn(), origin)>path
-//  path-store-on-origin: path@DataflowPath(  origin, _) -> <index-store-prop(|FlowsTo(),   origin)>path
+  path-store-on-origin: path@DependencyPath(origin, _) -> <index-add(|origin, DependsOn())>path
+  path-store-on-origin: path@DataflowPath(  origin, _) -> <index-add(|origin, FlowsTo()  )>path
 
   path-last = ?DependencyPath(_, <pathexpr-last>)
   path-last = ?DataflowPath  (_, <pathexpr-last>)

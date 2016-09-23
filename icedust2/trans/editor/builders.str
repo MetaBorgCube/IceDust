@@ -7,6 +7,7 @@ imports
   api/module-names-api
   desugaring/desugar
   editor/pp
+  lib/index
   lib/nabl2
 
 rules // Debugging
@@ -104,3 +105,12 @@ rules
       analysis := <get-stored-analysis>
     with
       <nabl2-after-analysis(|path, ast)>analysis
+
+rules
+
+  debug-show-index:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"index.aterm")> path;
+      result   := <_index-get;debug> //TODO: why is the index empty?
+      
