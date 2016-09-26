@@ -22,6 +22,7 @@ imports // functions
   lib/index
   lib/lists-tuples
 //  lib/string
+  lib/origin
   lib/traverse
 //  names/naming/names
 //  naming/_notNaBL
@@ -73,18 +74,13 @@ rules
       memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs;
       memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
     with
-      <debug(!"memvs     ")>memvs;
-      <debug(!"memvs-a   ")>memvs-a;
-      <debug(!"memvs-rri ")>memvs-rri;
-      <debug(!"memvs-s   ")>memvs-s
-    with
       assoc1* := <fmap(membervalue-rri-assocs)>memvs-rri;
       assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
       assoc*  := [assoc1*, assoc2*]
     with
-      <debug>assoc*
+      <debug(!"assocs       ")>assoc*
     with
-      <map(index-add-prop(|Rel()))>assoc*
+      <map(index-add-prop(|Assoc()))>assoc*
       
   membervalue-rri-assocs: memv -> [assoc1*, assoc2*]
     with
@@ -93,77 +89,41 @@ rules
       ei          := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
       expr        := <membervalue-get-expr>memv;
       ei2*        := <map(entityinstance-get-name;get-decl(|"Member"))>expr
-//    with
-//      assoc1* := <map(\ei2->(ei ,name ,ei2)\)>ei2*;
-//      assoc2* := <map(\ei2->(ei2,name2,ei )\)>ei2*
     with
       assoc1* := <map(\ei2->(name,                                                      ei2)\)>ei2*;
       assoc2* := <map(\ei2->(<entityinstancename-get-membervaluename(|name2origin)>ei2, ei )\)>ei2*  //TODO: entityinstancename-get-membervaluename on ei2 with name2 might not exist in scope graph. Can I create a new definition? -> (ei2, name2, ei) can be encoded as (name2', ei) where name2' is a definition in the scope of ei2
       
-  membervalue-s-assocs: memv -> []
+  membervalue-s-assocs: memv -> assoc*
     with
-      id //TODO: on `foo{rel=foo2}` requires treating as `foo{rel=<noname1{}>foo2}` which requires creating a new definition of EntityInstance in data scope (if I want to NaBL2 based code gen)
-         //TODO: other option is to create a completely new data structure as model, and do AST -> ScopeGraph -> Model -> Java rather than AST -> ScopeGraph as Model -> Java
+      assoc* := <membervalue-get-expr;fmap(membervalue-s-expr-assocs(|memv))>memv
 
-//  store-expressions: ast -> ast
-//    with
-//      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-//      <map(attr-store-expr)>attrs;
-//      memvs := <collect-all(is-membervalue)>ast;
-//      <map(membervalue-store-expr)>memvs;
-//      <module-store-expr>ast
-//  
-//  attr-store-expr: attr -> attr
-//    with
-//      derivation := <attr-get-derivation>attr;
-//      attrName   := <attr-get-name>attr;
-//      <index-store-prop(|AST(), attrName)>derivation
-//      
-//  membervalue-store-expr: memv -> memv
-//    with
-//      expr := <membervalue-get-expr>memv;
-//      expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
-//      name := <membervalue-get-name>memv;
-//      <index-store-prop(|AST(), name)>expr';
-//      eiNamesTuples := <membervalue-getall-einames;filter((?None()<+is-entityinstancename,is-entityinstancename))>expr' // not all identifiers might be resolved in erroneous programs
-//    with
-//      if <membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse>name then
-//        eiNames := <map(Snd)>eiNamesTuples;
-//        <map(index-store-prop    (|Rel(),    name))>eiNames;
-//        eiName := <membervaluename-get-entityinstancename>name;
-//        names  := <map(entityinstancename-get-membervaluename(|<membervaluename-get-origin;name-get-inversename>name))>eiNames;
-//        <map(index-store-prop-inv(|RelInv(), eiName))>names
-//      end
-//    with
-//      if <membervaluename-is-shortcut>name then
-//        invName := <get-member-origin;shortcutname-get-inversename>name;
-//        invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
-//        <index-store-def>invvalueName;
-//        <index-store-prop(|NablProp_member-origin(), invvalueName)>invName;
-//        roleName := <get-member-origin;shortcutname-get-rolename>name;
-//        <map(store-shortcut-helper(|invvalueName, invName, roleName))>eiNamesTuples
-//      end
-//      
-//  store-shortcut-helper(|invvalueName, invName, roleName): (riName, eiName2) -> None()
-//    with
-//      eiName       := <membervaluename-get-entityinstancename>invvalueName;
-//      relationName := <attributename-get-entityname>roleName;
-//      if None() := riName then
-//        riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
-//        riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
-//        <index-store-def>riName';
-//        <index-store-prop(|Type(), riName')><_get-type>invName
-//      else
-//        riName' := riName
-//      end;
-//      <index-store-prop(|Rel(), invvalueName)>riName';
-//      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>invName)>riName')>eiName;
-//      rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
-//      <index-store-def>rolevalueName;
-//      <index-store-prop(|NablProp_member-origin(), rolevalueName)>roleName;
-//      <index-store-prop(|Rel(), rolevalueName)>eiName2;
-//      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>roleName)>eiName2)>riName'
-//  
+  membervalue-s-expr-assocs(|memv): expr -> [assoc1, assoc2, assoc3, assoc4]
+    with
+      name         := <membervalue-get-name>memv;
+      eiName       := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
+      eiName2      := <entityinstance-get-name;get-decl(|"Member")>expr;
+      roleName1    := <membervaluename-get-origin;shortcutname-get-rolename1>name;
+      roleName2    := <membervaluename-get-origin;shortcutname-get-rolename2>name;
+      inverseName1 := <rolename-get-inversename>roleName1;
+      inverseName2 := <rolename-get-inversename>roleName2;
+      if riName    := <relation-instance-get-name>expr then
+        id
+      else
+        relationName  := <attributename-get-entityname>roleName1;
+        modulename    := <entityinstancename-get-modulename>eiName;
+        riName-string := <custom-origin(|name)>$[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
+        riName        := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName
+      end;
+      memv-r1-name := <entityinstancename-get-membervaluename(|roleName1)>riName;
+      memv-r2-name := <entityinstancename-get-membervaluename(|roleName2)>riName;
+      memv-i1-name := <entityinstancename-get-membervaluename(|inverseName1)>eiName;
+      memv-i2-name := <entityinstancename-get-membervaluename(|inverseName2)>eiName2
+    with
+      assoc1 := (memv-i1-name, riName);
+      assoc2 := (memv-r1-name, eiName);
+      assoc3 := (memv-r2-name, eiName2);
+      assoc4 := (memv-i2-name, riName)
+
 //  module-store-expr: mod -> mod
 //    with
 //      exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;

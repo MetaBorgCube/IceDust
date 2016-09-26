@@ -22,8 +22,12 @@ rules // query
   entityinstance-get-name = ?EntityInstance(<id>, _, _)
   entityinstance-get-name = ?EntityInstanceNoType(<id>, _)
   entityinstance-get-name = ?EntityInstanceRef(<id>)
+  entityinstance-get-name = ?EntityInstanceWrapper(_, <entityinstance-get-name>)
   entityinstance-get-membervalues = ?EntityInstance(_, _, <id>)
   entityinstance-get-membervalues = ?EntityInstanceNoType(_, <id>)
+  
+  relation-instance-get-name = ?RelationInstanceNoType(<id> ,[])
+  relation-instance-get-name = ?EntityInstanceWrapper(<relation-instance-get-name>,_)
   
   membervalue-get-name = ?MemberValue(<id>, _)
   membervalue-get-expr = ?MemberValue(_, LitVal(<id>))

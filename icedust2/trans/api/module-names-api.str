@@ -28,7 +28,12 @@ rules // module
 
   modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names(|"Entity");filter(is-entityname);string-sort-anno
   
-  modulename-get-entityinstancenames = get-property(|"Module","datascope");get-scope-decl-names;filter(is-entityinstancename);string-sort-anno
+  modulename-get-entityinstancenames    = concat(modulename-get-entityinstancenames-sg, modulename-get-entityinstancenames-i);string-sort-anno
+  modulename-get-entityinstancenames-sg = get-property(|"Module","datascope");get-scope-decl-names;filter(is-entityinstancename)
+  modulename-get-entityinstancenames-i  = index-get(|"Member")
+  
+  modulename-get-entityinstancename(|einame) = modulename-get-entityinstancenames;filter(eq-no-anno(|einame));Hd
+  modulename-get-entityinstancename(|einame) = modulename-decl-entityinstancename(|einame)
   
   // string -> [string]
   modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)

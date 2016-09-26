@@ -134,8 +134,8 @@ rules // shortcuts
 
   is-shortcutname = where(is-string;get-property(|"Member","ns");?Shortcut())
   
-  shortcutname-get-rolename1          = get-property(|"Member","originrole")
-  shortcutname-get-rolename2          = get-property(|"Member","originrole2")
+  shortcutname-get-rolename1          = get-property(|"Member","originrole") ;get-resolved-name(|"Member")
+  shortcutname-get-rolename2          = get-property(|"Member","originrole2");get-resolved-name(|"Member")
   
   shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
   shortcutname-get-rolename           = shortcutname-get-rolename2
