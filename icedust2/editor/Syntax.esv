@@ -28,9 +28,10 @@ menus
 
     action: "debug-get-ast-value" = debug-get-ast-value
 
-  menu: "Analysis2"
+  menu: "Analysis2" (openeditor)
   
-    action: "Analysis2" = analysis2-builder (openeditor)
+    action: "Analysis2"                  = analysis2-builder
+    action: "Analysis2 with key origins" = analysis2-builder-key-origins
 
 views
   
