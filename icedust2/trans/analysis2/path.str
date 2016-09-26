@@ -83,7 +83,7 @@ rules
   path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
     with
       inv-origin := <pathexpr-last>pathexpr;
-      inv-origin-def := <get-resolved-name(|"Member")>inv-origin;
+      inv-origin-def := <get-decl(|"Member")>inv-origin;
       if pathexpr-shortened := <pathexpr-shorten>pathexpr then
         inv-pathexpr := MemberAccess(<pathexpr-inverse>pathexpr-shortened, origin)
       else
