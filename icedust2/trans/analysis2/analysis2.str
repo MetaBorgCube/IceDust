@@ -8,6 +8,7 @@ imports // constructors
 
 imports // functions
 
+  analysis2/check
   analysis2/path
 //  api/_runtime
 //  api/execute-api
@@ -45,7 +46,9 @@ rules
       <flows-toposort-2>modulename
     with
       if <check-nabl2-attachments>ast then
-        <ast-store-membervalues>ast
+        <ast-store-membervalues>ast//;
+//        error* := <analysis2check>modulename; //TODO: requires to store types/origins
+//        <map(debug)>error*
       end
 
 //  analysis2 =

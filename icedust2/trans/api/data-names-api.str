@@ -6,7 +6,7 @@ imports // constructors
 //  api/_runtime-constructors
 //  desugaring/constructors
 //  names/naming/names
-//  analysis2/constructors
+  analysis2/constructors
   analysis/_constructors
 
 imports // functions
@@ -58,7 +58,7 @@ rules // member values
   is-membervaluename = where(is-string;get-property(|"MemberValue","ns");?MemberValue())
 
 //  membervaluename-get-expr = index-get-prop(|AST());Hd
-//  membervaluename-get-values = index-get-prop(|Rel())
+  membervaluename-get-values = index-get2(|Assoc())
 //  membervaluename-get-values-inv = index-get-prop(|RelInv())
 //  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
