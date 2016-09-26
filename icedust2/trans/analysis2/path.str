@@ -61,8 +61,8 @@ rules
   pathexpr-remove-shortcuts: e@Ref(name)                -> MemberAccess(Ref(inverseName), roleName)                                           where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
   pathexpr-remove-shortcuts: e@Ref(name)                -> e
 
-  pathexpr-last: MemberAccess(expr, name) -> name
-  pathexpr-last: Ref(name)                -> name
+  pathexpr-last: MemberAccess(expr, name) -> <get-decl(|"Member")>name
+  pathexpr-last: Ref(name)                -> <get-decl(|"Member")>name
   
   pathexpr-first: MemberAccess(expr, name) -> <pathexpr-first>expr
   pathexpr-first: Ref(name)                -> name

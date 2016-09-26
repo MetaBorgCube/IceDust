@@ -4,7 +4,7 @@ imports // constructors
   
   signatures/Expressions-sig
 //  api/_runtime-constructors
-//  analysis2/constructors
+  analysis2/constructors
 
 imports // functions
 
@@ -18,9 +18,9 @@ imports // functions
 //  api/module-api
   api/module-names-api
 //  lib/nabl-ext
-//  lib/graph
+  lib/graph
   lib/index
-//  lib/lists-tuples
+  lib/lists-tuples
 //  lib/string
   lib/traverse
 //  names/naming/names
@@ -40,6 +40,8 @@ rules
       modulename := <collect-one(is-modulename)>ast
     with
       <depends-on-and-flows-to-2>modulename
+    with
+      <flows-toposort-2>modulename
     with
       if <check-nabl2-attachments>ast then
         <ast-store-membervalues>ast
@@ -190,25 +192,24 @@ rules
       dependencies      := <map(path(|attrName))>all-pathexprs;
       dataflow          := <map(path-inverse)>dependencies
       
-//rules
-//
-//  flows-toposort-2: ast -> ast
-//    with
-//      moduleName      := <module-get-modulename>ast;
-//      attributeNames* := <modulename-get-attributenames>moduleName;
-//      relationNames*  := <modulename-get-relationnames-left>moduleName;
-//      roleNames*      := <modulename-get-rolenames>moduleName;
-//      graphNames      := [attributeNames*, relationNames*, roleNames*];
-//      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
-//      <index-store-prop(|TopoSort(), moduleName)>toposort;
-//      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
-//      <map(index-store-prop(|TopoSort()))>numbers
-//
-//  toposort-edge: name -> [names*, inv-names*]
-//    with
-//      names* := <index-get-prop(|FlowsTo());map(path-last)>name;
-//      if inv-name := <name-get-inversename>name then
-//        inv-names* := <index-get-prop(|FlowsTo());map(path-last)>inv-name
-//      else
-//        inv-names* := []
-//      end
+rules
+
+  flows-toposort-2: moduleName -> moduleName
+    with
+      attributeNames* := <modulename-get-attributenames>moduleName;
+      relationNames*  := <modulename-get-relationnames-left>moduleName;
+      roleNames*      := <modulename-get-rolenames>moduleName;
+      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
+      <index-set(|moduleName, TopoSort())>toposort;
+      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+      <map(index-set-prop(|TopoSort()))>numbers
+
+  toposort-edge: name -> [names*, inv-names*]
+    with
+      names* := <index-get2(|FlowsTo());map(path-last)>name;
+      if inv-name := <name-get-inversename>name then
+        inv-names* := <index-get2(|FlowsTo());map(path-last)>inv-name
+      else
+        inv-names* := []
+      end
