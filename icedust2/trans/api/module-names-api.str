@@ -63,3 +63,9 @@ rules // module
 //  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
 //  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
   
+  modulename-decl-entityinstancename(|einame): modulename -> einame-decl
+    with
+      einame-decl := einame{modulename};
+      <index-add(|modulename , "Member")>einame-decl;
+      <index-add(|einame-decl, "Parent")>modulename
+  

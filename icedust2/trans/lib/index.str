@@ -25,8 +25,8 @@ rules // @type List(String, List(String, List(Term)))
 //      index' := <map(if Fst;?name then filter(Fst;not(?prop)) else id end)>index;
 //      <_index-set>index'
 
-  index-set(|name, prop) = ?val;_index-get;index-data-set(|name, prop, val);_index-set
-  index-add(|name, prop) = ?val;_index-get;index-data-add(|name, prop, val);_index-set
+  index-set(|name, prop) = ?val;_index-get;index-data-set(|name, prop, val);_index-set;!val
+  index-add(|name, prop) = ?val;_index-get;index-data-add(|name, prop, val);_index-set;!val
   
   index-set = ?(name, prop, val);!val;index-set(|name, prop)
   index-add = ?(name, prop, val);!val;index-add(|name, prop)

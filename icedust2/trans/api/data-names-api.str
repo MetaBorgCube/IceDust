@@ -15,9 +15,9 @@ imports // functions
   api/model-names-api
 //  lib/origin
 //  lib/search
-//  lib/index
+  lib/index
 //  lib/nabl-ext
-//  lib/lists-tuples
+  lib/lists-tuples
   lib/eq
   lib/string
   lib/nabl2
@@ -30,7 +30,9 @@ rules // entity instance
 //  entityinstancename-get-exprs = index-get-prop(|AST());Hd
 //  entityinstancename-get-membervalues = index-get-prop(|AST())
 
-  entityinstancename-get-membervaluenames = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename);string-sort-anno
+  entityinstancename-get-membervaluenames    = concat(entityinstancename-get-membervaluenames-sg, entityinstancename-get-membervaluenames-i);string-sort-anno
+  entityinstancename-get-membervaluenames-sg = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename)
+  entityinstancename-get-membervaluenames-i  = index-get(|"Member")
 
   entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
   entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
@@ -38,11 +40,18 @@ rules // entity instance
   entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
   
-  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq(|membername));Hd
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq-no-anno(|membername));Hd
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-decl-membervaluename(|membername)
   
   entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
   
   entityinstancename-get-modulename = get-scope(|"Member");get-scope-direct-edge-scope;get-scope-assoc-name
+
+  entityinstancename-decl-membervaluename(|membername): eiName -> membername-decl
+    with
+      membername-decl := membername{eiName};
+      <index-add(|eiName         , "Member")>membername-decl;
+      <index-add(|membername-decl, "Parent")>eiName
 
 rules // member values
 
