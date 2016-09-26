@@ -12,7 +12,7 @@ imports // functions
 
 //  api/_generated
 //  // analysis/rules
-//  analysis2/path
+  analysis2/path
 //  api/_runtime
 //  lib/index
   lib/nabl2
@@ -22,6 +22,7 @@ imports // functions
 //  completion/IceDust-cp
 //  runtime/completion/-
   api/types-names-api
+  api/model-names-api
   
 rules // Editor services
 
@@ -40,6 +41,10 @@ rules // Editor services
       path' := <base-filename>project-path; //flakey workaround for http://yellowgrass.org/issue/SpoofaxWithCore/165 only works for files directly in root folder of project
       <store-analysis>path'
     with
+      analysis := <get-stored-analysis>
+    with
+      <nabl2-after-analysis(|path, ast)>analysis
+    with
       result := <get-editor-properties(pp-partial-icedust2-string;truncate-string(|200));properties-to-html>target
       
   get-editor-properties(language-pp) = get-all-editor-properties(language-pp);filter(not(?(_,None())))
@@ -47,10 +52,13 @@ rules // Editor services
   get-all-editor-properties(language-pp):
     t ->
         [
-          ("Target",             <language-pp      <+ !None()>t),
-          ("Target Constructor", <pp-cons          <+ !None()>t),
-          ("Type",               <get-type         <+ !None()>t),
-          ("Multiplicity",       <get-multiplicity <+ !None()>t)
+          ("Target",             <language-pp              <+ !None()>t),
+          ("Target Constructor", <pp-cons                  <+ !None()>t),
+          ("Type",               <get-type                 <+ !None()>t), //TODO: make this work on declaration names
+          ("Multiplicity",       <get-multiplicity         <+ !None()>t), //TODO: make this work on declaration names
+          ("Depends On",         <name-get-dependson-paths <+ !None()>t),
+          ("Flows To",           <name-get-flowsto-paths   <+ !None()>t),
+          ("Topological Sort",   <name-get-toposort        <+ !None()>t)
         ]
   
   pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]] where not(is-string)
@@ -60,11 +68,13 @@ rules // Editor services
   pp-property: None() -> "-"
   pp-property: a -> <map(pp-property;\x->("",x)\)>a
     where is-list
+  pp-property = path-pp
   pp-property = topdown(try(rm-annotations));write-to-string
   
   properties-to-html = map(property-to-html);separate-by(|"<br/>\n");concat-strings
   property-to-html: ("", prop) -> $[[<property-to-html>prop]]
   property-to-html: (name, prop) -> $[<b>[name]</b>: [<property-to-html>prop]]
+    where is-tuple
   property-to-html: list -> $[<div>[<properties-to-html>list]</div>]
     where is-list
   property-to-html: prop -> <escape-for-html> $[[<pp-property>prop]]
@@ -132,6 +142,7 @@ rules // target of editor services
   hover-parent-for: a -> a // for constructors with no children hover parent, except for literals
     where
       [] := <get-arguments>a;
+      <not(is-string)>a; //TODO: what about strings of declarations, should they be hovering whole declaration constructor? And for references?
       <not(?False())>a;
       <not(?True())>a;
       <not(?NoValue())>a

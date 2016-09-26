@@ -8,7 +8,7 @@ imports // constructors
 //  desugaring/constructors
 //  names/naming/names
 //  naming/_notNaBL
-//  analysis2/constructors
+  analysis2/constructors
   analysis/_constructors
 
 imports // functions
@@ -21,10 +21,10 @@ imports // functions
   lib/origin
 //  lib/search
   lib/string
-//  lib/index
+  lib/index
 //  lib/nabl-ext
   lib/lists-tuples
-//  analysis2/path
+  analysis2/path
   lib/nabl2
 
 rules // entity
@@ -128,6 +128,8 @@ rules
 //  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
 //  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
+  name-get-type = get-property(|"Member","type")
+
 rules // shortcuts
 
   is-shortcutname = where(is-string;get-property(|"Member","ns");?Shortcut())
@@ -139,12 +141,15 @@ rules // shortcuts
   shortcutname-get-rolename           = shortcutname-get-rolename2
   shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
 
-//rules // combined
-//  
-//  name-get-flowsto-paths = index-get-prop(|FlowsTo())
-//  
-//  name-get-flowsto-pathexprs = name-get-flowsto-paths;map(path-pathexpr)
-//
+rules // combined
+  
+  name-get-dependson-paths = index-get(|DependsOn())
+  name-get-flowsto-paths   = index-get(|FlowsTo())
+  name-get-toposort        = index-get(|TopoSort())
+  
+  name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
+  name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
+
 //rules // helper
 //
 //  def-to-name: d@Def(uri) -> name{d} with  name := <_nabl-uri-name>uri
