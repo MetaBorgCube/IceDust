@@ -44,8 +44,6 @@ rules
       if <check-nabl2-attachments>ast then
         <ast-store-membervalues>ast
       end
-    with
-      _index-get;debug(!"stored index ")
 
 //  analysis2 =
 //    analysis2-clear-index;

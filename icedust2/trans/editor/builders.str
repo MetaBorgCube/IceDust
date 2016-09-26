@@ -98,19 +98,13 @@ rules
 //      memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs
 
   analysis2-builder:
-    (selected, position, ast, path, project-path) -> None()
+    (selected, position, ast, path, project-path) -> (filename, result)
     with
       <store-analysis>path
     with
       analysis := <get-stored-analysis>
     with
       <nabl2-after-analysis(|path, ast)>analysis
-
-rules
-
-  debug-show-index:
-    (selected, position, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"index.aterm")> path;
-      result   := <_index-get;debug(!"stored index ")> //TODO: why is the index empty?
-      
+      result   := <_index-get>

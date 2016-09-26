@@ -26,12 +26,11 @@ menus
     
   menu: "Debug"
 
-    action: "analysis2-builder"   = analysis2-builder
     action: "debug-get-ast-value" = debug-get-ast-value
 
-  menu: "Analysis2" (openeditor)
+  menu: "Analysis2"
   
-    action: "Analysis2" = debug-show-index
+    action: "Analysis2" = analysis2-builder (openeditor)
 
 views
   
