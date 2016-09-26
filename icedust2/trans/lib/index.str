@@ -2,6 +2,7 @@ module lib/index
 
 imports
 
+  lib/eq
   lib/lists-tuples
 
 rules // @type List(String, List(String, List(Term)))
@@ -37,20 +38,20 @@ rules // internal data structure
   
   index-data-get(|name): index -> prop*
     where
-      prop* := <lookup>(name, index)
+      prop* := <lookup(split2(id,Fst);eq-origin)>(name, index)
       
   index-data-get(|name, prop): index -> val*
     where
-      prop* := <lookup>(name, index);
-      val*  := <lookup>(prop, prop*)
+      prop* := <lookup(split2(id,Fst);eq-origin)>(name, index);
+      val*  := <lookup(split2(id,Fst);eq-origin)>(prop, prop*)
 
   index-data-set(|name, prop, vals): index -> index'
     with
       if index-data-get(|name, prop) then
-        index'   := <map(try(where(Fst;?name);split2(id,map(try(where(Fst;?prop);split2(id,!vals))))))>index
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;eq-origin(|prop));split2(id,!vals))))))>index
       else
         if index-data-get(|name) then
-          index' := <map(try(where(Fst;?name);split2(id,append(|(prop,vals)))))>index
+          index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,vals)))))>index
         else
           index' := <append(|(name, [(prop,vals)]))>index
         end
@@ -59,10 +60,10 @@ rules // internal data structure
   index-data-add(|name, prop, val): index -> index'
     with
       if index-data-get(|name, prop) then
-        index'   := <map(try(where(Fst;?name);split2(id,map(try(where(Fst;?prop);split2(id,append(|val)))))))>index
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;eq-origin(|prop));split2(id,append(|val)))))))>index
       else
         if index-data-get(|name) then
-          index' := <map(try(where(Fst;?name);split2(id,append(|(prop,[val])))))>index
+          index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,[val])))))>index
         else
           index' := <append(|(name, [(prop,[val])]))>index
         end
