@@ -61,4 +61,8 @@ rules // s1:a->a'   s2:b->b'  (a,b)->(a',b')
 rules
 
   append(|t) = ?t*;![t*,t]
+
+rules // s:(a,a)->a/fail  (a, List(a, b)) -> b
+
+  lookup2(keyeq) = lookup(split2(id,Fst);keyeq);Snd
   

@@ -38,17 +38,17 @@ rules // internal data structure
   
   index-data-get(|name): index -> prop*
     where
-      prop* := <lookup(split2(id,Fst);eq-origin)>(name, index)
+      prop* := <lookup2(eq-origin)>(name, index)
       
   index-data-get(|name, prop): index -> val*
     where
-      prop* := <lookup(split2(id,Fst);eq-origin)>(name, index);
-      val*  := <lookup(split2(id,Fst);eq-origin)>(prop, prop*)
+      prop* := <lookup2(eq-origin)>(name, index);
+      val*  := <debug;lookup;debug>(prop, prop*)
 
   index-data-set(|name, prop, vals): index -> index'
     with
       if index-data-get(|name, prop) then
-        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;eq-origin(|prop));split2(id,!vals))))))>index
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;?prop);split2(id,!vals))))))>index
       else
         if index-data-get(|name) then
           index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,vals)))))>index
@@ -60,7 +60,7 @@ rules // internal data structure
   index-data-add(|name, prop, val): index -> index'
     with
       if index-data-get(|name, prop) then
-        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;eq-origin(|prop));split2(id,append(|val)))))))>index
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;?prop);split2(id,append(|val)))))))>index
       else
         if index-data-get(|name) then
           index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,[val])))))>index
