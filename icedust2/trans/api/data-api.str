@@ -30,7 +30,7 @@ rules // query
   relation-instance-get-name = ?EntityInstanceWrapper(<relation-instance-get-name>,_)
   
   membervalue-get-name = ?MemberValue(<id>, _)
-  membervalue-get-expr = ?MemberValue(_, LitVal(<id>))
+  membervalue-get-expr = ?MemberValue(_, [LitVal(<id>)])
   membervalue-get-expr = ?MemberValue(_, <id>) //if not litval
 
 rules // properties

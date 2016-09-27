@@ -32,10 +32,6 @@ imports // functions
 rules
 
   nabl2-after-analysis(|source,ast): analysis -> ([],[],[],analysis)
-//    with
-//      <debug>source;
-//      <debug>ast;
-//      <debug>analysis
     with
       <store-analysis>analysis
     with
@@ -45,23 +41,13 @@ rules
     with
       <flows-toposort-2>modulename
     with
-      if <check-nabl2-attachments>ast then
+      if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
         <ast-store-membervalues>ast;
         error* := <analysis2check>modulename;
         <map(debug)>error*
+      else
+        error* := []
       end
-
-//  analysis2 =
-//    analysis2-clear-index;
-//    store-expressions;
-//    depends-on-and-flows-to-2;
-//    flows-toposort-2
-//
-//rules
-//
-//  analysis2-clear-index: a -> a
-//    with
-//      <_index-clear-source>"analysis2"
 
 rules
 
@@ -76,6 +62,12 @@ rules
       memvs-a   := <filter(where(membervalue-get-name;membervaluename-is-attribute            ))>memvs;
       memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs;
       memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
+    with
+      ast*    := <map(ttuple(membervalue-get-name, membervalue-get-expr))>memvs-a
+    with
+      <debug(!"asts         ")>ast*
+    with
+      <map(index-set-prop(|AST()))>ast*
     with
       assoc1* := <fmap(membervalue-rri-assocs)>memvs-rri;
       assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
@@ -138,8 +130,6 @@ rules
   depends-on-and-flows-to-2: modulename -> modulename
     with
       attributenames := <modulename-get-attributenames-default-derivation>modulename
-//    with
-//      <debug>attributenames
     with
       dependencies := <fmap(attrname-dependencies)>attributenames;
       dataflow     := <map(path-inverse)>dependencies
