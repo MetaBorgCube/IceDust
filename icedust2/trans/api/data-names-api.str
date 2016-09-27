@@ -48,6 +48,7 @@ rules // entity instance
   
   entityinstancename-get-modulename = get-scope(|"Member");get-scope-direct-edge-scope;get-scope-assoc-name
 
+  entityinstancename-get-type          = entityinstancename-get-entityname
   entityinstancename-get-entityname    = entityinstancename-get-entityname-sg <+ entityinstancename-get-entityname-i
   entityinstancename-get-entityname-sg = get-type-property(|"Member");normalize-type
   entityinstancename-get-entityname-i  = index-get(|"type")

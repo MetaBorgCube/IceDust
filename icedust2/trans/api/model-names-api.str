@@ -128,7 +128,8 @@ rules
 //  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
 //  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
-  name-get-type = get-property(|"Member","type")
+  name-get-type         = get-type-property(|"Member");normalize-type
+  name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity
 
 rules // shortcuts
 

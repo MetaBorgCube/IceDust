@@ -39,11 +39,11 @@ rules
   
   einame-check-multiplicities: eiName -> []
     where
-      not(get-type) // erroneous programs might have entity instances without type
+      not(entityinstancename-get-entityname) // erroneous programs might have entity instances without type
 
   einame-check-multiplicities: eiName -> result
     with
-      entityName       := <get-type>eiName;
+      entityName       := <entityinstancename-get-entityname>eiName;
       relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
       memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
       result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
@@ -53,7 +53,7 @@ rules
       values       := <membervaluename-get-values>memvName;
       num          := <length>values;
       memberName   := <membervaluename-get-origin>memvName;
-      multiplicity := <get-multiplicity>memberName;
+      multiplicity := <name-get-multiplicity>memberName;
       if <mult-inbounds(|multiplicity)>num then
         result := []
       else
