@@ -30,7 +30,7 @@ rules // module
   
   modulename-get-entityinstancenames    = concat(modulename-get-entityinstancenames-sg, modulename-get-entityinstancenames-i);string-sort-anno
   modulename-get-entityinstancenames-sg = get-property(|"Module","datascope");get-scope-decl-names;filter(is-entityinstancename)
-  modulename-get-entityinstancenames-i  = index-get(|"Member")
+  modulename-get-entityinstancenames-i  = index-get2(|"Member")
   
   modulename-get-entityinstancename(|einame) = modulename-get-entityinstancenames;filter(eq-no-anno(|einame));Hd
 //  modulename-get-entityinstancename(|einame) = modulename-decl-entityinstancename(|einame)
