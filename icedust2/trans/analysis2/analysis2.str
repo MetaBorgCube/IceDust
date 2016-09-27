@@ -16,7 +16,7 @@ imports // functions
   api/data-names-api
 //  api/model-api
   api/model-names-api
-//  api/module-api
+  api/module-api
   api/module-names-api
 //  lib/nabl-ext
   lib/graph
@@ -44,10 +44,11 @@ rules
       if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
         <ast-store-membervalues>ast;
         error* := <analysis2check>modulename;
-        <map(debug)>error*
+        <module-store-expr>ast
       else
         error* := []
-      end
+      end;
+      <map(debug)>error*
 
 rules
 
@@ -119,11 +120,11 @@ rules
       assoc3 := (memv-r2-name, eiName2);
       assoc4 := (memv-i2-name, riName)
 
-//  module-store-expr: mod -> mod
-//    with
-//      exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
-//      name  := <module-get-modulename>mod;
-//      <index-store-prop(|AST(), name)>exprs
+  module-store-expr: ast -> ast
+    with
+      name  := <module-get-modulename>ast;
+      exprs := <module-get-exprs>ast;
+      <index-set(|name, AST())>exprs
 
 rules
 

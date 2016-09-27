@@ -1,0 +1,23 @@
+module api/module-api
+
+imports // constructors
+  
+  signatures/icedust2-sig
+  
+imports
+
+  lib/traverse
+  
+rules
+
+  module-get-modulename = ?Module(<id>, _)
+  module-get-sections   = ?Module(_, <id>)
+  
+  module-get-exprs = module-get-sections;filter(is-execute);fmap(execute-get-exprs)
+  
+rules
+
+  is-execute = ?ExecuteSection(_)
+  
+  execute-get-exprs = ?ExecuteSection(<id>)
+  
