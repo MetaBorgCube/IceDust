@@ -14,12 +14,12 @@ imports // functions
 //  api/_runtime
   api/data-names-api
   api/model-names-api
-//  lib/index
+  lib/index
 //  lib/origin
 //  lib/search
   lib/string
 //  lib/nabl-ext
-//  lib/lists-tuples
+  lib/lists-tuples
   lib/traverse
 //  generating/_ir/constructors
   lib/nabl2
@@ -33,7 +33,7 @@ rules // module
   modulename-get-entityinstancenames-i  = index-get(|"Member")
   
   modulename-get-entityinstancename(|einame) = modulename-get-entityinstancenames;filter(eq-no-anno(|einame));Hd
-  modulename-get-entityinstancename(|einame) = modulename-decl-entityinstancename(|einame)
+//  modulename-get-entityinstancename(|einame) = modulename-decl-entityinstancename(|einame)
   
   // string -> [string]
   modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
@@ -68,9 +68,10 @@ rules // module
 //  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
 //  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
   
-  modulename-decl-entityinstancename(|einame): modulename -> einame-decl
+  modulename-decl-entityinstancename(|einame, origin): modulename -> einame-decl
     with
       einame-decl := einame{modulename};
       <index-add(|modulename , "Member")>einame-decl;
-      <index-add(|einame-decl, "Parent")>modulename
+      <index-set(|einame-decl, "Parent")>modulename;
+      <index-set(|einame-decl, "origin")>origin
   

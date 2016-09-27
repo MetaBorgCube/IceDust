@@ -115,7 +115,7 @@ rules
         relationName  := <attributename-get-entityname>roleName1;
         modulename    := <entityinstancename-get-modulename>eiName;
         riName-string := <custom-origin(|name)>$[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
-        riName        := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName
+        riName        := <entityinstancename-get-modulename;modulename-decl-entityinstancename(|riName-string, relationName)>eiName
       end;
       memv-r1-name := <entityinstancename-get-membervaluename(|roleName1)>riName;
       memv-r2-name := <entityinstancename-get-membervaluename(|roleName2)>riName;
