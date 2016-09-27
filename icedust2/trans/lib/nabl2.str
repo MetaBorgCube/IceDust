@@ -32,6 +32,7 @@ rules // store analysis to be able to query without passing the analysis
 
 rules // wrap nabl2 api with stored analysis
 
+  get-type-property         = nabl2-get-type(|<get-stored-analysis>)
   get-property(|prop)       = nabl2-get-property(|<get-stored-analysis>,prop)
   get-all-decls(|)          = nabl2-get-all-decls(|<get-stored-analysis>)
   get-all-refs(|)           = nabl2-get-all-refs(|<get-stored-analysis>)
@@ -49,6 +50,7 @@ rules // wrap nabl2 api with stored analysis
 
 rules // compose nabl2 calls (hide occurrence behind namespaces)
 
+  get-type-property(|ns)            = nabl2-mk-occurrence(|ns);get-type-property
   get-property(|ns, prop)           = get-decl(|ns);nabl2-mk-occurrence(|ns);get-property(|prop) //@type Term -> Term //TODO: make this work for references as well
 //  get-property(|ns, prop)           = nabl2-mk-occurrence(|ns);get-property(|prop)   //@type Term -> Term
   get-decl-assocs-with-labels(|ns)  = nabl2-mk-occurrence(|ns);get-decl-assocs       //@type Term -> List((Label,Scope))

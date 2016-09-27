@@ -7,19 +7,19 @@ imports // signatures
 
 rules
 
-  get-type         = nabl2-get-ast-type;?TTuple(<id>,_);normalize-type
-  get-multiplicity = nabl2-get-ast-type;?TTuple(_,<id>);normalize-multiplicity
+  get-type         = nabl2-get-ast-type;normalize-type
+  get-multiplicity = nabl2-get-ast-type;normalize-multiplicity
   
-  normalize-type = ?TInt();!Int()
-  normalize-type = ?TFloat();!Float()
-  normalize-type = ?TDatetime();!Datetime()
-  normalize-type = ?TBoolean();!Boolean()
-  normalize-type = ?TString();!String()
-  normalize-type = ?TNoValue();!NoValue()
-  normalize-type = ?TEntity(Occurrence(_,<id>,_))
-  normalize-type = debug
+  normalize-type = ?TTuple(<id>,_);?TInt()     ;!Int()
+  normalize-type = ?TTuple(<id>,_);?TFloat()   ;!Float()
+  normalize-type = ?TTuple(<id>,_);?TDatetime();!Datetime()
+  normalize-type = ?TTuple(<id>,_);?TBoolean() ;!Boolean()
+  normalize-type = ?TTuple(<id>,_);?TString()  ;!String()
+  normalize-type = ?TTuple(<id>,_);?TNoValue() ;!NoValue()
+  normalize-type = ?TTuple(<id>,_);?TEntity(Occurrence(_,<id>,_))
+  normalize-type = ?TTuple(<id>,_);debug
   
-  normalize-multiplicity = ?TOne();!One()
-  normalize-multiplicity = ?TZeroOrOne();!ZeroOrOne()
-  normalize-multiplicity = ?TZeroOrMore();!ZeroOrMore()
-  normalize-multiplicity = ?TOneOrMore();!OneOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>);?TOne()       ;!One()
+  normalize-multiplicity = ?TTuple(_,<id>);?TZeroOrOne() ;!ZeroOrOne()
+  normalize-multiplicity = ?TTuple(_,<id>);?TZeroOrMore();!ZeroOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>);?TOneOrMore() ;!OneOrMore()
