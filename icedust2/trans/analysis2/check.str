@@ -46,8 +46,9 @@ rules
     with
       entityName       := <entityinstancename-get-entityname>eiName;
       relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
-      memberValueNames := <filter(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames; //filter instead of map because of http://yellowgrass.org/issue/StrategoXT/913
-      result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
+      memberValueNames := <filter(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames; //broken because of http://yellowgrass.org/issue/StrategoXT/913 trigger creation of all memvs, but dont use the list
+      memberValueNames':= <entityinstancename-get-relation-role-inverse>eiName;
+      result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames'
       
   memv-check-multiplicities(|eiName): memvName -> result
     with

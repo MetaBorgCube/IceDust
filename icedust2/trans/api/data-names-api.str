@@ -19,6 +19,7 @@ imports // functions
   lib/index
 //  lib/nabl-ext
   lib/lists-tuples
+  lib/debug
   lib/eq
   lib/string
   lib/nabl2
@@ -35,11 +36,12 @@ rules // entity instance
   entityinstancename-get-membervaluenames-sg = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename) <+ ![]
   entityinstancename-get-membervaluenames-i  = index-get2(|"Member")
 
-  entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
-  entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
-  entityinstancename-get-rolevaluenames      = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
-  entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
-  entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+  entityinstancename-get-attributevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
+  entityinstancename-get-relationvaluenames    = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
+  entityinstancename-get-rolevaluenames        = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
+  entityinstancename-get-inversevaluenames     = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
+  entityinstancename-get-shortcutvaluenames    = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+  entityinstancename-get-relation-role-inverse = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation-role-inverse)
   
   entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq-no-anno(|membername));Hd
   entityinstancename-get-membervaluename(|membername) = entityinstancename-decl-membervaluename(|membername)
@@ -52,6 +54,7 @@ rules // entity instance
   entityinstancename-get-entityname    = entityinstancename-get-entityname-sg <+ entityinstancename-get-entityname-i
   entityinstancename-get-entityname-sg = get-type-property(|"Member");normalize-type
   entityinstancename-get-entityname-i  = index-get(|"type")
+  
 
   entityinstancename-decl-membervaluename(|membername): eiName -> memvname
     with
@@ -72,7 +75,7 @@ rules // member values
 //  membervaluename-get-values-inv = index-get-prop(|RelInv())
 //  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
-  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i// <+ debug(|$[membervaluename-get-origin failed [<membervaluename-get-entityinstancename>].[<id>]]);fail
+  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i <+ debug-term(|"membervaluename-get-origin failed");fail
   membervaluename-get-origin-sg = get-property(|"MemberValue","origin");nabl2-get-occurrence-name
   membervaluename-get-origin-i  = index-get(|"origin")
   
