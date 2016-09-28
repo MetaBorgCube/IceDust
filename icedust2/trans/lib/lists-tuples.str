@@ -41,6 +41,7 @@ rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 rules // s1:a->b  s2:a->c  a->(a, b)
   
   ttuple(s1,s2): t -> (<s1>t, <s2>t)
+  ttuple(s1,s2,s3): t -> (<s1>t, <s2>t, <s3>t)
 
 rules // List -> List
   

@@ -9,6 +9,8 @@ imports
   editor/pp
   lib/index
   lib/nabl2
+  lib/lists-tuples
+  nabl2/api
 
 rules // Debugging
   
@@ -109,4 +111,4 @@ rules
       filename := <guarantee-extension(|"index.aterm")> path;
       result   := <_index-get>
       
-  analysis2-builder-key-origins = analysis2-builder;split2(id,map(split2(ttuple(id,origin-offset),id)))
+  analysis2-builder-key-origins = analysis2-builder;split2(id,map(split2(ttuple(id,origin-offset,nabl2-mk-occurrence(|"RandomNs")<+!"No Origin"),id)))

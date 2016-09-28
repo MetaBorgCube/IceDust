@@ -59,6 +59,8 @@ rules
     where
       membervaluename-is-attribute
     with
+      membervaluename-get-expr <+ debug-term(|"attributevaluename-to-java-stms: membervaluename-get-expr");fail
+    with
       x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
       x_setter := <name-set>x_attributevalueName;
       valueAst := <membervaluename-get-expr>x_attributevalueName;
