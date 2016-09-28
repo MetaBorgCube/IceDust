@@ -25,6 +25,7 @@ imports // functions
   lib/index
   lib/lists-tuples
   lib/traverse
+  lib/debug
 //  names/naming/names
 //  naming/_notNaBL
   
@@ -45,7 +46,7 @@ rules
     with
       entityName       := <entityinstancename-get-entityname>eiName;
       relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
-      memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
+      memberValueNames := <filter(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames; //filter instead of map because of http://yellowgrass.org/issue/StrategoXT/913
       result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
       
   memv-check-multiplicities(|eiName): memvName -> result

@@ -488,14 +488,16 @@ rules
     where
       is-shortcutname
     with
-      x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
-      x_targetEntityName := <_get-type>x_shortcutName;
+      x_sourceEntityName := <shortcutname-get-entityname>x_shortcutName;
+      x_targetEntityName := <name-get-type>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
       x_relationName     := <attributename-get-entityname>x_roleName;
       x_getShortcut      := <name-get>x_shortcutName;
       x_getInverse       := <name-get>x_inverseName;
       x_getRole          := <name-get>x_roleName
+//    with
+//      <debug>(x_sourceEntityName, x_relationName, x_targetEntityName, x_inverseName, x_roleName, x_shortcutName)
     with
       if name-is-to-one then
         result-getShortcut* := class-body-dec* |[

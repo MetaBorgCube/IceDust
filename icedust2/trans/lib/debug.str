@@ -5,6 +5,7 @@ imports // functions
   api/_runtime
   api/_runtime-constructors
   lib/traverse
+  nabl2/api
 
 rules // debug tasks
   
@@ -58,3 +59,11 @@ rules // debug-no-anno
   debug-no-anno = strip-annos;debug
 
   debug-no-anno(|info) = strip-annos;debug(|info)
+
+rules
+
+  debug-term(|info) = where(is-list);debug(|$[[info]: [<map(nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>]])
+  debug-term(|info) =                debug(|$[[info]: [<   (nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>]])
+  debug-term(|)     = where(is-list);debug(|           <map(nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>)
+  debug-term(|)     =                debug(|           <   (nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>)
+  

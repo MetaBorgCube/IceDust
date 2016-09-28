@@ -34,7 +34,7 @@ rules // entity
   entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-decl-names                ;filter(is-attributename);string-sort-anno
   entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-decl-names                ;filter(is-attributename);origin-sort-anno
   entityname-get-relationnames   = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-relationname );string-sort-anno
-  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names                ;filter(is-rolename     );string-sort-anno
+  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names     (|"Member");filter(is-rolename     );string-sort-anno
   entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-inversename  );string-sort-anno
   entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-shortcutname );string-sort-anno
 
@@ -121,11 +121,11 @@ rules
   
   name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
   
-  name-is-one                = where(get-multiplicity;lower-one;upper-one)
-  name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
+  name-is-one                = where(name-get-multiplicity;lower-one;upper-one)
+  name-is-zeroorone          = where(name-get-multiplicity;lower-zero;upper-one)
   
-  name-is-to-one             = where(get-multiplicity;upper-one)
-  name-is-to-many            = where(get-multiplicity;upper-many)
+  name-is-to-one             = where(name-get-multiplicity;upper-one)
+  name-is-to-many            = where(name-get-multiplicity;upper-many)
 //  name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)
 //  name-is-to-many-unordered  = where(name-is-to-many; get-ordering;unordered)
   
@@ -147,6 +147,8 @@ rules // shortcuts
   shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
   shortcutname-get-rolename           = shortcutname-get-rolename2
   shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
+  
+  shortcutname-get-entityname = shortcutname-get-inversename;get-scope(|"Member");get-scope-assoc-name
 
 rules // combined
   

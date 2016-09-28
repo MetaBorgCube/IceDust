@@ -10,6 +10,7 @@ imports // functions
   api/_runtime
   api/model-names-api
   api/types-api
+  api/types-names-api
 //   names/naming/names
 //  naming/_notNaBL
 
@@ -30,9 +31,9 @@ rules // types of expressions and names (uses type and multiplicity)
   
   name-to-java-type(err): name -> result
     with
-      x_type := <_get-type;type-to-string-java>name
+      x_type := <get-type;type-to-string-java>name
     with
-      if <name-get-multiplicity;upper-one>name then
+      if <get-multiplicity;upper-one>name then
       result := type |[
         x_type
       ]|

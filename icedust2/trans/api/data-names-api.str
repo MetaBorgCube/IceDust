@@ -32,8 +32,8 @@ rules // entity instance
 //  entityinstancename-get-membervalues = index-get-prop(|AST())
 
   entityinstancename-get-membervaluenames    = concat(entityinstancename-get-membervaluenames-sg, entityinstancename-get-membervaluenames-i);string-sort-anno
-  entityinstancename-get-membervaluenames-sg = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename)
-  entityinstancename-get-membervaluenames-i  = index-get(|"Member")
+  entityinstancename-get-membervaluenames-sg = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename) <+ ![]
+  entityinstancename-get-membervaluenames-i  = index-get2(|"Member")
 
   entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
   entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
@@ -44,7 +44,7 @@ rules // entity instance
   entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq-no-anno(|membername));Hd
   entityinstancename-get-membervaluename(|membername) = entityinstancename-decl-membervaluename(|membername)
   
-  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+  entityinstancename-get-membervaluename-inv(|eiName) = ?memberName;!eiName;entityinstancename-get-membervaluename(|memberName)
   
   entityinstancename-get-modulename = get-scope(|"Member");get-scope-direct-edge-scope;get-scope-assoc-name
 
@@ -72,7 +72,7 @@ rules // member values
 //  membervaluename-get-values-inv = index-get-prop(|RelInv())
 //  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
-  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i
+  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i// <+ debug(|$[membervaluename-get-origin failed [<membervaluename-get-entityinstancename>].[<id>]]);fail
   membervaluename-get-origin-sg = get-property(|"MemberValue","origin");nabl2-get-occurrence-name
   membervaluename-get-origin-i  = index-get(|"origin")
   

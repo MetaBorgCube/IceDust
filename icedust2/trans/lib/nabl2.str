@@ -74,6 +74,7 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   is-ref(|ns)                       = where(get-ref-scope(|ns))                      //@type Term -> Term
   get-decl(|ns)                     = is-decl(|ns)                                   //@Type Term -> Term
   get-decl(|ns)                     = is-ref(|ns);get-resolved-name(|ns)             //@Type Term -> Term
+//  get-decl(|ns)                     = debug(|"get-decl: is-decl and is-ref both failed, defaulting to decl")
 
 imports
 
