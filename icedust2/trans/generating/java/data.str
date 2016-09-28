@@ -14,6 +14,7 @@ imports // functions
   generating/java/expressions
 //  names/naming/names
 //  naming/_notNaBL
+  lib/traverse
 
 rules
  
@@ -41,15 +42,15 @@ rules
   entityinstancename-to-java-stms2(err): x_eiName -> result
     with
       result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
-      result-relations*  := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
+      result-relations*  := <entityinstancename-get-rri-left           ;fmap(relationvaluename-to-java-stms (err))>x_eiName//;
+//      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+//      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
     with
       result := bstm* |[
         ~result-attributes*
         ~result-relations*
-        ~result-roles*
-        ~result-inverses*
+//        ~result-roles*
+//        ~result-inverses*
       ]|
 
 rules

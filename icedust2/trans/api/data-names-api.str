@@ -42,6 +42,7 @@ rules // entity instance
   entityinstancename-get-inversevaluenames     = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames    = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
   entityinstancename-get-relation-role-inverse = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation-role-inverse)
+  entityinstancename-get-rri-left              = entityinstancename-get-membervaluenames;filter(membervaluename-is-left)
   
   entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq-no-anno(|membername));Hd
   entityinstancename-get-membervaluename(|membername) = entityinstancename-decl-membervaluename(|membername)
