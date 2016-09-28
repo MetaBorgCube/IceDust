@@ -15,6 +15,7 @@ imports // functions
   lib/traverse
 //  names/naming/names
   api/model-names-api
+  api/types-names-api
 
 rules // math
 
@@ -89,7 +90,7 @@ rules // rel-expr -> List(String)
   method-mult-postfix: e -> arg-mult*
     with
       arg* := <get-arguments>e;
-      arg-mult* := <map(name-get-multiplicity;postfix-id)>arg*
+      arg-mult* := <map(get-multiplicity;postfix-id)>arg*
 
 rules // type -> String
   
