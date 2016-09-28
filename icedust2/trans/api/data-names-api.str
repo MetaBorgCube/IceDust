@@ -67,7 +67,7 @@ rules // member values
 
   is-membervaluename = where(is-string;get-property(|"MemberValue","ns");?MemberValue())
 
-//  membervaluename-get-expr = index-get-prop(|AST());Hd
+  membervaluename-get-expr   = index-get(|AST())
   membervaluename-get-values = index-get2(|Assoc())
 //  membervaluename-get-values-inv = index-get-prop(|RelInv())
 //  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
@@ -84,6 +84,8 @@ rules // member values
   
   membervaluename-is-relation-role-inverse = membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
   
-  membervaluename-get-entityinstancename = get-scope(|"MemberValue");get-scope-assoc-name
+  membervaluename-get-entityinstancename    = membervaluename-get-entityinstancename-sg <+ membervaluename-get-entityinstancename-i
+  membervaluename-get-entityinstancename-sg = get-scope(|"MemberValue");get-scope-assoc-name
+  membervaluename-get-entityinstancename-i  = index-get(|"Parent")
   
   membervaluename-is-left = where(membervaluename-get-origin; name-is-left)

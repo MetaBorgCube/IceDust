@@ -1,0 +1,23 @@
+module generating/java/generate
+
+imports // constructors
+
+//  signatures/Modules-sig
+
+imports // functions
+
+  api/module-api
+  java/pretty-print
+  generating/java/data
+  generating/java/execute
+  generating/java/model
+  generating/java/module
+
+rules // Builders
+  
+  generate-java-code(err): moduleName -> (result, errors)
+    with
+      java-ast := <modulename-to-java-compilationunit(err)>moduleName;
+      errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+      java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
+      result   := <pp-java-string> java-ast'

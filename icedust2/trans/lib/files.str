@@ -119,7 +119,7 @@ rules
 
 rules
 
-  component-path = with(prim("language_components");filter(language-component-artifactId(|"icedust"));Hd;?(_,_,_,path));!path
+  component-path = with(prim("language_components");filter(language-component-artifactId(|"icedust2"));Hd;?(_,_,_,path));!path
   
   language-component-artifactId(|is-artifactId): (groupId, artifactId, version, location) -> <id>
     where

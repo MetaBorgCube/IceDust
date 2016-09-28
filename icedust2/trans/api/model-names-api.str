@@ -43,6 +43,9 @@ rules // entity
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
+  entityname-is-calconread = id //TODO: properly implement this
+  entityname-is-calconwrite = fail
+  entityname-is-eventuallyconsistent = fail
 //  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
 //  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
 //  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
@@ -107,6 +110,9 @@ rules
   name-get-inversename = where(is-rolename)    ;rolename-get-inversename
   name-get-inversename = where(is-inversename) ;inversename-get-rolename
   
+  name-is-calconread = id //TODO: properly implement this
+  name-is-calconwrite = fail
+  name-is-eventuallyconsistent = fail
 //  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
 //  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
 //  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)

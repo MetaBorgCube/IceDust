@@ -1,0 +1,367 @@
+module Java
+
+signature
+  constructors
+    Some                    : TypeArgs -> OptTypeArgs0
+    None                    : OptTypeArgs0
+                            : TypeArgs -> OptTypeArgs0
+                            : ClassMod -> Anno_ClassMod0
+                            : Anno -> Anno_ClassMod0
+                            : InterfaceMod -> Anno_InterfaceMod0
+                            : Anno -> Anno_InterfaceMod0
+                            : AbstractMethodMod -> Anno_AbstractMethodMod0
+                            : Anno -> Anno_AbstractMethodMod0
+                            : ConstantMod -> Anno_ConstantMod0
+                            : Anno -> Anno_ConstantMod0
+                            : ConstrMod -> Anno_ConstrMod0
+                            : Anno -> Anno_ConstrMod0
+                            : VarMod -> Anno_VarMod0
+                            : Anno -> Anno_VarMod0
+                            : MethodMod -> Anno_MethodMod0
+                            : Anno -> Anno_MethodMod0
+                            : FieldMod -> Anno_FieldMod0
+                            : Anno -> Anno_FieldMod0
+    Conc                    : ListStarOfCharClass1 * ListPlusOfCharClass1 -> ListPlusOfCharClass1
+    Conc                    : ListPlusOfCharClass1 * ListStarOfCharClass1 -> ListPlusOfCharClass1
+    Conc                    : ListPlusOfCharClass1 * ListPlusOfCharClass1 -> ListPlusOfCharClass1
+    Cons                    : Int * ListStarOfCharClass1 -> ListPlusOfCharClass1
+    CompilationUnit         : Option(PackageDec) * List(ImportDec) * List(TypeDec) -> CompilationUnit
+    Semicolon               : TypeDec
+                            : InterfaceDec -> TypeDec
+                            : ClassDec -> TypeDec
+    StaticImportOnDemandDec : TypeName -> ImportDec
+    StaticImportDec         : TypeName * Id -> ImportDec
+    TypeImportOnDemandDec   : PackageName -> ImportDec
+    TypeImportDec           : TypeName -> ImportDec
+    PackageDec              : List(Anno) * PackageName -> PackageDec
+    ElemValArrayInit        : List(ElemVal) -> ElemVal
+                            : Anno -> ElemVal
+                            : Expr -> ElemVal
+    ElemValPair             : Id * ElemVal -> ElemValPair
+    MarkerAnno              : TypeName -> Anno
+    SingleElemAnno          : TypeName * ElemVal -> Anno
+    Anno                    : TypeName * List(ElemValPair) -> Anno
+                            : ArrayAccess -> LHS
+                            : FieldAccess -> LHS
+                            : ExprName -> LHS
+                            : Expr -> CondMid
+    GenericMethod           : AmbName * TypeArgs * Id -> MethodSpec
+    QSuperMethod            : TypeName * OptTypeArgs0 * Id -> MethodSpec
+    SuperMethod             : OptTypeArgs0 * Id -> MethodSpec
+    Method                  : Expr * OptTypeArgs0 * Id -> MethodSpec
+    Method                  : MethodName -> MethodSpec
+                            : Expr -> ArraySubscript
+    ArrayAccess             : Expr * ArraySubscript -> ArrayAccess
+    QSuperField             : TypeName * Id -> FieldAccess
+    SuperField              : Id -> FieldAccess
+    Field                   : Expr * Id -> FieldAccess
+    Dim                     : Expr -> DimExpr
+    UnboundWld              : TypeName -> ArrayBaseType
+                            : TypeName -> ArrayBaseType
+                            : PrimType -> ArrayBaseType
+    NewArray                : ArrayBaseType * List(Dim) * ArrayInit -> ArrayCreationExpr
+    NewArray                : ArrayBaseType * List(DimExpr) * List(Dim) -> ArrayCreationExpr
+    Semicolon               : ClassMemberDec
+                            : InterfaceDec -> ClassMemberDec
+                            : ClassDec -> ClassMemberDec
+                            : MethodDec -> ClassMemberDec
+                            : FieldDec -> ClassMemberDec
+                            : ConstrDec -> ClassBodyDec
+                            : StaticInit -> ClassBodyDec
+                            : InstanceInit -> ClassBodyDec
+                            : ClassMemberDec -> ClassBodyDec
+    ImplementsDec           : List(InterfaceType) -> Interfaces
+    SuperDec                : ClassType -> Super
+                            : StrictFP -> ClassMod
+                            : Final -> ClassMod
+                            : Static -> ClassMod
+                            : Private -> ClassMod
+                            : Protected -> ClassMod
+                            : Public -> ClassMod
+                            : Abstract -> ClassMod
+    ClassDecHead            : List(Anno_ClassMod0) * Id * Option(TypeParams) * Option(Super) * Option(Interfaces) -> ClassDecHead
+    ClassBody               : List(ClassBodyDec) -> ClassBody
+    ClassDec                : ClassDecHead * ClassBody -> ClassDec
+                            : EnumDec -> ClassDec
+                            : StrictFP -> InterfaceMod
+                            : Static -> InterfaceMod
+                            : Abstract -> InterfaceMod
+                            : Private -> InterfaceMod
+                            : Protected -> InterfaceMod
+                            : Public -> InterfaceMod
+    Semicolon               : InterfaceMemberDec
+                            : InterfaceDec -> InterfaceMemberDec
+                            : ClassDec -> InterfaceMemberDec
+                            : AbstractMethodDec -> InterfaceMemberDec
+                            : ConstantDec -> InterfaceMemberDec
+    ExtendsInterfaces       : List(InterfaceType) -> ExtendsInterfaces
+    InterfaceDecHead        : List(Anno_InterfaceMod0) * Id * Option(TypeParams) * Option(ExtendsInterfaces) -> InterfaceDecHead
+    InterfaceDec            : InterfaceDecHead * List(InterfaceMemberDec) -> InterfaceDec
+                            : AnnoDec -> InterfaceDec
+    DefaultVal              : ElemVal -> DefaultVal
+    Semicolon               : AnnoElemDec
+                            : AnnoDec -> AnnoElemDec
+                            : EnumDec -> AnnoElemDec
+                            : InterfaceDec -> AnnoElemDec
+                            : ClassDec -> AnnoElemDec
+                            : ConstantDec -> AnnoElemDec
+    AnnoMethodDec           : List(AbstractMethodMod) * Type * Id * Option(DefaultVal) -> AnnoElemDec
+    AnnoDecHead             : List(Anno_InterfaceMod0) * Id -> AnnoDecHead
+    AnnoDec                 : AnnoDecHead * List(AnnoElemDec) -> AnnoDec
+                            : Abstract -> AbstractMethodMod
+                            : Public -> AbstractMethodMod
+    DeprAbstractMethodDec   : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * List(Dim) * Option(Throws) -> AbstractMethodDec
+    AbstractMethodDec       : List(Anno_AbstractMethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * Option(Throws) -> AbstractMethodDec
+                            : Final -> ConstantMod
+                            : Static -> ConstantMod
+                            : Public -> ConstantMod
+    ConstantDec             : List(Anno_ConstantMod0) * Type * List(VarDec) -> ConstantDec
+    EnumBodyDecs            : List(ClassBodyDec) -> EnumBodyDecs
+                            : List(Expr) -> EnumConstArgs
+    EnumConst               : Id * Option(EnumConstArgs) * Option(ClassBody) -> EnumConst
+    EnumBody                : List(EnumConst) * Option(EnumBodyDecs) -> EnumBody
+    EnumDecHead             : List(Anno_ClassMod0) * Id * Option(Interfaces) -> EnumDecHead
+    EnumDec                 : EnumDecHead * EnumBody -> EnumDec
+                            : Private -> ConstrMod
+                            : Protected -> ConstrMod
+                            : Public -> ConstrMod
+    QSuperConstrInv         : Expr * OptTypeArgs0 * List(Expr) -> ConstrInv
+    SuperConstrInv          : OptTypeArgs0 * List(Expr) -> ConstrInv
+    AltConstrInv            : OptTypeArgs0 * List(Expr) -> ConstrInv
+    ConstrBody              : Option(ConstrInv) * List(BlockStm) -> ConstrBody
+    ConstrDecHead           : List(Anno_ConstrMod0) * Option(TypeParams) * Id * List(FormalParam) * Option(Throws) -> ConstrHead
+    ConstrDec               : ConstrHead * ConstrBody -> ConstrDec
+    StaticInit              : Block -> StaticInit
+    InstanceInit            : Block -> InstanceInit
+    NoMethodBody            : MethodBody
+                            : Block -> MethodBody
+                            : ClassType -> ExceptionType
+    ThrowsDec               : List(ExceptionType) -> Throws
+                            : StrictFP -> MethodMod
+                            : Native -> MethodMod
+                            : Synchronized -> MethodMod
+                            : Final -> MethodMod
+                            : Static -> MethodMod
+                            : Abstract -> MethodMod
+                            : Private -> MethodMod
+                            : Protected -> MethodMod
+                            : Public -> MethodMod
+                            : Final -> VarMod
+    VarArityParam           : List(Anno_VarMod0) * Type * VarDecId -> FormalParam
+    Param                   : List(Anno_VarMod0) * Type * VarDecId -> FormalParam
+    Void                    : ResultType
+                            : Type -> ResultType
+    DeprMethodDecHead       : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * List(Dim) * Option(Throws) -> MethodDecHead
+    MethodDecHead           : List(Anno_MethodMod0) * Option(TypeParams) * ResultType * Id * List(FormalParam) * Option(Throws) -> MethodDecHead
+    MethodDec               : MethodDecHead * MethodBody -> MethodDec
+                            : Stm -> BlockStm
+    ClassDecStm             : ClassDec -> BlockStm
+                            : LocalVarDecStm -> BlockStm
+    Block                   : List(BlockStm) -> Block
+    Catch                   : FormalParam * Block -> CatchClause
+    Default                 : SwitchLabel
+    Case                    : Expr -> SwitchLabel
+    SwitchGroup             : List(SwitchLabel) * List(BlockStm) -> SwitchGroup
+    SwitchBlock             : List(SwitchGroup) * List(SwitchLabel) -> SwitchBlock
+    Try                     : Block * List(CatchClause) * Block -> Stm
+    Try                     : Block * List(CatchClause) -> Stm
+    Synchronized            : Expr * Block -> Stm
+    Throw                   : Expr -> Stm
+    Return                  : Option(Expr) -> Stm
+    Continue                : Option(Id) -> Stm
+    Break                   : Option(Id) -> Stm
+    ForEach                 : FormalParam * Expr * Stm -> Stm
+    For                     : List(Expr) * Option(Expr) * List(Expr) * Stm -> Stm
+    For                     : LocalVarDec * Option(Expr) * List(Expr) * Stm -> Stm
+    DoWhile                 : Stm * Expr -> Stm
+    While                   : Expr * Stm -> Stm
+    Switch                  : Expr * SwitchBlock -> Stm
+    AssertStm               : Expr * Expr -> Stm
+    AssertStm               : Expr -> Stm
+    If                      : Expr * Stm * Stm -> Stm
+    If                      : Expr * Stm -> Stm
+    ExprStm                 : Expr -> Stm
+    Labeled                 : Id * Stm -> Stm
+    Empty                   : Stm
+                            : Block -> Stm
+    LocalVarDec             : List(Anno_VarMod0) * Type * List(VarDec) -> LocalVarDec
+    LocalVarDecStm          : LocalVarDec -> LocalVarDecStm
+                            : Volatile -> FieldMod
+                            : Transient -> FieldMod
+                            : Final -> FieldMod
+                            : Static -> FieldMod
+                            : Private -> FieldMod
+                            : Protected -> FieldMod
+                            : Public -> FieldMod
+                            : ArrayInit -> VarInit
+                            : Expr -> VarInit
+    Dim                     : Dim
+    ArrayVarDecId           : Id * List(Dim) -> VarDecId
+                            : Id -> VarDecId
+    VarDec                  : VarDecId * VarInit -> VarDec
+    VarDec                  : VarDecId -> VarDec
+    FieldDec                : List(Anno_FieldMod0) * Type * List(VarDec) -> FieldDec
+    ArrayInit               : List(VarInit) -> ArrayInit
+    VoidClass               : ClassLiteral
+    Class                   : Type -> ClassLiteral
+                            : ClassLiteral -> Literal
+                            : NullLiteral -> Literal
+                            : StringLiteral -> Literal
+                            : CharLiteral -> Literal
+                            : BoolLiteral -> Literal
+                            : FloatLiteral -> Literal
+                            : IntLiteral -> Literal
+    AssignOr                : LHS * Expr -> Expr
+    AssignExcOr             : LHS * Expr -> Expr
+    AssignAnd               : LHS * Expr -> Expr
+    AssignURightShift       : LHS * Expr -> Expr
+    AssignRightShift        : LHS * Expr -> Expr
+    AssignLeftShift         : LHS * Expr -> Expr
+    AssignMinus             : LHS * Expr -> Expr
+    AssignPlus              : LHS * Expr -> Expr
+    AssignRemain            : LHS * Expr -> Expr
+    AssignDiv               : LHS * Expr -> Expr
+    AssignMul               : LHS * Expr -> Expr
+    Assign                  : LHS * Expr -> Expr
+    Cond                    : Expr * CondMid * Expr -> Expr
+    Or                      : Expr * Expr -> Expr
+    ExcOr                   : Expr * Expr -> Expr
+    And                     : Expr * Expr -> Expr
+    LazyOr                  : Expr * Expr -> Expr
+    LazyAnd                 : Expr * Expr -> Expr
+    NotEq                   : Expr * Expr -> Expr
+    Eq                      : Expr * Expr -> Expr
+    GtEq                    : Expr * Expr -> Expr
+    LtEq                    : Expr * Expr -> Expr
+    Gt                      : Expr * Expr -> Expr
+    Lt                      : Expr * Expr -> Expr
+    URightShift             : Expr * Expr -> Expr
+    RightShift              : Expr * Expr -> Expr
+    LeftShift               : Expr * Expr -> Expr
+    Minus                   : Expr * Expr -> Expr
+    Plus                    : Expr * Expr -> Expr
+    Remain                  : Expr * Expr -> Expr
+    Div                     : Expr * Expr -> Expr
+    Mul                     : Expr * Expr -> Expr
+    InstanceOf              : Expr * RefType -> Expr
+    CastRef                 : RefType * Expr -> Expr
+    CastPrim                : PrimType * Expr -> Expr
+    Not                     : Expr -> Expr
+    Complement              : Expr -> Expr
+    PreDecr                 : Expr -> Expr
+    PreIncr                 : Expr -> Expr
+    Minus                   : Expr -> Expr
+    Plus                    : Expr -> Expr
+    PostDecr                : Expr -> Expr
+    PostIncr                : Expr -> Expr
+                            : ExprName -> Expr
+    Invoke                  : MethodSpec * List(Expr) -> Expr
+                            : ArrayAccess -> Expr
+                            : FieldAccess -> Expr
+                            : ArrayCreationExpr -> Expr
+    QNewInstance            : Expr * OptTypeArgs0 * Id * OptTypeArgs0 * List(Expr) * Option(ClassBody) -> Expr
+    NewInstance             : OptTypeArgs0 * ClassOrInterfaceType * List(Expr) * Option(ClassBody) -> Expr
+    QThis                   : TypeName -> Expr
+    This                    : Expr
+    Lit                     : Literal -> Expr
+                            : RefType -> Type
+                            : PrimType -> Type
+    ArrayType               : Type -> ArrayType
+    Member                  : TypeDecSpec * TypeArgs * Id -> TypeDecSpec
+                            : TypeName -> TypeDecSpec
+    InterfaceType           : TypeDecSpec * OptTypeArgs0 -> InterfaceType
+    ClassType               : TypeDecSpec * OptTypeArgs0 -> ClassType
+    ClassOrInterfaceType    : TypeDecSpec * OptTypeArgs0 -> ClassOrInterfaceType
+                            : ArrayType -> RefType
+                            : ClassOrInterfaceType -> RefType
+                            : Id -> TypeVarId
+    TypeParams              : List(TypeParam) -> TypeParams
+    TypeBound               : List(ClassOrInterfaceType) -> TypeBound
+    TypeParam               : TypeVarId * Option(TypeBound) -> TypeParam
+    WildcardLowerBound      : RefType -> WildcardBound
+    WildcardUpperBound      : RefType -> WildcardBound
+    Wildcard                : Option(WildcardBound) -> ActualTypeArg
+                            : Type -> ActualTypeArg
+    TypeArgs                : List(ActualTypeArg) -> TypeArgs
+    PackageOrTypeName       : PackageOrTypeName * Id -> PackageOrTypeName
+    PackageOrTypeName       : Id -> PackageOrTypeName
+    MethodName              : AmbName * Id -> MethodName
+    MethodName              : Id -> MethodName
+    ExprName                : AmbName * Id -> ExprName
+    ExprName                : Id -> ExprName
+    TypeName                : PackageOrTypeName * Id -> TypeName
+    TypeName                : Id -> TypeName
+    AmbName                 : AmbName * Id -> AmbName
+    AmbName                 : Id -> AmbName
+    PackageName             : List(Id) -> PackageName
+    Double                  : FloatType
+    Float                   : FloatType
+    Char                    : IntType
+    Long                    : IntType
+    Int                     : IntType
+    Short                   : IntType
+    Byte                    : IntType
+                            : FloatType -> NumType
+                            : IntType -> NumType
+    Boolean                 : PrimType
+                            : NumType -> PrimType
+    Null                    : NullLiteral
+                            : String -> StringChars
+                            : EscapeSeq -> StringPart
+                            : UnicodeEscape -> StringPart
+    Chars                   : StringChars -> StringPart
+    String                  : List(StringPart) -> StringLiteral
+                            : Int -> SingleChar
+                            : EscapeSeq -> CharContent
+                            : UnicodeEscape -> CharContent
+    Single                  : SingleChar -> CharContent
+    Char                    : CharContent -> CharLiteral
+                            : Int -> LastOcta
+    OctaEscape3             : Int * Int * Int -> OctaEscape
+    OctaEscape2             : Int * Int -> OctaEscape
+    OctaEscape2             : Int * LastOcta -> OctaEscape
+    OctaEscape1             : LastOcta -> OctaEscape
+    NamedEscape             : Int -> NamedEscape
+                            : NamedEscape -> EscapeSeq
+                            : OctaEscape -> EscapeSeq
+    False                   : Bool
+    True                    : Bool
+    Bool                    : Bool -> BoolLiteral
+    Float                   : HexaFloatLiteral -> FloatLiteral
+    Float                   : DeciFloatLiteral -> FloatLiteral
+                            : String -> HexaFloatLiteral
+                            : String -> DeciFloatLiteral
+    Octa                    : OctaLiteral -> IntLiteral
+    Hexa                    : HexaLiteral -> IntLiteral
+    Deci                    : DeciLiteral -> IntLiteral
+                            : String -> OctaLiteral
+                            : String -> HexaLiteral
+                            : String -> DeciLiteral
+    StrictFP                : StrictFP
+    Synchronized            : Synchronized
+    Volatile                : Volatile
+    Transient               : Transient
+    Native                  : Native
+    Static                  : Static
+    Final                   : Final
+    Abstract                : Abstract
+    Protected               : Protected
+    Private                 : Private
+    Public                  : Public
+    Id                      : ID -> Id
+                            : String -> ID
+                            : String -> UnicodeEscape
+    UnicodeEscape           : ListPlusOfCharClass1 * Int * Int * Int * Int -> UnicodeEscape
+
+
+//signature
+//  constructors
+//    Some : a -> Option(a)
+//    None : Option(a)
+//
+//
+//signature
+//  constructors
+//    Cons : a * List(a) -> List(a)
+//    Nil  : List(a)
+//    Conc : List(a) * List(a) -> List(a)

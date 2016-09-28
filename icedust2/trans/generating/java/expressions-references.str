@@ -1,0 +1,57 @@
+module generating/java/expressions-references
+
+imports // constructors
+  
+  java/Java
+  signatures/Expressions-sig
+
+imports // functions
+  
+  api/_runtime
+  api/data-names-api
+  api/model-names-api
+//  names/naming/names
+  generating/_ir/model
+  generating/java/types
+
+rules // member access
+
+  exp-to-java-stm(err|i): e@MemberAccess(e1, name) -> (stms, exp)
+    where
+      <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
+    with
+      x_expType := <_get-type>e1;
+      x_getter := <name-get>name;
+      (stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+      refty := <expr-to-java-type(err)>e;
+      j := <add>(i, <length>stms*);
+      x_var := $[var[<inc>j]]
+    with
+      stms := bstm* |[
+        ~stms*
+        refty x_var = x_expType.x_getter(~e1exp);
+      ]|;
+      exp := expr |[x_var]|
+
+rules // direct references
+
+  exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
+    where
+      <is-entityinstancename>x_entityName
+         
+  exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
+    where
+      <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
+    with
+      x_getter := <name-get>name;
+      refty := <expr-to-java-type(err)>e;
+      x_var := $[var[<inc>i]]
+    with
+      stms := bstm* |[
+        refty x_var = this.x_getter();
+      ]|;
+      exp := expr |[x_var]|
+
+rules // this
+      
+  exp-to-java-stm(err|i): This() -> ([], expr |[this]|)

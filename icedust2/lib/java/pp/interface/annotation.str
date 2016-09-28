@@ -1,0 +1,30 @@
+module java/pp/interface/annotation
+
+
+rules
+
+  java-to-box:
+    MarkerAnno(name) -> box |[ H hs=0 ["@" ~name ] ]|
+
+  java-to-box:
+    SingleElemAnno(name, val) -> box |[ H hs=0 ["@" ~name "(" ~val ")"] ]|
+
+  java-to-box:
+    Anno(name, pairs) -> box |[ H hs=0 ["@" ~name "(" ~pairs' ")"] ]|
+    where
+      <separate-by-comma> pairs => pairs'
+
+rules
+
+  java-to-box:
+    ElemValPair(Id(s), val) -> box |[ H hs=1 [s "=" ~val] ]|
+
+  java-to-box:
+    ElemValArrayInit(vals) -> ArrayInit(vals)
+
+strategies
+
+  is-Java-Anno =
+      ?MarkerAnno(_)
+    + ?SingleElemAnno(_, _)
+    + ?Anno(_, _)

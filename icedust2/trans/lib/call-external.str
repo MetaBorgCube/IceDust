@@ -1,0 +1,49 @@
+module lib/call-external
+
+imports
+
+  api/_generated
+  lib/files
+
+rules
+
+  /**
+   * Calls an external strategy with arguments and returns a tuple of the exit code and commandline output
+   */
+  call-external-read-output(|program, args): _ -> (exitCode, stdOut, stdErr)
+    with
+      project-path := <_project-path>;
+      stdout-file  := $[[project-path]/stdout.txt];
+      stderr-file  := $[[project-path]/stderr.txt];
+      Stream(instream)  := <stdin-stream>;
+      Stream(outstream) := <fopen> (stdout-file, "w");
+      Stream(errstream) := <fopen> (stderr-file, "w")
+    with
+      //log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+      exitCode := <prim("SSL_EXT_call", program, args, instream, outstream, errstream)>
+    with
+      <fclose>outstream;
+      <fclose>errstream;
+      stdOut := <read-text-file> stdout-file;
+      stdErr := <read-text-file> stderr-file;
+      <delete-file>"stdout.txt";
+      <delete-file>"stderr.txt"
+
+rules
+
+  /**
+   * Calls javac, with as classpath the folder of the main file.
+   *
+   * Returns: (exitCode, stdOut, stdErr)
+   */
+  call-javac(|mainFile) = call-external-read-output(|"javac", ["-cp", <dirname;local-path>mainFile, <local-path>mainFile])
+
+  /**
+   * Calls java, with as classpath the folder of the main file.
+   *
+   * Returns: (exitCode, stdOut, stdErr)
+   */
+  call-java(|mainFile): _ -> <call-external-read-output(|"java", ["-cp", <dirname;local-path>mainFile, className])> 
+    with
+      className := <base-filename;remove-extension> mainFile 
+      
