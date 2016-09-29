@@ -28,5 +28,5 @@ fixture [[
     [[...]]
 ]]
 
-test auto inverse on self relation  [[n.treeAsParent]]  run get-type to "Tree"
-test auto inverse on other relation [[foo.rel       ]]  run get-type to "Rel"
+test auto inverse on self relation  [[n.treeAsParent]]  run get-type2 to "Tree"
+test auto inverse on other relation [[foo.rel       ]]  run get-type2 to "Rel"

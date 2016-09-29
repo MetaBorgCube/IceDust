@@ -54,7 +54,7 @@ rules // Editor services
         [
           ("Target",             <language-pp              <+ !None()>t),
           ("Target Constructor", <pp-cons                  <+ !None()>t),
-          ("Type",               <get-type                 <+ !None()>t), //TODO: make this work on declaration names
+          ("Type",               <get-type2                <+ !None()>t), //TODO: make this work on declaration names
           ("Multiplicity",       <get-multiplicity         <+ !None()>t), //TODO: make this work on declaration names
           ("Depends On",         <name-get-dependson-paths <+ !None()>t),
           ("Flows To",           <name-get-flowsto-paths   <+ !None()>t),

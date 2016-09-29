@@ -20,9 +20,9 @@ fixture [[
   [[...]]
 ]]
 
-test type of relation                    [[n.maybe]]           run get-type to "Node"
-test type of relation relation           [[n.maybe.one]]       run get-type to "Node"
-test type of relation relation relation  [[n.maybe.one.star]]  run get-type to "Node"
+test type of relation                    [[n.maybe]]           run get-type2 to "Node"
+test type of relation relation           [[n.maybe.one]]       run get-type2 to "Node"
+test type of relation relation relation  [[n.maybe.one.star]]  run get-type2 to "Node"
 
 test multiplicity of relation ZeroOrOne  [[n.maybe]] run get-multiplicity to ZeroOrOne()
 test multiplicity of relation One        [[n.one]]   run get-multiplicity to One()

@@ -21,8 +21,8 @@ fixture [[
 ]]
 
 
-test type of choice Int    [[4 <+ 3  ]] run get-type to Int()
-test type of choice String [["a" <+ "b"]] run get-type to String()
+test type of choice Int    [[4 <+ 3  ]] run get-type2 to Int()
+test type of choice String [["a" <+ "b"]] run get-type2 to String()
 
 
 test mul ZeroOrOne  choice ZeroOrOne  [[x.i        <+ x.i        ]] run get-multiplicity to ZeroOrOne()

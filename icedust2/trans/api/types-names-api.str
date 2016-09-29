@@ -7,7 +7,7 @@ imports // signatures
 
 rules
 
-  get-type         = nabl2-get-ast-type;normalize-type
+  get-type2        = nabl2-get-ast-type;normalize-type
   get-multiplicity = nabl2-get-ast-type;normalize-multiplicity
   
   normalize-type = ?TTuple(<id>,_);?TInt()     ;!Int()

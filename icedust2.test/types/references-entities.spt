@@ -18,7 +18,7 @@ test type of ref entity this [[
   x : X {
     i=8
   }
-]] run get-type on #1 to "X"
+]] run get-type2 on #1 to "X"
    
 test type of ref entity Identifier [[
   model
@@ -33,7 +33,7 @@ test type of ref entity Identifier [[
   
   execute
    [[x]].i
-]] run get-type on #1 to "X"
+]] run get-type2 on #1 to "X"
 
 
 test multiplicity of ref this [[

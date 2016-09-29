@@ -84,7 +84,7 @@ fixture [[
 //        <rel { } >
 //        [[x1]] {i=4}
 //    }
-//]] run get-type on #1 to "X"
+//]] run get-type2 on #1 to "X"
 //
 //test infer relation instance type [[
 //  model
@@ -99,6 +99,6 @@ fixture [[
 //        <[[rel]] { } >
 //        x1 {i=4}
 //    }
-//]] run get-type on #1 to "XYRelation"
+//]] run get-type2 on #1 to "XYRelation"
 
 //TODO: add testcases for relations

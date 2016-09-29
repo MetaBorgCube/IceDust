@@ -13,14 +13,14 @@ test type of ref attribute (Identifier) [[
   entity X{
     i : Int = [[i]]
   }
-]] run get-type on #1 to Int()
+]] run get-type2 on #1 to Int()
 
 test type of ref this.attribute [[
   model
   entity X{
     i : Int = [[this.i]]
   }
-]] run get-type on #1 to Int()
+]] run get-type2 on #1 to Int()
 
 test type of ref entity.attribute [[
   model
@@ -35,7 +35,7 @@ test type of ref entity.attribute [[
   execute
   3
   [[x.i]]
-]] run get-type on #1 to Int()
+]] run get-type2 on #1 to Int()
 
 test type of ref role.attribute [[
   model
@@ -47,7 +47,7 @@ test type of ref role.attribute [[
     Node.out 1 -> out
     in.a <-> out.b
   }
-]] run get-type on #1 to Int()
+]] run get-type2 on #1 to Int()
 
 
 test multiplicity of ref attribute (Identifier) One [[

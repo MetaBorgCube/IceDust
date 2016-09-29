@@ -20,7 +20,7 @@ rules // member access
     where
       <is-attributename <+ is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname>name
     with
-      x_expType := <_get-type>e1;
+      x_expType := <get-type2>e1;
       x_getter := <name-get>name;
       (stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
       refty := <expr-to-java-type(err)>e;

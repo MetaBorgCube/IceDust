@@ -31,7 +31,7 @@ rules // types of expressions and names (uses type and multiplicity)
   
   name-to-java-type(err): name -> result
     with
-      x_type := <get-type;type-to-string-java>name
+      x_type := <get-type2;type-to-string-java>name
     with
       if <get-multiplicity;upper-one>name then
       result := type |[

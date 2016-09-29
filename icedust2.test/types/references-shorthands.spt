@@ -31,12 +31,12 @@ fixture [[
   [[...]]
 ]]
 
-test type of inverse role  [[c.enrollment.student]]  run get-type to "Student"
-test type of shortcut      [[c.students]]            run get-type to "Student"
-test type of inverse role2 [[s.enrollment.course]]   run get-type to "Course"
-test type of shortcut2     [[s.courses]]             run get-type to "Course"
+test type of inverse role  [[c.enrollment.student]]  run get-type2 to "Student"
+test type of shortcut      [[c.students]]            run get-type2 to "Student"
+test type of inverse role2 [[s.enrollment.course]]   run get-type2 to "Course"
+test type of shortcut2     [[s.courses]]             run get-type2 to "Course"
 
-test type of shortcut.shortcut    [[s.courses.students]]   run get-type to "Student"
+test type of shortcut.shortcut    [[s.courses.students]]   run get-type2 to "Student"
 
 test multiplicity of inverse role  [[c.enrollment.student]]  run get-multiplicity to OneOrMore()
 test multiplicity of shortcut      [[c.students]]            run get-multiplicity to OneOrMore()
