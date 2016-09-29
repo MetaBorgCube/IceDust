@@ -11,3 +11,6 @@ signature constructors
   AST       : AST
 
   Assoc     : Term
+
+  Type      : Term
+  Mult      : Term

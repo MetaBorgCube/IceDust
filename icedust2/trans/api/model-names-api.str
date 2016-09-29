@@ -146,8 +146,8 @@ rules // shortcuts
 
 rules // combined
   
-  name-get-dependson-paths = index-get(|DependsOn())
-  name-get-flowsto-paths   = index-get(|FlowsTo())
+  name-get-dependson-paths = index-get2(|DependsOn())
+  name-get-flowsto-paths   = index-get2(|FlowsTo())
   name-get-toposort        = index-get(|TopoSort())
   
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)

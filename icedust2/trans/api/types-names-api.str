@@ -2,13 +2,18 @@ module api/types-names-api
 
 imports // signatures
 
+  analysis2/constructors
   static-semantics
   signatures/Types-sig
+  
+imports // functions
+
+  lib/annotations
 
 rules
 
-  get-type2        = nabl2-get-ast-type;normalize-type
-  get-multiplicity = nabl2-get-ast-type;normalize-multiplicity
+  get-type2        = get-annotation(|Type()) <+ nabl2-get-ast-type;normalize-type
+  get-multiplicity = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-multiplicity
   
   normalize-type = ?TTuple(<id>,_);?TInt()     ;!Int()
   normalize-type = ?TTuple(<id>,_);?TFloat()   ;!Float()

@@ -7,13 +7,13 @@ imports // constructors
 
 imports // functions
 
+  analysis2/analyse-post-analysis
   api/model-names-api
   lib/index
   lib/nabl2
   lib/string
   lib/traverse
   prettyprinting/pp
-//  typing/references-manual
 
 signature constructors
 
@@ -77,8 +77,8 @@ rules
 
   path(|origin): pathexpr -> DependencyPath(origin, pathexpr-analyzed)
     with
-//      pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>origin)>pathexpr
-      pathexpr-analyzed := pathexpr
+      pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>origin)>pathexpr
+//      pathexpr-analyzed := pathexpr
   
   path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
     with
@@ -89,8 +89,8 @@ rules
       else
         inv-pathexpr := Ref(origin)
       end;
-//      inv-pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>inv-origin)>inv-pathexpr
-      inv-pathexpr-analyzed := inv-pathexpr
+      inv-pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>inv-origin)>inv-pathexpr
+//      inv-pathexpr-analyzed := inv-pathexpr
 
   path-pp: DependencyPath(origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] <- [<pp-partial-icedust2-string>pathexpr]]
   path-pp: DataflowPath  (origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] -> [<pp-partial-icedust2-string>pathexpr]]
@@ -157,11 +157,11 @@ rules // Expr -> Path
 
 rules // Path -> Expr
   
-//  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          ;analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
-  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          >pathexpr
+  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          ;analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
+//  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          >pathexpr
   
-//  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr);analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
-  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr)>pathexpr
+  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr);analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
+//  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr)>pathexpr
 
 rules // Path -> Path
   
