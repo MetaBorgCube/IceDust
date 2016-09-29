@@ -8,6 +8,7 @@ imports // constructors
 imports // functions
 
   editor/analysis
+  analysis2/analysis2
   api/_generated
   api/_runtime
   api/module-api
@@ -79,6 +80,8 @@ rules // Build in steps
 //      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
 //      <index-store-prop2(|UIStyle(),      moduleName)>uistyle;
 //      error* := <_task-get-messages(|eclipsePath)>
+      <index-set(|moduleName, ImplStrategy())>implstr;
+      <index-set(|moduleName, UIStyle     ())>uistyle;
       error* := []
     with
       if not([] := error*) then

@@ -8,6 +8,7 @@ imports // constructors
   analysis2/constructors
 //  names/naming/names
   analysis/_constructors
+  generating/_ir/constructors
 
 imports // functions
 
@@ -33,7 +34,6 @@ rules // module
   modulename-get-entityinstancenames-i  = index-get2(|"Member")
   
   modulename-get-entityinstancename(|einame) = modulename-get-entityinstancenames;filter(eq-no-anno(|einame));Hd
-//  modulename-get-entityinstancename(|einame) = modulename-decl-entityinstancename(|einame)
   
   // string -> [string]
   modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
@@ -56,20 +56,16 @@ rules // module
 
   modulename-get-exprs = index-get(|AST())
 
-  modulename-is-calconread = id //TODO: properly implement this
-  modulename-is-calconwrite = fail
-  modulename-is-eventuallyconsistent = fail
-//  modulename-get-implstr = _get-property(|ImplStrategy())
-//  
-//  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
-//  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
-//  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
-//
-//  modulename-get-uistyle = _get-property(|UIStyle())
-//  
-//  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
-//  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
-//  modulename-get-entityinstancename(|memberName) = name-get-childname(|NablNsEntityInstance(), memberName)
+  modulename-get-implstr = index-get(|ImplStrategy())
+  
+  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
+  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
+  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
+
+  modulename-get-uistyle = index-get(|UIStyle())
+  
+  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
+  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
   
   modulename-decl-entityinstancename(|einame, type): modulename -> einame-decl
     with
