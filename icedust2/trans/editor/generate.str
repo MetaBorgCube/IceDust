@@ -16,9 +16,9 @@ imports // functions
   desugaring/desugar
   generating/_ir/paths
   generating/java/generate
-//  generating/webdsl/generate
-//  generating/webdsl/java/generate
-//  generating/webdsl/js/generate
+  generating/webdsl/generate
+  generating/webdsl/java/generate
+  generating/webdsl/js/generate
   lib/files
   lib/call-external
   lib/index
@@ -94,21 +94,21 @@ rules // Build in steps
             (targetCode, error') := <generate-java-code(error-handler)>moduleName;
             targetFileName := <java-generated-path(|relativePath)>;
             java-library-paths(|fullPath);copy-dir
-//          case ?WebDSL():
-//            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
-//            targetFileName := <webdsl-generated-path(|relativePath)>;
-//            webdsl-library-paths(|fullPath);copy-dir;
-//            webdsl-java-library-paths(|fullPath);copy-dir;
-//            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
-//            if <modulename-is-explorerui> moduleName then
-//              jsString := <generate-webdsl-js-code> moduleName;
-//              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
-//            end;
-//            if <modulename-is-eventuallyconsistent> moduleName then
-//              (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
-//              targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
-//              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
-//            end
+          case ?WebDSL():
+            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+            targetFileName := <webdsl-generated-path(|relativePath)>;
+            webdsl-library-paths(|fullPath);copy-dir;
+            webdsl-java-library-paths(|fullPath);copy-dir;
+            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+            if <modulename-is-explorerui> moduleName then
+              jsString := <generate-webdsl-js-code> moduleName;
+              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
+            end;
+            if <modulename-is-eventuallyconsistent> moduleName then
+              (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+              targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
+            end
         end;
         if <eq>(1, phase) then
           result := (targetFileName, targetCode)

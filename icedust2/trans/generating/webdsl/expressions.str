@@ -1,0 +1,65 @@
+module generating/webdsl/expressions
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  signatures/Data-sig
+  signatures/Expressions-sig  
+  tiersplit/constructors
+
+imports // functions
+
+  api/_runtime  
+  api/module-names-api
+  generating/_ir/expressions
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+  generating/_ir/model
+
+rules // WebDSL specific: no generics, explicit casts
+  
+  webdsl-lib-call-cast = ?If(_,_,_)
+
+  webdsl-lib-call-cast = ?Merge(_, _)
+  webdsl-lib-call-cast = ?ChoiceLeft(_, _)
+
+rules // lib expression calls
+  
+  expr-to-webdsl-expr(err): e -> result
+    where
+      lib-call
+    with
+      arg*            := <get-arguments>e;
+      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
+      x_methodpostfix := <lib-method-name>e;
+      if <webdsl-lib-call-cast> e then
+        srt1          := <name-to-webdsl-srt(err)>e;
+        result := exp |[
+          Expressions.x_methodpostfix(e1*) as srt1
+        ]|
+      else
+        result := exp |[
+          Expressions.x_methodpostfix(e1*)
+        ]|
+      end
+  
+rules // literals
+  
+  expr-to-webdsl-expr(err): LitString(str1)                 -> String(str1)
+  expr-to-webdsl-expr(err): Int(i_1)                        -> webdsl:e |[ i_1 ]|
+  expr-to-webdsl-expr(err): Float(f_1)                      -> Float(f_1)//webdsl:e |[ f_1 ]|
+  expr-to-webdsl-expr(err): True()                          -> webdsl:e |[ true ]|
+  expr-to-webdsl-expr(err): False()                         -> webdsl:e |[ false ]|
+  expr-to-webdsl-expr(err): Datetime(str1)                  -> webdsl:e |[Expressions.parseDatetime(e1)]| with e1 := String(str1)
+  expr-to-webdsl-expr(err): NoValue()                       -> webdsl:e |[ null ]|
+
+rules // casts
+  
+  expr-to-webdsl-expr(err): Cast(NoValue() , ex1-ty) -> exp |[ null as x ]| where x := <type-to-string-webdsl>ex1-ty
+  
+  expr-to-webdsl-expr(err): Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      x_method := $[as[<postfix-id>ex1-ty]]

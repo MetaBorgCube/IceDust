@@ -1,0 +1,7 @@
+module icedustWebDSL
+
+model
+
+  entity Foo{
+    bar : String
+  }

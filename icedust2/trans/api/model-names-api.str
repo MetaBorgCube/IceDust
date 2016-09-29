@@ -75,11 +75,11 @@ rules // attributes
   
   attributename-get-expr = get-property(|"Member","expr")
   
-//  attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
-//  
-//  attributename-pp2-type-multiplicity: attrName -> x
-//    with
-//      x := <pp2-type-multiplicity>(<_get-type>attrName, <get-multiplicity>attrName)
+  attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
+  
+  attributename-pp2-type-multiplicity: attrName -> x
+    with
+      x := <pp2-type-multiplicity>(<name-get-type>attrName, <name-get-multiplicity>attrName)
 
 rules // relations
 
@@ -120,13 +120,16 @@ rules
   
   name-is-to-one             = where(name-get-multiplicity;upper-one)
   name-is-to-many            = where(name-get-multiplicity;upper-many)
+  
+  name-is-to-many-ordered = fail //TODO: properly implement this
+  name-is-to-many-unordered = id
 //  name-is-to-many-ordered    = where(name-is-to-many; get-ordering;ordered)
 //  name-is-to-many-unordered  = where(name-is-to-many; get-ordering;unordered)
   
   name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
   name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
-//  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
-//  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
+  name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
+  name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
   name-get-type         = get-type-property(|"Member");normalize-type
   name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity

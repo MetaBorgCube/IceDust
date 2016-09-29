@@ -1,0 +1,12 @@
+module lib/js/signatures/Parameter-sig
+
+imports
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Parameter-sig
+
+
+signature
+  constructors
+    parameter       : ID -> Parameter
+    Parameter-Plhdr : Parameter
+    ID-Plhdr        : ID
