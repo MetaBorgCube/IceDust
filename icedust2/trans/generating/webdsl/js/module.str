@@ -40,7 +40,7 @@ rules // module
   attributeName-default-derivation-to-js: attributeName -> result
     with
       exp_attributeNamestr := <attributename-entityname;js-string>attributeName;
-      partial-expr         := <attributename-get-expr-tiersplit-expr> attributeName;
+      partial-expr         := <attributename-get-expr-tiersplit-expr>attributeName;
       exp_derivation       := <expr-to-js> partial-expr;
       stmt_return          := js-stmt |[ return exp_derivation; ]|
     with

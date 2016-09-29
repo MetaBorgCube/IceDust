@@ -84,6 +84,7 @@ rules //
   // for terms
   topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term'''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       annotations := <get-annotations> term;
@@ -98,7 +99,7 @@ rules //
   topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(where(explode-term);not(is-string))>term
     with
       (term', fold-value') := <map-strategy>(term, parent, fold-value)
 

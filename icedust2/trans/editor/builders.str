@@ -7,6 +7,7 @@ imports
   api/module-names-api
   desugaring/desugar
   editor/pp
+  lib/debug
   lib/index
   lib/nabl2
   lib/lists-tuples
@@ -111,4 +112,4 @@ rules
       filename := <guarantee-extension(|"index.aterm")> path;
       result   := <_index-get>
       
-  analysis2-builder-key-origins = analysis2-builder;split2(id,map(split2(ttuple(id,origin-offset,nabl2-mk-occurrence(|"RandomNs")<+!"No Origin"),id)))
+  analysis2-builder-key-origins = analysis2-builder;split2(id,all-strings-add-origin)

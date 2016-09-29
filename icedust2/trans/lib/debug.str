@@ -5,6 +5,7 @@ imports // functions
   api/_runtime
   api/_runtime-constructors
   lib/traverse
+  lib/lists-tuples
   nabl2/api
 
 rules // debug tasks
@@ -62,8 +63,13 @@ rules // debug-no-anno
 
 rules
 
-  debug-term(|info) = where(is-list);debug(|$[[info]: [<map(nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>]])
-  debug-term(|info) =                debug(|$[[info]: [<   (nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>]])
-  debug-term(|)     = where(is-list);debug(|           <map(nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>)
-  debug-term(|)     =                debug(|           <   (nabl2-mk-occurrence(|"DontCareNs")<+!"No Occurence");write-to-string>)
+  debug-term(|info) = debug(|$[[info]: [<all-strings-add-origin;write-to-string>]])
+  debug-term(|)     = debug(|           <all-strings-add-origin;write-to-string>)
+  
+rules
+
+  add-origin = ttuple(id, origin-offset<+!"No Origin", nabl2-mk-occurrence(|"RandomNs");get-arguments;lThird<+!"No Term Index")
+  
+  all-strings-add-origin = bottomup(try(where(is-string);add-origin))
+  all-add-origin         = bottomup(try(                 add-origin))
   
