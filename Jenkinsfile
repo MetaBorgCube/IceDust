@@ -1,3 +1,12 @@
+properties([
+  pipelineTriggers([
+    upstream(
+      threshold: hudson.model.Result.SUCCESS,
+      upstreamProjects: '/metaborg/spoofax-releng/master'
+    )
+  ])
+])
+
 node{
   stage('Build and Test'){
     try{
