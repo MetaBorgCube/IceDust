@@ -31,12 +31,12 @@ rules // entity
 
   is-entityname = where(is-string;get-property(|"Entity","ns");?Entity())
 
-  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-decl-names                ;filter(is-attributename);string-sort-anno
-  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-decl-names                ;filter(is-attributename);origin-sort-anno
-  entityname-get-relationnames   = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-relationname );string-sort-anno
-  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names     (|"Member");filter(is-rolename     );string-sort-anno
-  entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-inversename  );string-sort-anno
-  entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-reachable-names(|"Member");filter(is-shortcutname );string-sort-anno
+  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-decl-names                 ;filter(is-attributename);string-sort-anno
+  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-decl-names                 ;filter(is-attributename);origin-sort-anno
+  entityname-get-relationnames   = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-relationname );string-sort-anno
+  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names      (|"Member");filter(is-rolename     );string-sort-anno
+  entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-inversename  );string-sort-anno
+  entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-shortcutname );string-sort-anno
 
   entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)

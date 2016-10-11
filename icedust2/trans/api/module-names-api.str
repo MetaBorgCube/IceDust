@@ -16,6 +16,7 @@ imports // functions
   api/data-names-api
   api/model-names-api
   lib/index
+  lib/eq
 //  lib/origin
 //  lib/search
   lib/string
