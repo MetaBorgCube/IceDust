@@ -11,7 +11,7 @@ fixture [[
 test Duplicate entity type fails [[
   entity [[User]] {}
   entity [[User]] {}
-]] 2 errors at #1,#2
+]] 1 error at #2 // 2 errors at #1,#2
 
 test Duplicate relation fails [[
   entity User{}
@@ -24,7 +24,7 @@ test Duplicate relation fails [[
     User.x * -> user1
     Book.y 1 -> book1
   }
-]] 2 errors at #1,#2
+]] 1 error at #2 // 2 errors at #1,#2
 
 test Resolve relation member to entity [[
   entity [[User]]{}

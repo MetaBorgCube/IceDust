@@ -18,7 +18,7 @@ test error on attribute and role with same name [[
     Student.enrollment * -> [[student]]
     [[student]] : Int
   }
-]] 2 errors at #1,#2
+]] 1 error at #2 // 2 errors at #1,#2
 
 //test error on attribute and inverse with same name [[ //TODO: NaBL2 bug, W doesnt give reachable but visible
 //  entity Student{
@@ -89,5 +89,5 @@ test error on inverse and shortcut with same name [[
     
     student.courseShort <-> course.[[student]]
   }
-]] 2 errors at #1,#2
+]] 1 error at #2 // 2 errors at #1,#2
 
