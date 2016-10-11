@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/IceDust/job/feature%252Finterfaces/badge/icon)](http://buildfarm.metaborg.org/job/IceDust/job/feature%252Finterfaces/)
+[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Finterfaces/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Finterfaces/)
 
 # IceDust
 
