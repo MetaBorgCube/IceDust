@@ -70,7 +70,7 @@ test error on duplicate shortcut [[
     
     a.[[node]] <-> b.[[node]]
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on duplicate shortcut by desugaring [[
   entity Project{}
@@ -85,4 +85,4 @@ test error on duplicate shortcut by desugaring [[
     [[Issue]] 1
     [[Project]] *
   }
-]] 2 errors // 4 errors at #1,#2,#3,#4
+]] 4 errors at #1,#2,#3,#4

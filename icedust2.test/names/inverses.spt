@@ -40,7 +40,7 @@ test error on duplicate inverse [[
     Node.[[edge]] 1 -> a
     Node.[[edge]] 1 -> b
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on duplicate inverse by desugaring [[
   entity Node {}
@@ -50,4 +50,4 @@ test error on duplicate inverse by desugaring [[
     
     node.[[c]] <-> node.[[d]]
   }
-]] 4 errors // 6 errors // always also results in duplicate inverses
+]] 6 errors // always also results in duplicate inverses
