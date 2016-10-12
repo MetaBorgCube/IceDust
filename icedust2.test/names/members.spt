@@ -28,7 +28,7 @@ test error on attribute and inverse with same name [[
   relation Enrollment{
     Student.[[enrollment]] * -> student
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on attribute and shortcut with same name [[
   entity Student{
@@ -45,7 +45,7 @@ test error on attribute and shortcut with same name [[
     
     student.[[course]] <-> course.student
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on role and inverse with same name [[
   relation Student{
@@ -55,7 +55,7 @@ test error on role and inverse with same name [[
   relation Enrollment{
     Student.[[enrollment]] * -> student
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on role and shortcut with same name [[
   relation Student{
@@ -72,7 +72,7 @@ test error on role and shortcut with same name [[
     
     student.[[course]] <-> course.student
   }
-]] 1 error at #2 // 2 errors at #1,#2
+]] 2 errors at #1,#2
 
 test error on inverse and shortcut with same name [[
   relation Student{
