@@ -80,11 +80,11 @@ The type system is aware of _multiplicities_ (the number of values an expression
 
 ## Getting the Editor
 
-Download from http://buildfarm.metaborg.org/job/icedust-eclipsegen/
+Download from http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust-EclipseGen/job/master/
 
 Or build the Editor (in Spoofax)
 
-1. Get Spoofax from http://buildfarm.metaborg.org/job/spoofax-master/lastSuccessfulBuild/artifact/dist/
+1. Get Spoofax from http://buildfarm.metaborg.org/job/metaborg/job/spoofax-releng/job/master/lastSuccessfulBuild/artifact/dist/spoofax/eclipse/
 2. Check out this git repo
 3. Build the Spoofax Language Project in [icedust](icedust)
 
