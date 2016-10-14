@@ -5,9 +5,23 @@ language icedust2
 fixture [[
   module test
   model
-  entity [[...]]{
+  relation [[...]]{
     i : Int
+    j : Int
+    Foo.someInverse  * -> someRole
+    Foo.someInverse2 * -> someRole2
+    someRole.someShortcut <-> someRole2.someShortcut
   }
+  relation Foo.foos <-> Foo.foos2
 ]]
 
-test Query entity attribute names [[Foo]] run entityname-get-attributenames-test to !ATerm["i"]
+test Query entity attribute names  [[Foo]] run entityname-get-attributenames-test  to !ATerm["i","j"]
+//test Query entity relation names   [[Foo]] run entityname-get-relationnames-test   to !ATerm["i","j"]
+test Query entity role names       [[Foo]] run entityname-get-rolenames-test       to !ATerm["someRole"]
+//test Query entity inverse names    [[Foo]] run entityname-get-inversenames-test    to !ATerm["someInverse"]
+//test Query entity shortcut names   [[Foo]] run entityname-get-shortcutnames-test   to !ATerm[]
+//test Query entity relroleinv names [[Foo]] run entityname-get-relroleinvnames-test to !ATerm[]
+//test Query entity member names     [[Foo]] run entityname-get-membernames-test     to !ATerm[]
+test Query entity module name      [[Foo]] run entityname-get-modulename-test      to "test"
+
+// commented out tests fail...
