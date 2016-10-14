@@ -1,0 +1,12 @@
+module api/model-names-api-test
+
+
+imports // functions
+
+  
+  api/model-names-api
+  lib/nabl2
+
+rules
+
+  entityname-get-attributenames-test  = store-analysis-ast;entityname-get-attributenames

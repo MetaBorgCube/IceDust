@@ -64,7 +64,7 @@ rules // Build in steps
 
   build(error-handler|lang, implstr, uistyle, phase): (selected, position, ast, path, project-path-wrong) -> result
     with
-      <store-analysis>path;
+      <store-analysis-resource>path;
       analysis := <get-stored-analysis>;
       <nabl2-after-analysis(|path, ast)>analysis
     with

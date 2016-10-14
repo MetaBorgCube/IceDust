@@ -33,7 +33,7 @@ rules
 
   nabl2-after-analysis(|source,ast): analysis -> ([],[],[],analysis)
     with
-      <store-analysis>analysis
+      <store-analysis-resource>analysis
     with
       modulename := <collect-one(is-modulename)>ast
     with

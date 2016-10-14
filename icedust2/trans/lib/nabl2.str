@@ -15,20 +15,29 @@ signature constructors
   
 rules // store analysis to be able to query without passing the analysis
   
-  store-analysis: path -> None()
+  store-analysis-resource: path -> None()
     where
       is-string
     with
       analysis := <nabl2-get-resource-analysis>$[[<_project-path>]/[path]];
       rules(StoredAnalysis : None() -> analysis)
   
-  store-analysis: analysis -> None()
+  store-analysis-resource: analysis -> None()
     where
       not(is-string)
     with
       rules(StoredAnalysis : None() -> analysis)
   
-  get-stored-analysis = !None();StoredAnalysis <+ fatal-err(|"Error: Analysis is not stored. Please store with <store-analysis>path.")    
+  store-analysis-ast: term -> term
+    with
+      analysis := <nabl2-get-ast-analysis>term;
+      rules(StoredAnalysis : None() -> analysis)
+  
+  
+  get-stored-analysis = ?t;(
+    !None();StoredAnalysis <+ // get stored analysis
+    !t;nabl2-get-ast-analysis;debug(!$[Used analysis stored on term [<write-to-string>t]]) <+ // or get analysis from term
+    fatal-err(|$[Error: Analysis is not stored. Please store with <store-analysis-resource>path. Also no ast-analysis available for term "[<write-to-string>t]"]))   
 
 rules // wrap nabl2 api with stored analysis
 

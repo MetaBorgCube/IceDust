@@ -39,7 +39,7 @@ rules // Editor services
       <not(hover-parent-for)>target
     with
       path' := <base-filename>project-path; //flakey workaround for http://yellowgrass.org/issue/SpoofaxWithCore/165 only works for files directly in root folder of project
-      <store-analysis>path'
+      <store-analysis-resource>path'
     with
       analysis := <get-stored-analysis>
     with

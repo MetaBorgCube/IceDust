@@ -41,7 +41,7 @@ rules
   debug-get-ast-value:
     (selected, position, ast, path, project-path) -> None()
     with
-      <store-analysis>path
+      <store-analysis-resource>path
     with
       <debug>"debug-get-ast-value"
     with
@@ -103,7 +103,7 @@ rules
   analysis2-builder:
     (selected, position, ast, path, project-path) -> (filename, result)
     with
-      <store-analysis>path
+      <store-analysis-resource>path
     with
       analysis := <get-stored-analysis>
     with
