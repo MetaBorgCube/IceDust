@@ -19,7 +19,7 @@ rules // store analysis to be able to query without passing the analysis
     where
       is-string
     with
-      analysis := <nabl2-get-analysis>$[[<_project-path>]/[path]];
+      analysis := <nabl2-get-resource-analysis>$[[<_project-path>]/[path]];
       rules(StoredAnalysis : None() -> analysis)
   
   store-analysis: analysis -> None()
