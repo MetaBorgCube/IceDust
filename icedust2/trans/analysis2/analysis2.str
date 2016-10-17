@@ -86,7 +86,7 @@ rules
       name2origin := <membervalue-get-name;membervaluename-get-origin;name-get-inversename>memv;
       ei          := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
       expr        := <membervalue-get-expr>memv;
-      ei2*        := <map(entityinstance-get-name;get-decl(|"Member"))>expr
+      ei2*        := <map(entityinstance-get-name;get-decl(|"Member")) <+ ![]>expr //if LitVal, empty list
     with
       assoc1* := <map(\ei2->(name,                                                      ei2)\)>ei2*;
       assoc2* := <map(\ei2->(<entityinstancename-get-membervaluename(|name2origin)>ei2, ei )\)>ei2*
