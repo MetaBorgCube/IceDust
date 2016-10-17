@@ -22,12 +22,28 @@ imports
   
   analysis2/analysis2
 
-rules // Analysis
+rules // Analysis: NaBL2 hooks
 
   editor-analyze = nabl2-analyze(desugar-before-analysis)
 
   nabl2-ignore-unused-references-hook = ?Namespace("Entity2")
   nabl2-ignore-unused-references-hook = ?Namespace("Member2")
+
+//  debug-generate-constraint = id
+
+  nabl2-debug-analysis-hook = id
+  
+  nabl2-custom-analysis-unit-hook: (resource, ast, customInitialResult) -> customUnitResult
+    with
+      customUnitResult := (resource, ast)
+  
+  nabl2-custom-analysis-final-hook(|a):(resource , customInitialResult, customUnitResult*) -> (error*, warning*, note*, customFinalResult)
+    with
+      ast := <Hd;Snd>customUnitResult*
+      ;<debug>ast
+    with
+      (error*, warning*, note*, customFinalResult) := <nabl2-after-analysis(|resource,ast)>a
+      ;<debug>(error*, warning*, note*, customFinalResult)
 
 rules // Debugging
   
@@ -41,6 +57,4 @@ rules // Debugging
     with filename := <guarantee-extension(|"analyzed.aterm")> path
        ; result   := selected
 
-//  debug-generate-constraint = id
 
-  nabl2-debug-analysis-hook = id

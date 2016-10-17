@@ -31,7 +31,7 @@ imports // functions
 
 rules
 
-  nabl2-after-analysis(|source,ast): analysis -> ([],[],[],analysis)
+  nabl2-after-analysis(|source,ast): analysis -> (error*, [], [], index)
     with
       <store-analysis-resource>analysis
     with
@@ -41,14 +41,16 @@ rules
     with
       <flows-toposort-2>modulename
     with
-      if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
+//      if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
         <ast-store-membervalues>ast;
         error* := <analysis2check>modulename;
-        <module-store-expr>ast
-      else
-        error* := []
-      end;
+        <module-store-expr>ast;
+//      else
+//        error* := []
+//      end;
       <map(debug)>error*
+    with
+      index := <_index-get>
 
 rules
 
