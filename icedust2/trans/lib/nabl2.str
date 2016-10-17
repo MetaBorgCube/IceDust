@@ -100,6 +100,7 @@ rules // stuff that depends on nabl2 internals
    * @type Scope -> List(Occurrence)
    */
   nabl2-get-scope-reachables(|a, ns) = ?s;!Reachables(s,Namespace(ns));nabl2--get-names(|<nabl2--sol-g>a)
+    ;debug(|"nabl2-get-scope-reachables: ") //FIXME: this does not return a List(Occurrence)!
   
 //  // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
 //  nabl2--analyze(pre):
