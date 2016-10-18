@@ -47,7 +47,7 @@ test (TS/1) Resolve invalid entity.attribute fails [[
   n : Node {
     name = "a"
   }
-]] 8 errors // 1 error
+]] >= 1 error // 1 error
 
 test Resolve entity.invalid attribute fails [[
   entity Node {
