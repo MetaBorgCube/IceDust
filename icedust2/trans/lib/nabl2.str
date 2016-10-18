@@ -97,10 +97,9 @@ rules // stuff that depends on nabl2 internals
    * Get reachable declarations of a scope
    *
    * @param ns : String
-   * @type Scope -> List(Occurrence)
+   * @type Scope -> List(Name)
    */
-  nabl2-get-scope-reachables(|a, ns) = ?s;!Reachables(s,Namespace(ns));nabl2--get-names(|<nabl2--sol-g>a)
-    ;debug(|"nabl2-get-scope-reachables: ") //FIXME: this does not return a List(Occurrence)!
+  nabl2-get-scope-reachables(|a, ns) = ?s;!Reachables(s,Namespace(ns));nabl2--get-names(|<nabl2--sol-g>a);nabl2--bag2set;with(map(?Name(_,_)))
   
 //  // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
 //  nabl2--analyze(pre):
