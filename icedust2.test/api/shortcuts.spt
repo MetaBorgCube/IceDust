@@ -22,4 +22,6 @@ test shortcut inversename [[students]] run shortcutname-get-inversename-test to 
 test shortcut rolename1   [[students]] run shortcutname-get-rolename1-test   to "course"
 test shortcut rolename2   [[students]] run shortcutname-get-rolename2-test   to "student"
 
-//test shortcut entityname  [[students]] run shortcutname-get-entityname-test   to "Enrollment"
+test shortcut entityname  [[students]] run shortcutname-get-entityname-test   to "Course"
+
+test shortcut type        [[students]] run name-get-type-test                 to "Student"

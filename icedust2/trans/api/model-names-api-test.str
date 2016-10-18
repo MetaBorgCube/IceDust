@@ -35,7 +35,7 @@ rules
   shortcutname-get-rolename-test           = store-analysis-ast; shortcutname-get-rolename
   shortcutname-get-inverseandrolename-test = store-analysis-ast; shortcutname-get-inverseandrolename
   
-  shortcutname-get-entityname-test         = store-analysis-ast; shortcutname-get-entityname-test
+  shortcutname-get-entityname-test         = store-analysis-ast; shortcutname-get-entityname
 
 rules
 
@@ -45,4 +45,6 @@ rules
   
   name-get-dependson-pathexprs-test        = try(attr-get-name); store-analysis-ast; name-get-dependson-pathexprs 
   name-get-flowsto-pathexprs-test          = try(attr-get-name); store-analysis-ast; name-get-flowsto-pathexprs
+
+  name-get-type-test                       = try(attr-get-name); store-analysis-ast; name-get-type
   
