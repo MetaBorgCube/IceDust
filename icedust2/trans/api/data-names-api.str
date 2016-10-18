@@ -60,8 +60,9 @@ rules // entity instance
   entityinstancename-decl-membervaluename(|membername): eiName -> memvname
     with
       memvname    := membername{eiName};
-      entityname  := <entityinstancename-get-entityname>eiName;
-      membername' := <entityname-get-membername(|membername)>entityname
+      entityname  := <entityinstancename-get-entityname>eiName
+    where
+      membername' := <entityname-get-membername(|membername)>entityname // fail if entity does not have that member
     with
       <index-add(|eiName  , "Member")>memvname;
       <index-set(|memvname, "Parent")>eiName;
