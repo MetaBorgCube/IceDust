@@ -32,6 +32,9 @@ rules // store analysis to be able to query without passing the analysis
     with
       analysis := <nabl2-get-ast-analysis>term;
       rules(StoredAnalysis : None() -> analysis)
+    with
+      analysis2 := <nalb2-get-custom-analysis>analysis;
+      <_index-set>analysis2
   
   
   get-stored-analysis = ?t;(

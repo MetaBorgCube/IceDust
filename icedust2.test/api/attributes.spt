@@ -1,0 +1,15 @@
+module api-attributes
+
+language icedust2
+
+fixture [[
+  module test
+  model
+    entity Foo {
+      [[...]]
+    }
+]]
+
+test Query attribute entity name [[ [[bla]]  : Int ]]                run attributename-get-entityname-test on #1 to "Foo"
+test Query attribute entity name [[ [[bla]]  : Int = 5 ]]            run attributename-get-expr-test       on #1 to Int("5")
+test Query attribute entity name [[ [[bla]]  : Int = 77 (default) ]] run attributename-get-expr-test       on #1 to Int("77")
