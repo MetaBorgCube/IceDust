@@ -30,7 +30,7 @@ rules // Editor services
     x@(target, position, ast, path, project-path) -> result
     where
       <is-string>target //dont resolve other things
-    with
+    where
       result := <nabl2--editor-resolve>x
 
   editor-hover:
@@ -43,7 +43,8 @@ rules // Editor services
     with
       analysis := <get-stored-analysis>
     with
-      <nabl2-after-analysis(|path, ast)>analysis
+      analysis2 := <nalb2-get-custom-analysis>analysis;
+      <_index-set>analysis2
     with
       result := <get-editor-properties(pp-partial-icedust2-string;truncate-string(|200));properties-to-html>target
       

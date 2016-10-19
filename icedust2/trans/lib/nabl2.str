@@ -32,6 +32,9 @@ rules // store analysis to be able to query without passing the analysis
     with
       analysis := <nabl2-get-ast-analysis>term;
       rules(StoredAnalysis : None() -> analysis)
+    with
+      analysis2 := <nalb2-get-custom-analysis>analysis;
+      <_index-set>analysis2
   
   
   get-stored-analysis = ?t;(
@@ -100,80 +103,3 @@ rules // stuff that depends on nabl2 internals
    * @type Scope -> List(Name)
    */
   nabl2-get-scope-reachables(|a, ns) = ?s;!Reachables(s,Namespace(ns));nabl2--get-names(|<nabl2--sol-g>a);nabl2--bag2set;with(map(?Name(_,_)))
-  
-//  // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
-//  nabl2--analyze(pre):
-//    AnalyzeUnit(source,ast,initial) -> UnitResult(ast',[Constraint(C)])
-//    where not(<nabl2--is-empty-ast> ast)
-//    with nabl2--analysis-step(!$[Preprocessing AST [source]],
-//      params := <getfirst(?Params(<id>))> initial;
-//      ast' := <pre;nabl2--index-ast(|source)> ast
-//    )
-//    with nabl2--analysis-step(!$[Generating constraints [source]],
-//      C := <nabl2--generate-constraint-file(|source,params);nabl2--normalize-constraint> ast'
-//    )
-//    with nabl2--analysis-step(!$[Storing AST [source]],
-//      rules(StoredAst : source -> ast)
-////      ; <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast
-//    )
-//  
-//  // overrides nabl2/runtime/analysis/main.str/nabl2--analyze(pre)
-//  nabl2--analyze(pre):
-//    AnalyzeFinal(source,initial,unit*) -> FinalResult([error*,error2*],[warning*,warning2*],[note*,note2*],analysis2)
-//    with nabl2--analysis-step(!"Normalizing constraints",
-//      C  := <getfirst(?Constraint(<id>))> initial;
-//      C* := <map(getfirst(?Constraint(<id>)))> unit*;
-//      C' := <nabl2--normalize-constraint> CConj([C|C*])
-//    )
-//    with nabl2--analysis-step(!"Solving constraints",
-//    {| AnalysisTiming:
-//      lo* := <join(nabl2--label-lt)> (<nabl2--labels>,<nabl2--labels>);
-//      sol1* := <nabl2--solve-facts> [(<nabl2--initial-solution>,[C'])];
-//      sol2* := <map(({ sol1, g:
-//        ?sol1;
-//        g := <nabl2--sol-g> sol1;
-//        ![ InitialScopeGraph(g)
-//         | sol1
-//         ]
-//      },id))> sol1*;
-//      sol3* := <nabl2--solve-constraints> sol2*;
-//      sol4* := <map(Fst)> sol3*; // discard constraint part
-//      timing := <nabl2--get-analysis-timing;qsort(where((Snd;Snd,Snd;Snd);gt))>
-//    |})
-//    where nabl2--analysis-step(!"Processing solutions",
-//    with(
-//      (good,bad) := <partition(not(nabl2--is-erronious));(length,length)> sol4*;
-//      try(nabl2-debug-analysis-hook; <debug> $[Found [<int-to-string> good] correct and [<int-to-string> bad] erronious solutions.])
-//    );
-//    where(
-//      sol := <Hd> sol4*
-//    );
-//    with(
-//      error* := <nabl2--sol-e;nabl2--mapv(nabl2--xmlencode)> sol;
-//      warning* := <nabl2--sol-w;nabl2--mapv(nabl2--xmlencode)> sol;
-//      note* := <nabl2--sol-n;nabl2--mapv(nabl2--xmlencode)> sol;
-//      resolution := <nabl2--sol-r;map((nabl2--occurrence-index,Fst;nabl2--occurrence-index))> sol;
-//      analysis := [ Constraint(C')
-//                  , ResolutionParams(<nabl2--labels>,<nabl2--labels-wf>,lo*)
-//                  , Timing(timing)
-//                  , AlternativeSolutions(<(Tl<+![]);map-with-index(id)> sol4*)
-//                  | sol
-//                  ]
-//    ))
-//    with( nabl2--analysis-step(!$[Retreiving AST [source]],
-//      ast := <StoredAst>source
-//    ));
-//    where( nabl2--analysis-step(!"2nd-phase analysis",
-//    with(
-//      (error2*,warning2*,note2*,analysis2) := <nabl2-after-analysis(|source,ast) <+ !([],[],[],analysis)>analysis
-//    )))
-//  
-//  // something similar should be in the public api
-//  /**
-//   * Do a 2nd-phase analysis after NaBL2 analysis
-//   *
-//   * @param source : String
-//   * @param ast : Term
-//   * @type analysis -> (error*,warning*,note*,analysis)
-//   */
-//  nabl2-after-analysis(|source,ast) = fail

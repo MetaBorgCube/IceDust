@@ -67,9 +67,7 @@ rules // Build in steps
       <store-analysis-resource>path;
       analysis := <get-stored-analysis>;
       analysis2 := <nalb2-get-custom-analysis>analysis;
-      <debug(!"analysis2 ")>analysis2;
       <_index-set>analysis2
-//      <nabl2-after-analysis(|path, ast)>analysis
     with
       moduleName  := <module-get-modulename>selected;
       result      := <build(error-handler|lang, implstr, uistyle, phase, moduleName, path)>

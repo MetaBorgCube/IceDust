@@ -107,7 +107,8 @@ rules
     with
       analysis := <get-stored-analysis>
     with
-      <nabl2-after-analysis(|path, ast)>analysis
+      analysis2 := <nalb2-get-custom-analysis>analysis;
+      <_index-set>analysis2
     with
       filename := <guarantee-extension(|"index.aterm")> path;
       result   := <_index-get>
