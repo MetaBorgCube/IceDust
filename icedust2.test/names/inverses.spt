@@ -50,4 +50,4 @@ test error on duplicate inverse by desugaring [[
     
     node.[[c]] <-> node.[[d]]
   }
-]] 6 errors // always also results in duplicate inverses
+]] >= 6 errors // always also results in duplicate inverses

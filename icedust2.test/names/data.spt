@@ -1,6 +1,6 @@
 module names-data
 
-language IceDust
+language icedust2
 
 test Resolve attribute in entity instance without type [[
   module test

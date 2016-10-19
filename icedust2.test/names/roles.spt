@@ -59,4 +59,4 @@ test error on duplicate role by desugaring [[
     
     node.[[c]] <-> node.[[d]]
   }
-]] 6 errors // always also results in duplicate inverses
+]] >= 6 errors // always also results in duplicate inverses
