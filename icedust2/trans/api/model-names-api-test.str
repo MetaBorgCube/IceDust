@@ -5,6 +5,8 @@ imports // functions
 
   api/model-api
   api/model-names-api
+  api/module-api
+  api/module-names-api
   lib/nabl2
 
 rules
@@ -47,4 +49,11 @@ rules
   name-get-flowsto-pathexprs-test          = try(attr-get-name); store-analysis-ast; name-get-flowsto-pathexprs
 
   name-get-type-test                       = try(attr-get-name); store-analysis-ast; name-get-type
-  
+
+rules
+
+  modulename-get-entitynames-test          = try(module-get-modulename); debug; store-analysis-ast; modulename-get-entitynames
+  modulename-get-entityinstancenames-test  = try(module-get-modulename); store-analysis-ast; modulename-get-entityinstancenames
+  modulename-get-attributenames-test       = try(module-get-modulename); store-analysis-ast; modulename-get-attributenames
+  modulename-get-attributenames-topo-test  = try(module-get-modulename); store-analysis-ast; modulename-get-attributenames-topo
+  modulename-get-exprs-test                = try(module-get-modulename); store-analysis-ast; modulename-get-exprs
