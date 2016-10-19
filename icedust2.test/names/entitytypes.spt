@@ -42,6 +42,6 @@ test Resolve invalid relation member fails [[
     User *
     Paper 1
   }
-]] 2 errors
+]] >= 1 error
 
 

@@ -25,7 +25,7 @@ test Resolve invalid Identifier fails [[
   entity User {
     name : String = [[x]]
   }
-]] 4 errors at #1
+]] >= 1 error at #1
 
 test Resolve attribute from this.attribute [[
   entity User {
@@ -37,7 +37,7 @@ test Resolve invalid this.attribute fails [[
   entity User {
     name : String = [[this.x]]
   }
-]] 4 errors at #1
+]] >= 1 error at #1
 
 test (TS/1) Resolve invalid entity.attribute fails [[
   entity Node {
@@ -63,7 +63,7 @@ test Resolve entity.invalid attribute fails [[
   }
   execute
   [[n.notin]]
-]] 2 errors at #1
+]] >= 1 error at #1
 
 test Resolve attribute from role.attribute [[
   entity Node {
@@ -85,5 +85,5 @@ test (TS/1) Resolve invalid role.attribute fails [[
     Node.out * -> out
     in.a <-> out.b
   }
-]] 5 errors // 1 error
+]] >= 1 error // 1 error
 
