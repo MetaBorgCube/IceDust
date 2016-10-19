@@ -13,7 +13,7 @@ imports // constructors
 
 imports // functions
 
-  api/model-names-api-test
+  api/api-test
 //  api/_runtime
   api/module-names-api
   api/types-api
