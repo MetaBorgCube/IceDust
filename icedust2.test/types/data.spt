@@ -27,25 +27,25 @@ fixture [[
 //  data
 //  [[x]] : X {}
 //]] 1 errors at #1
-//
-//test no error on omitting optional attribute[[
-//  model
-//  entity X{
-//    i : Int ?
-//  }
-//  data
-//  x : X {}
-//]] 0 errors
-//
-//test no error on omitting derived attribute[[
-//  model
-//  entity X{
-//    i : Int = 5
-//  }
-//  data
-//  x : X {}
-//]] 0 errors
-//
+
+test no error on omitting optional attribute[[
+  model
+  entity X{
+    i : Int ?
+  }
+  data
+  x : X {}
+]] 0 errors
+
+test no error on omitting derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {}
+]] 0 errors
+
 //test error on supplying derived attribute[[
 //  model
 //  entity X{
@@ -70,8 +70,22 @@ fixture [[
 //        [[x1]] {}
 //    }
 //]] 1 error at #1
-//
+
 //test infer enitity instance type [[
+//  model
+//    entity X{
+//      i : Int
+//    }
+//    relation X.y <-> X.z
+//  data
+//    x : X {
+//      i = 5
+//      y =
+//        [[x1]] {i=4}
+//    }
+//]] run get-type2 on #1 to "X"
+
+//test infer enitity instance type 2 [[
 //  model
 //    entity X{
 //      i : Int
