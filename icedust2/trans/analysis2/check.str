@@ -31,7 +31,7 @@ imports // functions
   
 rules
 
-  analysis2check = concat(data-check-multiplicities, data-check-not-derived, data-check-required)
+  analysis2check = concat(data-check-multiplicities, data-check-not-derived, data-check-required, model-check-upper)
 
 rules
 
@@ -115,3 +115,14 @@ rules
       result := (eiName, msg)
       
   einame-check-required: eiName -> [] // if where fails
+
+rules
+  
+  model-check-upper: moduleName -> result
+    with
+      eNames*   := <modulename-get-entitynames>moduleName;
+      result     := <filter(ename-check-upper)>eNames*
+
+  ename-check-upper: eName -> (eName, "Entity type names must start with a capital.")
+    where
+      <not(first-is-upper)>eName
