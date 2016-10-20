@@ -31,7 +31,9 @@ imports // functions
   
 rules
 
-  analysis2check = data-check-multiplicities
+  analysis2check = concat(data-check-multiplicities, data-check-not-derived);debug(|"a ")
+
+rules
 
   data-check-multiplicities: moduleName -> result
     with
@@ -62,4 +64,29 @@ rules
         msg := $[Multiplicity mismatch: expected [<write-to-string>multiplicity] got [<write-to-string>num] on [eiName].[memberName]];
         result := (eiName, msg)
       end
+      
+rules
+
+  data-check-not-derived: moduleName -> result
+    with
+      eiNames*   := <modulename-get-entityinstancenames>moduleName;
+      result     := <fmap(einame-check-not-derived)>eiNames*
+
+  einame-check-not-derived: eiName -> []
+    where
+      not(entityinstancename-get-entityname) // erroneous programs might have entity instances without type
+
+  einame-check-not-derived: eiName -> result
+    with
+      attrNames := <entityinstancename-get-attributevaluenames>eiName;
+      result    := <filter(memv-check-not-derived)>attrNames
+
+  memv-check-not-derived: memvName -> result
+    with
+      memberName   := <membervaluename-get-origin>memvName
+    where
+      <attributename-is-derivation>memberName
+    with
+      msg := $[Attribute [memberName] is a derived value];
+      result := (memvName, msg)
       

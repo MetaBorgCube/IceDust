@@ -46,18 +46,18 @@ test no error on omitting derived attribute[[
   x : X {}
 ]] 0 errors
 
-//test error on supplying derived attribute[[
-//  model
-//  entity X{
-//    i : Int = 5
-//  }
-//  data
-//  x : X {
-//    [[i]] = 5900
-//  }
-//]] 1 error at #1
-//
-//test error on omitting required attribute[[
+test error on supplying derived attribute[[
+  model
+  entity X{
+    i : Int = 5
+  }
+  data
+  x : X {
+    [[i]] = 5900
+  }
+]] 1 error at #1
+
+//test error on omitting required attribute nested [[
 //  model
 //    entity X{
 //      i : Int
@@ -71,21 +71,21 @@ test no error on omitting derived attribute[[
 //    }
 //]] 1 error at #1
 
-//test infer enitity instance type [[
-//  model
-//    entity X{
-//      i : Int
-//    }
-//    relation X.y <-> X.z
-//  data
-//    x : X {
-//      i = 5
-//      y =
-//        [[x1]] {i=4}
-//    }
-//]] run get-type2 on #1 to "X"
+test infer enitity instance type [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {i=4}
+    }
+]] run name-get-type-test on #1 to "X"
 
-//test infer enitity instance type 2 [[
+//test infer enitity instance type 2 [[ // http://yellowgrass.org/issue/NaBL2/11
 //  model
 //    entity X{
 //      i : Int
@@ -98,9 +98,32 @@ test no error on omitting derived attribute[[
 //        <rel { } >
 //        [[x1]] {i=4}
 //    }
-//]] run get-type2 on #1 to "X"
-//
-//test infer relation instance type [[
+//]] run name-get-type-test on #1 to "X"
+
+test infer relation instance type [[
+  model
+  
+    entity X {
+      i : Int 1
+    }
+  
+    relation XYRelation {
+      X.yRelation * -> z
+      X.zRelation * -> y
+      y.z <-> z.y
+    }
+  
+  data
+  
+    x : X {
+      i = 5
+      y = < [[rel]] { } > x1 {
+        i = 4
+      }
+    }
+]] run name-get-type-test on #1 to "XYRelation"
+
+//test infer relation instance type 2 [[ // http://yellowgrass.org/issue/NaBL2/11
 //  model
 //    entity X{
 //      i : Int
@@ -113,6 +136,6 @@ test no error on omitting derived attribute[[
 //        <[[rel]] { } >
 //        x1 {i=4}
 //    }
-//]] run get-type2 on #1 to "XYRelation"
+//]] run name-get-type-test on #1 to "XYRelation"
 
 //TODO: add testcases for relations
