@@ -31,7 +31,7 @@ imports // functions
   
 rules
 
-  analysis2check = concat(data-check-multiplicities, data-check-not-derived);debug(|"a ")
+  analysis2check = concat(data-check-multiplicities, data-check-not-derived, data-check-required)
 
 rules
 
@@ -90,3 +90,28 @@ rules
       msg := $[Attribute [memberName] is a derived value];
       result := (memvName, msg)
       
+rules
+
+  data-check-required: moduleName -> result
+    with
+      eiNames*   := <modulename-get-entityinstancenames>moduleName;
+      result     := <fmap(einame-check-required)>eiNames*
+
+  einame-check-required: eiName -> []
+    where
+      not(entityinstancename-get-entityname) // erroneous programs might have entity instances without type
+      
+  einame-check-required: eiName -> [result]
+    with
+      attrValueNames := <entityinstancename-get-attributevaluenames>eiName;
+      entityName     := <entityinstancename-get-entityname>eiName;
+      reqAttrNames   := <entityname-get-attributenames;filter(attributename-is-normal;name-is-one)>entityName;
+      ommittedAtrs   := <diff>(reqAttrNames, attrValueNames)
+    where
+      l := <length>ommittedAtrs;
+      <not(eq)>(l,0)
+    with
+      msg := $[[eiName] misses required attributes: [<concat-strings(|", ")>ommittedAtrs]];
+      result := (eiName, msg)
+      
+  einame-check-required: eiName -> [] // if where fails

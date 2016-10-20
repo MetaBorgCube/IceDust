@@ -7,26 +7,24 @@ fixture [[
   [[...]]
 ]]
 
-//TODO: implement these checks
+test error on omitting required attribute [[
+  model
+  entity X{
+    i : Int
+  }
+  data
+  [[x]] : X {}
+]] 1 error at #1
 
-//test error on omitting required attribute [[
-//  model
-//  entity X{
-//    i : Int
-//  }
-//  data
-//  [[x]] : X {}
-//]] 1 error at #1
-//
-//test error on omitting required attribute multiple [[
-//  model
-//  entity X{
-//    i : Int
-//    j : String
-//  }
-//  data
-//  [[x]] : X {}
-//]] 1 errors at #1
+test error on omitting required attribute multiple [[
+  model
+  entity X{
+    i : Int
+    j : String
+  }
+  data
+  [[x]] : X {}
+]] 1 errors at #1
 
 test no error on omitting optional attribute[[
   model
@@ -57,19 +55,19 @@ test error on supplying derived attribute[[
   }
 ]] 1 error at #1
 
-//test error on omitting required attribute nested [[
-//  model
-//    entity X{
-//      i : Int
-//    }
-//    relation X.y <-> X.z {}
-//  data
-//    x : X {
-//      i = 5
-//      y =
-//        [[x1]] {}
-//    }
-//]] 1 error at #1
+test error on omitting required attribute nested [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {}
+    }
+]] 1 error at #1
 
 test infer enitity instance type [[
   model
