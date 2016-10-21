@@ -39,6 +39,7 @@ test error on duplicate inverse [[
   relation Edge {
     Node.[[edge]] 1 -> a
     Node.[[edge]] 1 -> b
+    a.b <-> b.a
   }
 ]] 2 errors at #1,#2
 

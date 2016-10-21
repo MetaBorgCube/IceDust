@@ -85,4 +85,4 @@ test error on duplicate shortcut by desugaring [[
     [[Issue]] 1
     [[Project]] *
   }
-]] 4 errors at #1,#2,#3,#4
+]] >= 4 errors at #1,#2,#3,#4
