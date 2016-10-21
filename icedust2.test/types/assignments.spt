@@ -42,6 +42,7 @@ test error on assign role wrong entityType [[
   relation Edge{
     Node.x 1 -> in
     Node.y * -> out
+    out.in <-> in.out
   }
   
   data

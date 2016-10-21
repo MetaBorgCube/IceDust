@@ -95,7 +95,7 @@ rules
     with
       assoc* := <membervalue-get-expr;fmap(membervalue-s-expr-assocs(|memv))>memv
 
-  membervalue-s-expr-assocs(|memv): expr -> [assoc1, assoc2, assoc3, assoc4]
+  membervalue-s-expr-assocs(|memv): expr -> [assoc1*, assoc2, assoc3, assoc4*]
     with
       name         := <membervalue-get-name>memv;
       eiName       := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
@@ -114,13 +114,21 @@ rules
       end;
       memv-r1-name := <entityinstancename-get-membervaluename(|roleName1)>riName;
       memv-r2-name := <entityinstancename-get-membervaluename(|roleName2)>riName;
-      memv-i1-name := <entityinstancename-get-membervaluename(|inverseName1)>eiName;
-      memv-i2-name := <entityinstancename-get-membervaluename(|inverseName2)>eiName2
+      memv-i1-name*:= <filter(entityinstancename-get-membervaluename(|inverseName1))>[eiName]; // membervaluename can fail if ei1 has wrong type
+      memv-i2-name*:= <filter(entityinstancename-get-membervaluename(|inverseName2))>[eiName2] // membervaluename can fail if ei2 has wrong type
     with
-      assoc1 := (memv-i1-name, riName);
+      if memv-i1-name := <Hd>memv-i1-name* then
+        assoc1* := [(memv-i1-name, riName)]
+      else
+        assoc1* := []
+      end;
       assoc2 := (memv-r1-name, eiName);
       assoc3 := (memv-r2-name, eiName2);
-      assoc4 := (memv-i2-name, riName)
+      if memv-i2-name := <Hd>memv-i2-name* then
+        assoc4* := [(memv-i2-name, riName)]
+      else
+        assoc4* := []
+      end
 
   module-store-expr: ast -> ast
     with
