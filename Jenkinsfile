@@ -20,7 +20,7 @@ node{
     stage('Build and Test') {
       withMaven(
         mavenLocalRepo: "${env.JENKINS_HOME}/m2repos/${env.EXECUTOR_NUMBER}",
-        mavenOpts: '-Xmx1G -Xms1G -Xss16m'
+        mavenOpts: '-Xmx2G -Xms2G -Xss16m'
       ){
         sh 'mvn -B -U clean verify -DforceContextQualifier=\$(date +%Y%m%d%H%M)'
       }
