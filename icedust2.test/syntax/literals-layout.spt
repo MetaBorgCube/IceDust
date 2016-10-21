@@ -12,5 +12,5 @@ fixture [[
     [[...]]
 ]]
 
-test literal String whitespace [[" Asdf "]]  parse to LitString(" Asdf ")
+test literal String whitespace [[" Asdf "]] parse to LitString(" Asdf ")
 
