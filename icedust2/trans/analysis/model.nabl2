@@ -3,7 +3,7 @@ module model
 rules
 
   [[ Entity(e, as) ^ (module_scope) ]] :=
-    !W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
@@ -17,7 +17,7 @@ rules
     new entity_scope.
 
   [[ FirstClassRelation(e, as) ^ (module_scope) ]] := // identical to Entity
-    !W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
@@ -65,7 +65,7 @@ rules
     IsSubtype(a_type, e_type) == None() | error $[Type error: expected [a_type] got [e_type].]@e,
     InBounds (a_mult, e_mult) == None() | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e.
     
-  [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
+  [[ Relation(e1, r1, m1, o1, m2, o2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
     Entity2{e1} ===> entity1_scope,
     Member{r1} <- entity1_scope,
@@ -93,7 +93,7 @@ rules
     new entity1_scope,
     new entity2_scope.
     
-  [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
+  [[ Role(entity, inverse, mult, ord, role) ^ (entity_scope, module_scope) ]] :=
     [[ mult ^ (entity_scope) : inverse_mult ]],
     Implicit{"this"} -> entity_scope,
     Implicit{"this"} |-> this_def,
