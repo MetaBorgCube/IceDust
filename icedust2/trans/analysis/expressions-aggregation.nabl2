@@ -2,38 +2,38 @@ module expressions-aggregation
 
 rules
   
-  [[ Min(e1) ^ (s) : TTuple(e1_type, out_mult) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Min(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     NumericType(e1_type) == None(),
     UpperboundOne(e1_mult) == out_mult.
     
-  [[ Max(e1) ^ (s) : TTuple(e1_type, out_mult) ]] := // identical to Min
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Max(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] := // identical to Min
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     NumericType(e1_type) == None(),
     UpperboundOne(e1_mult) == out_mult.
     
-  [[ Avg(e1) ^ (s) : TTuple(e1_type, out_mult) ]] := // identical to Min
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Avg(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] := // identical to Min
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     NumericType(e1_type) == None(),
     UpperboundOne(e1_mult) == out_mult.
     
-  [[ Sum(e1) ^ (s) : TTuple(e1_type, TOne()) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Sum(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     NumericType(e1_type) == None().
     
-  [[ Conj(e1) ^ (s) : TTuple(e1_type, TOne()) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Conj(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     BooleanType(e1_type) == None().
     
-  [[ Disj(e1) ^ (s) : TTuple(e1_type, TOne()) ]] := // identical to Conj
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Disj(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] := // identical to Conj
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     BooleanType(e1_type) == None().
     
-  [[ Concat(e1) ^ (s) : TTuple(e1_type, TOne()) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Concat(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     StringType(e1_type) == None().
 
-  [[ Count(e1) ^ (s) : TTuple(TInt(), TOne()) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
+  [[ Count(e1) ^ (s) : TTuple(TInt(), TOne(), TOrdered()) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     IsType(e1_type) == None(). // make sure this evaluates
     

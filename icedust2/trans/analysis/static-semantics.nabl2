@@ -31,7 +31,10 @@ signature
     TOneOrMore()
     TZeroOrMore()
     
-    TTuple(type, type)        // type, mult
+    TOrdered()
+    TUnordered()
+    
+    TTuple(type, type, type)        // type, mult, ord
 
 rules
 

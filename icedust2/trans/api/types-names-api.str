@@ -14,17 +14,22 @@ rules
 
   get-type2        = get-annotation(|Type()) <+ nabl2-get-ast-type;normalize-type
   get-multiplicity = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-multiplicity
+  get-ordering     = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-ordering
   
-  normalize-type = ?TTuple(<id>,_);?TInt()     ;!Int()
-  normalize-type = ?TTuple(<id>,_);?TFloat()   ;!Float()
-  normalize-type = ?TTuple(<id>,_);?TDatetime();!Datetime()
-  normalize-type = ?TTuple(<id>,_);?TBoolean() ;!Boolean()
-  normalize-type = ?TTuple(<id>,_);?TString()  ;!String()
-  normalize-type = ?TTuple(<id>,_);?TNoValue() ;!NoValue()
-  normalize-type = ?TTuple(<id>,_);?TEntity(Occurrence(_,<id>,_))
-  normalize-type = ?TTuple(<id>,_);debug
+  normalize-type = ?TTuple(<id>,_,_);?TInt()     ;!Int()
+  normalize-type = ?TTuple(<id>,_,_);?TFloat()   ;!Float()
+  normalize-type = ?TTuple(<id>,_,_);?TDatetime();!Datetime()
+  normalize-type = ?TTuple(<id>,_,_);?TBoolean() ;!Boolean()
+  normalize-type = ?TTuple(<id>,_,_);?TString()  ;!String()
+  normalize-type = ?TTuple(<id>,_,_);?TNoValue() ;!NoValue()
+  normalize-type = ?TTuple(<id>,_,_);?TEntity(Occurrence(_,<id>,_))
+  normalize-type = ?TTuple(<id>,_,_);debug
   
-  normalize-multiplicity = ?TTuple(_,<id>);?TOne()       ;!One()
-  normalize-multiplicity = ?TTuple(_,<id>);?TZeroOrOne() ;!ZeroOrOne()
-  normalize-multiplicity = ?TTuple(_,<id>);?TZeroOrMore();!ZeroOrMore()
-  normalize-multiplicity = ?TTuple(_,<id>);?TOneOrMore() ;!OneOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOne()       ;!One()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrOne() ;!ZeroOrOne()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMore();!ZeroOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMore() ;!OneOrMore()
+  normalize-multiplicity = debug(!"normalize-multiplicity: ");fail
+  
+  normalize-ordering = ?TTuple(_,_,<id>);?TOrdered()   ;!Ordered()
+  normalize-ordering = ?TTuple(_,_,<id>);?TUnordered() ;!Unordered()

@@ -2,15 +2,16 @@ module expressions-multiplicity-operators
 
 rules
 
-  [[ ChoiceLeft(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
-    [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
+  [[ ChoiceLeft(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     LeastUpperBound(e1_type, e2_type) == out_type,
-    ChoiceLeftMult(e1_mult, e2_mult) == out_mult.
+    ChoiceLeftMult(e1_mult, e2_mult) == out_mult,
+    CartesianProduct(e1_ord, e2_ord) == out_ord.
 
-  [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult) ]],
-    [[ e2 ^ (s) : TTuple(e2_type, e2_mult) ]],
+  [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     LeastUpperBound(e1_type, e2_type) == out_type,
-    ChoiceLeftMerge(e1_mult, e2_mult) == out_mult.
-
+    ChoiceLeftMerge(e1_mult, e2_mult) == out_mult,
+    CartesianProduct(e1_ord, e2_ord) == out_ord.

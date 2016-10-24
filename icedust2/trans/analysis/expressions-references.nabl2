@@ -2,7 +2,7 @@ module expressions-references
 
 rules
 
-  [[ This() ^ (s) : TTuple(this_type, TOne()) ]] :=
+  [[ This() ^ (s) : TTuple(this_type, TOne(), TOrdered()) ]] :=
     Implicit{"this"} -> s,
     Implicit{"this"} |-> this_def,
     this_def : this_type.
@@ -12,14 +12,15 @@ rules
     Member{r} |-> r_def,
     r_def : r_def_ty.
       
-  [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, ref_mult) ]] :=
-    [[expr ^ (s) : TTuple(expr_type, expr_mult) ]],
+  [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, out_mult, out_ord) ]] :=
+    [[expr ^ (s) : TTuple(expr_type, expr_mult, expr_ord) ]],
     expr_type == TEntity(expr_type_entity),
     expr_type_entity ?=I=> entity_scope,
     new_scope -I-> entity_scope,
     Member{r} -> new_scope,
     Member{r} |-> r_def,
     r_def : r_def_ty,
-    r_def_ty == TTuple(r_def_type, r_def_mult),
-    CartesianProduct(expr_mult, r_def_mult) == ref_mult,
+    r_def_ty == TTuple(r_def_type, r_def_mult, r_def_ord),
+    CartesianProduct(expr_mult, r_def_mult) == out_mult,
+    CartesianProduct(expr_ord, r_def_ord) == out_ord,
     new new_scope.

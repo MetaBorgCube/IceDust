@@ -16,4 +16,6 @@ rules
   [[ ZeroOrOne()  ^ (s) : ty ]] := ty == TZeroOrOne().
   [[ OneOrMore()  ^ (s) : ty ]] := ty == TOneOrMore().
   [[ ZeroOrMore() ^ (s) : ty ]] := ty == TZeroOrMore().
-   
+
+  [[ Ordered()    ^ (s) : ty ]] := ty == TOrdered().
+  [[ Unordered()  ^ (s) : ty ]] := ty == TUnordered().

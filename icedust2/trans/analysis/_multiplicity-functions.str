@@ -21,6 +21,10 @@ rules
   nabl2-reduce-op-hook(|sol): CartesianProduct(TZeroOrOne() , TOneOrMore() ) -> TOneOrMore()
   nabl2-reduce-op-hook(|sol): CartesianProduct(TZeroOrOne() , TZeroOrOne() ) -> TZeroOrOne()
   
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TUnordered() , _            ) -> TUnordered()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(_            , TUnordered() ) -> TUnordered()
+  nabl2-reduce-op-hook(|sol): CartesianProduct(TOrdered()   , TOrdered()   ) -> TOrdered()
+  
 signature constructors
   
   InBounds : Type * Type -> TypeOp // bounds * fits in bound?

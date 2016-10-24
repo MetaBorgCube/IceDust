@@ -65,6 +65,7 @@ rules // roles
   
   role-has-no-inv  = where(role-get-inv ;?None())
   role-has-no-mult = where(role-get-mult;?None())
+  role-has-no-ord  = where(role-get-ord ;?None())
   role-has-no-name = where(role-get-name;?None())
 
 rules // shortcuts

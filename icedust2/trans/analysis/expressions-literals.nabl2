@@ -1,19 +1,10 @@
 module expressions-literals
 
 rules
-  [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ) ]] := true.
-  [[ Float(_)     ^ (s) : TTuple(TFloat()   , TOne()      ) ]] := true.
-  [[ True()       ^ (s) : TTuple(TBoolean() , TOne()      ) ]] := true.
-  [[ False()      ^ (s) : TTuple(TBoolean() , TOne()      ) ]] := true.
-  [[ Datetime(_)  ^ (s) : TTuple(TDatetime(), TOne()      ) ]] := true.
-  [[ LitString(_) ^ (s) : TTuple(TString()  , TOne()      ) ]] := true.
-  [[ NoValue()    ^ (s) : TTuple(TNoValue() , TZeroOrOne()) ]] := true.
-
-//  [[ Int(_)       ^ (s, s2) : TInt()     ]] := true.
-//  [[ Float(_)     ^ (s, s2) : TFloat()   ]] := true.
-//  [[ True()       ^ (s, s2) : TBoolean() ]] := true.
-//  [[ False()      ^ (s, s2) : TBoolean() ]] := true.
-//  [[ Datetime(_)  ^ (s, s2) : TDatetime()]] := true.
-//  [[ LitString(_) ^ (s, s2) : TString()  ]] := true.
-//  [[ NoValue()    ^ (s, s2) : TNoValue() ]] := true.
-  
+  [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ,TOrdered()) ]] := true.
+  [[ Float(_)     ^ (s) : TTuple(TFloat()   , TOne()      ,TOrdered()) ]] := true.
+  [[ True()       ^ (s) : TTuple(TBoolean() , TOne()      ,TOrdered()) ]] := true.
+  [[ False()      ^ (s) : TTuple(TBoolean() , TOne()      ,TOrdered()) ]] := true.
+  [[ Datetime(_)  ^ (s) : TTuple(TDatetime(), TOne()      ,TOrdered()) ]] := true.
+  [[ LitString(_) ^ (s) : TTuple(TString()  , TOne()      ,TOrdered()) ]] := true.
+  [[ NoValue()    ^ (s) : TTuple(TNoValue() , TZeroOrOne(),TOrdered()) ]] := true.

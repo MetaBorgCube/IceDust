@@ -41,10 +41,12 @@ rules // role fields
   role-generate-omitted =
     is-role;
     try(role-generate-mult);
+    try(role-generate-ord );
     try(role-generate-name)
 
-  role-generate-name = role-has-no-name; ?r; role-set-name(!r;role-get-type;lcfirst)
   role-generate-mult = role-has-no-mult;     role-set-mult(!ZeroOrMore())
+  role-generate-ord  = role-has-no-ord ;     role-set-ord (!Unordered())
+  role-generate-name = role-has-no-name; ?r; role-set-name(!r;role-get-type;lcfirst)
 
 rules
 
