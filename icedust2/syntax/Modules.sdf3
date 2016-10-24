@@ -1,0 +1,36 @@
+module Modules
+
+imports
+
+  Common
+  Model
+  Data
+  Execute
+
+context-free syntax
+  
+  Start.Module = <
+    module <ID>
+    
+    <{ModuleSection "\n\n"}*>
+    
+  >
+
+  ModuleSection.ModelSection = <
+    model
+    
+      <{Model "\n\n"}*>
+  >
+  
+  ModuleSection.DataSection = <
+    data
+    
+      <{Data "\n"}*>
+  >
+  
+  ModuleSection.ExecuteSection = <
+    execute
+    
+      <{Execute "\n"}*>
+  >
+  

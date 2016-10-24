@@ -8,35 +8,9 @@ imports
   Expressions
   Model
   Types
+  Modules
 
 context-free start-symbols
   
   Start
 
-context-free syntax
-  
-  Start.Module = <
-    module <ID>
-    
-    <{ModuleSection "\n\n"}*>
-    
-  >
-
-  ModuleSection.ModelSection = <
-    model
-    
-      <{Model "\n\n"}*>
-  >
-  
-  ModuleSection.DataSection = <
-    data
-    
-      <{Data "\n"}*>
-  >
-  
-  ModuleSection.ExecuteSection = <
-    execute
-    
-      <{Execute "\n"}*>
-  >
-  
