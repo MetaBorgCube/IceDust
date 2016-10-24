@@ -22,7 +22,7 @@ rules
     bottomup(try(omitted2))
   
   omitted1 = attr-generate-mult
-  omitted1 = role-generate-name
+  omitted1 = role-generate-omitted
   omitted1 = shortcut-generate-omitted
   omitted1 = rel-generate-omitted
   omitted1 = shortcutrel-generate-omitted
@@ -38,7 +38,13 @@ rules // attr fields
     
 rules // role fields
 
+  role-generate-omitted =
+    is-role;
+    try(role-generate-mult);
+    try(role-generate-name)
+
   role-generate-name = role-has-no-name; ?r; role-set-name(!r;role-get-type;lcfirst)
+  role-generate-mult = role-has-no-mult;     role-set-mult(!ZeroOrMore())
 
 rules
 

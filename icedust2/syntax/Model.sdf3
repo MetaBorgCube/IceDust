@@ -14,18 +14,18 @@ context-free syntax
     }
   >
   
-  Model.Relation = [
-    relation [ID].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID].[ID]
-  ]
-  
   Model.FirstClassRelation = <
     relation <ID> {
       <{Member "\n"}*>
     }
   >
   
+  Model.Relation = [
+    relation [ID][DotID?] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID][DotID?]
+  ]
+  
   Model.ShortcutRelation = [
-    relation [ID].[ID] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID].[ID] {
+    relation [ID][DotID?] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID][DotID?] {
       [{Member "\n"}*]
     }
   ]
@@ -43,12 +43,12 @@ context-free syntax
   >
 
   Member.Role = [
-    [ID][DotID?] [Multiplicity][Ordering?][SpaceArrowID?]
+    [ID][DotID?] [Multiplicity?][Ordering?][SpaceArrowID?]
   ]
-  DotID        = <.<ID>>
-  SpaceArrowID = [ -> [ID]]
 
   Member.Shortcut = [
-    [ID].[ID] <-> [ID].[ID]
+    [ID][DotID?] <-> [ID][DotID?]
   ]
   
+  DotID        = <.<ID>>
+  SpaceArrowID = [ -> [ID]]

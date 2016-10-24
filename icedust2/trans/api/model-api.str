@@ -63,8 +63,9 @@ rules // roles
   role-set-ord (s) = Role(id, id, id, s, id)
   role-set-name(s) = Role(id, id, id, id, s)
   
-  role-has-no-name = where(role-get-name;?None())
   role-has-no-inv  = where(role-get-inv ;?None())
+  role-has-no-mult = where(role-get-mult;?None())
+  role-has-no-name = where(role-get-name;?None())
 
 rules // shortcuts
   
