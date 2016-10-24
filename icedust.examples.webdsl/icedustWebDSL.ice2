@@ -6,3 +6,5 @@ model
     bar : String
     bar2 : String = bar
   }
+  
+  relation Foo.o (ordered) <-> Foo.u
