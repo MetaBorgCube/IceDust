@@ -21,25 +21,25 @@ context-free syntax
   >
   
   Model.Relation = [
-    relation [ID][DotID?] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID][DotID?]
+    relation [ID][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [ID][DotID?]
   ]
   
   Model.ShortcutRelation = [
-    relation [ID][DotID?] [Multiplicity?] [Ordering?] <-> [Multiplicity?] [Ordering?] [ID][DotID?] {
+    relation [ID][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [ID][DotID?] {
       [{Member "\n"}*]
     }
   ]
   
   Member.Attribute = <
-    <ID> : <Type> <Multiplicity?>
+    <ID> : <Type><Multiplicity?>
   >
   
   Member.DerivationAttribute = <
-    <ID> : <Type> <Multiplicity?> = <Exp>
+    <ID> : <Type><Multiplicity?> = <Exp>
   >
   
   Member.DefaultAttribute = <
-    <ID> : <Type> <Multiplicity?> = <Exp> (default)
+    <ID> : <Type><Multiplicity?> = <Exp> (default)
   >
 
   Member.Role = [
@@ -50,5 +50,7 @@ context-free syntax
     [ID][DotID?] <-> [ID][DotID?]
   ]
   
-  DotID        = <.<ID>>
-  SpaceArrowID = [ -> [ID]]
+  DotID             = <.<ID>>
+  SpaceArrowID      = [ -> [ID]]
+  SpaceMultiplicity = [ [Multiplicity]]
+  SpaceOrdering     = [ [Ordering]]

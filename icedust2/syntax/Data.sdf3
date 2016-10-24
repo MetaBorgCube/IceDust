@@ -11,25 +11,25 @@ context-free syntax
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <ID?> : <Type> {
+    <IDSpace?>: <Type> {
       <{MemberValue "\n"}*>
     }
   >
   
   EntityInstance.EntityInstanceNoType = <
-    <ID?> {
+    <IDSpace?>{
       <{MemberValue "\n"}*>
     }
   >
   
   RelationInstance.RelationInstance = [
-    < [ID?] : [Type] {
+    < [IDSpace?]: [Type] {
       [{MemberValue "\n"}*]
     } >
   ]
   
   RelationInstance.RelationInstanceNoType = [
-    < [ID?] {
+    < [IDSpace?]{
       [{MemberValue "\n"}*]
     } >
   ]
@@ -46,3 +46,6 @@ context-free syntax
   
   EntityInstanceValue.EntityInstanceRef = ID
   EntityInstanceValue = EntityInstance
+
+  IDSpace = <<ID> >
+  

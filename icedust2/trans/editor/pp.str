@@ -11,8 +11,7 @@ imports
 rules
 
   editor-format:
-    (node, _, ast, path, project-path) -> (filename, result)
+    (node, _, ast, path, project-path) -> (path, result)
     with
       ext      := <get-extension> path
-    ; filename := <guarantee-extension(|$[pp.[ext]])> path
     ; result   := <pp-debug> node

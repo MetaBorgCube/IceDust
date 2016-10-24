@@ -67,3 +67,9 @@ rules // s:(a,a)->a/fail  (a, List(a, b)) -> b
 
   lookup2(keyeq) = lookup(split2(id,Fst);keyeq);Snd
   
+rules
+
+  list-add(|h): t -> [h | t]
+  
+  list-max(|lowerbound) = list-add(|lowerbound);list-max
+  
