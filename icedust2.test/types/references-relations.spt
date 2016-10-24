@@ -7,7 +7,7 @@ fixture [[
   model
     entity Node{}
     relation Node.maybe ? <-> 1 Node.one
-    relation Node.star * <-> + Node.plus
+    relation Node.star * <-> + (ordered) Node.plus
   data
     n : Node {
       maybe = n2 { }
@@ -32,5 +32,5 @@ test multiplicity of relation OneOrMore  [[n.plus]]  run get-multiplicity to One
 test multiplicity of relation relation ZeroOrOne   [[n.maybe.maybe]] run get-multiplicity to ZeroOrOne()
 test multiplicity of relation relation ZeroOrOne 2 [[n.maybe.one]]   run get-multiplicity to ZeroOrOne()
 
-//test ordering of relation Unordered    [[n.star]] run get-ordering to Unordered()
-//test ordering of relation Ordered      [[n.plus]] run get-ordering to Ordered()
+test ordering of relation Unordered    [[n.star]] run get-ordering to Unordered()
+test ordering of relation Ordered      [[n.plus]] run get-ordering to Ordered()

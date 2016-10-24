@@ -108,26 +108,26 @@ test multiplicity of ref role.attribute OneOrMore One [[
   }
 ]] run get-multiplicity on #1 to OneOrMore()
 
-//test ordering of ref role.attribute Unordered Ordered [[
-//  model
-//  entity Node{
-//    i : Int = max( [[this.in.out.i]] ) <+ 0
-//  }
-//  relation Edge{
-//    Node.in + (unordered) -> in
-//    Node.out 1 (unordered) -> out
-//    in.a <-> out.b
-//  }
-//]] run get-ordering on #1 to Unordered()
-//
-//test ordering of ref role.attribute Ordered Ordered [[
-//  model
-//  entity Node{
-//    i : Int = max( [[this.in.out.i]] ) <+ 0
-//  }
-//  relation Edge{
-//    Node.in + (ordered) -> in
-//    Node.out 1 (ordered) -> out
-//    in.a <-> out.b
-//  }
-//]] run get-ordering on #1 to Ordered()
+test ordering of ref role.attribute Unordered Ordered [[
+  model
+  entity Node{
+    i : Int = max( [[this.in.out.i]] ) <+ 0
+  }
+  relation Edge{
+    Node.in + (unordered) -> in
+    Node.out 1 (unordered) -> out
+    in.a <-> out.b
+  }
+]] run get-ordering on #1 to Unordered()
+
+test ordering of ref role.attribute Ordered Ordered [[
+  model
+  entity Node{
+    i : Int = max( [[this.in.out.i]] ) <+ 0
+  }
+  relation Edge{
+    Node.in + (ordered) -> in
+    Node.out 1 (ordered) -> out
+    in.a <-> out.b
+  }
+]] run get-ordering on #1 to Ordered()

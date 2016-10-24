@@ -62,4 +62,4 @@ test multiplicity of ZeroOrOne mult ZeroOrOne   [[x.i * x.i]] run get-multiplici
 
 //test error on One plus OneOrMore [[ 1 + (2 ++ 3) ]] 1 error at #1 //TODO: warning?
 
-//test ordering of Ordered mult Ordered  [[8 * 8]] run get-ordering to Ordered()
+test ordering of Ordered mult Ordered  [[8 * 8]] run get-ordering to Ordered()

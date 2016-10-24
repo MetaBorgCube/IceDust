@@ -16,7 +16,7 @@ fixture [[
   
   relation Enrollment{
     Student *
-    Course +
+    Course + (ordered)
     
     student.courses <-> course.students
   }
@@ -43,7 +43,7 @@ test multiplicity of shortcut      [[c.students]]            run get-multiplicit
 test multiplicity of inverse role2 [[s.enrollment.course]]   run get-multiplicity to ZeroOrMore()
 test multiplicity of shortcut2     [[s.courses]]             run get-multiplicity to ZeroOrMore()
 
-//test ordering of inverse role  [[c.enrollment.student]]  run get-ordering to Ordered()
-//test ordering of shortcut      [[c.students]]            run get-ordering to Ordered()
-//test ordering of inverse role2 [[s.enrollment.course]]   run get-ordering to Unordered()
-//test ordering of shortcut2     [[s.courses]]             run get-ordering to Unordered()
+test ordering of inverse role  [[c.enrollment.student]]  run get-ordering to Ordered()
+test ordering of shortcut      [[c.students]]            run get-ordering to Ordered()
+test ordering of inverse role2 [[s.enrollment.course]]   run get-ordering to Unordered()
+test ordering of shortcut2     [[s.courses]]             run get-ordering to Unordered()

@@ -16,7 +16,7 @@ fixture [[
 
   relation NodeStarRelation {
     Node.starRelation * -> plus
-    Node.plusRelation + -> star
+    Node.plusRelation + (ordered) -> star
     star.plus <-> plus.star
   }
   data
@@ -51,8 +51,8 @@ test multiplicity of shortcut OneOrMore  [[n.plus]]  run get-multiplicity to One
 test multiplicity of shortcut shortcut ZeroOrOne   [[n.maybe.maybe]] run get-multiplicity to ZeroOrOne()
 test multiplicity of shortcut shortcut ZeroOrOne 2 [[n.maybe.one]]   run get-multiplicity to ZeroOrOne()
 
-//test ordering of shortcut Unordered    [[n.star]] run get-ordering to Unordered()
-//test ordering of shortcut Ordered      [[n.plus]] run get-ordering to Ordered()
-//
-//test ordering of inverse Ordered      [[n.plusRelation]] run get-ordering to Ordered()
-//test ordering of inverse Unordered    [[n.starRelation]] run get-ordering to Unordered()
+test ordering of shortcut Unordered    [[n.star]] run get-ordering to Unordered()
+test ordering of shortcut Ordered      [[n.plus]] run get-ordering to Ordered()
+
+test ordering of inverse Ordered      [[n.plusRelation]] run get-ordering to Ordered()
+test ordering of inverse Unordered    [[n.starRelation]] run get-ordering to Unordered()

@@ -65,26 +65,30 @@ test multiplicity of ref entity Identifier [[
 ]] run get-multiplicity on #1 to One()
 
 
-//test ordering of ref this [[
-//  model
-//  entity X{
-//    i : Int = [[this]].i (default)
-//  }
-//  
-//  data
-//  x : X {
-//    i=8
-//  }
-//]] run get-ordering on #1 to Ordered()
-//   
-//test ordering of ref entity Identifier [[
-//  model
-//  entity X{
-//    i : Int = [[x]].i (default)
-//  }
-//  
-//  data
-//  x : X {
-//    i=5
-//  }
-//]] run get-ordering on #1 to Ordered()
+test ordering of ref this [[
+  model
+  entity X{
+    i : Int = [[this]].i (default)
+  }
+  
+  data
+  x : X {
+    i=8
+  }
+]] run get-ordering on #1 to Ordered()
+   
+test ordering of ref entity Identifier [[
+  model
+  entity X{
+    i : Int = 55 (default)
+  }
+  
+  data
+  x : X {
+    i=5
+  }
+  
+  execute
+  4
+  [[x]].i
+]] run get-ordering on #1 to Ordered()
