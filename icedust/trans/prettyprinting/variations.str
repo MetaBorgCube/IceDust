@@ -45,8 +45,8 @@ rules // newline a derivation expression if subexpression is multiline + align c
     where
       is-entity
     with
-      maxnamelength := <entity-get-members;filter(is-attr);map(attr-get-name);map(strlen);list-max>e;
-      maxtypelenght := <entity-get-members;filter(is-attr);map(ttuple(attr-get-type,attr-get-mult);pp-type-and-multiplicity;strlen);list-max>e;
+      maxnamelength := <entity-get-members;filter(is-attr);map(attr-get-name);map(strlen);list-max(|0)>e;
+      maxtypelenght := <entity-get-members;filter(is-attr);map(ttuple(attr-get-type,attr-get-mult);pp-type-and-multiplicity;strlen);list-max(|0)>e;
       e'            := <topdown(try(pp-variation(|maxnamelength, maxtypelenght)))>e
 
   pp-variation(|n,t): Attribute          (a, b, c   ) -> AttributePP                   (a, a', b, c       )                                    with a' := <subt;whitespace>(n,<strlen>a)
