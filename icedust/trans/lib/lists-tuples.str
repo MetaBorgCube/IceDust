@@ -53,3 +53,9 @@ rules // List(a) -> a
   lFst:   [x | xs] -> x
   lSnd:   [x, y | xs] -> y
   lThird: [x, y, z | xs] -> z
+
+rules
+
+  list-add(|h): t -> [h | t]
+  
+  list-max(|lowerbound) = list-add(|lowerbound);list-max
