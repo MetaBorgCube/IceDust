@@ -47,6 +47,6 @@ model
 // Option 3: datalog-style (with .notation) restricted
 //
 // Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions {
-//   s.assignment.groupSubmissions
-//   s.student.groups.members.submissions
+//   assignment.groupSubmissions
+//   student.groups.members.submissions
 // }
