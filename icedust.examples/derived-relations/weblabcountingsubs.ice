@@ -25,3 +25,15 @@ model
 //
 // relation Assignment.countingSubs = submissions.filter(x => x.student.forGrade)
 //        <-> ? Submission.dontcare
+
+// Option 2: datalog-style (with.notation)
+//
+// a:Assignment.countingSubs <-> ? s:Submission.dontcare {
+//   s = a.submissions.filter(x => x.student.forGrade)
+// }
+
+// Option 2: datalog-style (with.notation) restricted
+//
+// Assignment.countingSubs <-> ? Submission.dontcare {
+//   submissions.filter(x => x.student.forGrade)
+// }
