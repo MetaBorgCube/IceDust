@@ -19,7 +19,7 @@ model
 
   relation StudentInCourse.submissions <-> 1 Submission.student
 
-  relation Assignment.countingSubs <-> ? Submission.dontcare // derive this
+//  relation Assignment.countingSubs <-> ? Submission.dontcare // derive this
   
 // Option 1: derived value expression
 

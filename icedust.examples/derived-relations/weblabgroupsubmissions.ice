@@ -30,7 +30,7 @@ model
   relation GroupSubmission.assignment 1 <-> Assignment.groupSubmissions
   relation GroupSubmission.group 1 <-> Group.submissions
   
-  relation Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions // derive this
+//  relation Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions // derive this
   
 // Option 1: derived value expression
 

@@ -32,7 +32,7 @@ model
   relation AssignmentPerson.assignment <-> Assignment.assignmentPerson // derive this
   relation AssignmentPerson.person <-> Person.assignmentPerson // derive this
   
-  relation AssignmentPerson.toGrade <-> Submission.dontcare // derive this
+//  relation AssignmentPerson.toGrade <-> Submission.dontcare // derive this
   relation AssignmentPerson.toGradeCompleted <-> Submission.dontcare2
   
 // TODO: skip, because Assignment.findChecklistValuations(p:Person) does not have an abstraction AssignmentPerson

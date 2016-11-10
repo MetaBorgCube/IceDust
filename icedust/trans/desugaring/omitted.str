@@ -123,6 +123,10 @@ rules
   rel-generate-mult: Relation(e1, s1, None(), o1, m2    , o2, e2, s2) -> Relation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2)
   rel-generate-mult: Relation(e1, s1, m1,     o1, None(), o2, e2, s2) -> Relation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2)
 
+  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, None(), o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, ZeroOrMore(), o2, e2, s2)
+  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, m2    , o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, m2,           o2, e2, s2)
+  rel-generate-mult: RelationDerived(e1, s1, m1,     o1, expr, None(), o2, e2, s2) -> RelationDerived(e1, s1, m1,           o1, expr, ZeroOrMore(), o2, e2, s2)
+
 rules
 
   shortcutrel-to-rel:

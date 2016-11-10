@@ -11,7 +11,7 @@ model
   }
   
   entity Profile {
-  
+    name : String
   }
   
   relation Profile.conf 1 <-> Conf.profiles
@@ -24,7 +24,7 @@ model
   relation Committee.conf <-> Conf.memberships
   relation Committee.members <-> Person.memberships
   
-  relation Profile.memberships <-> Committee.profiles // derive this
+//  relation Profile.memberships <-> Committee.profiles // derive this
   
 // Option 1: derived value expression
 //

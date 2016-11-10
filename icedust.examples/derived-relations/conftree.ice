@@ -10,11 +10,11 @@ model
   
   //TODO: descendant conf voor alle niet root Confs
   
-  relation Conference.rootConf 1 <-> Conference.descendantConfs // derive this
+//  relation Conference.rootConf 1 <-> Conference.descendantConfs // derive this
   
 // Option 1: derived value expression
 
-  relation Conference.rootConf 1 = parent.rootConf <+ this
+  relation Conference.rootConf 1 = parentConf.rootConf <+ this
     <-> Conference.descendantConfs
 
 // or

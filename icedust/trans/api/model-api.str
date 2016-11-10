@@ -98,7 +98,9 @@ rules // manipulation
   role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
   
   relation-set-type1(type) = Relation(type, id, id, id, id ,id, id, id)
+  relation-set-type1(type) = RelationDerived(type, id, id, id, id, id ,id, id, id)
   relation-set-type2(type) = Relation(id, id, id, id, id ,id, type, id)
+  relation-set-type2(type) = RelationDerived(id, id, id, id, id, id ,id, type, id)
   
   relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
   relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)

@@ -8,7 +8,7 @@ model
   
   relation Submission.parent ? <-> * (ordered) Submission.children
   
-  relation Submission.next ? <-> ? Submission.previous // derive this
+//  relation Submission.next ? <-> ? Submission.previous // derive this
 
 // Option 1: derived value expression
 //  - issue with ? on previous

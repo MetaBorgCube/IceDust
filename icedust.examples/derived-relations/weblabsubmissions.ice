@@ -20,7 +20,7 @@ model
 
   relation Student.submissions <-> 1 Submission.student
 
-  relation Submission.parent ? <-> Submission.children // TODO: derive this
+//  relation Submission.parent ? <-> Submission.children // TODO: derive this
 
 // Option 1: derived value expression
 //  - uses .first() hack to get multiplicity down from * to ?

@@ -173,6 +173,31 @@ binding rules // model
       of inverse left-name
       of side Right()
 
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
+    defines non-unique Entity right-ty2
+      scopes Relation
+    defines Relation right-name
+      of multiplicity right-mu
+      of multiplicity-inverse left-mu
+      of ordering right-or
+      of ordering-inverse left-or
+      of type left-ty2
+      of inverse left-name
+      of side Right()
+    defines non-unique Entity left-ty2
+      scopes Relation
+      scopes This
+      implicitly defines This This()
+        of type left-ty2
+    defines Relation left-name
+      of multiplicity left-mu
+      of multiplicity-inverse right-mu
+      of ordering left-or
+      of ordering-inverse right-or
+      of type right-ty2
+      of inverse right-name
+      of side Left()
+
 binding rules // data
 
   EntityInstance(e, EntityRef(e-ty), _) :
