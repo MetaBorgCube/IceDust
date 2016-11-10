@@ -27,7 +27,8 @@ model
 //  - other side of relation must be * multiplicity, unless specifying another expression for that
 //  + allows arbitrary expressions
 //
-// relation Submission.parent ? = assignment.parent.submissions.filter(x => x.student == student).first() <-> * Submission.children
+// relation Submission.parent ? = assignment.parent.submissions.filter(x => x.student == student).first()
+//    <-> * Submission.children
 //
 // or
 //

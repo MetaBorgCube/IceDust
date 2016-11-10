@@ -8,11 +8,15 @@ model
   
   relation Conference.parentConf ? <-> Conference.subConf
   
-  relation Conference.rootConf ? <-> Conference.descendantConfs // derive this
+  //TODO: descendant conf voor alle niet root Confs
+  
+  relation Conference.rootConf 1 <-> Conference.descendantConfs // derive this
   
 // Option 1: derived value expression
 //
-// relation Conference.rootConf ? = parent.rootConf <+ parent <-> Conference.descendantConfs
+// @cached
+// relation Conference.rootConf 1 = parent.rootConf <+ this
+// <-> Conference.descendantConfs
 //
 // or
 //
@@ -25,3 +29,9 @@ model
 // or (has probs with ?)
 //
 // relation Conference.rootConf ? <-> Conference.descendantConfs = children ++ children.descendantConfs
+
+  relation Conference.allEditions * <-> Conference.dontcare
+  
+// relation Conference.allEditions * = rootConf.descendantConfs
+//           <-> Conference.dontcare
+//

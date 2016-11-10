@@ -17,29 +17,34 @@ model
   relation Profile.conf 1 <-> Conf.profiles
   relation Profile.person 1 <-> Person.profiles
   
-  entity Group {
+  entity Committee {
   
   }
   
-  relation Group.conf <-> Conf.groups
-  relation Group.members <-> Person.groups
+  relation Committee.conf <-> Conf.memberships
+  relation Committee.members <-> Person.memberships
   
-  relation Profile.groups <-> Group.profiles // derive this
+  relation Profile.memberships <-> Committee.profiles // derive this
   
 // Option 1: derived value expression
 //
-// relation Profile.groups <-> Group.profiles = members.profiles.filter(x => x.conf == conf)
+// relation Profile.memberships <-> Committee.profiles = members.profiles.filter(x => x.conf == this.conf)
+//
+// or
+//
+// relation Profile.memberships = person.memberships.filter(x => x.conf == this.conf)
+//  <-> Committee.profiles
 
 // Option 2: datalog-style (with .notation)
 //
-// relation p:Profile.groups <-> g:Group.profiles {
+// relation p:Profile.memberships <-> g:Committee.profiles {
 //   p = g.members.profiles
 //   p = g.conf.profiles
 // } 
 
 // Option 3: datalog-style (with .notation) restricted
 //
-// relation Profile.groups <-> Group.profiles {
+// relation Profile.memberships <-> Committee.profiles {
 //   members.profiles
 //   conf.profiles
 // }
