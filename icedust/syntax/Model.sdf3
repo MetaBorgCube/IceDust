@@ -33,6 +33,11 @@ context-free syntax // non-first-class relation
   Model.Relation = [
     relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID]
   ]
+
+  Model.RelationDerived = [
+    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] = [Exp]
+      <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID]
+  ]
   
   SpaceMultiplicity             = [ [Multiplicity]]
   SpaceOrdering                 = [ [Ordering]]

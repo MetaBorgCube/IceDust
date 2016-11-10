@@ -13,11 +13,10 @@ model
   relation Conference.rootConf 1 <-> Conference.descendantConfs // derive this
   
 // Option 1: derived value expression
-//
-// @cached
-// relation Conference.rootConf 1 = parent.rootConf <+ this
-// <-> Conference.descendantConfs
-//
+
+  relation Conference.rootConf 1 = parent.rootConf <+ this
+    <-> Conference.descendantConfs
+
 // or
 //
 // relation Conference.descendantConfs <-> ? Conference.rootConf = parent.rootConf <+ parent

@@ -38,6 +38,6 @@ model
 // TODO: skip, because Assignment.findChecklistValuations(p:Person) does not have an abstraction AssignmentPerson
   
 // Option 1: derived value expression
-//
-// relation Submission.toGrade = assignment.submissions.filter(x => x.grading.grader == person)
-//   <-> ? Submission.dontcare
+
+ relation Submission.toGrade = assignment.submissions//.filter(x => x.grading.grader == person)
+   <-> ? Submission.dontcare

@@ -22,9 +22,9 @@ model
   relation Assignment.countingSubs <-> ? Submission.dontcare // derive this
   
 // Option 1: derived value expression
-//
-// relation Assignment.countingSubs = submissions.filter(x => x.student.forGrade)
-//        <-> ? Submission.dontcare
+
+  relation Assignment.countingSubs = submissions//.filter(x => x.student.forGrade)
+    <-> ? Submission.dontcare
 
 // Option 2: datalog-style (with.notation)
 //

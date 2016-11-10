@@ -33,9 +33,9 @@ model
   relation Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions // derive this
   
 // Option 1: derived value expression
-//
-// relation Submission.groupSubmission ? = assignment.groupSubmissions.filter(x => x.group.members.contains(student))
-// <-> * GroupSubmission.individualSubmissions 
+
+  relation Submission.groupSubmission ? = assignment.groupSubmissions//.filter(x => x.group.members.contains(student))
+    <-> * GroupSubmission.individualSubmissions 
 
 // Option 2: datalog-style (with .notation)
 //

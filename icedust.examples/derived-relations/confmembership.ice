@@ -31,9 +31,9 @@ model
 // relation Profile.memberships <-> Committee.profiles = members.profiles.filter(x => x.conf == this.conf)
 //
 // or
-//
-// relation Profile.memberships = person.memberships.filter(x => x.conf == this.conf)
-//  <-> Committee.profiles
+
+  relation Profile.memberships = person.memberships//.filter(x => x.conf == this.conf)
+    <-> Committee.profiles
 
 // Option 2: datalog-style (with .notation)
 //

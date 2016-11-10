@@ -12,9 +12,9 @@ model
 
 // Option 1: derived value expression
 //  - issue with ? on previous
-//
-// relation Submission.next ? = parent.children[ parent.children.indexOf(this) + 1 ]
-//  <-> Submission.previous ?
+
+  relation Submission.next ? = parent.children//[ parent.children.indexOf(this) + 1 ]
+     <-> ? Submission.previous
 
 // Option 2: derived value expression twosided
 //  - don't know whether these expressions are the inverse of each other
