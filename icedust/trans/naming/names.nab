@@ -67,6 +67,7 @@ binding rules // model
     scopes Attribute
     scopes Role
     scopes This
+    scopes Var
     implicitly defines This This()
       of type e-ty
       
@@ -186,6 +187,7 @@ binding rules // model
       of inverse left-name
       of side Right()
     defines non-unique Entity left-ty2
+      scopes Var
       scopes Relation
       scopes This
       implicitly defines This This()

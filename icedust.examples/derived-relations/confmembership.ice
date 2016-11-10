@@ -21,7 +21,7 @@ model
   
   }
   
-  relation Committee.conf <-> Conf.memberships
+  relation Committee.conf 1 <-> Conf.memberships
   relation Committee.members <-> Person.memberships
   
 //  relation Profile.memberships <-> Committee.profiles // derive this
@@ -32,7 +32,7 @@ model
 //
 // or
 
-  relation Profile.memberships = person.memberships//.filter(x => x.conf == this.conf)
+  relation Profile.memberships = person.memberships.filter(x => x.conf == this.conf)
     <-> Committee.profiles
 
 // Option 2: datalog-style (with .notation)

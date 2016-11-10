@@ -14,16 +14,16 @@ model
   
   }
   
-  relation ChecklistValuation.grader <-> Person.grading
-  relation ChecklistValuation.submission <-> Submission.grading
-  relation ChecklistValuation.submission2 <-> Submission.checking
+  relation ChecklistValuation.grader 1 <-> Person.grading
+  relation ChecklistValuation.submission <-> 1 Submission.grading
+  relation ChecklistValuation.submission2 <-> 1 Submission.checking
   
   entity Assignment {
   
   }
   
   relation Assignment.submissions <-> Submission.assignment
-  relation Person.submissions <-> Submission.person
+  relation Person.submissions <-> 1 Submission.person
   
   entity AssignmentPerson { // derive this
     progress: Float// = ...
@@ -39,5 +39,5 @@ model
   
 // Option 1: derived value expression
 
- relation Submission.toGrade = assignment.submissions//.filter(x => x.grading.grader == person)
+ relation Submission.toGrade = assignment.submissions.filter(x => x.grading.grader == person)
    <-> ? Submission.dontcare

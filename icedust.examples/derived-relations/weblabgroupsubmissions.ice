@@ -34,7 +34,7 @@ model
   
 // Option 1: derived value expression
 
-  relation Submission.groupSubmission ? = assignment.groupSubmissions//.filter(x => x.group.members.contains(student))
+  relation Submission.groupSubmission ? = assignment.groupSubmissions.filter(x => x.group.members.filter(y => y == student).count()>=1).first()
     <-> * GroupSubmission.individualSubmissions 
 
 // Option 2: datalog-style (with .notation)

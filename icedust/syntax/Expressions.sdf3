@@ -73,6 +73,7 @@ context-free syntax // built-in functions
   
   Exp.First              = <<Exp>.first()>
   Exp.Filter             = [[Exp].filter([ID] => [Exp])]
+  Exp.Count              = <<Exp>.count()>
 
 context-free syntax // references
 
