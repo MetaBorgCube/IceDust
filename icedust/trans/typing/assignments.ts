@@ -37,6 +37,20 @@ type rules // derivations well-formedness
         )
     else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e
 
+type rules // derivations well-formedness (relations)
+
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+  where expr : e-ty
+    and e-ty == right-ty2 else error $[Type mismatch: expected [right-ty2] got [e-ty] in Derivation] on expr
+
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+  where expr has multiplicity e-mu
+    and e-mu == left-mu else error $[Multiplicity mismatch: expected [left-mu] got [e-mu] in Derivation] on expr
+
+//  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+//  where expr has ordering e-or
+//    and e-or == left-or else error $[Ordering mismatch: expected [left-or] got [e-or] in Derivation] on expr
+
 type rules // data well-formedness
 
   MemberValue(NaBLHelp(m, m2), val) :-

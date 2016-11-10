@@ -24,9 +24,10 @@ type rules
     expr2 : ty2 and
     ty2 == Boolean() else error $[Type mismatch: expected Boolean got [ty2] in Not] on expr2
   
-  Filter(expr1, x, expr2) has multiplicity mu1 //FIXME: lower bound zero
+  Filter(expr1, x, expr2) has multiplicity mu
   where
     expr1 has multiplicity mu1 and
+    <lowerbound-zero> (mu1) => mu and
     expr2 has multiplicity mu2 and
     mu2 == One() else error $[Multiplicity mismatch: expected One got [mu2] in Conditional] on expr2
     
@@ -40,6 +41,9 @@ type rules
   where
     e:ty
     
-  First(e) has multiplicity One() //FIXME: lower bound zero
+  First(e) has multiplicity mu
+  where
+    e has multiplicity e-mu
+    and <upperbound-one> (e-mu) => mu
   
   First(e) has ordering Ordered()
