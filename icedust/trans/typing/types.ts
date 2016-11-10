@@ -5,6 +5,7 @@ imports
   types/typing/aggregation
   types/typing/assignments
   types/typing/casts
+  types/typing/collections
   types/typing/data
   types/typing/literals
   types/typing/logic

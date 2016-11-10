@@ -35,16 +35,17 @@ namespaces
   This
   MemberType
   MemberValue
+  Var
 
 properties
 
-  derivation-type      of Attribute    : DerivationType  //Derivation(), DefaultValue() or Normal()
-  multiplicity         of Attribute    : Multiplicity
+  derivation-type      of Attribute   : DerivationType  //Derivation(), DefaultValue() or Normal()
+  multiplicity         of Attribute   : Multiplicity
   multiplicity-inverse of Role        : Multiplicity
   ordering             of Role        : Ordering
   ordering-inverse     of Role        : Ordering
   inverse              of Role        : Inverse
-  origin-role           of Inverse      : Role
+  origin-role          of Inverse     : Role
   origin-role2         of Shortcut    : Role
   rel-ty               of Shortcut    : Entity
   side                 of Relation    : Term
@@ -265,6 +266,8 @@ binding rules // data
 binding rules // references
 
   Ref(x) :
+    refers to Var x
+  otherwise
     refers to EntityInstance x
   otherwise
     refers to Attribute x  in Entity e-ty
@@ -343,4 +346,12 @@ binding rules // references
   This() :
     refers to This This()
 
+binding rules // expressions
 
+  Filter(expr1, var, expr2):
+    scopes Var
+    defines Var var
+      of type ty1
+      of multiplicity One()
+      of ordering Ordered()
+    where expr1 has type ty1
