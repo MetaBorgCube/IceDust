@@ -96,17 +96,54 @@ rules // manipulation
 
   role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
   role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
-  
-  relation-set-type1(type) = Relation(type, id, id, id, id ,id, id, id)
-  relation-set-type1(type) = RelationDerived(type, id, id, id, id, id ,id, id, id)
-  relation-set-type2(type) = Relation(id, id, id, id, id ,id, type, id)
-  relation-set-type2(type) = RelationDerived(id, id, id, id, id, id ,id, type, id)
-  
-  relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
-  relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
 
 rules // creation
   
   create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)
   create-shortcut(|role1, type1, shortcut1, role2, type2, shortcut2) = !Shortcut(NaBLHelp(<custom-origin(|role1)>RoleRef(role1), type1), shortcut1, NaBLHelp(<custom-origin(|role2)>RoleRef(role2), type2), shortcut2)
+
+rules // relations
+  
+  is-relation = ?Relation(_, _, _, _, _, _, _, _)
+  is-relation = ?RelationDerived(_, _, _, _, _, _, _, _, _)
+  
+  relation-get-type1 = ?Relation(<id>, _, _, _, _, _, _, _)
+  relation-get-rel1  = ?Relation(_, <id>, _, _, _, _, _, _)
+  relation-get-mult1 = ?Relation(_, _, <id>, _, _, _, _, _)
+  relation-get-ord1  = ?Relation(_, _, _, <id>, _, _, _, _)
+  relation-get-mult2 = ?Relation(_, _, _, _, <id>, _, _, _)
+  relation-get-ord2  = ?Relation(_, _, _, _, _, <id>, _, _)
+  relation-get-type2 = ?Relation(_, _, _, _, _, _, <id>, _)
+  relation-get-rel2  = ?Relation(_, _, _, _, _, _, _, <id>)
+  
+  relation-get-type1 = ?RelationDerived(<id>, _, _, _, _, _, _, _, _)
+  relation-get-rel1  = ?RelationDerived(_, <id>, _, _, _, _, _, _, _)
+  relation-get-mult1 = ?RelationDerived(_, _, <id>, _, _, _, _, _, _)
+  relation-get-ord1  = ?RelationDerived(_, _, _, <id>, _, _, _, _, _)
+  relation-get-expr1 = ?RelationDerived(_, _, _, _, <id>, _, _, _, _)
+  relation-get-mult2 = ?RelationDerived(_, _, _, _, _, <id>, _, _, _)
+  relation-get-ord2  = ?RelationDerived(_, _, _, _, _, _, <id>, _, _)
+  relation-get-type2 = ?RelationDerived(_, _, _, _, _, _, _, <id>, _)
+  relation-get-rel2  = ?RelationDerived(_, _, _, _, _, _, _, _, <id>) 
+  
+  relation-set-type1(s) = Relation(s, id, id, id, id, id, id, id)
+  relation-set-rel1 (s) = Relation(id, s, id, id, id, id, id, id)
+  relation-set-mult1(s) = Relation(id, id, s, id, id, id, id, id)
+  relation-set-ord1 (s) = Relation(id, id, id, s, id, id, id, id)
+  relation-set-mult2(s) = Relation(id, id, id, id, s, id, id, id)
+  relation-set-ord2 (s) = Relation(id, id, id, id, id, s, id, id)
+  relation-set-type2(s) = Relation(id, id, id, id, id, id, s, id)
+  relation-set-rel2 (s) = Relation(id, id, id, id, id, id, id, s) 
+  
+  relation-set-type1(s) = RelationDerived(s, id, id, id, id, id, id, id, id)
+  relation-set-rel1 (s) = RelationDerived(id, s, id, id, id, id, id, id, id)
+  relation-set-mult1(s) = RelationDerived(id, id, s, id, id, id, id, id, id)
+  relation-set-ord1 (s) = RelationDerived(id, id, id, s, id, id, id, id, id)
+  relation-set-mult2(s) = RelationDerived(id, id, id, id, id, s, id, id, id)
+  relation-set-ord2 (s) = RelationDerived(id, id, id, id, id, id, s, id, id)
+  relation-set-type2(s) = RelationDerived(id, id, id, id, id, id, id, s, id)
+  relation-set-rel2 (s) = RelationDerived(id, id, id, id, id, id, id, id, s)  
+  
+  relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
+  relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
   
