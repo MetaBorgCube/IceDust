@@ -6,14 +6,14 @@ model
   
   }
   
-  relation Submission.parent ? <-> * (ordered) Submission.children
+  relation Submission.parent ? (ordered) <-> * (ordered) Submission.children
   
 //  relation Submission.next ? <-> ? Submission.previous // derive this
 
 // Option 1: derived value expression
 //  - issue with ? on previous
 
-  relation Submission.next ? = parent.children//[ parent.children.indexOf(this) + 1 ]
+  relation Submission.next ? = parent.children.elemAt(parent.children.indexOf(this) + 1)
      <-> ? Submission.previous
 
 // Option 2: derived value expression twosided
