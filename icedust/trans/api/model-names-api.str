@@ -84,6 +84,9 @@ rules // relations
   relationname-get-inversename = get-inverse
   
   relationname-is-left = where(get-side;?Left())
+  
+  relationname-is-derivation = where(get-derivation-type;?Derivation())
+  relationname-is-normal     = where(get-derivation-type;?Normal())
 
 rules // roles
   

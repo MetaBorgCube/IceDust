@@ -164,6 +164,7 @@ binding rules // model
       of type right-ty2
       of inverse right-name
       of side Left()
+      of derivation-type Normal()
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
@@ -174,6 +175,7 @@ binding rules // model
       of type left-ty2
       of inverse left-name
       of side Right()
+      of derivation-type Normal()
 
   RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
     defines non-unique Entity right-ty2
@@ -186,6 +188,7 @@ binding rules // model
       of type left-ty2
       of inverse left-name
       of side Right()
+      of derivation-type Derivation() 
     defines non-unique Entity left-ty2
       scopes Var
       scopes Relation
@@ -200,6 +203,7 @@ binding rules // model
       of type right-ty2
       of inverse right-name
       of side Left()
+      of derivation-type Derivation() 
 
 binding rules // data
 

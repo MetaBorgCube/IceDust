@@ -43,7 +43,7 @@ rules
   einame-check-multiplicities: eiName -> result
     with
       entityName       := <_get-type>eiName;
-      relRoleInvNames  := <entityname-get-relroleinvnames>entityName;
+      relRoleInvNames  := <entityname-get-relroleinvnames;filter(not(relationname-is-derivation))>entityName;
       memberValueNames := <map(entityinstancename-get-membervaluename-inv(|eiName))>relRoleInvNames;
       result           := <fmap(memv-check-multiplicities(|eiName))>memberValueNames
       

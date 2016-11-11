@@ -47,7 +47,7 @@ signature constructors
   Left : Term
   Right : Term
   
-rules // check if entities have all the required attributes and roles assigned
+rules // check if entities have all the required attributes assigned
   
   contains-all-errors = ![
     ContainsAll(
