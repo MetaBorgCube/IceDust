@@ -56,7 +56,7 @@ rules
       is-attributename
     with
       x_entityName                := <attributename-get-entityname>x_attributeName;
-      x_attributeType             := <_get-type;type-to-string-java>x_attributeName;
+      x_attributeType             := <get-type2;type-to-string-java>x_attributeName;
       x_getAttribute              := <name-get>x_attributeName;
       x_setAttribute              := <name-set>x_attributeName;
       x_calculateAttribute        := <name-calculate>x_attributeName;
@@ -488,7 +488,7 @@ rules
       is-shortcutname
     with
       x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
-      x_targetEntityName := <_get-type>x_shortcutName;
+      x_targetEntityName := <get-type2>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
       x_relationName     := <attributename-get-entityname>x_roleName;

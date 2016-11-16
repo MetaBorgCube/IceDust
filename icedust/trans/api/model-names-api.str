@@ -13,6 +13,7 @@ imports // constructors
 imports // functions
 
   api/_runtime
+  api/api-test
   api/module-names-api
   api/types-api
   lib/eq
@@ -75,7 +76,7 @@ rules // attributes
   
   attributename-pp2-type-multiplicity: attrName -> x
     with
-      x := <pp2-type-multiplicity>(<_get-type>attrName, <get-multiplicity>attrName)
+      x := <pp2-type-multiplicity>(<get-type2>attrName, <get-multiplicity>attrName)
 
 rules // relations
 
@@ -127,6 +128,8 @@ rules
   name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
   name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
+  name-get-type = get-type2
+
 rules // shortcuts
 
   is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
@@ -137,12 +140,17 @@ rules // shortcuts
   shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
   shortcutname-get-rolename           = shortcutname-get-rolename2
   shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
+  
+  shortcutname-get-entityname = nabl-name-parent
 
 rules // combined
   
-  name-get-flowsto-paths = index-get-prop(|FlowsTo())
+  name-get-dependson-paths = index-get-prop(|DependsOn())
+  name-get-flowsto-paths   = index-get-prop(|FlowsTo())
+  name-get-toposort        = index-get-prop(|TopoSort())
   
-  name-get-flowsto-pathexprs = name-get-flowsto-paths;map(path-pathexpr)
+  name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
+  name-get-flowsto-pathexprs   = name-get-flowsto-paths;map(path-pathexpr)
 
 rules // helper
 

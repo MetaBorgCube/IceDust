@@ -18,19 +18,22 @@ test type of ref entity this [[
   x : X {
     i=8
   }
-]] run get-type on #1 to "X"
+]] run get-type2 on #1 to "X"
    
 test type of ref entity Identifier [[
   model
   entity X{
-    i : Int = [[x]].i (default)
+    i : Int
   }
   
   data
   x : X {
     i=6
   }
-]] run get-type on #1 to "X"
+  
+  execute
+   [[x]].i
+]] run get-type2 on #1 to "X"
 
 
 test multiplicity of ref this [[
@@ -48,13 +51,17 @@ test multiplicity of ref this [[
 test multiplicity of ref entity Identifier [[
   model
   entity X{
-    i : Int = [[x]].i (default)
+    i : Int
   }
   
   data
   x : X {
     i=5
   }
+  
+  execute
+  4
+  [[x]].i 
 ]] run get-multiplicity on #1 to One()
 
 
@@ -73,11 +80,15 @@ test ordering of ref this [[
 test ordering of ref entity Identifier [[
   model
   entity X{
-    i : Int = [[x]].i (default)
+    i : Int = 55 (default)
   }
   
   data
   x : X {
     i=5
   }
+  
+  execute
+  4
+  [[x]].i
 ]] run get-ordering on #1 to Ordered()

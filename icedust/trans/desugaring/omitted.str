@@ -6,7 +6,7 @@ imports // constructors
   signatures/Types-sig
 
 imports // functions
-  
+
   api/model-api
   api/data-api
   lib/origin
@@ -14,7 +14,7 @@ imports // functions
   lib/string
   lib/traverse
   lib/lists-tuples
-
+  
 rules
   
   generate-omitted =
@@ -22,61 +22,115 @@ rules
     bottomup(try(omitted2))
   
   omitted1 = attr-generate-mult
-  omitted1 = role-generate-name
+  omitted1 = role-generate-omitted
+  omitted1 = shortcut-generate-omitted
+  omitted1 = rel-generate-omitted
+  omitted1 = shortcutrel-generate-omitted
   omitted1 = entity-generate-inverse-names
   omitted1 = datadef-generate-entity-names
-  omitted1 = shortcutrel-generate-mult
-  omitted1 = rel-generate-mult
   
-  omitted2 = role-generate-ord                // matches same as role-generate-name
   omitted2 = entity-generate-shortcuts        // requires role-generate-name
   omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
 
-rules // generate omitted multiplicities
+rules // attr fields
 
-  attr-generate-mult: attr -> attr'
-    where  attr-has-no-mult
-    with attr':= <attr-set-mult(|One())>attr
+  attr-generate-mult = attr-has-no-mult; attr-set-mult(!One())
+    
+rules // role fields
 
-rules // generate omitted role names
+  role-generate-omitted =
+    is-role;
+    try(role-generate-mult);
+    try(role-generate-ord );
+    try(role-generate-name)
 
-  role-generate-name: role -> role'
-    where role-has-no-name
-    with role' := <role-set-name(|<role-get-type;keep-origin(lcfirst)>role)>role
+  role-generate-mult = role-has-no-mult;     role-set-mult(!ZeroOrMore())
+  role-generate-ord  = role-has-no-ord ;     role-set-ord (!Unordered())
+  role-generate-name = role-has-no-name; ?r; role-set-name(!r;role-get-type;lcfirst)
 
-rules // generate omitted role orderings
+rules
 
-  role-generate-ord: role -> role'
-    where role-has-no-ord
-    with role' := <role-set-ord(|Unordered())>role
-      
-rules // generate omitted inverse names
+  shortcut-generate-omitted = 
+    is-shortcut;
+    try(shortcut-generate-shortcut1);
+    try(shortcut-generate-shortcut2)
+
+  shortcut-generate-shortcut1 = shortcut-has-no-shortcut1; ?s; shortcut-set-shortcut1(!s;shortcut-get-role2;lcfirst)
+  shortcut-generate-shortcut2 = shortcut-has-no-shortcut2; ?s; shortcut-set-shortcut2(!s;shortcut-get-role1;lcfirst)
+
+rules // relation fields
+
+  rel-generate-omitted =
+    is-relation;
+    try(rel-generate-rel1 );
+    try(rel-generate-rel2 );
+    try(rel-generate-mult1);
+    try(rel-generate-mult2);
+    try(rel-generate-ord1 );
+    try(rel-generate-ord2 )
+
+  rel-generate-rel1  = relation-has-no-rel1 ; ?r; relation-set-rel1 (!r;relation-get-type2;lcfirst)
+  rel-generate-rel2  = relation-has-no-rel2 ; ?r; relation-set-rel2 (!r;relation-get-type1;lcfirst)
+  rel-generate-mult1 = relation-has-no-mult1;     relation-set-mult1(!ZeroOrMore())
+  rel-generate-mult2 = relation-has-no-mult2;     relation-set-mult2(!ZeroOrMore())
+  rel-generate-ord1  = relation-has-no-ord1 ;     relation-set-ord1 (!Unordered())
+  rel-generate-ord2  = relation-has-no-ord2 ;     relation-set-ord2 (!Unordered())
+
+rules // shortcutrel fields
+
+  shortcutrel-generate-omitted =
+    is-shortcutrel;
+    try(shortcutrel-generate-rel1 );
+    try(shortcutrel-generate-rel2 );
+    try(shortcutrel-generate-mult1);
+    try(shortcutrel-generate-mult2);
+    try(shortcutrel-generate-ord1 );
+    try(shortcutrel-generate-ord2 )
+
+  shortcutrel-generate-rel1  = shortcutrel-has-no-rel1 ; ?r; shortcutrel-set-rel1 (!r;shortcutrel-get-type2;lcfirst)
+  shortcutrel-generate-rel2  = shortcutrel-has-no-rel2 ; ?r; shortcutrel-set-rel2 (!r;shortcutrel-get-type1;lcfirst)
+  shortcutrel-generate-mult1 = shortcutrel-has-no-mult1;     shortcutrel-set-mult1(!ZeroOrMore())
+  shortcutrel-generate-mult2 = shortcutrel-has-no-mult2;     shortcutrel-set-mult2(!ZeroOrMore())
+  shortcutrel-generate-ord1  = shortcutrel-has-no-ord1 ;     shortcutrel-set-ord1 (!Unordered())
+  shortcutrel-generate-ord2  = shortcutrel-has-no-ord2 ;     shortcutrel-set-ord2 (!Unordered())
+
+rules // roles -> inv (context sensitive)
   
-  entity-generate-inverse-names:
-    e -> <entity-set-members(map(try(generate-inverse-name(|<entity-get-name>e, <entity-duplicate-role-types>e))))>e
-      where is-entity
+  entity-generate-inverse-names: e -> e'
+    where
+      is-entity
+    with 
+      dups  := <entity-duplicate-role-types>e;
+      eName := <entity-get-name>e;
+      e'    := <entity-set-members(map(try(generate-inverse-name(|eName, dups))))>e
 
   generate-inverse-name(|entityName, dupRoleTypes): role -> role'
-    where role-has-no-inversename
-    where <not(elem)>(<role-get-type>role, dupRoleTypes)
-    with role' := <role-set-inversename(|<custom-origin(|<role-get-type>role)><lcfirst>entityName)>role
+    where
+      role-has-no-inv;
+      <not(elem)>(<role-get-type>role, dupRoleTypes)
+    with
+      inv   := <lcfirst;custom-origin(|<role-get-type>role)>entityName;
+      role' := <role-set-inv(!inv)>role
     
   generate-inverse-name(|entityName, dupRoleTypes): role -> role'
-    where role-has-no-inversename
-    where <elem>(<role-get-type>role, dupRoleTypes)
-    with role' := <role-set-inversename(|<custom-origin(|<role-get-type>role)>$[[<lcfirst>entityName]As[<role-get-name;ucfirst>role]])>role
+    where
+      role-has-no-inv;
+      <elem>(<role-get-type>role, dupRoleTypes)
+    with
+      inv   := <custom-origin(|<role-get-type>role)>$[[<lcfirst>entityName]As[<role-get-name;ucfirst>role]];
+      role' := <role-set-inv(!inv)>role
     
   entity-duplicate-role-types = entity-get-members;filter(is-role);map(role-get-type);list-duplicates;make-set
 
-rules  // generate omitted entity names
+rules  // eiNames (context sensitive)
 
   datadef-generate-entity-names: d -> <datadef-set-data(|c'')>d
     where
       is-datadef
     with
-      c := <datadef-get-data>d;
+      c       := <datadef-get-data>d;
       (c', _) := <topdown-fold(try(generate-entity-name))>(c, []);
-      c'' := <custom-origin(|c)>c'
+      c''     := <custom-origin(|c)>c'
 
   generate-entity-name: (ei, history) -> (ei', history')
     where
@@ -85,20 +139,20 @@ rules  // generate omitted entity names
       (e, history') := <new-name>("noname", history);
       ei' := <entityinstance-set-name(|<custom-origin(|ei)>e)>ei
   
-rules // generate omitted shortcuts
+rules // shortcuts (context sensitive)
 
   entity-generate-shortcuts: e -> <entity-set-members(|members'')>e
     where
       is-entity
     with
-      members        := <entity-get-members>e;
+      members       := <entity-get-members>e;
       roles         := <filter(role-get-name);keep-origin(string-sort)>members;
-      shortcuts      := <filter(shortcut-get-roles-ordered)>members;
+      shortcuts     := <filter(shortcut-get-roles-ordered)>members;
       shortcuts-all := <join-half>roles;
       shortcuts-add := <diff>(shortcuts-all, shortcuts);
-      members-new    := <map(create-shortcut-with-same-name)>shortcuts-add;
+      members-new   := <map(create-shortcut-with-same-name)>shortcuts-add;
       members'      := <conc>(members,members-new);
-      members''      := <custom-origin(|members)>members'
+      members''     := <custom-origin(|members)>members'
   
   join-half: [] -> []
   
@@ -111,17 +165,7 @@ rules // generate omitted shortcuts
 
   create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
 
-rules
-
-  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, ZeroOrMore(), o2, e2, s2, attrs)
-  shortcutrel-generate-mult: ShortcutRelation(e1, s1, None(), o1, m2    , o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2, attrs)
-  shortcutrel-generate-mult: ShortcutRelation(e1, s1, m1,     o1, None(), o2, e2, s2, attrs) -> ShortcutRelation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2, attrs)
-
-rules
-
-  rel-generate-mult: Relation(e1, s1, None(), o1, None(), o2, e2, s2) -> Relation(e1, s1, ZeroOrMore(), o1, ZeroOrMore(), o2, e2, s2)
-  rel-generate-mult: Relation(e1, s1, None(), o1, m2    , o2, e2, s2) -> Relation(e1, s1, ZeroOrMore(), o1, m2,           o2, e2, s2)
-  rel-generate-mult: Relation(e1, s1, m1,     o1, None(), o2, e2, s2) -> Relation(e1, s1, m1,           o1, ZeroOrMore(), o2, e2, s2)
+rules // shortcutrels -> shortcut relations
 
   rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, None(), o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, ZeroOrMore(), o2, e2, s2)
   rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, m2    , o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, m2,           o2, e2, s2)
@@ -129,20 +173,17 @@ rules
 
 rules
 
-  shortcutrel-to-rel:
-    scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, attrs) ->
-    <custom-origin(|scr)>FirstClassRelation(
-      relname
-    , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
-      , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
-      , <custom-origin(|e1)>Shortcut(<custom-origin(|s1)>RoleRef(s1), s2, <custom-origin(|s2)>RoleRef(s2), s1)
-      | attrs
-      ]
-    )
-      with
-        relname := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
-        invname1 := <custom-origin(|e1)>$[[s2]Relation];
-        invname2 := <custom-origin(|e2)>$[[s1]Relation]
-
-  
-  
+  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, attrs) -> result
+    with
+      relname  := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
+      invname1 := <custom-origin(|e1)>$[[s2]Relation];
+      invname2 := <custom-origin(|e2)>$[[s1]Relation]
+    with
+      result := <custom-origin(|scr)>FirstClassRelation(
+        relname
+      , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
+        , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
+        , <custom-origin(|e1)><create-shortcut(|s1, s2, s2, s1)>
+        | attrs
+        ]
+      )  

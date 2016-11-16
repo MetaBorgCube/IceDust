@@ -27,7 +27,7 @@ test Resolve shortcut [[
 
 test Resolve invalid shortcut fails [[
   entity Student{
-    numCourses : Int = count(this.[[iDoNotExist]])
+    numCourses : Int = [[count(this.iDoNotExist)]]
   }
   
   relation Enrollment{
@@ -36,7 +36,7 @@ test Resolve invalid shortcut fails [[
     
     student.courses <-> course.students
   }
-]] 1 error at #1
+]] >= 1 error at #1
 
 test Resolve role in shortcut [[
   entity Student{
@@ -58,9 +58,9 @@ test Resolve invalid role in shortcut fails [[
     Student *
     Course  +
     
-    student.abc <-> [[iDoNotExist]].bcd
+    [[student.abc <-> iDoNotExist.bcd]]
   }
-]] 1 error at #1
+]] >= 1 error at #1
 
 test error on duplicate shortcut [[
   entity Node {}
@@ -85,4 +85,4 @@ test error on duplicate shortcut by desugaring [[
     [[Issue]] 1
     [[Project]] *
   }
-]] 4 errors at #1,#2,#3,#4
+]] >= 4 errors at #1,#2,#3,#4

@@ -23,7 +23,7 @@ context-free syntax // entities
 context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
-    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID] {
+    relation [EntityRef][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef][DotID?] {
       [{Attribute "\n"}*]
     }
   ]
@@ -31,7 +31,7 @@ context-free syntax // shortcut relations
 context-free syntax // non-first-class relation
 
   Model.Relation = [
-    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID]
+    relation [EntityRef][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef][DotID?]
   ]
 
   Model.RelationDerived = [

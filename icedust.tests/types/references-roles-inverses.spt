@@ -6,20 +6,32 @@ fixture [[
   module test
   model
   entity Node{}
-  relation Node.maybe ? <-> 1 Node.one {}
-  relation Node.star * <-> + (ordered) Node.plus {}
+//  relation Node.maybe ? <-> 1 Node.one {}
+//  relation Node.star * <-> + Node.plus {}
+  relation NodeMaybeRelation {
+    Node.maybeRelation ? -> one
+    Node.oneRelation 1 -> maybe
+    maybe.one <-> one.maybe
+  }
+
+  relation NodeStarRelation {
+    Node.starRelation * -> plus
+    Node.plusRelation + (ordered) -> star
+    star.plus <-> plus.star
+  }
   data
   n : Node {
     maybe = <e : NodeMaybeRelation { } > n
     star  = <e2 : NodeStarRelation { } > n
   }
   execute
+  3
   [[...]]
 ]]
 
-test type of shortcut                    [[n.maybe]]           run get-type to "Node"
-test type of shortcut shortcut           [[n.maybe.one]]       run get-type to "Node"
-test type of shortcut shortcut shortcut  [[n.maybe.one.star]]  run get-type to "Node"
+test type of shortcut                    [[n.maybe]]           run get-type2 to "Node"
+test type of shortcut shortcut           [[n.maybe.one]]       run get-type2 to "Node"
+test type of shortcut shortcut shortcut  [[n.maybe.one.star]]  run get-type2 to "Node"
 
 test multiplicity of role ZeroOrOne    [[e.maybe]]  run get-multiplicity to One()
 test multiplicity of role One          [[e.one]]    run get-multiplicity to One()
