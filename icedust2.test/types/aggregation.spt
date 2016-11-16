@@ -31,8 +31,8 @@ test type of aggr conj  [[conj(true ++ false)]] run get-type2 to Boolean()
 
 test type of aggr min  Float  [[min(4.4 ++ 3.4)]] run get-type2 to Float()
 
-test error on aggr min String  [[ min("b" ++ "c")]] 1 error //at #1
-test error on aggr concat Int  [[ concat(2 ++ 3) ]] 1 error //at #1
+test error on aggr min String  [[ min("b" ++ "c")]] 1 error
+test error on aggr concat Int  [[ concat(2 ++ 3) ]] 1 error
 
 
 test multiplicity of aggr min OneOrMore    [[min(4 ++ 3)]]         run get-multiplicity to One()

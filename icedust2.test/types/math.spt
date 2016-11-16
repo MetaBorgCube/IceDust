@@ -36,11 +36,11 @@ test type of plus [[no value + 3.0]] run get-type2 to Float()
 test type of plus [[no value + no value + 3]] run get-type2 to Int()
 
 
-test (TS/6) error on Boolean plus Boolean [[ true + false ]] 1 error // 1 error // http://yellowgrass.org/issue/TS/6
-test error on Int plus String  [[ 1 + "b" ]] 1 error
-test error on Int minus String [[ 1 - "b" ]] 2 errors
-test error on String mod String[[ "a" % "b" ]] 1 error
-test (TS/6) error on String div Int  [[ "a" / 3 ]] 3 errors // 1 error // http://yellowgrass.org/issue/TS/6
+test error on Boolean plus Boolean [[ true + false ]] >= 1 error
+test error on Int plus String  [[ 1 + "b" ]] >= 1 error
+test error on Int minus String [[ 1 - "b" ]] >= 1 errors
+test error on String mod String[[ "a" % "b" ]] >= 1 error
+test error on String div Int  [[ "a" / 3 ]] >= 1 errors
 
 
 test multiplicity of One plus One  [[1 + 3]] run get-multiplicity to One()
@@ -60,6 +60,6 @@ test multiplicity of One plus ZeroOrOne String  [["s" + x.s]] run get-multiplici
 test multiplicity of ZeroOrOne minus One        [[x.i - 5]]   run get-multiplicity to ZeroOrOne()
 test multiplicity of ZeroOrOne mult ZeroOrOne   [[x.i * x.i]] run get-multiplicity to ZeroOrOne()
 
-//test error on One plus OneOrMore [[ 1 + (2 ++ 3) ]] 1 error at #1 //TODO: warning?
+//test error on One plus OneOrMore [[ 1 + [[(2 ++ 3)]] ]] 1 error at #1
 
 test ordering of Ordered mult Ordered  [[8 * 8]] run get-ordering to Ordered()

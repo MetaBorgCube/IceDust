@@ -135,5 +135,3 @@ test infer relation instance type [[
 //        x1 {i=4}
 //    }
 //]] run name-get-type-test on #1 to "XYRelation"
-
-//TODO: add testcases for relations
