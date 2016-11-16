@@ -25,20 +25,21 @@ test Resolve inverse [[
 
 test Resolve invalid inverse fails [[
   entity Student{
-    numCourses : Int = count(this.[[iDoNotExist]])
+    numCourses : Int = [[count(this.iDoNotExist)]]
   }
   
   relation Enrollment{
     Student.enrollments * -> student
     Course.enrollments +  -> course
   }
-]] 1 error at #1
+]] >= 1 error at #1
 
 test error on duplicate inverse [[
   entity Node {}
   relation Edge {
     Node.[[edge]] 1 -> a
     Node.[[edge]] 1 -> b
+    a.b <-> b.a
   }
 ]] 2 errors at #1,#2
 
@@ -48,6 +49,6 @@ test error on duplicate inverse by desugaring [[
     [[Node]] 1
     [[Node]] 1
     
-    node.a <-> node.b
+    node.c <-> node.d
   }
-]] 4 errors // only possible by duplicate roles
+]] >= 2 errors at #1,#2 // always also results in duplicate shorcuts
