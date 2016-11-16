@@ -75,7 +75,7 @@ rules // attributes
   
   attributename-pp2-type-multiplicity: attrName -> x
     with
-      x := <pp2-type-multiplicity>(<_get-type>attrName, <get-multiplicity>attrName)
+      x := <pp2-type-multiplicity>(<get-type2>attrName, <get-multiplicity>attrName)
 
 rules // relations
 

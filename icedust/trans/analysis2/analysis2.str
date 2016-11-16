@@ -90,7 +90,7 @@ rules
         riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
         riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
         <index-store-def>riName';
-        <index-store-prop(|Type(), riName')><_get-type>invName
+        <index-store-prop(|Type(), riName')><get-type2>invName
       else
         riName' := riName
       end;
