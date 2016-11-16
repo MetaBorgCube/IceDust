@@ -34,7 +34,7 @@ test Resolve to shortcut [[
 //    
 //    }
 //    
-//    relation [[Node]].parent ? <-> * Node.children {
+//    relation Node.parent ? <-> * Node.children {
 //      weight : Int
 //    }
 //  
@@ -44,5 +44,5 @@ test Resolve to shortcut [[
 //    
 //  execute
 //  
-//    [[node1.iDoNotExist]]
-//]] 5 errors at #1, #2
+//    node1.[[iDoNotExist]]
+//]] >= 1 error at #1

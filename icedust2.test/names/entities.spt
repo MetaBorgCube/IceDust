@@ -5,27 +5,43 @@ language icedust2
 fixture [[
   module test
   model
-  entity User{}
-  
   [[...]]
 ]]
 
-test Duplicate entity fails [[
-  data
-  [[u]] : User {}
-  [[u]] : User {}
+test Duplicate entity type fails [[
+  entity [[User]] {}
+  entity [[User]] {}
 ]] 2 errors at #1,#2
 
-test Resolve Identifier to entity [[
-  data
-  [[u]] : User {}
-  execute
-  [[u]]
+test Duplicate relation fails [[
+  entity User{}
+  entity Book{}
+  relation [[Owns]]{
+    User *
+    Book 1
+  }
+  relation [[Owns]]{
+    User.x * -> user1
+    Book.y 1 -> book1
+  }
+]] 2 errors at #1,#2
+
+test Resolve relation member to entity [[
+  entity [[User]]{}
+  entity Book{}
+  relation Owns{
+    [[User]] *
+    Book 1
+  }
 ]] resolve #2 to #1
 
-test Resolve invalid Identifier fails [[
-  data
-  u : User {}
-  execute
-  [[v]]
-]] >= 1 error at #1
+test Resolve invalid relation member fails [[
+  entity User{}
+  entity Book{}
+  relation Owns{
+    User *
+    Paper 1
+  }
+]] >= 1 error
+
+

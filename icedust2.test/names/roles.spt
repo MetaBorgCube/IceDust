@@ -15,9 +15,9 @@ test Duplicate role fails [[
     Node.x * -> [[in]]
     Node   * -> [[in]]
     
-    in.[[c]] <-> in.[[d]]
+    in.c <-> in.d
   }
-]] >= 4 errors at #1,#2, #3, #4 // also triggers errors on shortcut definitions
+]] >= 2 errors at #1,#2
 
 test Resolve role  [[
   entity Node {
@@ -49,7 +49,7 @@ test error on duplicate role [[
     
     node.[[c]] <-> node.[[d]]
   }
-]] >= 4 errors at #1,#2, #3, #4 // also triggers errors on shortcut definitions 
+]] >= 2 errors at #1, #2 
 
 test error on duplicate role by desugaring [[
   entity Node {}
@@ -57,6 +57,6 @@ test error on duplicate role by desugaring [[
     [[Node]] 1
     [[Node]] 1
     
-    node.[[c]] <-> node.[[d]]
+    node.c <-> node.d
   }
-]] >= 6 errors // always also results in duplicate inverses
+]] >= 2 errors at #1, #2

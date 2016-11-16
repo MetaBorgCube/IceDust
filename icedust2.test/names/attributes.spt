@@ -39,16 +39,6 @@ test Resolve invalid this.attribute fails [[
   }
 ]] >= 1 error at #1
 
-test (TS/1) Resolve invalid entity.attribute fails [[
-  entity Node {
-    name : String = n2.name (default)
-  }
-  data
-  n : Node {
-    name = "a"
-  }
-]] >= 1 error // 1 error
-
 test Resolve entity.invalid attribute fails [[
   entity Node {
     name : String
@@ -85,5 +75,5 @@ test (TS/1) Resolve invalid role.attribute fails [[
     Node.out * -> out
     in.a <-> out.b
   }
-]] >= 1 error // 1 error
+]] >= 1 error
 

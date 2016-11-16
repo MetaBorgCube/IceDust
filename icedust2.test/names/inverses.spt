@@ -49,6 +49,6 @@ test error on duplicate inverse by desugaring [[
     [[Node]] 1
     [[Node]] 1
     
-    node.[[c]] <-> node.[[d]]
+    node.c <-> node.d
   }
-]] >= 6 errors // always also results in duplicate inverses
+]] >= 2 errors at #1,#2 // always also results in duplicate shorcuts
