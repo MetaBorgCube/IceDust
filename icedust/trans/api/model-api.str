@@ -100,13 +100,13 @@ rules // relations
   
   is-relation = ?Relation(_, _, _, _, _, _, _, _)
   
-  relation-get-type1 = ?Relation(<id>, _, _, _, _, _, _, _)
+  relation-get-type1 = ?Relation(EntityRef(<id>), _, _, _, _, _, _, _)
   relation-get-rel1  = ?Relation(_, <id>, _, _, _, _, _, _)
   relation-get-mult1 = ?Relation(_, _, <id>, _, _, _, _, _)
   relation-get-ord1  = ?Relation(_, _, _, <id>, _, _, _, _)
   relation-get-mult2 = ?Relation(_, _, _, _, <id>, _, _, _)
   relation-get-ord2  = ?Relation(_, _, _, _, _, <id>, _, _)
-  relation-get-type2 = ?Relation(_, _, _, _, _, _, <id>, _)
+  relation-get-type2 = ?Relation(_, _, _, _, _, _, EntityRef(<id>), _)
   relation-get-rel2  = ?Relation(_, _, _, _, _, _, _, <id>) 
   
   relation-set-type1(s) = Relation(s, id, id, id, id, id, id, id)
