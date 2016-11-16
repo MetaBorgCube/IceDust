@@ -8,15 +8,27 @@ imports // constructors
 imports // functions
 
   lib/origin
+  lib/lists-tuples
 
-rules // query
+rules // entities
   
-  entity-get-type: Entity            (_,_) -> EntityType()
-  entity-get-type: FirstClassRelation(_,_) -> RelationType()
+  is-entity = ?Entity            (_,_)
+  is-entity = ?FirstClassRelation(_,_)
+  
   entity-get-name    = ?Entity            (<id>,_)
   entity-get-name    = ?FirstClassRelation(<id>,_)
   entity-get-members = ?Entity            (_, <id>)
   entity-get-members = ?FirstClassRelation(_, <id>)
+  
+  entity-set-members(|members) = entity-set-members(!members)
+  entity-set-members(members) = Entity            (id, members)
+  entity-set-members(members) = FirstClassRelation(id, members)
+
+rules // attributes
+
+  is-attr = ?Attribute(_, _, _)
+  is-attr = ?DerivationAttribute(_, _, _, _)
+  is-attr = ?DefaultAttribute(_, _, _, _)
 
   attr-get-name       = ?Attribute(<id>, _, _)
   attr-get-type       = ?Attribute(_, <id>, _)
@@ -29,76 +41,134 @@ rules // query
   attr-get-type       = ?DefaultAttribute(_, <id>, _, _)
   attr-get-mult       = ?DefaultAttribute(_, _, <id>, _)
   attr-get-derivation = ?DefaultAttribute(_, _, _, <id>)
+  
+  attr-set-mult(s) = Attribute(id, id, s)
+  attr-set-mult(s) = DerivationAttribute(id, id, s, id)
+  attr-set-mult(s) = DefaultAttribute(id, id, s, id)
+  
+  attr-has-no-mult = where(attr-get-mult;?None())
+  
+rules // roles
 
-  role-get-type           = ?Role(NaBLHelp(<id>, _), _, _, _, _)
-  role-get-type           = ?Role(<id>, _, _, _, _)
-  role-get-inv            = ?Role(_, <id>, _, _, _)
-  role-get-mult           = ?Role(_, _, <id>, _, _)
-  role-get-ord            = ?Role(_, _, _, <id>, _)
-  role-get-name           = ?Role(_, _, _, _, <id>)
-
-  shortcut-get-roles: Shortcut(NaBLHelp(RoleRef(role1),_),_,NaBLHelp(RoleRef(role2),_),_) -> (role1, role2)
-  shortcut-get-roles: Shortcut(RoleRef(role1), _, RoleRef(role2), _) -> (role1, role2)
-  shortcut-get-role1 = shortcut-get-roles;Fst
-  shortcut-get-role2 = shortcut-get-roles;Snd
-  shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
-  
-  shortcut-get-shortcuts: Shortcut(_, shortcut1, _, shortcut2) -> (shortcut1, shortcut2)
-  shortcut-get-shortcut1 = shortcut-get-shortcuts;Fst
-  shortcut-get-shortcut2 = shortcut-get-shortcuts;Snd
-
-  shortcut-get-types: Shortcut(NaBLHelp(_,type1),_,NaBLHelp(_,type2),_) -> (type1, type2)
-  shortcut-get-type1 = shortcut-get-types;Fst
-  shortcut-get-type2 = shortcut-get-types;Snd
-
-rules // properties
-  
-  is-entity = ?Entity            (_,_)
-  is-entity = ?FirstClassRelation(_,_)
-  
-  entity-is-entitytype = entity-get-type;?EntityType()
-  
-  is-attr = ?Attribute(_, _, _)
-  is-attr = ?DerivationAttribute(_, _, _, _)
-  is-attr = ?DefaultAttribute(_, _, _, _)
-  
-  attr-has-no-mult        = ?Attribute(_, _, None())
-  attr-has-no-mult        = ?DerivationAttribute(_, _, None(), _)
-  attr-has-no-mult        = ?DefaultAttribute(_, _, None(), _)
-  
   is-role = ?Role(_, _, _, _, _)
   
-  role-has-no-ord         = ?Role(_, _, _, None(), _)  
-  role-has-no-name        = ?Role(_, _, _, _, None())
-  role-has-no-inversename = ?Role(_, None(), _, _, _)
+  role-get-type = ?Role(NaBLHelp(<id>, _), _, _, _, _)
+  role-get-type = ?Role(<id>, _, _, _, _)
+  role-get-inv  = ?Role(_, <id>, _, _, _)
+  role-get-mult = ?Role(_, _, <id>, _, _)
+  role-get-ord  = ?Role(_, _, _, <id>, _)
+  role-get-name = ?Role(_, _, _, _, <id>)
+  
+  role-set-type(s) = Role(s, id, id, id, id)
+  role-set-inv (s) = Role(id, s, id, id, id)
+  role-set-mult(s) = Role(id, id, s, id, id)
+  role-set-ord (s) = Role(id, id, id, s, id)
+  role-set-name(s) = Role(id, id, id, id, s)
+  
+  role-has-no-inv  = where(role-get-inv ;?None())
+  role-has-no-mult = where(role-get-mult;?None())
+  role-has-no-ord  = where(role-get-ord ;?None())
+  role-has-no-name = where(role-get-name;?None())
+
+rules // shortcuts
   
   is-shortcut = ?Shortcut(_, _, _, _)
+
+  shortcut-get-role1     = ?Shortcut(NaBLHelp(RoleRef(<id>), _), _, _, _)
+  shortcut-get-role1     = ?Shortcut(RoleRef(<id>), _, _, _)
+  shortcut-get-type1     = ?Shortcut(NaBLHelp(_, <id>), _, _, _)
+  shortcut-get-shortcut1 = ?Shortcut(_, <id>, _, _)
+  shortcut-get-role2     = ?Shortcut(_, _, NaBLHelp(RoleRef(<id>), _), _)
+  shortcut-get-role2     = ?Shortcut(_, _, RoleRef(<id>), _)
+  shortcut-get-type2     = ?Shortcut(_, _, NaBLHelp(_, <id>), _)
+  shortcut-get-shortcut2 = ?Shortcut(_, _, _, <id>)
+  
+  shortcut-set-role1    (s) = Shortcut(s, id, id, id)
+  shortcut-set-shortcut1(s) = Shortcut(id, s, id, id)
+  shortcut-set-role2    (s) = Shortcut(id, id, s, id)
+  shortcut-set-shortcut2(s) = Shortcut(id, id, id, s)
+  
+  shortcut-has-no-shortcut1 = where(shortcut-get-shortcut1;?None())
+  shortcut-has-no-shortcut2 = where(shortcut-get-shortcut2;?None())
+  
+  shortcut-get-roles     = ttuple(shortcut-get-role1    , shortcut-get-role2    )
+  shortcut-get-shortcuts = ttuple(shortcut-get-shortcut1, shortcut-get-shortcut2)
+  
+  shortcut-get-roles-ordered = shortcut-get-roles;TupleToList;string-sort;ListToTuple
+
+rules // relations
   
   is-relation = ?Relation(_, _, _, _, _, _, _, _)
   
+  relation-get-type1 = ?Relation(<id>, _, _, _, _, _, _, _)
+  relation-get-rel1  = ?Relation(_, <id>, _, _, _, _, _, _)
+  relation-get-mult1 = ?Relation(_, _, <id>, _, _, _, _, _)
+  relation-get-ord1  = ?Relation(_, _, _, <id>, _, _, _, _)
+  relation-get-mult2 = ?Relation(_, _, _, _, <id>, _, _, _)
+  relation-get-ord2  = ?Relation(_, _, _, _, _, <id>, _, _)
+  relation-get-type2 = ?Relation(_, _, _, _, _, _, <id>, _)
+  relation-get-rel2  = ?Relation(_, _, _, _, _, _, _, <id>) 
+  
+  relation-set-type1(s) = Relation(s, id, id, id, id, id, id, id)
+  relation-set-rel1 (s) = Relation(id, s, id, id, id, id, id, id)
+  relation-set-mult1(s) = Relation(id, id, s, id, id, id, id, id)
+  relation-set-ord1 (s) = Relation(id, id, id, s, id, id, id, id)
+  relation-set-mult2(s) = Relation(id, id, id, id, s, id, id, id)
+  relation-set-ord2 (s) = Relation(id, id, id, id, id, s, id, id)
+  relation-set-type2(s) = Relation(id, id, id, id, id, id, s, id)
+  relation-set-rel2 (s) = Relation(id, id, id, id, id, id, id, s)
+  
+  relation-has-no-rel1  = where(relation-get-rel1 ;?None())
+  relation-has-no-mult1 = where(relation-get-mult1;?None())
+  relation-has-no-ord1  = where(relation-get-ord1 ;?None())
+  relation-has-no-mult2 = where(relation-get-mult2;?None())
+  relation-has-no-ord2  = where(relation-get-ord2 ;?None())
+  relation-has-no-rel2  = where(relation-get-rel2 ;?None())
+  
+rules // shortcutrel
+  
+  is-shortcutrel = ?ShortcutRelation(_, _, _, _, _, _, _, _, _)
+  
+  shortcutrel-get-type1 = ?ShortcutRelation(EntityRef(<id>), _, _, _, _, _, _, _, _)
+  shortcutrel-get-rel1  = ?ShortcutRelation(_, <id>, _, _, _, _, _, _, _)
+  shortcutrel-get-mult1 = ?ShortcutRelation(_, _, <id>, _, _, _, _, _, _)
+  shortcutrel-get-ord1  = ?ShortcutRelation(_, _, _, <id>, _, _, _, _, _)
+  shortcutrel-get-mult2 = ?ShortcutRelation(_, _, _, _, <id>, _, _, _, _)
+  shortcutrel-get-ord2  = ?ShortcutRelation(_, _, _, _, _, <id>, _, _, _)
+  shortcutrel-get-type2 = ?ShortcutRelation(_, _, _, _, _, _, EntityRef(<id>), _, _)
+  shortcutrel-get-rel2  = ?ShortcutRelation(_, _, _, _, _, _, _, <id>, _)
+  shortcutrel-get-attrs = ?ShortcutRelation(_, _, _, _, _, _, _, _, <id>) 
+  
+  shortcutrel-set-type1(s) = ShortcutRelation(s, id, id, id, id, id, id, id, id)
+  shortcutrel-set-rel1 (s) = ShortcutRelation(id, s, id, id, id, id, id, id, id)
+  shortcutrel-set-mult1(s) = ShortcutRelation(id, id, s, id, id, id, id, id, id)
+  shortcutrel-set-ord1 (s) = ShortcutRelation(id, id, id, s, id, id, id, id, id)
+  shortcutrel-set-mult2(s) = ShortcutRelation(id, id, id, id, s, id, id, id, id)
+  shortcutrel-set-ord2 (s) = ShortcutRelation(id, id, id, id, id, s, id, id, id)
+  shortcutrel-set-type2(s) = ShortcutRelation(id, id, id, id, id, id, s, id, id)
+  shortcutrel-set-rel2 (s) = ShortcutRelation(id, id, id, id, id, id, id, s, id)
+  shortcutrel-set-attrs(s) = ShortcutRelation(id, id, id, id, id, id, id, id, s)
+  
+  shortcutrel-has-no-rel1  = where(shortcutrel-get-rel1 ;?None())
+  shortcutrel-has-no-mult1 = where(shortcutrel-get-mult1;?None())
+  shortcutrel-has-no-ord1  = where(shortcutrel-get-ord1 ;?None())
+  shortcutrel-has-no-mult2 = where(shortcutrel-get-mult2;?None())
+  shortcutrel-has-no-ord2  = where(shortcutrel-get-ord2 ;?None())
+  shortcutrel-has-no-rel2  = where(shortcutrel-get-rel2 ;?None())
+
+rules // query
+  
+  entity-get-type: Entity            (_,_) -> EntityType()
+  entity-get-type: FirstClassRelation(_,_) -> RelationType()
+
+rules // properties
+  
+  entity-is-entitytype = entity-get-type;?EntityType()
+  
 rules // manipulation
-
-  entity-set-members(|members) = entity-set-members(!members)
-  
-  entity-set-members(members) = Entity            (id, members)
-  entity-set-members(members) = FirstClassRelation(id, members)
-
-  attr-set-mult(|mult)                = Attribute(id, id, !mult)
-  attr-set-mult(|mult)                = DerivationAttribute(id, id, !mult, id)
-  attr-set-mult(|mult)                = DefaultAttribute(id, id, !mult, id)
-  
-  role-set-type(|type)                = role-set-type(!type)
-  role-set-ord(|ord)                  = Role(id, id, id, !ord, id)
-  role-set-name(|name)                = Role(id, id, id, id, !name)
-  role-set-inversename(|inversename)  = Role(id, !inversename, id, id, id)
-  
-  role-set-type(type)                  = Role(type, id, id, id, id)
 
   role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
   role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
-  
-  relation-set-type1(type) = Relation(type, id, id, id, id ,id, id, id)
-  relation-set-type2(type) = Relation(id, id, id, id, id ,id, type, id)
   
   relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
   relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
