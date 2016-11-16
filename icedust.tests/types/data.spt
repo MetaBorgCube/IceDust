@@ -7,7 +7,6 @@ fixture [[
   [[...]]
 ]]
 
-
 test error on omitting required attribute [[
   model
   entity X{
@@ -56,12 +55,12 @@ test error on supplying derived attribute[[
   }
 ]] 1 error at #1
 
-test error on omitting required attribute 2[[
+test error on omitting required attribute nested [[
   model
     entity X{
       i : Int
     }
-    relation X.y <-> X.z {}
+    relation X.y <-> X.z
   data
     x : X {
       i = 5
@@ -75,6 +74,20 @@ test infer enitity instance type [[
     entity X{
       i : Int
     }
+    relation X.y <-> X.z
+  data
+    x : X {
+      i = 5
+      y =
+        [[x1]] {i=4}
+    }
+]] run name-get-type-test on #1 to "X"
+
+test infer enitity instance type 2 [[
+  model
+    entity X{
+      i : Int
+    }
     relation X.y <-> X.z {}
   data
     x : X {
@@ -83,9 +96,32 @@ test infer enitity instance type [[
         <rel { } >
         [[x1]] {i=4}
     }
-]] run get-type on #1 to "X"
+]] run name-get-type-test on #1 to "X"
 
 test infer relation instance type [[
+  model
+  
+    entity X {
+      i : Int 1
+    }
+  
+    relation XYRelation {
+      X.yRelation * -> z
+      X.zRelation * -> y
+      y.z <-> z.y
+    }
+  
+  data
+  
+    x : X {
+      i = 5
+      y = < [[rel]] { } > x1 {
+        i = 4
+      }
+    }
+]] run name-get-type-test on #1 to "XYRelation"
+
+test infer relation instance type 2 [[
   model
     entity X{
       i : Int
@@ -98,6 +134,4 @@ test infer relation instance type [[
         <[[rel]] { } >
         x1 {i=4}
     }
-]] run get-type on #1 to "XYRelation"
-
-//TODO: add testcases for relations
+]] run name-get-type-test on #1 to "XYRelation"
