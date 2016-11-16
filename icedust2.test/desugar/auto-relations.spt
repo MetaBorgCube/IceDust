@@ -1,0 +1,27 @@
+module desugar-auto-relations
+
+language icedust2
+
+fixture [[
+  module test
+  
+  model
+  
+    entity Course {}
+    
+    entity Student {}
+    
+    relation Course <-> Student
+
+  data
+    
+    alice : Student {
+    
+    }
+    
+  execute
+    3
+    [[...]]
+]]
+
+test auto relation [[alice.course]]  run get-type2 to "Course"
