@@ -37,6 +37,10 @@ rules // module
 
   modulename-get-attributenames-topo-default-derivation = modulename-get-attributenames-topo;map(filter(attributename-is-default-derivation));filter(list-not-empty)
   
+  modulename-get-arrinames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(name-is-arri)));filter(list-not-empty)
+  
+  modulename-get-arrinames-topo-default-derivation = modulename-get-arrinames-topo;map(filter(name-is-default-derived));filter(list-not-empty)
+  
   modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
   modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
   

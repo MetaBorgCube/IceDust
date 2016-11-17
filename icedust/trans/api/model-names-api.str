@@ -38,6 +38,7 @@ rules // entity
 
   entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+  entityname-get-arrinames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   
   entityname-get-modulename = nabl-name-parent
   
@@ -61,16 +62,16 @@ rules // attributes
   
   is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
   
-  attributename-is-derivation = where(get-derivation-type;?Derivation())
-  attributename-is-default    = where(get-derivation-type;?DefaultValue())
-  attributename-is-normal     = where(get-derivation-type;?Normal())
+  attributename-is-derivation = name-is-derived
+  attributename-is-default    = name-is-default
+  attributename-is-normal     = name-is-normal
   
-  attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
-  attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
+  attributename-is-normal-default     = name-is-normal-default
+  attributename-is-default-derivation = name-is-default-derived
   
   attributename-get-entityname = nabl-name-parent
   
-  attributename-get-expr = index-get-prop(|AST());Hd
+  attributename-get-expr = name-get-expr
   
   attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
   
@@ -103,9 +104,20 @@ rules // inverses
 
 rules
 
+  name-is-arri           = is-attributename <+ is-relationname <+ is-rolename <+ is-inversename
+
+  name-is-unidirectional = is-attributename
+  name-is-bidirectional  = is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname
+
+rules
+
   name-get-inversename = where(is-relationname);relationname-get-inversename
   name-get-inversename = where(is-rolename)    ;rolename-get-inversename
   name-get-inversename = where(is-inversename) ;inversename-get-rolename
+  
+  name-is-ondemand    = name-is-calconread
+  name-is-incremental = name-is-calconwrite
+  name-is-eventual    = name-is-eventuallyconsistent
   
   name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
   name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
@@ -129,6 +141,17 @@ rules
   name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
   name-get-type = get-type2
+  
+  name-is-derived = where(get-derivation-type;?Derivation())
+  name-is-default = where(get-derivation-type;?DefaultValue())
+  name-is-normal  = where(get-derivation-type;?Normal())
+  
+  name-is-normal-default     = where(name-is-normal  <+ name-is-default)
+  name-is-default-derived = where(name-is-default <+ name-is-derived)
+  
+  name-get-expr = index-get-prop(|AST());Hd
+  
+  name-has-expr = where(name-get-expr)
 
 rules // shortcuts
 
