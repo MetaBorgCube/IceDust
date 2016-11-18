@@ -3,7 +3,8 @@ module conftree
 model
 
   entity Conference {
-  
+    name     : String
+    rootName : String = rootConf.name
   }
   
   relation Conference.parentConf ? <-> Conference.subConf
@@ -34,3 +35,24 @@ model
 // relation Conference.allEditions * = rootConf.descendantConfs
 //           <-> Conference.dontcare
 //
+
+data
+
+  splash:Conference{
+    name = "SPLASH"
+    subConf = 
+      sle{
+        name = "SLE"
+        subConf = 
+          subsle{
+            name = "subSLE"
+          }
+      }
+  }
+  
+execute
+
+  sle.name
+  sle.parentConf.name
+  sle.rootName
+  subsle.rootName
