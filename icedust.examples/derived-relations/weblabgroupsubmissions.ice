@@ -3,15 +3,15 @@ module weblabgroupsubmissions
 model
 
   entity Student {
-  
+    name : String
   }
   
   entity Submission {
-    grade : Float? = groupSubmission.grade (default) // if there is a group submission, use the group submission grade
+    grade : Float? = groupSubmission.grade (default) // if there is no student-specific grade, use the group grade
   }
   
   entity Assignment {
-  
+    avgGrade : Float? = avg(submissions.grade)
   }
   
   relation Submission.assignment 1 <-> Assignment.submissions
@@ -33,9 +33,9 @@ model
 //  relation Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions // derive this
   
 // Option 1: derived value expression
-
+  
   relation Submission.groupSubmission ? = assignment.groupSubmissions.filter(x => x.group.members.filter(y => y == student).count()>=1).first()
-    <-> * GroupSubmission.individualSubmissions 
+    <-> * GroupSubmission.individualSubmissions
 
 // Option 2: datalog-style (with .notation)
 //
@@ -50,3 +50,46 @@ model
 //   assignment.groupSubmissions
 //   student.groups.members.submissions
 // }
+
+data
+
+  alice:Student{
+    name = "Alice"
+  }
+  bob:Student{
+    name = "Bob"
+  }
+  charles:Student{
+    name = "Charles"
+  }
+  
+  group:Group{
+    members = 
+      alice,
+      bob,
+      charles
+  }
+  
+  assignment:Assignment {
+    submissions =
+      submissionAlice{
+        grade = 10.0
+        student = alice
+      },
+      submissionBob{
+        student = bob
+      },
+      {
+        student = charles
+      }
+    groupSubmissions =
+      {
+        group = group
+        grade = 7.0
+      }
+  }
+  
+execute
+
+  assignment.avgGrade // should be 8.0
+  
