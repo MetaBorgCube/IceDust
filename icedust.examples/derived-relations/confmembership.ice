@@ -25,30 +25,8 @@ model
   relation Committee.conference 1 <-> Conference.comittees
   relation Committee.members <-> Person.comittees
   
-//  relation Profile.memberships <-> Committee.profiles // derive this
-  
-// Option 1: derived value expression
-//
-// relation Profile.memberships <-> Committee.profiles = members.profiles.filter(x => x.conf == this.conf)
-//
-// or
-  
   relation Profile.comittees = person.comittees.filter(x => x.conference == this.conference)
     <-> Committee.profiles
-
-// Option 2: datalog-style (with .notation)
-//
-// relation p:Profile.memberships <-> g:Committee.profiles {
-//   p = g.members.profiles
-//   p = g.conf.profiles
-// } 
-
-// Option 3: datalog-style (with .notation) restricted
-//
-// relation Profile.memberships <-> Committee.profiles {
-//   members.profiles
-//   conf.profiles
-// }
 
 data
 

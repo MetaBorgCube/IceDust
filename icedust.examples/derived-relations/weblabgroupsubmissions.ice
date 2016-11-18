@@ -30,26 +30,8 @@ model
   relation GroupSubmission.assignment 1 <-> Assignment.groupSubmissions
   relation GroupSubmission.group 1 <-> Group.submissions
   
-//  relation Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions // derive this
-  
-// Option 1: derived value expression
-  
   relation Submission.groupSubmission ? = assignment.groupSubmissions.filter(x => x.group.members.filter(y => y == student).count()>=1).first()
     <-> * GroupSubmission.individualSubmissions
-
-// Option 2: datalog-style (with .notation)
-//
-// s:Submission.groupSubmission ? <-> * g:GroupSubmission.individualSubmissions {
-//   g = s.assignment.groupSubmissions
-//   g = s.student.groups.members.submissions
-// }
-
-// Option 3: datalog-style (with .notation) restricted
-//
-// Submission.groupSubmission ? <-> * GroupSubmission.individualSubmissions {
-//   assignment.groupSubmissions
-//   student.groups.members.submissions
-// }
 
 data
 
