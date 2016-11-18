@@ -33,7 +33,7 @@ rules
 //      rolesJava*        := <entityname-get-rolenames     ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
 //      inversesJava*     := <entityname-get-inversenames  ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
       shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
-      initCachesJava*   := <entityname-get-attributenames;fmap(model-init-attributename-to-java-stms(err)        )>x_entityName
+      initCachesJava*   := <entityname-get-arrinames     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
     with
       result := type-dec |[
         class x_entityName
@@ -1101,12 +1101,12 @@ rules
 
 rules
 
-  model-init-attributename-to-java-stms(err): x_attributeName -> result
+  model-init-name-to-java-stms(err): x_attributeName -> result
     with
       x_entityName                := <attributename-get-entityname>x_attributeName;
       x_flagDirty                 := <name-flagdirty>x_attributeName
     with
-      if attributename-is-default-derivation; name-is-calconwrite then
+      if name-is-default-derived; name-is-calconwrite then
         result := bstm* |[
           x_entityName.x_flagDirty(this);
         ]|
