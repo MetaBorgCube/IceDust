@@ -274,8 +274,6 @@ binding rules // references
   Ref(x) :
     refers to Var x
   otherwise
-    refers to EntityInstance x
-  otherwise
     refers to Attribute x  in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
@@ -295,6 +293,8 @@ binding rules // references
     refers to Shortcut x in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
+  otherwise
+    refers to EntityInstance x
 
   MemberAccess(exp, a) :
     refers to Attribute a in Entity e-ty
