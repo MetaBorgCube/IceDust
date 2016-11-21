@@ -58,4 +58,4 @@ data
 execute
 
   assignment.countingSubs.name
-  assignment.avgGrade
+  assignment.avgGrade // should be 9.0 as bob does not count
