@@ -62,11 +62,10 @@ rules
       x_cache            := <name-cache>x_name;
       x_updateCache      := <name-update-cache>x_name;
       x_dirty            := <name-dirty>x_name;
-      x_getAndEmptyDirty := <name-getandemptydirty>x_name;
       x_updateAllCache   := <name-updateallcache>x_name;
       x_hasDirty         := <name-hasdirty>x_name;
       x_flagDirty        := <name-flagdirty>x_name;
-      x_dirtyFlagFlowsto := <name-dirtyflagflowsto>x_name;
+      x_dirtyFlagFlows   := <name-dirtyflagflowsto>x_name;
       x_setIncr          := <name-set-incremental>x_name;
       x_addIncr          := <name-add-incremental>x_name;
       x_removeIncr       := <name-remove-incremental>x_name;
@@ -96,57 +95,21 @@ rules
       if name-is-calconwrite then
         flowsto-stms* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-java-stm(err))>x_name
       end
-    with // Static getter layer
-      switch id
-        case name-is-to-one:
-          result-getStatic* := class-body-dec* |[
-            public static x_type x_get(x_entityName en)
-            { 
-              return en == null ? null : en.x_get();
-            }
-          
-            public static Collection<x_type> x_get(Collection<x_entityName> ens)
-            { 
-              Collection<x_type> result = Expressions.emptyCollection();
-              for(x_entityName en : ens)
-              { 
-                if(en.x_get() != null)
-                  result.add(en.x_get());
-              }
-              return result;
-            }
-          ]|
-        case name-is-to-many:
-          result-getStatic* := class-body-dec* |[
-            public static Collection<x_type> x_get(x_entityName en)
-            { 
-              Collection<x_type> empty = Expressions.emptyCollection();
-              return en == null ? empty : en.x_get();
-            }
-          
-            public static Collection<x_type> x_get(Collection<x_entityName> ens)
-            { 
-              Collection<x_type> result = Expressions.emptyCollection();
-              for(x_entityName en : ens)
-              { 
-                result.addAll(en.x_get());
-              }
-              return result;
-            }
-          ]|
-        otherwise:
-          result-getStatic* := []
-      end
     with // Recalculate layer
       switch id
         case name-is-incremental; name-is-default-derived:
           result-updateCache* := class-body-dec* |[
-            public void x_updateCache()
+            protected void x_updateCache()
             {
               x_setCache(x_calculate());
             }
-            protected static void x_updateAllCache(){
-              Collection<x_entityName> ens = x_getAndEmptyDirty();
+            public static boolean x_hasDirty()
+            {
+              return !x_dirty.isEmpty();
+            }
+            public static void x_updateAllCache(){
+              Collection<x_entityName> ens = x_dirty;
+              x_dirty = new HashSet<x_entityName>();
               for(x_entityName en : ens){
                 en.x_updateCache();
               }
@@ -155,7 +118,7 @@ rules
         otherwise:
           result-updateCache* := []
       end
-    with // Set public layer
+    with // Setter, maintain bidirectional Layer (1/2)
       switch id
         case name-is-unidirectional; name-is-to-one; name-is-normal-default:
           result-set* := class-body-dec* |[
@@ -194,41 +157,23 @@ rules
               this.x_setIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-normal-default:
+        case name-is-bidirectional; name-is-to-many; name-is-normal-default:
           result-set* := class-body-dec* |[
-            public void x_add(x_type en)
+            public void x_set(Collection<x_type> en)
             { 
-              if(en != null){
-                x_inverseType v = en.x_inverseName;
-                if(v != null){
-                  v.x_removeIncr(en);
-                }
-                en.x_inverseSetIncr(this);
-                this.x_addIncr(en);
+              Collection<x_type> toAdd = new HashSet<x_type>();
+              toAdd.addAll(en);
+              toAdd.removeAll(x_name);
+              for(x_type n : toAdd)
+              { 
+                x_add(n);
               }
-            }
-            public void x_remove(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseSetIncr(null);
-                this.x_removeIncr(en);
-              }
-            }
-          ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-normal-default:
-          result-set* := class-body-dec* |[
-            public void x_add(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseAddIncr(this);
-                this.x_addIncr(en);
-              }
-            }
-            public void x_remove(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseRemoveIncr(this);
-                this.x_removeIncr(en);
+              Collection<x_type> toRemove = new HashSet<x_type>();
+              toRemove.addAll(x_name);
+              toRemove.removeAll(en);
+              for(x_type n : toRemove)
+              { 
+                x_remove(n);
               }
             }
           ]|
@@ -274,61 +219,9 @@ rules
               this.x_setCacheIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-default-derived ;name-is-incremental:
+        case name-is-bidirectional; name-is-to-many; name-is-default-derived ;name-is-incremental:
           result-setCache* := class-body-dec* |[
-            public void x_addCache(x_type en)
-            { 
-              if(en != null){
-                x_inverseType v = en.x_inverseCache;
-                if(v != null){
-                  v.x_removeCacheIncr(en);
-                }
-                en.x_inverseSetCacheIncr(this);
-                this.x_addCacheIncr(en);
-              }
-            }
-            public void x_removeCache(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseSetCacheIncr(null);
-                this.x_removeCacheIncr(en);
-              }
-            }
-            public void x_setCache(Collection<x_type> en) //TODO: remove duplicated code
-            { 
-              Collection<x_type> toAdd = new HashSet<x_type>();
-              toAdd.addAll(en);
-              toAdd.removeAll(x_cache);
-              for(x_type n : toAdd)
-              { 
-                x_addCache(n);
-              }
-              Collection<x_type> toRemove = new HashSet<x_type>();
-              toRemove.addAll(x_cache);
-              toRemove.removeAll(en);
-              for(x_type n : toRemove)
-              { 
-                x_removeCache(n);
-              }
-            }
-          ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-default-derived ;name-is-incremental:
-          result-setCache* := class-body-dec* |[
-            public void x_addCache(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseAddCacheIncr(this);
-                this.x_addCacheIncr(en);
-              }
-            }
-            public void x_removeCache(x_type en)
-            { 
-              if(en != null){
-                en.x_inverseRemoveCacheIncr(this);
-                this.x_removeCacheIncr(en);
-              }
-            }
-            public void x_setCache(Collection<x_type> en) //TODO: remove duplicated code
+            public void x_setCache(Collection<x_type> en)
             { 
               Collection<x_type> toAdd = new HashSet<x_type>();
               toAdd.addAll(en);
@@ -349,9 +242,102 @@ rules
         otherwise:
           result-setCache* := []
       end
-    with // Set Incremental layer
+    with // Setter, maintain bidirectional Layer (2/2)
       switch id
-        case name-is-normal-default; name-is-to-one:
+         case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-normal-default:
+          result-set2* := class-body-dec* |[
+            public void x_add(x_type en)
+            { 
+              if(en != null){
+                x_inverseType v = en.x_inverseName;
+                if(v != null){
+                  v.x_removeIncr(en);
+                }
+                en.x_inverseSetIncr(this);
+                this.x_addIncr(en);
+              }
+            }
+            public void x_remove(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseSetIncr(null);
+                this.x_removeIncr(en);
+              }
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-normal-default:
+          result-set2* := class-body-dec* |[
+            public void x_add(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseAddIncr(this);
+                this.x_addIncr(en);
+              }
+            }
+            public void x_remove(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseRemoveIncr(this);
+                this.x_removeIncr(en);
+              }
+            }
+          ]|
+        otherwise:
+          result-set2* := []
+      end
+    with
+      switch id
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-default-derived ;name-is-incremental:
+          result-setCache2* := class-body-dec* |[
+            public void x_addCache(x_type en)
+            { 
+              if(en != null){
+                x_inverseType v = en.x_inverseCache;
+                if(v != null){
+                  v.x_removeCacheIncr(en);
+                }
+                en.x_inverseSetCacheIncr(this);
+                this.x_addCacheIncr(en);
+              }
+            }
+            public void x_removeCache(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseSetCacheIncr(null);
+                this.x_removeCacheIncr(en);
+              }
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-default-derived ;name-is-incremental:
+          result-setCache2* := class-body-dec* |[
+            public void x_addCache(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseAddCacheIncr(this);
+                this.x_addCacheIncr(en);
+              }
+            }
+            public void x_removeCache(x_type en)
+            { 
+              if(en != null){
+                en.x_inverseRemoveCacheIncr(this);
+                this.x_removeCacheIncr(en);
+              }
+            }
+          ]|
+        otherwise:
+          result-setCache2* := []
+      end
+    with // Set, maintain incremental Layer
+      switch id
+        case name-is-normal-default; name-is-to-one; name-is-ondemand:
+          result-setIncremental* := class-body-dec* |[
+            protected void x_setIncr(x_type en)
+            { 
+              this.x_name = en;
+            }
+          ]|
+        case name-is-normal-default; name-is-to-one; name-is-incremental:
           result-setIncremental* := class-body-dec* |[
             protected void x_setIncr(x_type en)
             { 
@@ -360,12 +346,23 @@ rules
                 this.x_name = en;
                 x_type newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto();
+                  x_dirtyFlagFlows();
                 }
               }
             }
-          ]| 
-        case name-is-normal-default; name-is-to-many:
+          ]|
+        case name-is-normal-default; name-is-to-many; name-is-ondemand:
+          result-setIncremental* := class-body-dec* |[
+            protected void x_addIncr(x_type en)
+            { 
+              this.x_name.add(en);
+            }
+            protected void x_removeIncr(x_type en)
+            { 
+              this.x_name.remove(en);
+            }
+          ]|
+        case name-is-normal-default; name-is-to-many; name-is-incremental:
           result-setIncremental* := class-body-dec* |[
             protected void x_addIncr(x_type en)
             { 
@@ -374,7 +371,7 @@ rules
                 this.x_name.add(en);
                 Collection<x_type> newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto(); //TODO: does this dirty flag too much?
+                  x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
             }
@@ -385,11 +382,11 @@ rules
                 this.x_name.remove(en);
                 Collection<x_type> newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto(); //TODO: does this dirty flag too much?
+                  x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
             }
-          ]| 
+          ]|
         otherwise:
           result-setIncremental* := []
       end
@@ -404,7 +401,7 @@ rules
                 this.x_cache = en;
                 x_type newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto();
+                  x_dirtyFlagFlows();
                 }
               }
             }
@@ -418,7 +415,7 @@ rules
                 this.x_cache.add(en);
                 Collection<x_type> newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto(); //TODO: does this dirty flag too much?
+                  x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
             }
@@ -429,7 +426,7 @@ rules
                 this.x_cache.remove(en);
                 Collection<x_type> newValue = this.x_get();
                 if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
-                  x_dirtyFlagFlowsto(); //TODO: does this dirty flag too much?
+                  x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
             }
@@ -437,24 +434,48 @@ rules
         otherwise:
           result-setCacheIncr* := []
       end
-    with // Recalculate flagger layer
+    with // Getter, many valued Layer
       switch id
-        case name-is-incremental:
-          result-dirtyFlagFlowsto* := class-body-dec* |[
-            public void x_dirtyFlagFlowsto()
-            {
-              ~flowsto-stms*
+        case name-is-to-one:
+          result-getStatic* := class-body-dec* |[
+            public static x_type x_get(x_entityName en)
+            { 
+              return en == null ? null : en.x_get();
+            }
+          
+            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            { 
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_entityName en : ens)
+              { 
+                if(en.x_get() != null)
+                  result.add(en.x_get());
+              }
+              return result;
+            }
+          ]|
+        case name-is-to-many:
+          result-getStatic* := class-body-dec* |[
+            public static Collection<x_type> x_get(x_entityName en)
+            { 
+              Collection<x_type> empty = Expressions.emptyCollection();
+              return en == null ? empty : en.x_get();
+            }
+          
+            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            { 
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_entityName en : ens)
+              { 
+                result.addAll(en.x_get());
+              }
+              return result;
             }
           ]|
         otherwise:
-          result-dirtyFlagFlowsto* := class-body-dec* |[
-            public void x_dirtyFlagFlowsto()
-            {
-              // do nothing
-            }
-          ]|
+          result-getStatic* := []
       end
-    with // Getter layer
+    with // Getter, derivation type Layer
       switch id
         case name-is-normal:
           result-get* := class-body-dec* |[
@@ -482,27 +503,7 @@ rules
         otherwise:
           result-get* := []
         end
-    with // Getter, calculated value layer
-      switch id
-        case name-is-default-derived; name-has-expr:
-          result-calculate* := class-body-dec* |[
-            private ~type:multType x_calculate()
-            { 
-              ~calculate-stms*
-              return ~calculate-exp;
-            }
-          ]|
-        case name-is-default-derived; not(name-has-expr):
-          result-calculate* := class-body-dec* |[
-            private ~type:multType x_calculate()
-            { 
-              throw new UnsupportedOperationException("Cannot read inverse derived value with on-demand calculation strategy.");
-            }
-          ]|
-        otherwise:
-          result-calculate* := []
-        end
-    with
+    with // Getter, calculated value Layer
       switch id
         case name-is-default-derived; name-is-ondemand:
           result-getCalculated* := class-body-dec* |[
@@ -521,6 +522,56 @@ rules
         otherwise:
           result-getCalculated* := []
         end
+    with // Expressions + Dataflows Layer
+      switch id
+        case name-is-default-derived; name-has-expr:
+          result-calculate* := class-body-dec* |[
+            private ~type:multType x_calculate()
+            { 
+              ~calculate-stms*
+              return ~calculate-exp;
+            }
+          ]|
+        case name-is-default-derived; not(name-has-expr):
+          result-calculate* := class-body-dec* |[
+            private ~type:multType x_calculate()
+            { 
+              throw new UnsupportedOperationException("Cannot read inverse derived value with on-demand calculation strategy.");
+            }
+          ]|
+        otherwise:
+          result-calculate* := []
+      end
+    with
+      switch id
+        case name-is-incremental:
+          result-dirtyFlagFlows* := class-body-dec* |[
+            public void x_dirtyFlagFlows()
+            {
+              ~flowsto-stms*
+            }
+          ]|
+        otherwise:
+          result-dirtyFlagFlows* := []
+      end
+    with
+      switch id
+        case name-is-incremental; name-is-default-derived:
+          result-flagDirty* := class-body-dec* |[
+            protected static void x_flagDirty(x_entityName en)
+            {
+              if(en != null)
+                x_dirty.add(en);
+            }
+            
+            protected static void x_flagDirty(Collection<x_entityName> ens)
+            {
+              x_dirty.addAll(ens);
+            }
+          ]|
+        otherwise :
+          result-flagDirty* := []
+      end
     with // Data Structure Layer
       switch id
         case name-is-normal-default; name-is-to-one:
@@ -552,45 +603,25 @@ rules
         case name-is-incremental; name-is-default-derived:
           result-dirtyFlags* := class-body-dec* |[
             private static Collection<x_entityName> x_dirty = new HashSet<x_entityName>();
-            
-            public static void x_flagDirty(x_entityName en)
-            {
-              if(en != null)
-                x_dirty.add(en);
-            }
-            
-            public static void x_flagDirty(Collection<x_entityName> ens)
-            {
-              x_dirty.addAll(ens);
-            }
-            
-            public static boolean x_hasDirty()
-            {
-              return !x_dirty.isEmpty();
-            }
-            
-            public static Collection<x_entityName> x_getAndEmptyDirty()
-            {
-              Collection<x_entityName> values = x_dirty;
-              x_dirty = new HashSet<x_entityName>();
-              return values;
-            }
           ]|
         otherwise :
           result-dirtyFlags* := []
       end
     with
       result := class-body-dec* |[
-        ~result-getStatic*
         ~result-updateCache*
         ~result-set*
         ~result-setCache*
+        ~result-set2*
+        ~result-setCache2*
         ~result-setIncremental*
         ~result-setCacheIncr*
-        ~result-dirtyFlagFlowsto*
+        ~result-getStatic*
         ~result-get*
-        ~result-calculate*
         ~result-getCalculated*
+        ~result-calculate*
+        ~result-dirtyFlagFlows*
+        ~result-flagDirty*
         ~result-userField*
         ~result-cacheField*
         ~result-dirtyFlags*
