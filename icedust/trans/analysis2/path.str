@@ -7,7 +7,9 @@ imports // constructors
 
 imports // functions
 
+  api/expressions-names-api
   api/model-names-api
+  lib/eq
   lib/index
   lib/string
   lib/traverse
@@ -22,7 +24,7 @@ signature constructors
 rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expressions
 
   expr-pathexprs: e@This()    -> ([e], [])
-  expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
+  expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname+is-varname)
   expr-pathexprs: e@Ref(name) -> ([e], [])
   
   expr-pathexprs: e@MemberAccess(expr, name) -> ([],  [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname)
@@ -36,10 +38,26 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       (p1*, q1*) := <expr-pathexprs>e1;
       (p2*, q2*) := <expr-pathexprs>e2;
       (p3*, q3*) := <expr-pathexprs>e3
+      
+  expr-pathexprs: e@Filter(e1, x, e2) -> ([p1*,p2'*], [q1*,q2'*])
+    with
+      (p1*, q1*) := <expr-pathexprs>e1;
+      (p2*, q2*) := <expr-pathexprs>e2;
+      p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
+      q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 
 rules
+  
+  pathexpr-replace(|name, expr*) = ?expr2;!expr*;where(is-list);map(pathexpr-replace-internal(|name, expr2))
+  
+  pathexpr-replace-internal(|name, expr2) = ?expr;!expr2;pathexpr-replace(|name, expr)
+
+  pathexpr-replace(|name, expr):   Ref(name2)         -> expr where <eq-no-anno(|name)>name2
+  pathexpr-replace(|name, expr): e@Ref(_)             -> e
+  pathexpr-replace(|name, expr):   MemberAccess(e, n) -> MemberAccess(<pathexpr-replace(|name, expr)>e, n)
+  pathexpr-replace(|name, expr):   This()             -> This()
   
   pathexpr-extend(|name): expr -> MemberAccess(expr, name)
   
