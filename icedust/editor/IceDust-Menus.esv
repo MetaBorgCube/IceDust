@@ -30,7 +30,9 @@ menus
     end
 
   menu: "Analysis" 
-    action: "5) Topological Sorting"       = debug-toposort
+    action: "5) Depends On"                = debug-dependson (openeditor)
+    action: "6) Flows To"                  = debug-flowsto (openeditor)
+    action: "7) Topological Sorting"       = debug-toposort (openeditor)
     action: "Properties (Selection)"       = debug-properties (openeditor)
     submenu: "Index" (openeditor) 
       action: "File"                       = debug-index-selection-partition
