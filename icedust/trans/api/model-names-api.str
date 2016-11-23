@@ -85,7 +85,8 @@ rules // relations
   
   relationname-get-inversename = get-inverse
   
-  relationname-is-left = where(get-side;?Left())
+  relationname-is-left  = where(get-side;?Left())
+  relationname-is-right = where(get-side;?Right())
   
   relationname-is-derivation = where(get-derivation-type;?Derivation())
   relationname-is-normal     = where(get-derivation-type;?Normal())
@@ -119,13 +120,16 @@ rules
   name-is-incremental = name-is-calconwrite
   name-is-eventual    = name-is-eventuallyconsistent
   
+  name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
+  
   name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
   name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
   name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   
-  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
+  name-is-left  = where(is-rolename    <+ is-relationname;relationname-is-left)
+  name-is-right = where(is-inversename <+ is-relationname;relationname-is-right)
   
   name-is-one                = where(get-multiplicity;lower-one;upper-one)
   name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
