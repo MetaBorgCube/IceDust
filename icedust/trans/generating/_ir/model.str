@@ -40,6 +40,8 @@ rules // generic names
   name-set-cache-trigger:  name -> $[set[<name-cache;ucfirst>name]]
   name-add-trigger:        name -> $[addTo[<ucfirst>name]]
   name-remove-trigger:     name -> $[removeFrom[<ucfirst>name]]
+  name-add-cache-trigger:  name -> $[addTo[<name-cache;ucfirst>name]]
+  name-remove-cache-trigger:name -> $[removeFrom[<name-cache;ucfirst>name]]
   name-manage:             name -> $[manage[<ucfirst>name]]
   name-create:             name -> $[create[<ucfirst>name]]
   name-remove:             name -> $[remove[<ucfirst>name]]

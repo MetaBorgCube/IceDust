@@ -4,10 +4,12 @@ imports // constructors
 
   api/constructors
   desugaring/constructors
+  tiersplit/constructors
   webdsl/WebDSL
   signatures/Model-sig
   signatures/Modules-sig
   signatures/Expressions-sig
+  signatures/Types-sig
 
 imports // functions
 
@@ -23,6 +25,7 @@ imports // functions
   names/naming/names
   naming/_notNaBL
   tiersplit/intra-object
+  lib/traverse
 
 rules // entities
 
@@ -72,15 +75,20 @@ rules
       srt_type           := <get-type2;type-to-webdsl-srt(err)>x_name;
       srt_multType       := <name-to-webdsl-srt(err)>x_name;
       e_name             := String(x_name);
+      e_qualifiedName    := String($[[x_entityName].[x_name]]);
+      e_entityName       := String(x_entityName);
       x_get              := <name-get>x_name;
       x_set              := <name-set>x_name;
       x_add              := <name-add>x_name;
       x_remove           := <name-remove>x_name;
+      x_addTo            := <name-add-trigger>x_name;
+      x_removeFrom       := <name-remove-trigger>x_name;
       x_calculate        := <name-calculate>x_name;
       x_getCalculated    := <name-getCalculated>x_name;
       x_cache            := <name-cache>x_name;
       x_updateCache      := <name-update-cache>x_name;
       x_dirty            := <name-dirty>x_name;
+      x_qualifiedDirty   := <attributename-entityname-dirty>x_name;
       x_updateAllCache   := <name-updateallcache>x_name;
       x_hasDirty         := <name-hasdirty>x_name;
       x_flagDirty        := <name-flagdirty>x_name;
@@ -93,7 +101,14 @@ rules
       x_removeCacheIncr  := <name-remove-cache-incr>x_name;
       x_setCache         := <name-set-cache>x_name;
       x_addCache         := <name-add-cache>x_name;
-      x_removeCache      := <name-remove-cache>x_name
+      x_removeCache      := <name-remove-cache>x_name;
+      x_addToCache       := <name-add-cache-trigger>x_name;
+      x_removeFromCache  := <name-remove-cache-trigger>x_name;
+      x_getQueue         := <attributename-entityname-getqueue>x_name;
+      x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
+      x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
+      x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
+      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name
     with
       if name-is-bidirectional then
         x_inverseName            := <name-get-inversename>x_name;
@@ -114,6 +129,127 @@ rules
     with
       if name-is-incremental-eventual then
         stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_name
+      end
+    with // Partial evaluation variables (Expressions + Data Layer?)
+      switch id
+        case attributename-is-explorerui ;attributename-is-default-derivation:
+          ebd_calculateTiersplitVar* := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_name
+        otherwise:
+          ebd_calculateTiersplitVar* := []
+      end
+    with // Recalculate cache Layer
+      switch id
+        case name-is-incremental-eventual; name-is-default-derived:
+          ebd_updateCache* := ebd* |[
+            function x_updateCache(){
+              x_cache := x_calculate();
+            }
+            
+            static function x_updateAllCache () { //TODO: not generate if eventual
+              var entities := x_qualifiedDirty;
+              x_qualifiedDirty := Set<x_entityName>();
+              if(entities.length != 0){
+                log("Updating " + e_qualifiedName + ": " + entities.length);
+              }
+              for(en in entities){
+                en.x_updateCache();
+              }
+            }
+      
+            static function x_hasDirty () : Bool { //TODO: not generate if eventual
+              return x_qualifiedDirty.length!=0;
+            }
+          ]|
+        otherwise:
+          ebd_updateCache* := []
+      end
+    with
+      switch id // TODO: add async to documentation
+        case name-is-default-derived; name-is-eventual:
+          ebd_flagDirtyAsync* := ebd* |[
+            static function x_flagDirtyAsync() {
+              var dirtyValues := x_qualifiedDirty;
+              x_qualifiedDirty := Set<x_entityName>();
+              DirtyCollections.x_getQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
+            }
+  
+            static function x_receiveOneDirtyAsync() : x_entityName {
+              var queue := DirtyCollections.x_getQueue();
+              if(!queue.isEmpty()){
+                var v : x_entityName := loadEntity(e_entityName, UUIDFromString(queue.poll() as String)) as x_entityName;
+                return v;
+              }
+              return null;
+            }
+            
+            static function x_updateAllCacheAsync () {
+              while( x_entityName.x_hasDirtyAsync() ){
+                var en := x_entityName.x_receiveOneDirtyAsync();
+                en.x_updateCache();
+                log("Updating " + e_qualifiedName);
+                commitAndStartNewTransaction();
+              }
+            }
+      
+            static function x_hasDirtyAsync () : Bool {
+              var queue := DirtyCollections.x_getQueue();
+              return !queue.isEmpty();
+            }
+          ]|
+        otherwise:
+          ebd_flagDirtyAsync* := []
+      end
+    with // Set, maintain incremental Layer
+      switch id
+        case name-is-normal-default; name-is-to-one; name-is-incremental-eventual:
+          ebd_setIncremental* := ebd* |[
+            extend function x_set(newValue : srt_type){
+              if(x_get() != newValue){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        case name-is-normal-default; name-is-to-many; name-is-incremental-eventual:
+          ebd_setIncremental* := ebd* |[
+            extend function x_addTo(en : srt_type){
+              if(en != null){
+                x_dirtyFlagFlows();
+              }
+            }
+            extend function x_removeFrom(en : srt_type){
+              if(en != null){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        otherwise:
+          ebd_setIncremental* := []
+      end
+    with
+      switch id
+        case name-is-default-derived; name-is-to-one; name-is-incremental-eventual:
+          ebd_setCacheIncr* := ebd* |[
+            extend function x_setCache(newValue : srt_type){
+              if(x_get() != newValue){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        case name-is-default-derived; name-is-to-many; name-is-incremental-eventual:
+          ebd_setCacheIncr* := ebd* |[
+            extend function x_addToCache(en : srt_type){
+              if(en != null){
+                x_dirtyFlagFlows();
+              }
+            }
+            extend function x_removeFromCache(en : srt_type){
+              if(en != null){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        otherwise:
+          ebd_setCacheIncr* := []
       end
     with // Getter, many valued Layer
       switch id
@@ -145,10 +281,16 @@ rules
       end
     with // Getter, derivation type Layer
       switch id
-        case name-is-normal:
+        case name-is-normal; name-is-to-one:
           ebd_get* := ebd* |[
             function x_get() : srt_multType {
               return this.x_name;
+            }
+          ]|
+        case name-is-normal; name-is-to-many: //TODO: get rid of this special case
+          ebd_get* := ebd* |[
+            function x_get() : srt_multType {
+              return [en | en : srt_type in this.x_name]; // list comprehension to convert set or list to list
             }
           ]|
         case name-is-default:
@@ -208,6 +350,23 @@ rules
           ]|
         otherwise:
           ebd_dirtyFlagFlows* := []
+      end
+    with
+      switch id
+        case name-is-incremental-eventual; name-is-default-derived:
+          ebd_flagDirty* := ebd* |[
+            static function x_flagDirty(en : x_entityName) {
+              if(en != null){
+                x_qualifiedDirty.add(en);
+              }
+            }
+            
+            static function x_flagDirty(ens : [x_entityName]) {
+              x_qualifiedDirty.addAll(ens);
+            }
+          ]|
+        otherwise:
+          ebd_flagDirty* := []
       end
     with // Data Structure Layer
       switch id
@@ -277,11 +436,17 @@ rules
       end
     with
       result := ebd* |[
+        ebd_updateCache*
+        ebd_flagDirtyAsync*
+        ebd_setIncremental*
+        ebd_setCacheIncr*
         ebd_getStatic*
         ebd_get*
         ebd_getCalculated*
+        ebd_calculateTiersplitVar*
         ebd_calculate*
         ebd_dirtyFlagFlows*
+        ebd_flagDirty*
         ebd_field*
         ebd_cacheField*
       ]|

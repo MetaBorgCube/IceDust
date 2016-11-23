@@ -40,9 +40,14 @@ rules // types of expressions and names (uses type and multiplicity)
             srt1
           ]|
         case name-is-to-many:
+//        case name-is-to-many-ordered:
           result := webdsl |[ //webdsl srt
             [srt1]
           ]|
+//        case name-is-to-many-unordered:
+//          result := webdsl |[ //webdsl srt
+//            {srt1}
+//          ]|
       end
 
 rules // pritives as strings (not literal string in target language)
