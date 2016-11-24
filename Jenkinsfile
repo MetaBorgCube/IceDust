@@ -1,4 +1,5 @@
 properties([
+  buildDiscarder(logRotator(artifactNumToKeepStr: '3')),
   disableConcurrentBuilds()
 ])
 
