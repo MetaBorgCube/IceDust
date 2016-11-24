@@ -34,6 +34,8 @@ rules // module
   
   modulename-get-arrinames = modulename-get-entitynames;fmap(entityname-get-arrinames)
   
+  modulename-get-arrinames-default-derived = modulename-get-arrinames;filter(name-is-default-derived)
+  
   // string -> [[string]]
   modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 

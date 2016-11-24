@@ -26,6 +26,9 @@ rules // WebDSL specific: no generics, explicit casts
 
   webdsl-lib-call-cast = ?Merge(_, _)
   webdsl-lib-call-cast = ?ChoiceLeft(_, _)
+  
+  webdsl-lib-call-cast = ?First(_)
+  webdsl-lib-call-cast = ?ElemAt(_,_)
 
 rules // lib expression calls
   

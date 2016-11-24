@@ -132,20 +132,33 @@ rules
       end
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
-        case attributename-is-explorerui ;attributename-is-default-derivation:
+        case name-has-expr; attributename-is-explorerui:
           ebd_calculateTiersplitVar* := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_name
         otherwise:
           ebd_calculateTiersplitVar* := []
       end
     with // Recalculate cache Layer
       switch id
-        case name-is-incremental-eventual; name-is-default-derived:
+        case name-is-incremental-eventual; name-is-default-derived; name-is-ordered:
           ebd_updateCache* := ebd* |[
             function x_updateCache(){
               x_cache := x_calculate();
             }
-            
-            static function x_updateAllCache () { //TODO: not generate if eventual
+          ]|
+        case name-is-incremental-eventual; name-is-default-derived; name-is-unordered: //TODO: get rid of this special case
+          ebd_updateCache* := ebd* |[
+            function x_updateCache(){
+              x_cache := x_calculate().set(); // convert to set
+            }
+          ]|
+        otherwise:
+          ebd_updateCache* := []
+      end
+    with
+      switch id
+        case name-is-incremental; name-is-default-derived:
+          ebd_updateAllCache* := ebd* |[
+            static function x_updateAllCache () {
               var entities := x_qualifiedDirty;
               x_qualifiedDirty := Set<x_entityName>();
               if(entities.length != 0){
@@ -156,12 +169,12 @@ rules
               }
             }
       
-            static function x_hasDirty () : Bool { //TODO: not generate if eventual
+            static function x_hasDirty () : Bool {
               return x_qualifiedDirty.length!=0;
             }
           ]|
         otherwise:
-          ebd_updateCache* := []
+          ebd_updateAllCache* := []
       end
     with
       switch id // TODO: add async to documentation
@@ -315,13 +328,19 @@ rules
             function x_getCalculated() : srt_multType {
               return x_calculate();
             }
-          ]|       
-        case name-is-default-derived; name-is-incremental-eventual:
+          ]|
+        case name-is-default-derived; name-is-incremental-eventual; name-is-to-one:
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               return x_cache;
             }
-          ]|  
+          ]|
+        case name-is-default-derived; name-is-incremental-eventual; name-is-to-many: //TODO: get rid of this special case
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
+            }
+          ]|
         otherwise:
           ebd_getCalculated* := []
       end
@@ -411,15 +430,15 @@ rules
       switch id
         case name-is-left; name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
           ebd_cacheField* := ebd* |[
-            x_cache : srt_type (inverse=x_inverseEntityName.x_inverseName)
+            x_cache : srt_type (inverse=x_inverseEntityName.x_inverseCache)
           ]|
         case name-is-left; name-is-to-many-ordered; name-is-default-derived; name-is-incremental-eventual:
           ebd_cacheField* := ebd* |[
-            x_cache : [srt_type] (inverse=x_inverseEntityName.x_inverseName)
+            x_cache : [srt_type] (inverse=x_inverseEntityName.x_inverseCache)
           ]|
         case name-is-left; name-is-to-many-unordered; name-is-default-derived; name-is-incremental-eventual:
           ebd_cacheField* := ebd* |[
-            x_cache : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
+            x_cache : {srt_type} (inverse=x_inverseEntityName.x_inverseCache)
           ]|
         case (name-is-right + is-attributename); name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
           ebd_cacheField* := ebd* |[
@@ -439,6 +458,7 @@ rules
     with
       result := ebd* |[
         ebd_updateCache*
+        ebd_updateAllCache*
         ebd_flagDirtyAsync*
         ebd_setIncremental*
         ebd_setCacheIncr*

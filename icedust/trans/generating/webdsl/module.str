@@ -38,13 +38,13 @@ rules // module
       end
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
+        def_dirtyReqVar* := <modulename-get-arrinames-default-derived;map(attributename-to-webdsl-def)>x_moduleName;
         stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
       end
     with
       if modulename-is-eventuallyconsistent then
-        stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
-        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName;
+        stat_flagasync*    := <modulename-get-arrinames-default-derived;map(attributename-to-webdsl-stat)>x_moduleName;
+        native1*           := <modulename-get-arrinames-default-derived;map(attributename-to-webdsl-native)>x_moduleName;
         stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
       end
     with
