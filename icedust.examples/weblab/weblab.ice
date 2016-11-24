@@ -95,30 +95,114 @@ model
     best       : Boolean = grade == max(assignment.submissions.grade) <+ false
   }
   
-  relation Assignment.parent     ? <-> * Assignment.children
-  relation Submission.parent     ? <-> * Submission.children
+  relation Assignment.parent     ? (ordered) <-> * (ordered) Assignment.children
   relation Submission.student    1 <-> * Student.submissions
   relation Submission.assignment 1 <-> * Assignment.submissions
   
   relation Course.assignment     1 <-> ? Assignment.course
   relation Enrollment.submission 1 <-> ? Submission.enrollment
+     
+  relation Submission.children * (ordered) = assignment.children.submissions.filter(x => x.student == student)
+     <-> ? (ordered) Submission.parent
+
+  relation Assignment.next ? = parent.children.elemAt(parent.children.indexOf(this) + 1)
+     <-> ? Assignment.previous
+     
+  relation Submission.next ? = parent.children.elemAt(parent.children.indexOf(this) + 1)
+     <-> ? Submission.previous
 
 data
 
   alice : Student {
     name = "Alice"
+    submissions =
+      mathAlice {
+        assignment = mathAssignment
+      },
+      examAlice {
+        assignment = exam
+        answer = "Good"
+        baseGrade = 7.0
+      },
+      practicalAlice {
+        assignment = practical
+        answer = "Great"
+        baseGrade = 8.0
+        date = 2016-02-17 16:00:00
+      }
   }
   bob : Student {
     name = "Bob"
+    submissions =
+      mathBob {
+        assignment = mathAssignment
+      },
+      examBob {
+        assignment = exam
+        answer = "Bad"
+        baseGrade = 3.0
+      },
+      practicalBob {
+        assignment = practical
+        answer = "Perfect"
+        baseGrade = 10.0
+        date = 2016-02-17 16:00:00
+      }
   }
   charlie : Student {
     name = "Charlie"
+    submissions =
+      mathCharlie {
+        assignment = mathAssignment
+      },
+      examCharlie {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
+      },
+      practicalCharlie {
+        assignment = practical
+        answer = "Sufficient"
+        baseGrade = 6.0
+        date = 2016-02-20 16:00:00
+      }
   }
   dave : Student {
     name = "Dave"
+    submissions =
+      mathDave {
+        assignment = mathAssignment
+      },
+      examDave {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
+      },
+      practicalDave {
+        assignment = practical
+        answer = "Great"
+        baseGrade = 8.0
+        date = 2016-02-27 16:00:00
+      }
   }
   eve : Student {
     name = "Eve"
+    submissions =
+      mathEve {
+        assignment = mathAssignment
+      },
+      examEve {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
+      },
+      practicalEve {
+        assignment = practical
+        answer = "Near Perfect"
+        baseGrade = 9.0
+        date = 2016-02-27 16:00:00
+        deadline = 2016-02-27 23:59:59
+      }
   }
   math : Course {
     name = "Math"
@@ -146,117 +230,26 @@ data
     enrollments = 
       enA { // alice succeeds math
         student = alice
-        submission =
-          mathAlice {
-            assignment = mathAssignment
-            student = alice
-            children = 
-              examAlice {
-                assignment = exam
-                student = alice
-                answer = "Good"
-                baseGrade = 7.0
-              },
-              practicalAlice {
-                assignment = practical
-                student = alice
-                answer = "Great"
-                baseGrade = 8.0
-                date = 2016-02-17 16:00:00
-              }
-          }
+        submission = mathAlice
       },
       enB { // bob fails, because his exam is too low
         student = bob
-        submission =
-          mathBob {
-            assignment = mathAssignment
-            student = bob
-            children = 
-              examBob {
-                assignment = exam
-                student = bob
-                answer = "Bad"
-                baseGrade = 3.0
-              },
-              practicalBob {
-                assignment = practical
-                student = bob
-                answer = "Perfect"
-                baseGrade = 10.0
-                date = 2016-02-17 16:00:00
-              }
-          }
+        submission = mathBob
       },
       enC { // charlie fails, because with the penalty for his practical his practical is too low
         student = charlie
-        submission =
-          mathCharlie {
-            assignment = mathAssignment
-            student = charlie
-            children = 
-              examCharlie {
-                assignment = exam
-                student = charlie
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalCharlie {
-                assignment = practical
-                student = charlie
-                answer = "Sufficient"
-                baseGrade = 6.0
-                date = 2016-02-20 16:00:00
-              }
-          }
+        submission = mathCharlie
       },
       enD { // dave fails, because his practical is submitted after the deadline extension
         student = dave
-        submission =
-          mathDave {
-            assignment = mathAssignment
-            student = dave
-            children = 
-              examDave {
-                assignment = exam
-                student = dave
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalDave {
-                assignment = practical
-                student = dave
-                answer = "Great"
-                baseGrade = 8.0
-                date = 2016-02-27 16:00:00
-              }
-          }
+        submission = mathDave 
       },
       enE { // eve succeeds, as she got a deadline extension
         student = eve
-        submission =
-          mathEve {
-            assignment = mathAssignment
-            student = eve
-            children = 
-              examEve {
-                assignment = exam
-                student = eve
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalEve {
-                assignment = practical
-                student = eve
-                answer = "Near Perfect"
-                baseGrade = 9.0
-                date = 2016-02-27 16:00:00
-                deadline = 2016-02-27 23:59:59
-              }
-          }
+        submission = mathEve 
       }
   }
   
 execute
 
-  math.summary
+  math.summary // should be 40% passing and with an average of 7.8
