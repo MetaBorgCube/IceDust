@@ -21,7 +21,7 @@ rules // module (or modulename) -> java compilation-unit
     where
       modulename-is-eventuallyconsistent
     with
-      decs* := <modulename-get-attributenames;filter(where(not(attributename-is-normal)));fmap(attributename-to-java-classbodydecs(err))>x_moduleName
+      decs* := <modulename-get-arrinames-default-derived;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
       result := compilation-unit |[
         package derivations;
@@ -39,8 +39,6 @@ rules // module (or modulename) -> java compilation-unit
 rules // attrname -> java declarations
   
   attributename-to-java-classbodydecs(err): x_attributeName -> result
-    where
-      <is-attributename>x_attributeName
     with
       x_attributeQueue    := <attributename-entityname-queue>x_attributeName;
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
