@@ -5,6 +5,7 @@ properties([
       upstreamProjects: '/metaborg/spoofax-releng/master'
     )
   ]),
+  buildDiscarder(logRotator(artifactNumToKeepStr: '3')),
   disableConcurrentBuilds()
 ])
 
