@@ -385,6 +385,10 @@ rules
             static function x_flagDirty(ens : [x_entityName]) {
               x_qualifiedDirty.addAll(ens);
             }
+            
+            extend function x_entityName(){
+              x_entityName.x_flagDirty(this);
+            }
           ]|
         otherwise:
           ebd_flagDirty* := []

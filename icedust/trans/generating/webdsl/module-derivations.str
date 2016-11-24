@@ -54,7 +54,7 @@ rules
   
   cache-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation>x_moduleName;
       stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
@@ -102,7 +102,7 @@ rules
   
   cache-async-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation>x_moduleName;
       stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
     with
       if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
