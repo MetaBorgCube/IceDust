@@ -183,7 +183,13 @@ rules
             static function x_flagDirtyAsync() {
               var dirtyValues := x_qualifiedDirty;
               x_qualifiedDirty := Set<x_entityName>();
-              DirtyCollections.x_getQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
+//              DirtyCollections.x_getQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
+              var queue := DirtyCollections.x_getQueue();
+              for(s:String in [ v.id.toString() | v : x_entityName in dirtyValues ]){ // TODO: move 'add if not contains' out of the code generator, into the stdlib
+                if(!queue.contains(s)){
+                  queue.add(s);
+                }
+              }
             }
   
             static function x_receiveOneDirtyAsync() : x_entityName {
