@@ -196,11 +196,13 @@ rules
             }
             
             static function x_updateAllCacheAsync () {
+              var i := 1;
               while( x_entityName.x_hasDirtyAsync() ){
                 var en := x_entityName.x_receiveOneDirtyAsync();
+                log("Updating " + e_qualifiedName + ": " + i + " " + en.getName());
                 en.x_updateCache();
-                log("Updating " + e_qualifiedName);
                 commitAndStartNewTransaction();
+                i := i + 1;
               }
             }
       
