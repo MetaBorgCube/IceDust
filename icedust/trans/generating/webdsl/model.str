@@ -409,7 +409,7 @@ rules
           ]|
         case name-is-left; name-is-one; name-is-normal-default:
           ebd_field* := ebd* |[
-            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_name != null, "" + e_name + " is required."))
+            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required."))
           ]|
         case name-is-left; name-is-to-many-ordered; name-is-normal-default:
           ebd_field* := ebd* |[
@@ -425,7 +425,7 @@ rules
           ]|
         case (name-is-right + is-attributename); name-is-one; name-is-normal-default:
           ebd_field* := ebd* |[
-            x_name : srt_type (default=null, validate(x_name != null, "" + e_name + " is required."))
+            x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
           ]|
         case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default:
           ebd_field* := ebd* |[
