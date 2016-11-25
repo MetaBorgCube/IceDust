@@ -37,8 +37,12 @@ rules
           public static void main(String[] args)
           {
             ~dataJava*
-            ~cacheJava* // empty if calc-on-read
+            maintainCaches();
             ~executeJava*
+          }
+          
+          private static void maintainCaches() {
+            ~cacheJava* // empty if calc-on-read
           }
         }
         

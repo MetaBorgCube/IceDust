@@ -51,6 +51,7 @@ rules
     with
       x_entityName       := <attributename-get-entityname>x_name;
       x_moduleName       := <entityname-get-modulename>x_entityName;
+      qualifiedName-exp  := Lit(String([Chars($[[x_entityName].[x_name]])]));
       x_type             := <get-type2;type-to-string-java>x_name;
       multType           := <name-to-java-type(err)>x_name;
       x_get              := <name-get>x_name;
@@ -110,6 +111,9 @@ rules
             public static void x_updateAllCache(){
               Collection<x_entityName> ens = x_dirty;
               x_dirty = new HashSet<x_entityName>();
+              if (ens.size() > 0) {
+                System.out.println("Updating " + ~qualifiedName-exp + ": " + ens.size());
+              }
               for(x_entityName en : ens){
                 en.x_updateCache();
               }
@@ -345,7 +349,7 @@ rules
                 x_type oldValue = this.x_get();
                 this.x_name = en;
                 x_type newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows();
                 }
               }
@@ -370,7 +374,7 @@ rules
                 Collection<x_type> oldValue = this.x_get();
                 this.x_name.add(en);
                 Collection<x_type> newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
@@ -381,7 +385,7 @@ rules
                 Collection<x_type> oldValue = this.x_get();
                 this.x_name.remove(en);
                 Collection<x_type> newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
@@ -400,7 +404,7 @@ rules
                 x_type oldValue = this.x_get();
                 this.x_cache = en;
                 x_type newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows();
                 }
               }
@@ -414,7 +418,7 @@ rules
                 Collection<x_type> oldValue = this.x_get();
                 this.x_cache.add(en);
                 Collection<x_type> newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
@@ -425,7 +429,7 @@ rules
                 Collection<x_type> oldValue = this.x_get();
                 this.x_cache.remove(en);
                 Collection<x_type> newValue = this.x_get();
-                if((oldValue==null && newValue !=null) || (oldValue.equals(newValue))){
+                if((oldValue==null && newValue !=null) || (!oldValue.equals(newValue))){
                   x_dirtyFlagFlows(); //TODO: does this dirty flag too much?
                 }
               }
