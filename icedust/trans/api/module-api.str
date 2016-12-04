@@ -7,6 +7,16 @@ imports // constructors
   
 rules // Module -> String
 
-  module-get-modulename: Module(name, _, _) -> name  
-  module-get-modulename: ModuleDesugared(name, _, _) -> name
+  is-module = ?Module         (_, _, _)
+  is-module = ?ModuleDesugared(_, _, _)
+
+  module-get-modulename = ?Module         (<id>, _, _)
+  module-get-modulename = ?ModuleDesugared(<id>, _, _)
+  module-get-strategy   = ?Module         (_, <id>, _)
+  module-get-strategy   = ?ModuleDesugared(_, <id>, _)
+  
+  module-set-strategy(s) = Module         (id, s, id)
+  module-set-strategy(s) = ModuleDesugared(id, s, id)
+
+  module-has-no-strategy = where(module-get-strategy;?None())
   
