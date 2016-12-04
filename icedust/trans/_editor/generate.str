@@ -72,7 +72,7 @@ rules // Build in steps
       eclipsePath := <eclipse-path>relativePath
     with
       clear-index2;
-      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
+//      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
       <index-store-prop2(|UIStyle(),      moduleName)>uistyle;
       error* := <_task-get-messages(|eclipsePath)>
     with

@@ -53,7 +53,7 @@ rules
   
   cache-modulename-to-java-stms: x_moduleName -> result
     with
-      namess := <modulename-get-arrinames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation;map(filter(name-is-incremental))>x_moduleName;
       update-stms* := <fmap(cache-attributenames-to-java-stms)>namess
     with
       if modulename-is-calconwrite then

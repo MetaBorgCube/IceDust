@@ -94,7 +94,7 @@ rules
       end
     with
       if name-is-calconwrite then
-        flowsto-stms* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-java-stm(err))>x_name
+        flowsto-stms* := <name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental));map(model-pathexpr-to-java-stm(err))>x_name
       end
     with // Recalculate layer
       switch id

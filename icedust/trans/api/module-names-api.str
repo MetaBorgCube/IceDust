@@ -58,11 +58,12 @@ rules // module
 
   modulename-get-exprs = index-get-prop(|AST());flatten-list
 
-  modulename-get-implstr = _get-property(|ImplStrategy())
+  modulename-get-implstr = _get-property(|NablProp_strategy())
   
-  modulename-is-calconread           = where(modulename-get-implstr;?CalcOnRead())
-  modulename-is-calconwrite          = where(modulename-get-implstr;?CalcOnWrite())
-  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?EventuallyConsistent())
+  modulename-is-calconread           = where(modulename-get-implstr;?OnDemand())
+  modulename-is-calconread           = where(modulename-get-implstr;?OnDemandEventual())
+  modulename-is-calconwrite          = where(modulename-get-implstr;?Incremental())
+  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?Eventual())
 
   modulename-get-uistyle = _get-property(|UIStyle())
   
