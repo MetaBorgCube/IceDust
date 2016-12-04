@@ -18,3 +18,9 @@ context-free syntax
 
   Ordering.Ordered        = <(ordered)>
   Ordering.Unordered      = <(unordered)>
+
+  Strategy.OnDemand         = <(on-demand)>
+  Strategy.Incremental      = <(incremental)>
+  Strategy.Eventual         = <(eventual)>
+  Strategy.OnDemandEventual = <(on-demand eventual)>
+  

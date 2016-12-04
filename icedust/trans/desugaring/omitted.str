@@ -167,13 +167,13 @@ rules // shortcuts (context sensitive)
 
 rules // shortcutrels -> shortcut relations
 
-  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, None(), o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, ZeroOrMore(), o2, e2, s2)
-  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, m2    , o2, e2, s2) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, m2,           o2, e2, s2)
-  rel-generate-mult: RelationDerived(e1, s1, m1,     o1, expr, None(), o2, e2, s2) -> RelationDerived(e1, s1, m1,           o1, expr, ZeroOrMore(), o2, e2, s2)
+  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, None(), o2, e2, s2, st) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, ZeroOrMore(), o2, e2, s2, st)
+  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, m2    , o2, e2, s2, st) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, m2,           o2, e2, s2, st)
+  rel-generate-mult: RelationDerived(e1, s1, m1,     o1, expr, None(), o2, e2, s2, st) -> RelationDerived(e1, s1, m1,           o1, expr, ZeroOrMore(), o2, e2, s2, st)
 
 rules
 
-  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, attrs) -> result
+  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, strategy, attrs) -> result
     with
       relname  := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
       invname1 := <custom-origin(|e1)>$[[s2]Relation];
@@ -181,6 +181,7 @@ rules
     with
       result := <custom-origin(|scr)>FirstClassRelation(
         relname
+      , strategy
       , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
         , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
         , <custom-origin(|e1)><create-shortcut(|s1, s2, s2, s1)>

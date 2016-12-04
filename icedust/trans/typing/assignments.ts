@@ -22,14 +22,14 @@ imports
 
 type rules // derivations well-formedness
 
-  DerivationAttribute(a, a-ty, a-mu, e)
-+ DefaultAttribute   (a, a-ty, a-mu, e) :-
+  DerivationAttribute(a, a-ty, a-mu, e, st)
++ DefaultAttribute   (a, a-ty, a-mu, e, st) :-
   where  e  : e-ty
     and  (e-ty == a-ty or e-ty <sub: a-ty) 
         else error $[Type mismatch: expected [a-ty] got [e-ty] in Derivation] on e
       
-  DerivationAttribute(a, a-ty, a-mu, e)
-+ DefaultAttribute   (a, a-ty, a-mu, e) :-
+  DerivationAttribute(a, a-ty, a-mu, e, st)
++ DefaultAttribute   (a, a-ty, a-mu, e, st) :-
   where  e has multiplicity e-mu
     and (
             a-mu == ZeroOrOne() and e-mu == One()
@@ -39,15 +39,15 @@ type rules // derivations well-formedness
 
 type rules // derivations well-formedness (relations)
 
-  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):-
   where expr : e-ty
     and e-ty == right-ty2 else error $[Type mismatch: expected [right-ty2] got [e-ty] in Derivation] on expr
 
-  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):-
   where expr has multiplicity e-mu
     and e-mu == left-mu else error $[Multiplicity mismatch: expected [left-mu] got [e-mu] in Derivation] on expr
 
-//  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):-
+//  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):-
 //  where expr has ordering e-or
 //    and e-or == left-or else error $[Ordering mismatch: expected [left-or] got [e-or] in Derivation] on expr
 

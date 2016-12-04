@@ -7,6 +7,6 @@ imports // constructors
   
 rules // Module -> String
 
-  module-get-modulename: Module(name, _) -> name  
-  module-get-modulename: ModuleDesugared(name, _) -> name
+  module-get-modulename: Module(name, _, _) -> name  
+  module-get-modulename: ModuleDesugared(name, _, _) -> name
   

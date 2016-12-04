@@ -49,11 +49,11 @@ rules // newline a derivation expression if subexpression is multiline + align c
       maxtypelenght := <entity-get-members;filter(is-attr);map(ttuple(attr-get-type,attr-get-mult);pp-type-and-multiplicity;strlen);list-max(|0)>e;
       e'            := <topdown(try(pp-variation(|maxnamelength, maxtypelenght)))>e
 
-  pp-variation(|n,t): Attribute          (a, b, c   ) -> AttributePP                   (a, a', b, c       )                                    with a' := <subt;whitespace>(n,<strlen>a)
-  pp-variation(|n,t): DerivationAttribute(a, b, c, d) -> DerivationAttributePP         (a, a', b, c, c', d) where <not(multiline-expression)>d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
-  pp-variation(|n,t): DerivationAttribute(a, b, c, d) -> DerivationAttributePPMultiLine(a, a', b, c, c', d) where <    multiline-expression >d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
-  pp-variation(|n,t): DefaultAttribute   (a, b, c, d) -> DefaultAttributePP            (a, a', b, c, c', d) where <not(multiline-expression)>d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
-  pp-variation(|n,t): DefaultAttribute   (a, b, c, d) -> DefaultAttributePPMultiLine   (a, a', b, c, c', d) where <    multiline-expression >d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
+  pp-variation(|n,t): Attribute          (a, b, c      ) -> AttributePP                   (a, a', b, c          )                                    with a' := <subt;whitespace>(n,<strlen>a)
+  pp-variation(|n,t): DerivationAttribute(a, b, c, d, e) -> DerivationAttributePP         (a, a', b, c, c', d, e) where <not(multiline-expression)>d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
+  pp-variation(|n,t): DerivationAttribute(a, b, c, d, e) -> DerivationAttributePPMultiLine(a, a', b, c, c', d, e) where <    multiline-expression >d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
+  pp-variation(|n,t): DefaultAttribute   (a, b, c, d, e) -> DefaultAttributePP            (a, a', b, c, c', d, e) where <not(multiline-expression)>d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
+  pp-variation(|n,t): DefaultAttribute   (a, b, c, d, e) -> DefaultAttributePPMultiLine   (a, a', b, c, c', d, e) where <    multiline-expression >d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
 
   pp-type-and-multiplicity: (ty, mu) -> $[[pp-ty][pp-mu]]
     with

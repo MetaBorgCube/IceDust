@@ -3,6 +3,7 @@ module desugaring/desugar
 imports // constructors
   
   signatures/Modules-sig
+  signatures/Types-sig
   desugaring/constructors
 
 imports // functions
@@ -30,8 +31,8 @@ rules
 rules // general
 
   desugar-somes = bottomup(try(desugar-some))
-  desugar-some: Some(a) -> a
+  desugar-some: Some(a) -> a where !a;not(?OnDemand());not(?Incremental());not(?Eventual());not(?OnDemandEventual())
 
   desugar-done = keep-origin(desugar-done2)
-  desugar-done2: Module(moduleName, section*) -> ModuleDesugared(moduleName, section*)
+  desugar-done2: Module(moduleName, strategy, section*) -> ModuleDesugared(moduleName, strategy, section*)
 
