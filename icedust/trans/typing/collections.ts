@@ -34,6 +34,11 @@ type rules
   Filter(expr1, x, expr2) has ordering or1
   where
     expr1 has ordering or1
+    
+  Filter(expr1, x, expr2) has strategy st
+  where expr1 has strategy e1-st
+    and expr2 has strategy e2-st
+    and <strategy-least-upperbound> (e1-st, e2-st) => st
 
 type rules
 
@@ -47,6 +52,10 @@ type rules
     and <upperbound-one> (e-mu) => mu
   
   First(e) has ordering Ordered()
+    
+  First(e) has strategy st
+  where
+    e has strategy st
 
 type rules
 
@@ -77,3 +86,9 @@ type rules
   IndexOf(e1, e2) has ordering Ordered()
   where e1 has ordering o1
     and o1 == Ordered() else error $[Ordering mismatch: Expected Ordered but got Unordered] on e1
+    
+  ElemAt(e1, e2)
++ IndexOf(e1, e2) has strategy st
+  where e1 has strategy e1-st
+    and e2 has strategy e2-st
+    and <strategy-least-upperbound> (e1-st, e2-st) => st

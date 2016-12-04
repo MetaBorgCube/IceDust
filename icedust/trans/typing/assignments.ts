@@ -36,6 +36,17 @@ type rules // derivations well-formedness
          or a-mu == e-mu
         )
     else error $[Multiplicity mismatch: expected [a-mu] got [e-mu] in Derivation] on e
+      
+  DerivationAttribute(a, a-ty, a-mu, e, ignore)
++ DefaultAttribute   (a, a-ty, a-mu, e, ignore) :-
+  where  e has strategy e-st
+    and definition of a has strategy a-st
+    and (
+            a-st == e-st
+         or a-st == OnDemandEventual()
+         or e-st == Incremental()
+        )
+    else error $[Calculation strategy mismatch: expected [a-st] got [e-st] in Derivation] on e
 
 type rules // derivations well-formedness (relations)
 

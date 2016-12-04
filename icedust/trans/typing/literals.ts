@@ -21,7 +21,7 @@ type rules
   Int(x) : Int()
   Int(x) has multiplicity One()
   Int(x) has ordering Ordered()
-
+  
   Float(x) : Float()
   Float(x) has multiplicity One()
   Float(x) has ordering Ordered()
@@ -45,3 +45,12 @@ type rules
   NoValue() : NoValue()
   NoValue() has multiplicity ZeroOrOne()
   NoValue() has ordering Ordered()
+
+  Int(x)
++ Float(x)
++ LitString(x)
++ True()
++ False() 
++ Datetime(x)
++ NoValue() has strategy Incremental() //bottom of lattice
+  

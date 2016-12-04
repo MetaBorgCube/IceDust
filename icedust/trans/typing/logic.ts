@@ -107,4 +107,22 @@ type rules
     and  z  has ordering  z-or
     and <or-nav> (x-or, y-or) => or2
     and <or-nav> (or2, z-or) => or
+
+  LessThan(x, y)
++ LessThanEqual(x, y)
++ GreaterThan(x, y)
++ GreaterThanEqual(x, y)
++ Equal(x, y)
++ Inequal(x, y)
++ And(x, y)
++ Or(x, y) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and <strategy-least-upperbound> (x-st, y-st) => st
     
+  If(x, y, z) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and  z  has strategy  z-st
+    and <strategy-least-upperbound> (x-st, y-st) => st2
+    and <strategy-least-upperbound> (st2, z-st) => st

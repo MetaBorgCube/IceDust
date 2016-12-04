@@ -92,4 +92,14 @@ type rules
   where  x  has ordering x-or
     and  y  has ordering  y-or
     and <or-nav> (x-or, y-or) => or
+
+  Multiplication(x, y)
++ Addition(x, y)
++ Subtraction(x, y)
++ Division(x, y)
++ FloorDivision(x, y)
++ Modulo(x, y) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and <strategy-least-upperbound> (x-st, y-st) => st
     

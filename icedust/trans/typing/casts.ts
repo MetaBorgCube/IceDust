@@ -46,3 +46,7 @@ type rules // derivations well-formedness
   
   Cast(e, cast-ty) has ordering e-or
   where e has ordering e-or
+
+  Cast(e, cast-ty) has strategy e-st
+  where e has strategy e-st
+  

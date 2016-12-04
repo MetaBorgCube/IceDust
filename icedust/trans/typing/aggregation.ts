@@ -63,3 +63,15 @@ type rules
 + Concat(x)
 + Sum(x)
 + Count(x) has ordering Ordered()
+
+
+
+  Min(x)
++ Max(x)
++ Avg(x)
++ Conj(x)
++ Disj(x)
++ Concat(x)
++ Sum(x)
++ Count(x) has strategy st
+  where  x  has strategy st

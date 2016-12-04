@@ -13,5 +13,6 @@ imports
   types/typing/multiplicity-operators
   types/typing/references
   types/typing/_multiplicity-functions
+  types/typing/_strategy-functions
   types/typing/_subtyping
   trans/typing/_subtyping-manual

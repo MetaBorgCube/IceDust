@@ -123,6 +123,7 @@ binding rules // model
       of multiplicity a-mu
       of ordering Ordered()
       of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
       
   DerivationAttribute(a, a-ty, a-mu, _, None()) :
     defines Attribute a
@@ -170,6 +171,7 @@ binding rules // model
       of ordering-inverse role-ord
       of inverse inverseName
       of rel-ty this-ty2
+      of strategy Incremental() // bottom of lattice
       where This() resolves to This this2
       and this2 has type this-ty2
     defines non-unique Entity role-ty2
@@ -181,6 +183,7 @@ binding rules // model
       of ordering-inverse Ordered()
       of type this-ty
       of origin-role role
+      of strategy Incremental() // bottom of lattice
       where This() resolves to This this
       and this has type this-ty
 
@@ -194,6 +197,7 @@ binding rules // model
       of origin-role role1
       of origin-role2 role2
       of rel-ty rel-ty1
+      of strategy Incremental() // bottom of lattice
       where role1 resolves to Role role1def
       and role1def has multiplicity-inverse mu1
       and role1def has ordering-inverse or1
@@ -207,6 +211,7 @@ binding rules // model
       of origin-role role2
       of origin-role2 role1
       of rel-ty rel-ty2
+      of strategy Incremental() // bottom of lattice
       where role2 resolves to Role role2def
       and role2def has multiplicity-inverse mu2
       and role2def has ordering-inverse or2
@@ -224,6 +229,7 @@ binding rules // model
       of inverse right-name
       of side Left()
       of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
@@ -235,6 +241,7 @@ binding rules // model
       of inverse left-name
       of side Right()
       of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
 
   RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):
     defines non-unique Entity right-ty2

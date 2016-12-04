@@ -46,3 +46,9 @@ type rules
   where  x  has ordering x-or
     and  y  has ordering  y-or
     and <or-nav> (x-or, y-or) => or
+
+  ChoiceLeft(x,y)
++ Merge(x,y) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and <strategy-least-upperbound> (x-st, y-st) => st

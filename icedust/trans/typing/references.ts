@@ -36,6 +36,11 @@ type rules // general references
   where  expr has ordering expr-or
     and definition of member has ordering member-or
     and <or-nav> (expr-or, member-or) => or
+  
+  MemberAccess(expr, member) has strategy st
+  where  expr has strategy expr-st
+    and definition of member has strategy member-st
+    and <strategy-least-upperbound> (expr-st, member-st) => st
 
   Ref(a) : ty
   where definition of a : ty
@@ -46,12 +51,17 @@ type rules // general references
   Ref(a) has ordering a-or
   where definition of a has ordering a-or
 
+  Ref(a) has strategy st
+  where definition of a has strategy st
+
   this@This() : ty
   where definition of this : ty 
 
   This() has multiplicity One()
 
   This() has ordering Ordered()
+
+  This() has strategy Incremental()
 
 type rules // specific references
 
