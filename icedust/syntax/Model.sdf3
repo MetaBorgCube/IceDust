@@ -8,12 +8,12 @@ imports
 context-free syntax // entities
 
   Model.Entity = <
-    entity <ID> <Strategy?> {
+    entity <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
   Model.FirstClassRelation = <
-    relation <ID> <Strategy?> {
+    relation <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
@@ -23,7 +23,7 @@ context-free syntax // entities
 context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
-    relation [EntityRef][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef][DotID?] [Strategy?] {
+    relation [EntityRef][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef][DotID?][Strategy?] {
       [{Attribute "\n"}*]
     }
   ]
@@ -36,7 +36,7 @@ context-free syntax // non-first-class relation
 
   Model.RelationDerived = [
     relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] = [Exp]
-      <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID] [Strategy?]
+      <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID][Strategy?]
   ]
   
   SpaceMultiplicity             = [ [Multiplicity]]
@@ -52,10 +52,10 @@ context-free syntax // entity members
     <ID> : <PrimitiveType><Multiplicity?>
   >
   Attribute.DerivationAttribute = <
-    <ID> : <PrimitiveType><Multiplicity?> = <Exp> <Strategy?>
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
   >
   Attribute.DefaultAttribute    = <
-    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default) <Strategy?>
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
   >
   DerivationType.DefaultValue   = <(default)>
   DerivationType.Derivation     = <>
