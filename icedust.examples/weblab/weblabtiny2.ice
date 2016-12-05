@@ -18,7 +18,7 @@ model
   }
   
   entity Submission {
-    name     : String    = assignment.name + " " + student.name
+    name     : String    = assignment.name + " " + student.name        (on-demand)
     answer   : String?
     deadline : Datetime? = assignment.deadline <+ parent.deadline      (default)
     onTime   : Boolean   = submitted <= deadline <+ true
@@ -36,7 +36,7 @@ model
     assignment.children.submissions.filter(x => x.student == student)
                                              <-> ? (ordered) Submission.parent
   
-  relation Submission.next ? = 
+  relation Submission.next       ? = 
     parent.children.elemAt(parent.children.indexOf(this))
                                              <-> ? Submission.previous
 
