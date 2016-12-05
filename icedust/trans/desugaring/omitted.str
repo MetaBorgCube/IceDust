@@ -41,7 +41,7 @@ rules // else
 
 rules // module strategy
 
-  module-generate-strategy = is-module; try( module-has-no-strategy; ?m; module-set-strategy(!<custom-origin(|<module-get-modulename>m)>Some(<custom-origin(|<module-get-modulename>m)>OnDemand())))
+  module-generate-strategy = is-module; try( module-has-no-strategy; ?m; module-set-strategy(!<custom-origin(|<module-get-modulename>m)>Some(<custom-origin(|<module-get-modulename>m)>Incremental())))
     
 rules // attr fields
 
