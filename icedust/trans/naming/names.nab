@@ -61,7 +61,7 @@ binding rules // modules
     scopes Entity
     scopes Entity2
     scopes EntityInstance
-    scopes This
+    scopes ModuleThis
     implicitly defines ModuleThis This()
       of strategy s
 
@@ -243,7 +243,7 @@ binding rules // model
       of derivation-type Normal()
       of strategy Incremental() // bottom of lattice
 
-  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, None()):
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
@@ -254,7 +254,10 @@ binding rules // model
       of type left-ty2
       of inverse left-name
       of side Right()
-      of derivation-type Derivation() 
+      of derivation-type Derivation()
+      of strategy this-s
+      where This() resolves to ModuleThis this2
+      and this2 has strategy this-s
     defines non-unique Entity left-ty2
       scopes Var
       scopes Relation
@@ -270,6 +273,37 @@ binding rules // model
       of inverse right-name
       of side Left()
       of derivation-type Derivation() 
+      of strategy this-s
+
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, Some(strategy)):
+    defines non-unique Entity right-ty2
+      scopes Relation
+    defines Relation right-name
+      of multiplicity right-mu
+      of multiplicity-inverse left-mu
+      of ordering right-or
+      of ordering-inverse left-or
+      of type left-ty2
+      of inverse left-name
+      of side Right()
+      of derivation-type Derivation()
+      of strategy strategy
+    defines non-unique Entity left-ty2
+      scopes Var
+      scopes Relation
+      scopes This
+      implicitly defines This This()
+        of type left-ty2
+    defines Relation left-name
+      of multiplicity left-mu
+      of multiplicity-inverse right-mu
+      of ordering left-or
+      of ordering-inverse right-or
+      of type right-ty2
+      of inverse right-name
+      of side Left()
+      of derivation-type Derivation()
+      of strategy strategy
 
 binding rules // data
 
@@ -426,4 +460,6 @@ binding rules // expressions
       of type ty1
       of multiplicity One()
       of ordering Ordered()
+      of strategy st1
     where expr1 has type ty1
+      and expr1 has strategy st1
