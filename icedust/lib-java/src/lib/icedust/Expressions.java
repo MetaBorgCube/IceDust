@@ -611,5 +611,14 @@ public class Expressions {
     }
     return null;
   }
+  
+  // null-safe equality (not-three-valued logic)
+  
+  public static boolean nullSafeEqual(Object i, Object j) {
+    if(i == null){
+      return j == null;
+    }
+    return i.equals(j);
+  }
 
 }
