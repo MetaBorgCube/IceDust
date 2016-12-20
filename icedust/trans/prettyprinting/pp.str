@@ -24,17 +24,24 @@ rules
   
   pp-IceDust-string =
       parenthesize-IceDust
-    ; apply-pp-variation
+    ; try(apply-pp-variation)
     ; prettyprint-IceDust-Start
     ; !V([], <id>)
     ; box2text-string(|120)
 
   pp-partial-IceDust-string =
       parenthesize-IceDust
-    ; apply-pp-variation
+    ; try(apply-pp-variation)
     ; prettyprint-IceDust
     ; !V([], <id>)
     ; box2text-string(|120)
+    
+  pp-partial-IceDust-string(|sort) =
+      parenthesize-IceDust
+    ; try(apply-pp-variation)
+    ; prettyprint-IceDust(|sort)
+    ; !V([], <id>)
+    ; box2text-string(|120)  
        
   pp-debug :
     ast -> result
