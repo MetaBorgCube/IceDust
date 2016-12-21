@@ -62,11 +62,11 @@ rules // Error handlers (editor: report error, do not fail, tests: fail with err
 
 rules // Build in steps
 
-  build(error-handler|lang, implstr, uistyle, phase): (selected, position, ast, path, project-path-wrong) -> result
+  build(error-handler|lang, implstr, uistyle, phase): (selected, position, ast, path, project-path) -> result
     with
-      <store-analysis-resource>path;
+      <store-analysis-resource>$[[project-path]/[path]];
       analysis := <get-stored-analysis>;
-      analysis2 := <nalb2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
       <_index-set>analysis2
     with
       moduleName  := <module-get-modulename>selected;

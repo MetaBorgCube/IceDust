@@ -2,6 +2,7 @@ module analysis
 
 imports
   
+  nabl2/api
   nabl2shared
   nabl2runtime
   
@@ -10,13 +11,6 @@ imports
   editor/pp
 
   analysis/_constructors
-  analysis/_multiplicity-functions
-  analysis/_type-functions
-  analysis/expressions-aggregation
-  analysis/expressions-casts
-  analysis/expressions-logic
-  analysis/expressions-math
-  analysis/expressions-multiplicity-operators
 
   desugaring/desugar
   
@@ -33,6 +27,8 @@ rules // Analysis: NaBL2 hooks
 
   nabl2-debug-analysis-hook = id
   
+  nabl2-custom-analysis-init-hook: resource -> []
+
   nabl2-custom-analysis-unit-hook: (resource, ast, customInitialResult) -> customUnitResult
     with
       customUnitResult := (resource, ast)

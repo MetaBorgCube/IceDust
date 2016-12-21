@@ -3,8 +3,8 @@ module module
 rules
     
   [[ Module(m, es) ^ (init_scope) ]] :=
-    !D(module_scope)/Entity | error "Duplicate entity" @NAMES,
-    !D(module_data_scope)/Member | error "Duplicate attribute" @NAMES,
+    distinct/name D(module_scope)/Entity | error "Duplicate entity" @NAMES,
+    distinct/name D(module_data_scope)/Member | error "Duplicate attribute" @NAMES,
     Module{m} <- init_scope,
     module_scope ---> init_scope,
     module_data_scope ---> module_scope,

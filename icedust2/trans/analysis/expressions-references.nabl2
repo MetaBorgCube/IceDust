@@ -12,7 +12,7 @@ rules
     Member{r} |-> r_def,
     r_def : r_def_ty.
       
-  [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, out_mult, out_ord) ]] :=
+  [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, out_mult__, out_ord__) ]] :=
     [[expr ^ (s) : TTuple(expr_type, expr_mult, expr_ord) ]],
     expr_type == TEntity(expr_type_entity),
     expr_type_entity ?=I=> entity_scope,
@@ -21,6 +21,5 @@ rules
     Member{r} |-> r_def,
     r_def : r_def_ty,
     r_def_ty == TTuple(r_def_type, r_def_mult, r_def_ord),
-    CartesianProduct(expr_mult, r_def_mult) == out_mult,
-    CartesianProduct(expr_ord, r_def_ord) == out_ord,
+    (out_mult__, out_ord__) is mulOrd.lub of ((expr_mult,expr_ord),(r_def_mult,r_def_ord)),
     new new_scope.

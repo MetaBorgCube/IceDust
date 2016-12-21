@@ -38,12 +38,11 @@ rules // Editor services
     where
       <not(hover-parent-for)>target
     with
-      path' := <base-filename>project-path; //flakey workaround for http://yellowgrass.org/issue/SpoofaxWithCore/165 only works for files directly in root folder of project
-      <store-analysis-resource>path'
+      <store-analysis-resource>$[[project-path]/[path]]
     with
       analysis := <get-stored-analysis>
     with
-      analysis2 := <nalb2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
       <_index-set>analysis2
     with
       result := <get-editor-properties(pp-partial-icedust2-string;truncate-string(|200));properties-to-html>target

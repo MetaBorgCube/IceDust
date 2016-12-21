@@ -1,74 +1,24 @@
-module example
-
-model
-
-  entity Student {
-//    name   : String = concat("Foo" ++ "Bar" + f as String)
-//    age    : Int 
-//    bornIn : Int = age + 1 + 4 * 7 % 2
-//    ages   : Int * = knows2.age
-//    f      : Float ? = 3.4 / (2 as Float)
-//    f2     : Float ? = no value + no value
-//    b      : Boolean = not (3 == 3)
-//    i      : Int = if(b and not(b)) 3 else 4 (default)
-//    a      : Float = f <+ f2 <+ 0.0
-//    fdsa   : Float =  min((knows2).f ++ 1.0) 
-  }
-  
-//  relation Student.knows + <-> Student.knows2
-  
-  relation Enrollment {
-    Course +
-    Student *
-    f : Int //= course.i
-  }
-  
-//  relation Student.course <-> + Course.student { f : Int } // Triggers NaBL2 bug
-  
-//  relation StudentCourseRelation { // is exact same definition as above relation, but desugared, does not trigger NaBL2 bug
-//    Student.courseRelation * -> student
-//    Course.studentRelation + -> course
-//    course.student <-> student.course
-//    f : Int
-//  }
-  
-  
-//  relation Student.courses <-> + Course.students
-  
-  entity Course {
-    i : Int //= count(this.students)
+  module test
+  model
+  entity Node{}
+//  relation Node.maybe ? <-> 1 Node.one {}
+//  relation Node.star * <-> + Node.plus {}
+  relation NodeMaybeRelation {
+    Node.maybeRelation ? -> one
+    Node.oneRelation 1 -> maybe
+    maybe.one <-> one.maybe
   }
 
-data
-
-  math : Course {
-    student =
-      alice {
-        course = ai
-      },
-      bob {
-        
-      },
-      {
-        course = ai
-      }
+  relation NodeStarRelation {
+    Node.starRelation * -> plus
+    Node.plusRelation + (ordered) -> star
+    star.plus <-> plus.star
   }
-
-  ai : Course {
-    student = alice, bob
-    i = 5
-  }
-  
-//  : Enrollment {
-//    student = bob
-//  }
-  
-execute
-
-  3 + 5
-  
-  7 * (7 ++ 9)
-  
-  math.student.course.i
-//  math.enrollment.f
-  
+  data
+  n : Node {
+    maybe = <e : NodeMaybeRelation { } > n
+    star  = <e2 : NodeStarRelation { } > n
+  } 
+  execute 
+  3
+  n.maybeRelation.maybe

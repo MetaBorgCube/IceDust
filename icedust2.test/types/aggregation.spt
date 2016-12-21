@@ -18,8 +18,7 @@ fixture [[
   3
   [[...]]
 ]]
-
-
+ 
 test type of aggr min   [[min(4 ++ 3)]]         run get-type2 to Int()
 test type of aggr max   [[max(4 ++ 3 ++ 8)]]    run get-type2 to Int()
 test type of aggr avg   [[avg(1 ++ 3)]]         run get-type2 to Int()
@@ -33,7 +32,7 @@ test type of aggr min  Float  [[min(4.4 ++ 3.4)]] run get-type2 to Float()
 
 test error on aggr min String  [[ min("b" ++ "c")]] 1 error
 test error on aggr concat Int  [[ concat(2 ++ 3) ]] 1 error
-
+ 
 
 test multiplicity of aggr min OneOrMore    [[min(4 ++ 3)]]         run get-multiplicity to One()
 test multiplicity of aggr max  OneOrMore   [[max(4 ++ 3 ++ 8)]]    run get-multiplicity to One()

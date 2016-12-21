@@ -19,7 +19,7 @@ rules // store analysis to be able to query without passing the analysis
     where
       is-string
     with
-      analysis := <nabl2-get-resource-analysis>$[[<_project-path>]/[path]];
+      analysis := <debug;nabl2-get-resource-analysis>path;
       rules(StoredAnalysis : None() -> analysis)
   
   store-analysis-resource: analysis -> None()
@@ -32,9 +32,11 @@ rules // store analysis to be able to query without passing the analysis
     with
       analysis := <nabl2-get-ast-analysis>term;
       rules(StoredAnalysis : None() -> analysis)
+      /*
     with
-      analysis2 := <nalb2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
       <_index-set>analysis2
+      */
   
   get-stored-analysis = ?t;(
     !None();StoredAnalysis <+ // get stored analysis

@@ -4,36 +4,36 @@ rules
   
   [[ Min(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    NumericType(e1_type) == None(),
-    UpperboundOne(e1_mult) == out_mult.
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult.
     
   [[ Max(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] := // identical to Min
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    NumericType(e1_type) == None(),
-    UpperboundOne(e1_mult) == out_mult.
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult.
     
   [[ Avg(e1) ^ (s) : TTuple(e1_type, out_mult, TOrdered()) ]] := // identical to Min
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    NumericType(e1_type) == None(),
-    UpperboundOne(e1_mult) == out_mult.
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult.
     
   [[ Sum(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    NumericType(e1_type) == None().
+    e1_type <test? IsNumeric().
     
   [[ Conj(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    BooleanType(e1_type) == None().
-    
+    e1_type <test? IsBoolean().
+
   [[ Disj(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] := // identical to Conj
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    BooleanType(e1_type) == None().
-    
+    e1_type <test? IsBoolean().
+
   [[ Concat(e1) ^ (s) : TTuple(e1_type, TOne(), TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    StringType(e1_type) == None().
+    e1_type <test? IsString().
 
   [[ Count(e1) ^ (s) : TTuple(TInt(), TOne(), TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    IsType(e1_type) == None(). // make sure this evaluates
-    
+    e1_type <test? IsType(). // make sure it evaluates to something
+ 

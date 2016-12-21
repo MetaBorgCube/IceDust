@@ -58,7 +58,7 @@ rules
     Map2 [[ ms ^ (entity_instance_scope, module_scope) ]].
     
   [[ MemberValue(member, vs) ^ (entity_instance_scope, module_scope) ]] :=
-    Map2T [[ vs ^ (member_value_scope, module_scope) : ei_types ]],
+    Lala [[ vs ^ (member_value_scope, module_scope) : member_def_type ]],
     MemberValue{member} <- entity_instance_scope,
     MemberValue{member}.ns := MemberValue(),
     MemberValue{member}.origin := member_def,
@@ -73,11 +73,17 @@ rules
     Member{member} |-> member_def,
     member_def : TTuple(member_def_type, member_def_mult, member_def_ord),
     member_def.reltype := relation_object_type,
-    IsSubtype(member_def_type, ei_types) == None(),
     new member_value_scope,
     Implicit{"membervalue"} <- member_value_scope,
     Implicit{"membervalue"} : member_def_type,
     Implicit{"membervalue"}.reltype := relation_object_type.
+
+  Lala [[ [x|xs] ^ (member_value_scope, module_scope) : member_def_type ]] :=
+    [[ x  ^ (member_value_scope, module_scope) : ei_type ]],
+    ei_type <sub? member_def_type,
+    Lala [[ xs ^ (member_value_scope, module_scope) : super_type ]].
+
+  Lala [[ [] ^ (member_value_scope, module_scope) : member_def_type ]].
 
   [[ EntityInstanceWrapper(ri, ei) ^ (member_value_scope, module_scope) : ei_type ]] :=
     [[ ri ^ (member_value_scope, module_scope) : ri_type ]],

@@ -5,50 +5,47 @@ rules
   [[ Addition(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    AdditionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanAdd(),
+    out_type is sub.lub of (e1_type,e2_type),
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ Subtraction(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    LeastUpperBound(e1_type, e2_type) == lup_type,
-    SubtractionType(lup_type) == out_type,
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    lub_type is sub.lub of (e1_type,e2_type),
+    out_type is subtractionType of lub_type,
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ Division(e1, e2) ^ (s) : TTuple(TFloat(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    DivisionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type, // don't use out-type, because division of ints is also float
-    IsType(out_type) == None(),                    // but make sure it evaluates to something
-    DivisionMult(CartesianProduct(e1_mult, e2_mult), e2) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanDivide(),
+    out_type is sub.lub of (e1_type,e2_type), // don't use out-type, because division of ints is also float
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is divisionMult of out_mult', // FIXME ignored zero-ness of e2
+    (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ FloorDivision(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    DivisionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,                    // type rule identical to Multiplication
-    DivisionMult(CartesianProduct(e1_mult, e2_mult), e2) == out_mult, // mult rule identical to Division
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanDivide(),
+    out_type is sub.lub of (e1_type,e2_type),   // type rule identical to Multiplication
+    out_mult is divisionMult of out_mult', // FIXME ignored zero-ness of e2
+    (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
 
   [[ Modulo(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] := // identical to FloorDivision
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    DivisionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    DivisionMult(CartesianProduct(e1_mult, e2_mult), e2) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanDivide(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_mult is divisionMult of out_mult', // FIXME ignored zero-ness of e2
+    (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ Multiplication(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    DivisionType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanDivide(),
+    out_type is sub.lub of (e1_type,e2_type),
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
  

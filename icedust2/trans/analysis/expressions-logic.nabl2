@@ -4,83 +4,74 @@ rules
   
   [[ Not(e1) ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    BooleanType(e1_type) == None().
+    e1_type <test? IsBoolean().
   
   [[ Equal(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),                      // make sure it evaluates to something
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ Inequal(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to Equal
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ LessThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    NotBooleanType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),                      // make sure it evaluates to something
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ LessThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    NotBooleanType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ GreaterThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    NotBooleanType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ GreaterThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    NotBooleanType(e1_type) == None(),
-    LeastUpperBound(e1_type, e2_type) == out_type,
-    IsType(out_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ And(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    BooleanType(e1_type) == None(),
-    BooleanType(e2_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? IsBoolean(),
+    e2_type <test? IsBoolean(),
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ Or(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to And
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
-    BooleanType(e1_type) == None(),
-    BooleanType(e2_type) == None(),
-    CartesianProduct(e1_mult, e2_mult) == out_mult,
-    CartesianProduct(e1_ord, e2_ord) == out_ord.
+    e1_type <test? IsBoolean(),
+    e2_type <test? IsBoolean(),
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
   
   [[ If(e1, e2, e3) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     [[ e3 ^ (s) : TTuple(e3_type, e3_mult, e3_ord) ]],
-    BooleanType(e1_type) == None(),
-    LeastUpperBound(e2_type, e3_type) == out_type,
-    CartesianProduct(CartesianProduct(e1_mult, e2_mult), e3_mult) == out_mult,
-    CartesianProduct(CartesianProduct(e1_ord, e2_ord), e3_ord) == out_ord,
+    e1_type <test? IsBoolean(),
+    out_type is sub.lub of (e2_type,e3_type),
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
     e1_mult == TOne() | warning $[Expected condition multiplicity of One got [e1_mult]]@e1.
     

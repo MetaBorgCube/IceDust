@@ -16,28 +16,158 @@ imports
 
 signature
 
-  types
+  constructors
 
-    TBoolean()
-    TDatetime()
-    TFloat()
-    TInt()
-    TString()
-    TNoValue()
-    TEntity(occurrence)
+    TBoolean()          : type
+    TDatetime()         : type
+    TFloat()            : type
+    TInt()              : type
+    TString()           : type
+    TNoValue()          : type
+    TEntity(occurrence) : type
     
-    TOne()
-    TZeroOrOne()
-    TOneOrMore()
-    TZeroOrMore()
+    TOne()        : Mult
+    TZeroOrOne()  : Mult
+    TOneOrMore()  : Mult
+    TZeroOrMore() : Mult
     
-    TOrdered()
-    TUnordered()
-    
-    TTuple(type, type, type)        // type, mult, ord
+    TOrdered()   : Ord
+    TUnordered() : Ord
 
+    TTuple(type, Mult, Ord) : RichType
+
+    IsType()      : TypeTest // type classes
+    IsNumeric()   : TypeTest
+    IsString()    : TypeTest
+    IsBoolean()   : TypeTest
+    CanCompare()  : TypeTest
+    CanAdd()      : TypeTest
+    CanSubtract() : TypeTest
+    CanDivide()   : TypeTest
+
+  relations
+
+    anti-symmetric, anti-transitive test : type * TypeTest
+    reflexive, anti-symmetric, transitive mulOrd : (Mul * Ord) * (Mul * Ord)
+    reflexive, anti-symmetric, transitive sub : type * type
+    irreflexive cast : type * type
+ 
+  functions
+
+    divisionMult : Mult -> Mult {
+      TZeroOrOne()  -> TZeroOrOne(),
+      TZeroOrMore() -> TZeroOrMore(),
+      TOne()        -> TZeroOrOne(), // One if non-zero expr
+      TOneOrMore()  -> TZeroOrMore()  // OneOrMore if non-zero expr
+    }
+
+    subtractionType : type -> type {
+      TInt()      -> TInt(),
+      TFloat()    -> TFloat(),
+      TDatetime() -> TInt(),
+      TNoValue()  -> TNoValue()
+    }
+
+    upperboundOne : Mult -> Mult {
+      TOne() -> TOne(),
+      TZeroOrOne() -> TZeroOrOne(),
+      TOneOrMore() -> TOne(),
+      TZeroOrMore() -> TZeroOrOne()
+    }
+
+    choiceLeftMult : Mult -> Mult {
+      (TOne()       , mult         ) -> TOne(),
+      (TOneOrMore() , mult         ) -> TOneOrMore(),
+      (TZeroOrOne() , mult         ) -> mult,
+      (TZeroOrMore(), TOne()       ) -> TOneOrMore(),
+      (TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore(),
+      (TZeroOrMore(), TOneOrMore() ) -> TOneOrMore(),
+      (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+    }
+ 
+    choiceLeftMerge : Mult -> Mult {
+      (TOne()       , mult         ) -> TOneOrMore(),
+      (TOneOrMore() , mult         ) -> TOneOrMore(),
+      (mult         , TOne()       ) -> TOneOrMore(),
+      (mult         , TOneOrMore() ) -> TOneOrMore(),
+      (TZeroOrOne() , TZeroOrOne() ) -> TZeroOrMore(),
+      (TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore(),
+      (TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore(),
+      (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+    }
+ 
 rules
 
   init ^ (init_scope) :=
+  
+    // type classes
+  
+    TBoolean()  <test! IsType(),
+    TDatetime() <test! IsType(),
+    TFloat()    <test! IsType(),
+    TInt()      <test! IsType(),
+    TString()   <test! IsType(),
+    TNoValue()  <test! IsType(),
+    
+    TFloat()    <test! IsNumeric(),
+    TInt()      <test! IsNumeric(),
+    TNoValue()  <test! IsNumeric(),
+
+    TString()   <test! IsString(),
+    TNoValue()  <test! IsString(),
+
+    TBoolean()  <test! IsBoolean(),
+    TNoValue()  <test! IsBoolean(),
+    
+    TDatetime() <test! CanCompare(),
+    TFloat()    <test! CanCompare(),
+    TInt()      <test! CanCompare(),
+    TString()   <test! CanCompare(),
+    TNoValue()  <test! CanCompare(),
+    
+    TFloat()    <test! CanAdd(),
+    TInt()      <test! CanAdd(),
+    TString()   <test! CanAdd(),
+    TNoValue()  <test! CanAdd(),
+
+    TFloat()    <test! CanDivide(),
+    TInt()      <test! CanDivide(),
+    TNoValue()  <test! CanDivide(),
+  
+    // multiplicity/ordering lattice
+  
+    (TOne(),       TUnordered()) <mulOrd! (TOne(), TOrdered()),
+    (TOne(),       TOrdered())   <mulOrd! (TZeroOrOne(), TOrdered()),
+    (TOne(),       TOrdered())   <mulOrd! (TOneOrMore(), TOrdered()),
+
+    (TZeroOrOne(), TUnordered()) <mulOrd! (TZeroOrOne(),TOrdered()),
+    (TZeroOrOne(), TOrdered())   <mulOrd! (TZeroOrMore(),TOrdered()),
+    
+    (TOneOrMore(), TOrdered())   <mulOrd! (TZeroOrMore(),TOrdered()),
+    (TOneOrMore(), TOrdered())   <mulOrd! (TOneOrMore(), TUnordered()),
+    (TOneOrMore(), TUnordered()) <mulOrd! (TZeroOrMore(),TUnordered()),
+
+    (TZeroOrMore(),TOrdered())   <mulOrd! (TZeroOrMore(),TUnordered()),
+  
+    // subtype relation 
+  
+    TNoValue() <sub! TInt(),
+    TNoValue() <sub! TFloat(),
+    TNoValue() <sub! TBoolean(),
+    TNoValue() <sub! TDatetime(),
+    TNoValue() <sub! TString(),
+
+    // casting relation
+    
+    TInt()    <cast! TFloat(),
+    TInt()    <cast! TNoValue(),
+    TFloat()  <cast! TInt(),
+    TFloat()  <cast! TNoValue(),
+    TString() <cast! TInt(),
+    TString() <cast! TFloat(),
+    TString() <cast! TBoolean(),
+    TString() <cast! TDatetime(),
+    TString() <cast! TNoValue(),
+
     new init_scope.
-   
+ 
