@@ -18,39 +18,39 @@ signature
 
   constructors
 
-    TBoolean()          : type
-    TDatetime()         : type
-    TFloat()            : type
-    TInt()              : type
-    TString()           : type
-    TNoValue()          : type
-    TEntity(occurrence) : type
+    TBoolean  : Type
+    TDatetime : Type
+    TFloat    : Type
+    TInt      : Type
+    TString   : Type
+    TNoValue  : Type
+    TEntity   : occurrence -> Type
     
-    TOne()        : Mult
-    TZeroOrOne()  : Mult
-    TOneOrMore()  : Mult
-    TZeroOrMore() : Mult
+    TOne        : Mult
+    TZeroOrOne  : Mult
+    TOneOrMore  : Mult
+    TZeroOrMore : Mult
     
-    TOrdered()   : Ord
-    TUnordered() : Ord
+    TOrdered   : Ord
+    TUnordered : Ord
 
-    TTuple(type, Mult, Ord) : RichType
+    TTuple : Type * Mult * Ord -> RichType
 
-    IsType()      : TypeTest // type classes
-    IsNumeric()   : TypeTest
-    IsString()    : TypeTest
-    IsBoolean()   : TypeTest
-    CanCompare()  : TypeTest
-    CanAdd()      : TypeTest
-    CanSubtract() : TypeTest
-    CanDivide()   : TypeTest
+    IsType      : TypeTest // type classes
+    IsNumeric   : TypeTest
+    IsString    : TypeTest
+    IsBoolean   : TypeTest
+    CanCompare  : TypeTest
+    CanAdd      : TypeTest
+    CanSubtract : TypeTest
+    CanDivide   : TypeTest
 
   relations
 
-    anti-symmetric, anti-transitive test : type * TypeTest
+    anti-symmetric, anti-transitive test : Type * TypeTest
     reflexive, anti-symmetric, transitive mulOrd : (Mul * Ord) * (Mul * Ord)
-    reflexive, anti-symmetric, transitive sub : type * type
-    irreflexive cast : type * type
+    reflexive, anti-symmetric, transitive sub : Type * Type
+    irreflexive cast : Type * Type
  
   functions
 
@@ -61,7 +61,7 @@ signature
       TOneOrMore()  -> TZeroOrMore()  // OneOrMore if non-zero expr
     }
 
-    subtractionType : type -> type {
+    subtractionType : Type -> Type {
       TInt()      -> TInt(),
       TFloat()    -> TFloat(),
       TDatetime() -> TInt(),
