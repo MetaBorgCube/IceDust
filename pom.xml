@@ -46,7 +46,7 @@
     </repository>
     <repository>
       <id>spoofax-eclipse-repo</id>
-      <url>http://download.spoofax.org/update/release/2.1.0/eclipse/site/</url>
+      <url>http://tinyurl.com/spoofax-eclipse-2-1-0</url>
       <layout>p2</layout>
       <releases>
         <enabled>false</enabled>
