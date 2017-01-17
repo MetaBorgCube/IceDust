@@ -22,7 +22,7 @@ rules // member access
     with
       e1       := <expr-to-webdsl-expr(err)>ex1;
       x_getter := <name-get>x_name;
-      x_srt    := <_get-type>ex1
+      x_srt    := <get-type2>ex1
 
 rules // direct references
 

@@ -22,4 +22,4 @@ fixture [[
 //
 //test Expressions Logic compile-java [[ ]] run compile-java-test
 
-test Expressions Math execute-java [[ ]] run execute-java-test to "5"
+//test Expressions Math execute-java [[ ]] run execute-java-test to "5"

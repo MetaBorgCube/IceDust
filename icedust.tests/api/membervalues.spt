@@ -1,0 +1,21 @@
+module api-membervalues
+
+language IceDust
+
+fixture [[
+  module test
+  model
+    entity Student{}
+    entity Course{}
+    relation Student.courses <-> Course.students
+  data
+    math:Course{
+      [[...]]=
+        alice{},
+        bob{}
+    }
+]]
+
+// test memv get origin [[students]] run membervaluename-get-origin-test to "" // selection selects whole module...
+
+ 

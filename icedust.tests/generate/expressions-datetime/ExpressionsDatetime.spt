@@ -15,4 +15,4 @@ fixture [[
 //
 //test Expressions Datetime compile-java [[ ]] run compile-java-test
 
-test Expressions Datetime execute-java [[ ]] run execute-java-test to "24"
+//test Expressions Datetime execute-java [[ ]] run execute-java-test to "24"

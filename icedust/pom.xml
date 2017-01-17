@@ -6,14 +6,14 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <artifactId>icedust</artifactId>
-  <version>0.5.0</version>
+  <version>0.5.1</version>
   <name>IceDust</name>  
   <packaging>spoofax-language</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>parent.language</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <relativePath />
   </parent>
   
@@ -40,7 +40,7 @@
     </repository>
     <repository>
       <id>spoofax-eclipse-repo</id>
-      <url>http://download.spoofax.org/update/release/2.0.0/eclipse/site/</url>
+      <url>http://tinyurl.com/spoofax-eclipse-2-1-0</url>
       <layout>p2</layout>
       <releases>
         <enabled>false</enabled>

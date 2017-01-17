@@ -93,6 +93,6 @@ execute
 
 // test Job Offers compile-java [[ ]] run compile-java-test
 
-test Job Offers execute-java [[ ]] run execute-java-test to "1996"
+//test Job Offers execute-java [[ ]] run execute-java-test to "1996"
 
-test Job Offers execute-java-incr [[ ]] run execute-java-incr-test to "1996"
+//test Job Offers execute-java-incr [[ ]] run execute-java-incr-test to "1996"

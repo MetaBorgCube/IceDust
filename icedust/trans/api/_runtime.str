@@ -67,7 +67,7 @@ rules
   
   _nabl-uri = nabl-uri
   
-  _get-type = get-type
+  get-type2 = get-type
 
   _task-create-error(|ctx, msg) = task-create-error(|ctx, msg)
   _task-create-warning(|ctx, msg) = task-create-warning(|ctx, msg)

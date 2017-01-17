@@ -1,0 +1,20 @@
+module api-flowsto2
+
+language IceDust
+
+fixture [[
+  module test
+  model
+    entity Student {
+      foo : Int 1
+      [[...]] : Int = count(courses.students) + foo
+    }
+    entity Course { }
+    relation Student.courses <-> Course.students
+]]
+
+//test Query attribute depends on 2 [[b]] run name-get-dependson-pathexprs-test to !ATerm[ //TODO: ordering of this list is non-deterministic
+//  MemberAccess(Ref("courses"),"students"),
+//  Ref("courses"),
+//  Ref("foo")
+//]
