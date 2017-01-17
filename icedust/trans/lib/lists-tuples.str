@@ -41,6 +41,7 @@ rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
 rules // s1:a->b  s2:a->c  a->(a, b)
   
   ttuple(s1,s2): t -> (<s1>t, <s2>t)
+  ttuple(s1,s2,s3): t -> (<s1>t, <s2>t, <s3>t)
 
 rules // List -> List
   
@@ -53,3 +54,22 @@ rules // List(a) -> a
   lFst:   [x | xs] -> x
   lSnd:   [x, y | xs] -> y
   lThird: [x, y, z | xs] -> z
+
+rules // s1:a->a'   s2:b->b'  (a,b)->(a',b')
+
+  split2(s1,s2) = !(<Fst;s1>,<Snd;s2>) //fixed version of split
+
+rules
+
+  append(|t) = ?t*;![t*,t]
+
+rules // s:(a,a)->a/fail  (a, List(a, b)) -> b
+
+  lookup2(keyeq) = lookup(split2(id,Fst);keyeq);Snd
+  
+rules
+
+  list-add(|h): t -> [h | t]
+  
+  list-max(|lowerbound) = list-add(|lowerbound);list-max
+  

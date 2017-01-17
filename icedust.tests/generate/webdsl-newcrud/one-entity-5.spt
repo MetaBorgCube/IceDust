@@ -28,4 +28,4 @@ model
 
 ]]
 
-test one-entity-5 generate new crud test [[ ]] run generate-webdsl-newcrudui-test
+//test one-entity-5 generate new crud test [[ ]] run generate-webdsl-newcrudui-test

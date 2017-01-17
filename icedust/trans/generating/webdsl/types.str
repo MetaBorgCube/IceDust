@@ -30,7 +30,7 @@ rules // types of expressions and names (uses type and multiplicity)
   
   name-to-webdsl-srt(err): name -> result
     with
-      srt1 := <_get-type;type-to-webdsl-srt(err)>name
+      srt1 := <get-type2;type-to-webdsl-srt(err)>name
     with
       if <get-multiplicity;upper-one>name then
       result := webdsl |[ //webdsl srt

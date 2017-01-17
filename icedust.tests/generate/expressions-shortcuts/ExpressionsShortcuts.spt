@@ -32,4 +32,4 @@ fixture [[
 //
 //test Expressions Aggregation Recursive compile-java [[ ]] run compile-java-test
 
-test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-test to "3"
+//test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-test to "3"

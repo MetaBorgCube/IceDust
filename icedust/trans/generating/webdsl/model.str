@@ -63,7 +63,7 @@ rules
   var-to-webdsl-function(err): TierSplit(name, expr) -> result
     with
       x_getVar := <name-get> name;
-      type := <_get-type> expr;
+      type := <get-type2> expr;
       srt_type := <type-to-webdsl-srt(err)> type;
       e_calculate := <expr-to-webdsl-expr(err)> expr;
       result := ebd |[
@@ -77,7 +77,7 @@ rules
       is-attributename
     with
       x_entityName                := <attributename-get-entityname>x_attributeName;
-      srt_attributeType           := <_get-type;type-to-webdsl-srt(err)>x_attributeName;
+      srt_attributeType           := <get-type2;type-to-webdsl-srt(err)>x_attributeName;
       x_getAttribute              := <name-get>x_attributeName;
       x_setAttribute              := <name-set>x_attributeName;
       x_calculateAttribute        := <name-calculate>x_attributeName;
@@ -122,11 +122,11 @@ rules
           ]|
         else
           e1 := String(x_attributeName);
-          if <_get-type ; String()> x_attributeName then
+          if <get-type2 ; String()> x_attributeName then
             ebd_attributeField* := ebd* |[
               x_attributeName : srt_attributeType (default=null, validate(x_attributeName != null && x_attributeName.trim() != "", ""+ e1 + " cannot be empty! "))
             ]|
-          else  if <_get-type ; Boolean()> x_attributeName then
+          else  if <get-type2 ; Boolean()> x_attributeName then
             ebd_attributeField* := ebd* |[
               x_attributeName : srt_attributeType (validate(x_attributeName != null, ""+ e1 + " cannot be empty! "))
             ]|
@@ -494,7 +494,7 @@ rules
       is-shortcutname
     with
       x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
-      x_targetEntityName := <_get-type>x_shortcutName;
+      x_targetEntityName := <get-type2>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
       x_relationName     := <attributename-get-entityname>x_roleName;

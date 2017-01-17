@@ -47,4 +47,4 @@ fixture [[
 //
 //test Expressions Roles Inverses compile-java [[ ]] run compile-java-test
 
-test Expressions Roles Inverses execute-java [[ ]] run execute-java-test to "Charles"
+//test Expressions Roles Inverses execute-java [[ ]] run execute-java-test to "Charles"

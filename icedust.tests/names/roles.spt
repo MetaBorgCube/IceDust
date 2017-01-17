@@ -17,7 +17,7 @@ test Duplicate role fails [[
     
     in.c <-> in.d
   }
-]] 2 errors at #1,#2
+]] >= 2 errors at #1,#2
 
 test Resolve role  [[
   entity Node {
@@ -47,9 +47,9 @@ test error on duplicate role [[
     Node.a 1 -> [[node]]
     Node.b 1 -> [[node]]
     
-    node.c <-> node.d
+    node.[[c]] <-> node.[[d]]
   }
-]] 2 errors at #1,#2
+]] >= 2 errors at #1, #2 
 
 test error on duplicate role by desugaring [[
   entity Node {}
@@ -59,4 +59,4 @@ test error on duplicate role by desugaring [[
     
     node.c <-> node.d
   }
-]] 4 errors // always also results in duplicate inverses
+]] >= 2 errors at #1, #2

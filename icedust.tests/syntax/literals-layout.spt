@@ -8,8 +8,9 @@ fixture [[
   
   execute
   
-   [[...]]
+    3
+    [[...]]
 ]]
 
-test literal String whitespace [[  [[" Asdf "]] ]]  run rm-annotations to LitString(" Asdf ")
+test literal String whitespace [[" Asdf "]] parse to LitString(" Asdf ")
 

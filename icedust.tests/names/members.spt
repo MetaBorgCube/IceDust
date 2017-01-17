@@ -90,4 +90,3 @@ test error on inverse and shortcut with same name [[
     student.courseShort <-> course.[[student]]
   }
 ]] 2 errors at #1,#2
-

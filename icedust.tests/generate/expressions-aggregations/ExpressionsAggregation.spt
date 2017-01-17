@@ -26,4 +26,4 @@ fixture [[
 //
 //test Expressions Aggregation compile-java [[ ]] run compile-java-test
 
-test Expressions Aggregation execute-java [[ ]] run execute-java-test to "5"
+//test Expressions Aggregation execute-java [[ ]] run execute-java-test to "5"

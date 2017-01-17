@@ -25,14 +25,14 @@ rules
   pp-IceDust-string =
       parenthesize-IceDust
     ; apply-pp-variation
-    ; prettyprint-Start
+    ; prettyprint-IceDust-Start
     ; !V([], <id>)
     ; box2text-string(|120)
 
   pp-partial-IceDust-string =
       parenthesize-IceDust
     ; apply-pp-variation
-    ; prettyprint-example
+    ; prettyprint-IceDust
     ; !V([], <id>)
     ; box2text-string(|120)
        
@@ -52,11 +52,11 @@ rules // needed after desugaring
   
   prettyprint-Start: ModuleDesugared(a,b) -> <prettyprint-Start>Module(a,b)
 
-  prettyprint-AttrRef: NaBLHelp(a, _) -> <prettyprint-AttrRef>a
-  prettyprint-RoleRef: NaBLHelp(a, _) -> <prettyprint-RoleRef>a
-  prettyprint-ID:      NaBLHelp(a, _) -> <prettyprint-ID>a
+  prettyprint-IceDust-AttrRef: NaBLHelp(a, _) -> <prettyprint-IceDust-AttrRef>a
+  prettyprint-IceDust-RoleRef: NaBLHelp(a, _) -> <prettyprint-IceDust-RoleRef>a
+  prettyprint-IceDust-ID:      NaBLHelp(a, _) -> <prettyprint-IceDust-ID>a
 
-  prettyprint-Exp = prettyprint-ID
+  prettyprint-IceDust-Exp = prettyprint-IceDust-ID
 
 rules // content completion
   

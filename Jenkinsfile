@@ -1,4 +1,10 @@
 properties([
+  //pipelineTriggers([
+  //  upstream(
+  //    threshold: hudson.model.Result.SUCCESS,
+  //    upstreamProjects: '/metaborg/spoofax-releng/master'
+  //  )
+  //]),
   buildDiscarder(logRotator(artifactNumToKeepStr: '3')),
   disableConcurrentBuilds()
 ])
@@ -14,7 +20,8 @@ node{
 
     stage('Build and Test') {
       withMaven(
-        mavenLocalRepo: "${env.JENKINS_HOME}/m2repos/${env.EXECUTOR_NUMBER}",
+        //mavenLocalRepo: "${env.JENKINS_HOME}/m2repos/${env.EXECUTOR_NUMBER}", //http://yellowgrass.org/issue/SpoofaxWithCore/173
+        mavenLocalRepo: ".repository",
         mavenOpts: '-Xmx1G -Xms1G -Xss16m'
       ){
         sh 'mvn -B -U clean verify -DforceContextQualifier=\$(date +%Y%m%d%H%M)'
