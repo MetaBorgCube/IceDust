@@ -1,4 +1,4 @@
-id: org.metaborg:icedust:0.5.0-SNAPSHOT
+id: org.metaborg:icedust:0.5.1
 name: IceDust
 metaborgVersion: 2.1.0
 dependencies:
