@@ -26,6 +26,7 @@ rules // apply strategy on a tree top-down and carry over a history
   // for terms
   topdown-fold(map-strategy): (term, fold-value) -> (term''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value);
@@ -38,7 +39,7 @@ rules // apply strategy on a tree top-down and carry over a history
   topdown-fold(map-strategy): (term, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(explode-term)+is-string>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value)
       
@@ -53,6 +54,7 @@ rules // apply strategy on a tree top-down and carry over a history
   // for terms
   topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term'''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       annotations := <get-annotations> term;
@@ -67,7 +69,7 @@ rules // apply strategy on a tree top-down and carry over a history
   topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(explode-term)+is-string>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value)
 
