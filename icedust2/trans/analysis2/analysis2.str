@@ -58,7 +58,7 @@ rules
 
 rules
 
-  check-nabl2-attachments = where(collect-all(is-string);(map(nabl2--get-ast-index) <+ filter(not(nabl2--get-ast-index));debug(!"The following terms do not have an nabl2 attachment ");fail))
+  check-nabl2-attachments = where(collect-all(is-string,conc);(map(nabl2--get-ast-index) <+ filter(not(nabl2--get-ast-index));debug(!"The following terms do not have an nabl2 attachment ");fail))
   nabl2--get-ast-index = fail //is an internal nabl2 strategy
 
 rules
