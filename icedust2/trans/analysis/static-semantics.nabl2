@@ -44,6 +44,9 @@ signature
     CanAdd      : TypeTest
     CanSubtract : TypeTest
     CanDivide   : TypeTest
+    
+    TNonZeroConst : TNonZeroConst
+    TPossiblyZero : TNonZeroConst
 
   relations
 
@@ -53,12 +56,22 @@ signature
     irreflexive cast : Type * Type
  
   functions
+    
+    nonZeroConst: Term -> TNonZeroConst {
+      Float("0.0") -> TPossiblyZero(),
+      Int("0")     -> TPossiblyZero(),
+      Float(i)     -> TNonZeroConst(),
+      Int(i)       -> TNonZeroConst(),
+      expr         -> TPossiblyZero()
+    }
 
     divisionMult : Mult -> Mult {
-      TZeroOrOne()  -> TZeroOrOne(),
-      TZeroOrMore() -> TZeroOrMore(),
-      TOne()        -> TZeroOrOne(), // One if non-zero expr
-      TOneOrMore()  -> TZeroOrMore()  // OneOrMore if non-zero expr
+      (TZeroOrOne() , nonzeroconst)    -> TZeroOrOne(),
+      (TZeroOrMore(), nonzeroconst)    -> TZeroOrMore(),
+      (TOne()       , TNonZeroConst()) -> TOne(),
+      (TOne()       , TPossiblyZero()) -> TZeroOrOne(),
+      (TOneOrMore() , TNonZeroConst()) -> TOneOrMore(),
+      (TOneOrMore() , TPossiblyZero()) -> TZeroOrMore()
     }
 
     subtractionType : Type -> Type {
