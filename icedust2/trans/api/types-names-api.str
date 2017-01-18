@@ -14,7 +14,7 @@ rules
 
   get-type2        = get-annotation(|Type()) <+ nabl2-get-ast-type;normalize-type
   get-multiplicity = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-multiplicity
-  get-ordering     = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-ordering
+  get-ordering     = get-annotation(|Ord())  <+ nabl2-get-ast-type;normalize-ordering
   
   normalize-type = ?TTuple(<id>,_,_);?TInt()     ;!Int()
   normalize-type = ?TTuple(<id>,_,_);?TFloat()   ;!Float()

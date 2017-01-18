@@ -6,12 +6,12 @@ rules
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     out_type is sub.lub of (e1_type,e2_type),
-    out_mult is choiceLeftMult of (e1_mult, e2_mult).
-  //CartesianProduct(e1_ord, e2_ord) == out_ord. // FIXME
+    out_mult is choiceLeftMult of (e1_mult, e2_mult),
+    out_ord is choiceLeftOrd of (e1_ord, e2_ord).
 
   [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     out_type is sub.lub of (e1_type,e2_type),
-    out_mult is choiceLeftMerge of (e1_mult, e2_mult).
-  //CartesianProduct(e1_ord, e2_ord) == out_ord. // FIXME
+    out_mult is mergeMult of (e1_mult, e2_mult),
+    out_ord is choiceLeftOrd of (e1_ord, e2_ord).

@@ -84,8 +84,14 @@ signature
       (TZeroOrMore(), TOneOrMore() ) -> TOneOrMore(),
       (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
     }
+
+    choiceLeftOrd : Ord -> Ord {
+      (TOrdered()   , TOrdered()   ) -> TOrdered(),
+      (TOrdered()   , TUnordered() ) -> TUnordered(),
+      (TUnordered() , ord          ) -> TUnordered()
+    }
  
-    choiceLeftMerge : Mult -> Mult {
+    mergeMult : Mult -> Mult {
       (TOne()       , mult         ) -> TOneOrMore(),
       (TOneOrMore() , mult         ) -> TOneOrMore(),
       (mult         , TOne()       ) -> TOneOrMore(),
