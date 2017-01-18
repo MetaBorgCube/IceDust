@@ -80,7 +80,7 @@ rules
 
   Lala [[ [x|xs] ^ (member_value_scope, module_scope) : member_def_type ]] :=
     [[ x  ^ (member_value_scope, module_scope) : ei_type ]],
-    ei_type <sub? member_def_type,
+    ei_type <sub? member_def_type | error $[Type error: expected [member_def_type] got [ei_type].]@x,
     Lala [[ xs ^ (member_value_scope, module_scope) : super_type ]].
 
   Lala [[ [] ^ (member_value_scope, module_scope) : member_def_type ]].
