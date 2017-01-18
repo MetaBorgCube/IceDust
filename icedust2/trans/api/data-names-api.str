@@ -77,7 +77,7 @@ rules // member values
 //  membervaluename-get-values-inv = index-get-prop(|RelInv())
 //  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
-  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i <+ debug-term(|"membervaluename-get-origin failed");fail
+  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i <+ debug-term(|"membervaluename-get-origin failed");with(fail)
   membervaluename-get-origin-sg = get-property(|"MemberValue","origin");nabl2-get-occurrence-name
   membervaluename-get-origin-i  = index-get(|"origin")
   

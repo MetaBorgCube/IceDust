@@ -41,6 +41,10 @@ rules
     with
       <flows-toposort-2>modulename
     with
+      if <not(check-nabl2-attachments)>ast then
+        <debug>"missing nabl2 attachments";
+        with(fail)
+      end;
 //      if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
         <ast-store-membervalues>ast;
         error* := <analysis2check>modulename;
