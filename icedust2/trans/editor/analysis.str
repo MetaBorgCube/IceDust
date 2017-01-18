@@ -31,7 +31,8 @@ rules // Analysis: NaBL2 hooks
 
   nabl2-custom-analysis-unit-hook: (resource, ast, customInitialResult) -> customUnitResult
     with
-      customUnitResult := (resource, ast)
+      ast' := <desugar-before-analysis>ast;
+      customUnitResult := (resource, ast')
   
   nabl2-custom-analysis-final-hook(|a):(resource , customInitialResult, customUnitResult*) -> (error*, warning*, note*, customFinalResult)
     with
