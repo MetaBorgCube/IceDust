@@ -6,6 +6,7 @@ fixture [[
   module test
   model
     entity Foo {
+      b : Int
       [[...]]
     }
 ]]
