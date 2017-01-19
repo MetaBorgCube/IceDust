@@ -177,7 +177,7 @@ rules // shortcutrels -> shortcut relations
         relname
       , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
         , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
-        , <custom-origin(|e1)>Shortcut(s1, s2, s2, s1)
+        , <custom-origin(|e1)>Shortcut(<copy-string>s1, <copy-string>s2, <copy-string>s2, <copy-string>s1)
         | attrs
         ]
       )  
