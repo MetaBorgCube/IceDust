@@ -7,14 +7,22 @@ rules
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     e1_type <test? CanAdd(),
     out_type is sub.lub of (e1_type,e2_type),
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ Subtraction(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     lub_type is sub.lub of (e1_type,e2_type),
     out_type is subtractionType of lub_type,
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ Division(e1, e2) ^ (s) : TTuple(TFloat(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -24,7 +32,11 @@ rules
     out_type <test? IsType(), // make sure it evaluates to something
     (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
     nonZeroConst is nonZeroConst of e2,
-    out_mult is divisionMult of (out_mult', nonZeroConst).
+    out_mult is divisionMult of (out_mult', nonZeroConst),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ FloorDivision(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -33,7 +45,11 @@ rules
     out_type is sub.lub of (e1_type,e2_type),   // type rule identical to Multiplication
     (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
     nonZeroConst is nonZeroConst of e2,
-    out_mult is divisionMult of (out_mult', nonZeroConst).
+    out_mult is divisionMult of (out_mult', nonZeroConst),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
 
   [[ Modulo(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] := // identical to FloorDivision
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -42,13 +58,21 @@ rules
     out_type is sub.lub of (e1_type,e2_type),
     (out_mult', out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
     nonZeroConst is nonZeroConst of e2,
-    out_mult is divisionMult of (out_mult', nonZeroConst).
+    out_mult is divisionMult of (out_mult', nonZeroConst),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ Multiplication(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     e1_type <test? CanDivide(),
     out_type is sub.lub of (e1_type,e2_type),
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
  

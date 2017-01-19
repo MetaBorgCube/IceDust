@@ -11,14 +11,22 @@ rules
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ Inequal(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to Equal
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ LessThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -26,7 +34,11 @@ rules
     e1_type <test? CanCompare(),
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ LessThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -34,7 +46,11 @@ rules
     e1_type <test? CanCompare(),
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ GreaterThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -42,7 +58,11 @@ rules
     e1_type <test? CanCompare(),
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ GreaterThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to LessThan
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
@@ -50,21 +70,33 @@ rules
     e1_type <test? CanCompare(),
     out_type is sub.lub of (e1_type,e2_type),
     out_type <test? IsType(), // make sure it evaluates to something
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ And(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     e1_type <test? IsBoolean(),
     e2_type <test? IsBoolean(),
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ Or(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_ord) ]] := // identical to And
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
     e1_type <test? IsBoolean(),
     e2_type <test? IsBoolean(),
-    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)).
+    (out_mult, out_ord) is mulOrd.lub of ((e1_mult,e1_ord),(e2_mult,e2_ord)),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
   [[ If(e1, e2, e3) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],

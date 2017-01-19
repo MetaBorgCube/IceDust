@@ -31,6 +31,9 @@ signature
     TOneOrMore  : Mult
     TZeroOrMore : Mult
     
+    TUOne  : MultU
+    TUMany : MultU
+    
     TOrdered   : Ord
     TUnordered : Ord
 
@@ -113,6 +116,14 @@ signature
       (TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore(),
       (TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore(),
       (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+    }
+    
+    multUpper : Mult -> MultU {
+      TZeroOrOne()  -> TUOne(),
+      TOne()        -> TUOne(),
+      TZeroOrMore() -> TUMany(),
+      TOneOrMore()  -> TUMany()
+      
     }
  
 rules
