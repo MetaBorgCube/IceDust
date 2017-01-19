@@ -83,20 +83,20 @@ test infer enitity instance type [[
     }
 ]] run name-get-type-test on #1 to "X"
 
-//test infer enitity instance type 2 [[ // http://yellowgrass.org/issue/NaBL2/11
-//  model
-//    entity X{
-//      i : Int
-//    }
-//    relation X.y <-> X.z {}
-//  data
-//    x : X {
-//      i = 5
-//      y =
-//        <rel { } >
-//        [[x1]] {i=4}
-//    }
-//]] run name-get-type-test on #1 to "X"
+test infer enitity instance type 2 [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <rel { } >
+        [[x1]] {i=4}
+    }
+]] run name-get-type-test on #1 to "X"
 
 test infer relation instance type [[
   model
@@ -121,17 +121,17 @@ test infer relation instance type [[
     }
 ]] run name-get-type-test on #1 to "XYRelation"
 
-//test infer relation instance type 2 [[ // http://yellowgrass.org/issue/NaBL2/11
-//  model
-//    entity X{
-//      i : Int
-//    }
-//    relation X.y <-> X.z {}
-//  data
-//    x : X {
-//      i = 5
-//      y =
-//        <[[rel]] { } >
-//        x1 {i=4}
-//    }
-//]] run name-get-type-test on #1 to "XYRelation"
+test infer relation instance type 2 [[
+  model
+    entity X{
+      i : Int
+    }
+    relation X.y <-> X.z {}
+  data
+    x : X {
+      i = 5
+      y =
+        <[[rel]] { } >
+        x1 {i=4}
+    }
+]] run name-get-type-test on #1 to "XYRelation"
