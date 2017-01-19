@@ -49,7 +49,5 @@ rules
 
   [[ Count(e1) ^ (s) : TTuple(TInt(), TOne(), TOrdered()) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    e1_type <test? IsType(), // make sure it evaluates to something
-    e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_type <test? IsType(). // make sure it evaluates to something
  
