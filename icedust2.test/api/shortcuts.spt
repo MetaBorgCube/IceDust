@@ -9,8 +9,8 @@ fixture [[
     }
     entity Course { }
     relation Enrollment {
-      Student.enrollment * -> student
-      Course.enrollment * -> course
+      Student *
+      Course *
       
       course.[[...]] <-> student.courses
     }
