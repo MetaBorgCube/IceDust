@@ -108,6 +108,9 @@ type rules
     and <or-nav> (x-or, y-or) => or2
     and <or-nav> (or2, z-or) => or
 
+  Not(x) has strategy x-st
+  where x has strategy x-st
+  
   LessThan(x, y)
 + LessThanEqual(x, y)
 + GreaterThan(x, y)
