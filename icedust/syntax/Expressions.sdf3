@@ -33,7 +33,7 @@ context-free syntax // operators
   Exp.And2               = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> or <Exp>>        {left}
   Exp.Or2                = <<Exp> || <Exp>>        {left}
-  Exp.If                 = <if(<Exp>) <Exp>>       {right} // else no value
+  Exp.IfElseNoValue      = <if(<Exp>) <Exp>>       {right} // else no value
   Exp.If                 = <if(<Exp>) <Exp> else <Exp>> {right}
   Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
@@ -140,6 +140,7 @@ context-free priorities
     Exp.Or2
   } >
   { right:
+    Exp.IfElseNoValue
     Exp.If
     Exp.If2
     Exp.If3

@@ -37,7 +37,7 @@ rules
 
 rules // else
 
-  expr-generate-else: e@If(a, b) -> If(a, b, <custom-origin(|e)>NoValue())
+  expr-generate-else: e@IfElseNoValue(a, b) -> If(a, b, <custom-origin(|e)>NoValue())
 
 rules // module strategy
 
