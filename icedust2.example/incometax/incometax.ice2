@@ -1,4 +1,4 @@
-module incometax // >>> Solving constraints <<< Finished in 22.19s
+module incometax // ctree collection=?+-2s constraints=0.025s analysis2=0.25s // jar collection=?<1s constraints=0.015 analysis2=0.05s
 
 model
 

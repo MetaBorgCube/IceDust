@@ -1,4 +1,4 @@
-module weblab // >>> Solving constraints <<< Finished in 230.18s
+module weblab // ctree collection=?+-10s constraints=0.1s analysis2=4s // jar collection=?+-6s constraints=0.06s analysis2-0.6s
 
 //// A simplified model of a grade calculation and course statistics tool in the university.
 ////

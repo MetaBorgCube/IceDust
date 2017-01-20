@@ -1,4 +1,4 @@
-module neverwinter // >>> Solving constraints <<< Killed it after 20 minutes, after it was stuck at 2010-2048MB memory usage for a while
+module neverwinter // ctree collection=?+60s constraints=0.25s analysis2=37s // jar collection=?+30s constraints=0.2s analysis2=5s
 
 //model
 //
