@@ -1,4 +1,4 @@
-module weblab
+module weblab // ctree 7 seconds // jar 0.7 seconds
 
 // A simplified model of a grade calculation and course statistics tool in the university.
 //
