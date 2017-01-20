@@ -24,7 +24,7 @@ model
     onTime   : Boolean   = submitted <= deadline <+ true
     submitted: Datetime?
     baseGrade: Float?    = if(conj(children.pass)) avg(children.grade) (default)
-    grade    : Float?    = baseGrade - if(onTime) 0.0 else 1.0         (default)
+    grade    : Float?    = baseGrade - (if(onTime) 0.0 else 1.0)       (default)
     pass     : Boolean   = grade >= (assignment.minimum<+0.0) <+ false
   }
   

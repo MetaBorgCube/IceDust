@@ -17,7 +17,7 @@ model
     passedCourses : Int = sum(enrollments.pass2)
   }
   
-  entity Course {
+  entity Course (eventual) {
     name       : String
     
     avgGrade   : Float?  = assignment.avgGrade
@@ -26,11 +26,11 @@ model
     
     summary    : String  = "The course " + name + " has " + numStudents as String + " students, " +
                            ("has a pass percentage of " + passPerc as String + "%" <+ "has no passing students") + ", and " +
-                           ("passing students have an average grade of " + avgGrade as String + "." <+ "has no average grade.")
+                           ("passing students have an average grade of " + avgGrade as String + "." <+ "has no average grade.") (on-demand eventual)
   }
   
   entity Enrollment {
-    name       : String  = course.name + " " +student.name
+    name       : String  = course.name + " " +student.name (on-demand)
     
     grade      : Float?  = submission.grade
     pass       : Boolean = submission.pass
