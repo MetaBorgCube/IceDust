@@ -16,6 +16,8 @@ imports
   
   analysis2/analysis2
 
+  lib/time
+
 rules // Analysis: NaBL2 hooks
 
   editor-analyze = nabl2-analyze(desugar-before-analysis)
@@ -38,8 +40,8 @@ rules // Analysis: NaBL2 hooks
       ast := <Hd;Snd>customUnitResult*
       ;<debug>ast
     with
-      (error*, warning*, note*, customFinalResult) := <nabl2-after-analysis(|resource,ast)>a
-      ;<debug>(error*, warning*, note*, customFinalResult)
+      (error*, warning*, note*, customFinalResult) := <measure-time(nabl2-after-analysis(|resource,ast),?analysis2-time)>a
+      ;<debug>($[analysis2 [analysis2-time]s],error*, warning*, note*, customFinalResult)
 
 rules // Debugging
   
