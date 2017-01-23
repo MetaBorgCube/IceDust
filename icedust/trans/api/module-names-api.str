@@ -36,6 +36,10 @@ rules // module
   
   modulename-get-arrinames-default-derived = modulename-get-arrinames;filter(name-is-default-derived)
   
+  modulename-get-arrinames-default-derived-incremental          = modulename-get-arrinames-default-derived;filter(name-is-incremental)
+  modulename-get-arrinames-default-derived-eventual             = modulename-get-arrinames-default-derived;filter(name-is-eventual)
+  modulename-get-arrinames-default-derived-incremental-eventual = modulename-get-arrinames-default-derived;filter(name-is-incremental+name-is-eventual)
+  
   // string -> [[string]]
   modulename-get-attributenames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(is-attributename)));filter(list-not-empty)
 
@@ -44,6 +48,9 @@ rules // module
   modulename-get-arrinames-topo = index-get-prop(|TopoSort());Hd;map(filter(where(name-is-arri)));filter(list-not-empty)
   
   modulename-get-arrinames-topo-default-derivation = modulename-get-arrinames-topo;map(filter(name-is-default-derived));filter(list-not-empty)
+  
+  modulename-get-arrinames-topo-default-derivation-incremental = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-incremental))
+  modulename-get-arrinames-topo-default-derivation-eventual    = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-eventual))
   
   modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
   modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)

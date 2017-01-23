@@ -18,10 +18,8 @@ rules // module (or modulename) -> java compilation-unit
   modulename-to-java-compilationunit2(err): x_moduleName -> result
     where
       is-modulename
-    where
-      modulename-is-eventuallyconsistent
     with
-      decs* := <modulename-get-arrinames-default-derived;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
+      decs* := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
       result := compilation-unit |[
         package derivations;

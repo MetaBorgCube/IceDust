@@ -183,6 +183,8 @@ rules // combined
   
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
   name-get-flowsto-pathexprs   = name-get-flowsto-paths;map(path-pathexpr)
+  
+  name-get-flowsto-pathexprs-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental-eventual))
 
 rules // helper
 

@@ -93,7 +93,7 @@ rules
         (calculate-stms*, calculate-exp) := <name-get-expr;exp-to-java-stm(err|0)>x_name
       end
     with
-      flowsto-stms* := <name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental));map(model-pathexpr-to-java-stm(err))>x_name
+      flowsto-stms* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-java-stm(err))>x_name
     with // Recalculate layer
       switch id
         case name-is-incremental; name-is-default-derived:

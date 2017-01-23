@@ -116,7 +116,7 @@ rules
       end
     with
       if name-is-incremental-eventual then
-        stat_flowsTo* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-webdsl-stm(err))>x_name
+        stat_flowsTo* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
       end
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
