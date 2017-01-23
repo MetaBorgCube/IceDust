@@ -57,6 +57,7 @@ type rules // derivations well-formedness (relations)
   RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):-
   where expr has multiplicity e-mu
     and e-mu == left-mu else error $[Multiplicity mismatch: expected [left-mu] got [e-mu] in Derivation] on expr
+    and right-mu == ZeroOrMore() else warning $[Warning: multiplicity [right-mu] cannot be statically guaranteed.] on right-mu
 
 //  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, strategy):-
 //  where expr has ordering e-or

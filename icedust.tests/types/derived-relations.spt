@@ -1,0 +1,30 @@
+module types-derived-relations
+
+language IceDust
+
+fixture [[
+  module test
+  
+  [[...]]
+]]
+
+test warning on non-* multiplicity on right-hand side of derived relation [[
+model
+
+  entity Assignment (on-demand) {
+  }
+  
+  entity Student {
+  }
+  
+  entity Submission {
+  }
+  
+  relation Submission.student    1           <-> * Student.submissions
+  relation Submission.assignment 1           <-> * Assignment.submissions
+  relation Assignment.children   * (ordered) <-> ? Assignment.parent
+  
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> [[?]] Submission.parent
+]] 1 warning at #1
