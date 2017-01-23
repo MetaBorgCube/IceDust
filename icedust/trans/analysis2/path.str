@@ -45,6 +45,13 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       (p2*, q2*) := <expr-pathexprs>e2;
       p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
       q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
+      
+  expr-pathexprs: e@Find(e1, x, e2) -> ([p1*,p2'*], [q1*,q2'*])
+    with
+      (p1*, q1*) := <expr-pathexprs>e1;
+      (p2*, q2*) := <expr-pathexprs>e2;
+      p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
+      q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 

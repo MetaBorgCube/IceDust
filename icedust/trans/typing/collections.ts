@@ -18,7 +18,8 @@ imports
 
 type rules
 
-  Filter(expr1, x, expr2) : ty1
+  Filter(expr1, x, expr2)
++ Find(expr1, x, expr2) : ty1
   where
     expr1 : ty1 and
     expr2 : ty2 and
@@ -30,12 +31,20 @@ type rules
     <lowerbound-zero> (mu1) => mu and
     expr2 has multiplicity mu2 and
     mu2 == One() else error $[Multiplicity mismatch: expected One got [mu2]] on expr2
+  
+  Find(expr1, x, expr2) has multiplicity ZeroOrOne()
+  where
+    expr1 has multiplicity mu1 and
+    expr2 has multiplicity mu2 and
+    mu2 == One() else error $[Multiplicity mismatch: expected One got [mu2]] on expr2
     
-  Filter(expr1, x, expr2) has ordering or1
+  Filter(expr1, x, expr2)
++ Find(expr1, x, expr2) has ordering or1
   where
     expr1 has ordering or1
     
-  Filter(expr1, x, expr2) has strategy st
+  Filter(expr1, x, expr2)
++ Find(expr1, x, expr2) has strategy st
   where expr1 has strategy e1-st
     and expr2 has strategy e2-st
     and <strategy-least-upperbound> (e1-st, e2-st) => st

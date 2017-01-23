@@ -463,3 +463,13 @@ binding rules // expressions
       of strategy st1
     where expr1 has type ty1
       and expr1 has strategy st1
+
+  Find(expr1, var, expr2):
+    scopes Var
+    defines Var var
+      of type ty1
+      of multiplicity One()
+      of ordering Ordered()
+      of strategy st1
+    where expr1 has type ty1
+      and expr1 has strategy st1

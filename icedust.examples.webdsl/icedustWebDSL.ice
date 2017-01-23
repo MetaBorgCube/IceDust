@@ -33,7 +33,7 @@ model
     name       : String  = course.name + " " +student.name (on-demand)
     
     grade      : Float?  = submission.grade
-    pass       : Boolean = submission.pass
+    pass       : Boolean = submission.pass <+ false
     pass2      : Int     = pass ? 1 : 0
   }
   
@@ -77,10 +77,8 @@ model
                            0.0
     
     childGrade : Float?  = sum(children.gradeWeighted) / sum(assignment.children.weight)
-    baseGrade  : Float?  = switch {
-                             case childPass => childGrade
-                             default        => no value // if one of child assignments not passed, no grade in the parent assignment
-                           } (default)                  // if this a leaf assginment, then the grade is entered here
+    baseGrade  : Float?  = if(childPass) childGrade  // if one of child assignments not passed, no grade in the parent assignment
+                                          (default)  // if this a leaf assginment, then the grade is entered here
     grade      : Float?  = switch {
                              case onTime      => baseGrade
                              case onExtension => baseGrade - latePenalty
@@ -96,30 +94,18 @@ model
   }
   
   relation Assignment.parent     ? <-> * Assignment.children
-  relation Submission.parent     ? <-> * Submission.children
   relation Submission.student    1 <-> * Student.submissions
   relation Submission.assignment 1 <-> * Assignment.submissions
+  relation Submission.parent     ? =  
+    assignment.parent.submissions.find(x => x.student == student)
+                                   <-> * Submission.children
   
   relation Course.assignment     1 <-> ? Assignment.course
-  relation Enrollment.submission 1 <-> ? Submission.enrollment
+  relation Enrollment.submission ? = course.assignment.submissions.find(x => x.student == student)
+                                   <-> ? Submission.enrollment
 
 data
-
-  alice : Student {
-    name = "Alice"
-  }
-  bob : Student {
-    name = "Bob"
-  }
-  charlie : Student {
-    name = "Charlie"
-  }
-  dave : Student {
-    name = "Dave"
-  }
-  eve : Student {
-    name = "Eve"
-  }
+  
   math : Course {
     name = "Math"
     assignment = 
@@ -143,117 +129,116 @@ data
             latePenalty = 2.0
           }
       }
+  }
+  alice : Student { // alice succeeds math
+    name = "Alice"
+    enrollments =
+      enA {
+        course = math
+      }
+    submissions =
+      mathAlice {
+        assignment = mathAssignment
+      },
+      examAlice {
+        assignment = exam
+        answer = "Good"
+        baseGrade = 7.0
+      },
+      practicalAlice {
+        assignment = practical
+        answer = "Great"
+        baseGrade = 8.0
+        date = 2016-02-17 16:00:00
+      }
+  }
+  bob : Student { // bob fails, because his exam is too low
+    name = "Bob"
     enrollments = 
-      enA { // alice succeeds math
-        student = alice
-        submission =
-          mathAlice {
-            assignment = mathAssignment
-            student = alice
-            children = 
-              examAlice {
-                assignment = exam
-                student = alice
-                answer = "Good"
-                baseGrade = 7.0
-              },
-              practicalAlice {
-                assignment = practical
-                student = alice
-                answer = "Great"
-                baseGrade = 8.0
-                date = 2016-02-17 16:00:00
-              }
-          }
+      enB {
+        course = math
+      }
+    submissions =
+      mathBob {
+        assignment = mathAssignment
       },
-      enB { // bob fails, because his exam is too low
-        student = bob
-        submission =
-          mathBob {
-            assignment = mathAssignment
-            student = bob
-            children = 
-              examBob {
-                assignment = exam
-                student = bob
-                answer = "Bad"
-                baseGrade = 3.0
-              },
-              practicalBob {
-                assignment = practical
-                student = bob
-                answer = "Perfect"
-                baseGrade = 10.0
-                date = 2016-02-17 16:00:00
-              }
-          }
+      examBob {
+        assignment = exam
+        answer = "Bad"
+        baseGrade = 3.0
       },
-      enC { // charlie fails, because with the penalty for his practical his practical is too low
-        student = charlie
-        submission =
-          mathCharlie {
-            assignment = mathAssignment
-            student = charlie
-            children = 
-              examCharlie {
-                assignment = exam
-                student = charlie
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalCharlie {
-                assignment = practical
-                student = charlie
-                answer = "Sufficient"
-                baseGrade = 6.0
-                date = 2016-02-20 16:00:00
-              }
-          }
+      practicalBob {
+        assignment = practical
+        answer = "Perfect"
+        baseGrade = 10.0
+        date = 2016-02-17 16:00:00
+      }
+  }
+  charlie : Student { // charlie fails, because with the penalty for his practical his practical is too low
+    name = "Charlie"
+    enrollments =
+      enC {
+        course = math
+      }
+    submissions = 
+      mathCharlie {
+        assignment = mathAssignment
       },
-      enD { // dave fails, because his practical is submitted after the deadline extension
-        student = dave
-        submission =
-          mathDave {
-            assignment = mathAssignment
-            student = dave
-            children = 
-              examDave {
-                assignment = exam
-                student = dave
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalDave {
-                assignment = practical
-                student = dave
-                answer = "Great"
-                baseGrade = 8.0
-                date = 2016-02-27 16:00:00
-              }
-          }
+      examCharlie {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
       },
-      enE { // eve succeeds, as she got a deadline extension
-        student = eve
-        submission =
-          mathEve {
-            assignment = mathAssignment
-            student = eve
-            children = 
-              examEve {
-                assignment = exam
-                student = eve
-                answer = "Great"
-                baseGrade = 8.0
-              },
-              practicalEve {
-                assignment = practical
-                student = eve
-                answer = "Near Perfect"
-                baseGrade = 9.0
-                date = 2016-02-27 16:00:00
-                deadline = 2016-02-27 23:59:59
-              }
-          }
+      practicalCharlie {
+        assignment = practical
+        answer = "Sufficient"
+        baseGrade = 6.0
+        date = 2016-02-20 16:00:00
+      }
+  }
+  dave : Student { // dave fails, because his practical is submitted after the deadline extension
+    name = "Dave"
+    enrollments =
+      enD {
+        course = math
+      }
+    submissions = 
+      mathDave {
+        assignment = mathAssignment
+      },
+      examDave {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
+      },
+      practicalDave {
+        assignment = practical
+        answer = "Great"
+        baseGrade = 8.0
+        date = 2016-02-27 16:00:00
+      }
+  }
+  eve : Student { // eve succeeds, as she got a deadline extension
+    name = "Eve"
+    enrollments =
+      enE {
+        course = math
+      }
+    submissions = 
+      mathEve {
+        assignment = mathAssignment
+      },
+      examEve {
+        assignment = exam
+        answer = "Great"
+        baseGrade = 8.0
+      },
+      practicalEve {
+        assignment = practical
+        answer = "Near Perfect"
+        baseGrade = 9.0
+        date = 2016-02-27 16:00:00
+        deadline = 2016-02-27 23:59:59
       }
   }
   

@@ -22,7 +22,6 @@ rules
     bottomup(try(omitted1));
     bottomup(try(omitted2))
   
-  omitted1 = expr-generate-else
   omitted1 = keep-origin(module-generate-strategy)
   omitted1 = attr-generate-mult
   omitted1 = role-generate-omitted
@@ -34,10 +33,6 @@ rules
   
   omitted2 = entity-generate-shortcuts        // requires role-generate-name
   omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
-
-rules // else
-
-  expr-generate-else: e@IfElseNoValue(a, b) -> If(a, b, <custom-origin(|e)>NoValue())
 
 rules // module strategy
 
