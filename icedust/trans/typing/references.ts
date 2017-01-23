@@ -41,6 +41,12 @@ type rules // general references
   where  expr has strategy expr-st
     and definition of member has strategy member-st
     and <strategy-least-upperbound> (expr-st, member-st) => st
+    
+  MemberAccess(expr, a)
++ Ref(a) :-
+  where definition of a has strategy st
+    and definition of a has side     si
+    and not((st => OnDemand() or st => OnDemandEventual()) and si => Right()) else error $[Error: [a] is not materialized, use incremental or eventual calculation strategy for [a]] on a
 
   Ref(a) : ty
   where definition of a : ty
