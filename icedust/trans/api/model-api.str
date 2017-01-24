@@ -125,6 +125,8 @@ rules // relations
   relation-has-no-ord2  = where(relation-get-ord2 ;?None())
   relation-has-no-rel2  = where(relation-get-rel2 ;?None())
   
+  relation-is-same-type = where(<eq>(<relation-get-type1>,<relation-get-type2>))
+  
 rules // shortcutrel
   
   is-shortcutrel = ?ShortcutRelation(_, _, _, _, _, _, _, _, _, _)
@@ -155,6 +157,8 @@ rules // shortcutrel
   shortcutrel-has-no-mult2 = where(shortcutrel-get-mult2;?None())
   shortcutrel-has-no-ord2  = where(shortcutrel-get-ord2 ;?None())
   shortcutrel-has-no-rel2  = where(shortcutrel-get-rel2 ;?None())
+  
+  shortcutrel-is-same-type = where(<eq>(<shortcutrel-get-type1>,<shortcutrel-get-type2>))
 
 rules // query
   
