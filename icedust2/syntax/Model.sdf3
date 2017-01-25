@@ -6,51 +6,60 @@ imports
   Expressions
   Types
   
-context-free syntax
+context-free syntax // entities
 
   Model.Entity = <
-    entity <ID> {
+    entity <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
   
   Model.FirstClassRelation = <
-    relation <ID> {
+    relation <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
   
-  Model.Relation = [
-    relation [ID][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [ID][DotID?]
-  ]
-  
+context-free syntax // shortcut relations
+
   Model.ShortcutRelation = [
-    relation [ID][DotID?][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [ID][DotID?] {
+    relation [ID][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [ID][DotID?][Strategy?] {
       [{Member "\n"}*]
     }
   ]
   
-  Member.Attribute = <
-    <ID> : <Type><Multiplicity?>
-  >
-  
-  Member.DerivationAttribute = <
-    <ID> : <Type><Multiplicity?> = <Exp>
-  >
-  
-  Member.DefaultAttribute = <
-    <ID> : <Type><Multiplicity?> = <Exp> (default)
-  >
+context-free syntax // non-first-class relation
 
-  Member.Role = [
-    [ID][DotID?] [Multiplicity?][Ordering?][SpaceArrowID?]
+  Model.Relation = [
+    relation [ID][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [ID][DotID?]
   ]
 
+  Model.RelationDerived = [
+    relation [ID][DotID?][SpaceMultiplicity?] = [Exp]
+      <->[SpaceMultiplicity?] [ID][DotID?][Strategy?]
+  ]
+  
+
+context-free syntax // entity members
+
+  Member.Attribute           = <
+    <ID> : <PrimitiveType><Multiplicity?>
+  >
+  Member.DerivationAttribute = <
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
+  >
+  Member.DefaultAttribute    = <
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
+  >
+  
+  Member.Role = [
+    [ID][DotID?][SpaceMultiplicity?][SpaceArrowID?]
+  ]
+  
   Member.Shortcut = [
     [ID][DotID?] <-> [ID][DotID?]
   ]
   
   DotID             = <.<ID>>
   SpaceArrowID      = [ -> [ID]]
-  SpaceMultiplicity = [ [Multiplicity]]
-  SpaceOrdering     = [ [Ordering]]
+  SpaceMultiplicity = [ [MultiplicityOrdering]]

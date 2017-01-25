@@ -26,18 +26,22 @@ signature
     TNoValue  : Type
     TEntity   : occurrence -> Type
     
-    TOne        : Mult
-    TZeroOrOne  : Mult
-    TOneOrMore  : Mult
-    TZeroOrMore : Mult
+    TOne               : Mult
+    TZeroOrOne         : Mult
+    TOneOrMore         : Mult
+    TZeroOrMore        : Mult
+    TOneOrMoreOrdered  : Mult
+    TZeroOrMoreOrdered : Mult
+    
+    TIncremental      : Strat
+    TOnDemand         : Strat
+    TEventual         : Strat
+    TOnDemandEventual : Strat
     
     TUOne  : MultU
     TUMany : MultU
     
-    TOrdered   : Ord
-    TUnordered : Ord
-
-    TTuple : Type * Mult * Ord -> RichType
+    TTuple : Type * Mult * Strat -> RichType
 
     IsType      : TypeTest // type classes
     IsNumeric   : TypeTest
@@ -54,7 +58,8 @@ signature
   relations
 
     anti-symmetric, anti-transitive test : Type * TypeTest
-    reflexive, anti-symmetric, transitive mulOrd : (Mul * Ord) * (Mul * Ord)
+    reflexive, anti-symmetric, transitive mulOrd : Mul * Mul
+    reflexive, anti-symmetric, transitive strat : Strat * Strat
     reflexive, anti-symmetric, transitive sub : Type * Type
     irreflexive cast : Type * Type
  
@@ -85,44 +90,54 @@ signature
     }
 
     upperboundOne : Mult -> Mult {
-      TOne() -> TOne(),
-      TZeroOrOne() -> TZeroOrOne(),
-      TOneOrMore() -> TOne(),
-      TZeroOrMore() -> TZeroOrOne()
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrOne(),
+      TZeroOrMoreOrdered() -> TZeroOrOne(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOne(),
+      TOneOrMoreOrdered()  -> TOne()
     }
 
     choiceLeftMult : Mult -> Mult {
-      (TOne()       , mult         ) -> TOne(),
-      (TOneOrMore() , mult         ) -> TOneOrMore(),
-      (TZeroOrOne() , mult         ) -> mult,
-      (TZeroOrMore(), TOne()       ) -> TOneOrMore(),
-      (TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore(),
-      (TZeroOrMore(), TOneOrMore() ) -> TOneOrMore(),
-      (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
-    }
-
-    choiceLeftOrd : Ord -> Ord {
-      (TOrdered()   , TOrdered()   ) -> TOrdered(),
-      (TOrdered()   , TUnordered() ) -> TUnordered(),
-      (TUnordered() , ord          ) -> TUnordered()
+      (TOne()              , mult                ) -> TOne(),              // [1,_] -> always left-hand side operand
+      (TOneOrMore()        , mult                ) -> TOneOrMore(),        // [1,_] -> always left-hand side operand
+      (TOneOrMoreOrdered() , mult                ) -> TOneOrMore(),        // [1,_] -> always left-hand side operand
+      (TZeroOrOne()        , mult                ) -> mult,                // [0,1] -> always right-hand side multiplicity
+      (mult                , TZeroOrMore()       ) -> ZeroOrMore(),        // [0,_] <+ [0,n) unordered -> always [0,n) unordered
+      (mult                , TOneOrMore()        ) -> TOneOrMore(),        // [0,_] <+ [1,n) unordered -> always [1,n) unordered
+      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> ZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOne()              ) -> OneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> ZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOneOrMoreOrdered() ) -> OneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMore()       , TZeroOrOne()        ) -> ZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOne()              ) -> OneOrMore(),         // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TZeroOrMoreOrdered()) -> ZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> OneOrMore()          // [0,n) unordered -> upper-bound many, drop ordering
     }
  
     mergeMult : Mult -> Mult {
-      (TOne()       , mult         ) -> TOneOrMore(),
-      (TOneOrMore() , mult         ) -> TOneOrMore(),
-      (mult         , TOne()       ) -> TOneOrMore(),
-      (mult         , TOneOrMore() ) -> TOneOrMore(),
-      (TZeroOrOne() , TZeroOrOne() ) -> TZeroOrMore(),
-      (TZeroOrMore(), TZeroOrOne() ) -> TZeroOrMore(),
-      (TZeroOrOne() , TZeroOrMore()) -> TZeroOrMore(),
-      (TZeroOrMore(), TZeroOrMore()) -> TZeroOrMore()
+      (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
+      (mult                , TOneOrMore()        ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
+      (TZeroOrMore()       , TOne()              ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TOne()              , TZeroOrMore()       ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TOneOrMoreOrdered() , TZeroOrMore()       ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TZeroOrMore()       , mult                ) -> TZeroOrMore(),        // [0,n) unordered remaining -> [0,n) unordered
+      (mult                , TZeroOrMore()       ) -> TZeroOrMore(),        // [0,n) unordered remaining -> [0,n) unordered
+      (TZeroOrOne()        , TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrOne()        , TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (mult1               , mult2               ) -> TOneOrMoreOrdered()   // rest -> [1,n) ordered
     }
     
     multUpper : Mult -> MultU {
-      TZeroOrOne()  -> TUOne(),
-      TOne()        -> TUOne(),
-      TZeroOrMore() -> TUMany(),
-      TOneOrMore()  -> TUMany()
+      TZeroOrOne()         -> TUOne(),
+      TOne()               -> TUOne(),
+      TZeroOrMore()        -> TUMany(),
+      TOneOrMore()         -> TUMany(),
+      TZeroOrMoreOrdered() -> TUMany(),
+      TOneOrMoreOrdered()  -> TUMany()
       
     }
  
@@ -166,19 +181,21 @@ rules
   
     // multiplicity/ordering lattice
   
-    (TOne(),       TUnordered()) <mulOrd! (TOne(), TOrdered()),
-    (TOne(),       TOrdered())   <mulOrd! (TZeroOrOne(), TOrdered()),
-    (TOne(),       TOrdered())   <mulOrd! (TOneOrMore(), TOrdered()),
-
-    (TZeroOrOne(), TUnordered()) <mulOrd! (TZeroOrOne(),TOrdered()),
-    (TZeroOrOne(), TOrdered())   <mulOrd! (TZeroOrMore(),TOrdered()),
+    TOne()               <mulOrd! TZeroOrOne(),         //                 TZeroOrMore()
+    TOne()               <mulOrd! TOneOrMoreOrdered(),  //                  /    \
+    TZeroOrOne()         <mulOrd! TZeroOrMoreOrdered(), // ZeroOrMoreOrdered()  TOneOrMore()
+    TOneOrMoreOrdered()  <mulOrd! TZeroOrMoreOrdered(), //             /    \    /
+    TOneOrMoreOrdered()  <mulOrd! TOneOrMore(),         //  TZeroOrOne()  TOneOrMoreOrdered()
+    TZeroOrMoreOrdered() <mulOrd! TZeroOrMore(),        //             \    /
+    TOneOrMore()         <mulOrd! TZeroOrMore(),        //             TOne()
     
-    (TOneOrMore(), TOrdered())   <mulOrd! (TZeroOrMore(),TOrdered()),
-    (TOneOrMore(), TOrdered())   <mulOrd! (TOneOrMore(), TUnordered()),
-    (TOneOrMore(), TUnordered()) <mulOrd! (TZeroOrMore(),TUnordered()),
-
-    (TZeroOrMore(),TOrdered())   <mulOrd! (TZeroOrMore(),TUnordered()),
-  
+    // strategy lattice
+    
+    TIncremental() <strat! TOnDemand(),         //      TOnDemandEventual()
+    TIncremental() <strat! TEventual(),         //          /       \
+    TOnDemand()    <strat! TOnDemandEventual(), //  TEventual()   TOnDemand()
+    TEventual()    <strat! TOnDemandEventual(), //          \       /
+                                                //        TIncremental()
     // subtype relation 
   
     TNoValue() <sub! TInt(),

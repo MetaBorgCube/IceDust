@@ -14,7 +14,7 @@ rules
 
   get-type2        = get-annotation(|Type()) <+ nabl2-get-ast-type;normalize-type
   get-multiplicity = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-multiplicity
-  get-ordering     = get-annotation(|Ord())  <+ nabl2-get-ast-type;normalize-ordering
+  get-strategy     =                            nabl2-get-ast-type;normalize-strategy
   
   normalize-type = ?TTuple(<id>,_,_);?TInt()     ;!Int()
   normalize-type = ?TTuple(<id>,_,_);?TFloat()   ;!Float()
@@ -25,11 +25,16 @@ rules
   normalize-type = ?TTuple(<id>,_,_);?TEntity(Occurrence(_,<id>,_))
   normalize-type = ?TTuple(<id>,_,_);debug
   
-  normalize-multiplicity = ?TTuple(_,<id>,_);?TOne()       ;!One()
-  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrOne() ;!ZeroOrOne()
-  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMore();!ZeroOrMore()
-  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMore() ;!OneOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOne()              ;!One()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrOne()        ;!ZeroOrOne()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMore()       ;!ZeroOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMore()        ;!OneOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMoreOrdered();!ZeroOrMoreOrdered()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMoreOrdered() ;!OneOrMoreOrdered()
   normalize-multiplicity = debug(!"normalize-multiplicity: ");fail
   
-  normalize-ordering = ?TTuple(_,_,<id>);?TOrdered()   ;!Ordered()
-  normalize-ordering = ?TTuple(_,_,<id>);?TUnordered() ;!Unordered()
+  normalize-strategy = ?TTuple(_,<id>,_);?TIncremental()     ;!Incremental()
+  normalize-strategy = ?TTuple(_,<id>,_);?TOnDemand()        ;!OnDemand()
+  normalize-strategy = ?TTuple(_,<id>,_);?TEventual()        ;!Eventual()
+  normalize-strategy = ?TTuple(_,<id>,_);?TOnDemandEventual();!OnDemandEventual()
+  normalize-strategy = debug(!"normalize-strategy: ");fail

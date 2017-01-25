@@ -6,11 +6,12 @@ imports
   Model
   Data
   Execute
+  Types
 
-context-free syntax
-  
+context-free syntax // modules
+
   Start.Module = <
-    module <ID>
+    module <ID><Strategy?>
     
     <{ModuleSection "\n\n"}*>
     
@@ -33,4 +34,3 @@ context-free syntax
     
       <{Execute "\n"}*>
   >
-  

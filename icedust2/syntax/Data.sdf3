@@ -11,7 +11,7 @@ context-free syntax
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <IDSpace?>: <Type> {
+    <IDSpace?>: <EntityType> {
       <{MemberValue "\n"}*>
     }
   >
@@ -23,7 +23,7 @@ context-free syntax
   >
   
   RelationInstance.RelationInstance = [
-    < [IDSpace?]: [Type] {
+    < [IDSpace?]: [EntityType] {
       [{MemberValue "\n"}*]
     } >
   ]

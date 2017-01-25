@@ -132,10 +132,9 @@ rules
 
   name-get-type         = get-type-property(|"Member");normalize-type
   name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity
-  name-get-ordering     = get-type-property(|"Member");normalize-ordering
   
-  name-is-ordered   = where(name-get-ordering;ordered)
-  name-is-unordered = where(name-get-ordering;unordered)
+  name-is-ordered            = where(get-multiplicity;ordered)
+  name-is-unordered          = where(get-multiplicity;unordered)
 
 rules // shortcuts
 

@@ -2,7 +2,7 @@ module expressions-references
 
 rules
 
-  [[ This() ^ (s) : TTuple(this_type, TOne(), TOrdered()) ]] :=
+  [[ This() ^ (s) : TTuple(this_type, TOne(), TIncremental()) ]] :=
     Implicit{"this"} -> s,
     Implicit{"this"} |-> this_def,
     this_def : this_type.

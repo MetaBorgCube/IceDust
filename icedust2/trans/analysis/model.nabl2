@@ -2,7 +2,7 @@ module model
 
 rules
 
-  [[ Entity(e, as) ^ (module_scope) ]] :=
+  [[ Entity(e, st, as) ^ (module_scope) ]] :=
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
@@ -23,7 +23,7 @@ rules
     Entity2{e} <=I= entity_scope, // import all from that reference
     new entity_scope.
 
-  [[ FirstClassRelation(e, as) ^ (module_scope) ]] := // identical to Entity
+  [[ FirstClassRelation(e, st, as) ^ (module_scope) ]] := // identical to Entity
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
@@ -39,42 +39,42 @@ rules
     
   [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult, TOrdered()),
+    Member{a} : TTuple(a_type, a_mult, TIncremental()),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := Normal(),
     Member{a}.reltype := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ DerivationAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
-    a_ord == TOrdered(),
+  [[ DerivationAttribute(a, t, m, e, st) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult, a_ord),
+    Member{a} : TTuple(a_type, a_mult, a_strat),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := Derivation(),
     Member{a}.expr := e,
     Member{a}.reltype := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
+    [[ st^ (entity_scope) : a_strat ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult, e_ord) ]],
     e_type <sub? a_type | error $[Type error: expected [a_type] got [e_type].]@e,
     (e_mult,e_ord) <mulOrd? (a_mult,a_ord) | error $[Multiplicity error: expected [(a_mult,a_ord)] got [(e_mult,e_ord)].]@e.
     
-  [[ DefaultAttribute(a, t, m, e) ^ (entity_scope, module_scope) ]] :=
-    a_ord == TOrdered(),
+  [[ DefaultAttribute(a, t, m, e, st) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
-    Member{a} : TTuple(a_type, a_mult, a_ord),
+    Member{a} : TTuple(a_type, a_mult, a_strat),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := DefaultValue(),
     Member{a}.expr := e,
     Member{a}.reltype := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
+    [[ st^ (entity_scope) : a_strat ]],
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult, e_ord) ]],
     e_type <sub? a_type | error $[Type error: expected [a_type] got [e_type].]@e,
     (e_mult,e_ord) <mulOrd? (a_mult,a_ord) | error $[Multiplicity error: expected [(a_mult,a_ord)] got [(e_mult,e_ord)].]@e.
     
-  [[ Relation(e1, r1, m1, o1, m2, o2, e2, r2) ^ (module_scope) ]] :=
+  [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
     Entity2{e1} ===> entity1_scope,
     Member{r1} <- entity1_scope,
@@ -104,14 +104,14 @@ rules
     new entity1_scope,
     new entity2_scope.
     
-  [[ Role(entity, inverse, mult, ord, role) ^ (entity_scope, module_scope) ]] :=
+  [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
     [[ mult ^ (entity_scope) : inverse_mult ]],
     [[ ord  ^ (entity_scope) : inverse_ord  ]],
     Implicit{"this"} -> entity_scope,
     Implicit{"this"} |-> this_def,
     this_def : this_type,
     Member{role} <- entity_scope,
-    Member{role} : TTuple(entity_type, TOne(), TOrdered()),
+    Member{role} : TTuple(entity_type, TOne(), TIncremental()),
     Member{role}.ns := Role(),
     Member{role}.inversemult := inverse_mult,
     Member{role}.inverseord  := inverse_ord,

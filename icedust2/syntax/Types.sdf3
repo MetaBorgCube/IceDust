@@ -6,8 +6,7 @@ imports
 
 context-free syntax
 
-  Type            = PrimitiveType
-  Type.EntityType = ID
+  EntityType.EntityType = ID
 
   PrimitiveType.Boolean   = <Boolean>
   PrimitiveType.Float     = <Float>
@@ -19,7 +18,13 @@ context-free syntax
   Multiplicity.ZeroOrOne  = <?>
   Multiplicity.OneOrMore  = <+>
   Multiplicity.ZeroOrMore = <*>
+  
+  MultiplicityOrdering                   = Multiplicity
+  MultiplicityOrdering.ZeroOrMoreOrdered = <* (ordered)>
+  MultiplicityOrdering.OneOrMoreOrdered  = <+ (ordered)>
 
-  Ordering.Ordered        = <(ordered)>
-  Ordering.Unordered      = <(unordered)>
+  Strategy.OnDemand         = <(on-demand)>
+  Strategy.Incremental      = <(incremental)>
+  Strategy.Eventual         = <(eventual)>
+  Strategy.OnDemandEventual = <(on-demand eventual)>
   
