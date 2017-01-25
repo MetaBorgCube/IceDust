@@ -47,11 +47,9 @@ rules // role fields
   role-generate-omitted =
     is-role;
     try(role-generate-mult);
-    try(role-generate-ord );
     try(role-generate-name)
 
   role-generate-mult = role-has-no-mult;     role-set-mult(!ZeroOrMore())
-  role-generate-ord  = role-has-no-ord ;     role-set-ord (!Unordered())
   role-generate-name = role-has-no-name; ?r; role-set-name(!r;role-get-type;lcfirst)
 
 rules
@@ -73,9 +71,7 @@ rules // relation fields
     try(rel-generate-rel1 );
     try(rel-generate-rel2 );
     try(rel-generate-mult1);
-    try(rel-generate-mult2);
-    try(rel-generate-ord1 );
-    try(rel-generate-ord2 )
+    try(rel-generate-mult2)
 
   rel-generate-rel1a = relation-has-no-rel1 ; ?r; not(relation-has-no-rel2); relation-is-same-type; relation-set-rel1(<custom-origin(|<relation-get-type1>r)>$[[<relation-get-rel2>r]Inverse])
   rel-generate-rel2a = relation-has-no-rel2 ; ?r; not(relation-has-no-rel1); relation-is-same-type; relation-set-rel2(<custom-origin(|<relation-get-type2>r)>$[[<relation-get-rel1>r]Inverse])
@@ -83,8 +79,6 @@ rules // relation fields
   rel-generate-rel2  = relation-has-no-rel2 ; ?r; relation-set-rel2 (<custom-origin(|<relation-get-type2>r)>$[[<relation-get-type1;lcfirst>r]])
   rel-generate-mult1 = relation-has-no-mult1;     relation-set-mult1(!ZeroOrMore())
   rel-generate-mult2 = relation-has-no-mult2;     relation-set-mult2(!ZeroOrMore())
-  rel-generate-ord1  = relation-has-no-ord1 ;     relation-set-ord1 (!Unordered())
-  rel-generate-ord2  = relation-has-no-ord2 ;     relation-set-ord2 (!Unordered())
 
 rules // shortcutrel fields
 
@@ -95,9 +89,7 @@ rules // shortcutrel fields
     try(shortcutrel-generate-rel1 );
     try(shortcutrel-generate-rel2 );
     try(shortcutrel-generate-mult1);
-    try(shortcutrel-generate-mult2);
-    try(shortcutrel-generate-ord1 );
-    try(shortcutrel-generate-ord2 )
+    try(shortcutrel-generate-mult2)
 
   shortcutrel-generate-rel1a = shortcutrel-has-no-rel1 ; ?r; not(shortcutrel-has-no-rel2); shortcutrel-is-same-type; shortcutrel-set-rel1(<custom-origin(|<shortcutrel-get-type1>r)>$[[<shortcutrel-get-rel2>r]Inverse])
   shortcutrel-generate-rel2a = shortcutrel-has-no-rel2 ; ?r; not(shortcutrel-has-no-rel1); shortcutrel-is-same-type; shortcutrel-set-rel2(<custom-origin(|<shortcutrel-get-type2>r)>$[[<shortcutrel-get-rel1>r]Inverse])
@@ -105,8 +97,6 @@ rules // shortcutrel fields
   shortcutrel-generate-rel2  = shortcutrel-has-no-rel2 ; ?r; shortcutrel-set-rel2 (<custom-origin(|<shortcutrel-get-type2>r)>$[[<shortcutrel-get-type1;lcfirst>r]])
   shortcutrel-generate-mult1 = shortcutrel-has-no-mult1;     shortcutrel-set-mult1(!ZeroOrMore())
   shortcutrel-generate-mult2 = shortcutrel-has-no-mult2;     shortcutrel-set-mult2(!ZeroOrMore())
-  shortcutrel-generate-ord1  = shortcutrel-has-no-ord1 ;     shortcutrel-set-ord1 (!Unordered())
-  shortcutrel-generate-ord2  = shortcutrel-has-no-ord2 ;     shortcutrel-set-ord2 (!Unordered())
 
 rules // roles -> inv (context sensitive)
   
@@ -181,13 +171,7 @@ rules // shortcuts (context sensitive)
 
 rules // shortcutrels -> shortcut relations
 
-  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, None(), o2, e2, s2, st) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, ZeroOrMore(), o2, e2, s2, st)
-  rel-generate-mult: RelationDerived(e1, s1, None(), o1, expr, m2    , o2, e2, s2, st) -> RelationDerived(e1, s1, ZeroOrMore(), o1, expr, m2,           o2, e2, s2, st)
-  rel-generate-mult: RelationDerived(e1, s1, m1,     o1, expr, None(), o2, e2, s2, st) -> RelationDerived(e1, s1, m1,           o1, expr, ZeroOrMore(), o2, e2, s2, st)
-
-rules
-
-  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, o1, m2, o2, EntityRef(e2), s2, strategy, attrs) -> result
+  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, m2, EntityRef(e2), s2, strategy, attrs) -> result
     with
       relname  := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
       invname1 := <custom-origin(|e1)>$[[s2]Relation];
@@ -196,8 +180,8 @@ rules
       result := <custom-origin(|scr)>FirstClassRelation(
         relname
       , strategy
-      , [ <custom-origin(|e2)>Role(e1, invname2, m1, o1, s2)
-        , <custom-origin(|e1)>Role(e2, invname1, m2, o2, s1)
+      , [ <custom-origin(|e2)>Role(e1, invname2, m1, s2)
+        , <custom-origin(|e1)>Role(e2, invname1, m2, s1)
         , <custom-origin(|e1)><create-shortcut(|s1, s2, s2, s1)>
         | attrs
         ]

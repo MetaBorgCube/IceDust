@@ -42,12 +42,6 @@ type rules
     and <mu-merge> (x-mu, y-mu) => mu
 
   ChoiceLeft(x,y)
-+ Merge(x,y) has ordering or
-  where  x  has ordering x-or
-    and  y  has ordering  y-or
-    and <or-nav> (x-or, y-or) => or
-
-  ChoiceLeft(x,y)
 + Merge(x,y) has strategy st
   where  x  has strategy x-st
     and  y  has strategy  y-st

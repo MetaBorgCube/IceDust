@@ -38,12 +38,12 @@ test type of shortcut2     [[s.courses]]             run get-type2 to "Course"
 
 test type of shortcut.shortcut    [[s.courses.students]]   run get-type2 to "Student"
 
-test multiplicity of inverse role  [[c.enrollment.student]]  run get-multiplicity to OneOrMore()
-test multiplicity of shortcut      [[c.students]]            run get-multiplicity to OneOrMore()
+test multiplicity of inverse role  [[c.enrollment.student]]  run get-multiplicity to OneOrMoreOrdered()
+test multiplicity of shortcut      [[c.students]]            run get-multiplicity to OneOrMoreOrdered()
 test multiplicity of inverse role2 [[s.enrollment.course]]   run get-multiplicity to ZeroOrMore()
 test multiplicity of shortcut2     [[s.courses]]             run get-multiplicity to ZeroOrMore()
 
-test ordering of inverse role  [[c.enrollment.student]]  run get-ordering to Ordered()
-test ordering of shortcut      [[c.students]]            run get-ordering to Ordered()
-test ordering of inverse role2 [[s.enrollment.course]]   run get-ordering to Unordered()
-test ordering of shortcut2     [[s.courses]]             run get-ordering to Unordered()
+test ordering of inverse role  [[c.enrollment.student]]  run get-multiplicity to OneOrMoreOrdered() // is ordered
+test ordering of shortcut      [[c.students]]            run get-multiplicity to OneOrMoreOrdered() // is ordered
+test ordering of inverse role2 [[s.enrollment.course]]   run get-multiplicity to ZeroOrMore() // is unordered
+test ordering of shortcut2     [[s.courses]]             run get-multiplicity to ZeroOrMore() // is unordered

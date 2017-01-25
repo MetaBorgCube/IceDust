@@ -29,12 +29,12 @@ model
   }
   
   relation Submission.student    1           <-> * Student.submissions
-  relation Submission.assignment 1           <-> * Assignment.submissions
+  relation Submission.assignment 1           <-> * (ordered) Assignment.submissions
   relation Assignment.children   * (ordered) <-> ? Assignment.parent
   
   relation Submission.children   * (ordered) = 
     assignment.children.submissions.filter(x => x.student == student)
-                                             <-> ? (ordered) Submission.parent
+                                             <-> ? Submission.parent
   
   relation Submission.next       ? = 
     parent.children.elemAt(parent.children.indexOf(this))

@@ -92,30 +92,6 @@ rules // check that we do not assign to derived value attributes
       msg           := ["Attribute ", name, " is a derived value."];
       <_task-create-error-on-success(|ctx, match-task, msg)>name
 
-rules // predicates over multiplcities
-  
-  upper-one: ZeroOrOne() -> <id>
-  upper-one: One() -> <id>
-  upper-many: ZeroOrMore() -> <id>
-  upper-many: OneOrMore() -> <id>
-  lower-zero: ZeroOrOne() -> <id>
-  lower-zero: ZeroOrMore() -> <id>
-  lower-one: One() -> <id>
-  lower-one: OneOrMore() -> <id>
-  nullable = lower-zero
-
-rules
-
-  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrMore())
-  mult-inbounds(|multiplicity) = where(!multiplicity => OneOrMore()) ;?i ;where(!(i,1);geq)
-  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrOne()) ;?i ;where(!(i,1);leq)
-  mult-inbounds(|multiplicity) = where(!multiplicity => One())       ;?i ;where(!(i,1);eq)
-
-rules // predicates over ordering
-  
-  ordered: Ordered() -> <id>
-  unordered: Unordered() -> <id>
-
 rules
   
   // FIXME: NaBL should have generated this  

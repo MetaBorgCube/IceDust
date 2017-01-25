@@ -43,8 +43,6 @@ properties
   derivation-type      of Attribute   : DerivationType  //Derivation(), DefaultValue() or Normal()
   multiplicity         of Attribute   : Multiplicity
   multiplicity-inverse of Role        : Multiplicity
-  ordering             of Role        : Ordering
-  ordering-inverse     of Role        : Ordering
   inverse              of Role        : Inverse
   origin-role          of Inverse     : Role
   origin-role2         of Shortcut    : Role
@@ -121,7 +119,6 @@ binding rules // model
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type Normal()
       of strategy Incremental() // bottom of lattice
       
@@ -129,7 +126,6 @@ binding rules // model
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type Derivation()
       of strategy this-s
       where This() resolves to This this2
@@ -139,7 +135,6 @@ binding rules // model
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type Derivation()
       of strategy s
           
@@ -147,7 +142,6 @@ binding rules // model
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type DefaultValue()
       of strategy this-s
       where This() resolves to This this2
@@ -157,18 +151,15 @@ binding rules // model
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type DefaultValue()
       of strategy s
 
-  Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
+  Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role) :
     refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
     defines Role role
       of type role-ty2
       of multiplicity One()
       of multiplicity-inverse role-mu
-      of ordering Ordered()
-      of ordering-inverse role-ord
       of inverse inverseName
       of rel-ty this-ty2
       of strategy Incremental() // bottom of lattice
@@ -179,8 +170,6 @@ binding rules // model
     defines Inverse inverseName
       of multiplicity role-mu
       of multiplicity-inverse One()
-      of ordering role-ord
-      of ordering-inverse Ordered()
       of type this-ty
       of origin-role role
       of strategy Incremental() // bottom of lattice
@@ -193,38 +182,32 @@ binding rules // model
     defines Shortcut shortcut1
       of type type2
       of multiplicity mu1
-      of ordering or1
       of origin-role role1
       of origin-role2 role2
       of rel-ty rel-ty1
       of strategy Incremental() // bottom of lattice
       where role1 resolves to Role role1def
       and role1def has multiplicity-inverse mu1
-      and role1def has ordering-inverse or1
       and role1def has rel-ty rel-ty1
     defines non-unique Entity type2
       scopes Shortcut
     defines Shortcut shortcut2
       of type type1
       of multiplicity mu2
-      of ordering or2
       of origin-role role2
       of origin-role2 role1
       of rel-ty rel-ty2
       of strategy Incremental() // bottom of lattice
       where role2 resolves to Role role2def
       and role2def has multiplicity-inverse mu2
-      and role2def has ordering-inverse or2
       and role2def has rel-ty rel-ty2
 
-  Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
+  Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, right-mu, NaBLHelp(right-ty1, right-ty2), right-name):
     defines non-unique Entity left-ty2
       scopes Relation
     defines Relation left-name
       of multiplicity left-mu
       of multiplicity-inverse right-mu
-      of ordering left-or
-      of ordering-inverse right-or
       of type right-ty2
       of inverse right-name
       of side Left()
@@ -235,22 +218,18 @@ binding rules // model
     defines Relation right-name
       of multiplicity right-mu
       of multiplicity-inverse left-mu
-      of ordering right-or
-      of ordering-inverse left-or
       of type left-ty2
       of inverse left-name
       of side Right()
       of derivation-type Normal()
       of strategy Incremental() // bottom of lattice
 
-  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, None()):
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, expr, right-mu, NaBLHelp(right-ty1, right-ty2), right-name, None()):
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
       of multiplicity right-mu
       of multiplicity-inverse left-mu
-      of ordering right-or
-      of ordering-inverse left-or
       of type left-ty2
       of inverse left-name
       of side Right()
@@ -267,22 +246,18 @@ binding rules // model
     defines Relation left-name
       of multiplicity left-mu
       of multiplicity-inverse right-mu
-      of ordering left-or
-      of ordering-inverse right-or
       of type right-ty2
       of inverse right-name
       of side Left()
       of derivation-type Derivation() 
       of strategy this-s
 
-  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, expr, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name, Some(strategy)):
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, expr, right-mu, NaBLHelp(right-ty1, right-ty2), right-name, Some(strategy)):
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
       of multiplicity right-mu
       of multiplicity-inverse left-mu
-      of ordering right-or
-      of ordering-inverse left-or
       of type left-ty2
       of inverse left-name
       of side Right()
@@ -297,8 +272,6 @@ binding rules // model
     defines Relation left-name
       of multiplicity left-mu
       of multiplicity-inverse right-mu
-      of ordering left-or
-      of ordering-inverse right-or
       of type right-ty2
       of inverse right-name
       of side Left()
@@ -311,19 +284,16 @@ binding rules // data
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
     scopes MemberValue
     scopes This
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       
   EntityInstance(e, None(), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       where MemberType() resolves to MemberType membertype
       and membertype has type e-ty
     scopes MemberValue
@@ -331,25 +301,21 @@ binding rules // data
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
 
   RelationInstance(e, EntityRef(e-ty), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
     scopes MemberValue
     scopes This
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       
   RelationInstance(e, None(), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       where MemberType() resolves to MemberType membertype
       and membertype has rel-ty e-ty
     scopes MemberValue
@@ -357,7 +323,6 @@ binding rules // data
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
 
   MemberValue(NaBLHelp(m@MemberRef(m-name), m2), value) :
     defines MemberValue m2
@@ -459,7 +424,6 @@ binding rules // expressions
     defines Var var
       of type ty1
       of multiplicity One()
-      of ordering Ordered()
       of strategy st1
     where expr1 has type ty1
       and expr1 has strategy st1
@@ -469,7 +433,6 @@ binding rules // expressions
     defines Var var
       of type ty1
       of multiplicity One()
-      of ordering Ordered()
       of strategy st1
     where expr1 has type ty1
       and expr1 has strategy st1

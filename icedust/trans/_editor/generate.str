@@ -74,9 +74,10 @@ rules // Build in steps
       clear-index2;
 //      <index-store-prop2(|ImplStrategy(), moduleName)>implstr;
       <index-store-prop2(|UIStyle(),      moduleName)>uistyle;
-      error* := <_task-get-messages(|eclipsePath)>
+      error* := <_task-get-messages(|eclipsePath);filter(not(?Warning(_,_,_)))>
     with
       if not([] := error*) then
+        <debug>error*;
         <error-handler>"Fix errors before generating code. Exiting code generation.";
         result := None()
       else

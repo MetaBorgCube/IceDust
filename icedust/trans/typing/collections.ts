@@ -39,11 +39,6 @@ type rules
     mu2 == One() else error $[Multiplicity mismatch: expected One got [mu2]] on expr2
     
   Filter(expr1, x, expr2)
-+ Find(expr1, x, expr2) has ordering or1
-  where
-    expr1 has ordering or1
-    
-  Filter(expr1, x, expr2)
 + Find(expr1, x, expr2) has strategy st
   where expr1 has strategy e1-st
     and expr2 has strategy e2-st
@@ -60,8 +55,6 @@ type rules
     e has multiplicity e-mu
     and <upperbound-one> (e-mu) => mu
   
-  First(e) has ordering Ordered()
-    
   First(e) has strategy st
   where
     e has strategy st
@@ -77,10 +70,6 @@ type rules
   where e2 has multiplicity m2
     and (m2 == One() or m2 == ZeroOrOne()) else error $[Multiplicity mismatch: expected One or ZeroOrOne got [m2]] on e2
     
-  ElemAt(e1, e2) has ordering Ordered()
-  where e1 has ordering o1
-    and o1 == Ordered() else error $[Ordering mismatch: Expected Ordered but got Unordered] on e1
-  
 type rules
 
   IndexOf(e1, e2) : Int()
@@ -91,10 +80,6 @@ type rules
   IndexOf(e1, e2) has multiplicity ZeroOrOne()
   where e2 has multiplicity m2
     and m2 == One() else error $[Multiplicity mismatch: Expected One or ZeroOrOne got [m2]] on e2
-    
-  IndexOf(e1, e2) has ordering Ordered()
-  where e1 has ordering o1
-    and o1 == Ordered() else error $[Ordering mismatch: Expected Ordered but got Unordered] on e1
     
   ElemAt(e1, e2)
 + IndexOf(e1, e2) has strategy st

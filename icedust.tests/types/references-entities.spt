@@ -75,7 +75,7 @@ test ordering of ref this [[
   x : X {
     i=8
   }
-]] run get-ordering on #1 to Ordered()
+]] run get-multiplicity on #1 to One() // is ordered
    
 test ordering of ref entity Identifier [[
   model
@@ -91,4 +91,4 @@ test ordering of ref entity Identifier [[
   execute
   4
   [[x]].i
-]] run get-ordering on #1 to Ordered()
+]] run get-multiplicity on #1 to One() // is ordered

@@ -15,9 +15,10 @@ context-free syntax
   
   MultiplicityZ           = Multiplicity
   MultiplicityZ.Zero      = <0>
-
-  Ordering.Ordered        = <(ordered)>
-  Ordering.Unordered      = <(unordered)>
+  
+  MultiplicityOrdering                  = Multiplicity
+  MultiplicityOrdering.ZeroOrMoreOrdered = <* (ordered)>
+  MultiplicityOrdering.OneOrMoreOrdered  = <+ (ordered)>
 
   Strategy.OnDemand         = <(on-demand)>
   Strategy.Incremental      = <(incremental)>

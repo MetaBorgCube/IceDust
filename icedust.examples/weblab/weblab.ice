@@ -95,15 +95,15 @@ model
     best       : Boolean = grade == max(assignment.submissions.grade) <+ false
   }
   
-  relation Assignment.parent     ? (ordered) <-> * (ordered) Assignment.children
+  relation Assignment.parent     ? <-> * (ordered) Assignment.children
   relation Submission.student    1 <-> * Student.submissions
-  relation Submission.assignment 1 <-> * Assignment.submissions
+  relation Submission.assignment 1 <-> * (ordered) Assignment.submissions
   
   relation Course.assignment     1 <-> ? Assignment.course
   relation Enrollment.submission 1 <-> ? Submission.enrollment
      
   relation Submission.children * (ordered) = assignment.children.submissions.filter(x => x.student == student)
-     <-> ? (ordered) Submission.parent
+     <-> ? Submission.parent
 
   relation Assignment.next ? = parent.children.elemAt(parent.children.indexOf(this) + 1)
      <-> ? Assignment.previous
