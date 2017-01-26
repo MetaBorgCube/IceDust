@@ -88,6 +88,7 @@ rules
     e1_type <test? IsBoolean(),
     e2_type <test? IsBoolean(),
     out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
     e1_mult_u is multUpper of e1_mult,
     e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
     e2_mult_u is multUpper of e2_mult,
