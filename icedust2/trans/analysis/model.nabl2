@@ -136,7 +136,8 @@ rules
     Member{r2}.side := Right(),
     Member{r2}.reltype := None(),
     new entity1_scope,
-    new entity2_scope.
+    new entity2_scope,
+    m2 == ZeroOrMore() | warning $[Warning: multiplicity [m2] cannot be statically guaranteed.] @ m2.
     
   [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
     [[ mult ^ (entity_scope) : inverse_mult ]],
