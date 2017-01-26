@@ -5,7 +5,7 @@ imports // constructors
   signatures/Modules-sig
   desugaring/constructors
   
-rules // Module -> String
+rules
 
   is-module = ?Module         (_, _, _)
   is-module = ?ModuleDesugared(_, _, _)

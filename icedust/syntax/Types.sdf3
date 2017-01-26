@@ -13,10 +13,7 @@ context-free syntax
   Multiplicity.OneOrMore  = <+>
   Multiplicity.ZeroOrMore = <*>
   
-  MultiplicityZ           = Multiplicity
-  MultiplicityZ.Zero      = <0>
-  
-  MultiplicityOrdering                  = Multiplicity
+  MultiplicityOrdering                   = Multiplicity
   MultiplicityOrdering.ZeroOrMoreOrdered = <* (ordered)>
   MultiplicityOrdering.OneOrMoreOrdered  = <+ (ordered)>
 
