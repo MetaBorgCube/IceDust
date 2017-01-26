@@ -58,3 +58,5 @@ test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error at #1
 
 test ordering of not  [[! false]] run get-multiplicity to One() // is ordered
 test ordering of Ordered gte Ordered  [[8 > 8]] run get-multiplicity to One() // is ordered
+
+test multiplicity of one armed if [[if(false) 3]] run get-multiplicity to ZeroOrOne()
