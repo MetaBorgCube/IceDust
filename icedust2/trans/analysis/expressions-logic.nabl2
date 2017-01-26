@@ -105,13 +105,14 @@ rules
     e2_mult_u is multUpper of e2_mult,
     e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
   
-  [[ If(e1, e2, e3) ^ (s) : TTuple(out_type, out_mult, out_strat) ]] :=
+  [[ If(e1, e2, e3) ^ (s) : TTuple(out_type, out_mult, out_strat') ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
     [[ e3 ^ (s) : TTuple(e3_type, e3_mult, e3_strat) ]],
     e1_type <test? IsBoolean(),
     out_type is sub.lub of (e2_type,e3_type),
-    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_mult is mulOrd.lub of (e2_mult,e3_mult),
     out_strat is strat.lub of (e1_strat,e2_strat),
+    out_strat' is strat.lub of (out_strat,e3_strat),
     e1_mult == TOne() | warning $[Expected condition multiplicity of One got [e1_mult]]@e1.
     
