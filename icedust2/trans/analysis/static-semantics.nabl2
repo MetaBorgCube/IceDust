@@ -54,6 +54,9 @@ signature
     
     TNonZeroConst : TNonZeroConst
     TPossiblyZero : TNonZeroConst
+    
+    TMaterialized    : TMaterialization
+    TNonMaterialized : TMaterialization
 
   relations
 
@@ -98,7 +101,7 @@ signature
       TOneOrMoreOrdered()  -> TOne()
     }
 
-    choiceLeftMult : Mult -> Mult {
+    choiceLeftMult : (Mult * Mult) -> Mult {
       (TOne()              , mult                ) -> TOne(),               // [1,_] -> always left-hand side operand
       (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] -> always left-hand side operand
       (TOneOrMoreOrdered() , mult                ) -> TOneOrMoreOrdered(),  // [1,_] -> always left-hand side operand
@@ -115,7 +118,7 @@ signature
       (TZeroOrMore()       , TOneOrMoreOrdered() ) -> TOneOrMore()          // [0,n) unordered -> upper-bound many, drop ordering
     }
  
-    mergeMult : Mult -> Mult {
+    mergeMult : (Mult * Mult) -> Mult {
       (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
       (mult                , TOneOrMore()        ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
       (TZeroOrMore()       , TOne()              ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
@@ -138,7 +141,15 @@ signature
       TOneOrMore()         -> TUMany(),
       TZeroOrMoreOrdered() -> TUMany(),
       TOneOrMoreOrdered()  -> TUMany()
-      
+    }
+    
+    materialization : (Strat * Side) -> TMaterialization {
+      (strat              , None() ) -> TMaterialized(),    // unidirectional -> materialized
+      (strat              , Left() ) -> TMaterialized(),    // left-hand side -> materialized
+      (TIncremental()     , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TEventual()        , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TOnDemand()        , Right()) -> TNonMaterialized(), // pull-based -> not materialized
+      (TOnDemandEventual(), Right()) -> TNonMaterialized()  // pull-based -> not materialized
     }
  
 rules

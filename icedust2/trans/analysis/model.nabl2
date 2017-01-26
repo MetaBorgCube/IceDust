@@ -45,6 +45,7 @@ rules
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := Normal(),
     Member{a}.reltype := None(),
+    Member{a}.side := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
@@ -55,6 +56,7 @@ rules
     Member{a}.derivationtype := Derivation(),
     Member{a}.expr := e,
     Member{a}.reltype := None(),
+    Member{a}.side := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ st^ (entity_scope) : a_strat ]],
@@ -70,6 +72,7 @@ rules
     Member{a}.derivationtype := DefaultValue(),
     Member{a}.expr := e,
     Member{a}.reltype := None(),
+    Member{a}.side := None(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ st^ (entity_scope) : a_strat ]],

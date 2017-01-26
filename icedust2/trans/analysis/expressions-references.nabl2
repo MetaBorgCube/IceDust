@@ -10,7 +10,11 @@ rules
   [[ Ref(r) ^ (s) : r_def_tup ]] :=
     Member{r} -> s,
     Member{r} |-> r_def,
-    r_def : r_def_tup.
+    r_def : r_def_tup,
+    r_def_tup == TTuple(r_def_type, r_def_mult, r_def_strat),
+    r_def.side := r_def_side,
+    materialization is materialization of (r_def_strat, r_def_side),
+    materialization == TMaterialized() | note $[Error: Right-hand side of relation is not materialized with [r_def_strat], use Incremental() or Eventual()] @r.
       
   [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, out_mult, out_strat) ]] :=
     [[expr ^ (s) : TTuple(expr_type, expr_mult, expr_strat) ]],
