@@ -99,20 +99,20 @@ signature
     }
 
     choiceLeftMult : Mult -> Mult {
-      (TOne()              , mult                ) -> TOne(),              // [1,_] -> always left-hand side operand
-      (TOneOrMore()        , mult                ) -> TOneOrMore(),        // [1,_] -> always left-hand side operand
-      (TOneOrMoreOrdered() , mult                ) -> TOneOrMore(),        // [1,_] -> always left-hand side operand
-      (TZeroOrOne()        , mult                ) -> mult,                // [0,1] -> always right-hand side multiplicity
-      (mult                , TZeroOrMore()       ) -> ZeroOrMore(),        // [0,_] <+ [0,n) unordered -> always [0,n) unordered
-      (mult                , TOneOrMore()        ) -> TOneOrMore(),        // [0,_] <+ [1,n) unordered -> always [1,n) unordered
-      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> ZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
-      (TZeroOrMoreOrdered(), TOne()              ) -> OneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
-      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> ZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
-      (TZeroOrMoreOrdered(), TOneOrMoreOrdered() ) -> OneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
-      (TZeroOrMore()       , TZeroOrOne()        ) -> ZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
-      (TZeroOrMore()       , TOne()              ) -> OneOrMore(),         // [0,n) unordered -> upper-bound many, drop ordering
-      (TZeroOrMore()       , TZeroOrMoreOrdered()) -> ZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
-      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> OneOrMore()          // [0,n) unordered -> upper-bound many, drop ordering
+      (TOne()              , mult                ) -> TOne(),               // [1,_] -> always left-hand side operand
+      (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] -> always left-hand side operand
+      (TOneOrMoreOrdered() , mult                ) -> TOneOrMoreOrdered(),  // [1,_] -> always left-hand side operand
+      (TZeroOrOne()        , mult                ) -> mult,                 // [0,1] -> always right-hand side multiplicity
+      (mult                , TZeroOrMore()       ) -> TZeroOrMore(),        // [0,_] <+ [0,n) unordered -> always [0,n) unordered
+      (mult                , TOneOrMore()        ) -> TOneOrMore(),         // [0,_] <+ [1,n) unordered -> always [1,n) unordered
+      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOne()              ) -> TOneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOneOrMoreOrdered() ) -> TOneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMore()       , TZeroOrOne()        ) -> TZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOne()              ) -> TOneOrMore(),         // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TZeroOrMoreOrdered()) -> TZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> TOneOrMore()          // [0,n) unordered -> upper-bound many, drop ordering
     }
  
     mergeMult : Mult -> Mult {

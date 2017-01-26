@@ -12,14 +12,19 @@ rules
   [[ Int()               ^ (s) : ty ]] := ty == TInt().
   [[ String()            ^ (s) : ty ]] := ty == TString().
 
-  [[ One()               ^ (s) : ty ]] := ty == TOne().
-  [[ ZeroOrOne()         ^ (s) : ty ]] := ty == TZeroOrOne().
-  [[ OneOrMore()         ^ (s) : ty ]] := ty == TOneOrMore().
-  [[ ZeroOrMore()        ^ (s) : ty ]] := ty == TZeroOrMore().
-  [[ OneOrMoreOrdered()  ^ (s) : ty ]] := ty == TOneOrMoreOrdered().
-  [[ ZeroOrMoreOrdered() ^ (s) : ty ]] := ty == TZeroOrMoreOrdered().
+  [[ One()               ^ (s) : mu ]] := mu == TOne().
+  [[ ZeroOrOne()         ^ (s) : mu ]] := mu == TZeroOrOne().
+  [[ OneOrMore()         ^ (s) : mu ]] := mu == TOneOrMore().
+  [[ ZeroOrMore()        ^ (s) : mu ]] := mu == TZeroOrMore().
+  [[ OneOrMoreOrdered()  ^ (s) : mu ]] := mu == TOneOrMoreOrdered().
+  [[ ZeroOrMoreOrdered() ^ (s) : mu ]] := mu == TZeroOrMoreOrdered().
 
-  [[ Incremental()       ^ (s) : ty ]] := ty == TIncremental().
-  [[ OnDemand()          ^ (s) : ty ]] := ty == TOnDemand().
-  [[ Eventual()          ^ (s) : ty ]] := ty == TEventual().
-  [[ OnDemandEventual()  ^ (s) : ty ]] := ty == TOnDemandEventual().
+  [[ Some(Incremental())       ^ (s) : st ]] := st == TIncremental().
+  [[ Some(OnDemand())          ^ (s) : st ]] := st == TOnDemand().
+  [[ Some(Eventual())          ^ (s) : st ]] := st == TEventual().
+  [[ Some(OnDemandEventual())  ^ (s) : st ]] := st == TOnDemandEventual().
+  [[ None()                    ^ (s) : st ]] :=
+    Implicit{"this"} -> s,
+    Implicit{"this"} |-> this_def,
+    this_def : this_ty,
+    this_ty == TTuple(this_type, this_mult, st).

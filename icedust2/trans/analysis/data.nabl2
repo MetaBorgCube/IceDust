@@ -71,7 +71,7 @@ rules
     new_scope -I-> entity_scope,
     Member{member} -> new_scope,
     Member{member} |-> member_def,
-    member_def : TTuple(member_def_type, member_def_mult, member_def_ord),
+    member_def : TTuple(member_def_type, member_def_mult, member_def_strat),
     member_def.reltype := relation_object_type,
     new member_value_scope,
     Implicit{"membervalue"} <- member_value_scope,
@@ -92,7 +92,7 @@ rules
   [[ EntityInstanceRef(ei) ^  (member_value_scope, module_scope) : ei_type ]] :=
     Member{ei} -> module_scope,
     Member{ei} |-> ei_def,
-    ei_def : TTuple(ei_type, ei_mult, ei_ord).
+    ei_def : TTuple(ei_type, ei_mult, ei_strat).
     
   [[ LitVal(e) ^  (member_value_scope, module_scope) : e_type ]] :=
-    [[ e ^ (module_scope) : TTuple(e_type, e_mult, e_ord) ]].
+    [[ e ^ (module_scope) : TTuple(e_type, e_mult, e_strat) ]].

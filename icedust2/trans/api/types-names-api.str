@@ -23,7 +23,7 @@ rules
   normalize-type = ?TTuple(<id>,_,_);?TString()  ;!String()
   normalize-type = ?TTuple(<id>,_,_);?TNoValue() ;!NoValue()
   normalize-type = ?TTuple(<id>,_,_);?TEntity(Occurrence(_,<id>,_))
-  normalize-type = ?TTuple(<id>,_,_);debug
+  normalize-type = debug(!"normalize-type: ");fail
   
   normalize-multiplicity = ?TTuple(_,<id>,_);?TOne()              ;!One()
   normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrOne()        ;!ZeroOrOne()
@@ -33,8 +33,8 @@ rules
   normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMoreOrdered() ;!OneOrMoreOrdered()
   normalize-multiplicity = debug(!"normalize-multiplicity: ");fail
   
-  normalize-strategy = ?TTuple(_,<id>,_);?TIncremental()     ;!Incremental()
-  normalize-strategy = ?TTuple(_,<id>,_);?TOnDemand()        ;!OnDemand()
-  normalize-strategy = ?TTuple(_,<id>,_);?TEventual()        ;!Eventual()
-  normalize-strategy = ?TTuple(_,<id>,_);?TOnDemandEventual();!OnDemandEventual()
+  normalize-strategy = ?TTuple(_,_,<id>);?TIncremental()     ;!Incremental()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemand()        ;!OnDemand()
+  normalize-strategy = ?TTuple(_,_,<id>);?TEventual()        ;!Eventual()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandEventual();!OnDemandEventual()
   normalize-strategy = debug(!"normalize-strategy: ");fail
