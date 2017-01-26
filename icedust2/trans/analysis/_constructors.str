@@ -11,6 +11,7 @@ signature constructors
   Relation       : NameSpace
   Role           : NameSpace
   Shortcut       : NameSpace
+  Variable       : NameSpace
 
   Normal       : DerivationType
   Derivation   : DerivationType

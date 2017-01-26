@@ -5,6 +5,7 @@ imports
   data
   expressions-aggregation
   expressions-casts
+  expressions-collections
   expressions-literals
   expressions-logic
   expressions-math
@@ -99,6 +100,15 @@ signature
       TOne()               -> TOne(),
       TOneOrMore()         -> TOne(),
       TOneOrMoreOrdered()  -> TOne()
+    }
+
+    lowerboundZero : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMore(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TZeroOrOne(),
+      TOneOrMore()         -> TZeroOrMore(),
+      TOneOrMoreOrdered()  -> TZeroOrMoreOrdered()
     }
 
     choiceLeftMult : (Mult * Mult) -> Mult {
