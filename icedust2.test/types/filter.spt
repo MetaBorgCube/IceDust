@@ -49,7 +49,7 @@ test find multiplicity [[
 
 test filter multiplicity [[
   relation Submission.parent     ? =  
-    [[assignment.parent.submissions.filter(x => true &&  x.student == student)]].first()
+    ([[assignment.parent.submissions.filter(x => true &&  x.student == student)]]).first()
                                    <-> * Submission.children
 ]] run get-multiplicity on #1 to ZeroOrMore()
 
