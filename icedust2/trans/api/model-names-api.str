@@ -123,9 +123,11 @@ rules
   
   name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
   
-  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
-  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
-  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
+  name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
+  
+  name-is-calconread           = where(name-get-calculation-strategy;?OnDemand())
+  name-is-calconwrite          = where(name-get-calculation-strategy;?Incremental())
+  name-is-eventuallyconsistent = where(name-get-calculation-strategy;?EventuallyConsistent())
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   

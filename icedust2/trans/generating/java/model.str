@@ -513,7 +513,6 @@ rules
             }
           ]|
         otherwise:
-          <debug(!"x ")>x_name;
           result-get* := []
         end
     with // Getter, calculated value Layer

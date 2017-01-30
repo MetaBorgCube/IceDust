@@ -80,7 +80,7 @@ rules
     with
       x_set := <name-set>relationName;
       x_add := <name-add>relationName;
-      if <membervaluename-get-origin;get-multiplicity;upper-one>relationName then
+      if <membervaluename-get-origin;name-get-multiplicity;upper-one>relationName then
         result := java:block-stm |[
           x_eiName.x_set(x_eiName2);
         ]|

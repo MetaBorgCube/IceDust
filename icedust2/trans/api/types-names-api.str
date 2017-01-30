@@ -38,3 +38,8 @@ rules
   normalize-strategy = ?TTuple(_,_,<id>);?TEventual()        ;!Eventual()
   normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandEventual();!OnDemandEventual()
   normalize-strategy = debug(!"normalize-strategy: ");fail
+  
+  normalize-strategy-2 = ?TIncremental()     ;!Incremental()
+  normalize-strategy-2 = ?TOnDemand()        ;!OnDemand()
+  normalize-strategy-2 = ?TEventual()        ;!Eventual()
+  normalize-strategy-2 = ?TOnDemandEventual();!OnDemandEventual()
