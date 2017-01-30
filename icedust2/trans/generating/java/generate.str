@@ -2,7 +2,7 @@ module generating/java/generate
 
 imports // constructors
 
-//  signatures/Modules-sig
+  signatures/Modules-sig
 
 imports // functions
 

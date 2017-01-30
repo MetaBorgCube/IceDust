@@ -8,8 +8,6 @@ imports // constructors
 
 imports // functions
 
-  generating/_ir/expressions
-  generating/_ir/model
   generating/webdsl/js/js-helper
 
 rules // lib expression calls

@@ -8,10 +8,7 @@ imports // constructors
 imports // functions
 
   api/_runtime
-  api/model-names-api
-  api/types-api
-  api/types-names-api
-//   names/naming/names
+//  names/naming/names
 //  naming/_notNaBL
 
 rules // primitives

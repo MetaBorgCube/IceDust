@@ -3,8 +3,8 @@ module generating/java/execute
 imports // constructors
 
   java/Java
-//  signatures/Execute-sig
-//  signatures/Modules-sig
+  signatures/Execute-sig
+  signatures/Modules-sig
 
 imports // functions
 

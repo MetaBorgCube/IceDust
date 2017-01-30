@@ -1,0 +1,12 @@
+module api/expressions-names-api
+
+imports // constructors
+
+
+imports // functions
+
+  api/_runtime
+
+rules
+
+  is-varname = where(is-string;get-property(|"Member","ns");?Variable())
