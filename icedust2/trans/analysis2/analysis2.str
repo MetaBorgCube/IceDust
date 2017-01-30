@@ -65,7 +65,7 @@ rules
 
   ast-store-membervalues: ast -> ast
     with
-      memvs     := <collect-all(is-membervalue)>ast;
+      memvs     := <collect-all(is-membervalue,conc)>ast;
       memvs-a   := <filter(where(membervalue-get-name;membervaluename-is-attribute            ))>memvs;
       memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs;
       memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
@@ -80,6 +80,9 @@ rules
       assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
       assoc*  := [assoc1*, assoc2*]
     with
+      <debug>memvs;
+      <debug>memvs-rri;
+      <debug>assoc1*;
       <debug(!"assocs       ")>assoc*
     with
       <map(index-add-prop(|Assoc()))>assoc*
