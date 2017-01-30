@@ -160,7 +160,7 @@ rules
   name-is-normal-default  = where(name-is-normal  <+ name-is-default)
   name-is-default-derived = where(name-is-default <+ name-is-derived)
   
-  name-get-expr = index-get(|AST())
+  name-get-expr = get-property(|"Member","expr")
   
   name-has-expr = where(name-get-expr)
 

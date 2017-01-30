@@ -94,6 +94,7 @@ rules
     Member{r1}.inverse := r2,
     Member{r1}.side := Left(),
     Member{r1}.reltype := None(),
+    Member{r1}.derivationtype := Normal(),
     Entity2{e2} <- module_scope,
     Entity2{e2} ===> entity2_scope,
     Member{r2} <- entity2_scope,
@@ -106,6 +107,7 @@ rules
     Member{r2}.inverse := r1,
     Member{r2}.side := Right(),
     Member{r2}.reltype := None(),
+    Member{r2}.derivationtype := Normal(),
     new entity1_scope,
     new entity2_scope.
     
@@ -123,6 +125,7 @@ rules
     Member{r1}.inverse := r2,
     Member{r1}.side := Left(),
     Member{r1}.reltype := None(),
+    Member{r1}.derivationtype := Derivation(),
     Entity2{e2} <- module_scope,
     Entity2{e2} ===> entity2_scope,
     Member{r2} <- entity2_scope,
@@ -135,6 +138,7 @@ rules
     Member{r2}.inverse := r1,
     Member{r2}.side := Right(),
     Member{r2}.reltype := None(),
+    Member{r2}.derivationtype := Derivation(),
     new entity1_scope,
     new entity2_scope,
     new expr_scope,

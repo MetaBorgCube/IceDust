@@ -315,7 +315,7 @@ rules //crud
   
   name-to-input-elem: x_name -> result
     with
-      if get-type2;Boolean(); !x_name;(attributename-is-default<+name-is-zeroorone) then
+      if name-get-type;Boolean(); !x_name;(attributename-is-default<+name-is-zeroorone) then
         result := elem |[ inputNonRequiredBool(temp.x_name) ]|
       else
         result := elem |[ input(temp.x_name) ]|
@@ -325,7 +325,7 @@ rules //crud
     with
       x_getname := <name-get>x_name
     with
-      if <get-type2;Datetime()>x_name then
+      if <name-get-type;Datetime()>x_name then
         result := elem |[outputNonRef(temp.x_getname())]|
       else
         result := elem |[output(temp.x_getname())]|

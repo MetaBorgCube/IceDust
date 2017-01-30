@@ -52,7 +52,7 @@ rules
       x_entityName       := <attributename-get-entityname>x_name;
       x_moduleName       := <entityname-get-modulename>x_entityName;
       qualifiedName-exp  := Lit(String([Chars($[[x_entityName].[x_name]])]));
-      x_type             := <get-type2;type-to-string-java>x_name;
+      x_type             := <name-get-type;type-to-string-java>x_name;
       multType           := <name-to-java-type(err)>x_name;
       x_get              := <name-get>x_name;
       x_set              := <name-set>x_name;
@@ -79,7 +79,7 @@ rules
     with
       if name-is-bidirectional then
         x_inverseName            := <name-get-inversename>x_name;
-        x_inverseType            := <get-type2;type-to-string-java>x_inverseName;
+        x_inverseType            := <name-get-type;type-to-string-java>x_inverseName;
         x_inverseCache           := <name-cache>x_inverseName;
         x_inverseSetIncr         := <name-set-incremental>x_inverseName;
         x_inverseAddIncr         := <name-add-incremental>x_inverseName;
@@ -513,6 +513,7 @@ rules
             }
           ]|
         otherwise:
+          <debug(!"x ")>x_name;
           result-get* := []
         end
     with // Getter, calculated value Layer
@@ -656,7 +657,7 @@ rules
       is-shortcutname
     with
       x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
-      x_targetEntityName := <get-type2>x_shortcutName;
+      x_targetEntityName := <name-get-type>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
       x_relationName     := <attributename-get-entityname>x_roleName;
