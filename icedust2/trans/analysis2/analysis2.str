@@ -80,9 +80,6 @@ rules
       assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
       assoc*  := [assoc1*, assoc2*]
     with
-      <debug>memvs;
-      <debug>memvs-rri;
-      <debug>assoc1*;
       <debug(!"assocs       ")>assoc*
     with
       <map(index-add-prop(|Assoc()))>assoc*
