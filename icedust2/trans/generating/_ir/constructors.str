@@ -16,9 +16,5 @@ signature constructors
   ImplStrategy : CompilerOptions
   UIStyle      : CompilerOptions
   
-  CalcOnRead           : ImplStrategy
-  CalcOnWrite          : ImplStrategy
-  EventuallyConsistent : ImplStrategy
-  
   NoUI       : UIStyle
   ExplorerUI : UIStyle

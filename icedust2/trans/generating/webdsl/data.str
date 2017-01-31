@@ -86,7 +86,7 @@ rules
 
   relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationName): x_eiName2 -> result
     with
-      if <membervaluename-get-origin;get-multiplicity;upper-one>x_relationName then
+      if <membervaluename-get-origin;name-get-multiplicity;upper-one>x_relationName then
         result := stat |[
           x_eiName.x_relationName := x_eiName2;
         ]|

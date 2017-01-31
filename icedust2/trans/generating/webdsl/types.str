@@ -41,14 +41,15 @@ rules // types of expressions and names (uses type and multiplicity)
           result := webdsl |[ //webdsl srt
             srt1
           ]|
-        case (name-get-multiplicity<+get-multiplicity);upper-many-ordered:
+        case (name-get-multiplicity<+get-multiplicity);upper-many:
+//        case (name-get-multiplicity<+get-multiplicity);upper-many-ordered:
           result := webdsl |[ //webdsl srt
             [srt1]
           ]|
-        case (name-get-multiplicity<+get-multiplicity);upper-many-unordered:
-          result := webdsl |[ //webdsl srt
-            {srt1}
-          ]|
+//        case (name-get-multiplicity<+get-multiplicity);upper-many-unordered:
+//          result := webdsl |[ //webdsl srt
+//            {srt1}
+//          ]|
       end
 
 rules // pritives as strings (not literal string in target language)

@@ -126,8 +126,9 @@ rules
   name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
   
   name-is-calconread           = where(name-get-calculation-strategy;?OnDemand())
+  name-is-calconread           = where(name-get-calculation-strategy;?OnDemandEventual())
   name-is-calconwrite          = where(name-get-calculation-strategy;?Incremental())
-  name-is-eventuallyconsistent = where(name-get-calculation-strategy;?EventuallyConsistent())
+  name-is-eventuallyconsistent = where(name-get-calculation-strategy;?Eventual())
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   
@@ -152,8 +153,8 @@ rules
   name-get-type         = get-type-property(|"Member");normalize-type
   name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity
   
-  name-is-ordered            = where(get-multiplicity;ordered)
-  name-is-unordered          = where(get-multiplicity;unordered)
+  name-is-ordered            = where(name-get-multiplicity;ordered)
+  name-is-unordered          = where(name-get-multiplicity;unordered)
   
   name-is-derived = where(get-property(|"Member","derivationtype");?Derivation())
   name-is-default = where(get-property(|"Member","derivationtype");?DefaultValue())
