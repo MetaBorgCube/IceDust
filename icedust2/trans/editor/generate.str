@@ -104,11 +104,9 @@ rules // Build in steps
               jsString := <generate-webdsl-js-code> moduleName;
               <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
             end;
-            if <modulename-is-eventuallyconsistent> moduleName then
-              (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
-              targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
-              <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
-            end
+            (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+            targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+            <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
         end;
         if <eq>(1, phase) then
           result := (targetFileName, targetCode)
