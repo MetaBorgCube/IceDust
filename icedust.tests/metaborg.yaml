@@ -5,5 +5,6 @@ dependencies:
   compile:
   - org.metaborg:icedust:0.5.1-SNAPSHOT
   - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lang.analysis:${metaborgVersion}
 build:
   useBuildSystemSpec: true
