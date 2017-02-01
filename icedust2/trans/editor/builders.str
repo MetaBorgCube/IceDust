@@ -2,8 +2,10 @@ module editor/builders
 
 imports
   
+  analysis2/path
   api/data-names-api
   api/model-names-api
+  api/module-api
   api/module-names-api
   desugaring/desugar
   editor/pp
@@ -114,3 +116,37 @@ rules
       result   := <_index-get>
       
   analysis2-builder-key-origins = analysis2-builder;split2(id,all-strings-add-origin)
+  
+rules
+
+  debug-dependson: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"dependson.txt")> path;
+      result := <debug(|"1 ");module-get-modulename;debug(|"2 ");modulename-get-arrinames;debug(|"3 ");fmap(name-get-dependson-paths;map(path-pp));concat-strings(|"\n");debug(|"4 ")>ast
+
+  debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"flowsto.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths;map(path-pp));concat-strings(|"\n")>ast
+      
+  debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"toposort.aterm")> path;
+      result := <module-get-modulename;name-get-toposort;map(map(pp-toposort))>ast
+
+  pp-toposort: name -> (<name-get-toposort>name, $[[<attributename-get-entityname>name].[name]])
