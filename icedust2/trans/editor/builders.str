@@ -127,7 +127,7 @@ rules
       <_index-set>analysis2
     with
       filename := <guarantee-extension(|"dependson.txt")> path;
-      result := <debug(|"1 ");module-get-modulename;debug(|"2 ");modulename-get-arrinames;debug(|"3 ");fmap(name-get-dependson-paths;map(path-pp));concat-strings(|"\n");debug(|"4 ")>ast
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-dependson-paths;map(path-pp));concat-strings(|"\n")>ast
 
   debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
     with

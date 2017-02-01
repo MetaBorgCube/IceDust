@@ -50,6 +50,8 @@ rules // module
   modulename-get-arrinames-default-derived-eventual             = modulename-get-arrinames-default-derived;filter(name-is-eventual)
   modulename-get-arrinames-default-derived-incremental-eventual = modulename-get-arrinames-default-derived;filter(name-is-incremental+name-is-eventual)
   
+  modulename-get-arrinames-default-derived-has-expr             = modulename-get-arrinames-default-derived;filter(name-has-expr)
+  
   // string -> [[string]]
   modulename-get-attributenames-topo = index-get2(|TopoSort());map(filter(where(is-attributename)));filter(list-not-empty)
 
