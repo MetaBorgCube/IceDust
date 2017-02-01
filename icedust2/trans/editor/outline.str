@@ -3,8 +3,8 @@ module outline
 imports
   
   signatures/icedust2-sig
-  runtime/editor/outline-library
-  runtime/editor/origins
+  libspoofax/editor/outline
+  libspoofax/term/origin
 
 //rules
 //  

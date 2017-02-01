@@ -2,7 +2,6 @@ module Syntax
 
 imports 
 
-  editor/Colorer.generated
   completion/colorer/icedust2-cc-esv
 
 language
