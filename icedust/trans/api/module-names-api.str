@@ -49,8 +49,8 @@ rules // module
   
   modulename-get-arrinames-topo-default-derivation = modulename-get-arrinames-topo;map(filter(name-is-default-derived));filter(list-not-empty)
   
-  modulename-get-arrinames-topo-default-derivation-incremental = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-incremental))
-  modulename-get-arrinames-topo-default-derivation-eventual    = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-eventual))
+  modulename-get-arrinames-topo-default-derivation-incremental = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-incremental));filter(list-not-empty)
+  modulename-get-arrinames-topo-default-derivation-eventual    = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-eventual));filter(list-not-empty)
   
   modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
   modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
