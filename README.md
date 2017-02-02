@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fstrategy-composition/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fstrategy-composition/)
+[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/)
 
 # IceDust
 
