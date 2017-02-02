@@ -3,6 +3,10 @@ module desugaring/alternatives
 imports // constructors
   
   signatures/Expressions-sig
+  
+imports // functions
+
+  lib/origin
 
 rules
   
@@ -18,6 +22,10 @@ rules
   desugar-alternative: Or2 (a,b) -> Or (a,b)
   
   desugar-alternative: Not2(a) -> Not(a)
+  
+  desugar-alternative: Count2(a) -> Count(a)
+  
+  desugar-alternative: e@IfElseNoValue(a, b) -> If(a, b, <custom-origin(|e)>NoValue())
 
 rules
   

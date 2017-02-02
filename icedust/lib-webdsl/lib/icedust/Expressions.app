@@ -11,6 +11,9 @@ section java implementations
     static merge_One_Many(Object, List<Object>) : List<Object>
     static merge_Many_One(List<Object>, Object) : List<Object>
     static merge_Many_Many(List<Object>, List<Object>) : List<Object>
+    static first(List<Object>) : Object
+    static indexOf(List<Object>, Object) : Int
+    static elemAt(List<Object>, Int) : Object
     static plus_String(String, String) : String
     static plus_Integer(Int, Int) : Int
     static plus_Float(Float, Float) : Float

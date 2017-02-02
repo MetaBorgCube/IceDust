@@ -6,7 +6,7 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <artifactId>icedust</artifactId>
-  <version>0.5.1-SNAPSHOT</version>
+  <version>0.6.1-SNAPSHOT</version>
   <name>IceDust</name>  
   <packaging>spoofax-language</packaging>
 

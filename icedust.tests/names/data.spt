@@ -32,10 +32,10 @@ test Error on non existing attribute in entity instance without type [[
       foreward = 
         innerFoo {
           i = 7
-          [[j]] = 7
+          [[j = 7]]
         }
     }
-]] 1 error at #1
+]] >= 1 error at #1
 
 test No error on existing attribute in entity instance without type [[
   module test

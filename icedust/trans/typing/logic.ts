@@ -86,9 +86,9 @@ type rules
     and <cartesian-product> (z-mu, y-mu) => mu
     and (x-mu == One()) else error $[Multiplicity mismatch: expected One got [x-mu] in Conditional] on x
 
-  Not(x) has ordering x-or
-  where x has ordering x-or
-
+  Not(x) has strategy x-st
+  where x has strategy x-st
+  
   LessThan(x, y)
 + LessThanEqual(x, y)
 + GreaterThan(x, y)
@@ -96,15 +96,14 @@ type rules
 + Equal(x, y)
 + Inequal(x, y)
 + And(x, y)
-+ Or(x, y) has ordering or
-  where  x  has ordering x-or
-    and  y  has ordering  y-or
-    and <or-nav> (x-or, y-or) => or
++ Or(x, y) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and <strategy-least-upperbound> (x-st, y-st) => st
     
-  If(x, y, z) has ordering or
-  where  x  has ordering x-or
-    and  y  has ordering  y-or
-    and  z  has ordering  z-or
-    and <or-nav> (x-or, y-or) => or2
-    and <or-nav> (or2, z-or) => or
-    
+  If(x, y, z) has strategy st
+  where  x  has strategy x-st
+    and  y  has strategy  y-st
+    and  z  has strategy  z-st
+    and <strategy-least-upperbound> (x-st, y-st) => st2
+    and <strategy-least-upperbound> (st2, z-st) => st

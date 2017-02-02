@@ -74,6 +74,61 @@ rules // casts
       ]|;
       exp := expr |[x_var]|
 
+rules // filter expression
+
+  exp-to-java-stm(err|i): e@Filter(e1, x_loopvar, e2) -> result
+    with
+      (e1stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+      i' := <add>(i, <length>e1stms*);
+      i'' := <inc>i';
+      x_var := $[var[i'']];
+      (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
+      refty := <expr-to-java-type(err)>e;
+      x_type := <get-type2;type-to-java-type(err)>e
+    with
+      result := (
+        bstm*|[
+          ~e1stms*
+          refty x_var = Expressions.emptyCollection();
+          for(x_type x_loopvar : ~e1exp){
+            ~e2stms*
+            if(~e2exp!=null && ~e2exp)
+              x_var.add(x_loopvar);
+          }
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
+
+rules // find expression
+
+  exp-to-java-stm(err|i): e@Find(e1, x_loopvar, e2) -> result
+    with
+      (e1stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+      i' := <add>(i, <length>e1stms*);
+      i'' := <inc>i';
+      x_var := $[var[i'']];
+      (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
+      refty := <expr-to-java-type(err)>e;
+      x_type := <get-type2;type-to-java-type(err)>e
+    with
+      result := (
+        bstm*|[
+          ~e1stms*
+          refty x_var = Expressions.emptyCollection();
+          for(x_type x_loopvar : ~e1exp){
+            ~e2stms*
+            if(~e2exp!=null && ~e2exp)
+              x_var = x_loopvar;
+              break;
+          }
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
+
 rules
 
   exp-to-java-stm(err|i): a -> (a', a')
