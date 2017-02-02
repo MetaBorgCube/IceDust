@@ -6,14 +6,13 @@ imports // constructors
 //  desugaring/constructors
   java/Java
   signatures/Model-sig
-//  signatures/Modules-sig
+  signatures/Modules-sig
 
 imports // functions
 
   analysis2/path
   api/_runtime
   api/model-names-api
-  api/types-api
   generating/_ir/model
   generating/java/expressions
   generating/java/types
@@ -28,12 +27,9 @@ rules
     where
       is-entityname
     with
-      attributesJava*   := <entityname-get-attributenames;fmap(model-attributename-to-java-classbodydecs(err)    )>x_entityName;
-      relationsJava*    := <entityname-get-relationnames ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
-      rolesJava*        := <entityname-get-rolenames     ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
-      inversesJava*     := <entityname-get-inversenames  ;fmap(model-roleOrInversename-to-java-classbodydecs(err))>x_entityName;
+      membersJava*      := <entityname-get-arrinames     ;fmap(model-membername-to-java-classbodydecs(err)       )>x_entityName;
       shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
-      initCachesJava*   := <entityname-get-attributenames;fmap(model-init-attributename-to-java-stms(err)        )>x_entityName
+      initCachesJava*   := <entityname-get-arrinames     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
     with
       result := type-dec |[
         class x_entityName
@@ -42,215 +38,602 @@ rules
           {
             ~initCachesJava*
           }
-          ~attributesJava*
-          ~relationsJava*
-          ~rolesJava*
+          ~membersJava*
           ~shortcutsJava*
-          ~inversesJava*
         }
       ]|
 
 rules
 
-  model-attributename-to-java-classbodydecs(err): x_attributeName -> result
+  model-membername-to-java-classbodydecs(err): x_name -> result
     where
-      is-attributename
+      is-attributename <+ is-relationname <+ is-rolename <+ is-inversename
     with
-      x_entityName                := <attributename-get-entityname>x_attributeName;
-      x_attributeType             := <name-get-type;type-to-string-java>x_attributeName;
-      x_getAttribute              := <name-get>x_attributeName;
-      x_setAttribute              := <name-set>x_attributeName;
-      x_calculateAttribute        := <name-calculate>x_attributeName;
-      x_attributeCache            := <name-cache>x_attributeName;
-      x_updateAttributeCache      := <name-update-cache>x_attributeName;
-      x_dirtyAttribute            := <name-dirty>x_attributeName;
-      x_getAndEmptyDirtyAttribute := <name-getandemptydirty>x_attributeName;
-      x_updateAllAttributeCache   := <name-updateallcache>x_attributeName;
-      x_hasDirty                  := <name-hasdirty>x_attributeName;
-      x_flagDirty                 := <name-flagdirty>x_attributeName;
-      x_dirtyFlagFlowsto          := <name-dirtyflagflowsto>x_attributeName;
-      x_moduleName                := <entityname-get-modulename>x_entityName
+      x_entityName       := <attributename-get-entityname>x_name;
+      x_moduleName       := <entityname-get-modulename>x_entityName;
+      qualifiedName-exp  := Lit(String([Chars($[[x_entityName].[x_name]])]));
+      x_type             := <name-get-type;type-to-string-java>x_name;
+      multType           := <name-to-java-type(err)>x_name;
+      x_get              := <name-get>x_name;
+      x_set              := <name-set>x_name;
+      x_add              := <name-add>x_name;
+      x_remove           := <name-remove>x_name;
+      x_calculate        := <name-calculate>x_name;
+      x_getCalculated    := <name-getCalculated>x_name;
+      x_cache            := <name-cache>x_name;
+      x_updateCache      := <name-update-cache>x_name;
+      x_dirty            := <name-dirty>x_name;
+      x_updateAllCache   := <name-updateallcache>x_name;
+      x_hasDirty         := <name-hasdirty>x_name;
+      x_flagDirty        := <name-flagdirty>x_name;
+      x_dirtyFlagFlows   := <name-dirtyflagflowsto>x_name;
+      x_setIncr          := <name-set-incremental>x_name;
+      x_addIncr          := <name-add-incremental>x_name;
+      x_removeIncr       := <name-remove-incremental>x_name;
+      x_setCacheIncr     := <name-set-cache-incr>x_name;
+      x_addCacheIncr     := <name-add-cache-incr>x_name;
+      x_removeCacheIncr  := <name-remove-cache-incr>x_name;
+      x_setCache         := <name-set-cache>x_name;
+      x_addCache         := <name-add-cache>x_name;
+      x_removeCache      := <name-remove-cache>x_name
     with
-      if attributename-is-default-derivation then
-        (calculate-stms*, calculate-exp) := <attributename-get-expr;exp-to-java-stm(err|0)>x_attributeName
+      if name-is-bidirectional then
+        x_inverseName            := <name-get-inversename>x_name;
+        x_inverseType            := <name-get-type;type-to-string-java>x_inverseName;
+        x_inverseCache           := <name-cache>x_inverseName;
+        x_inverseSetIncr         := <name-set-incremental>x_inverseName;
+        x_inverseAddIncr         := <name-add-incremental>x_inverseName;
+        x_inverseRemoveIncr      := <name-remove-incremental>x_inverseName;
+        x_inverseSetCacheIncr    := <name-set-cache-incr>x_inverseName;
+        x_inverseAddCacheIncr    := <name-add-cache-incr>x_inverseName;
+        x_inverseRemoveCacheIncr := <name-remove-cache-incr>x_inverseName
       end
     with
-      if name-is-calconwrite then
-        flowsto-stms* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-java-stm(err))>x_attributeName
+      if name-has-expr then
+        (calculate-stms*, calculate-exp) := <name-get-expr;exp-to-java-stm(err|0)>x_name
       end
     with
-      if attributename-is-normal-default then
-        result-attributeField* := class-body-dec* |[
-          private x_attributeType x_attributeName;
-        ]|
-      else
-        result-attributeField* := []
+      flowsto-stms* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-java-stm(err))>x_name
+    with // Recalculate layer
+      switch id
+        case name-is-incremental; name-is-default-derived:
+          result-updateCache* := class-body-dec* |[
+            protected void x_updateCache()
+            {
+              x_setCache(x_calculate());
+            }
+            public static boolean x_hasDirty()
+            {
+              return !x_dirty.isEmpty();
+            }
+            public static void x_updateAllCache(){
+              Collection<x_entityName> ens = x_dirty;
+              x_dirty = new HashSet<x_entityName>();
+              if (ens.size() > 0) {
+                System.out.println("Updating " + ~qualifiedName-exp + ": " + ens.size());
+              }
+              for(x_entityName en : ens){
+                en.x_updateCache();
+              }
+            }
+          ]|
+        otherwise:
+          result-updateCache* := []
+      end
+    with // Add remove
+      switch id
+        case name-is-to-many; name-is-normal-default:
+          result-addRem* := class-body-dec* |[
+            public void x_add(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.add(en);
+              x_set(newValue);
+            }
+            public void x_add(Collection<x_type> en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.addAll(en);
+              x_set(newValue);
+            }
+            public void x_remove(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.remove(en);
+              x_set(newValue);
+            }
+            public void x_remove(Collection<x_type> en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.removeAll(en);
+              x_set(newValue);
+            }
+          ]|
+        otherwise:
+          result-addRem* := []
+      end
+    with // Setter, maintain bidirectional Layer
+      switch id
+        case name-is-unidirectional; name-is-normal-default:
+          result-set* := class-body-dec* |[
+            public void x_set(x_type en)
+            { 
+              x_setIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-one; name-is-normal-default:
+          result-set* := class-body-dec* |[
+            public void x_set(x_type en)
+            { 
+              if(x_name != null){
+                x_name.x_inverseSetIncr(null);
+              }
+              if(en != null){
+                x_inverseType v = en.x_inverseName;
+                if(v != null){
+                  v.x_setIncr(null);
+                }
+                en.x_inverseSetIncr(this);
+              }
+              this.x_setIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-many; name-is-normal-default:
+          result-set* := class-body-dec* |[
+            public void x_set(x_type en)
+            { 
+              if(x_name != null){
+                x_name.x_inverseRemoveIncr(this);
+              }
+              if(en != null){
+                en.x_inverseAddIncr(this);
+              }
+              this.x_setIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-normal-default:
+          result-set* := class-body-dec* |[
+            public void x_set(Collection<x_type> en)
+            { 
+              Collection<x_type> toAdd = new HashSet<x_type>();
+              toAdd.addAll(en);
+              toAdd.removeAll(x_name);
+              Collection<x_type> toRemove = new HashSet<x_type>();
+              toRemove.addAll(x_name);
+              toRemove.removeAll(en);
+              for(x_type n : toRemove)
+              { 
+                n.x_inverseSetIncr(null);
+              }
+              for(x_type n : toAdd)
+              { 
+                x_inverseType v = n.x_inverseName;
+                if(v != null){
+                  v.x_removeIncr(n);
+                }
+                n.x_inverseSetIncr(this);
+              }
+              x_setIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-normal-default:
+          result-set* := class-body-dec* |[
+            public void x_set(Collection<x_type> en)
+            { 
+              Collection<x_type> toAdd = new HashSet<x_type>();
+              toAdd.addAll(en);
+              toAdd.removeAll(x_name);
+              Collection<x_type> toRemove = new HashSet<x_type>();
+              toRemove.addAll(x_name);
+              toRemove.removeAll(en);
+              for(x_type n : toRemove)
+              { 
+                n.x_inverseRemoveIncr(this);
+              }
+              for(x_type n : toAdd)
+              { 
+                n.x_inverseAddIncr(this);
+              }
+              x_setIncr(en);
+            }
+          ]|
+        otherwise:
+          result-set* := []
       end
     with
-      if attributename-is-normal then
-        result-getAttribute* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_attributeName;
-          }
-        ]|
-      else if attributename-is-default; name-is-calconread then
-        result-getAttribute* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            if(x_attributeName != null)
-              return x_attributeName;
-            return x_calculateAttribute();
-          }
-        ]|
-      else if attributename-is-default; name-is-calconwrite then
-        result-getAttribute* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            if(x_attributeName != null)
-              return x_attributeName;
-            return x_attributeCache;
-          }
-        ]|
-      else if attributename-is-derivation; name-is-calconread then
-        result-getAttribute* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_calculateAttribute();
-          }
-        ]|
-      else // derivation calconwrite
-        result-getAttribute* := class-body-dec* |[
-          public x_attributeType x_getAttribute()
-          { 
-            return x_attributeCache;
-          }
-        ]|
-      end end end end
+      switch id
+        case name-is-unidirectional; name-is-to-one; name-is-default-derived; name-is-incremental:
+          result-setCache* := class-body-dec* |[
+            public void x_setCache(x_type en)
+            { 
+              x_setCacheIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-one; name-is-default-derived; name-is-incremental:
+          result-setCache* := class-body-dec* |[
+            public void x_setCache(x_type en)
+            { 
+              if(x_cache != null){
+                x_cache.x_inverseSetCacheIncr(null);
+              }
+              if(en != null){
+                x_inverseType v = en.x_inverseCache;
+                if(v != null){
+                  v.x_setCacheIncr(null);
+                }
+                en.x_inverseSetCacheIncr(this);
+              }
+              this.x_setCacheIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-many; name-is-default-derived; name-is-incremental:
+          result-setCache* := class-body-dec* |[
+            public void x_setCache(x_type en)
+            { 
+              if(x_cache != null){
+                x_cache.x_inverseRemoveCacheIncr(this);
+              }
+              if(en != null){
+                en.x_inverseAddCacheIncr(this);
+              }
+              this.x_setCacheIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-default-derived; name-is-incremental:
+          result-setCache* := class-body-dec* |[
+            public void x_setCache(Collection<x_type> en)
+            { 
+              Collection<x_type> toAdd = new HashSet<x_type>();
+              toAdd.addAll(en);
+              toAdd.removeAll(x_cache);
+              Collection<x_type> toRemove = new HashSet<x_type>();
+              toRemove.addAll(x_cache);
+              toRemove.removeAll(en);
+              for(x_type n : toRemove)
+              { 
+                n.x_inverseRemoveCacheIncr(this);
+              }
+              for(x_type n : toAdd)
+              { 
+                x_inverseType v = n.x_inverseCache;
+                if(v != null){
+                  v.x_removeCacheIncr(n);
+                }
+                n.x_inverseAddCacheIncr(this);
+              }
+              x_setCacheIncr(en);
+            }
+          ]|
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-default-derived; name-is-incremental:
+          result-setCache* := class-body-dec* |[
+            public void x_setCache(Collection<x_type> en)
+            { 
+              Collection<x_type> toAdd = new HashSet<x_type>();
+              toAdd.addAll(en);
+              toAdd.removeAll(x_cache);
+              Collection<x_type> toRemove = new HashSet<x_type>();
+              toRemove.addAll(x_cache);
+              toRemove.removeAll(en);
+              for(x_type n : toRemove)
+              { 
+                n.x_inverseRemoveCacheIncr(this);
+              }
+              for(x_type n : toAdd)
+              { 
+                n.x_inverseAddCacheIncr(this);
+              }
+              x_setCacheIncr(en);
+            }
+          ]|
+        otherwise:
+          result-setCache* := []
+      end
+    with // Set, maintain multiplicities Layer
+      switch id
+        case name-is-normal-default; name-is-to-one:
+          result-addRemIncr* := class-body-dec* |[
+            protected void x_addIncr(x_type en)
+            { 
+              x_setIncr(en);
+            }
+            protected void x_removeIncr(x_type en)
+            { 
+              x_setIncr(null);
+            }
+          ]|
+        case name-is-normal-default; name-is-to-many:
+          result-addRemIncr* := class-body-dec* |[
+            protected void x_addIncr(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.add(en);
+              x_setIncr(newValue);
+            }
+            protected void x_removeIncr(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_name);
+              newValue.remove(en);
+              x_setIncr(newValue);
+            }
+          ]|
+        otherwise:
+          result-addRemIncr* := []
+      end
     with
-      result-staticGetAttribute* := class-body-dec* |[
-        public static x_attributeType x_getAttribute(x_entityName c)
-        { 
-          return c == null ? null : c.x_getAttribute();
-        }
-        
-        public static Collection<x_attributeType> x_getAttribute(Collection<x_entityName> c)
-        { 
-          Collection<x_attributeType> result = Expressions.emptyCollection();
-          for(x_entityName n : c)
-          { 
-            x_attributeType v = n.x_getAttribute();
-            if(v != null)
-              result.add(v);
-          }
-          return result;
+      switch id
+        case name-is-default-derived; name-is-to-one; name-is-incremental:
+          result-addRemCacheIncr* := class-body-dec* |[
+            protected void x_addCacheIncr(x_type en)
+            { 
+              x_setCacheIncr(en);
+            }
+            protected void x_removeCacheIncr(x_type en)
+            { 
+              x_setCacheIncr(null);
+            }
+          ]|
+        case name-is-default-derived; name-is-to-many; name-is-incremental:
+          result-addRemCacheIncr* := class-body-dec* |[
+            protected void x_addCacheIncr(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_cache);
+              newValue.add(en);
+              x_setCacheIncr(newValue);
+            }
+            protected void x_removeCacheIncr(x_type en)
+            { 
+              Collection<x_type> newValue = Expressions.emptyCollection();
+              newValue.addAll(this.x_cache);
+              newValue.remove(en);
+              x_setCacheIncr(newValue);
+            }
+          ]|
+        otherwise:
+          result-addRemCacheIncr* := []
+      end
+    with // Set, maintain incremental Layer
+      switch id
+        case name-is-normal-default; where([] := flowsto-stms*):
+          result-setIncr* := class-body-dec* |[
+            protected void x_setIncr(~multType en)
+            { 
+              this.x_name = en;
+            }
+          ]|
+        case name-is-normal-default; where(not([] := flowsto-stms*)):
+          result-setIncr* := class-body-dec* |[
+            protected void x_setIncr(~multType en)
+            { 
+              ~multType oldValue = this.x_get();
+              this.x_name = en;
+              ~multType newValue = this.x_get();
+              if(!Expressions.nullSafeEqual(oldValue, newValue)){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        otherwise:
+          result-setIncr* := []
+      end
+    with
+      switch id
+        case name-is-default-derived; name-is-incremental; where([] := flowsto-stms*):
+          result-setCacheIncr* := class-body-dec* |[
+            protected void x_setCacheIncr(~multType en)
+            { 
+              this.x_cache = en;
+            }
+          ]|
+        case name-is-default-derived; name-is-incremental; where(not([] := flowsto-stms*)):
+          result-setCacheIncr* := class-body-dec* |[
+            protected void x_setCacheIncr(~multType en)
+            { 
+              ~multType oldValue = this.x_get();
+              this.x_cache = en;
+              ~multType newValue = this.x_get();
+              if(!Expressions.nullSafeEqual(oldValue, newValue)){
+                x_dirtyFlagFlows();
+              }
+            }
+          ]|
+        otherwise:
+          result-setCacheIncr* := []
+      end
+    with // Getter, many valued Layer
+      switch id
+        case name-is-to-one:
+          result-getStatic* := class-body-dec* |[
+            public static x_type x_get(x_entityName en)
+            { 
+              return en == null ? null : en.x_get();
+            }
+          
+            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            { 
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_entityName en : ens)
+              { 
+                if(en.x_get() != null)
+                  result.add(en.x_get());
+              }
+              return result;
+            }
+          ]|
+        case name-is-to-many:
+          result-getStatic* := class-body-dec* |[
+            public static Collection<x_type> x_get(x_entityName en)
+            { 
+              Collection<x_type> empty = Expressions.emptyCollection();
+              return en == null ? empty : en.x_get();
+            }
+          
+            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            { 
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_entityName en : ens)
+              { 
+                result.addAll(en.x_get());
+              }
+              return result;
+            }
+          ]|
+        otherwise:
+          result-getStatic* := []
+      end
+    with // Getter, derivation type Layer
+      switch id
+        case name-is-normal:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return x_name;
+            }
+          ]|
+        case name-is-default:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              if(x_name != null)
+                return x_name;
+              return x_getCalculated();
+            }
+          ]|
+        case name-is-derived:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return x_getCalculated();
+            }
+          ]|
+        otherwise:
+          result-get* := []
+        end
+    with // Getter, calculated value Layer
+      switch id
+        case name-is-default-derived; name-is-ondemand:
+          result-getCalculated* := class-body-dec* |[
+            private ~type:multType x_getCalculated()
+            { 
+              return x_calculate();
+            }
+          ]|
+        case name-is-default-derived; name-is-incremental:
+          result-getCalculated* := class-body-dec* |[
+            private ~type:multType x_getCalculated()
+            { 
+              return x_cache;
+            }
+          ]|
+        otherwise:
+          result-getCalculated* := []
+        end
+    with // Expressions + Dataflows Layer
+      switch id
+        case name-is-default-derived; name-has-expr:
+          result-calculate* := class-body-dec* |[
+            private ~type:multType x_calculate()
+            { 
+              ~calculate-stms*
+              return ~calculate-exp;
+            }
+          ]|
+        case name-is-default-derived; not(name-has-expr):
+          result-calculate* := class-body-dec* |[
+            private ~type:multType x_calculate()
+            { 
+              throw new UnsupportedOperationException("Cannot read inverse derived value with on-demand calculation strategy.");
+            }
+          ]|
+        otherwise:
+          result-calculate* := []
+      end
+    with
+      result-dirtyFlagFlows* := class-body-dec* |[
+        public void x_dirtyFlagFlows()
+        {
+          ~flowsto-stms*
         }
       ]|
     with
-      if attributename-is-default-derivation then
-        result-calculateAttribute* := class-body-dec* |[
-          public x_attributeType x_calculateAttribute()
-          { 
-            ~calculate-stms*
-            return ~calculate-exp;
-          }
-        ]|
-      else
-        result-calculateAttribute* := []
+      switch id
+        case name-is-incremental; name-is-default-derived:
+          result-flagDirty* := class-body-dec* |[
+            protected static void x_flagDirty(x_entityName en)
+            {
+              if(en != null)
+                x_dirty.add(en);
+            }
+            
+            protected static void x_flagDirty(Collection<x_entityName> ens)
+            {
+              x_dirty.addAll(ens);
+            }
+          ]|
+        otherwise :
+          result-flagDirty* := []
+      end
+    with // Data Structure Layer
+      switch id
+        case name-is-normal-default; name-is-to-one:
+          result-userField* := class-body-dec* |[
+            protected x_type x_name;
+          ]|
+        case name-is-normal-default; name-is-to-many:
+          result-userField* := class-body-dec* |[
+            protected Collection<x_type> x_name = Expressions.emptyCollection();
+          ]|
+        otherwise :
+          result-userField* := []
       end
     with
-      if attributename-is-normal-default; name-is-calconread then
-        result-setAttribute* := class-body-dec* |[
-          public void x_setAttribute(x_attributeType x_attributeName)
-          { 
-            this.x_attributeName = x_attributeName;
-          }
-        ]|
-      else if attributename-is-normal-default; name-is-calconwrite then
-        result-setAttribute* := class-body-dec* |[
-          public void x_setAttribute(x_attributeType newValue)
-          { 
-            if(this.x_getAttribute() != newValue){ // compare with getAttribute to compare to default-value behavior
-              x_dirtyFlagFlowsto();
-            }
-            this.x_attributeName = newValue; // assign always, because we might have compared to default-value
-          }
-        ]|
-      else
-        result-setAttribute* := []
-      end end
-    with
-      if name-is-calconwrite then
-        result-dirtyFlagFlowsto* := class-body-dec* |[
-          public void x_dirtyFlagFlowsto()
-          {
-            ~flowsto-stms*
-          }
-        ]|
-      else
-        result-dirtyFlagFlowsto* := []
+      switch id
+        case name-is-incremental; name-is-default-derived; name-is-to-one:
+          result-cacheField* := class-body-dec* |[
+            protected x_type x_cache;
+          ]|
+        case name-is-incremental; name-is-default-derived; name-is-to-many:
+          result-cacheField* := class-body-dec* |[
+            protected Collection<x_type> x_cache = Expressions.emptyCollection();
+          ]|
+        otherwise :
+          result-cacheField* := []
       end
     with
-      if attributename-is-default-derivation; name-is-calconwrite then
-        result-attributeCacheAndCacheFunctions* := class-body-dec* |[
-          private x_attributeType x_attributeCache;
-          
-          public void x_updateAttributeCache()
-          {
-            x_attributeType oldValue = x_getAttribute(); // use getter to get default-value behavior
-            this.x_attributeCache = x_calculateAttribute(); // update the cache (which might be an unused default)
-            if(oldValue != x_getAttribute()){
-              x_dirtyFlagFlowsto();
-            }
-          }
-          
-          protected static void x_updateAllAttributeCache(){
-            Collection<x_entityName> ens = x_getAndEmptyDirtyAttribute();
-            for(x_entityName en : ens){
-              en.x_updateAttributeCache();
-            }
-          }
-          
-          private static Collection<x_entityName> x_dirtyAttribute = new HashSet<x_entityName>();
-          
-          public static void x_flagDirty(x_entityName en)
-          {
-            if(en != null)
-              x_dirtyAttribute.add(en);
-          }
-          
-          public static void x_flagDirty(Collection<x_entityName> ens)
-          {
-            x_dirtyAttribute.addAll(ens);
-          }
-          
-          public static boolean x_hasDirty()
-          {
-            return !x_dirtyAttribute.isEmpty();
-          }
-          
-          public static Collection<x_entityName> x_getAndEmptyDirtyAttribute()
-          {
-            Collection<x_entityName> values = x_dirtyAttribute;
-            x_dirtyAttribute = new HashSet<x_entityName>();
-            return values;
-          }
-        ]|
-      else
-        result-attributeCacheAndCacheFunctions* := []
+      switch id
+        case name-is-incremental; name-is-default-derived:
+          result-dirtyFlags* := class-body-dec* |[
+            private static Collection<x_entityName> x_dirty = new HashSet<x_entityName>();
+          ]|
+        otherwise :
+          result-dirtyFlags* := []
       end
     with
       result := class-body-dec* |[
-        ~result-attributeField*
-        ~result-getAttribute*
-        ~result-staticGetAttribute*
-        ~result-calculateAttribute*
-        ~result-setAttribute*
-        ~result-dirtyFlagFlowsto*
-        ~result-attributeCacheAndCacheFunctions*
+        ~result-updateCache*
+        ~result-addRem*
+        ~result-set*
+        ~result-setCache*
+        ~result-addRemIncr*
+        ~result-addRemCacheIncr*
+        ~result-setIncr*
+        ~result-setCacheIncr*
+        ~result-getStatic*
+        ~result-get*
+        ~result-getCalculated*
+        ~result-calculate*
+        ~result-dirtyFlagFlows*
+        ~result-flagDirty*
+        ~result-userField*
+        ~result-cacheField*
+        ~result-dirtyFlags*
       ]|
-
-rules
 
   model-pathexpr-to-java-stm(err): pathexpr -> result
     with
@@ -268,227 +651,11 @@ rules
 
 rules
 
-  model-roleOrInversename-to-java-classbodydecs(err): x_roleName -> result
-    where
-      is-rolename <+ is-inversename <+ is-relationname
-    with
-      x_inverseName          := <name-get-inversename>x_roleName;
-      x_inverseEntityName    := <attributename-get-entityname>x_inverseName;
-      x_roleEntityName       := <attributename-get-entityname>x_roleName;
-      x_getRole              := <name-get>x_roleName;
-      x_setRole              := <name-set>x_roleName;
-      x_addRole              := <name-add>x_roleName;
-      x_removeRole           := <name-remove>x_roleName;
-      x_setRolePrivate       := <name-set-private>x_roleName;
-      x_addRolePrivate       := <name-add-private>x_roleName;
-      x_removeRolePrivate    := <name-remove-private>x_roleName;
-      x_getInverse           := <name-get>x_inverseName;
-      x_setInversePrivate    := <name-set-private>x_inverseName;
-      x_addInversePrivate    := <name-add-private>x_inverseName;
-      x_removeInversePrivate := <name-remove-private>x_inverseName;
-      x_dirtyFlagFlowstoRole := <name-dirtyflagflowsto>x_roleName
-    with
-      if name-is-calconwrite then
-        flowsto-stms* := <name-get-flowsto-pathexprs;map(model-pathexpr-to-java-stm(err))>x_roleName
-      end
-    with
-      if name-get-multiplicity;upper-one then
-        result-roleField* := class-body-dec* |[
-          private x_inverseEntityName x_roleName;
-        ]|
-      else
-        result-roleField* := class-body-dec* |[
-          private Collection<x_inverseEntityName> x_roleName = Expressions.emptyCollection();
-        ]|
-      end
-    with
-      if name-get-multiplicity;upper-one then
-        result-getRole* := class-body-dec* |[
-          public x_inverseEntityName x_getRole()
-          { 
-            return this.x_roleName;
-          }
-        
-          public static x_inverseEntityName x_getRole(x_roleEntityName en)
-          { 
-            return en == null ? null : en.x_roleName;
-          }
-        
-          public static Collection<x_inverseEntityName> x_getRole(Collection<x_roleEntityName> ens)
-          { 
-            Collection<x_inverseEntityName> result = Expressions.emptyCollection();
-            for(x_roleEntityName en : ens)
-            { 
-              if(en.x_roleName != null)
-                result.add(en.x_roleName);
-            }
-            return result;
-          }
-        ]|
-      else
-        result-getRole* := class-body-dec* |[
-          public Collection<x_inverseEntityName> x_getRole()
-          { 
-            return this.x_roleName;
-          }
-        
-          public static Collection<x_inverseEntityName> x_getRole(x_roleEntityName en)
-          { 
-            Collection<x_inverseEntityName> empty = Expressions.emptyCollection();
-            return en == null ? empty : en.x_roleName;
-          }
-        
-          public static Collection<x_inverseEntityName> x_getRole(Collection<x_roleEntityName> ens)
-          { 
-            Collection<x_inverseEntityName> result = Expressions.emptyCollection();
-            for(x_roleEntityName en : ens)
-            { 
-              result.addAll(en.x_roleName);
-            }
-            return result;
-          }
-        ]|
-      end
-    with
-      if name-is-calconread; name-is-to-one then
-        result-setAddRemoveRolePrivate* := class-body-dec* |[
-          protected void x_setRolePrivate(x_inverseEntityName en)
-          { 
-            if(this.x_roleName != en){
-              this.x_roleName = en;
-            }
-          }
-        ]|
-      else if name-is-calconwrite; name-is-to-one then
-        result-setAddRemoveRolePrivate* := class-body-dec* |[
-          protected void x_setRolePrivate(x_inverseEntityName en)
-          { 
-            if(this.x_roleName != en){
-              this.x_roleName = en;
-              x_dirtyFlagFlowstoRole();
-            }
-          }
-        ]|
-      else if name-is-calconread; name-is-to-many then
-        result-setAddRemoveRolePrivate* := class-body-dec* |[
-          protected void x_addRolePrivate(x_inverseEntityName en)
-          { 
-            if(en != null){
-              this.x_roleName.add(en);
-            }
-          }
-          
-          protected void x_removeRolePrivate(x_inverseEntityName en)
-          { 
-            if(en != null){
-              this.x_roleName.remove(en);
-            }
-          }
-        ]|
-      else // calconwrite many
-        result-setAddRemoveRolePrivate* := class-body-dec* |[
-          protected void x_addRolePrivate(x_inverseEntityName en)
-          { 
-            if(en != null){
-              this.x_roleName.add(en);
-              x_dirtyFlagFlowstoRole();
-            }
-          }
-          
-          protected void x_removeRolePrivate(x_inverseEntityName en)
-          { 
-            if(en != null){
-              this.x_roleName.remove(en);
-              x_dirtyFlagFlowstoRole();
-            }
-          }
-        ]|
-      end end end
-    with
-      if name-is-to-one; name-inverse-is-to-one then
-        result-setAddRemoveRole* := class-body-dec* |[
-          public void x_setRole(x_inverseEntityName en)
-          { 
-            if(x_roleName != null){
-              x_roleName.x_setInversePrivate(null);
-            }
-            if(en != null){
-              x_roleEntityName v = en.x_getInverse();
-              if(v != null){
-                v.x_setRolePrivate(null);
-              }
-              en.x_setInversePrivate(this);
-            }
-            this.x_setRolePrivate(en);
-          }
-        ]|
-      else if name-is-to-one; name-inverse-is-to-many then
-        result-setAddRemoveRole* := class-body-dec* |[
-          public void x_setRole(x_inverseEntityName en)
-          { 
-            if(x_roleName != null){
-              x_roleName.x_removeInversePrivate(this);
-            }
-            if(en != null){
-              en.x_addInversePrivate(this);
-            }
-            this.x_setRolePrivate(en);
-          }
-        ]|
-      else if name-is-to-many; name-inverse-is-to-one then
-        result-setAddRemoveRole* := class-body-dec* |[
-          public void x_addRole(x_inverseEntityName en)
-          { 
-            if(en != null){
-              x_roleEntityName v = en.x_getInverse();
-              if(v != null){
-                v.x_removeRolePrivate(null);
-              }
-              en.x_setInversePrivate(this);
-              this.x_addRolePrivate(en);
-            }
-          }
-          //TODO: add remove
-        ]|
-      else // many-many
-        result-setAddRemoveRole* := class-body-dec* |[
-          public void x_addRole(x_inverseEntityName en)
-          { 
-            if(en != null){
-              en.x_addInversePrivate(this);
-              this.x_addRolePrivate(en);
-            }
-          }
-          //TODO: add remove
-        ]|
-      end end end
-    with
-      if name-is-calconwrite then
-        result-dirtyFlagFlowsto* := class-body-dec* |[
-          public void x_dirtyFlagFlowstoRole()
-          {
-            ~flowsto-stms*
-          }
-        ]|
-      else
-        result-dirtyFlagFlowsto* := []
-      end
-    with
-      result := class-body-dec* |[
-        ~result-roleField*
-        ~result-getRole*
-        ~result-setAddRemoveRole*
-        ~result-setAddRemoveRolePrivate*
-        ~result-dirtyFlagFlowsto*
-      ]|
-
-rules
-
   model-shortcutname-to-java-classbodydecs(err): x_shortcutName -> result-getShortcut*
     where
       is-shortcutname
     with
-      x_sourceEntityName := <shortcutname-get-entityname>x_shortcutName;
+      x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
       x_targetEntityName := <name-get-type>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
@@ -496,8 +663,6 @@ rules
       x_getShortcut      := <name-get>x_shortcutName;
       x_getInverse       := <name-get>x_inverseName;
       x_getRole          := <name-get>x_roleName
-//    with
-//      <debug>(x_sourceEntityName, x_relationName, x_targetEntityName, x_inverseName, x_roleName, x_shortcutName)
     with
       if name-is-to-one then
         result-getShortcut* := class-body-dec* |[
@@ -549,12 +714,12 @@ rules
 
 rules
 
-  model-init-attributename-to-java-stms(err): x_attributeName -> result
+  model-init-name-to-java-stms(err): x_attributeName -> result
     with
       x_entityName                := <attributename-get-entityname>x_attributeName;
       x_flagDirty                 := <name-flagdirty>x_attributeName
     with
-      if attributename-is-default-derivation; name-is-calconwrite then
+      if name-is-default-derived; name-is-calconwrite then
         result := bstm* |[
           x_entityName.x_flagDirty(this);
         ]|

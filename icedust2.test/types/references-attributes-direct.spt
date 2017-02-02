@@ -118,4 +118,4 @@ test ordering of ref entity.attribute Ordered [[
   execute
   3
   [[x.i]]
-]] run get-ordering on #1 to Ordered()
+]] run get-multiplicity on #1 to ZeroOrOne() // is ordered

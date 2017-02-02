@@ -4,6 +4,7 @@ imports // constructors
 
   webdsl/constructors
   webdsl/WebDSL
+//  desugaring/constructors
   signatures/Types-sig
   analysis2/path
   tiersplit/constructors
@@ -53,17 +54,13 @@ rules
   
   cache-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation-incremental>x_moduleName;
       stat_updat* := <fmap(cache-attributenames-to-webdsl-stms)>namess
     with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        result := stat* |[
-          var notEmpty : Bool;
-          stat_updat*
-        ]|
-      else
-        result := []
-      end
+      result := stat* |[
+        var notEmpty : Bool;
+        stat_updat*
+      ]|
       
   cache-attributenames-to-webdsl-stms: attributeNames -> result
     with
@@ -101,17 +98,13 @@ rules
   
   cache-async-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation-eventual>x_moduleName;
       stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
     with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        result := stat* |[
-          var notEmpty : Bool;
-          stat_updat*
-        ]|
-      else
-        result := []
-      end
+      result := stat* |[
+        var notEmpty : Bool;
+        stat_updat*
+      ]|
       
   cache-async-attributenames-to-webdsl-stms: attributeNames -> result
     with

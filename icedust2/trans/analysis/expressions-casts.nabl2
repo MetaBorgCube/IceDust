@@ -2,7 +2,7 @@ module expressions-casts
 
 rules
   
-  [[ Cast(e1, t) ^ (s) : TTuple(t_type, e1_mult, e1_ord) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
+  [[ Cast(e1, t) ^ (s) : TTuple(t_type, e1_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     [[ t ^ (s) : t_type ]],
     t_type <cast? e1_type.

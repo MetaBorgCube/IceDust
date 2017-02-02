@@ -3,7 +3,7 @@ module generating/java/module
 imports // constructors
 
   java/Java
-//  signatures/Modules-sig  
+  signatures/Modules-sig  
 //  desugaring/constructors
 
 imports // functions
@@ -13,7 +13,6 @@ imports // functions
   generating/java/data
   generating/java/execute
   generating/java/model
-  lib/traverse
 
 rules
 
@@ -38,8 +37,12 @@ rules
           public static void main(String[] args)
           {
             ~dataJava*
-            ~cacheJava* // empty if calc-on-read
+            maintainCaches();
             ~executeJava*
+          }
+          
+          private static void maintainCaches() {
+            ~cacheJava* // empty if calc-on-read
           }
         }
         
@@ -50,17 +53,13 @@ rules
   
   cache-modulename-to-java-stms: x_moduleName -> result
     with
-      namess := <modulename-get-attributenames-topo-default-derivation>x_moduleName;
+      namess := <modulename-get-arrinames-topo-default-derivation-incremental>x_moduleName;
       update-stms* := <fmap(cache-attributenames-to-java-stms)>namess
     with
-      if modulename-is-calconwrite then
-        result := bstm* |[
-          boolean notEmpty;
-          ~update-stms*
-        ]|
-      else
-        result := []
-      end
+      result := bstm* |[
+        boolean notEmpty;
+        ~update-stms*
+      ]|
       
   cache-attributenames-to-java-stms: attributeNames -> result
     with

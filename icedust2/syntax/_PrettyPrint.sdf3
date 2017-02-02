@@ -17,7 +17,7 @@ context-free syntax
 context-free syntax
 
   EntityInstance.EntityInstancePP = <
-    <IDSpace?>: <Type> {<{MemberValue "\n"}*> }
+    <IDSpace?>: <EntityType> {<{MemberValue "\n"}*> }
   >
   
   EntityInstance.EntityInstanceNoTypePP = <
@@ -30,18 +30,18 @@ context-free syntax
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?>
   >   
   Member.DerivationAttributePP = <
-    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp>
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp><Strategy?>
   >  
   Member.DerivationAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
-      <Exp>
+      <Exp><Strategy?>
   >
   Member.DefaultAttributePP = <
-    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)<Strategy?>
   >
   Member.DefaultAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
-      <Exp> (default)
+      <Exp> (default)<Strategy?>
   >
 
   MyLayOut = <>

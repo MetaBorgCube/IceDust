@@ -39,8 +39,8 @@ test type of inline if String [[true?"a":"b"]] run get-type2 to String()
 test type of inline if Boolean() [[true?false:false]] run get-type2 to Boolean()
 
 test error on Boolean and Int  [[ true && 3 ]] 1 error
-test error on String gt Int [[ "b" > 4 ]] 2 errors
-test (TS/6) error on String inline if [[ "a" ? 3 : 4 ]] 1 error // 1 error // http://yellowgrass.org/issue/TS/6
+test error on String gt Int [[ "b" > 4 ]] >= 1 errors
+test (TS/6) error on String inline if [[ "a" ? 3 : 4 ]] >= 1 error
 test error on inline if String Int [[ true ? "a" : 4 ]] 1 error
 
 
@@ -56,5 +56,7 @@ test error on ZeroOrOne inline if One One[[ [[x.b]] ? 4 : 6]] 1 error at #1
 
 test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error at #1 // should be warning
 
-test ordering of not  [[! false]] run get-ordering to Ordered()
-test ordering of Ordered gte Ordered  [[8 > 8]] run get-ordering to Ordered()
+test ordering of not  [[! false]] run get-multiplicity to One() // is ordered
+test ordering of Ordered gte Ordered  [[8 > 8]] run get-multiplicity to One() // is ordered
+
+test multiplicity of one armed if [[if(false) 3]] run get-multiplicity to ZeroOrOne()

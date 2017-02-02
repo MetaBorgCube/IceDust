@@ -5,7 +5,7 @@ imports // constructors
   java/Java
   signatures/Expressions-sig
   signatures/Types-sig
-//  tiersplit/constructors
+  tiersplit/constructors
 
 imports // functions
 
@@ -14,8 +14,6 @@ imports // functions
   lib/string
   lib/traverse
 //  names/naming/names
-  api/model-names-api
-  api/types-names-api
 
 rules // math
 
@@ -37,7 +35,7 @@ rules // logic
   lib-call-postfix-mults:    Inequal(_, _)          ->"neq"
   lib-call:                  And(_, _)              ->"and"
   lib-call:                  Or(_, _)               ->"or"
-  lib-call-postfix-mults:    If(_,_,_) ->"conditional"
+  lib-call-postfix-mults:    If(_,_,_)              ->"conditional"
 
 rules // aggregations
   
@@ -54,6 +52,12 @@ rules // multiplicities
   
   lib-call-postfix-mults:    Merge(_, _)            ->"merge"
   lib-call-postfix-mults:    ChoiceLeft(_, _)       ->"choice"
+
+rules // collections
+
+  lib-call:                  First(_)               ->"first"
+  lib-call:                  IndexOf(_, _)          ->"indexOf"
+  lib-call:                  ElemAt(_, _)           ->"elemAt"
 
 rules // lib-call catch all
   

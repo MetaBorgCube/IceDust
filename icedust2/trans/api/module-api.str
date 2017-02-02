@@ -10,8 +10,17 @@ imports
   
 rules
 
-  module-get-modulename = ?Module(<id>, _)
-  module-get-sections   = ?Module(_, <id>)
+  is-module = ?Module(_, _, _)
+
+  module-get-modulename = ?Module(<id>, _, _)
+  module-get-strategy   = ?Module(_, <id>, _)
+  module-get-sections   = ?Module(_, _, <id>)
+  
+  module-set-strategy(s) = Module(id, s, id)
+
+  module-has-no-strategy = where(module-get-strategy;?None())
+  
+rules
   
   module-get-exprs = module-get-sections;filter(is-execute);fmap(execute-get-exprs)
   

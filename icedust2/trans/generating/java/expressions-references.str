@@ -9,6 +9,7 @@ imports // functions
   
   api/_runtime
   api/data-names-api
+  api/expressions-names-api
   api/model-names-api
 //  names/naming/names
   generating/_ir/model
@@ -37,7 +38,7 @@ rules // direct references
 
   exp-to-java-stm(err|i): Ref(x_entityName) -> ([], expr |[x_entityName]|)
     where
-      <is-entityinstancename>x_entityName
+      <is-entityinstancename <+ is-varname>x_entityName
          
   exp-to-java-stm(err|i): e@Ref(name) -> (stms, exp)
     where

@@ -84,7 +84,7 @@ rules //
       (input-rest', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(input-rest, parent, fold-value')
 
   // for terms
-  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term'''', fold-value'')
+  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term''''', fold-value'')
     where
       <not(is-string)>term;
       <explode-term>term
@@ -95,7 +95,8 @@ rules //
       (args', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(args, term, fold-value');
       term'' := <mkterm>(cons, args');
       term''' := <custom-origin(|term)>term'';
-      term'''' := <set-annotations> (term''', annotations)
+      term'''' := <set-annotations> (term''', annotations);
+      term''''' := <nabl2--try-copy-ast-index(|term)>term'''' //copy NaBL2 attachments
 
   // for not(list) not(term)
   topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term', fold-value')

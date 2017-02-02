@@ -5,6 +5,10 @@ language icedust2
 fixture [[
   module test
   
+    [[...]]
+]]
+
+test auto relation type [[
   model
   
     entity Course {}
@@ -15,13 +19,47 @@ fixture [[
 
   data
     
-    alice : Student {
-    
-    }
+    alice : Student { }
     
   execute
+  
     3
-    [[...]]
-]]
+    [[alice.course]]
+]] run get-type2 on #1 to "Course"
 
-test auto relation [[alice.course]]  run get-type2 to "Course"
+test auto relation name resolution [[
+  model
+  
+    entity Course {}
+    
+    entity Student {}
+    
+    relation Course <-> [[Student]]
+
+  data
+    
+    alice : Student { }
+    
+  execute
+  
+    3
+    alice.[[course]]
+]] resolve #2 to #1
+
+test auto relation name resolution 2 [[
+  model
+  
+    entity Node{}
+    
+    relation Node.parent ? <-> Node.children
+    
+    relation Node.root 1 = parent.root <+ this <-> [[Node]]
+    
+  data
+  
+    n:Node{}
+    
+  execute
+  
+    n.[[rootInverse]]
+]] resolve #2 to #1

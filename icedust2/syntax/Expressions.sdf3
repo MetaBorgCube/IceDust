@@ -33,6 +33,7 @@ context-free syntax // operators
   Exp.And2               = <<Exp> && <Exp>>        {left}
   Exp.Or                 = <<Exp> or <Exp>>        {left}
   Exp.Or2                = <<Exp> || <Exp>>        {left}
+  Exp.IfElseNoValue      = <if(<Exp>) <Exp>>       {right} // else no value
   Exp.If                 = <if(<Exp>) <Exp> else <Exp>> {right}
   Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
@@ -70,6 +71,13 @@ context-free syntax // built-in functions
   Exp.Count              = <count(<Exp>)>
   Exp.Conj               = <conj(<Exp>)>
   Exp.Disj               = <disj(<Exp>)>
+  
+  Exp.First              = <<Exp>.first()>
+  Exp.Filter             = [[Exp].filter([ID] => [Exp])]
+  Exp.Find               = [[Exp].find([ID] => [Exp])]
+  Exp.Count2             = <<Exp>.count()>
+  Exp.IndexOf            = <<Exp>.indexOf(<Exp>)>
+  Exp.ElemAt             = <<Exp>.elemAt(<Exp>)>
 
 context-free syntax // references
 
@@ -94,6 +102,8 @@ context-free priorities
 
   { left:
     Exp.MemberAccess
+    Exp.First
+    Exp.Count
   } >  
   { right:
     Exp.Not
@@ -131,6 +141,7 @@ context-free priorities
     Exp.Or2
   } >
   { right:
+    Exp.IfElseNoValue
     Exp.If
     Exp.If2
     Exp.If3

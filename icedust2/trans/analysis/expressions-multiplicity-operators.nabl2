@@ -2,16 +2,16 @@ module expressions-multiplicity-operators
 
 rules
 
-  [[ ChoiceLeft(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
+  [[ ChoiceLeft(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
     out_type is sub.lub of (e1_type,e2_type),
     out_mult is choiceLeftMult of (e1_mult, e2_mult),
-    out_ord is choiceLeftOrd of (e1_ord, e2_ord).
+    out_strat is strat.lub of (e1_strat,e2_strat).
 
-  [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_ord) ]] :=
-    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_ord) ]],
-    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_ord) ]],
+  [[ Merge(e1, e2) ^ (s) : TTuple(out_type, out_mult, out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
     out_type is sub.lub of (e1_type,e2_type),
     out_mult is mergeMult of (e1_mult, e2_mult),
-    out_ord is choiceLeftOrd of (e1_ord, e2_ord).
+    out_strat is strat.lub of (e1_strat,e2_strat).

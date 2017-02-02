@@ -4,6 +4,7 @@ imports // constructors
 
   webdsl/constructors
   webdsl/WebDSL
+//  desugaring/constructors
   tiersplit/constructors
 
 imports // functions
@@ -18,12 +19,16 @@ imports // functions
   lib/lists-tuples
   lib/string
   analysis2/path
+  api/_runtime
   api/model-api
   api/model-names-api
   generating/_ir/model
   generating/webdsl/expressions
   generating/webdsl/expressions-references
   generating/webdsl/types
+  lib/search
+//  names/naming/names
+//  naming/_notNaBL
   tiersplit/intra-object
   generating/webdsl/js/expressions
   generating/webdsl/js/js-helper
@@ -40,7 +45,7 @@ rules // module
   attributeName-default-derivation-to-js: attributeName -> result
     with
       exp_attributeNamestr := <attributename-entityname;js-string>attributeName;
-      partial-expr         := <attributename-get-expr-tiersplit-expr>attributeName;
+      partial-expr         := <attributename-get-expr-tiersplit-expr> attributeName;
       exp_derivation       := <expr-to-js> partial-expr;
       stmt_return          := js-stmt |[ return exp_derivation; ]|
     with

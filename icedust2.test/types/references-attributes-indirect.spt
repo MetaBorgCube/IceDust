@@ -114,11 +114,11 @@ test ordering of ref role.attribute Unordered Ordered [[
     i : Int = max( [[this.in.out.i]] ) <+ 0
   }
   relation Edge{
-    Node.in + (unordered) -> in
-    Node.out 1 (unordered) -> out
+    Node.in + -> in
+    Node.out 1 -> out
     in.a <-> out.b
   }
-]] run get-ordering on #1 to Unordered()
+]] run get-multiplicity on #1 to OneOrMore() // is unordered
 
 test ordering of ref role.attribute Ordered Ordered [[
   model
@@ -127,7 +127,7 @@ test ordering of ref role.attribute Ordered Ordered [[
   }
   relation Edge{
     Node.in + (ordered) -> in
-    Node.out 1 (ordered) -> out
+    Node.out 1 -> out
     in.a <-> out.b
   }
-]] run get-ordering on #1 to Ordered()
+]] run get-multiplicity on #1 to OneOrMoreOrdered() // is ordered

@@ -4,6 +4,7 @@ imports // constructors
 
   webdsl/constructors
   webdsl/WebDSL
+//  desugaring/constructors
   signatures/Types-sig
   analysis2/path
   tiersplit/constructors
@@ -36,16 +37,12 @@ rules // module
         elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName
       end
     with
-      if (modulename-is-calconwrite<+modulename-is-eventuallyconsistent) then
-        def_dirtyReqVar* := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-def)>x_moduleName;
-        stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
-      end
+      def_dirtyReqVar* := <modulename-get-arrinames-default-derived-incremental-eventual;map(attributename-to-webdsl-def)>x_moduleName;
+      stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
     with
-      if modulename-is-eventuallyconsistent then
-        stat_flagasync*    := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-stat)>x_moduleName;
-        native1*           := <modulename-get-attributenames-default-derivation;map(attributename-to-webdsl-native)>x_moduleName;
-        stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
-      end
+      stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-stat)>x_moduleName;
+      native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
+      stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -71,77 +68,55 @@ rules // module
         ]|
       end
     with
-      if modulename-is-calconwrite  then  
-        sec_cachesDirtyflag* := section* |[
-          section caches and dirty flags
-          
-            def_dirtyReqVar*
-            
-            function updateDerivations(){
-              stat_cach*
-            }
-        ]|
-      else if modulename-is-eventuallyconsistent then  
-        sec_cachesDirtyflag* := section* |[
-          section caches and dirty flags
-          
-            def_dirtyReqVar*
-        ]|
-      else
-        sec_cachesDirtyflag* := []
-      end end
-    with
-      if modulename-is-eventuallyconsistent then
-        sec_asyncDirtyflag* :=  section* |[
-          section async dirty flags
-            
-            function flagDirtyAsync(){
-              stat_flagasync*
-            }
-            
-            function updateDerivationsAsync(){
-              stat_cachAsync*
-            }
-            
-            invoke updateDerivationsAsync() every 1 milliseconds
-            
-            native class derivations.DirtyCollections as DirtyCollections {
-              native1*
-            }
-            
-            native class java.util.Queue as Queue{
-              offer(String) : Bool
-              add(String) : Bool
-              addAll(List<String>) : Bool
-              poll() : String
-              contains(String) : Bool
-              isEmpty() : Bool
-            }
-        ]|
-      else
-        sec_asyncDirtyflag* := []
-      end
-    with
-      if modulename-is-calconwrite then
-        sec_hibernateTriggers* :=  section* |[
-          section triggers
+      sec_cachesDirtyflag* := section* |[
+        section caches and dirty flags
         
-            function beforeTransactionCompletion(){
-              updateDerivations();
-              flush();
-            }
-        ]|
-      else if modulename-is-eventuallyconsistent then
-        sec_hibernateTriggers* :=  section* |[
-          section triggers
-            
-            function afterTransactionCompletionCommitted(){
-              flagDirtyAsync();
-            }
-        ]|
-      else
-        sec_hibernateTriggers* := []
-      end end
+          def_dirtyReqVar*
+          
+          function updateDerivations(){
+            stat_cach*
+          }
+      ]|
+    with
+      sec_asyncDirtyflag* :=  section* |[
+        section async dirty flags
+          
+          function flagDirtyAsync(){
+            stat_flagasync*
+          }
+          
+          function updateDerivationsAsync(){
+            stat_cachAsync*
+          }
+          
+          invoke updateDerivationsAsync() every 1 milliseconds
+          
+          native class derivations.DirtyCollections as DirtyCollections {
+            native1*
+          }
+          
+          native class java.util.Queue as Queue{
+            offer(String) : Bool
+            add(String) : Bool
+            addAll(List<String>) : Bool
+            poll() : String
+            contains(String) : Bool
+            isEmpty() : Bool
+          }
+      ]|
+    with
+      sec_hibernateTriggers* :=  section* |[
+        section triggers
+      
+          function beforeTransactionCompletion(){
+            updateDerivations();
+            flush();
+          }
+          
+          function afterTransactionCompletionCommitted(){
+            flagDirtyAsync();
+          }
+      ]|
     with
       if modulename-is-explorerui then
         result := application |[
@@ -162,35 +137,17 @@ rules // module
           sec_hibernateTriggers*
         ]|
       else //embedded model
-        if not(modulename-is-eventuallyconsistent) then
-          result := module |[
-            module x_moduleName
-          
-            imports lib/icedust/Expressions
+        result := module |[
+          module x_moduleName
         
-            sec_modelData*
-          
-            sec_cachesDirtyflag*
-          
-            sec_asyncDirtyflag*
-          
-            sec_hibernateTriggers*
-          ]|
-        else
-          result := module |[
-            module x_moduleName
-          
-//            imports lib/icedust/eventually-consistent
-//            imports lib/icedust/eventually-consistent-ac
-            imports lib/icedust/Expressions
+          imports lib/icedust/Expressions
+      
+          sec_modelData*
         
-            sec_modelData*
-          
-            sec_cachesDirtyflag*
-          
-            sec_asyncDirtyflag*
-          
-            sec_hibernateTriggers*
-          ]|
-        end
+          sec_cachesDirtyflag*
+        
+          sec_asyncDirtyflag*
+        
+          sec_hibernateTriggers*
+        ]|
       end

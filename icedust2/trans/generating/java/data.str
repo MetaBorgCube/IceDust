@@ -9,12 +9,10 @@ imports // functions
   api/data-names-api
   api/model-names-api
   api/module-names-api
-  api/types-api
   generating/_ir/model
   generating/java/expressions
 //  names/naming/names
 //  naming/_notNaBL
-  lib/traverse
 
 rules
  
@@ -42,15 +40,15 @@ rules
   entityinstancename-to-java-stms2(err): x_eiName -> result
     with
       result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
-      result-relations*  := <entityinstancename-get-rri-left           ;fmap(relationvaluename-to-java-stms (err))>x_eiName//;
-//      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-//      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
+      result-relations*  := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
+      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
     with
       result := bstm* |[
         ~result-attributes*
         ~result-relations*
-//        ~result-roles*
-//        ~result-inverses*
+        ~result-roles*
+        ~result-inverses*
       ]|
 
 rules
@@ -58,8 +56,6 @@ rules
   attributevaluename-to-java-stms(err): x_attributevalueName -> result
     where
       membervaluename-is-attribute
-    with
-      membervaluename-get-expr <+ debug-term(|"attributevaluename-to-java-stms: membervaluename-get-expr");fail
     with
       x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
       x_setter := <name-set>x_attributevalueName;

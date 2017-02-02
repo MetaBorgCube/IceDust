@@ -21,5 +21,3 @@ test type of literal No Value [[no value]] run get-type2 to NoValue()
 test multiplicity of Literal Int      [[1]] run get-multiplicity to One() 
 test multiplicity of literal String   [["Asdf"]] run get-multiplicity to One()
 test multiplicity of literal No Value [[no value]] run get-multiplicity to ZeroOrOne() //there is no Zero representation
-
-test ordering of Literal Int     [[1]] run get-ordering to Ordered() 

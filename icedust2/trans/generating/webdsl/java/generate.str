@@ -1,5 +1,9 @@
 module generating/webdsl-java/generate
 
+imports // constructors
+
+  signatures/Modules-sig
+
 imports // functions
 
   api/module-api

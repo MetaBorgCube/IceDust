@@ -5,7 +5,6 @@ imports // signatures
   signatures/Types-sig
 
 rules
-
   is-type = ?Boolean()
   is-type = ?Float()
   is-type = ?Datetime()
@@ -14,11 +13,10 @@ rules
 
   is-multiplicity = ?One()
   is-multiplicity = ?ZeroOrOne()
+  is-multiplicity = ?OneOrMoreOrdered()
+  is-multiplicity = ?ZeroOrMoreOrdered()
   is-multiplicity = ?OneOrMore()
   is-multiplicity = ?ZeroOrMore()
-
-  is-ordering = ?Ordered()
-  is-ordering = ?Unordered()
 
 rules
 
@@ -31,31 +29,43 @@ rules
   
   pp2-multiplicity = ?One();!""
   pp2-multiplicity = ?ZeroOrOne();!"?"
+  pp2-multiplicity = ?OneOrMoreOrdered();!"+ (ordered)"
+  pp2-multiplicity = ?ZeroOrMoreOrdered();!"* (ordered)"
   pp2-multiplicity = ?OneOrMore();!"+"
   pp2-multiplicity = ?ZeroOrMore();!"*"
   
   pp2-type-multiplicity = ?(type, multiplicity);!$[[<pp2-type>type][<pp2-multiplicity>multiplicity]]
 
-rules // predicates over multiplcities
+rules // multiplicity and ordering predicates
+
+  ordered   = ?One()
+  ordered   = ?ZeroOrOne()
+  ordered   = ?OneOrMoreOrdered()
+  ordered   = ?ZeroOrMoreOrdered()
+  unordered = ?OneOrMore()
+  unordered = ?ZeroOrMore()
   
-  upper-one  = ?ZeroOrOne()
-  upper-one  = ?One()
-  upper-many = ?ZeroOrMore()
-  upper-many = ?OneOrMore()
   lower-zero = ?ZeroOrOne()
   lower-zero = ?ZeroOrMore()
+  lower-zero = ?ZeroOrMoreOrdered()
   lower-one  = ?One()
   lower-one  = ?OneOrMore()
-  nullable   = lower-zero
-
-rules
+  lower-one  = ?OneOrMoreOrdered()
   
-  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrMore())
-  mult-inbounds(|multiplicity) = where(!multiplicity => OneOrMore()) ;?i ;where(!(i,1);geq)
-  mult-inbounds(|multiplicity) = where(!multiplicity => ZeroOrOne()) ;?i ;where(!(i,1);leq)
-  mult-inbounds(|multiplicity) = where(!multiplicity => One())       ;?i ;where(!(i,1);eq)
+  upper-one  = ?One()
+  upper-one  = ?ZeroOrOne()
+  upper-many = ?OneOrMore()
+  upper-many = ?ZeroOrMore()
+  upper-many = ?OneOrMoreOrdered()
+  upper-many = ?ZeroOrMoreOrdered()
+  
+  upper-many-ordered   = upper-many;ordered
+  upper-many-unordered = upper-many;unordered
   
 rules
 
-  ordered = ?Ordered()
-  unordered = ?Unordered()
+  mult-inbounds(|multiplicity) = where(!multiplicity;lower-zero;upper-many)
+  mult-inbounds(|multiplicity) = where(!multiplicity;lower-one ;upper-many) ;?i ;where(!(i,1);geq)
+  mult-inbounds(|multiplicity) = where(!multiplicity;lower-zero;upper-one ) ;?i ;where(!(i,1);leq)
+  mult-inbounds(|multiplicity) = where(!multiplicity;lower-one ;upper-one ) ;?i ;where(!(i,1);eq)
+  

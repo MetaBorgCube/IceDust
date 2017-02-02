@@ -41,6 +41,7 @@ rules // entity
 
   entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+  entityname-get-arrinames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
@@ -80,7 +81,7 @@ rules // attributes
   
   attributename-pp2-type-multiplicity: attrName -> x
     with
-      x := <pp2-type-multiplicity>(<name-get-type>attrName, <name-get-multiplicity>attrName)
+      x := <pp2-type-multiplicity>(<name-get-type<+get-type2>attrName, <name-get-multiplicity<+get-multiplicity>attrName)
 
 rules // relations
 
@@ -88,7 +89,8 @@ rules // relations
   
   relationname-get-inversename = get-property(|"Member","inverse")
   
-  relationname-is-left = where(get-property(|"Member","side");?Left())
+  relationname-is-left  = where(get-property(|"Member","side");?Left())
+  relationname-is-right = where(get-property(|"Member","side");?Right())
 
 rules // roles
   
@@ -104,17 +106,35 @@ rules // inverses
 
 rules
 
+  name-is-arri           = is-attributename <+ is-relationname <+ is-rolename <+ is-inversename
+
+  name-is-unidirectional = is-attributename
+  name-is-bidirectional  = is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname
+  
+rules
+
   name-get-inversename = where(is-relationname);relationname-get-inversename
   name-get-inversename = where(is-rolename)    ;rolename-get-inversename
   name-get-inversename = where(is-inversename) ;inversename-get-rolename
   
-  name-is-calconread           = where(attributename-get-entityname;entityname-is-calconread)
-  name-is-calconwrite          = where(attributename-get-entityname;entityname-is-calconwrite)
-  name-is-eventuallyconsistent = where(attributename-get-entityname;entityname-is-eventuallyconsistent)
+  name-is-ondemand    = name-is-calconread
+  name-is-incremental = name-is-calconwrite
+  name-is-eventual    = name-is-eventuallyconsistent
+  
+  name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
+  
+  name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
+  
+  name-is-calconread           = where(name-get-calculation-strategy;?OnDemand())
+  name-is-calconread           = where(name-get-calculation-strategy;?OnDemandEventual())
+  name-is-calconwrite          = where(name-get-calculation-strategy;?Incremental())
+  name-is-eventuallyconsistent = where(name-get-calculation-strategy;?Eventual())
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   
-  name-is-left = where(is-rolename <+ is-relationname;relationname-is-left)
+  name-is-left =  where(is-rolename    <+ is-relationname;relationname-is-left)
+  name-is-right = where(is-inversename <+ is-relationname;relationname-is-right)
+  
   
   name-is-one                = where(name-get-multiplicity;lower-one;upper-one)
   name-is-zeroorone          = where(name-get-multiplicity;lower-zero;upper-one)
@@ -132,10 +152,20 @@ rules
 
   name-get-type         = get-type-property(|"Member");normalize-type
   name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity
-  name-get-ordering     = get-type-property(|"Member");normalize-ordering
   
-  name-is-ordered   = where(name-get-ordering;ordered)
-  name-is-unordered = where(name-get-ordering;unordered)
+  name-is-ordered            = where(name-get-multiplicity;ordered)
+  name-is-unordered          = where(name-get-multiplicity;unordered)
+  
+  name-is-derived = where(get-property(|"Member","derivationtype");?Derivation())
+  name-is-default = where(get-property(|"Member","derivationtype");?DefaultValue())
+  name-is-normal  = where(get-property(|"Member","derivationtype");?Normal())
+  
+  name-is-normal-default  = where(name-is-normal  <+ name-is-default)
+  name-is-default-derived = where(name-is-default <+ name-is-derived)
+  
+  name-get-expr = get-property(|"Member","expr")
+  
+  name-has-expr = where(name-get-expr)
 
 rules // shortcuts
 
@@ -158,6 +188,8 @@ rules // combined
   
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
   name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
+  
+  name-get-flowsto-pathexprs-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental-eventual))
 
 //rules // helper
 //
