@@ -2,7 +2,7 @@
 <feature
       id="icedust.eclipse.feature"
       label="IceDust Language Editor"
-      version="0.5.1.qualifier">
+      version="0.6.0">
 
    <description url="https://github.com/metaborg/icedust">
       The IceDust Language Editor
@@ -35,6 +35,6 @@ Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (L
          id="icedust.eclipse"
          download-size="0"
          install-size="0"
-         version="0.5.1.qualifier"/>
+         version="0.6.0"/>
 
 </feature>
