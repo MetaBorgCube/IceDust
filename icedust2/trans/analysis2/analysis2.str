@@ -173,16 +173,24 @@ rules
       relationNames*  := <modulename-get-relationnames-left>moduleName;
       roleNames*      := <modulename-get-rolenames>moduleName;
       graphNames      := [attributeNames*, relationNames*, roleNames*];
-      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
-      <index-set(|moduleName, TopoSort())>toposort;
-      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
+      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames';
+      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
+      <index-set(|moduleName, TopoSort())>toposort';
+      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort';
       <map(index-set-prop(|TopoSort()))>numbers
+      
+  annotate-with-parent-entity    = try(nabl2--preserve-ast-index(?name;attributename-get-entityname;?ent;!name{("parent-entity",ent)}))
+  de-annotate-with-parent-entity = try(nabl2--preserve-ast-index(?name{("parent-entity",_)};!name{}))
 
-  toposort-edge: name -> [names*, inv-names*]
+  toposort-edge: name -> all-names*
     with
-      names* := <index-get2(|FlowsTo());map(path-last)>name;
-      if inv-name := <name-get-inversename>name then
+      name' := <de-annotate-with-parent-entity>name;
+      names* := <index-get2(|FlowsTo());map(path-last)>name';
+      if inv-name := <name-get-inversename>name' then
         inv-names* := <index-get2(|FlowsTo());map(path-last)>inv-name
       else
         inv-names* := []
-      end
+      end;
+      all-names* := <map(annotate-with-parent-entity)>[names*, inv-names*]
+      
