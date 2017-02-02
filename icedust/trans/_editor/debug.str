@@ -157,13 +157,22 @@ rules // Debugging builders
 
 rules
 
-  debug-toposort: (target, position, ast, path, project-path) -> None()
+  debug-dependson: (target, position, ast, path, project-path) -> (filename, result)
     with
-      <module-get-modulename;modulename-get-toposort;map(map(debug-name))>ast
+      filename := <guarantee-extension(|"dependson.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(index-get-prop(|DependsOn());map(path-pp));concat-strings(|"\n")>ast
 
-  debug-name: name -> name
+  debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
     with
-      <debug>$[[<index-get-prop(|TopoSort());Hd>name]: [<attributename-get-entityname>name].[name]]
+      filename := <guarantee-extension(|"flowsto.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(index-get-prop(|FlowsTo());map(path-pp));concat-strings(|"\n")>ast
+      
+  debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"toposort.aterm")> path;
+      result := <module-get-modulename;modulename-get-toposort;map(map(pp-toposort))>ast
+
+  pp-toposort: name -> (<index-get-prop(|TopoSort());Hd>name, $[[<attributename-get-entityname>name].[name]])
 
 rules // test builders
 

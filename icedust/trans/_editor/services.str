@@ -18,7 +18,7 @@ imports // functions
   lib/string
   prettyprinting/pp
   names/naming/names
-  completion/IceDust-cp
+  completion/completion
   runtime/completion/-
   
 rules // Editor services

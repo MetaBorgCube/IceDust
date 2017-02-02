@@ -26,6 +26,9 @@ rules // WebDSL specific: no generics, explicit casts
 
   webdsl-lib-call-cast = ?Merge(_, _)
   webdsl-lib-call-cast = ?ChoiceLeft(_, _)
+  
+  webdsl-lib-call-cast = ?First(_)
+  webdsl-lib-call-cast = ?ElemAt(_,_)
 
 rules // lib expression calls
   
@@ -65,3 +68,27 @@ rules // casts
     with
       e1 := <expr-to-webdsl-expr(err)>ex1;
       x_method := $[as[<postfix-id>ex1-ty]]
+
+rules // filter
+
+  expr-to-webdsl-expr(err): Filter(ex1, x_var, ex2) -> result
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      e2 := <expr-to-webdsl-expr(err)>ex2;
+      srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
+    with
+      result := exp |[
+        [ x_var | x_var : srt1 in e1 where e2]
+      ]|
+      
+rules // find
+
+  expr-to-webdsl-expr(err): Find(ex1, x_var, ex2) -> result
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      e2 := <expr-to-webdsl-expr(err)>ex2;
+      srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
+    with
+      result := exp |[
+        Expressions.first([ x_var | x_var : srt1 in e1 where e2]) as srt1
+      ]|

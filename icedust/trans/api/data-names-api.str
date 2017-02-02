@@ -46,7 +46,7 @@ rules // entity instance
 rules // member values
 
   membervaluename-get-expr = index-get-prop(|AST());Hd
-  membervaluename-get-values = index-get-prop(|Rel())
+  membervaluename-get-values = index-get-prop(|Rel()); origin-sort-anno
   membervaluename-get-values-inv = index-get-prop(|RelInv())
   membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
