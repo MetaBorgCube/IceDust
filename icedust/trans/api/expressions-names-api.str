@@ -1,0 +1,13 @@
+module api/expressions-names-api
+
+imports // constructors
+
+  names/naming/names
+
+imports // functions
+
+  api/_runtime
+
+rules
+
+  is-varname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsVar())

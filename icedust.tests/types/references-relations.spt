@@ -27,10 +27,10 @@ test type of relation relation relation  [[n.maybe.one.star]]  run get-type2 to 
 test multiplicity of relation ZeroOrOne  [[n.maybe]] run get-multiplicity to ZeroOrOne()
 test multiplicity of relation One        [[n.one]]   run get-multiplicity to One()
 test multiplicity of relation ZeroOrMore [[n.star]]  run get-multiplicity to ZeroOrMore()
-test multiplicity of relation OneOrMore  [[n.plus]]  run get-multiplicity to OneOrMore()
+test multiplicity of relation OneOrMore  [[n.plus]]  run get-multiplicity to OneOrMoreOrdered()
 
 test multiplicity of relation relation ZeroOrOne   [[n.maybe.maybe]] run get-multiplicity to ZeroOrOne()
 test multiplicity of relation relation ZeroOrOne 2 [[n.maybe.one]]   run get-multiplicity to ZeroOrOne()
 
-test ordering of relation Unordered    [[n.star]] run get-ordering to Unordered()
-test ordering of relation Ordered      [[n.plus]] run get-ordering to Ordered()
+test ordering of relation Unordered    [[n.star]] run get-multiplicity to ZeroOrMore() // is unordered
+test ordering of relation Ordered      [[n.plus]] run get-multiplicity to OneOrMoreOrdered() // is ordered

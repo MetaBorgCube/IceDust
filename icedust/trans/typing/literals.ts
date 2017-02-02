@@ -20,28 +20,30 @@ type rules
 
   Int(x) : Int()
   Int(x) has multiplicity One()
-  Int(x) has ordering Ordered()
-
+  
   Float(x) : Float()
   Float(x) has multiplicity One()
-  Float(x) has ordering Ordered()
   
   LitString(x) : String()
   LitString(x) has multiplicity One()
-  LitString(x) has ordering Ordered()
   
   True() : Boolean()
   True() has multiplicity One()
-  True() has ordering Ordered()
   
   False() : Boolean()
   False() has multiplicity One()
-  False() has ordering Ordered()
   
   Datetime(x) : Datetime()
   Datetime(x) has multiplicity One()
-  Datetime(x) has ordering Ordered()
   
   NoValue() : NoValue()
   NoValue() has multiplicity ZeroOrOne()
-  NoValue() has ordering Ordered()
+
+  Int(x)
++ Float(x)
++ LitString(x)
++ True()
++ False() 
++ Datetime(x)
++ NoValue() has strategy Incremental() //bottom of lattice
+  
