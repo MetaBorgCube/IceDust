@@ -13,7 +13,7 @@ imports // generated runtime
   libspoofax/term/annotation  
   libspoofax/term/origin
   libspoofax/editor/outline
-  runtime/editor/properties
+  runtime/properties/editor
   runtime/index/core
   runtime/index/legacy
   runtime/index/query
