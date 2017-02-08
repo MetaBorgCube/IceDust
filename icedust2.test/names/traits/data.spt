@@ -1,0 +1,82 @@
+module names-traits-data
+
+language icedust2
+
+fixture [[
+  module test
+  [[...]]
+]]
+
+//test error on instantiate trait [[
+//  model
+//    trait Foo{}
+//  data
+//    foo:[[Foo]]{}
+//]] 1 error at #1
+//
+//test no error on instantiate non trait [[
+//  model
+//    entity Foo{}
+//  data
+//    foo:Foo{}
+//]] 0 errors
+//
+//test error on instantiate trait with type inference [[
+//model
+//
+//  entity Foo{}
+//  
+//  trait Bar{
+//    f : Float
+//  }
+//  
+//  relation Foo <-> Bar
+//  
+//data
+//
+//  foo:Foo{
+//    bar = bar{
+//      f = 5.5
+//    }
+//  }
+//]] >= 1 error //TODO: make error more precise // http://yellowgrass.org/issue/NaBL2/17
+//
+//test error on instantiate trait relation [[
+//model
+//
+//  entity Foo {
+//  }
+//
+//  trait Bar {
+//    Foo -> foo1
+//    Foo -> foo2
+//  }
+//  
+//data
+//  
+//  bar:[[Bar]]{
+//    foo1=foo{}
+//    foo2=foo
+//  }
+//]] >= 1 error at #1
+//
+//test error on instantiate trait relation with type inference [[
+//model
+//
+//  entity Foo {
+//  }
+//
+//  trait Bar {
+//    Foo.barAsFoo1 *(unordered) -> foo1
+//    Foo.barAsFoo2 *(unordered) -> foo2
+//    foo1.foo2 <-> foo2.foo1
+//  }
+//  
+//data
+//
+//  foo:Foo{
+//    foo1 = [[<bar{}>]] otherFoo{}
+//  }
+//]] 1 error at #1 //TODO: make error more precise // http://yellowgrass.org/issue/NaBL2/17
+//
+////TODO: error on implicit relation object when trait in shortcut member

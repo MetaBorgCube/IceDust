@@ -20,3 +20,7 @@ signature constructors
   Left  : Side
   Right : Side
   
+  Entity   : Term
+  Relation : Term
+  Trait    : Term
+  

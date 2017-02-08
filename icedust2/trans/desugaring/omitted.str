@@ -179,6 +179,7 @@ rules // shortcutrels -> shortcut relations
     with
       result := <custom-origin(|scr)>FirstClassRelation(
         relname
+      , None()
       , strategy
       , [ <custom-origin(|e2)>Role(e1, invname2, m1, s2)
         , <custom-origin(|e1)>Role(e2, invname1, m2, s1)

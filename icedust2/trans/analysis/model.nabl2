@@ -2,7 +2,7 @@ module model
 
 rules
 
-  [[ Entity(e, st, as) ^ (module_scope) ]] :=
+  [[ Entity(e, parents, st, as) ^ (module_scope) ]] :=
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
@@ -22,22 +22,77 @@ rules
     Map2 [[ as ^ (entity_scope, module_scope) ]],
     Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
     Entity2{e} <=I= entity_scope, // import all from that reference
-    new entity_scope.
+    new entity_scope,
+    
+    Entity{e}.constructor := Entity(),
+    Extends [[parents ^ (entity_scope)]].
 
-  [[ FirstClassRelation(e, st, as) ^ (module_scope) ]] := // identical to Entity
+  [[ FirstClassRelation(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
     entity_scope ---> module_scope,
     Entity{e} ===> entity_scope,
-    Entity{e} : TEntity(Entity{e}),
+    e_type == TEntity(Entity{e}),
+    Entity{e} : e_type,
+
+    e_type <test! IsType(),
+    e_type <test! CanCompare(),
+    TString() <cast! e_type,
+    TNoValue() <sub! e_type,
+
     Entity{e}.ns := Entity(),
     Implicit{"this"} <- entity_scope,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
     Map2 [[ as ^ (entity_scope, module_scope) ]],
-    Entity2{e} -> module_scope,
-    Entity2{e} <=I= entity_scope,
-    new entity_scope.
+    Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
+    Entity2{e} <=I= entity_scope, // import all from that reference
+    new entity_scope,
+    
+    Entity{e}.constructor := Relation(),
+    Extends [[parents ^ (entity_scope)]].
+
+  [[ Trait(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
+    distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    Entity{e} <- module_scope,
+    entity_scope ---> module_scope,
+    Entity{e} ===> entity_scope,
+    e_type == TEntity(Entity{e}),
+    Entity{e} : e_type,
+
+    e_type <test! IsType(),
+    e_type <test! CanCompare(),
+    TString() <cast! e_type,
+    TNoValue() <sub! e_type,
+
+    Entity{e}.ns := Entity(),
+    Implicit{"this"} <- entity_scope,
+    Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
+    [[ st ^ (module_scope) : e_strat ]],
+    Map2 [[ as ^ (entity_scope, module_scope) ]],
+    Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
+    Entity2{e} <=I= entity_scope, // import all from that reference
+    new entity_scope,
+    
+    Entity{e}.constructor := Trait(),
+    Extends [[parents ^ (entity_scope)]].
+    
+  Extends [[ None() ^ (dont_care) ]] :=
+    true.
+    
+  Extends [[ OptionalExtends(parents_list) ^ (entity_scope) ]] :=
+    Map1 [[ parents_list ^ (entity_scope) ]].
+  
+  [[ Extends(parent) ^ (entity_scope) ]] :=
+    Entity{parent} -> entity_scope,
+    Entity{parent} <=I= entity_scope,
+    Entity{parent} |-> parent_def,
+    parent_def : TEntity(parent_entity),
+    parent_def.constructor := Trait() | error "Only traits can be extended",
+    Implicit{"this"} -> entity_scope,
+    Implicit{"this"} |-> this_def,
+    this_def : TTuple(TEntity(entity), this_mu, this_st),
+    TEntity(entity) <sub! TEntity(parent_entity).
     
   [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
     Member{a} <- entity_scope,
