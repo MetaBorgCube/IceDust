@@ -32,10 +32,10 @@ rules // entity
 
   is-entityname = where(is-string;get-property(|"Entity","ns");?Entity())
 
-  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-decl-names                 ;filter(is-attributename);string-sort-anno
-  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-decl-names                 ;filter(is-attributename);origin-sort-anno
+  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-attributename);string-sort-anno
+  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-attributename);origin-sort-anno
   entityname-get-relationnames   = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-relationname );string-sort-anno
-  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-decl-names      (|"Member");filter(is-rolename     );string-sort-anno
+  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-rolename     );string-sort-anno
   entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-inversename  );string-sort-anno
   entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-reachable-names2(|"Member");filter(is-shortcutname );string-sort-anno
 
@@ -73,7 +73,7 @@ rules // attributes
   attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
   attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
   
-  attributename-get-entityname = get-decl(|"Member");get-scope(|"Member");get-scope-assoc-name
+  attributename-get-entityname = get-decl(|"Member");get-scope(|"Member");(get-scope-assoc-name <+ (get-scope-scope;get-scope-assoc-name))
   
   attributename-get-expr = get-property(|"Member","expr")
   

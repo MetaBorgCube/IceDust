@@ -11,6 +11,7 @@ imports
   expressions-math
   expressions-multiplicity-operators
   expressions-references
+  map3
   model
   module
   types
@@ -161,7 +162,33 @@ signature
       (TOnDemand()        , Right()) -> TNonMaterialized(), // pull-based -> not materialized
       (TOnDemandEventual(), Right()) -> TNonMaterialized()  // pull-based -> not materialized
     }
- 
+
+  name resolution
+  
+    labels
+    //D // definition
+      I // import
+      J // lower priority import
+      P // parent
+//      S // requires a J to be wellformed
+      N // no edge at all (used for inverse querying)
+
+    order
+      D < I,
+      D < J,
+      D < P,
+//      D < S,
+//      S < I,
+//      S < J,
+//      S < P,
+      I < J,
+      I < P,
+      J < P
+
+    well-formedness
+      P* . (I|J)*
+//      P* . (e|(S.J)) . (I|J)*
+
 rules
 
   init ^ (init_scope) :=

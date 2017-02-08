@@ -2,8 +2,29 @@ module model
 
 rules
 
+  // modeling partial classes through importing Entity2{e}
+  // modeling inheritance through importing Entity{parent}
+  //
+  // module_scope ---> Entity2{e}
+  //   |         ^
+  //   |          \
+  //   |           P
+  //   v            \
+  // Entity{e} =I=> entity_scope ---> Implicit{"this"}
+  //               /       \       __^  ^
+  //              I         J  __/      |
+  //             /      __/  \          |
+  //            v     /       v         |
+  // entity_scope_local      entity_scope_inherit
+  //   |          ||              ||
+  //   |          I               I
+  //   |          ||              ||
+  //   v          v               v
+  // Member{m}  Entity2{e}   Entity{parent}
+
   [[ Entity(e, parents, st, as) ^ (module_scope) ]] :=
-    distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES, //currently sees all names, also through -N->, will be fixed
+    distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
     Entity{e} <- module_scope,
     entity_scope -P-> module_scope,
     Entity{e} =I=> entity_scope,
@@ -17,18 +38,26 @@ rules
 
     Entity{e}.ns := Entity(),
     Implicit{"this"} <- entity_scope,
+    Implicit{"this"} <- entity_scope_local,
+    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
-    Map2 [[ as ^ (entity_scope, module_scope) ]],
+    Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
     Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
-    Entity2{e} <=I= entity_scope, // import all from that reference
+    Entity2{e} <=I= entity_scope_local, // import all from that reference
     new entity_scope,
     
     Entity{e}.constructor := Entity(),
-    Extends [[parents ^ (entity_scope)]].
+    new entity_scope_local,
+    entity_scope -I-> entity_scope_local,
+    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
+    new entity_scope_inherit,
+    entity_scope -J-> entity_scope_inherit,
+    Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
 
   [[ FirstClassRelation(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
-    distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
     Entity{e} <- module_scope,
     entity_scope -P-> module_scope,
     Entity{e} =I=> entity_scope,
@@ -42,18 +71,25 @@ rules
 
     Entity{e}.ns := Entity(),
     Implicit{"this"} <- entity_scope,
+    Implicit{"this"} <- entity_scope_local,
+    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
-    Map2 [[ as ^ (entity_scope, module_scope) ]],
+    Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
     Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
-    Entity2{e} <=I= entity_scope, // import all from that reference
+    Entity2{e} <=I= entity_scope_local, // import all from that reference
     new entity_scope,
     
     Entity{e}.constructor := Relation(),
-    Extends [[parents ^ (entity_scope)]].
+    new entity_scope_local,
+    entity_scope -I-> entity_scope_local,
+    new entity_scope_inherit,
+    entity_scope -J-> entity_scope_inherit,
+    Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
 
   [[ Trait(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
-    distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+    distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
     Entity{e} <- module_scope,
     entity_scope -P-> module_scope,
     Entity{e} =I=> entity_scope,
@@ -67,25 +103,31 @@ rules
 
     Entity{e}.ns := Entity(),
     Implicit{"this"} <- entity_scope,
+    Implicit{"this"} <- entity_scope_local,
+    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
-    Map2 [[ as ^ (entity_scope, module_scope) ]],
+    Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
     Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
-    Entity2{e} <=I= entity_scope, // import all from that reference
+    Entity2{e} <=I= entity_scope_local, // import all from that reference
     new entity_scope,
     
     Entity{e}.constructor := Trait(),
-    Extends [[parents ^ (entity_scope)]].
+    new entity_scope_local,
+    entity_scope -I-> entity_scope_local,
+    new entity_scope_inherit,
+    entity_scope -J-> entity_scope_inherit,
+    Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
     
-  Extends [[ None() ^ (dont_care) ]] :=
+  Extends [[ None() ^ (entity_scope, entity_scope_inherit) ]] :=
     true.
     
-  Extends [[ OptionalExtends(parents_list) ^ (entity_scope) ]] :=
-    Map1 [[ parents_list ^ (entity_scope) ]].
+  Extends [[ OptionalExtends(parents_list) ^ (entity_scope, entity_scope_inherit) ]] :=
+    Map2 [[ parents_list ^ (entity_scope, entity_scope_inherit) ]].
   
-  [[ Extends(parent) ^ (entity_scope) ]] :=
+  [[ Extends(parent) ^ (entity_scope, entity_scope_inherit) ]] :=
     Entity{parent} -> entity_scope,
-    Entity{parent} <=I= entity_scope,
+    Entity{parent} <=I= entity_scope_inherit,
     Entity{parent} |-> parent_def,
     parent_def : TEntity(parent_entity),
     parent_def.constructor := Trait() | error "Only traits can be extended",
@@ -94,8 +136,8 @@ rules
     this_def : TTuple(TEntity(entity), this_mu, this_st),
     TEntity(entity) <sub! TEntity(parent_entity).
     
-  [[ Attribute(a, t, m) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
+  [[ Attribute(a, t, m) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope_local,
     Member{a} : TTuple(a_type, a_mult, TIncremental()),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := Normal(),
@@ -105,8 +147,8 @@ rules
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]].
     
-  [[ DerivationAttribute(a, t, m, e, st) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
+  [[ DerivationAttribute(a, t, m, e, st) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope_local,
     Member{a} : TTuple(a_type, a_mult, a_strat),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := Derivation(),
@@ -122,8 +164,8 @@ rules
     e_mult  <mulOrd? a_mult  | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e,
     e_strat <strat?  a_strat | error $[Calculation strategy error: expected [a_strat] got [e_strat].]@e.
     
-  [[ DefaultAttribute(a, t, m, e, st) ^ (entity_scope, module_scope) ]] :=
-    Member{a} <- entity_scope,
+  [[ DefaultAttribute(a, t, m, e, st) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope_local,
     Member{a} : TTuple(a_type, a_mult, a_strat),
     Member{a}.ns := Attribute(),
     Member{a}.derivationtype := DefaultValue(),
@@ -212,12 +254,12 @@ rules
     expr_mult  <mulOrd? m1_mult  | error $[Multiplicity error: expected [m1_mult] got [expr_mult].]@expr,
     expr_strat <strat?  st_strat | error $[Calculation strategy error: expected [st_strat] got [expr_strat].]@expr.
     
-  [[ Role(entity, inverse, mult, role) ^ (entity_scope, module_scope) ]] :=
+  [[ Role(entity, inverse, mult, role) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
     [[ mult ^ (entity_scope) : inverse_mult ]],
     Implicit{"this"} -> entity_scope,
     Implicit{"this"} |-> this_def,
     this_def : TTuple(this_type, this_mult, this_strat),
-    Member{role} <- entity_scope,
+    Member{role} <- entity_scope_local,
     Member{role} : TTuple(entity_type, TOne(), TIncremental()),
     Member{role}.ns := Role(),
     Member{role}.inversemult := inverse_mult,
@@ -240,7 +282,7 @@ rules
     Member2{role} <=I= entity2_scope, // import all shortcut definitions from the role associated scope into the entity2 scope
     true.
     
-  [[ Shortcut(role1, shortcut1, role2, shortcut2) ^ (entity_scope, module_scope) ]] :=
+  [[ Shortcut(role1, shortcut1, role2, shortcut2) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
     Member{role1} -> entity_scope,
     Member{role1} |-> role1_def,
     role1_def : TTuple(role1_type, role1_mult, role1_strat),
