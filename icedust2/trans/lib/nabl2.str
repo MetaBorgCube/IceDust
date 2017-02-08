@@ -81,6 +81,8 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
   get-scope-reachable-names(|ns)    = get-reachable-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-reachable-names2(|ns)   = get-scope-reachable-names(|ns) <+ ![]          //@type Scope -> List(Term)
+  get-scope-visible-names(|ns)      = get-visible-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-visible-names2(|ns)     = get-scope-visible-names(|ns) <+ ![]          //@type Scope -> List(Term)
   get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
   get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
   get-resolved-name(|ns)            = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@Type Term -> Term

@@ -170,24 +170,23 @@ signature
       I // import
       J // lower priority import
       P // parent
-//      S // requires a J to be wellformed
+      S // requires a J to be wellformed
       N // no edge at all (used for inverse querying)
 
     order
       D < I,
       D < J,
       D < P,
-//      D < S,
-//      S < I,
-//      S < J,
-//      S < P,
+      D < S,
+      S < I,
+      S < J,
+      S < P,
       I < J,
       I < P,
       J < P
 
     well-formedness
-      P* . (I|J)*
-//      P* . (e|(S.J)) . (I|J)*
+      P* . (e|(S.J)) . (I|J)*
 
 rules
 

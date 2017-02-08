@@ -173,7 +173,7 @@ rules
       relationNames*  := <modulename-get-relationnames-left>moduleName;
       roleNames*      := <modulename-get-rolenames>moduleName;
       graphNames      := [attributeNames*, relationNames*, roleNames*];
-      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
+      graphNames'     := <map(annotate-with-parent-entity);debug>graphNames;
       toposort        := <graph-topological-sort(toposort-edge)>graphNames';
       toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
       <index-set(|moduleName, TopoSort())>toposort';

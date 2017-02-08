@@ -8,7 +8,7 @@ fixture [[
   [[...]]
 ]]
 
-//test no error on overriding field [[ //FIXME: implement
+//test no error on overriding field [[ //FIXME: NaBL2 reachable takes non-wellformed paths as well
 //  trait Assignment {
 //    size : Int
 //  }
@@ -17,28 +17,28 @@ fixture [[
 //    size : Int = 1
 //  }
 //]] 0 errors
-//
-//test error on overriding field with wrong type [[ //FIXME: implement
-//  trait Assignment {
-//    size : Int
-//  }
-//
-//  entity BasicAssignment extends Assignment {
-//    size : [[String]]
-//  }
-//]] 1 error at #1
-//
-//test error on overriding field with wrong multiplicity [[ //FIXME: implement
-//  trait Assignment {
-//    size : Int
-//  }
-//
-//  entity BasicAssignment extends Assignment {
-//    size : Int [[?]]
-//  }
-//]] 1 error at #1
-//
-//test no error on overriding field with tighter multiplicity [[ //FIXME: implement
+
+test error on overriding field with wrong type [[
+  trait Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : [[String]]
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong multiplicity [[
+  trait Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int [[?]]
+  }
+]] >= 1 error at #1
+
+//test no error on overriding field with tighter multiplicity [[ //FIXME: NaBL2 reachable takes non-wellformed paths as well
 //  trait Assignment {
 //    size : Int?
 //  }
@@ -47,13 +47,13 @@ fixture [[
 //    size : Int
 //  }
 //]] 0 errors
-//
-//test resolve to overriden member [[
-//  trait Assignment {
-//    [[size]] : Int
-//  }
-//
-//  entity BasicAssignment extends Assignment {
-//    [[size]] : Int
-//  }
-//]] resolve #2 to #1
+
+test resolve to overriden member [[
+  trait Assignment {
+    [[size]] : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int
+  }
+]] resolve #2 to #1

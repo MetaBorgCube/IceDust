@@ -13,7 +13,7 @@ test Duplicate attribute fails [[
     [[name]] : String
     [[name]] : String
   }
-]] 2 errors at #1,#2
+]] >= 2 errors at #1,#2
 
 test Resolve attribute from Identifier [[
   entity User {
