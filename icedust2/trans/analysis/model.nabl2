@@ -5,8 +5,8 @@ rules
   [[ Entity(e, parents, st, as) ^ (module_scope) ]] :=
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
-    entity_scope ---> module_scope,
-    Entity{e} ===> entity_scope,
+    entity_scope -P-> module_scope,
+    Entity{e} =I=> entity_scope,
     e_type == TEntity(Entity{e}),
     Entity{e} : e_type,
 
@@ -30,8 +30,8 @@ rules
   [[ FirstClassRelation(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
-    entity_scope ---> module_scope,
-    Entity{e} ===> entity_scope,
+    entity_scope -P-> module_scope,
+    Entity{e} =I=> entity_scope,
     e_type == TEntity(Entity{e}),
     Entity{e} : e_type,
 
@@ -55,8 +55,8 @@ rules
   [[ Trait(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
     distinct/name W(entity_scope)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
     Entity{e} <- module_scope,
-    entity_scope ---> module_scope,
-    Entity{e} ===> entity_scope,
+    entity_scope -P-> module_scope,
+    Entity{e} =I=> entity_scope,
     e_type == TEntity(Entity{e}),
     Entity{e} : e_type,
 
@@ -141,7 +141,7 @@ rules
     
   [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
-    Entity2{e1} ===> entity1_scope,
+    Entity2{e1} =I=> entity1_scope,
     Member{r1} <- entity1_scope,
     Entity{e1} -> module_scope,
     Entity{e1} |-> e1_def,
@@ -155,7 +155,7 @@ rules
     Member{r1}.derivationtype := Normal(),
     Member{r1}.calculationstrategy := TIncremental(),
     Entity2{e2} <- module_scope,
-    Entity2{e2} ===> entity2_scope,
+    Entity2{e2} =I=> entity2_scope,
     Member{r2} <- entity2_scope,
     Entity{e2} -> module_scope,
     Entity{e2} |-> e2_def,
@@ -173,7 +173,7 @@ rules
     
   [[ RelationDerived(e1, r1, m1, expr, m2, e2, r2, st) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
-    Entity2{e1} ===> entity1_scope,
+    Entity2{e1} =I=> entity1_scope,
     Member{r1} <- entity1_scope,
     Entity{e1} -> module_scope,
     Entity{e1} |-> e1_def,
@@ -189,7 +189,7 @@ rules
     Member{r1}.expr := expr,
     Member{r1}.calculationstrategy := st_strat,
     Entity2{e2} <- module_scope,
-    Entity2{e2} ===> entity2_scope,
+    Entity2{e2} =I=> entity2_scope,
     Member{r2} <- entity2_scope,
     Entity{e2} -> module_scope,
     Entity{e2} |-> e2_def,
@@ -228,7 +228,7 @@ rules
     Entity{entity} |-> entity_def,
     entity_def : entity_type,
     Entity2{entity} <- module_scope,
-    Entity2{entity} ===> entity2_scope,
+    Entity2{entity} =I=> entity2_scope,
     Member{inverse} <- entity2_scope,
     Member{inverse} : TTuple(this_type, inverse_mult, TIncremental()),
     Member{inverse}.ns := Inverse(),
@@ -246,7 +246,7 @@ rules
     role1_def : TTuple(role1_type, role1_mult, role1_strat),
     role1_def.inversemult := role1_inverse_mult,
     Member2{role1} <- entity_scope,
-    Member2{role1} ===> role1_scope,
+    Member2{role1} =I=> role1_scope,
     Member{shortcut1} <- role1_scope,
     Member{shortcut1} : TTuple(role2_type, role1_inverse_mult, TIncremental()),
     Member{shortcut1}.ns := Shortcut(),
@@ -260,7 +260,7 @@ rules
     role2_def : TTuple(role2_type, role2_mult, role2_strat), 
     role2_def.inversemult := role2_inverse_mult,
     Member2{role2} <- entity_scope,
-    Member2{role2} ===> role2_scope,
+    Member2{role2} =I=> role2_scope,
     Member{shortcut2} <- role2_scope,
     Member{shortcut2} : TTuple(role1_type, role2_inverse_mult, TIncremental()),
     Member{shortcut2}.ns := Shortcut(),

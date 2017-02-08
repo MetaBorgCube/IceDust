@@ -4,7 +4,7 @@ rules
 
   [[ Filter(e1, x, e2) ^ (s) : TTuple(e1_type, out_mult, out_strat) ]] :=
     new s2,
-    s2 ---> s,
+    s2 -P-> s,
     Member{x} <- s2,
     Member{x} : TTuple(e1_type, TOne(), e1_strat),
     Member{x}.ns := Variable(),
@@ -19,7 +19,7 @@ rules
 
   [[ Find(e1, x, e2) ^ (s) : TTuple(e1_type, TZeroOrOne(), out_strat) ]] :=
     new s2,
-    s2 ---> s,
+    s2 -P-> s,
     Member{x} <- s2,
     Member{x} : TTuple(e1_type, TOne(), e1_strat),
     Member{x}.ns := Variable(),
