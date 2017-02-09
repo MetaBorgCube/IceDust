@@ -169,10 +169,7 @@ rules
 
   flows-toposort-2: moduleName -> moduleName
     with
-      attributeNames* := <modulename-get-attributenames>moduleName;
-      relationNames*  := <modulename-get-relationnames-left>moduleName;
-      roleNames*      := <modulename-get-rolenames>moduleName;
-      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      graphNames      := <modulename-get-arrleftrootnames>moduleName;
       graphNames'     := <map(annotate-with-parent-entity);debug>graphNames;
       toposort        := <graph-topological-sort(toposort-edge)>graphNames';
       toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
@@ -192,5 +189,5 @@ rules
       else
         inv-names* := []
       end;
-      all-names* := <map(annotate-with-parent-entity)>[names*, inv-names*]
+      all-names* := <map(name-get-root;annotate-with-parent-entity)>[names*, inv-names*]
       

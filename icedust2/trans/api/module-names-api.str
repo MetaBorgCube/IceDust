@@ -41,8 +41,8 @@ rules // module
   
   modulename-get-attributenames-default-derivation = modulename-get-attributenames;filter(attributename-is-default-derivation)  
   
-  
-  modulename-get-arrinames = modulename-get-entitynames;fmap(entityname-get-arrinames)
+  modulename-get-arrleftrootnames = modulename-get-entitynames;fmap(entityname-get-arrleftrootnames);make-set;string-sort-anno
+  modulename-get-arrinames        = modulename-get-entitynames;fmap(entityname-get-arrinames)
   
   modulename-get-arrinames-default-derived = modulename-get-arrinames;filter(name-is-default-derived)
   

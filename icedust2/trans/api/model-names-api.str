@@ -40,8 +40,11 @@ rules // entity
   entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-shortcutname );string-sort-anno
 
   entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
-  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
-  entityname-get-arrinames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+  entityname-get-membernames     = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+  entityname-get-arrinames       = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+  entityname-get-arrleftnames    = concat(entityname-get-attributenames, entityname-get-relationnames;filter(relationname-is-left), entityname-get-rolenames)
+  entityname-get-arrleftrootnames= entityname-get-arrleftnames;filter(not(name-has-parent))
+  
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
@@ -191,6 +194,11 @@ rules // combined
   name-get-dependson-paths = index-get2(|DependsOn())
   name-get-flowsto-paths   = index-get2(|FlowsTo())
   name-get-toposort        = index-get(|TopoSort())
+  
+  name-get-root-get-toposort = name-get-root;name-get-toposort
+  
+  name-get-dependson-paths-all = concat(name-get-dependson-paths, name-get-parent;name-get-dependson-paths-all<+![])
+  name-get-flowsto-paths-all   = concat(name-get-flowsto-paths,   name-get-parent;name-get-flowsto-paths-all  <+![])
   
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
   name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
