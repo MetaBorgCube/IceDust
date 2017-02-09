@@ -3,6 +3,7 @@ module lib/traverse
 imports
 
   lib/origin
+  nabl2/api
 
 rules // apply strategy on a list left-to-right and carry over a history
 
@@ -96,7 +97,7 @@ rules //
       term'' := <mkterm>(cons, args');
       term''' := <custom-origin(|term)>term'';
       term'''' := <set-annotations> (term''', annotations);
-      term''''' := <nabl2--try-copy-ast-index(|term)>term'''' //copy NaBL2 attachments
+      term''''' := <try(nabl2-copy-ast-index(|term))>term'''' //copy NaBL2 attachments
 
   // for not(list) not(term)
   topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term', fold-value')
