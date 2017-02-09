@@ -94,4 +94,5 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-scopes-with-labels      = get-scope-direct-edges                         //@type Scope -> List((Label,Scope))
   get-scope-scopes                  = get-scope-scopes-with-labels;map(Snd)          //@type Scope -> List(Scope)
   get-scope-scope                   = get-scope-scopes;Hd                            //@type Scope -> Scope
+  get-decl-name(|ns)                = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@type Term -> Term
 

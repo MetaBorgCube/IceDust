@@ -83,6 +83,7 @@ rules
     Entity{e}.constructor := Relation(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
+    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
@@ -115,6 +116,7 @@ rules
     Entity{e}.constructor := Trait(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
+    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].

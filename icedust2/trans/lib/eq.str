@@ -3,6 +3,7 @@ module lib/eq
 imports
 
   api/_runtime
+  nabl2/api
 
 rules
 
@@ -28,3 +29,6 @@ rules
   
   eq-origin = ?(x, y);!y;eq-origin(|x)
   
+rules
+
+  nabl2-ast-eq(|x) = ?y;!(x,y);nabl2-ast-eq;!y

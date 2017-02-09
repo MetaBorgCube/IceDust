@@ -27,6 +27,8 @@ rules
   attributename-get-entityname-test        = try(attr-get-name); store-analysis-ast; attributename-get-entityname
   
   attributename-get-expr-test              = try(attr-get-name); store-analysis-ast; attributename-get-expr
+  
+  attributename-get-root-get-entityname-test = try(attr-get-name); store-analysis-ast; attributename-get-root-get-entityname
 
 rules
 
@@ -49,6 +51,9 @@ rules
   name-get-flowsto-pathexprs-test          = try(attr-get-name); store-analysis-ast; name-get-flowsto-pathexprs
 
   name-get-type-test                       = try(attr-get-name); store-analysis-ast; name-get-type
+  
+  name-get-parent-test                     = try(attr-get-name); store-analysis-ast; name-get-parent
+  name-has-parent-test                     = try(attr-get-name); store-analysis-ast; ((name-has-parent;!"yes")<+!"no")
 
 rules
 

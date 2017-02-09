@@ -82,6 +82,8 @@ rules // attributes
   attributename-pp2-type-multiplicity: attrName -> x
     with
       x := <pp2-type-multiplicity>(<name-get-type<+get-type2>attrName, <name-get-multiplicity<+get-multiplicity>attrName)
+      
+  attributename-get-root-get-entityname = name-get-root;attributename-get-entityname
 
 rules // relations
 
@@ -166,6 +168,10 @@ rules
   name-get-expr = get-property(|"Member","expr")
   
   name-has-expr = where(name-get-expr)
+  
+  name-get-parent = ?n;get-decl-name(|"Member");where(not(nabl2-ast-eq(|n)))
+  name-has-parent = where(name-get-parent)
+  name-get-root   = (name-get-parent;name-get-root) <+ id
 
 rules // shortcuts
 
