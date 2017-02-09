@@ -1,0 +1,23 @@
+module names-traits-filtertype
+
+language icedust2
+
+test resolve filter type [[
+module test
+model
+
+  trait Assignment {
+    grade : Float?
+    a     : Float? = this.filter(:CollectionAssignment).[[grade]]
+  }
+  
+  entity LeafAssignment extends Assignment {
+  
+  }
+  
+  entity CollectionAssignment extends Assignment {
+    [[grade]] : Float? = avg(children.grade)
+  }
+  
+  relation CollectionAssignment.children * <-> ? Assignment.parent
+]] resolve #1 to #2

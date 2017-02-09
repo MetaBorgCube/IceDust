@@ -1,0 +1,58 @@
+module names-traits-concat
+
+language icedust2
+
+test resolve concat super type derefence [[
+module test
+model
+
+  trait Assignment {
+    [[grade]] : Float?
+  }
+  
+  entity LeafAssignment extends Assignment {
+    grade : Float?
+  }
+  
+  entity CollectionAssignment extends Assignment {
+    grade : Float? = avg(children.grade)
+  }
+  
+  relation CollectionAssignment.children * <-> ? Assignment.parent
+  
+  entity Foo {
+    grade : Float? = avg((collections ++ leaves).[[grade]])
+  }
+  relation Foo.collections <-> CollectionAssignment.foos
+  relation Foo.leaves      <-> LeafAssignment.foos
+]] resolve #2 to #1
+
+
+test resolve concat super type not root derefence [[
+module test
+model
+
+  trait HasGrade {
+    grade : Float?
+  }
+
+  trait Assignment extends HasGrade {
+    [[grade]] : Float?
+  }
+  
+  entity LeafAssignment extends Assignment {
+    grade : Float?
+  }
+  
+  entity CollectionAssignment extends Assignment {
+    grade : Float? = avg(children.grade)
+  }
+  
+  relation CollectionAssignment.children * <-> ? Assignment.parent
+  
+  entity Foo {
+    grade : Float? = avg((collections ++ leaves).[[grade]])
+  }
+  relation Foo.collections <-> CollectionAssignment.foos
+  relation Foo.leaves      <-> LeafAssignment.foos
+]] resolve #2 to #1
