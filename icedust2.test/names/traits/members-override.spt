@@ -8,15 +8,15 @@ fixture [[
   [[...]]
 ]]
 
-//test no error on overriding field [[ //FIXME: NaBL2 reachable takes non-wellformed paths as well
-//  trait Assignment {
-//    size : Int
-//  }
-//
-//  entity BasicAssignment extends Assignment {
-//    size : Int = 1
-//  }
-//]] 0 errors
+test no error on overriding field [[
+  trait Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int = 1
+  }
+]] 0 errors
 
 test error on overriding field with wrong type [[
   trait Assignment {
@@ -38,15 +38,15 @@ test error on overriding field with wrong multiplicity [[
   }
 ]] >= 1 error at #1
 
-//test no error on overriding field with tighter multiplicity [[ //FIXME: NaBL2 reachable takes non-wellformed paths as well
-//  trait Assignment {
-//    size : Int?
-//  }
-//
-//  entity BasicAssignment extends Assignment {
-//    size : Int
-//  }
-//]] 0 errors
+test no error on overriding field with tighter multiplicity [[
+  trait Assignment {
+    size : Int?
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int
+  }
+]] 0 errors
 
 test resolve to overriden member [[
   trait Assignment {
