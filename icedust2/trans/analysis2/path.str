@@ -56,7 +56,6 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 
-
 rules
   
   pathexpr-replace(|name, expr*) = ?expr2;!expr*;where(is-list);map(pathexpr-replace-internal(|name, expr2))
@@ -104,7 +103,6 @@ rules
   path(|origin): pathexpr -> DependencyPath(origin, pathexpr-analyzed)
     with
       pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>origin)>pathexpr
-//      pathexpr-analyzed := pathexpr
   
   path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
     with
@@ -116,7 +114,6 @@ rules
         inv-pathexpr := Ref(origin)
       end;
       inv-pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>inv-origin)>inv-pathexpr
-//      inv-pathexpr-analyzed := inv-pathexpr
 
   path-pp: DependencyPath(origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] <- [<pp-partial-icedust2-string>pathexpr]]
   path-pp: DataflowPath  (origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] -> [<pp-partial-icedust2-string>pathexpr]]
@@ -129,144 +126,6 @@ rules
   
   path-pathexpr = ?DependencyPath(_, <id>)
   path-pathexpr = ?DataflowPath  (_, <id>)
-
-signature constructors
-  
-  Path                  : PathOrigin * PathExpr -> Path
-  PathExpr              : List(String)          -> PathExpr
-  AttrOrigin            : String                -> PathOrigin
-  RoleRelationOrigin    : String                -> PathOrigin
-  RoleParticipantOrigin : String                -> PathOrigin
-
-rules // Expr -> PathExpr
-
-  expr-to-pathexpr: This()                   -> PathExpr([])
-  expr-to-pathexpr: Ref(name)                -> PathExpr([name])
-  expr-to-pathexpr: MemberAccess(expr, name) -> PathExpr([name*,name]) with <expr-to-pathexpr>expr => PathExpr(name*)
-
-rules // PathExpr -> PathExpr
-  
-  pathexpr-no-shortcuts     = PathExpr( map(shortcutname-get-inverseandrolename;TupleToList<+MkSingleton);concat )
-  
-  pathexpr-reverse          = PathExpr( reverse;map(try(rolename-get-inversename<+inversename-get-rolename)) )
-  
-  pathexpr-add-start(|name) : PathExpr(name*)        -> PathExpr([name,name*])
-  pathexpr-add-end(|name)   : PathExpr(name*)        -> PathExpr([name*,name])
-  pathexpr-tail             : PathExpr([name|name*]) -> PathExpr(name*)
-  
-  pathexpr-remove-end       : PathExpr(names)        -> PathExpr(name*) with <split-last>names=>(name*,name)
-
-rules // PathExpr -> Expr
-
-  pathexpr-to-expr: PathExpr([])     -> This()  
-  pathexpr-to-expr: PathExpr([name]) -> Ref(name)
-  pathexpr-to-expr: PathExpr(names)  -> MemberAccess(expr, name) with <split-last>names=>(name*,name); <pathexpr-to-expr>PathExpr(name*) => expr
-
-  pathexpr-to-expr(|subexpr): PathExpr([])     -> subexpr 
-  pathexpr-to-expr(|subexpr): PathExpr([name]) -> MemberAccess(subexpr, name)
-  pathexpr-to-expr(|subexpr): PathExpr(names)  -> MemberAccess(expr,    name) with <split-last>names=>(name*,name); <pathexpr-to-expr(|subexpr)>PathExpr(name*) => expr
-
-rules // PathExpr -> String
-
-  pathexpr-get-start        : PathExpr([name|_]) -> name
-  pathexpr-get-last         = ?PathExpr(<last>)
-
-  pathexpr-pp : PathExpr(names) -> <concat-strings(|".")>names
-
-rules // Path -> Path or fail
-  
-  pathexpr-isvalid: p@PathExpr(names) -> p where <map(is-attributename <+ is-rolename <+ is-inversename <+ is-shortcutname)>names
-
-rules // Expr -> Path
-  
-  expr-to-path(|name): expr -> Path(<name-to-pathorigin>name, <expr-to-pathexpr>expr)
-
-rules // Path -> Expr
-  
-  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          ;analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
-//  path-to-expr:           Path(origin, pathexpr) -> <pathexpr-to-expr          >pathexpr
-  
-  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr);analyse-post-analysis(|<pathorigin-get-name;attributename-get-entityname>origin)>pathexpr
-//  path-to-expr(|subexpr): Path(origin, pathexpr) -> <pathexpr-to-expr(|subexpr)>pathexpr
-
-rules // Path -> Path
-  
-  path-no-shortcuts = Path(id, pathexpr-no-shortcuts)
-  
-  path-reverse: Path(origin, pathexpr) -> Path(origin', pathexpr')
-    with
-      origin-name  := <pathorigin-get-name>origin;
-      pathexpr-rev := <pathexpr-reverse>pathexpr;
-      origin'      := <pathexpr-get-start;name-to-pathorigin>pathexpr-rev;
-      pathexpr'    := <pathexpr-tail;pathexpr-add-end(|origin-name)>pathexpr-rev
-  
-  path-tail: Path(origin, pathexpr) -> Path(origin', pathexpr')
-    with
-      pathexpr' := <pathexpr-tail>pathexpr;
-      origin'   := <pathexpr-get-start;name-to-pathorigin>pathexpr
-
-  path-remove-end = Path(id, pathexpr-remove-end)
-
-//  path-store-on-origin(|property): path -> <index-store-prop(|property, <path-get-origin-name-r>path)>path
-
-  path-prependorigin: Path(origin, pathexpr) -> Path(origin, <pathexpr-add-start(|<pathorigin-get-name>origin)>pathexpr)
-
-rules // Path -> Path or fail
-  
-  path-isvalid: p@Path(_, pathexpr) -> p where <pathexpr-isvalid>pathexpr
-  
-  path-origin-is-attr    = where(?Path(<pathorigin-is-attr>,_))
-  path-origin-is-role    = where(?Path(<pathorigin-is-role>,_))
-  path-origin-is-inverse = where(?Path(<pathorigin-is-inverse>,_))
-
-rules // Path -> String
-  
-  path-get-last = ?Path(_,<pathexpr-get-last>)
-  
-  path-get-origin-name = ?Path(<pathorigin-get-name>,_)
-
-  path-get-origin-name-r = ?Path(<pathorigin-get-name-r>,_)
-  
-  path-pp: Path(origin, pathexpr) -> $[[<pathorigin-pp>origin] -> [<pathexpr-pp>pathexpr]]
-
-rules // PathOrigin -> PathOrigin or fail
-  
-  pathorigin-is-attr    = ?AttrOrigin(_)
-  pathorigin-is-role    = ?RoleRelationOrigin(_)
-  pathorigin-is-inverse = ?RoleParticipantOrigin(_)
-
-rules // String -> PathOrigin
-  
-  name-to-pathorigin = where(is-attributename);?name;!AttrOrigin(name)
-  name-to-pathorigin = where(is-rolename)     ;?name;!RoleRelationOrigin(name)
-  name-to-pathorigin = where(is-inversename)  ;?name;!RoleParticipantOrigin(<inversename-get-rolename>name)
-  
-rules // PathOrigin -> String
-  
-  pathorigin-get-name = ?AttrOrigin(<id>)
-  pathorigin-get-name = ?RoleRelationOrigin(<id>)
-  pathorigin-get-name = ?RoleParticipantOrigin(<rolename-get-inversename>)
-  
-  pathorigin-get-name-r = ?AttrOrigin(<id>)
-  pathorigin-get-name-r = ?RoleRelationOrigin(<id>)
-  pathorigin-get-name-r = ?RoleParticipantOrigin(<id>)
-  
-  pathorigin-pp: AttrOrigin(name)            -> $[[name]]
-  pathorigin-pp: RoleRelationOrigin(name)    -> $[[name] (role)]
-  pathorigin-pp: RoleParticipantOrigin(name) -> $[[name] (participant)]
-
-rules // String -> String
-  
-  name-inverse = rolename-get-inversename
-  name-inverse = inversename-get-rolename
-  name-inverse = where(is-attributename);id
-  
-  name-pp-qualified: name -> $[[<attributename-get-entityname>name].[name]]
-
-rules // Path -> [Path]
-  
-  path-all-tails : Path(_,PathExpr([])) -> []
-  path-all-tails : path                 -> [path|<path-tail;path-all-tails>path]
 
 rules // DataflowPath -> String
 
