@@ -37,6 +37,13 @@ rules
       member-mu   := <name-get-multiplicity>member-decl;
       expr-mu     := <get-multiplicity>expr';
       mu          := <cartesian-product>(expr-mu, member-mu)
+      
+  analyse-post-analysis(|context): e@FilterType(expr, ty) -> FilterType(expr', ty){(Mult(), expr-mu), (Type(), ty)}
+    with
+      expr'       := <analyse-post-analysis(|context)>expr;
+      expr-mu     := <get-multiplicity>expr'
+      
+    
 
 rules
   

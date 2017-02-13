@@ -90,13 +90,24 @@ rules
   pathexpr-last: Ref(name)                -> <get-decl(|"Member")>name
   
   pathexpr-first: MemberAccess(expr, name) -> <pathexpr-first>expr
-  pathexpr-first: Ref(name)                -> name
+  pathexpr-first: Ref(name)                -> <get-decl(|"Member")>name
   
   pathexpr-remove-first: MemberAccess(Ref(name), name2) -> Ref(name2)
   pathexpr-remove-first: MemberAccess(expr, name)       -> MemberAccess(<pathexpr-remove-first>expr, name)
   
-  pathexpr-inverse: Ref(name)                  -> Ref(<try(name-get-inversename)>name)
-  pathexpr-inverse: e@MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-first;pathexpr-inverse>e, <pathexpr-first;try(name-get-inversename)>e)
+  pathexpr-inverse(|this-ty): e@Ref(name)                -> MemberAccess(FilterType(This(), this-ty), <try(name-get-inversename)>name)
+    where
+      <debug>(e, this-ty);
+      ty := <attributename-get-entityname>name;
+      <debug>ty;
+      <not(eq)>(ty,this-ty)
+  pathexpr-inverse(|this-ty): e@Ref(name)                -> Ref(<try(name-get-inversename)>name)
+  pathexpr-inverse(|this-ty): e@MemberAccess(expr, name) -> MemberAccess(FilterType(<pathexpr-remove-first;pathexpr-inverse(|this-ty)>e, first-ty), <pathexpr-first;try(name-get-inversename)>e)
+    where
+      first-ty := <                      pathexpr-first;name-get-type>e;
+      secnd-ty := <pathexpr-remove-first;pathexpr-first;attributename-get-entityname>e;
+      <not(eq)>(first-ty,secnd-ty)
+  pathexpr-inverse(|this-ty): e@MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-first;pathexpr-inverse(|this-ty)>e, <pathexpr-first;try(name-get-inversename)>e)
 
 rules
 
@@ -109,7 +120,16 @@ rules
       inv-origin := <pathexpr-last>pathexpr;
       inv-origin-def := <get-decl(|"Member")>inv-origin;
       if pathexpr-shortened := <pathexpr-shorten>pathexpr then
-        inv-pathexpr := MemberAccess(<pathexpr-inverse>pathexpr-shortened, origin)
+        this-ty            := <get-type2>pathexpr-shortened;
+        inv-pathexpr-short := <pathexpr-inverse(|this-ty)>pathexpr-shortened;
+        inv-pathexpr-short':= <analyse-post-analysis(|this-ty)>inv-pathexpr-short;
+        pathexpr-short-ty  := <get-type2>pathexpr-shortened;
+        origin-entity      := <attributename-get-entityname>origin;    
+        if <not(eq)>(origin-entity, pathexpr-short-ty) then
+          inv-pathexpr     := MemberAccess(FilterType(inv-pathexpr-short',origin-entity), origin)
+        else
+          inv-pathexpr     := MemberAccess(inv-pathexpr-short', origin)
+        end
       else
         inv-pathexpr := Ref(origin)
       end;
