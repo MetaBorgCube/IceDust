@@ -21,6 +21,10 @@ rules
   entityname-get-membernames-test          = store-analysis-ast; entityname-get-membernames
   
   entityname-get-modulename-test           = store-analysis-ast; entityname-get-modulename
+  
+  entityname-get-parentnames-test          = store-analysis-ast; entityname-get-parentnames
+  entityname-get-rootnames-test            = store-analysis-ast; entityname-get-rootnames
+  entityname-get-ancestornames-test        = store-analysis-ast; entityname-get-ancestornames
 
 rules
 

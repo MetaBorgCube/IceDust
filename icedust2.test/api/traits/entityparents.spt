@@ -1,0 +1,76 @@
+module api-traits-entityparents
+
+language icedust2
+
+test Query entity get parent [[
+module test
+model
+  trait A {
+    i : Int
+  }
+  entity [[B]] extends A {
+    i : Int
+  }
+]] run entityname-get-parentnames-test on #1 to !ATerm["A"]
+
+test Query entity get parent 2 [[
+module test
+model
+  trait A {
+    i : Int
+  }
+  trait C {}
+  entity [[B]] extends A, C {
+    i : Int
+  }
+]] run entityname-get-parentnames-test on #1 to !ATerm["A","C"]
+
+test Query entity has no parent [[
+module test
+model
+  trait [[A]] {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+]] run entityname-get-parentnames-test on #1 to !ATerm[]
+
+test Query entity get root names [[
+module test
+model
+  trait A {
+    i : Int
+  }
+  entity [[B]] extends A {
+    i : Int
+  }
+]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
+
+//test Query entity get root names 2 [[ //TODO: get these to work
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  entity B extends A {
+//    i : Int
+//  }
+//  entity [[C]] extends B {
+//    i : Int
+//  }
+//]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
+//
+//test Query entity get ancestor names [[
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  entity B extends A {
+//    i : Int
+//  }
+//  entity [[C]] extends B {
+//    i : Int
+//  }
+//]] run entityname-get-ancestornames-test on #1 to !ATerm["A"]

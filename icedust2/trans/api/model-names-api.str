@@ -45,7 +45,6 @@ rules // entity
   entityname-get-arrleftnames    = concat(entityname-get-attributenames, entityname-get-relationnames;filter(relationname-is-left), entityname-get-rolenames)
   entityname-get-arrleftrootnames= entityname-get-arrleftnames;filter(not(name-has-parent))
   
-  
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
   entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
@@ -63,6 +62,10 @@ rules // entity
   entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
   
   entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
+  
+  entityname-get-parentnames   = debug(!"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-names;debug(!"3 ");map(get-decl(|"Entity"));debug(!"4 ");where(try(map(get-decl-assoc(|"Entity"));debug(!"5 ")))
+  entityname-get-rootnames     = (entityname-get-parentnames;not(?[]);fmap(entityname-get-rootnames)) <+ MkSingleton //@type name -> List(name)
+  entityname-get-ancestornames = concat(MkSingleton,entityname-get-parentnames;fmap(entityname-get-ancestornames))
   
 rules // attributes
 
