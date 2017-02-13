@@ -170,7 +170,7 @@ rules
   flows-toposort-2: moduleName -> moduleName
     with
       graphNames      := <modulename-get-arrleftrootnames>moduleName;
-      graphNames'     := <map(annotate-with-parent-entity);debug>graphNames;
+      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
       toposort        := <graph-topological-sort(toposort-edge)>graphNames';
       toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
       <index-set(|moduleName, TopoSort())>toposort';
