@@ -2,29 +2,28 @@ module api-traits-flowsto
 
 language icedust2
 
-//test Query attribute flows to with type filter[[
-//module test
-//
-//model
-//
-//  entity Picture {
-//    dummy : String 1
-//    [[path]]: String 1
-//  }
-//  
-//  trait HasPicture {
-//  
-//  }
-//  
-//  relation Picture.usedBy <-> 1 HasPicture.picture
-//  
-//  entity Page extends HasPicture {
-//    display : String = "<img href='"+picture.path+"'>"
-//  }
-//]] run name-get-flowsto-pathexprs-test on #1 to !ATerm[
-//  MemberAccess(FilterType(Ref("usedBy"),"Page"),"display")
-////  MemberAccess(FilterType(MemberAccess(FilterType(This(),"Picture"),"usedBy"),"Page"),"display")
-//]
+test Query attribute flows to with type filter[[
+module test
+
+model
+
+  entity Picture {
+    dummy : String 1
+    [[path]]: String 1
+  }
+  
+  trait HasPicture {
+  
+  }
+  
+  relation Picture.usedBy <-> 1 HasPicture.picture
+  
+  entity Page extends HasPicture {
+    display : String = "<img href='"+picture.path+"'>"
+  }
+]] run name-get-flowsto-pathexprs-test on #1 to !ATerm[
+  MemberAccess(FilterType(Ref("usedBy"),"Page"),"display")
+]
 
 test Query attribute flows to with type filter 2 [[
 module test

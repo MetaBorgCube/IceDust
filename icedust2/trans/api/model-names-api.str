@@ -63,10 +63,12 @@ rules // entity
   
   entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
   
-  entityname-get-parentnames   = debug-nabl2(|"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);debug-nabl2(|"3b ");map(nabl2-mk-occurrence(|"Entity");debug-nabl2(|"x"));map(get-resolved-name;Fst;nabl2-get-occurrence-name);debug-nabl2(|"4 ")
+  entityname-get-parentnames   = get-decl-assoc(|"Entity");get-scope-scope(|"J");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);map(nabl2-mk-occurrence(|"Entity"));map(get-resolved-name;Fst;nabl2-get-occurrence-name)
+//entityname-get-parentnames   = debug-nabl2(|"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);debug-nabl2(|"3b ");map(nabl2-mk-occurrence(|"Entity");debug-nabl2(|"x"));map(get-resolved-name;Fst;nabl2-get-occurrence-name);debug-nabl2(|"4 ")
 //entityname-get-parentnames   = debug-nabl2(|"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);debug-nabl2(|"3b ");map(nabl2-mk-occurrence(|"Entity");debug-nabl2(|"x");     get-resolved-name;Fst;nabl2-get-occurrence-name);debug-nabl2(|"4 ")      //does not work...
   entityname-get-rootnames     = (entityname-get-parentnames;not(?[]);fmap(entityname-get-rootnames));string-sort-anno <+ MkSingleton //@type name -> List(name)
   entityname-get-ancestornames = concat(MkSingleton,entityname-get-parentnames;fmap(entityname-get-ancestornames));string-sort-anno
+  entityname-has-ancestor(|a)  = where(entityname-get-ancestornames;?as;!(a,as);elem)
   
 rules // attributes
 
