@@ -47,30 +47,30 @@ model
   }
 ]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
 
-//test Query entity get root names 2 [[ //TODO: get these to work
-//module test
-//model
-//  trait A {
-//    i : Int
-//  }
-//  entity B extends A {
-//    i : Int
-//  }
-//  entity [[C]] extends B {
-//    i : Int
-//  }
-//]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
-//
-//test Query entity get ancestor names [[
-//module test
-//model
-//  trait A {
-//    i : Int
-//  }
-//  entity B extends A {
-//    i : Int
-//  }
-//  entity [[C]] extends B {
-//    i : Int
-//  }
-//]] run entityname-get-ancestornames-test on #1 to !ATerm["A"]
+test Query entity get root names 2 [[
+module test
+model
+  trait A {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+  entity [[C]] extends B {
+    i : Int
+  }
+]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
+
+test Query entity get ancestor names [[
+module test
+model
+  trait A {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+  entity [[C]] extends B {
+    i : Int
+  }
+]] run entityname-get-ancestornames-test on #1 to !ATerm["C","B","A"]
