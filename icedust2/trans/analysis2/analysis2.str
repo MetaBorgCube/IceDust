@@ -180,8 +180,11 @@ rules
       numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort';
       <map(index-set-prop(|TopoSort()))>numbers
       
-  annotate-with-parent-entity    = try(nabl2--preserve-ast-index(?name;attributename-get-entityname;?ent;!name{("parent-entity",ent)}))
-  de-annotate-with-parent-entity = try(nabl2--preserve-ast-index(?name{("parent-entity",_)};!name{}))
+    annotate-with-parent-entity    = id
+    de-annotate-with-parent-entity = id
+      
+//  annotate-with-parent-entity    = try(nabl2--preserve-ast-index(?name;attributename-get-entityname;?ent;!name{("parent-entity",ent)}))
+//  de-annotate-with-parent-entity = try(nabl2--preserve-ast-index(?name{("parent-entity",_)};!name{}))
 
   toposort-edge: name -> all-names*
     with

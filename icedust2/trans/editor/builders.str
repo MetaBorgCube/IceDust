@@ -13,6 +13,7 @@ imports
   lib/index
   lib/nabl2
   lib/lists-tuples
+  lib/traverse
   nabl2/api
 
 rules // Debugging
@@ -115,6 +116,8 @@ rules
       filename := <guarantee-extension(|"index.aterm")> path;
       result   := <_index-get>
       
+  analysis2-builder-trim-termindices = analysis2-builder;split2(id,bottomup-anno(try(?TermIndex(_,<id>))))
+
   analysis2-builder-key-origins = analysis2-builder;split2(id,all-strings-add-origin)
   
 rules

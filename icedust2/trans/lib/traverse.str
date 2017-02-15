@@ -143,7 +143,7 @@ rules // apply strategy on a tree top-down and carry over a history, dont carry 
 
 rules // bottom up traversal including annotations
   
-  bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup(s)>a}); s
+  bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup-anno(s)>a}); s
 
 rules // a -> List(a)
 

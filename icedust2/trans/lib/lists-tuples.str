@@ -73,3 +73,7 @@ rules
   
   list-max(|lowerbound) = list-add(|lowerbound);list-max
   
+rules
+
+  diff-no-annos = diff(strip-annos)
+  
