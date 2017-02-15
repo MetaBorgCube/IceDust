@@ -34,8 +34,9 @@ menus
     action: "6) Flows To"                  = debug-flowsto (openeditor)
     action: "7) Topological Sorting"       = debug-toposort (openeditor)
 //    action: "Properties (Selection)"       = debug-properties (openeditor)
-    action: "Analysis2"                  = analysis2-builder
-    action: "Analysis2 with key origins" = analysis2-builder-key-origins
+    action: "Analysis2"                    = analysis2-builder
+    action: "Analysis2 trim term indices"  = analysis2-builder-trim-termindices
+    action: "Analysis2 with key origins"   = analysis2-builder-key-origins
 
   menu: "Generation"
   

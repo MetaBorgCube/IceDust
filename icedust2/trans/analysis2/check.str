@@ -106,7 +106,7 @@ rules
       attrValueNames := <entityinstancename-get-attributevaluenames>eiName;
       entityName     := <entityinstancename-get-entityname>eiName;
       reqAttrNames   := <entityname-get-attributenames;filter(attributename-is-normal;name-is-one)>entityName;
-      ommittedAtrs   := <diff>(reqAttrNames, attrValueNames)
+      ommittedAtrs   := <diff-no-annos>(reqAttrNames, attrValueNames)
     where
       l := <length>ommittedAtrs;
       <not(eq)>(l,0)
