@@ -61,4 +61,14 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+  
+  <dependencies>
+    <dependency>
+    <groupId>io.usethesource</groupId>
+    <artifactId>capsule</artifactId>
+    <version>0.2.2</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/capsule-0.2.2.jar</systemPath>
+  </dependency>
+  </dependencies>
 </project>

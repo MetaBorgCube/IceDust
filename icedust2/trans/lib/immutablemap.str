@@ -1,0 +1,32 @@
+module lib/immutablemap
+
+rules
+
+  /*
+   * @type _ -> StrategoImmutableMap
+   */
+  external immutablemap-create(|)
+
+  /*
+   * @type key Term
+   * @type StrategoImmutableMap -> Term
+   */
+  external immutablemap-get(|key)
+
+  /*
+   * @type key Term
+   * @type value Term
+   * @type StrategoImmutableMap -> Term
+   */
+  external immutablemap-put(|key,value)
+
+  /*
+   * @type StrategoImmutableMap -> Term
+   */
+  external immutablemap-as-aterm(|)
+
+  /*
+   * @type StrategoImmutableMap -> StrategoImmutableMap or fail
+   */
+  external is-immutablemap(|)
+  

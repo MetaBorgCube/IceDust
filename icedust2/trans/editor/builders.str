@@ -14,7 +14,22 @@ imports
   lib/nabl2
   lib/lists-tuples
   lib/traverse
+  lib/immutablemap
   nabl2/api
+
+rules
+
+  debug-immutablemap:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      i := <immutablemap-create>;
+      j := <immutablemap-put(|"a","b")>i;
+      k := <immutablemap-get(|"a")>j;
+      <debug>k;
+      <debug>j;
+      <immutablemap-as-aterm;debug>j;
+      <debug><is-immutablemap;!"yes"<+"no">j;
+      <debug><(is-immutablemap;!"yes")<+"no">k
 
 rules // Debugging
   

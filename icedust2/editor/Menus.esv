@@ -29,6 +29,9 @@ menus
 //      action: "Pretty Print (Show Implicit Code)" = editor-format // but this time not with (source)
 //    end
 
+  menu: "x"
+    action: "immutablemap"                = debug-immutablemap (openeditor)
+
   menu: "Analysis2" (openeditor)
     action: "5) Depends On"                = debug-dependson (openeditor)
     action: "6) Flows To"                  = debug-flowsto (openeditor)

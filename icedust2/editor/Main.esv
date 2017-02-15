@@ -13,3 +13,4 @@ language
 
   provider : target/metaborg/stratego.ctree
   provider : target/metaborg/stratego-javastrat.jar
+  provider : lib/capsule-0.2.2.jar
