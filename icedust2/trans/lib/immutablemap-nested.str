@@ -1,0 +1,41 @@
+module lib/immutablemap-nested
+
+imports
+
+  lib/immutablemap
+
+rules // StrategoImmutableMap<IStrategoTerm, StrategoImmutableMap<IStrategoTerm, IStrategoTerm>>
+
+  /*
+   * @type key1 Term
+   * @type key2 Term
+   * @type StrategoImmutableMap -> Term
+   */
+  immutablemap-nested-get(|key1,key2) = immutablemap-get(|key1);immutablemap-get(|key2)
+
+  /*
+   * @type key1 Term
+   * @type key2 Term
+   * @type val Term
+   * @type StrategoImmutableMap -> StrategoImmutableMap
+   */
+  immutablemap-nested-put(|key1,key2,val): immutablemap -> immutablemap'
+    with
+      if(val1 := <immutablemap-get(|key1)>immutablemap) then
+        id
+      else
+        val1 := <immutablemap-create>
+      end;
+      val1' := <immutablemap-put(|key2,val)>val1;
+      immutablemap' := <immutablemap-put(|key1,val1')>immutablemap
+
+  /*
+   * @type StrategoImmutableMap -> List(Term * List(Term * Term))
+   */
+  immutablemap-nested-as-aterm = immutablemap-as-aterm;map((id,immutablemap-as-aterm))
+
+  /*
+   * @type List(Term * List(Term * Term)) -> StrategoImmutableMap
+   */
+  immutablemap-nested-from-aterm = map((id,immutablemap-from-aterm));immutablemap-from-aterm
+

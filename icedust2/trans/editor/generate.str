@@ -22,6 +22,7 @@ imports // functions
   lib/files
   lib/call-external
   lib/index
+  lib/immutablemap-nested
   prettyprinting/pp
 
 rules // Builders
@@ -66,7 +67,7 @@ rules // Build in steps
     with
       <store-analysis-resource>$[[project-path]/[path]];
       analysis := <get-stored-analysis>;
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       moduleName  := <module-get-modulename>selected;

@@ -15,6 +15,7 @@ imports
   lib/lists-tuples
   lib/traverse
   lib/immutablemap
+  lib/immutablemap-nested
   nabl2/api
 
 rules
@@ -125,7 +126,7 @@ rules
     with
       analysis := <get-stored-analysis>
     with
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       filename := <guarantee-extension(|"index.aterm")> path;
@@ -141,7 +142,7 @@ rules
     with
       <store-analysis-resource>$[[project-path]/[path]];
       analysis := <get-stored-analysis>;
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       filename := <guarantee-extension(|"dependson.txt")> path;
@@ -151,7 +152,7 @@ rules
     with
       <store-analysis-resource>$[[project-path]/[path]];
       analysis := <get-stored-analysis>;
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       filename := <guarantee-extension(|"flowsto.txt")> path;
@@ -161,7 +162,7 @@ rules
     with
       <store-analysis-resource>$[[project-path]/[path]];
       analysis := <get-stored-analysis>;
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       filename := <guarantee-extension(|"toposort.aterm")> path;

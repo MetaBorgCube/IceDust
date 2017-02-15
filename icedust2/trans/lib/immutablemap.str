@@ -1,6 +1,6 @@
 module lib/immutablemap
 
-rules
+rules // StrategoImmutableMap<IStrategoTerm, IStrategoTerm>
 
   /*
    * @type _ -> StrategoImmutableMap
@@ -21,12 +21,16 @@ rules
   external immutablemap-put(|key,value)
 
   /*
-   * @type StrategoImmutableMap -> Term
+   * @type StrategoImmutableMap -> List(Term * Term)
    */
   external immutablemap-as-aterm(|)
+
+  /*
+   * @type List(Term * Term) -> StrategoImmutableMap
+   */
+  external immutablemap-from-aterm(|)
 
   /*
    * @type StrategoImmutableMap -> StrategoImmutableMap or fail
    */
   external is-immutablemap(|)
-  

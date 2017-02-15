@@ -17,6 +17,7 @@ imports // functions
 //  lib/index
   lib/nabl2
   lib/string
+  lib/immutablemap-nested
   prettyprinting/pp
 //  names/naming/names
 //  completion/IceDust-cp
@@ -42,7 +43,7 @@ rules // Editor services
     with
       analysis := <get-stored-analysis>
     with
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
     with
       result := <get-editor-properties(pp-partial-icedust2-string;truncate-string(|200));properties-to-html>target

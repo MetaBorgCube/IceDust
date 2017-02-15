@@ -6,6 +6,7 @@ imports // functions
   api/_runtime
   lib/debug
   lib/lists-tuples
+  lib/immutablemap-nested
   nabl2/api
 
 signature constructors
@@ -33,7 +34,7 @@ rules // store analysis to be able to query without passing the analysis
       analysis := <nabl2-get-ast-analysis>term;
       rules(StoredAnalysis : None() -> analysis)
     with
-      analysis2 := <nabl2-get-custom-analysis>analysis;
+      analysis2 := <nabl2-get-custom-analysis;immutablemap-nested-from-aterm>analysis;
       <_index-set>analysis2
       
   
