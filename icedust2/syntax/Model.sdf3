@@ -20,13 +20,15 @@ context-free syntax // entities
     }
   >
 
-  Model.Trait = <
-    trait <ID> <OptionalExtends?><Strategy?>{
-      <{Member "\n"}*>
-    }
-  >
+//  Model.Trait = <
+//    trait <ID> <OptionalExtends?><Strategy?>{
+//      <{Member "\n"}*>
+//    }
+//  >
+//  
+//  OptionalExtends.OptionalExtends = [extends [{Extends ", "}+] ] // need a constructor to dispatch on in NaBL2
   
-  OptionalExtends.OptionalExtends = [extends [{Extends ", "}+] ] // need a constructor to dispatch on in NaBL2
+  OptionalExtends.OptionalExtends = [extends [Extends] ] // need a constructor to dispatch on in NaBL2
   
   Extends.Extends = <<ID>>
   
