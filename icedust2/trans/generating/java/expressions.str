@@ -129,6 +129,22 @@ rules // find expression
         ]|
       )
 
+rules // filter type
+
+  exp-to-java-stm(err|i): e@FilterType(e1, e1-ty) -> (stms, exp)
+    with
+      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+      j := <add>(i, <length>exp1s*);
+      refty := <expr-to-java-type(err)>e;
+      x_var := $[var[<inc>j]];
+      x_type := <get-type2;type-to-java-type(err)>e
+    with
+      stms := bstm*|[
+        ~exp1s*
+        refty x_var = Expressions.filterType(~exp1j,x_type.class);
+      ]|;
+      exp := expr |[x_var]|
+
 rules
 
   exp-to-java-stm(err|i): a -> (a', a')

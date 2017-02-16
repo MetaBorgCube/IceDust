@@ -587,11 +587,11 @@ public class Expressions {
   }
 
   public static <E> Integer indexOf(Collection<E> es, E e) {
-    if(e==null)
+    if (e == null)
       return null;
     int index = 0;
-    for (E elem : es){
-      if(elem.equals(e))
+    for (E elem : es) {
+      if (elem.equals(e))
         return index;
       index++;
     }
@@ -599,23 +599,40 @@ public class Expressions {
   }
 
   public static <E> E elemAt(Collection<E> es, Integer index) {
-    if(index==null)
+    if (index == null)
       return null;
-    if(index >= es.size())
+    if (index >= es.size())
       return null;
     int index2 = 0;
-    for (E elem : es){
-      if(index==index2)
+    for (E elem : es) {
+      if (index == index2)
         return elem;
       index2++;
     }
     return null;
   }
-  
+
+  @SuppressWarnings("unchecked")
+  public static <E, F extends E> Collection<F> filterType(Collection<E> es, Class<F> c) {
+    Collection<F> fs = emptyCollection();
+    for (E e : es) {
+      if (c.isInstance(e))
+        fs.add((F) e);
+    }
+    return fs;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <E, F extends E> F filterType(E e, Class<F> c) {
+    if (c.isInstance(e))
+      return (F) e;
+    return null;
+  }
+
   // null-safe equality (not-three-valued logic)
-  
+
   public static boolean nullSafeEqual(Object i, Object j) {
-    if(i == null){
+    if (i == null) {
       return j == null;
     }
     return i.equals(j);
