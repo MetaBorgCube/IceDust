@@ -13,10 +13,10 @@ test error on cyclic traits [[
   
   }
 
-  trait Bar extends [[Foo]] {
+  trait Bar extends Foo {
   
   }
-]] >= 1 error at #1
+]] >= 1 error
 
 test no error on acyclic traits [[
   trait Foo extends Bar {
