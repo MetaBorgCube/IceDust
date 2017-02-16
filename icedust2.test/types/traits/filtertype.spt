@@ -6,7 +6,7 @@ test resolve filter type [[
 module test
 model
 
-  trait Assignment {
+  entity Assignment {
     grade : Float?
     a     : Float? = [[this.filter(:CollectionAssignment)]].grade
   }

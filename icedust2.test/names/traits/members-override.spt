@@ -9,7 +9,7 @@ fixture [[
 ]]
 
 test no error on overriding field [[
-  trait Assignment {
+  entity Assignment {
     size : Int
   }
 
@@ -19,7 +19,7 @@ test no error on overriding field [[
 ]] 0 errors
 
 test error on overriding field with wrong type [[
-  trait Assignment {
+  entity Assignment {
     size : Int
   }
 
@@ -29,7 +29,7 @@ test error on overriding field with wrong type [[
 ]] >= 1 error at #1
 
 test error on overriding field with wrong multiplicity [[
-  trait Assignment {
+  entity Assignment {
     size : Int
   }
 
@@ -39,7 +39,7 @@ test error on overriding field with wrong multiplicity [[
 ]] >= 1 error at #1
 
 test no error on overriding field with tighter multiplicity [[
-  trait Assignment {
+  entity Assignment {
     size : Int?
   }
 
@@ -49,7 +49,7 @@ test no error on overriding field with tighter multiplicity [[
 ]] 0 errors
 
 test resolve to overriden member [[
-  trait Assignment {
+  entity Assignment {
     [[size]] : Int
   }
 

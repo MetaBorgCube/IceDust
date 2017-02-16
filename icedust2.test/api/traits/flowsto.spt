@@ -12,7 +12,7 @@ model
     [[path]]: String 1
   }
   
-  trait HasPicture {
+  entity HasPicture {
   
   }
   
@@ -30,7 +30,7 @@ module test
 
 model
 
-  trait IA {
+  entity IA {
     [[name]]: String
   }
 
@@ -38,7 +38,7 @@ model
   
   }
   
-  trait IB {
+  entity IB {
   
   }
   
@@ -48,7 +48,7 @@ model
   
   }
   
-  trait IC {
+  entity IC {
   
   }
   
@@ -58,13 +58,13 @@ model
   
   }
   
-  trait ID {
+  entity ID {
   
   }
   
   relation C <-> 1 ID
   
-  trait D extends ID {
+  entity D extends ID {
     name : String = c.b.a.name
   }
 

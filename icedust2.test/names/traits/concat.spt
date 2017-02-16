@@ -6,7 +6,7 @@ test resolve concat super type derefence [[
 module test
 model
 
-  trait Assignment {
+  entity Assignment {
     [[grade]] : Float?
   }
   
@@ -32,11 +32,11 @@ test resolve concat super type not root derefence [[
 module test
 model
 
-  trait HasGrade {
+  entity HasGrade {
     grade : Float?
   }
 
-  trait Assignment extends HasGrade {
+  entity Assignment extends HasGrade {
     [[grade]] : Float?
   }
   

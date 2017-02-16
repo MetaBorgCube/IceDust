@@ -5,7 +5,7 @@ language icedust2
 test Query attribute has parent yes  [[
 module test
 model
-  trait A {
+  entity A {
     i : Int
   }
   entity B extends A {
@@ -16,7 +16,7 @@ model
 test Query attribute has parent no  [[
 module test
 model
-  trait A {
+  entity A {
     [[i]] : Int
   }
   entity B extends A {
@@ -27,7 +27,7 @@ model
 test Query attribute root entity [[
 module test
 model
-  trait A {
+  entity A {
     [[i]] : Int
   }
   entity B extends A {
@@ -38,7 +38,7 @@ model
 test Query attribute root entity 2 [[
 module test
 model
-  trait A {
+  entity A {
     i : Int
   }
   entity B extends A {
@@ -49,7 +49,7 @@ model
 test Query attribute root entity 3 [[
 module test
 model
-  trait A {
+  entity A {
     i : Int
   }
   entity B extends A {

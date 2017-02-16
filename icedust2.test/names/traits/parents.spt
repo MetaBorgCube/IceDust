@@ -9,7 +9,7 @@ fixture [[
 ]]
 
 test resolve parent [[
-  trait [[Assignment]] {
+  entity [[Assignment]] {
   }
 
   entity AssignmentCollection extends [[Assignment]] {
@@ -17,25 +17,25 @@ test resolve parent [[
 ]] resolve #2 to #1
 
 test unresolved parent error [[
-  trait Assignment {
-  }
-
-  entity AssignmentCollection extends [[Foo]] {
-  }
-]] >= 1 error at #1
-
-test error on extending non-trait [[
   entity Assignment {
   }
 
-  entity AssignmentCollection extends Assignment {
+  entity AssignmentCollection [[extends Foo]] {
   }
-]] >= 1 error
+]] >= 1 error at #1
 
-test no error on extending trait [[
-  trait Assignment {
-  }
-
-  entity AssignmentCollection extends Assignment {
-  }
-]] 0 errors
+//test error on extending non-trait [[
+//  entity Assignment {
+//  }
+//
+//  entity AssignmentCollection extends Assignment {
+//  }
+//]] >= 1 error
+//
+//test no error on extending trait [[
+//  trait Assignment {
+//  }
+//
+//  entity AssignmentCollection extends Assignment {
+//  }
+//]] 0 errors

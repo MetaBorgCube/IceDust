@@ -9,19 +9,19 @@ fixture [[
 ]]
 
 test error on cyclic traits [[
-  trait Foo extends Bar {
+  entity Foo extends Bar {
   
   }
 
-  trait Bar extends Foo {
+  entity Bar extends Foo {
   
   }
 ]] >= 1 error
 
 test no error on acyclic traits [[
-  trait Foo extends Bar {
+  entity Foo extends Bar {
   }
 
-  trait Bar {
+  entity Bar {
   }
 ]] 0 errors

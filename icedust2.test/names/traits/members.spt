@@ -9,7 +9,7 @@ fixture [[
 ]]
 
 test resolve attribute subtype [[
-  trait Assignment {
+  entity Assignment {
     [[name]] : String
   }
 
@@ -19,7 +19,7 @@ test resolve attribute subtype [[
 ]] resolve #2 to #1
 
 test unresolved member error [[
-  trait Assignment {
+  entity Assignment {
   }
 
   entity AssignmentCollection extends Assignment {
@@ -28,11 +28,11 @@ test unresolved member error [[
 ]] >= 1 error at #1
 
 test resolve attribute subsubtype [[
-  trait HasName {
+  entity HasName {
     [[name]] : String
   }
   
-  trait Assignment extends HasName {
+  entity Assignment extends HasName {
   }
 
   entity AssignmentCollection extends Assignment {
@@ -45,7 +45,7 @@ test resolve relation subtype [[
     name : String
   }
   
-  trait HasPhoto{}
+  entity HasPhoto{}
   
   relation HasPhoto.[[photo]] 1 <-> Photo
   
@@ -59,7 +59,7 @@ test resolve relation attribute subtype [[
     [[name]] : String
   }
   
-  trait HasPhoto{}
+  entity HasPhoto{}
   
   relation HasPhoto 1 <-> Photo
   
