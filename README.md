@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Ftraits/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Ftraits/)
+[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fsubtyping/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fsubtyping/)
 
 # IceDust
 
