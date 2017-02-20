@@ -125,14 +125,14 @@ rules
   
   path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
     with
-      inv-origin := <pathexpr-last>pathexpr;
+      inv-origin     := <pathexpr-last>pathexpr;
       inv-origin-def := <get-decl(|"Member")>inv-origin;
+      origin-entity  := <attributename-get-entityname>origin;
       if pathexpr-shortened := <pathexpr-shorten>pathexpr then
         this-ty            := <pathexpr-last;attributename-get-entityname>pathexpr;
         inv-pathexpr-short := <pathexpr-inverse(|this-ty)>pathexpr-shortened;
         inv-pathexpr-short':= <analyse-post-analysis(|this-ty)>inv-pathexpr-short;
         inv-pathexpr-s-ty  := <get-type2>inv-pathexpr-short';
-        origin-entity      := <attributename-get-entityname>origin;
 //        <debug>"path-inverse";
 //        <debug>origin-entity;
 //        <entityname-get-ancestornames;debug>origin-entity;
@@ -144,7 +144,13 @@ rules
           inv-pathexpr     := MemberAccess(inv-pathexpr-short', origin)
         end
       else
-        inv-pathexpr := Ref(origin)
+        Ref(target)   := pathexpr;
+        target-entity := <attributename-get-entityname>target;
+        if <not(entityname-has-ancestor(|origin-entity))>target-entity then
+          inv-pathexpr  := MemberAccess(FilterType(This(), origin-entity), origin)
+        else
+          inv-pathexpr  := Ref(origin)
+        end
       end;
       inv-pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>inv-origin)>inv-pathexpr
 
