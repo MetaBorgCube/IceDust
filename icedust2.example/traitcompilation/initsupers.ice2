@@ -1,0 +1,49 @@
+module initsupers
+
+// used features (incrementalwithsubtype):
+// - extending a trait
+// - incremental attribute using parent field (dirty flagging needs to type filter)
+// extra:
+// - derived value in trait as well (requires initing derived values in all super types)
+
+// compilation to inheritance (idem incrementalwithsubtype):
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - use extends
+// extra:
+// - only call init for _defined_ fields (currently _visible_) in constructor, super constructors are called implicitly already
+
+// compilation to default methods (idem incrementalwithsubtype):
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - make interface + all non-static methods public default
+// - make interface require getInternalX() and setInternal(x) + use those in the method implementations + implement these methods in concrete class
+// extra:
+// - dirty collection needs to be in concrete companion class
+// - static getters in all classes OR call them on correct type (where the field is first defined)
+// - init methods only _defined_ fields that have no super type, call the super inits()
+
+// compilation to interfaces (idem incrementalwithsubtype):
+// - compile all visible fields in class (entities)
+// - for all defined fields getters (traits)
+// extra:
+// - dirty collection + static methods need to be in concrete companion class
+// - static getters in all classes OR call them on correct type (where the field is first defined)
+// - init calls in constructors for all visible fields (already correct)
+
+model
+
+  trait CountTen {
+    ten : Int = 1 + 2 + 3 + 4
+  }
+  
+  entity UseCountTen extends CountTen {
+    twenty : Int = ten * 2
+  }
+
+data
+
+  twenty:UseCountTen{}
+  
+execute
+
+  twenty.ten
+  twenty.twenty
