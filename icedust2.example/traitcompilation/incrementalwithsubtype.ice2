@@ -1,0 +1,36 @@
+module incrementalwithsubtype
+
+// used features:
+// - extending a trait
+// - incremental attribute using parent field (dirty flagging needs to type filter)
+
+// compilation to inheritance (idem relationwithtrait):
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - use extends
+
+// compilation to default methods (idem relationwithtrait):
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - make interface + all non-static methods public default
+// - make interface require getInternalX() and setInternal(x) + use those in the method implementations + implement these methods in concrete class
+
+// compilation to interfaces (less than relationwithtrait):
+// - compile all visible fields in class (entities)
+// - for all defined fields getters (traits)
+
+model
+
+  trait Named {
+    name : String
+  }
+  
+  entity Book extends Named {
+    title : String = name
+  }
+
+data
+
+  b:Book{name="my book"}
+  
+execute
+
+  b.title

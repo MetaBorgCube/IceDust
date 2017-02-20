@@ -4,16 +4,16 @@ module relationwithtrait (on-demand)
 // - relation with trait
 // - on-demand read of property through trait
 
-// compilation to inheritance:
+// compilation to inheritance (idem incrementalwithsubtype:
 // - not compile all _visible_ fields in class, only fields _defined_ in that class
 // - make Page extends HasPicture
 
-// compilation to default methods:
+// compilation to default methods (idem incrementalwithsubtype):
 // - not compile all _visible_ fields in class, only fields _defined_ in that class
-// - make HasPicture interface + all non-static methods public default
-// - make HasPicture require getInternalPicture() and setInternalPicture(pictures) + use those in the method implementations + implement these methods in Page
+// - make interface + all non-static methods public default
+// - make interface require getInternalX() and setInternal(x) + use those in the method implementations + implement these methods in concrete class
 
-// compilation to interfaces:
+// compilation to interfaces (addIncremental/setIncremental extra over incrementalwithsubtype):
 // - compile all visible fields in class (entities)
 // - for all defined fields getters, addIncremental, setIncremental (traits)
 
