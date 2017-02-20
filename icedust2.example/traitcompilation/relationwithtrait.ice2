@@ -1,0 +1,48 @@
+module relationwithtrait (on-demand)
+
+// used features:
+// - relation with trait
+// - on-demand read of property through trait
+
+// compilation to inheritance:
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - make Page extends HasPicture
+
+// compilation to default methods:
+// - not compile all _visible_ fields in class, only fields _defined_ in that class
+// - make HasPicture interface + all non-static methods public default
+// - make HasPicture require getInternalPicture() and setInternalPicture(pictures) + use those in the method implementations + implement these methods in Page
+
+// compilation to interfaces:
+// - compile all visible fields in class (entities)
+// - for all defined fields getters, addIncremental, setIncremental (traits)
+
+model
+
+  entity Picture {
+    path    : String
+  }
+  
+  trait HasPictures { }
+  
+  relation HasPictures.pictures <-> Picture.usedBy
+  
+  entity Page extends HasPictures {
+    display : String = concat(pictures.path) 
+  }
+
+data
+
+  pic1:Picture{path="/usr/local/pic1.gif"}
+  pic2:Picture{path="/usr/local/pic2.jpeg"}
+  
+  page1:Page{pictures=pic1}
+  page2:Page{pictures=pic1,pic2}
+  
+execute
+
+  "page1"
+  page1.display
+  "page2"
+  page2.display
+  
