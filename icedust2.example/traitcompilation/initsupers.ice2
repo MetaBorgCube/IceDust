@@ -18,7 +18,7 @@ module initsupers
 // - make interface require getInternalX() and setInternal(x) + use those in the method implementations + implement these methods in concrete class
 // extra:
 // - dirty collection needs to be in concrete companion class
-// - static getters in all classes OR call them on correct type (where the field is first defined)
+// - static getters in all classes OR call them on correct type (where the field is first defined) (not an issue with inheritance, because one can call static methods that resolve to a super type)
 // - init methods only _defined_ fields that have no super type, call the super inits()
 
 // compilation to interfaces (idem incrementalwithsubtype):
