@@ -32,6 +32,8 @@ module dirtysupers
 // - dirty collection + static methods need to be in concrete companion class
 // - static getters in all classes OR call them on correct type (where the field is first defined)
 // - init calls in constructors for all visible fields (already correct)
+// extra
+// - dirtyflagsflowsto has to inline all flows
 
 model
 
