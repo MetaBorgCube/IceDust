@@ -20,10 +20,10 @@ fixture [[
   [[...]]
 ]]
 
-//test Hello World generate-java [[ ]] run generate-java-test
-//
-//test Hello World compile-java [[ ]] run compile-java-test
+test Hello World generate-java [[ ]] transform "SPT -> to Java -> Generate"
 
-//test Hello World execute-java [[ ]] run execute-java-test to "Hello World!"
-//
-//test Hello World execute-java-incr [[ ]] run execute-java-incr-test to "Hello World!"
+test Hello World compile-java [[ ]] transform "SPT -> to Java -> Compile"
+
+test Hello World execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+"Hello World!
+"

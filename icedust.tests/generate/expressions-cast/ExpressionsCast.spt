@@ -3,15 +3,13 @@ module generate-expressions-cast
 language IceDust
 
 fixture [[
-  module ExpressionsCast
+  module ExpressionsCast (on-demand)
   
   execute
     concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
     [[...]]
 ]]
 
-//test Expressions Logic generate-java [[ ]] run generate-java-test
-//
-//test Expressions Logic compile-java [[ ]] run compile-java-test
-
-//test Expressions Math execute-java [[ ]] run execute-java-test to "5.0 true 5"
+test Expressions Cast execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"5.0 true 5
+"

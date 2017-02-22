@@ -28,8 +28,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Aggregation Recursive generate-java [[ ]] run generate-java-test
-//
-//test Expressions Aggregation Recursive compile-java [[ ]] run compile-java-test
-
-//test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-test to "3"
+//test Expressions Shortcuts execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: fix analysis
+//"3
+//"
