@@ -93,7 +93,7 @@ test Job Offers execute-java [[ (on-demand) ]] transform "SPT -> to Java -> Exec
 "1996
 "
 
-test Job Offers execute-java incremental [[ (incremental) ]] transform "SPT -> to Java -> Execute" to 
+test Job Offers execute-java incremental [[ (incremental) ]] transform "SPT -> to Java -> Execute" to
 "Updating JobOffer.leaseCarAddition: 7
 Updating JobOffer.lease: 7
 Updating JobOffer.slice1boundrary: 7
@@ -112,13 +112,13 @@ Updating JobOffer.defaultTaxDiscount: 7
 Updating JobOffer.hourlyBruto: 7
 Updating JobOffer.yearlyTaxed: 7
 Updating JobOffer.slice1: 7
-Updating JobOffer.slice1tax: 7
 Updating JobOffer.slice2: 7
 Updating JobOffer.slice3: 7
-Updating JobOffer.slice3tax: 7
-Updating JobOffer.slice2tax: 7
 Updating JobOffer.slice4: 7
 Updating JobOffer.slice4tax: 7
+Updating JobOffer.slice3tax: 7
+Updating JobOffer.slice2tax: 7
+Updating JobOffer.slice1tax: 7
 Updating JobOffer.box1tax: 7
 Updating JobOffer.tax: 7
 Updating JobOffer.yearlyNetto: 7

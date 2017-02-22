@@ -111,18 +111,18 @@ execute
   [[...]]
 ]]
 
-test Weblab execute-java (strategy composition & derived relations) [[ ]] transform "SPT -> to Java -> Execute" to 
+test Weblab execute-java (strategy composition & derived relations) [[ ]] transform "SPT -> to Java -> Execute" to
 "Updating Submission.children: 6
+Updating Submission.next: 6
 Updating Submission.deadline: 6
 Updating Submission.onTime: 6
 Updating Submission.pass: 6
-Updating Submission.grade: 6
 Updating Submission.baseGrade: 6
+Updating Submission.grade: 6
 Updating Submission.pass: 4
 Updating Submission.baseGrade: 2
 Updating Submission.grade: 1
 Updating Submission.pass: 1
-Updating Submission.next: 6
 0.5
 7.0
 "
