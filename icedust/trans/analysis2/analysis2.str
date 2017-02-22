@@ -163,13 +163,13 @@ rules
       attributeNames* := <modulename-get-attributenames>moduleName;
       relationNames*  := <modulename-get-relationnames-left>moduleName;
       roleNames*      := <modulename-get-rolenames>moduleName;
-      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      graphNames      := <string-sort-anno>[attributeNames*, relationNames*, roleNames*];
       toposort        := <graph-topological-sort(toposort-edge)>graphNames;
       <index-store-prop(|TopoSort(), moduleName)>toposort;
       numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
       <map(index-store-prop(|TopoSort()))>numbers
 
-  toposort-edge: name -> [names*, inv-names*]
+  toposort-edge: name -> <string-sort-anno>[names*, inv-names*]
     with
       names* := <index-get-prop(|FlowsTo());map(path-last)>name;
       if inv-name := <name-get-inversename>name then
