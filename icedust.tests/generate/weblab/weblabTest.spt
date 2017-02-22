@@ -4,194 +4,125 @@ language IceDust
 
 fixture [[
 
-module weblabTest
+module weblabTest (incremental)
+
+//================================================================================
 
 model
 
+  entity Assignment (on-demand) {
+    name     : String 
+    question : String?
+    minimum  : Float?
+    deadline : Datetime?
+    avgGrade : Float?    = avg(submissions.grade)
+    passPerc : Float?    = count(submissions.filter(x=>x.pass))/count(submissions)
+  }
+  
   entity Student {
-    name : String
-    
-    passedCourses : Int = sum(enrollment.pass2)  
-  }
-
-  entity Course {
     name     : String
-    avgGrade : Int? = avg( enrollment.grade )
-    passPerc : Int? = 100 * sum(enrollment.pass2) /. count(enrollment)
-  }
-
-  relation Enrollment {
-    Course * 
-    Student *
-    
-    name : String = course.name + " " +student.name
-    
-    pass  : Boolean = studentAssignment.pass
-    pass2 : Int     = pass?1:0
-    grade : Int?    = studentAssignment.grade
-  }
-
-  entity Assignment {
-    name :  String
-    
-    gradeMinimum  : Int = 55 (default)
-    gradeWeight   : Int = 1  (default)
-    
-    deadline      : Int? // day since start academic year
-    extension     : Int?
-    extensionDays : Int? = extension - deadline
-    penalty       : Int? // for using the full extension
-  }
-
-  relation Submission {
-    Student * 
-    Assignment * 
-    
-    name : String = student.name + " " + assignment.name
-
-    grade        : Int    // between 10 (min) and 100 (max)
-    date         : Int?
-    extension    : Int? = assignment.extension (default)
-    
-    gradePanelty : Int? = assignment.penalty*lateDays/.assignment.extensionDays
-    gradeReal    : Int? = onTime      ? grade :
-                          onExtension ? grade - gradePanelty :
-                          noValue
-    
-    lateDays     : Int? = date - assignment.deadline
-    
-    onTime       : Boolean = date <= assignment.deadline
-                             <+ 
-                             count(date)==1 || count(assignment.deadline)==0
-
-    onExtension  : Boolean = date <= extension && !onTime
-                             <+
-                             count(date)==1 || count(extension)==0
-    noValue : Int?
   }
   
-  relation Course.assignment 1 <-> ? Assignment.course
-  
-  relation Assignment.whole ? <-> * Assignment.parts
-  
-  entity StudentAssignment {
-    name : String? = enrollment.name //+ " " + assignment.name
-    
-    pass            : Boolean = passGrade && passParts
-    
-    passGrade       : Boolean = grade >= assignment.gradeMinimum <+ false
-    passParts       : Boolean = conj( parts.pass ) <+ true 
-    
-    grade           : Int? = passParts ? (gradeSubmission <+ gradeParts) : noValue
-    
-    gradeWeighted   : Int? = grade * assignment.gradeWeight
-    
-    gradeSubmission : Int? = submission.gradeReal
-    gradeParts      : Int? = count(parts)==count(parts.grade)
-                             ? sum ( parts.gradeWeighted ) /. 
-                               sum ( assignment.parts.gradeWeight )
-                             : noValue
-    
-    noValue : Int?
+  entity Submission {
+    name     : String    = assignment.name + " " + student.name        (on-demand)
+    answer   : String?
+    deadline : Datetime? = assignment.deadline <+ parent.deadline      (default)
+    onTime   : Boolean   = submitted <= deadline <+ true
+    submitted: Datetime?
+    baseGrade: Float?    = if(conj(children.pass)) avg(children.grade) (default)
+    grade    : Float?    = baseGrade - (if(onTime) 0.0 else 1.0)       (default)
+    pass     : Boolean   = grade >= (assignment.minimum<+0.0) <+ false
   }
   
-  relation StudentAssignment.whole ? <-> * StudentAssignment.parts
+  relation Submission.student    1           <-> * Student.submissions
+  relation Submission.assignment 1           <-> * (ordered) Assignment.submissions
+  relation Assignment.children   * (ordered) <-> ? Assignment.parent
   
-  relation StudentAssignment.enrollment ? <-> 1 Enrollment.studentAssignment
-
-  relation StudentAssignment.submission ? <-> 1 Submission.studentAssignment
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> ? Submission.parent
   
-  relation StudentAssignment.assignment 1 <-> * Assignment.studentAssignments
+  relation Submission.next       ? = 
+    parent.children.elemAt(parent.children.indexOf(this))
+                                             <-> ? Submission.previous
 
 data
 
-  compiler : Course {
-    name = "Compiler Construction"
-    student =
-      < enA { } >
-      alice {
-        name = "Alice"
+  math:Assignment{
+    name = "Math"
+    minimum = 6.0
+    children =
+      exam {
+        name = "Exam"
+        question = "1+1=?"
+        minimum = 5.0
       },
-      < enB { } >
-      bob {
-        name = "Bob"
+      lab {
+        name = "Practical"
+        question = "1/0=?"
+        minimum = 5.0
+        deadline = 2017-01-14 00:00:00
+      }
+  }
+  
+  alice:Student {
+    name = "Alice"
+    submissions =
+      mathAlice {
+        assignment = math
       },
-      < enC {  } >
-      charlie {
-        name = "Charlie"
+      examAlice {
+        assignment = exam
+        answer = "Good"
+        baseGrade = 7.0
+      },
+      labAlice {
+        assignment = lab
+        answer = "Great"
+        baseGrade = 8.0
+        submitted = 2017-01-14 17:00:00
       }
-    assignment = 
-      comp {
-        name = "root"
-        parts =
-          exam       { name="exam"       gradeWeight=2 gradeMinimum=60
-            student =
-              <sa3{grade=60 }>alice,
-              <sb3{grade=100}>bob,
-              <sc3{grade=98 }>charlie
-            studentAssignments = aExam, bExam, cExam
-          },
-          practical  { name="practical"  gradeWeight=1 gradeMinimum=60
-            parts =
-              practicalA { name="practicalA" gradeWeight=2 gradeMinimum=50 deadline=7
-                student =
-                  <sa1{grade=50  date=7 }>alice,
-                  <sb1{grade=50  date=7 }>bob,
-                  <sc1{grade=88  date=7 }>charlie
-                studentAssignments = aPractA, bPractA, cPractA
-              },
-              practicalB { name="practicalB" gradeWeight=3 gradeMinimum=50 deadline=14 extension=16 penalty=20
-                student =
-                  <sa2{grade=90  date=13 }>alice,
-                  <sb2{grade=60  date=10 }>bob,
-                  <sc2{grade=76  date=15 }>charlie
-                studentAssignments = aPractB, bPractB, cPractB
-              }
-            studentAssignments = aPract, bPract, cPract
-          }
-        studentAssignments =
-          aComp {
-            enrollment = enA 
-            parts = 
-              aExam { submission = sa3 },
-              aPract {
-                parts =
-                  aPractA { submission = sa1 },
-                  aPractB { submission = sa2 }
-              }
-          },
-          bComp {
-            enrollment = enB 
-            parts = 
-              bExam { submission = sb3 },
-              bPract {
-                parts =
-                  bPractA { submission = sb1 },
-                  bPractB { submission = sb2 }
-              }
-          },
-          cComp {
-            enrollment = enC 
-            parts = 
-              cExam { submission = sc3 },
-              cPract {
-                parts =
-                  cPractA { submission = sc1 },
-                  cPractB { submission = sc2 }
-              }
-          }
+  }
+  
+  bob:Student {
+    name = "Bob"
+    submissions =
+      mathBob {
+        assignment = math
+      },
+      examBob {
+        assignment = exam
+        answer = "Bad"
+        baseGrade = 3.0
+      },
+      labBob {
+        assignment = lab
+        answer = "Perfect"
+        baseGrade = 10.0
+        deadline = 2017-01-21 00:00:00
+        submitted = 2017-01-14 17:00:00
       }
-  } 
+  }
 
 execute
 
-  compiler.avgGrade
-  [[...]] ]]
+  math.passPerc
+  math.avgGrade
+  [[...]]
+]]
 
-// test Weblab generate-java [[ ]] run generate-java-test
-
-// test Weblab compile-java [[ ]] run compile-java-test
-
-//test Weblab execute-java [[ ]] run execute-java-test to "77"
-//
-//test Weblab execute-java-incr [[ ]] run execute-java-incr-test to "77"
+test Weblab execute-java (strategy composition & derived relations) [[ ]] transform "SPT -> to Java -> Execute" to 
+"Updating Submission.children: 6
+Updating Submission.deadline: 6
+Updating Submission.onTime: 6
+Updating Submission.pass: 6
+Updating Submission.grade: 6
+Updating Submission.baseGrade: 6
+Updating Submission.pass: 4
+Updating Submission.baseGrade: 2
+Updating Submission.grade: 1
+Updating Submission.pass: 1
+Updating Submission.next: 6
+0.5
+7.0
+"

@@ -3,13 +3,13 @@ module generate-expressions-references
 language IceDust
 
 fixture [[
-  module ExpressionsMultiplicities
+  module ExpressionsMultiplicities (on-demand)
   
   model
   entity Foo{
     input1  : Int = 5
     input2  : Int?
-    value    : Int = input1
+    value   : Int = input1
   }
   
   data
@@ -20,8 +20,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions References generate-java [[ ]] run generate-java-test
-//
-//test Expressions References compile-java [[ ]] run compile-java-test
-
-//test Expressions References execute-java [[ ]] run execute-java-test to "5"
+test Expressions References execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"5
+"

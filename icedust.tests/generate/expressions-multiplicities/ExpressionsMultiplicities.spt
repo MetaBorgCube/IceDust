@@ -3,7 +3,7 @@ module generate-expressions-multiplicities
 language IceDust
 
 fixture [[
-  module ExpressionsMultiplicities
+  module ExpressionsMultiplicities (on-demand)
   
   model
   entity Foo{
@@ -18,8 +18,6 @@ fixture [[
   execute
   f.input1 ++ f.input2[[...]] ]]
 
-//test Expressions Multiplicities generate-java [[ ]] run generate-java-test
-//
-//test Expressions Multiplicities compile-java [[ ]] run compile-java-test
-
-//test Expressions Multiplicities execute-java [[ ]] run execute-java-test to "[5]"
+test Expressions Multiplicities execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"[5]
+"

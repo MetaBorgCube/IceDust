@@ -3,7 +3,7 @@ module generate-expressions-nested-if
 language IceDust
 
 fixture [[
-  module ExpressionsNestedIf
+  module ExpressionsNestedIf (on-demand)
   
   model
   
@@ -23,8 +23,7 @@ fixture [[
     [[...]]
 ]]
 
-//test Expressions Logic generate-java [[ ]] run generate-java-test
-//
-//test Expressions Logic compile-java [[ ]] run compile-java-test
 
-//test Expressions Math execute-java [[ ]] run execute-java-test to "true"
+test Expressions Nested If execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+"true
+"

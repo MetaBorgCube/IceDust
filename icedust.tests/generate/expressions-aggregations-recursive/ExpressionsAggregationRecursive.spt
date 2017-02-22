@@ -3,7 +3,7 @@ module generate-expressions-aggregation-recursive
 language IceDust
 
 fixture [[
-  module ExpressionsAggregationRecursive
+  module ExpressionsAggregationRecursive (on-demand)
 
   model
   
@@ -28,8 +28,6 @@ fixture [[
     [[...]] 
 ]]
 
-//test Expressions Aggregation Recursive generate-java [[ ]] run generate-java-test
-//
-//test Expressions Aggregation Recursive compile-java [[ ]] run compile-java-test
-
-//test Expressions Aggregation Recursive execute-java [[ ]] run execute-java-test to "3"
+//test Expressions Aggregation Recursive execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: analysis fails
+//"5
+//"

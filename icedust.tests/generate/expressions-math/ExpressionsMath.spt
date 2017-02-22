@@ -3,7 +3,7 @@ module generate-expressions-math
 language IceDust
 
 fixture [[
-  module ExpressionsMath
+  module ExpressionsMath (on-demand)
   
   model
   entity X {
@@ -18,8 +18,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Math generate-java [[ ]] run generate-java-test
-//
-//test Expressions Math compile-java [[ ]] run compile-java-test
-
-//test Expressions Math execute-java [[ ]] run execute-java-test to "29"
+test Expressions Math execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"29
+"

@@ -3,7 +3,7 @@ module generate-expressions-aggregation
 language IceDust
 
 fixture [[
-  module ExpressionsAggregation
+  module ExpressionsAggregation (on-demand)
   
   model
   entity X {
@@ -22,8 +22,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Aggregation generate-java [[ ]] run generate-java-test
-//
-//test Expressions Aggregation compile-java [[ ]] run compile-java-test
-
-//test Expressions Aggregation execute-java [[ ]] run execute-java-test to "5"
+//test Expressions Aggregation execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: code generator fails 
+//"5
+//"
