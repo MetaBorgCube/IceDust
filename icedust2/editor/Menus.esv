@@ -69,8 +69,15 @@ menus
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 
-//  menu: "SPT" (meta)
-//    action: "generate-java-test" = generate-java-test (openeditor)
-//    action: "execute-java-incr-test" = execute-java-incr-test
+  menu: "SPT" (meta)
+    submenu: "to Java"
+      action: "Generate" = generate-java-test
+      action: "Compile"  = compile-java-test
+      action: "Execute"  = execute-java-test
+    end
+    submenu: "to WebDSL"
+      action: "Model Explorer" = generate-webdsl-explorerui-test  
+      action: "Embedded Model" = generate-webdsl-test
+    end
     
     
