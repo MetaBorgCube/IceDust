@@ -10,6 +10,7 @@ imports // functions
   analysis2/analyse-post-analysis
   api/expressions-names-api
   api/model-names-api
+  lib/debug
   lib/eq
   lib/index
   lib/nabl2
@@ -103,6 +104,7 @@ rules
 //      <debug>ty;
 //      <debug><not(entityname-has-ancestor(|ty));!"not ancestor"<+!"is ancestor">this-ty;
       <not(entityname-has-ancestor(|ty))>this-ty
+//      ;<debug>"a"
   pathexpr-inverse(|this-ty): e@Ref(name)                -> Ref(<try(name-get-inversename)>name)
   pathexpr-inverse(|this-ty): e@MemberAccess(expr, name) -> MemberAccess(FilterType(<pathexpr-remove-first;pathexpr-inverse(|this-ty)>e, first-ty), <pathexpr-first;try(name-get-inversename)>e)
     where
@@ -115,6 +117,7 @@ rules
 //      <entityname-get-ancestornames;debug>secnd-ty;
 //      <debug><not(entityname-has-ancestor(|first-ty));!"not ancestor"<+!"is ancestor">secnd-ty;
       <not(entityname-has-ancestor(|first-ty))>secnd-ty
+//      ;<debug>"b"
   pathexpr-inverse(|this-ty): e@MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-first;pathexpr-inverse(|this-ty)>e, <pathexpr-first;try(name-get-inversename)>e)
 
 rules
@@ -134,18 +137,24 @@ rules
         inv-pathexpr-short':= <analyse-post-analysis(|this-ty)>inv-pathexpr-short;
         inv-pathexpr-s-ty  := <get-type2>inv-pathexpr-short';
 //        <debug>"path-inverse";
-//        <debug>origin-entity;
+//        <debug>[origin-entity];
 //        <entityname-get-ancestornames;debug>origin-entity;
-//        <debug>inv-pathexpr-s-ty;
+//        <debug>[inv-pathexpr-s-ty];
 //        <entityname-get-ancestornames;debug>inv-pathexpr-s-ty;
-        if <not(entityname-has-ancestor(|origin-entity))>inv-pathexpr-s-ty then // <not(eq)>(origin-entity, pathexpr-short-ty) then
+        if <not(entityname-has-ancestor(|origin-entity))>inv-pathexpr-s-ty then
+//          <debug>"x";
           inv-pathexpr     := MemberAccess(FilterType(inv-pathexpr-short',origin-entity), origin)
         else
+//          <debug>"y";
           inv-pathexpr     := MemberAccess(inv-pathexpr-short', origin)
         end
       else
         Ref(target)   := pathexpr;
         target-entity := <attributename-get-entityname>target;
+//        <debug-nabl2(|"pathexpr     ")>pathexpr;
+//        <debug-nabl2(|"target-entity")>target-entity;
+//        <debug-nabl2(|" - ancestors ")><entityname-get-ancestornames<+!"failed">target-entity;
+//        <debug-nabl2(|"origin-entity")>origin-entity;
         if <not(entityname-has-ancestor(|origin-entity))>target-entity then
           inv-pathexpr  := MemberAccess(FilterType(This(), origin-entity), origin)
         else
