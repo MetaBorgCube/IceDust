@@ -57,6 +57,9 @@ context-free syntax // entity members
   Member.Attribute           = <
     <ID> : <PrimitiveType><Multiplicity?>
   >
+  Member.AbstractAttribute   = <
+    <ID> : <PrimitiveType><Multiplicity?> (abstract)<Strategy?>
+  >
   Member.DerivationAttribute = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
   >

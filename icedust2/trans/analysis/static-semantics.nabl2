@@ -40,6 +40,11 @@ signature
     TEventual         : Strat
     TOnDemandEventual : Strat
     
+    Normal       : DerivationType
+    Abstract     : DerivationType
+    Derivation   : DerivationType
+    DefaultValue : DerivationType
+    
     TUOne  : MultU
     TUMany : MultU
     
@@ -62,10 +67,13 @@ signature
 
   relations
 
-    anti-symmetric, anti-transitive test : Type * TypeTest
+    reflexive, anti-symmetric, transitive sub    : Type * Type
     reflexive, anti-symmetric, transitive mulOrd : Mul * Mul
-    reflexive, anti-symmetric, transitive strat : Strat * Strat
-    reflexive, anti-symmetric, transitive sub : Type * Type
+    reflexive, anti-symmetric, transitive strat  : Strat * Strat
+    reflexive, anti-symmetric, transitive deriv  : DerivationType * DerivationType
+    
+    anti-symmetric, anti-transitive test : Type * TypeTest
+    
     irreflexive cast : Type * Type
  
   functions
@@ -243,6 +251,13 @@ rules
     TOnDemand()    <strat! TOnDemandEventual(), //  TEventual()   TOnDemand()
     TEventual()    <strat! TOnDemandEventual(), //          \       /
                                                 //        TIncremental()
+    // derivation type lattice
+    
+    DefaultValue() <deriv! Normal(),     //       Abstract()
+    DefaultValue() <deriv! Derivation(), //        /      \ 
+    Normal()       <deriv! Abstract(),   //  Normal()    Derivation()
+    Derivation()   <deriv! Abstract(),   //        \      /
+                                         //     DefaultValue()
     // subtype relation 
   
     TNoValue() <sub! TInt(),
