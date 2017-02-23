@@ -25,6 +25,8 @@ rules
   entityname-get-parentnames-test          = store-analysis-ast; entityname-get-parentnames
   entityname-get-rootnames-test            = store-analysis-ast; entityname-get-rootnames
   entityname-get-ancestornames-test        = store-analysis-ast; entityname-get-ancestornames
+  
+  entityname-get-arrinames-defined-test    = store-analysis-ast; entityname-get-arrinames-defined
 
 rules
 
