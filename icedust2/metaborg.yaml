@@ -11,6 +11,13 @@ dependencies:
   - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.shared:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.runtime:${metaborgVersion}
+exports:
+- directory: ./
+  includes:
+    - lib-java/**/*
+    - lib-webdsl/**/*
+    - lib/webdsl/HQL-pretty.pp.af
+    - lib/webdsl/WebDSL-pretty.pp.af
 pardonedLanguages:
 - EditorService
 - Stratego-Sugar
