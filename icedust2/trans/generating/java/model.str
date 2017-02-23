@@ -31,17 +31,32 @@ rules
       shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
       initCachesJava*   := <entityname-get-arrinames     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
     with
-      result := type-dec |[
-        class x_entityName
-        {
-          public x_entityName()
-          {
-            ~initCachesJava*
-          }
-          ~membersJava*
-          ~shortcutsJava*
-        }
-      ]|
+      switch id
+        case x_parentName := <entityname-get-parentname>x_entityName:
+          result := type-dec |[
+            class x_entityName extends x_parentName
+            {
+              public x_entityName()
+              {
+                ~initCachesJava*
+              }
+              ~membersJava*
+              ~shortcutsJava*
+            }
+          ]|
+        otherwise:
+          result := type-dec |[
+            class x_entityName
+            {
+              public x_entityName()
+              {
+                ~initCachesJava*
+              }
+              ~membersJava*
+              ~shortcutsJava*
+            }
+          ]|
+      end
 
 rules
 

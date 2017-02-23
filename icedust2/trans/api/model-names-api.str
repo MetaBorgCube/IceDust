@@ -70,6 +70,9 @@ rules // entity
   entityname-get-ancestornames = concat(MkSingleton,entityname-get-parentnames;fmap(entityname-get-ancestornames));string-sort-anno
   entityname-has-ancestor(|a)  = where(entityname-get-ancestornames;?as;!(a,as);elem)
   
+  entityname-get-parentname    = entityname-get-parentnames;Hd
+  entityname-has-parentname    = where(entityname-get-parentname)
+  
 rules // attributes
 
   is-attributename = where(is-string;                             get-property(|"Member","ns");?Attribute())
@@ -181,6 +184,7 @@ rules
   name-get-parent = ?n;get-decl-name(|"Member");where(not(eq(|n)))
   name-has-parent = where(name-get-parent)
   name-get-root   = (name-get-parent;name-get-root) <+ id
+  name-is-root    = where(not(name-has-parent))
 
 rules // shortcuts
 
