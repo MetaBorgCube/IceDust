@@ -50,5 +50,6 @@ test Traits abstract field execute-java on-demand [[ (on-demand) ]] transform "S
 
 test Traits abstract field execute-java incremental [[ (incremental) ]] transform "SPT -> to Java -> Execute" to 
 "Updating CollectionSubmission.grade: 2
+Updating CollectionSubmission.grade: 1
 8.5
 "

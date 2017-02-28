@@ -415,14 +415,14 @@ rules
       end
     with // Set, maintain incremental Layer
       switch id
-        case name-is-normal-default; where([] := flowsto-stms*):
-          result-setIncr* := class-body-dec* |[
-            protected void x_setIncr(~multType en)
-            { 
-              this.x_name = en;
-            }
-          ]|
-        case name-is-normal-default; where(not([] := flowsto-stms*)):
+//        case name-is-normal-default; where([] := flowsto-stms*):
+//          result-setIncr* := class-body-dec* |[
+//            protected void x_setIncr(~multType en)
+//            { 
+//              this.x_name = en;
+//            }
+//          ]|
+        case name-is-normal-default: // parent can have flowsto stms
           result-setIncr* := class-body-dec* |[
             protected void x_setIncr(~multType en)
             { 
@@ -439,14 +439,14 @@ rules
       end
     with
       switch id
-        case name-is-default-derived; name-is-incremental; where([] := flowsto-stms*):
-          result-setCacheIncr* := class-body-dec* |[
-            protected void x_setCacheIncr(~multType en)
-            { 
-              this.x_cache = en;
-            }
-          ]|
-        case name-is-default-derived; name-is-incremental; where(not([] := flowsto-stms*)):
+//        case name-is-default-derived; name-is-incremental; where([] := flowsto-stms*):
+//          result-setCacheIncr* := class-body-dec* |[
+//            protected void x_setCacheIncr(~multType en)
+//            { 
+//              this.x_cache = en;
+//            }
+//          ]|
+        case name-is-default-derived; name-is-incremental: // parent can have flowsto stms
           result-setCacheIncr* := class-body-dec* |[
             protected void x_setCacheIncr(~multType en)
             { 
