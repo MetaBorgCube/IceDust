@@ -186,6 +186,7 @@ rules
   name-has-expr = where(name-get-expr)
   
   name-get-parent = ?n;get-decl-name(|"Member");where(not(eq(|n)))
+  name-get-parent2= (name-get-parent;MkSingleton)<+![]
   name-has-parent = where(name-get-parent)
   name-get-root   = (name-get-parent;name-get-root) <+ id
   name-is-root    = where(not(name-has-parent))
