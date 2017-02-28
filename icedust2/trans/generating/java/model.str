@@ -584,12 +584,23 @@ rules
           result-calculate* := []
       end
     with
-      result-dirtyFlagFlows* := class-body-dec* |[
-        public void x_dirtyFlagFlows()
-        {
-          ~flowsto-stms*
-        }
-      ]|
+      switch id
+        case name-is-root:
+          result-dirtyFlagFlows* := class-body-dec* |[
+            public void x_dirtyFlagFlows()
+            {
+              ~flowsto-stms*
+            }
+          ]|
+        otherwise:
+          result-dirtyFlagFlows* := class-body-dec* |[
+            public void x_dirtyFlagFlows()
+            {
+              super.x_dirtyFlagFlows();
+              ~flowsto-stms*
+            }
+          ]|
+      end
     with
       switch id
         case name-is-incremental; name-is-default-derived:
