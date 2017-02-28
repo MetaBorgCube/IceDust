@@ -47,7 +47,8 @@ rules // entity
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
-  entityname-get-arrinames-defined = ?e;entityname-get-arrinames;filter(where(attributename-get-entityname;?e))
+  entityname-get-arrinames-defined     = ?e;entityname-get-arrinames    ;filter(where(attributename-get-entityname;?e))
+  entityname-get-shortcutnames-defined = ?e;entityname-get-shortcutnames;filter(where(attributename-get-entityname;?e))
   
   entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
   entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
@@ -175,6 +176,7 @@ rules
   name-is-derived = where(get-property(|"Member","derivationtype");?Derivation())
   name-is-default = where(get-property(|"Member","derivationtype");?DefaultValue())
   name-is-normal  = where(get-property(|"Member","derivationtype");?Normal())
+  name-is-abstract= where(get-property(|"Member","derivationtype");?Abstract())
   
   name-is-normal-default  = where(name-is-normal  <+ name-is-default)
   name-is-default-derived = where(name-is-default <+ name-is-derived)

@@ -27,9 +27,9 @@ rules
     where
       is-entityname
     with
-      membersJava*      := <entityname-get-arrinames     ;fmap(model-membername-to-java-classbodydecs(err)       )>x_entityName;
-      shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
-      initCachesJava*   := <entityname-get-arrinames     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
+      membersJava*      := <entityname-get-arrinames-defined     ;fmap(model-membername-to-java-classbodydecs(err)       )>x_entityName;
+      shortcutsJava*    := <entityname-get-shortcutnames-defined ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
+      initCachesJava*   := <entityname-get-arrinames-defined     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
     with
       switch id
         case x_parentName := <entityname-get-parentname>x_entityName:
@@ -463,7 +463,7 @@ rules
       end
     with // Getter, many valued Layer
       switch id
-        case name-is-to-one:
+        case name-is-to-one; name-is-root:
           result-getStatic* := class-body-dec* |[
             public static x_type x_get(x_entityName en)
             { 
@@ -481,7 +481,7 @@ rules
               return result;
             }
           ]|
-        case name-is-to-many:
+        case name-is-to-many; name-is-root:
           result-getStatic* := class-body-dec* |[
             public static Collection<x_type> x_get(x_entityName en)
             { 
@@ -525,6 +525,20 @@ rules
             public ~type:multType x_get()
             { 
               return x_getCalculated();
+            }
+          ]|
+        case name-is-abstract; name-is-to-one:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return null;
+            }
+          ]|
+        case name-is-abstract; name-is-to-many:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return Expressions.emptyCollection();
             }
           ]|
         otherwise:
