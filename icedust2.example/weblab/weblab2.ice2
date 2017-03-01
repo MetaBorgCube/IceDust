@@ -1,0 +1,371 @@
+module weblab2
+
+model // person
+
+  entity Person {
+    name : String
+  }
+
+data
+
+  alice:Person{
+    name = "Alice"
+  }
+  bob:Person{
+    name = "Bob"
+  }
+  charles:Person{
+    name = "Charles"
+  }
+
+model // course
+
+  entity Course {
+    name     : String
+    key      : String
+    code     : String
+    fullname : String = code + ": " + name
+  }
+
+  entity CourseEdition {
+    key      : String
+    code     : String = course.code
+    fullname : String = code + ": " + course.name + " (" + year + ")"
+    year     : String
+  }
+  relation CourseEdition.students   <-> 1 StudentInCourse.course
+  relation CourseEdition.course   1 <->   Course.editions
+  
+  entity StudentInCourse {
+        
+  }
+  relation StudentInCourse             1 <-> Person.enrolled
+  relation StudentInCourse.submissions   <-> AssignmentSubmission.student
+
+data
+
+  programmingLanguages:Course{
+    name = "Programming Languages"
+    key = "PL"
+    code = "PL"
+    editions = 
+      pl2015{
+        key = "PL15"
+        year = "2015"
+        students =
+          alicePl{
+            person = alice
+          },
+          bobPl{
+            person = bob
+          }
+      },
+      pl2016{
+        key = "PL15"
+        year = "2016"
+        students =
+          alicePl2{
+            person = alice
+          },
+          charlesPl{
+            person = charles
+          }
+      }
+  }
+
+execute
+
+  "Students of " + pl2015.fullname + ": "
+  pl2015.students.person.name
+
+model // assignment
+
+  entity Assignment {
+    key : String
+    title : String
+  }
+//  relation AssignmentCollection.course     ?                       <-> CourseEdition.rootAssignment
+  relation Assignment.course     ?                       <-> CourseEdition.rootAssignment
+  relation Assignment.root       1 = parent.root <+ this <-> Assignment
+//  relation Assignment.rootCourse ? = root.filter(:AssignmentCollection).course <-> CourseEdition.assignments
+  relation Assignment.rootCourse ? = root.course         <-> CourseEdition.assignments
+
+  entity AssignmentCollection extends Assignment {
+    
+  }
+  relation AssignmentCollection.assignments <-> ? Assignment.parent
+  
+  entity AssignmentSubmission {
+    
+  }
+  
+data
+
+  
+
+model
+
+  entity Notification {
+    
+  }
+
+  entity ApplicationLog {
+    
+  }
+
+  entity CheckList {
+    
+  }
+
+  entity CheckListItem {
+    
+  }
+
+  entity CheckListValuation {
+    
+  }
+
+  entity CheckListItemValuation {
+    
+  }
+
+  entity AssignmentRegirstrationKey {
+    
+  }
+
+  entity Comment {
+    
+  }
+
+  entity SubmissionComment extends Comment {
+    
+  }
+
+  entity Point {
+    
+  }
+
+  entity Correlation {
+    
+  }
+
+  entity BasicAssignment extends Assignment {
+    
+  }
+
+  entity BasicAssignmentSubmission extends AssignmentSubmission {
+    
+  }
+
+  entity Question {
+    
+  }
+
+  entity GradeOnlyQuestion extends Question {
+    
+  }
+
+  entity CohortFileImport {
+    
+  }
+
+  entity EducationCohort {
+    
+  }
+
+  entity MentorGroup {
+    
+  }
+
+  entity Education {
+    
+  }
+
+  entity StudentInEducation {
+    
+  }
+
+  entity AssignmentCollectionSubmission extends AssignmentSubmission {
+    
+  }
+
+  entity RandomAssignmentCollection extends AssignmentCollection {
+    
+  }
+
+  entity Database {
+    
+  }
+
+  entity CourseRules {
+    
+  }
+
+  entity CourseGroup {
+    
+  }
+
+  entity CoursePresentation {
+    
+  }
+
+  entity CourseRequest {
+    
+  }
+
+  entity AbstractFile {
+    
+  }
+
+  entity MetaData {
+    
+  }
+
+  entity Directory extends AbstractFile {
+    
+  }
+
+  entity DirectoryMetaData extends MetaData {
+    
+  }
+
+  entity ProgrammingFile extends AbstractFile {
+    
+  }
+
+  entity ProgrammingFileMetaData extends MetaData {
+    
+  }
+
+  entity Language {
+    
+  }
+
+  entity FileType {
+    
+  }
+
+  entity FileSUbmissionQuestion extends Question {
+    
+  }
+
+  entity FileSUbmissionAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity GenerateQuestion extends Question {
+    
+  }
+
+  entity GeneratedQuestionAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity GradingScheme {
+    
+  }
+
+  entity AdditionalGradeDef {
+    
+  }
+
+  entity GradingWebhook {
+    
+  }
+
+  entity SubmissionGrade {
+    
+  }
+
+  entity AdditionalGrade {
+    
+  }
+
+  entity GradeImport {
+    
+  }
+
+  entity Institution {
+    
+  }
+
+  entity MultipleChoiceQuestion extends Question {
+    
+  }
+
+  entity Alternative {
+    
+  }
+
+  entity MultipleChoiceAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity NewsItem {
+    
+  }
+
+  entity Note {
+    
+  }
+
+  entity NoteStamp {
+    
+  }
+
+  entity EssayQuestion extends Question {
+    
+  }
+
+  entity EssayAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity ReviewQuestion extends Question {
+    
+  }
+
+  entity ReviewQuestionConfig {
+    
+  }
+
+  entity ReviewAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity Event {
+    
+  }
+
+  entity ProgrammingQuestion extends Question {
+    
+  }
+
+  entity DataFile {
+    
+  }
+
+  entity WebProgrammingQuestion extends Question {
+    
+  }
+
+  entity ProgrammingAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity WebProgrammingAnswer extends BasicAssignmentSubmission {
+    
+  }
+
+  entity ProgramRun {
+    
+  }
+
+  entity StudentGroup {
+    
+  }
+
+  entity TextChange {
+    
+  }
+  
