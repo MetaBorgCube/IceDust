@@ -78,30 +78,61 @@ execute
   "Students of " + pl2015.fullname + ": "
   pl2015.students.person.name
 
-model // assignment
+model // assignments
 
   entity Assignment {
     key : String
     title : String
   }
-//  relation AssignmentCollection.course     ?                       <-> CourseEdition.rootAssignment
-  relation Assignment.course     ?                       <-> CourseEdition.rootAssignment
-  relation Assignment.root       1 = parent.root <+ this <-> Assignment
-//  relation Assignment.rootCourse ? = root.filter(:AssignmentCollection).course <-> CourseEdition.assignments
-  relation Assignment.rootCourse ? = root.course         <-> CourseEdition.assignments
+  relation Assignment.root       1 = parent.root <+ this                       <-> Assignment
+  relation Assignment.rootCourse ? = root.filter(:AssignmentCollection).course <-> CourseEdition.assignments
 
   entity AssignmentCollection extends Assignment {
     
   }
-  relation AssignmentCollection.assignments <-> ? Assignment.parent
+  relation AssignmentCollection.course      ? <-> ? CourseEdition.rootAssignment
+  relation AssignmentCollection.assignments   <-> ? Assignment.parent
+  
+data
+
+  pl2015Assignments:AssignmentCollection{
+    course = pl2015
+    key = "pl15a"
+    title = "Assignments"
+    assignments =
+      pl15a1:AssignmentCollection{
+        key = "pl15a1"
+        title = "Week 1"
+        assignments =
+          pl15a11:Assignment{
+            key = "pl15a11"
+            title = "Assignment 1"
+          },
+          pl15a12:Assignment{
+            key = "pl15a12"
+            title = "Assignment 2"
+          }
+      },
+      pl15a2:AssignmentCollection{
+        key = "pl15a2"
+        title = "Week 2"
+      }
+  }
+  
+execute
+
+  "Sub assignment root course name: "
+  pl15a12.rootCourse.fullname
+
+model // submisisons
   
   entity AssignmentSubmission {
     
   }
   
-data
-
-  
+  entity AssignmentCollectionSubmission extends AssignmentSubmission {
+    
+  }
 
 model
 
@@ -182,10 +213,6 @@ model
   }
 
   entity StudentInEducation {
-    
-  }
-
-  entity AssignmentCollectionSubmission extends AssignmentSubmission {
     
   }
 
