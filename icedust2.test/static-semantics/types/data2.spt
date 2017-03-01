@@ -36,3 +36,54 @@ data
   foo2:Foo{bar=bar}
   foo3:Foo{bar=bar}
 ]] 1 error at #1
+
+test no error on omitting derived relation [[
+model
+
+  entity Node {
+  }
+  
+  relation Node.parent ? <-> Node.children
+  
+  relation Node.root 1 = parent.root <+ this <-> Node
+  
+data
+
+  node1:Node {
+  
+  }
+]] 0 errors
+
+test error on omitting non-derived relation [[
+model
+
+  entity Node {
+  }
+  
+  relation Node.parent ? <-> Node.children
+  
+  relation Node.root 1 <-> Node
+  
+data
+
+  [[node1]]:Node {
+  
+  }
+]] >=1 error at #1
+
+test error on supplying derived relation [[
+model
+
+  entity Node {
+  }
+  
+  relation Node.parent ? <-> Node.children
+  
+  relation Node.root 1 = parent.root <+ this <-> Node
+  
+data
+
+  node1:Node {
+    [[root]] = node1
+  }
+]] >=1 error at #1
