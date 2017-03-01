@@ -324,6 +324,7 @@ rules
     new entity2_scope,
     new expr_scope,
     Entity{e1} <=I= expr_scope,
+    expr_scope -P-> module_scope,
     [[ expr ^ (expr_scope) : TTuple(expr_type, expr_mult, expr_strat) ]],
     m2 == ZeroOrMore() | warning $[Warning: multiplicity [m2] cannot be statically guaranteed.] @ m2,
     expr_type  <sub?    e2_type  | error $[Type error: expected [e2_type] got [expr_type].]@expr,
