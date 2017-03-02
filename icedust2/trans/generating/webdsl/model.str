@@ -33,8 +33,8 @@ rules // entities
     where
       <is-entityname> x_entityName
     with
-      ebd_members*    := <entityname-get-arrinames     ;fmap(model-membername-to-webdsl-ebds(err)       )>x_entityName;
-      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
+      ebd_members*    := <entityname-get-arrinames-defined     ;fmap(model-membername-to-webdsl-ebds(err)       )>x_entityName;
+      ebd_shortcuts*  := <entityname-get-shortcutnames-defined ;fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
     with
       switch id
         case x_parentName := <entityname-get-parentname>x_entityName:
