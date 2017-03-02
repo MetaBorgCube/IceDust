@@ -119,9 +119,10 @@ rules // find expression
           refty x_var = null;
           for(x_type x_loopvar : ~e1exp){
             ~e2stms*
-            if(~e2exp!=null && ~e2exp)
+            if(~e2exp!=null && ~e2exp){
               x_var = x_loopvar;
               break;
+            }
           }
         ]|,
         expr |[
