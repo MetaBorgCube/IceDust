@@ -11,6 +11,7 @@ section ui
   }
   
   define main() {
+    includeCSS("icedust.css")
     <div id="pagewrapper">
       <div id="navbar">
         applicationmenu()
