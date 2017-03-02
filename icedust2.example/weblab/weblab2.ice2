@@ -39,8 +39,8 @@ model // course
   entity StudentInCourse {
         
   }
-  relation StudentInCourse             1 <-> Person.enrolled
-  relation StudentInCourse.submissions   <-> AssignmentSubmission.student
+  relation StudentInCourse             1 <->   Person.enrolled
+  relation StudentInCourse.submissions   <-> 1 AssignmentSubmission.student
 
 data
 
@@ -116,6 +116,11 @@ data
       pl15a2:AssignmentCollection{
         key = "pl15a2"
         title = "Week 2"
+        assignments =
+          pl15a21:Assignment{
+            key = "pl15a21"
+            title = "Assignment 3"
+          }
       }
   }
   
@@ -129,11 +134,76 @@ model // submisisons
   entity AssignmentSubmission {
     
   }
+  relation AssignmentSubmission 1 <-> Assignment.submissions
   
   entity AssignmentCollectionSubmission extends AssignmentSubmission {
     
   }
+  relation AssignmentCollectionSubmission.submissions = assignment.filter(:AssignmentCollection).assignments.submissions.filter(x => x.student == student)
+    <-> ? AssignmentSubmission.parent
 
+data
+
+  :AssignmentCollectionSubmission{
+    student = alicePl
+    assignment = pl2015Assignments
+  }
+  :AssignmentCollectionSubmission{
+    student = alicePl
+    assignment = pl15a1
+  }
+  :AssignmentCollectionSubmission{
+    student = alicePl
+    assignment = pl15a2
+  }
+  :AssignmentSubmission{
+    student = alicePl
+    assignment = pl15a11
+  }
+  :AssignmentSubmission{
+    student = alicePl
+    assignment = pl15a12
+  }
+  alicePl15a21:AssignmentSubmission{
+    student = alicePl
+    assignment = pl15a21
+  }
+
+execute
+
+  "Submission parent assignment name of " + alicePl15a21.assignment.title + ": "
+  alicePl15a21.parent.assignment.title
+
+model // submission grades
+
+  entity GradingScheme {
+    minimumToPass       : Float = 0.0  (default)
+    passNSubAssignments : Int   = -1   (default)
+    checkListWeight     : Float
+    computedWeight      : Float = 1.0  (default)
+    checkPercentage     : Float = 0.0  (default)
+    customTotalWeight   : Float = -1.0 (default)
+  }
+  relation GradingScheme                  1 <-> ? Assignment
+  relation GradingScheme.additionalGrades   <-> 1 AdditionalGradeDef
+  
+  entity SubmissionGrade {
+    
+  }
+  relation SubmissionGrade.sub              1 <-> ? AssignmentSubmission.gradeData
+  relation SubmissionGrade.assignment       1 = sub.assignment <-> Assignment
+  relation SubmissionGrade.previousGrade    ? <-> ? SubmissionGrade.newerGrade
+  relation SubmissionGrade.additionalGrades   <-> 1 AdditionalGrade
+
+  entity AdditionalGradeDef {
+    weight  : Float
+    isBonus : Boolean
+  }
+  
+  entity AdditionalGrade {
+    
+  }
+  
 model
 
   entity Notification {
@@ -288,23 +358,7 @@ model
     
   }
 
-  entity GradingScheme {
-    
-  }
-
-  entity AdditionalGradeDef {
-    
-  }
-
   entity GradingWebhook {
-    
-  }
-
-  entity SubmissionGrade {
-    
-  }
-
-  entity AdditionalGrade {
     
   }
 
