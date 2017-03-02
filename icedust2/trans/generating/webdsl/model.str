@@ -36,20 +36,21 @@ rules // entities
       ebd_members*    := <entityname-get-arrinames     ;fmap(model-membername-to-webdsl-ebds(err)       )>x_entityName;
       ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
     with
-      if entityname-is-explorerui then
-        result := def |[
-          entity x_entityName {
-            ebd_members*
-            ebd_shortcuts*
-          }
-        ]|
-      else
-        result := def |[
-          extend entity x_entityName {
-            ebd_members*
-            ebd_shortcuts*
-          }
-        ]|
+      switch id
+        case x_parentName := <entityname-get-parentname>x_entityName:
+          result := def |[
+            entity x_entityName : x_parentName {
+              ebd_members*
+              ebd_shortcuts*
+            }
+          ]|
+        otherwise:
+          result := def |[
+            entity x_entityName {
+              ebd_members*
+              ebd_shortcuts*
+            }
+          ]|
       end
 
 rules
