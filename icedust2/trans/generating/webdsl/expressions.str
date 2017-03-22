@@ -13,6 +13,7 @@ imports // functions
 
   api/_runtime  
   api/module-names-api
+  api/types-api
   generating/_ir/expressions
   generating/webdsl/model
   generating/webdsl/data
@@ -91,4 +92,29 @@ rules // find
     with
       result := exp |[
         Expressions.first([ x_var | x_var : srt1 in e1 where e2]) as srt1
+      ]|
+
+rules // filter type
+
+  expr-to-webdsl-expr(err): e@FilterType(ex1, ty1) -> result
+    where
+      <get-multiplicity;upper-one>ex1
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      srt2 := <get-type2;type-to-webdsl-srt(err)>e
+    with
+      result := exp |[
+        if(e1 is a srt2) e1 as srt2 else null
+      ]|
+
+  expr-to-webdsl-expr(err): e@FilterType(ex1, ty1) -> result
+    where
+      <get-multiplicity;upper-many>ex1
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      srt1 := <get-type2;type-to-webdsl-srt(err)>ex1;
+      srt2 := <get-type2;type-to-webdsl-srt(err)>e
+    with
+      result := exp |[
+        [a as srt2 | a : srt1 in e1 where (a is a srt2)]
       ]|
