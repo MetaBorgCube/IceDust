@@ -194,7 +194,7 @@ signature
       J < P
 
     well-formedness
-      P* . (e|(S.J)) . (I|J)*
+      P* . (S.J)? . (I|J)*
 
 rules
 
