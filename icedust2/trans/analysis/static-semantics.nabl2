@@ -179,7 +179,7 @@ signature
       J // lower priority import
       P // parent
       S // requires a J to be wellformed
-      N // no edge at all (used for inverse querying)
+//      N // no edge at all (used for inverse querying)
 
     order
       D < I,

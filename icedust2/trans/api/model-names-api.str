@@ -88,7 +88,7 @@ rules // attributes
   attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
   attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
   
-  attributename-get-entityname = get-decl(|"Member");get-scope(|"Member");(get-scope-assoc-name <+ (get-scope-scope;get-scope-assoc-name)) ; try(get-resolved-name(|"Entity")) // try to resolve the name in the end because of possibly external definitions
+  attributename-get-entityname = get-decl(|"Member");get-scope(|"Member");(get-scope-assoc-name <+ (get-scope-scope-inv;get-scope-assoc-name)) ; try(get-resolved-name(|"Entity")) // try to resolve the name in the end because of possibly external definitions
   
   attributename-get-expr = get-property(|"Member","expr")
   
