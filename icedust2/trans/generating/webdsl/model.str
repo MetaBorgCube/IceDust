@@ -97,7 +97,8 @@ rules
       x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
-      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name
+//      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
+      x_updateOneCacheAsync  := <name-updateonecacheasync>x_name
     with
       if name-is-bidirectional then
         x_inverseName            := <name-get-inversename>x_name;
@@ -190,14 +191,23 @@ rules
               return null;
             }
             
-            static function x_updateAllCacheAsync () {
-              var i := 1;
-              while( x_entityName.x_hasDirtyAsync() ){
+//            static function x_updateAllCacheAsync () {
+//              var i := 1;
+//              while( x_entityName.x_hasDirtyAsync() ){
+//                var en := x_entityName.x_receiveOneDirtyAsync();
+//                log("Updating " + e_qualifiedName + ": " + i + " " + en.id);
+//                en.x_updateCache();
+//                commitAndStartNewTransaction();
+//                i := i + 1;
+//              }
+//            }
+            
+            static function x_updateOneCacheAsync () {
+              if( x_entityName.x_hasDirtyAsync() ){
                 var en := x_entityName.x_receiveOneDirtyAsync();
-                log("Updating " + e_qualifiedName + ": " + i + " " + en.id);
+                log("Updating " + e_qualifiedName + ": " + en.id);
                 en.x_updateCache();
                 commitAndStartNewTransaction();
-                i := i + 1;
               }
             }
       
