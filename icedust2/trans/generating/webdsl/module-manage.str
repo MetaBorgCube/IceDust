@@ -1,0 +1,101 @@
+module generating/webdsl/module-manage
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+//  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
+  tiersplit/constructors
+
+imports // functions
+  
+  generating/_ir/model 
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+  generating/webdsl/webdsl-helper
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+
+rules
+
+  membername-to-webdsl-elem-row: x_name -> result
+    with
+      x_entityName       := <attributename-get-entityname>x_name;
+      e_name             := String(x_name);
+      e_qualifiedName    := String($[[x_entityName].[x_name]]);
+      e_toposort         := String(<name-get-toposort;write-to-string>x_name);
+      e_strategy         := String(<name-get-calculation-strategy;write-to-string>x_name);
+      x_action           := <attributename-entityname-flagallaction>x_name
+    with
+      switch id
+        case name-is-incremental-eventual: 
+          elem_action* := elem* |[
+            action("flag all dirty", x_action())
+          ]|
+        otherwise:
+          elem_action* := elem* |[
+          
+          ]|
+      end
+    with
+      result := elem |[
+        row{
+          column{
+            output(e_toposort)
+          }
+          column{
+            output(e_qualifiedName)
+          }
+          column{
+            output(e_strategy)
+          }
+          column{
+            "?" " / " output(select count(*) from x_entityName)
+          }
+          column{
+            elem_action*
+          }
+        }
+      ]|
+
+  membername-to-webdsl-elems-action: x_name -> result
+    with
+      x_entityName       := <attributename-get-entityname>x_name;
+      e_qualifiedName    := String($[[x_entityName].[x_name]]);
+      x_flagDirty        := <name-flagdirty>x_name;
+      x_action           := <attributename-entityname-flagallaction>x_name
+    with
+      switch id
+        case name-is-incremental: 
+          result := elem* |[
+            action x_action(){
+              var all := from x_entityName;
+              log("Flag dirty " + e_qualifiedName + ": " + all.length);
+              x_entityName.x_flagDirty(all);
+              log("Updating derivations");
+              updateDerivations();
+              log("Updating derivations done");
+            }
+          ]|
+        case name-is-eventual: 
+          result := elem* |[
+            action x_action(){
+              var all := from x_entityName;
+              log("Flag dirty " + e_qualifiedName + ": " + all.length);
+              x_entityName.x_flagDirty(all);
+              log("flagDirtyAsync");
+              flagDirtyAsync();
+              log("flagDirtyAsync done");
+            }
+          ]|
+        otherwise:
+          result := []
+      end
+
+  

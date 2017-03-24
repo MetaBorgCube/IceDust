@@ -80,4 +80,8 @@ rules // prefixed names
   attributename-entityname: attributename -> $[[entityname]_[attributename]]
     with
       entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-flagallaction: attributename -> $[[entityname][<ucfirst>attributename]FlagAllDirtyAction]
+    with
+      entityname := <attributename-get-entityname>attributename
   
