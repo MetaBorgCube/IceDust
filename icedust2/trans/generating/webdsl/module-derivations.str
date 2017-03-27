@@ -47,7 +47,7 @@ rules // derivations
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
     with
       result := native |[
-        static x_attributeGetQueue() : Queue
+        static x_attributeGetQueue() : Set<String>
       ]|
 
 rules

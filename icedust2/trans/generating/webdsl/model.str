@@ -175,17 +175,19 @@ rules
               x_qualifiedDirty := Set<x_entityName>();
 //              DirtyCollections.x_getQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
               var queue := DirtyCollections.x_getQueue();
-              for(s:String in [ v.id.toString() | v : x_entityName in dirtyValues ]){ // TODO: move 'add if not contains' out of the code generator, into the stdlib
-                if(!queue.contains(s)){
-                  queue.add(s);
-                }
+              for(s:String in [ v.id.toString() | v : x_entityName in dirtyValues ]){ 
+//                if(!queue.contains(s)){
+                queue.add(s);
+//                }
               }
             }
   
             static function x_receiveOneDirtyAsync() : x_entityName {
               var queue := DirtyCollections.x_getQueue();
-              if(!queue.isEmpty()){
-                var v : x_entityName := loadEntity(e_entityName, UUIDFromString(queue.poll() as String)) as x_entityName;
+              if(queue.length != 0){
+                var key := queue.first as String;
+                queue.remove(key);
+                var v : x_entityName := loadEntity(e_entityName, UUIDFromString(key)) as x_entityName;
                 return v;
               }
               return null;
@@ -213,7 +215,7 @@ rules
       
             static function x_hasDirtyAsync () : Bool {
               var queue := DirtyCollections.x_getQueue();
-              return !queue.isEmpty();
+              return queue.length != 0;
             }
           ]|
         otherwise:

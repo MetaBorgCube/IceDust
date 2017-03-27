@@ -24,8 +24,9 @@ rules // module (or modulename) -> java compilation-unit
       result := compilation-unit |[
         package derivations;
         
-        import java.util.Queue;
-        import java.util.concurrent.ConcurrentLinkedQueue;
+        import java.util.Set;
+        import java.util.concurrent.ConcurrentHashMap;
+        import java.util.Collections;
         
         public class DirtyCollections {
           
@@ -42,9 +43,16 @@ rules // attrname -> java declarations
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
     with
       result := class-body-dec* |[
-        private static Queue<String> x_attributeQueue = new ConcurrentLinkedQueue<String>();
+//        private static Queue<String> x_attributeQueue = new ConcurrentLinkedQueue<String>();
+//        
+//        public static Queue<String> x_attributeGetQueue(){
+//          return x_attributeQueue;
+//        }
         
-        public static Queue<String> x_attributeGetQueue(){
+        private static Set<String> x_attributeQueue = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+      
+        public static Set<String> x_attributeGetQueue()
+        { 
           return x_attributeQueue;
         }
       ]|

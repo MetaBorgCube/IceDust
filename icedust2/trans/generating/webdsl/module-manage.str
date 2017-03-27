@@ -27,6 +27,7 @@ rules
   membername-to-webdsl-elem-row: x_name -> result
     with
       x_entityName       := <attributename-get-entityname>x_name;
+      x_getQueue         := <attributename-entityname-getqueue>x_name;
       e_name             := String(x_name);
       e_qualifiedName    := String($[[x_entityName].[x_name]]);
       e_toposort         := String(<name-get-toposort;write-to-string>x_name);
@@ -47,7 +48,7 @@ rules
       switch id
         case name-is-eventual: 
           elem_status* := elem* |[
-            "?" " / " output(select count(*) from x_entityName)
+            output(DirtyCollections.x_getQueue().length) " / " output(select count(*) from x_entityName)
           ]|
         otherwise:
           elem_status* := elem* |[
