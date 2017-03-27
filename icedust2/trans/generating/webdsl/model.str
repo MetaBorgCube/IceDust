@@ -327,7 +327,19 @@ rules
               return this.x_getCalculated();
             }
             
-            x_name : srt_multType := x_get()
+//            x_name : srt_multType := x_get()
+          ]|
+        case name-is-abstract; name-is-to-one:
+          ebd_get* := ebd* |[
+            function x_get() : srt_multType {
+              return null;
+            }
+          ]|
+        case name-is-abstract; name-is-to-many:
+          ebd_get* := ebd* |[
+            function x_get() : srt_multType {
+              return List<Object>();
+            }
           ]|
       end
     with // Getter, calcualted value Layer
