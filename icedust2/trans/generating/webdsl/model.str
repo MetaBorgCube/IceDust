@@ -117,9 +117,7 @@ rules
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_name
       end
     with
-      if name-is-incremental-eventual then
-        stat_flowsTo* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
-      end
+      stat_flowsTo* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
         case name-has-expr; attributename-is-explorerui:
@@ -384,14 +382,19 @@ rules
       end
     with
       switch id
-        case name-is-incremental-eventual:
+        case name-is-root:
           ebd_dirtyFlagFlows* := ebd* |[          
             function x_dirtyFlagFlows() {
               stat_flowsTo*
             }
           ]|
         otherwise:
-          ebd_dirtyFlagFlows* := []
+          ebd_dirtyFlagFlows* := ebd* |[          
+            function x_dirtyFlagFlows() {
+              super.x_dirtyFlagFlows();
+              stat_flowsTo*
+            }
+          ]|
       end
     with
       switch id
