@@ -144,7 +144,7 @@ rules
 
   depends-on-and-flows-to-2: modulename -> modulename
     with
-      arrinames    := <modulename-get-arrinames-default-derived-has-expr>modulename
+      arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
     with
       dependencies := <fmap(arriname-dependencies)>arrinames;
       dataflow     := <map(path-inverse)>dependencies
@@ -162,8 +162,7 @@ rules
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
       all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
-      dependencies      := <map(path(|attrName))>all-pathexprs;
-      dataflow          := <map(path-inverse)>dependencies
+      dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules
 

@@ -169,6 +169,7 @@ rules
     Member{a} |-> a_overridden,
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
+    a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
     a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
     a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
@@ -181,6 +182,7 @@ rules
     Member{a}.reltype := None(),
     Member{a}.side := None(),
     Member{a}.calculationstrategy := a_strat,
+    Member{a}.inlining := NotInline(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ st^ (entity_scope) : a_strat ]],
@@ -193,6 +195,7 @@ rules
     Member{a} |-> a_overridden,
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
+    a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
     a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
     a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
@@ -206,6 +209,7 @@ rules
     Member{a}.reltype := None(),
     Member{a}.side := None(),
     Member{a}.calculationstrategy := a_strat,
+    Member{a}.inlining := NotInline(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ st^ (entity_scope) : a_strat ]],
@@ -213,7 +217,7 @@ rules
     [[ e ^ (entity_scope) : TTuple(e_type, e_mult, e_strat) ]],
     e_type  <sub?    a_type  | error $[Type error: expected [a_type] got [e_type].]@e,
     e_mult  <mulOrd? a_mult  | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e,
-    e_strat <strat?  a_strat | error $[Calculation strategy error: expected [a_strat] got [a_strat].]@e,
+    e_strat <strat?  a_strat | error $[Calculation strategy error: expected [a_strat] got [e_strat].]@e,
     
     new s,
     Member{a} -> s,
@@ -222,6 +226,7 @@ rules
     Member{a} |-> a_overridden,
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
+    a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
     a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
     a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
@@ -236,6 +241,7 @@ rules
     Member{a}.reltype := None(),
     Member{a}.side := None(),
     Member{a}.calculationstrategy := a_strat,
+    Member{a}.inlining := NotInline(),
     [[ t ^ (entity_scope) : a_type ]],
     [[ m ^ (entity_scope) : a_mult ]],
     [[ st^ (entity_scope) : a_strat ]],
@@ -252,10 +258,35 @@ rules
     Member{a} |-> a_overridden,
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
+    a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
     a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
     a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
+    
+  [[ InlineAttribute(a, t, m, e) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
+    Member{a} <- entity_scope_local,
+    Member{a} : TTuple(a_type, a_mult, a_strat),
+    Member{a}.ns := Attribute(),
+    Member{a}.derivationtype := a_deriv,
+    Member{a}.expr := e,
+    Member{a}.reltype := None(),
+    Member{a}.side := None(),
+    Member{a}.calculationstrategy := a_strat,
+    Member{a}.inlining := Inline(),
+    [[ t ^ (entity_scope) : a_type ]],
+    [[ m ^ (entity_scope) : a_mult ]],
+    e_strat == a_strat, // inline attributes take the strategy from their expression, this strategy is the strongest strategy that the attribute can be inlined in.
+    a_deriv == Derivation(),
+    [[ e ^ (entity_scope) : TTuple(e_type, e_mult, e_strat) ]],
+    e_type  <sub?    a_type  | error $[Type error: expected [a_type] got [e_type].]@e,
+    e_mult  <mulOrd? a_mult  | error $[Multiplicity error: expected [a_mult] got [e_mult].]@e,
+    
+    new s,
+    Member{a} -> s,
+    s -S-> entity_scope,
+    s -I-> entity_scope,
+    Member{a} |-> Member{a} | error $[Error: overriding with (inline).]@a.
     
   [[ Relation(e1, r1, m1, m2, e2, r2) ^ (module_scope) ]] :=
     Entity2{e1} <- module_scope,
@@ -306,6 +337,7 @@ rules
     Member{r1}.derivationtype := Derivation(),
     Member{r1}.expr := expr,
     Member{r1}.calculationstrategy := st_strat,
+    Member{r1}.inlining := NotInline(),
     Entity2{e2} <- module_scope,
     Entity2{e2} =I=> entity2_scope,
     Member{r2} <- entity2_scope,
@@ -320,6 +352,7 @@ rules
     Member{r2}.reltype := None(),
     Member{r2}.derivationtype := Derivation(),
     Member{r2}.calculationstrategy := st_strat,
+    Member{r2}.inlining := NotInline(),
     new entity1_scope,
     new entity2_scope,
     new expr_scope,

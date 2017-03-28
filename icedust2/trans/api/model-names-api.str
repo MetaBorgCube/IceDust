@@ -10,6 +10,7 @@ imports // constructors
 //  naming/_notNaBL
   analysis2/constructors
   analysis/_constructors
+  static-semantics
 
 imports // functions
 
@@ -141,17 +142,21 @@ rules
   name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
   
   name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
+  name-has-calculation-strategy = where(name-get-calculation-strategy)
   
-  name-is-calconread           = where(name-get-calculation-strategy;?OnDemand())
-  name-is-calconread           = where(name-get-calculation-strategy;?OnDemandEventual())
-  name-is-calconwrite          = where(name-get-calculation-strategy;?Incremental())
-  name-is-eventuallyconsistent = where(name-get-calculation-strategy;?Eventual())
+  name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemand())
+  name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-calconwrite          = where(not(name-is-inline);name-get-calculation-strategy;?Incremental())
+  name-is-eventuallyconsistent = where(not(name-is-inline);name-get-calculation-strategy;?Eventual())
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   
   name-is-left =  where(is-rolename    <+ is-relationname;relationname-is-left)
   name-is-right = where(is-inversename <+ is-relationname;relationname-is-right)
   
+  name-get-inlining = get-property(|"Member","inlining")
+  
+  name-is-inline    = where(name-get-inlining;?Inline())
   
   name-is-one                = where(name-get-multiplicity;lower-one;upper-one)
   name-is-zeroorone          = where(name-get-multiplicity;lower-zero;upper-one)

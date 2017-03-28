@@ -61,6 +61,8 @@ rules
   name-get-parent-test                     = try(attr-get-name); store-analysis-ast; name-get-parent
   name-has-parent-test                     = try(attr-get-name); store-analysis-ast; ((name-has-parent;!"yes")<+!"no")
 
+  name-get-inlining-test                   = try(attr-get-name); store-analysis-ast; name-get-inlining
+
 rules
 
   modulename-get-entitynames-test          = try(module-get-modulename); store-analysis-ast; modulename-get-entitynames

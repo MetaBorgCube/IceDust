@@ -546,7 +546,7 @@ rules
         end
     with // Getter, calculated value Layer
       switch id
-        case name-is-default-derived; name-is-ondemand:
+        case name-is-default-derived; (name-is-ondemand<+name-is-inline):
           result-getCalculated* := class-body-dec* |[
             private ~type:multType x_getCalculated()
             { 

@@ -53,6 +53,8 @@ rules // module
   
   modulename-get-arrinames-default-derived-has-expr             = modulename-get-arrinames-default-derived;filter(name-has-expr)
   
+  modulename-get-arrinames-default-derived-has-expr-notinline   = modulename-get-arrinames-default-derived-has-expr;filter(not(name-is-inline))
+  
   // string -> [[string]]
   modulename-get-attributenames-topo = index-get2(|TopoSort());map(filter(where(is-attributename)));filter(list-not-empty)
 

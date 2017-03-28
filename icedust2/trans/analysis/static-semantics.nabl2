@@ -64,6 +64,9 @@ signature
     
     TMaterialized    : TMaterialization
     TNonMaterialized : TMaterialization
+    
+    Inline    : Inlining
+    NotInline : Inlining
 
   relations
 

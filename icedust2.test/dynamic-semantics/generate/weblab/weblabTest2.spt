@@ -26,7 +26,7 @@ model
   entity Course (on-demand) {
     name       : String
     
-    avgGrade   : Float?  = assignment.avgGrade
+    avgGrade   : Float?  = this.assignment.avgGrade
     passPerc   : Float?  = assignment.passPerc
     numStudents: Int     = count(enrollments)
     
@@ -40,7 +40,7 @@ model
     
     grade      : Float?  = submission.grade
     pass       : Boolean = submission.pass <+ false
-    pass2      : Int     = pass ? 1 : 0
+    pass2      : Int     = pass ? 1 : 0 (inline)
   }
   
   relation Course.enrollments *  <-> 1 Enrollment.course
@@ -75,18 +75,18 @@ model
     
     onTime     : Boolean = date <= deadline
                            <+
-                           count(deadline)==0 || count(date)==1 // no deadline is always on time
+                           count(deadline)==0 || count(date)==1 (inline) // no deadline is always on time
 
     onExtension: Boolean = !onTime && date <= extension
                            <+
-                           false // no extension means late, no submission date also means late
+                           false (inline) // no extension means late, no submission date also means late
 
     latePenalty: Float   = if(onExtension)
                              (date - deadline) / (extension - deadline) * assignment.latePenalty
                            else
                              0.0
                            <+
-                           0.0
+                           0.0 (inline)
     
     baseGrade  : Float?  (abstract)
     
@@ -95,11 +95,11 @@ model
                              case onExtension => baseGrade - latePenalty
                              default          => no value
                            }
-    gradeWeighted : Float? = grade * assignment.weight
+    gradeWeighted : Float? = grade * assignment.weight (inline)
     
     pass       : Boolean1 (abstract)
   
-    passInt    : Int     = if(pass) 1 else 0
+    passInt    : Int     = if(pass) 1 else 0 (inline)
     best       : Boolean = grade == max(assignment.submissions.grade) <+ false
   }
   
@@ -110,8 +110,8 @@ model
   
   entity CollectionSubmission extends Submission{
     baseGrade  : Float?  = if(childPass) childGrade
-    childGrade : Float?  = sum(children.gradeWeighted) / sum(assignment.filter(:CollectionAssignment).children.weight)
-    childPass  : Boolean = conj(children.pass)
+    childGrade : Float?  = sum(children.gradeWeighted) / sum(assignment.filter(:CollectionAssignment).children.weight) (inline)
+    childPass  : Boolean = conj(children.pass) (inline)
     pass       : Boolean = grade >= (assignment.minimum<+0.0) && childPass <+ false
   
   }
@@ -274,37 +274,21 @@ execute
 test Weblab 2 execute-java (strategy composition & derived relations & subtyping) [[ ]] transform "SPT -> to Java -> Execute" to
 "Updating Submission.deadline: 15
 Updating Submission.extension: 15
-Updating Submission.onTime: 15
-Updating Submission.onExtension: 15
-Updating Submission.latePenalty: 15
 Updating Submission.parent: 15
 Updating Submission.name: 15
 Updating Enrollment.submission: 5
 Updating Assignment.weight: 3
 Updating LeafSubmission.pass: 10
-Updating CollectionSubmission.childPass: 5
 Updating CollectionSubmission.pass: 5
-Updating Submission.gradeWeighted: 15
 Updating Submission.grade: 15
 Updating CollectionSubmission.baseGrade: 5
-Updating CollectionSubmission.childGrade: 5
 Updating LeafSubmission.pass: 9
-Updating CollectionSubmission.childPass: 5
-Updating CollectionSubmission.pass: 2
-Updating Submission.gradeWeighted: 9
+Updating CollectionSubmission.pass: 5
 Updating CollectionSubmission.baseGrade: 5
-Updating CollectionSubmission.childGrade: 5
-Updating Submission.grade: 2
-Updating CollectionSubmission.baseGrade: 5
-Updating CollectionSubmission.pass: 2
-Updating Submission.gradeWeighted: 2
 Updating Submission.grade: 2
 Updating CollectionSubmission.pass: 2
-Updating Submission.gradeWeighted: 2
-Updating Submission.passInt: 15
 Updating Assignment.passPerc: 3
 Updating Enrollment.pass: 5
-Updating Enrollment.pass2: 5
 Updating Student.passedCourses: 5
 Updating Enrollment.grade: 5
 Updating Submission.best: 15
