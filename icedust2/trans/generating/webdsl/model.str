@@ -342,7 +342,7 @@ rules
       end
     with // Getter, calcualted value Layer
       switch id
-        case name-is-default-derived; name-is-ondemand:
+        case name-is-default-derived; (name-is-ondemand<+name-is-inline):
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               return x_calculate();
