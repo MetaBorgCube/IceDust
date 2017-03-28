@@ -2,6 +2,8 @@ module lib/lists-tuples
 
 imports
 
+  lib/eq
+
 rules // (|b) a -> (a, b)
   
   tuple-with(|b): a -> (a, b)
@@ -76,4 +78,8 @@ rules
 rules
 
   diff-no-annos = diff(strip-annos)
+  
+rules
+
+  make-set-no-annos = debug(!"x ");foldr(![], union(eq-no-anno-r), ![<id>]);debug(!"y ")
   

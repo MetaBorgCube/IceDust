@@ -161,7 +161,7 @@ rules
       (p*, q*)          := <expr-pathexprs>expr;
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set-no-annos>pathexprs-no-this;
       dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules

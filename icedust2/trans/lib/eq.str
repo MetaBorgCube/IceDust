@@ -7,10 +7,21 @@ imports
 
 rules
 
+  eq-no-anno(|) = ?(x,y);!x;eq-no-anno(|y)
+
   eq-no-anno(|x): y -> y
     where
       x2 := <rm-annotations>x;
       y2 := <rm-annotations>y;
+      <equal(|x2)>y2
+rules
+
+  eq-no-anno-r(|) = ?(x,y);!x;eq-no-anno-r(|y)
+
+  eq-no-anno-r(|x): y -> y
+    where
+      x2 := <strip-annos>x;
+      y2 := <strip-annos>y;
       <equal(|x2)>y2
 
 rules
