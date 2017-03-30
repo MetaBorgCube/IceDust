@@ -30,6 +30,7 @@ lexical syntax // Keywords
   Keyword = "false"
   Keyword = "Float"
   Keyword = "if"
+  Keyword = "inline"
   Keyword = "Int"
   Keyword = "max"
   Keyword = "match"

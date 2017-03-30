@@ -6,6 +6,9 @@ imports
 
 context-free syntax
 
+  AnyType = EntityType
+  AnyType = PrimitiveType
+
   EntityType.EntityType = ID
 
   PrimitiveType.Boolean   = <Boolean>
