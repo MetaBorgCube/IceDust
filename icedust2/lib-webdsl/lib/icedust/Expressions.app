@@ -75,4 +75,5 @@ section java implementations
     static asString(Object) : String
     static asString(List<Object>) : List<String>
     static parseDatetime(String):DateTime
+    static nullSafeBoolean(Bool) : Bool
   }

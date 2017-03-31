@@ -637,5 +637,13 @@ public class Expressions {
     }
     return i.equals(j);
   }
+  
+  // null-safe boolean (not three-valued)
+  
+  public static boolean nullSafeBoolean(Boolean b){
+    if(b==null)
+      return false;
+    return b;
+  }
 
 }

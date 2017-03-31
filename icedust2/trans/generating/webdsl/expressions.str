@@ -79,7 +79,7 @@ rules // filter
       srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
     with
       result := exp |[
-        [ x_var | x_var : srt1 in e1 where e2]
+        [ x_var | x_var : srt1 in e1 where Expressions.nullSafeBoolean(e2)]
       ]|
       
 rules // find
@@ -91,7 +91,7 @@ rules // find
       srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
     with
       result := exp |[
-        Expressions.first([ x_var | x_var : srt1 in e1 where e2]) as srt1
+        Expressions.first([ x_var | x_var : srt1 in e1 where Expressions.nullSafeBoolean(e2)]) as srt1
       ]|
 
 rules // filter type
