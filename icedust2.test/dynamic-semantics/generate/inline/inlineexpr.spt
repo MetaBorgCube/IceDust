@@ -8,8 +8,8 @@ module inlineexpr
 model
 
   entity Foo{
-    myBars : Bar* = bars.filter(x => x.b) (inline)
-    v      : Int  = sum(myBars.v)
+    myBars : Bar*(ordered) = bars.filter(x => x.b).orderBy(x => x.v).first(2) (inline)
+    v      : Int           = sum(myBars.v)
   }
   
   entity Bar{
@@ -29,7 +29,19 @@ data
       },
       {
         b = false
+        v = 19
+      },
+      {
+        b = true
+        v = 55
+      },
+      {
+        b = false
         v = 4
+      },
+      {
+        b = true
+        v = 37
       }
   }
   
@@ -41,5 +53,5 @@ execute
 
 test Inline field execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
 "Updating Foo.v: 1
-5
+42
 "

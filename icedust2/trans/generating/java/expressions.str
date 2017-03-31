@@ -101,6 +101,49 @@ rules // filter expression
         ]|
       )
 
+rules // order by expression
+
+  exp-to-java-stm(err|i): e@OrderBy(e1, x_compvar, e2) -> result
+    with
+      (e1stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+      i' := <add>(i, <length>e1stms*);
+      i'' := <inc>i';
+      x_var := $[var[i'']];
+      (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
+      refty := <expr-to-java-type(err)>e;
+      refty2 := <expr-to-java-type(err)>e2;
+      x_type := <get-type2;type-to-java-type(err)>e;
+      x_comptype := <get-type2;type-to-java-type(err)>e2
+    with
+      result := (
+        bstm*|[
+          ~e1stms*
+          ArrayList<x_type> x_var = new ArrayList<x_type>();
+          x_var.addAll(~e1exp);
+          x_var.sort(new Comparator<x_type>() {
+            public int compare(x_type obj1, x_type obj2) {
+              return getVal(obj1).compareTo(getVal(obj2));
+            }
+            private refty2 getVal(Bar x_compvar){
+              ~e2stms*
+              return ~e2exp;
+            }
+          });
+//          Collections.sort(x_var, new Comparator<x_type>() {
+//            public int compare(x_type obj1, x_type obj2) {
+//              return getVal(obj1).compareTo(getVal(obj2));
+//            }
+//            private x_comptype getVal(x_type x_compvar){
+//              ~e2stms*
+//              return ~e2exp;
+//            }
+//          });
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
+
 rules // find expression
 
   exp-to-java-stm(err|i): e@Find(e1, x_loopvar, e2) -> result

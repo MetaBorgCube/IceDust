@@ -67,7 +67,7 @@ context-free syntax // entity members
     <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
   >
   Member.InlineAttribute    = <
-    <ID> : <AnyType><Multiplicity?> = <Exp> (inline)
+    <ID> : <AnyType><MultiplicityOrdering?> = <Exp> (inline)
   >
   
   Member.Role = [

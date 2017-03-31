@@ -40,6 +40,7 @@ lexical syntax // Keywords
   Keyword = "no"
   Keyword = "not"
   Keyword = "or"
+  Keyword = "orderBy"
   Keyword = "ordered"
   Keyword = "relation"
   Keyword = "String"

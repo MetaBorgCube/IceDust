@@ -586,6 +586,19 @@ public class Expressions {
     return null;
   }
 
+  public static <E> Collection<E> first(Collection<E> es, Integer n) {
+    Collection<E> out = emptyCollection();
+    if(n==null)
+      return out;
+    Iterator<E> i = es.iterator();
+    int count = 0;
+    while(i.hasNext() && count < n){
+      out.add(i.next());
+      count++;
+    }
+    return out;
+  }
+
   public static <E> Integer indexOf(Collection<E> es, E e) {
     if (e == null)
       return null;

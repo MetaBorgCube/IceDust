@@ -73,6 +73,8 @@ context-free syntax // built-in functions
   Exp.Disj               = <disj(<Exp>)>
   
   Exp.First              = <<Exp>.first()>
+  Exp.First              = <<Exp>.first(<Exp>)>
+  Exp.OrderBy            = [[Exp].orderBy([ID] => [Exp])]
   Exp.Filter             = [[Exp].filter([ID] => [Exp])]
   Exp.FilterType         = [[Exp].filter(:[EntityType])]
   Exp.Find               = [[Exp].find([ID] => [Exp])]

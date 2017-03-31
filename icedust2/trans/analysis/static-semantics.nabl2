@@ -123,6 +123,15 @@ signature
       TOneOrMoreOrdered()  -> TZeroOrMoreOrdered()
     }
 
+    toOrdered : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMoreOrdered(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOneOrMoreOrdered(),
+      TOneOrMoreOrdered()  -> TOneOrMoreOrdered()
+    }
+
     choiceLeftMult : (Mult * Mult) -> Mult {
       (TOne()              , mult                ) -> TOne(),               // [1,_] -> always left-hand side operand
       (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] -> always left-hand side operand
