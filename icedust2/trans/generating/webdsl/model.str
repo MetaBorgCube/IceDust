@@ -247,7 +247,7 @@ rules
       end
     with
       switch id
-        case name-is-default-derived; name-is-to-one; name-is-incremental-eventual:
+        case name-is-to-one; name-is-default-derived-incremental-eventual-parent-not:
           ebd_setCacheIncr* := ebd* |[
             extend function x_setCache(newValue : srt_type){
               if(x_cache != newValue){ //TODO: should check if there is a userField, and if it has a value
@@ -255,7 +255,7 @@ rules
               }
             }
           ]|
-        case name-is-default-derived; name-is-to-many; name-is-incremental-eventual:
+        case name-is-to-many; name-is-default-derived-incremental-eventual-parent-not:
           ebd_setCacheIncr* := ebd* |[
             extend function x_addToCache(en : srt_type){
               if(en != null){ //TODO: should check if its already in there for sets //TODO: should check if there is a userField, and if it has a value
@@ -419,35 +419,35 @@ rules
       end
     with // Data Structure Layer
       switch id
-        case name-is-left; name-is-zeroorone; name-is-normal-default:
+        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-one; name-is-normal-default:
+        case name-is-left; name-is-one; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-normal-default:
+        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : [srt_type] (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-normal-default:
+        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-one; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-one; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : {srt_type}
           ]|
@@ -456,27 +456,27 @@ rules
       end
     with
       switch id
-        case name-is-left; name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-one; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : srt_type (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-many-ordered; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : [srt_type] (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-many-unordered; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : {srt_type} (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case (name-is-right + is-attributename); name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-one; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-default-derived-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : {srt_type}
           ]|

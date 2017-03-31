@@ -141,6 +141,8 @@ rules
   
   name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
   
+  name-is-incremental-eventual-parent-not = name-is-incremental-eventual;where(not(name-get-parent;name-is-incremental-eventual))
+  
   name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
   name-has-calculation-strategy = where(name-get-calculation-strategy)
   
@@ -185,6 +187,13 @@ rules
   
   name-is-normal-default  = where(name-is-normal  <+ name-is-default)
   name-is-default-derived = where(name-is-default <+ name-is-derived)
+  
+  name-is-normal-default-parent-not  = name-is-normal-default ;where(not(name-get-parent;name-is-normal-default))
+  name-is-default-derived-parent-not = name-is-default-derived;where(not(name-get-parent;name-is-default-derived))
+  
+  name-is-default-derived-incremental-eventual = name-is-default-derived; name-is-incremental-eventual
+  
+  name-is-default-derived-incremental-eventual-parent-not = name-is-default-derived-incremental-eventual;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
   
   name-get-expr = get-property(|"Member","expr")
   
