@@ -45,6 +45,7 @@ rules // entity
   entityname-get-arrinames       = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
   entityname-get-arrleftnames    = concat(entityname-get-attributenames, entityname-get-relationnames;filter(relationname-is-left), entityname-get-rolenames)
   entityname-get-arrleftrootnames= entityname-get-arrleftnames;filter(not(name-has-parent))
+  entityname-get-arrleftnames-not-inline = entityname-get-arrleftnames;filter(not(name-is-inline))
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   

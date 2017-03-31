@@ -168,7 +168,7 @@ rules
 
   flows-toposort-2: moduleName -> moduleName
     with
-      graphNames      := <modulename-get-arrleftnames>moduleName;
+      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName;
       graphNames'     := <map(annotate-with-parent-entity)>graphNames;
       toposort        := <graph-topological-sort(toposort-edge)>graphNames';
       toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
