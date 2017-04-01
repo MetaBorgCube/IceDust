@@ -33,13 +33,15 @@ rules
   normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMoreOrdered() ;!OneOrMoreOrdered()
   normalize-multiplicity = debug(!"normalize-multiplicity: ");fail
   
-  normalize-strategy = ?TTuple(_,_,<id>);?TIncremental()     ;!Incremental()
-  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemand()        ;!OnDemand()
-  normalize-strategy = ?TTuple(_,_,<id>);?TEventual()        ;!Eventual()
-  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandEventual();!OnDemandEventual()
+  normalize-strategy = ?TTuple(_,_,<id>);?TIncremental()        ;!Incremental()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemand()           ;!OnDemand()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandIncremental();!OnDemandIncremental()
+  normalize-strategy = ?TTuple(_,_,<id>);?TEventual()           ;!Eventual()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandEventual()   ;!OnDemandEventual()
   normalize-strategy = debug(!"normalize-strategy: ");fail
   
-  normalize-strategy-2 = ?TIncremental()     ;!Incremental()
-  normalize-strategy-2 = ?TOnDemand()        ;!OnDemand()
-  normalize-strategy-2 = ?TEventual()        ;!Eventual()
-  normalize-strategy-2 = ?TOnDemandEventual();!OnDemandEventual()
+  normalize-strategy-2 = ?TIncremental()        ;!Incremental()
+  normalize-strategy-2 = ?TOnDemand()           ;!OnDemand()
+  normalize-strategy-2 = ?TOnDemandIncremental();!OnDemandIncremental()
+  normalize-strategy-2 = ?TEventual()           ;!Eventual()
+  normalize-strategy-2 = ?TOnDemandEventual()   ;!OnDemandEventual()

@@ -35,10 +35,11 @@ signature
     TOneOrMoreOrdered  : Mult
     TZeroOrMoreOrdered : Mult
     
-    TIncremental      : Strat
-    TOnDemand         : Strat
-    TEventual         : Strat
-    TOnDemandEventual : Strat
+    TIncremental         : Strat
+    TOnDemand            : Strat
+    TOnDemandIncremental : Strat
+    TEventual            : Strat
+    TOnDemandEventual    : Strat
     
     Normal       : DerivationType
     Abstract     : DerivationType
@@ -175,12 +176,13 @@ signature
     }
     
     materialization : (Strat * Side) -> TMaterialization {
-      (strat              , None() ) -> TMaterialized(),    // unidirectional -> materialized
-      (strat              , Left() ) -> TMaterialized(),    // left-hand side -> materialized
-      (TIncremental()     , Right()) -> TMaterialized(),    // push-based -> materialized
-      (TEventual()        , Right()) -> TMaterialized(),    // push-based -> materialized
-      (TOnDemand()        , Right()) -> TNonMaterialized(), // pull-based -> not materialized
-      (TOnDemandEventual(), Right()) -> TNonMaterialized()  // pull-based -> not materialized
+      (strat                 , None() ) -> TMaterialized(),    // unidirectional -> materialized
+      (strat                 , Left() ) -> TMaterialized(),    // left-hand side -> materialized
+      (TIncremental()        , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TEventual()           , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TOnDemandIncremental(), Right()) -> TNonMaterialized(), // pull-based (flags push-based, but that is not enough) -> not materialized
+      (TOnDemand()           , Right()) -> TNonMaterialized(), // pull-based -> not materialized
+      (TOnDemandEventual()   , Right()) -> TNonMaterialized()  // pull-based -> not materialized
     }
 
   name resolution
@@ -258,11 +260,13 @@ rules
     
     // strategy lattice
     
-    TIncremental() <strat! TOnDemand(),         //      TOnDemandEventual()
-    TIncremental() <strat! TEventual(),         //          /       \
-    TOnDemand()    <strat! TOnDemandEventual(), //  TEventual()   TOnDemand()
-    TEventual()    <strat! TOnDemandEventual(), //          \       /
-                                                //        TIncremental()
+    TIncremental()         <strat! TOnDemandIncremental(), //         TOnDemandEventual()
+    TIncremental()         <strat! TEventual(),            //              /      \
+    TOnDemandIncremental() <strat! TOnDemand(),            //            /       TOnDemand()
+    TOnDemand()            <strat! TOnDemandEventual(),    //          /          /
+    TEventual()            <strat! TOnDemandEventual(),    //  TEventual()   TOnDemandIncremental()
+                                                           //          \       /
+                                                           //        TIncremental()
     // derivation type lattice
     
     DefaultValue() <deriv! Normal(),     //       Abstract()
