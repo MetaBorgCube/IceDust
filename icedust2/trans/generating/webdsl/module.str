@@ -164,7 +164,7 @@ rules // module
         
           sec_hibernateTriggers*
         
-          sec_manage*
+//          sec_manage*
         ]|
       else //embedded model
         result := module |[

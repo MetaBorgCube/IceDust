@@ -195,9 +195,13 @@ rules
   name-is-normal-default-parent-not  = name-is-normal-default ;where(not(name-get-parent;name-is-normal-default))
   name-is-default-derived-parent-not = name-is-default-derived;where(not(name-get-parent;name-is-default-derived))
   
-  name-is-default-derived-incremental-eventual = name-is-default-derived; name-is-incremental-eventual
+  name-is-default-derived-ondemandinc-incremental-eventual = name-is-default-derived; name-is-ondemandinc-incremental-eventual
+  name-is-default-derived-incremental-eventual             = name-is-default-derived; name-is-incremental-eventual
+  name-is-default-derived-ondemandinc                      = name-is-default-derived; name-is-ondemandinc
   
-  name-is-default-derived-incremental-eventual-parent-not = name-is-default-derived-incremental-eventual;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
+  name-is-default-derived-ondemandinc-incremental-eventual-parent-not = name-is-default-derived-ondemandinc-incremental-eventual;where(not(name-get-parent;name-is-default-derived-ondemandinc-incremental-eventual))
+  name-is-default-derived-incremental-eventual-parent-not             = name-is-default-derived-incremental-eventual            ;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
+  name-is-default-derived-ondemandinc-parent-not                      = name-is-default-derived-ondemandinc                     ;where(not(name-get-parent;name-is-default-derived-ondemandinc))
   
   name-get-expr = get-property(|"Member","expr")
   
