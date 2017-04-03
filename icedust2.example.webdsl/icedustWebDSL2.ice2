@@ -1,4 +1,4 @@
-module icedustWebDSL2
+module icedustWebDSL2 (on-demand incremental)
 
 // A simplified model of a grade calculation and course statistics tool in the university.
 //
@@ -17,7 +17,7 @@ model
     passedCourses : Int = sum(enrollments.pass2)
   }
   
-  entity Course (eventual) {
+  entity Course {
     name       : String
     
     avgGrade   : Float?  = assignment.avgGrade
@@ -98,7 +98,7 @@ model
   relation Submission.assignment 1 <-> * Assignment.submissions
   relation Submission.parent     ? =  
     assignment.parent.submissions.find(x => x.student == student)
-                                   <-> * Submission.children
+                                   <-> * Submission.children (incremental)
   
   relation Course.assignment     1 <-> ? Assignment.course
   relation Enrollment.submission ? = course.assignment.submissions.find(x => x.student == student)
