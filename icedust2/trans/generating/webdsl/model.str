@@ -139,10 +139,11 @@ rules
               x_cache := x_calculate().set(); // convert to set
             }
           ]|
-        case name-is-ondemandinc; name-is-default-derived; name-is-ordered: // extra logging for ondemandinc
+        case name-is-ondemandinc; name-is-default-derived; name-is-ordered:
           ebd_updateCache* := ebd* |[
             function x_updateCache(){
               x_cache := x_calculate();
+              x_dirty := false;
               log("Updating " + e_qualifiedName);
             }
           ]|
@@ -150,6 +151,7 @@ rules
           ebd_updateCache* := ebd* |[
             function x_updateCache(){
               x_cache := x_calculate().set(); // convert to set
+              x_dirty := false;
               log("Updating " + e_qualifiedName);
             }
           ]|
