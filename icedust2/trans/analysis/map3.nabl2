@@ -4,8 +4,8 @@ signature
 
   constraint generator
 
-    Map3  [[ List(a) ^ (b,c,d)        ]]
-    Map3T [[ List(a) ^ (b,c,d) : Type ]]
+    Map3  [[ list(a) ^ (b,c,d)        ]]
+    Map3T [[ list(a) ^ (b,c,d) : Type ]]
 
 rules
 
