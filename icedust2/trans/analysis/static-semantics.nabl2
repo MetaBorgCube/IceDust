@@ -261,12 +261,12 @@ rules
     // strategy lattice
     
     TIncremental()         <strat! TOnDemandIncremental(), //         TOnDemandEventual()
-    TIncremental()         <strat! TEventual(),            //              /      \
-    TOnDemandIncremental() <strat! TOnDemand(),            //            /       TOnDemand()
-    TOnDemand()            <strat! TOnDemandEventual(),    //          /          /
-    TEventual()            <strat! TOnDemandEventual(),    //  TEventual()   TOnDemandIncremental()
-                                                           //          \       /
-                                                           //        TIncremental()
+    TOnDemandIncremental() <strat! TEventual(),            //              /      \
+    TOnDemandIncremental() <strat! TOnDemand(),            //      TEventual()   TOnDemand()
+    TOnDemand()            <strat! TOnDemandEventual(),    //              \      /
+    TEventual()            <strat! TOnDemandEventual(),    //       TOnDemandIncremental()
+                                                           //                 |
+                                                           //            TIncremental()
     // derivation type lattice
     
     DefaultValue() <deriv! Normal(),     //       Abstract()
