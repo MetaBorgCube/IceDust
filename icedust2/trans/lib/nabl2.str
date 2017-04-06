@@ -19,7 +19,8 @@ rules // store analysis to be able to query without passing the analysis
     where
       is-string
     with
-      analysis := <debug;nabl2-get-resource-analysis>path;
+      <nabl2-custom-analysis-info(|"Storing analysis")>path;
+      analysis := <nabl2-get-resource-analysis>path;
       rules(StoredAnalysis : None() -> analysis)
   
   store-analysis-resource: analysis -> None()
