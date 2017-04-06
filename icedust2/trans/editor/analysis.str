@@ -38,10 +38,10 @@ rules // Analysis: NaBL2 hooks
   nabl2-custom-analysis-final-hook(|a):(resource , customInitialResult, customUnitResult*) -> (error*, warning*, note*, customFinalResult)
     with
       ast := <Hd;Snd>customUnitResult*
-      ;<debug>ast
+      ;<nabl2-custom-analysis-info(|"AST")>ast
     with
       (error*, warning*, note*, customFinalResult) := <measure-time(nabl2-after-analysis(|resource,ast),?analysis2-time)>a
-      ;<debug>($[analysis2 [analysis2-time]s],error*, warning*, note*, customFinalResult)
+      ;<nabl2-custom-analysis-info(|$[analysis2 [analysis2-time]s])> (error*, warning*, note*, customFinalResult)
 
 rules // Debugging
   

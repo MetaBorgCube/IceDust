@@ -52,7 +52,7 @@ rules
 //      else
 //        error* := []
 //      end;
-      <map(debug)>error*
+      <map(nabl2-custom-analysis-info(|"Error"))>error*
     with
       index := <_index-get>
 
@@ -72,7 +72,7 @@ rules
     with
       ast*    := <map(ttuple(membervalue-get-name, membervalue-get-expr))>memvs-a
     with
-      <debug(!"asts         ")>ast*
+      <nabl2-custom-analysis-info-msg(|"asts         ")>ast*
     with
       <map(index-set-prop(|AST()))>ast*
     with
@@ -80,7 +80,7 @@ rules
       assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
       assoc*  := [assoc1*, assoc2*]
     with
-      <debug(!"assocs       ")>assoc*
+      <nabl2-custom-analysis-info-msg(|"assocs       ")>assoc*
     with
       <map(index-add-prop(|Assoc()))>assoc*
       
@@ -149,8 +149,8 @@ rules
       dependencies := <fmap(arriname-dependencies)>arrinames;
       dataflow     := <map(path-inverse)>dependencies
     with
-      <debug(!"dependencies ")>dependencies;
-      <debug(!"dataflow     ")>dataflow
+      <nabl2-custom-analysis-info-msg(|"dependencies ")>dependencies;
+      <nabl2-custom-analysis-info-msg(|"dataflow     ")>dataflow
     with
       <map(path-store-on-origin)>dependencies;
       <map(path-store-on-origin)>dataflow
