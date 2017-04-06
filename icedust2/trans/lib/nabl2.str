@@ -44,22 +44,23 @@ rules // store analysis to be able to query without passing the analysis
 
 rules // wrap nabl2 api with stored analysis
 
-  get-type-property         = nabl2-get-type(|<get-stored-analysis>)
-  get-property(|prop)       = nabl2-get-property(|<get-stored-analysis>,prop)
-  get-all-decls(|)          = nabl2-get-all-decls(|<get-stored-analysis>)
-  get-all-refs(|)           = nabl2-get-all-refs(|<get-stored-analysis>)
-  get-all-scopes(|)         = nabl2-get-all-scopes(|<get-stored-analysis>)
-  get-ref-scope(|)          = nabl2-get-ref-scope(|<get-stored-analysis>)
-  get-decl-scope(|)         = nabl2-get-decl-scope(|<get-stored-analysis>)
-  get-scope-decls(|)        = nabl2-get-scope-decls(|<get-stored-analysis>)
-  get-scope-refs(|)         = nabl2-get-scope-refs(|<get-stored-analysis>)
-  get-scope-direct-edges(|) = nabl2-get-scope-direct-edges(|<get-stored-analysis>)
-  get-scope-named-edges(|)  = nabl2-get-scope-named-edges(|<get-stored-analysis>)
-  get-decl-assocs(|)        = nabl2-get-decl-assocs(|<get-stored-analysis>)
-  get-scope-assocs(|)       = nabl2-get-scope-assocs(|<get-stored-analysis>)
-  get-visible-decls(|)      = nabl2-get-visible-decls(|<get-stored-analysis>)
-  get-reachable-decls(|)    = nabl2-get-reachable-decls(|<get-stored-analysis>)
-  get-resolved-name(|)      = nabl2-get-resolved-name(|<get-stored-analysis>)
+  get-type-property         = nabl2-get-type(|<get-stored-analysis>)              //@type decl:Occurrence -> Type
+  get-property(|prop)       = nabl2-get-property(|<get-stored-analysis>,prop)     //@type decl:Occurrence -> Term   prop:String
+  get-all-decls(|)          = nabl2-get-all-decls(|<get-stored-analysis>)         //@type _ -> List(Occurrences)
+  get-all-refs(|)           = nabl2-get-all-refs(|<get-stored-analysis>)          //@type _ -> List(Occurrences)
+  get-all-scopes(|)         = nabl2-get-all-scopes(|<get-stored-analysis>)        //@type _ -> List(Scope)
+  get-ref-scope(|)          = nabl2-get-ref-scope(|<get-stored-analysis>)         //@type ref:Occurrence -> Scope
+  get-decl-scope(|)         = nabl2-get-decl-scope(|<get-stored-analysis>)        //@type decl:Occurrence -> Scope
+  get-scope-decls(|)        = nabl2-get-scope-decls(|<get-stored-analysis>)       //@type Scope -> List(Occurrence)
+  get-scope-refs(|)         = nabl2-get-scope-refs(|<get-stored-analysis>)        //@type Scope -> List(Occurrence)
+  get-scope-direct-edges(|) = nabl2-get-direct-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Scope))
+  get-scope-direct-edges-inv= nabl2-get-direct-edges-inv(|<get-stored-analysis>)  //@type Scope -> List((Label,Scope))
+  get-scope-named-edges(|)  = nabl2-get-import-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Occurrence))
+  get-decl-assocs(|)        = nabl2-get-assoc-edges(|<get-stored-analysis>)       //@type decl:Occurrence -> List((Label,Scope))
+  get-scope-assocs(|)       = nabl2-get-assoc-edges-inv(|<get-stored-analysis>);map(Swap) //@type Scope -> List((Occurrence,Label))
+  get-visible-decls(|)      = nabl2-get-visible-decls(|<get-stored-analysis>)     //@type Scope -> List(Occurrence)
+  get-reachable-decls(|)    = nabl2-get-reachable-decls(|<get-stored-analysis>)   //@type Scope -> List(Occurrence)
+  get-resolved-name(|)      = nabl2-get-resolved-name(|<get-stored-analysis>)     //@type ref:Occurrence -> (decl:Occurrence, Path)
 
 rules // compose nabl2 calls (hide occurrence behind namespaces)
 
