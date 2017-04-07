@@ -19,7 +19,8 @@ rules // store analysis to be able to query without passing the analysis
     where
       is-string
     with
-      analysis := <debug;nabl2-get-resource-analysis>path;
+      <nabl2-custom-analysis-info(|"Storing analysis")>path;
+      analysis := <nabl2-get-resource-analysis>path;
       rules(StoredAnalysis : None() -> analysis)
   
   store-analysis-resource: analysis -> None()
@@ -53,11 +54,11 @@ rules // wrap nabl2 api with stored analysis
   get-decl-scope(|)         = nabl2-get-decl-scope(|<get-stored-analysis>)        //@type decl:Occurrence -> Scope
   get-scope-decls(|)        = nabl2-get-scope-decls(|<get-stored-analysis>)       //@type Scope -> List(Occurrence)
   get-scope-refs(|)         = nabl2-get-scope-refs(|<get-stored-analysis>)        //@type Scope -> List(Occurrence)
-  get-scope-direct-edges(|) = nabl2-get-scope-direct-edges(|<get-stored-analysis>)//@type Scope -> List((Label,Scope))
-  get-scope-direct-edges-inv= nabl2-get-scope-direct-edges-inv(|<get-stored-analysis>)//@type Scope -> List((Label,Scope))
-  get-scope-named-edges(|)  = nabl2-get-scope-named-edges(|<get-stored-analysis>) //@type Scope -> List((Label,Occurrence))
-  get-decl-assocs(|)        = nabl2-get-decl-assocs(|<get-stored-analysis>)       //@type decl:Occurrence -> List((Label,Scope))
-  get-scope-assocs(|)       = nabl2-get-scope-assocs(|<get-stored-analysis>)      //@type Scope -> List((Occurrence,Label))
+  get-scope-direct-edges(|) = nabl2-get-direct-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Scope))
+  get-scope-direct-edges-inv= nabl2-get-direct-edges-inv(|<get-stored-analysis>)  //@type Scope -> List((Label,Scope))
+  get-scope-named-edges(|)  = nabl2-get-import-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Occurrence))
+  get-decl-assocs(|)        = nabl2-get-assoc-edges(|<get-stored-analysis>)       //@type decl:Occurrence -> List((Label,Scope))
+  get-scope-assocs(|)       = nabl2-get-assoc-edges-inv(|<get-stored-analysis>);map(Swap) //@type Scope -> List((Occurrence,Label))
   get-visible-decls(|)      = nabl2-get-visible-decls(|<get-stored-analysis>)     //@type Scope -> List(Occurrence)
   get-reachable-decls(|)    = nabl2-get-reachable-decls(|<get-stored-analysis>)   //@type Scope -> List(Occurrence)
   get-resolved-name(|)      = nabl2-get-resolved-name(|<get-stored-analysis>)     //@type ref:Occurrence -> (decl:Occurrence, Path)
