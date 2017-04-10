@@ -10,6 +10,7 @@ rules
   is-type = ?Datetime()
   is-type = ?Int()
   is-type = ?String()
+  is-type = ?EntityType(_)
 
   is-multiplicity = ?One()
   is-multiplicity = ?ZeroOrOne()
