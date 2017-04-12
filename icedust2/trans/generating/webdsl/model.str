@@ -379,7 +379,7 @@ rules
         case name-is-default-derived; name-is-ondemandinc; name-is-to-one:
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
-              if(x_dirty){
+              if(x_dirty==null || x_dirty){
                 x_updateCache();
               }
               return x_cache;
@@ -388,7 +388,7 @@ rules
         case name-is-default-derived; name-is-ondemandinc; name-is-to-many: //TODO: get rid of this special case
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
-              if(x_dirty){
+              if(x_dirty==null || x_dirty){
                 x_updateCache();
               }
               return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
@@ -451,7 +451,7 @@ rules
         case name-is-ondemandinc; name-is-default-derived:
           ebd_flagDirty* := ebd* |[
             function x_flagDirty() {
-              if(!x_dirty){
+              if(x_dirty==null || !x_dirty){
                 x_dirty := true;
                 x_dirtyFlagFlows();
               }
