@@ -27,17 +27,28 @@ rules
   membername-to-webdsl-elem-row: x_name -> result
     with
       x_entityName       := <attributename-get-entityname>x_name;
+      x_action           := <attributename-entityname-flagallaction>x_name
+    with
+      result := elem |[
+        x_action
+      ]|
+
+  membername-to-webdsl-defs-manage: x_name -> result
+    with
+      x_entityName       := <attributename-get-entityname>x_name;
+      e_qualifiedName    := String($[[x_entityName].[x_name]]);
+      x_flagDirty        := <name-flagdirty>x_name;
+      x_flagDirtyAll     := <attributename-entityname-flagdirtyall>x_name;
+      x_action           := <attributename-entityname-flagallaction>x_name;
       x_getQueue         := <attributename-entityname-getqueue>x_name;
       e_name             := String(x_name);
-      e_qualifiedName    := String($[[x_entityName].[x_name]]);
       e_toposort         := String(<name-get-toposort;write-to-string>x_name);
-      e_strategy         := String(<name-get-calculation-strategy;write-to-string>x_name);
-      x_action           := <attributename-entityname-flagallaction>x_name
+      e_strategy         := String(<name-get-calculation-strategy;write-to-string>x_name)
     with
       switch id
         case name-is-incremental-eventual: 
           elem_action* := elem* |[
-            action("flag all dirty", x_action())
+            submit action{ x_action(); } { "flag all dirty" }
           ]|
         otherwise:
           elem_action* := elem* |[
@@ -56,58 +67,70 @@ rules
           ]|
       end
     with
-      result := elem |[
-        row{
-          column{
-            output(e_toposort)
-          }
-          column{
-            output(e_qualifiedName)
-          }
-          column{
-            output(e_strategy)
-          }
-          column{
-            elem_status*
-          }
-          column{
-            elem_action*
+      def_template* := def* |[
+        template x_action(){
+          row{
+            column{
+              output(e_toposort)
+            }
+            column{
+              output(e_qualifiedName)
+            }
+            column{
+              output(e_strategy)
+            }
+            column{
+              elem_status*
+            }
+            column{
+              elem_action*
+            }
           }
         }
       ]|
-
-  membername-to-webdsl-elems-action: x_name -> result
-    with
-      x_entityName       := <attributename-get-entityname>x_name;
-      e_qualifiedName    := String($[[x_entityName].[x_name]]);
-      x_flagDirty        := <name-flagdirty>x_name;
-      x_action           := <attributename-entityname-flagallaction>x_name
     with
       switch id
         case name-is-incremental: 
-          result := elem* |[
-            action x_action(){
+          def_func* := def* |[
+            function x_flagDirtyAll(){
               var all := from x_entityName;
               log("Flag dirty " + e_qualifiedName + ": " + all.length);
               x_entityName.x_flagDirty(all);
+            }
+            
+            function x_action(){
+              x_flagDirtyAll();
               log("Updating derivations");
               updateDerivations();
               log("Updating derivations done");
             }
+        
+            extend function flagAllIncrementalDirty(){
+              x_flagDirtyAll();
+            }
           ]|
         case name-is-eventual: 
-          result := elem* |[
-            action x_action(){
+          def_func* := def* |[
+            function x_flagDirtyAll(){
               var all := from x_entityName;
               log("Flag dirty " + e_qualifiedName + ": " + all.length);
               x_entityName.x_flagDirty(all);
+            }
+            
+            function x_action(){
+              x_flagDirtyAll();
               log("flagDirtyAsync");
               flagDirtyAsync();
               log("flagDirtyAsync done");
             }
           ]|
         otherwise:
-          result := []
+          def_func* := []
       end
-
+    with
+      result := def* |[
+        def_template*
+      
+        def_func*
+      ]|
   
