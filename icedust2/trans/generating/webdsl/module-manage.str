@@ -109,6 +109,22 @@ rules
               x_flagDirtyAll();
             }
           ]|
+        case name-is-ondemandinc: 
+          def_func* := def* |[
+            function x_flagDirtyAll(){
+              var all := from x_entityName;
+              log("Flag dirty " + e_qualifiedName + ": " + all.length);
+              x_entityName.x_flagDirty(all);
+            }
+            
+            function x_action(){
+              x_flagDirtyAll();
+            }
+        
+            extend function flagAllOnDemandIncDirty(){
+              x_flagDirtyAll();
+            }
+          ]|
         case name-is-eventual: 
           def_func* := def* |[
             function x_flagDirtyAll(){

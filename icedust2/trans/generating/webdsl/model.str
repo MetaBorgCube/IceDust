@@ -376,7 +376,7 @@ rules
               return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
             }
           ]|
-        case name-is-default-derived; name-is-ondemandinc; name-is-to-one:
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-one; name-has-expr:
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               if(x_dirty==null || x_dirty){
@@ -385,12 +385,24 @@ rules
               return x_cache;
             }
           ]|
-        case name-is-default-derived; name-is-ondemandinc; name-is-to-many: //TODO: get rid of this special case
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-many; name-has-expr: //TODO: get rid of this special case
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               if(x_dirty==null || x_dirty){
                 x_updateCache();
               }
+              return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-one; not(name-has-expr):
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              return x_cache;
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-many; not(name-has-expr): //TODO: get rid of this special case
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
               return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
             }
           ]|

@@ -141,12 +141,18 @@ rules // module
                 column{  }
                 column{  }
                 column{  }
-                column{ submit action{
-                  flagAllIncrementalDirty();
-                  log("Updating derivations");
-                  updateDerivations();
-                  log("Updating derivations done");
-                } { "flag all incremental fields dirty" } }
+                column{
+                  submit action{
+                    flagAllIncrementalDirty();
+                    log("Updating derivations");
+                    updateDerivations();
+                    log("Updating derivations done");
+                  } { "flag all incremental fields dirty" }
+                  br
+                  submit action{
+                    flagAllOnDemandIncDirty();
+                  } { "flag all on-demand incremental fields dirty" }
+                }
               }
               elem_manageRows*
             }
@@ -155,6 +161,8 @@ rules // module
           def_manage*
           
           function flagAllIncrementalDirty(){}
+          
+          function flagAllOnDemandIncDirty(){}
       ]|
     with
       if modulename-is-explorerui then
