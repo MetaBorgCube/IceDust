@@ -152,6 +152,7 @@ rules
   
   name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemand())
   name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-ondemandeventual     = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
   name-is-ondemandinc          = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandIncremental())
   name-is-calconwrite          = where(not(name-is-inline);name-get-calculation-strategy;?Incremental())
   name-is-eventuallyconsistent = where(not(name-is-inline);name-get-calculation-strategy;?Eventual())

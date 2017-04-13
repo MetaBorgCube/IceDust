@@ -296,16 +296,17 @@ rules //crud
       e_typestr     := <attributename-pp2-type-multiplicity;webdsl-expr>x_name;
       e_flows       := <name-get-flowsto-paths;filter(dataflowpath-direct-ref);map(attributename-entityname);concat-strings(|" ");webdsl-expr>x_name;
       elem_input    := <name-to-input-elem> x_name;
-      elem_output   := <name-to-output-elem>x_name
+      elem_output   := <name-to-output-elem>x_name;
+      elem_note     := <name-to-note-elem>x_name
     with
       if <attributename-is-derivation<+name-is-abstract>x_name then
         result := elem |[
-          attributeDerived(e_name, e_derivedname, e_typestr, e_flows){""elem_output}
+          attributeDerived(e_name, e_derivedname, e_typestr, e_flows, {""elem_note}){""elem_output}
         ]|
       else
       if <attributename-is-default> x_name then
           result := elem |[
-            attributeDefault(e_name, e_derivedname, e_typestr, e_flows,{""elem_input}){""elem_output}
+            attributeDefault(e_name, e_derivedname, e_typestr, e_flows, {""elem_note},{""elem_input}){""elem_output}
           ]|
         else
           result := elem |[
@@ -330,4 +331,15 @@ rules //crud
         result := elem |[outputNonRef(temp.x_getname())]|
       else
         result := elem |[output(temp.x_getname())]|
+      end
+      
+  name-to-note-elem: x_name ->  result
+    with
+      x_entityName       := <attributename-get-entityname>x_name;
+      x_isUpToDate       := <name-isuptodate>x_name
+    with
+      if <name-is-eventual<+name-is-ondemandeventual>x_name then
+        result := elem |[div[class="note"]{output(if(x_entityName.x_isUpToDate()) "up to date" else "possibly outdated")}]|
+      else
+        result := elem |[""]|
       end

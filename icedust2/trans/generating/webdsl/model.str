@@ -98,7 +98,9 @@ rules
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
 //      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
-      x_updateOneCacheAsync  := <name-updateonecacheasync>x_name
+      x_updateOneCacheAsync  := <name-updateonecacheasync>x_name;
+      x_isUpToDate       := <name-isuptodate>x_name;
+      x_topoSort         := <(name-get-toposort<+!0);int-to-string>x_name
     with
       if name-is-bidirectional then
         x_inverseName            := <name-get-inversename>x_name;
@@ -124,6 +126,17 @@ rules
           ebd_calculateTiersplitVar* := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_name
         otherwise:
           ebd_calculateTiersplitVar* := []
+      end
+    with // Recalculation report layer
+      switch id
+        case name-is-default-derived; (name-is-eventual<+name-is-ondemandeventual):
+          ebd_isUpToDate* := ebd* |[
+            static function x_isUpToDate () : Bool {
+              return DirtyCollections.getI() > x_topoSort;
+            }
+          ]|
+        otherwise:
+          ebd_isUpToDate* := []
       end
     with // Recalculate cache Layer
       switch id
@@ -193,6 +206,9 @@ rules
 //                if(!queue.contains(s)){
                 queue.add(s);
 //                }
+              }
+              if(dirtyValues.length != 0){
+                DirtyCollections.dirtyI(x_topoSort);
               }
             }
   
@@ -563,6 +579,7 @@ rules
       end
     with
       result := ebd* |[
+        ebd_isUpToDate*
         ebd_updateCache*
         ebd_updateAllCache*
         ebd_flagDirtyAsync*

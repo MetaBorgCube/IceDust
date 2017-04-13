@@ -68,7 +68,7 @@ section validator-inputs
 
 section attribute inputs
 
-  template attributeDerived(name:String, derivedname:String, typestr:String, flows:String){
+  template attributeDerived(name:String, derivedname:String, typestr:String, flows:String, note:TemplateElements){
     div[class="ice-attr"]{
       div[class="ice-attr-name"]{
         output(name) ":"
@@ -79,12 +79,13 @@ section attribute inputs
             elements
           }
           div[class="error-msg"]{}
+          note
         }
       }
     }
   }
   
-  template attributeDefault(name:String, derivedname:String, typestr:String, flows:String, input:TemplateElements){
+  template attributeDefault(name:String, derivedname:String, typestr:String, flows:String, note:TemplateElements, input:TemplateElements){
     div[class="ice-attr"]{
       div[class="ice-attr-name"]{
         output(name) ":"
@@ -96,6 +97,7 @@ section attribute inputs
           div[class="default-output"]{
             elements
           }
+          note
         }
       }
     }

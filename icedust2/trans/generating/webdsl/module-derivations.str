@@ -99,23 +99,25 @@ rules
   cache-async-modulename-to-webdsl-stms: x_moduleName -> result
     with
       namess      := <modulename-get-arrinames-topo-default-derivation-eventual>x_moduleName;
-      stat_updat* := <flatten-list;map(cache-async-attributename-to-webdsl-stm)>namess
+      stat_updat* := <flatten-list;fmap(cache-async-attributename-to-webdsl-stms)>namess
     with
       result := stat* |[
         stat_updat*
       ]|
   
-  cache-async-attributename-to-webdsl-stm: x_attributeName -> result
+  cache-async-attributename-to-webdsl-stms: x_attributeName -> result
     with
       x_entityName                   := <attributename-get-entityname>x_attributeName;
       x_updateOneAttributeCacheAsync := <name-updateonecacheasync>x_attributeName;
-      x_hasDirtyAsync                := <name-hasdirtyasync>x_attributeName
+      x_hasDirtyAsync                := <name-hasdirtyasync>x_attributeName;
+      x_topoSort                     := <(name-get-toposort<+!0);int-to-string>x_attributeName
     with
-      result := stat |[
+      result := stat* |[
         if(x_entityName.x_hasDirtyAsync()){
           x_entityName.x_updateOneAttributeCacheAsync();
           return;
         }
+        DirtyCollections.cleanI(x_topoSort+1);
       ]|
   
 //  cache-async-modulename-to-webdsl-stms: x_moduleName -> result
