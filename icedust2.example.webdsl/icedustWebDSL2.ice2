@@ -1,4 +1,4 @@
-module icedustWebDSL2 (on-demand incremental)
+module icedustWebDSL2 (incremental)
 
 // A simplified model of a grade calculation and course statistics tool in the university.
 //
@@ -17,7 +17,7 @@ model
     passedCourses : Int = sum(enrollments.pass2)
   }
   
-  entity Course {
+  entity Course (eventual) {
     name       : String
     
     avgGrade   : Float?  = assignment.avgGrade
@@ -50,11 +50,11 @@ model
     latePenalty: Float?    // penalty for using the full deadline extension
     
     avgGrade   : Float?  = avg(submissions.grade)
-    passPerc   : Float?  = sum(submissions.passInt) / count(submissions) * 100.0
+    passPerc   : Float?  = count(submissions.filter(s => s.pass)) / count(submissions) * 100.0
   }
   
   entity Submission {
-    name       : String  = assignment.name + " " + student.name
+    name       : String  = assignment.name + " " + student.name (on-demand)
     answer     : String?
     date       : Datetime?
     
@@ -89,7 +89,6 @@ model
     childPass  : Boolean = conj(children.pass)
     pass       : Boolean = grade >= (assignment.minimum<+0.0) && childPass <+ false
   
-    passInt    : Int     = if(pass) 1 else 0
     best       : Boolean = grade == max(assignment.submissions.grade) <+ false
   }
   
