@@ -1,0 +1,23 @@
+module map3
+
+signature
+
+  constraint generator
+
+    Map3  [[ list(a) ^ (b,c,d)        ]]
+    Map3T [[ list(a) ^ (b,c,d) : Type ]]
+
+rules
+
+  Map3[[ [x|xs] ^ (s1,s2,s3) ]] :=
+    [[ x ^ (s1,s2,s3) ]],
+    Map3[[ xs ^ (s1,s2,s3) ]].
+
+  Map3[[ [] ^ (s1,s2,s3) ]] := true.
+
+
+  Map3T[[ [x|xs] ^ (s1,s2,s3) : [ty|tys] ]] :=
+    [[ x ^ (s1,s2,s3) : ty ]],
+    Map3T[[ xs ^ (s1,s2,s3) : tys ]].
+
+  Map3T[[ [] ^ (s1,s2,s3) : [] ]] := true.

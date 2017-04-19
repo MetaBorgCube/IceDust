@@ -58,11 +58,20 @@ rules
       num          := <length>values;
       memberName   := <membervaluename-get-origin>memvName;
       multiplicity := <name-get-multiplicity>memberName;
-      if <mult-inbounds(|multiplicity)>num then
-        result := []
+      if <not(name-is-derived)>memberName then
+        if <mult-inbounds(|multiplicity)>num then
+          result := []
+        else
+          msg := $[Multiplicity mismatch: expected [<write-to-string>multiplicity] got [<write-to-string>num] on [eiName].[memberName]];
+          result := (eiName, msg)
+        end
       else
-        msg := $[Multiplicity mismatch: expected [<write-to-string>multiplicity] got [<write-to-string>num] on [eiName].[memberName]];
-        result := (eiName, msg)
+        if <eq(|0)>num then
+          result := []
+        else
+          msg := $[Member [memberName] is a derived value];
+          result := (memvName, msg)
+        end
       end
       
 rules

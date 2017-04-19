@@ -16,7 +16,12 @@ signature constructors
   Normal       : DerivationType
   Derivation   : DerivationType
   DefaultValue : DerivationType
+  Abstract     : DerivationType
 
   Left  : Side
   Right : Side
+  
+  Entity   : Term
+  Relation : Term
+  Trait    : Term
   

@@ -41,7 +41,6 @@ rules
     with
       result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
       result-rri*        := <entityinstancename-get-rri-left           ;fmap(relationvaluename-to-java-stms (err))>x_eiName
-
     with
       result := bstm* |[
         ~result-attributes*

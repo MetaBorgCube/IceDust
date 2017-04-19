@@ -22,13 +22,6 @@ rules // Analysis: NaBL2 hooks
 
   editor-analyze = nabl2-analyze(desugar-before-analysis)
 
-  nabl2-ignore-unused-references-hook = ?Namespace("Entity2")
-  nabl2-ignore-unused-references-hook = ?Namespace("Member2")
-
-//  debug-generate-constraint = id
-
-  nabl2-debug-analysis-hook = id
-  
   nabl2-custom-analysis-init-hook: resource -> []
 
   nabl2-custom-analysis-unit-hook: (resource, ast, customInitialResult) -> customUnitResult

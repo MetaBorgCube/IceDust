@@ -47,7 +47,7 @@ rules // derivations
       x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
     with
       result := native |[
-        static x_attributeGetQueue() : Queue
+        static x_attributeGetQueue() : Set<String>
       ]|
 
 rules
@@ -98,42 +98,66 @@ rules
   
   cache-async-modulename-to-webdsl-stms: x_moduleName -> result
     with
-      namess := <modulename-get-arrinames-topo-default-derivation-eventual>x_moduleName;
-      stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
+      namess      := <modulename-get-arrinames-topo-default-derivation-eventual>x_moduleName;
+      stat_updat* := <flatten-list;fmap(cache-async-attributename-to-webdsl-stms)>namess
     with
       result := stat* |[
-        var notEmpty : Bool;
         stat_updat*
       ]|
-      
-  cache-async-attributenames-to-webdsl-stms: attributeNames -> result
-    with
-      stat_updat* := <map(cache-async-attributename-to-webdsl-stm-update)>attributeNames;
-      stat_empty* := <map(cache-async-attributename-to-webdsl-stm-empty)>attributeNames
-    with
-      result := stat* |[
-        notEmpty := true;
-        while(notEmpty){
-          stat_updat*
-          notEmpty := false;
-          stat_empty*
-        }
-      ]|
-      
-  cache-async-attributename-to-webdsl-stm-update: x_attributeName -> result
+  
+  cache-async-attributename-to-webdsl-stms: x_attributeName -> result
     with
       x_entityName                   := <attributename-get-entityname>x_attributeName;
-      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName
+      x_updateOneAttributeCacheAsync := <name-updateonecacheasync>x_attributeName;
+      x_hasDirtyAsync                := <name-hasdirtyasync>x_attributeName;
+      x_topoSort                     := <(name-get-toposort<+!0);int-to-string>x_attributeName
     with
-      result := stat |[
-        x_entityName.x_updateAllAttributeCacheAsync();
+      result := stat* |[
+        if(x_entityName.x_hasDirtyAsync()){
+          x_entityName.x_updateOneAttributeCacheAsync();
+          return;
+        }
+        DirtyCollections.cleanI(x_topoSort+1);
       ]|
-      
-  cache-async-attributename-to-webdsl-stm-empty: x_attributeName -> result
-    with
-      x_entityName              := <attributename-get-entityname>x_attributeName;
-      x_hasDirtyAsync           := <name-hasdirtyasync>x_attributeName
-    with
-      result := stat |[
-        notEmpty := notEmpty || x_entityName.x_hasDirtyAsync();
-      ]|
+  
+//  cache-async-modulename-to-webdsl-stms: x_moduleName -> result
+//    with
+//      namess := <modulename-get-arrinames-topo-default-derivation-eventual>x_moduleName;
+//      stat_updat* := <fmap(cache-async-attributenames-to-webdsl-stms)>namess
+//    with
+//      result := stat* |[
+//        var notEmpty : Bool;
+//        stat_updat*
+//      ]|
+//      
+//  cache-async-attributenames-to-webdsl-stms: attributeNames -> result
+//    with
+//      stat_updat* := <map(cache-async-attributename-to-webdsl-stm-update)>attributeNames;
+//      stat_empty* := <map(cache-async-attributename-to-webdsl-stm-empty)>attributeNames
+//    with
+//      result := stat* |[
+//        notEmpty := true;
+//        while(notEmpty){
+//          stat_updat*
+//          notEmpty := false;
+//          stat_empty*
+//        }
+//      ]|
+//      
+//  cache-async-attributename-to-webdsl-stm-update: x_attributeName -> result
+//    with
+//      x_entityName                   := <attributename-get-entityname>x_attributeName;
+//      x_updateAllAttributeCacheAsync := <name-updateallcacheasync>x_attributeName
+//    with
+//      result := stat |[
+//        x_entityName.x_updateAllAttributeCacheAsync();
+//      ]|
+//      
+//  cache-async-attributename-to-webdsl-stm-empty: x_attributeName -> result
+//    with
+//      x_entityName              := <attributename-get-entityname>x_attributeName;
+//      x_hasDirtyAsync           := <name-hasdirtyasync>x_attributeName
+//    with
+//      result := stat |[
+//        notEmpty := notEmpty || x_entityName.x_hasDirtyAsync();
+//      ]|

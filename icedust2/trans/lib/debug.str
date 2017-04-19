@@ -73,3 +73,12 @@ rules
   all-strings-add-origin = bottomup(try(where(is-string);add-origin))
   all-add-origin         = bottomup(try(                 add-origin))
   
+rules
+
+  add-nabl2-index: t -> t' where t' := t{<!t;nabl2-get-ast-index;?TermIndex(_,<id>)>}
+  
+  all-add-nabl2-index = bottomup(try(add-nabl2-index))
+  
+  debug-nabl2(|info) = where(all-add-nabl2-index;write-to-string;debug(|info))
+  debug-nabl2(|)     = where(all-add-nabl2-index;write-to-string;debug)
+  

@@ -22,7 +22,7 @@ imports // functions
   lib/graph
   lib/index
   lib/lists-tuples
-  lib/string
+//  lib/string
   lib/origin
   lib/traverse
 //  names/naming/names
@@ -144,7 +144,7 @@ rules
 
   depends-on-and-flows-to-2: modulename -> modulename
     with
-      arrinames    := <modulename-get-arrinames-default-derived-has-expr>modulename
+      arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
     with
       dependencies := <fmap(arriname-dependencies)>arrinames;
       dataflow     := <map(path-inverse)>dependencies
@@ -161,18 +161,14 @@ rules
       (p*, q*)          := <expr-pathexprs>expr;
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
-      dependencies      := <map(path(|attrName))>all-pathexprs;
-      dataflow          := <map(path-inverse)>dependencies
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set-no-annos>pathexprs-no-this;
+      dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules
 
   flows-toposort-2: moduleName -> moduleName
     with
-      attributeNames* := <modulename-get-attributenames>moduleName;
-      relationNames*  := <modulename-get-relationnames-left>moduleName;
-      roleNames*      := <modulename-get-rolenames>moduleName;
-      graphNames      := <string-sort-anno>[attributeNames*, relationNames*, roleNames*];
+      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName;
       graphNames'     := <map(annotate-with-parent-entity)>graphNames;
       toposort        := <graph-topological-sort(toposort-edge)>graphNames';
       toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
@@ -186,7 +182,7 @@ rules
 //  annotate-with-parent-entity    = try(nabl2--preserve-ast-index(?name;attributename-get-entityname;?ent;!name{("parent-entity",ent)}))
 //  de-annotate-with-parent-entity = try(nabl2--preserve-ast-index(?name{("parent-entity",_)};!name{}))
 
-  toposort-edge: name -> <string-sort-anno>all-names*
+  toposort-edge: name -> all-names*
     with
       name' := <de-annotate-with-parent-entity>name;
       names* := <index-get2(|FlowsTo());map(path-last)>name';
@@ -195,5 +191,6 @@ rules
       else
         inv-names* := []
       end;
-      all-names* := <map(annotate-with-parent-entity)>[names*, inv-names*]
+      parent-names* := <name-get-parent2>name;
+      all-names* := <map(annotate-with-parent-entity)>[names*, inv-names*, parent-names*]
       

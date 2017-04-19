@@ -113,8 +113,8 @@ execute
 
 test Weblab execute-java (strategy composition & derived relations) [[ ]] transform "SPT -> to Java -> Execute" to
 "Updating Submission.children: 6
-Updating Submission.next: 6
 Updating Submission.deadline: 6
+Updating Submission.next: 6
 Updating Submission.onTime: 6
 Updating Submission.pass: 6
 Updating Submission.baseGrade: 6

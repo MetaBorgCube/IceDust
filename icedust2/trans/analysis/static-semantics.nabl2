@@ -11,6 +11,7 @@ imports
   expressions-math
   expressions-multiplicity-operators
   expressions-references
+  map3
   model
   module
   types
@@ -34,10 +35,16 @@ signature
     TOneOrMoreOrdered  : Mult
     TZeroOrMoreOrdered : Mult
     
-    TIncremental      : Strat
-    TOnDemand         : Strat
-    TEventual         : Strat
-    TOnDemandEventual : Strat
+    TIncremental         : Strat
+    TOnDemand            : Strat
+    TOnDemandIncremental : Strat
+    TEventual            : Strat
+    TOnDemandEventual    : Strat
+    
+    Normal       : DerivationType
+    Abstract     : DerivationType
+    Derivation   : DerivationType
+    DefaultValue : DerivationType
     
     TUOne  : MultU
     TUMany : MultU
@@ -58,13 +65,19 @@ signature
     
     TMaterialized    : TMaterialization
     TNonMaterialized : TMaterialization
+    
+    Inline    : Inlining
+    NotInline : Inlining
 
   relations
 
-    anti-symmetric, anti-transitive test : Type * TypeTest
+    reflexive, anti-symmetric, transitive sub    : Type * Type
     reflexive, anti-symmetric, transitive mulOrd : Mul * Mul
-    reflexive, anti-symmetric, transitive strat : Strat * Strat
-    reflexive, anti-symmetric, transitive sub : Type * Type
+    reflexive, anti-symmetric, transitive strat  : Strat * Strat
+    reflexive, anti-symmetric, transitive deriv  : DerivationType * DerivationType
+    
+    anti-symmetric, anti-transitive test : Type * TypeTest
+    
     irreflexive cast : Type * Type
  
   functions
@@ -111,6 +124,15 @@ signature
       TOneOrMoreOrdered()  -> TZeroOrMoreOrdered()
     }
 
+    toOrdered : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMoreOrdered(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOneOrMoreOrdered(),
+      TOneOrMoreOrdered()  -> TOneOrMoreOrdered()
+    }
+
     choiceLeftMult : (Mult * Mult) -> Mult {
       (TOne()              , mult                ) -> TOne(),               // [1,_] -> always left-hand side operand
       (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] -> always left-hand side operand
@@ -154,14 +176,40 @@ signature
     }
     
     materialization : (Strat * Side) -> TMaterialization {
-      (strat              , None() ) -> TMaterialized(),    // unidirectional -> materialized
-      (strat              , Left() ) -> TMaterialized(),    // left-hand side -> materialized
-      (TIncremental()     , Right()) -> TMaterialized(),    // push-based -> materialized
-      (TEventual()        , Right()) -> TMaterialized(),    // push-based -> materialized
-      (TOnDemand()        , Right()) -> TNonMaterialized(), // pull-based -> not materialized
-      (TOnDemandEventual(), Right()) -> TNonMaterialized()  // pull-based -> not materialized
+      (strat                 , None() ) -> TMaterialized(),    // unidirectional -> materialized
+      (strat                 , Left() ) -> TMaterialized(),    // left-hand side -> materialized
+      (TIncremental()        , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TEventual()           , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TOnDemandIncremental(), Right()) -> TNonMaterialized(), // pull-based (flags push-based, but that is not enough) -> not materialized
+      (TOnDemand()           , Right()) -> TNonMaterialized(), // pull-based -> not materialized
+      (TOnDemandEventual()   , Right()) -> TNonMaterialized()  // pull-based -> not materialized
     }
- 
+
+  name resolution
+  
+    labels
+    //D // definition
+      I // import
+      J // lower priority import
+      P // parent
+      S // requires a J to be wellformed
+//      N // no edge at all (used for inverse querying)
+
+    order
+      D < I,
+      D < J,
+      D < P,
+      D < S,
+      S < I,
+      S < J,
+      S < P,
+      I < J,
+      I < P,
+      J < P
+
+    well-formedness
+      P* . (S.J)? . (I|J)*
+
 rules
 
   init ^ (init_scope) :=
@@ -212,11 +260,20 @@ rules
     
     // strategy lattice
     
-    TIncremental() <strat! TOnDemand(),         //      TOnDemandEventual()
-    TIncremental() <strat! TEventual(),         //          /       \
-    TOnDemand()    <strat! TOnDemandEventual(), //  TEventual()   TOnDemand()
-    TEventual()    <strat! TOnDemandEventual(), //          \       /
-                                                //        TIncremental()
+    TIncremental()         <strat! TOnDemandIncremental(), //         TOnDemandEventual()
+    TOnDemandIncremental() <strat! TEventual(),            //              /      \
+    TOnDemandIncremental() <strat! TOnDemand(),            //      TEventual()   TOnDemand()
+    TOnDemand()            <strat! TOnDemandEventual(),    //              \      /
+    TEventual()            <strat! TOnDemandEventual(),    //       TOnDemandIncremental()
+                                                           //                 |
+                                                           //            TIncremental()
+    // derivation type lattice
+    
+    DefaultValue() <deriv! Normal(),     //       Abstract()
+    DefaultValue() <deriv! Derivation(), //        /      \ 
+    Normal()       <deriv! Abstract(),   //  Normal()    Derivation()
+    Derivation()   <deriv! Abstract(),   //        \      /
+                                         //     DefaultValue()
     // subtype relation 
   
     TNoValue() <sub! TInt(),

@@ -19,11 +19,12 @@ rules
   [[ OneOrMoreOrdered()  ^ (s) : mu ]] := mu == TOneOrMoreOrdered().
   [[ ZeroOrMoreOrdered() ^ (s) : mu ]] := mu == TZeroOrMoreOrdered().
 
-  [[ Some(Incremental())       ^ (s) : st ]] := st == TIncremental().
-  [[ Some(OnDemand())          ^ (s) : st ]] := st == TOnDemand().
-  [[ Some(Eventual())          ^ (s) : st ]] := st == TEventual().
-  [[ Some(OnDemandEventual())  ^ (s) : st ]] := st == TOnDemandEventual().
-  [[ None()                    ^ (s) : st ]] :=
+  [[ Some(Incremental())         ^ (s) : st ]] := st == TIncremental().
+  [[ Some(OnDemand())            ^ (s) : st ]] := st == TOnDemand().
+  [[ Some(OnDemandIncremental()) ^ (s) : st ]] := st == TOnDemandIncremental().
+  [[ Some(Eventual())            ^ (s) : st ]] := st == TEventual().
+  [[ Some(OnDemandEventual())    ^ (s) : st ]] := st == TOnDemandEventual().
+  [[ None()                      ^ (s) : st ]] :=
     Implicit{"this"} -> s,
     Implicit{"this"} |-> this_def,
     this_def : this_ty,

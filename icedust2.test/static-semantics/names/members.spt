@@ -18,7 +18,7 @@ test error on attribute and role with same name [[
     Student.enrollment * -> [[student]]
     [[student]] : Int
   }
-]] 2 errors at #1,#2
+]] >= 2 errors at #1,#2
 
 test error on attribute and inverse with same name [[
   entity Student{

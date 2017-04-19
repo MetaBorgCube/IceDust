@@ -1,0 +1,55 @@
+module generate-helloworld
+
+language icedust2
+
+fixture [[
+module traitsabstract [[...]]
+  
+model
+
+  entity Submission {
+    grade : Float? (abstract)
+  }
+  
+  entity CollectionSubmission extends Submission{
+    grade : Float? = avg(children.grade)
+  }
+  
+  entity LeafSubmission extends Submission{
+    grade : Float?
+  }
+  
+  relation CollectionSubmission.children * <-> ? Submission.parent
+  
+data
+
+  mathAlice:CollectionSubmission{
+    children =
+      labAlice:CollectionSubmission{
+        children =
+          lab1Alice:LeafSubmission{
+            grade = 7.0
+          },
+          lab2Alice:LeafSubmission{
+            grade = 9.0
+          }
+      },
+      examAlice:LeafSubmission{
+        grade = 9.0
+      }
+  }
+  
+execute
+
+  mathAlice.grade
+]]
+
+test Traits abstract field execute-java on-demand [[ (on-demand) ]] transform "SPT -> to Java -> Execute" to 
+"8.5
+"
+
+test Traits abstract field execute-java incremental [[ (incremental) ]] transform "SPT -> to Java -> Execute" to 
+"Updating CollectionSubmission.grade: 2
+Updating CollectionSubmission.grade: 1
+8.5
+"

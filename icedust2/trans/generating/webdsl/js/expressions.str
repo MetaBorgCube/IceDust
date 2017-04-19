@@ -50,4 +50,10 @@ rules // references
 
   expr-to-js: TierSplit(name) -> js-ex |[ getPartialVar(exp_name) ]|
     with exp_name := <js-string> name
+    
+//  expr-to-js: FilterType(expr, ty) -> <expr-to-js>expr //FIXME: implement
+  
+  expr-to-js: expr -> js-ex |[ null ]|
+    with
+      <debug(!"expr-to-js, no implementation for ")>expr 
         

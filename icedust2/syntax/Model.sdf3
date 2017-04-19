@@ -9,16 +9,28 @@ imports
 context-free syntax // entities
 
   Model.Entity = <
-    entity <ID><Strategy?> {
+    entity <ID> <OptionalExtends?><Strategy?>{
       <{Member "\n"}*>
     }
   >
   
   Model.FirstClassRelation = <
-    relation <ID><Strategy?> {
+    relation <ID> <OptionalExtends?><Strategy?>{
       <{Member "\n"}*>
     }
   >
+
+//  Model.Trait = <
+//    trait <ID> <OptionalExtends?><Strategy?>{
+//      <{Member "\n"}*>
+//    }
+//  >
+//  
+//  OptionalExtends.OptionalExtends = [extends [{Extends ", "}+] ] // need a constructor to dispatch on in NaBL2
+  
+  OptionalExtends.OptionalExtends = [extends [Extends] ] // need a constructor to dispatch on in NaBL2
+  
+  Extends.Extends = <<ID>>
   
 context-free syntax // shortcut relations
 
@@ -45,11 +57,17 @@ context-free syntax // entity members
   Member.Attribute           = <
     <ID> : <PrimitiveType><Multiplicity?>
   >
+  Member.AbstractAttribute   = <
+    <ID> : <PrimitiveType><Multiplicity?> (abstract)<Strategy?>
+  >
   Member.DerivationAttribute = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
   >
   Member.DefaultAttribute    = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
+  >
+  Member.InlineAttribute    = <
+    <ID> : <AnyType><MultiplicityOrdering?> = <Exp> (inline)
   >
   
   Member.Role = [
