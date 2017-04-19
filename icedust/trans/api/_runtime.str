@@ -7,10 +7,10 @@ imports // generated runtime
 //  runtime/analysis/legacy
   runtime/analysis/core
   runtime/analysis/resolve
-  runtime/editor/annotations  
-  runtime/editor/origins
-  runtime/editor/outline-library
-  runtime/editor/properties
+  libspoofax/term/annotation  
+  libspoofax/term/origin
+  libspoofax/editor/outline
+  runtime/properties/editor
   runtime/index/core
   runtime/index/legacy
   runtime/index/query
@@ -67,7 +67,7 @@ rules
   
   _nabl-uri = nabl-uri
   
-  _get-type = get-type
+  get-type2 = get-type
 
   _task-create-error(|ctx, msg) = task-create-error(|ctx, msg)
   _task-create-warning(|ctx, msg) = task-create-warning(|ctx, msg)

@@ -26,18 +26,18 @@ context-free syntax
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?>
   >   
   Attribute.DerivationAttributePP = <
-    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp>
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp><Strategy?>
   >  
   Attribute.DerivationAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
-      <Exp>
+      <Exp><Strategy?>
   >
   Attribute.DefaultAttributePP = <
-    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)
+    <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)<Strategy?>
   >
   Attribute.DefaultAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
-      <Exp> (default)
+      <Exp> (default)<Strategy?>
   >
 
   MyLayOut = <>

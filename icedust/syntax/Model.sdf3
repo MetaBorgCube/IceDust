@@ -8,12 +8,12 @@ imports
 context-free syntax // entities
 
   Model.Entity = <
-    entity <ID> {
+    entity <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
   Model.FirstClassRelation = <
-    relation <ID> {
+    relation <ID><Strategy?> {
       <{Member "\n"}*>
     }
   >
@@ -23,7 +23,7 @@ context-free syntax // entities
 context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
-    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID] {
+    relation [EntityRef][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [EntityRef][DotID?][Strategy?] {
       [{Attribute "\n"}*]
     }
   ]
@@ -31,11 +31,15 @@ context-free syntax // shortcut relations
 context-free syntax // non-first-class relation
 
   Model.Relation = [
-    relation [EntityRef].[ID][SpaceMultiplicity?][SpaceOrdering?] <->[SpaceMultiplicity?][SpaceOrdering?] [EntityRef].[ID]
+    relation [EntityRef][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [EntityRef][DotID?]
+  ]
+
+  Model.RelationDerived = [
+    relation [EntityRef][DotID?][SpaceMultiplicity?] = [Exp]
+      <->[SpaceMultiplicity?] [EntityRef][DotID?][Strategy?]
   ]
   
-  SpaceMultiplicity             = [ [Multiplicity]]
-  SpaceOrdering                 = [ [Ordering]]
+  SpaceMultiplicity             = [ [MultiplicityOrdering]]
 
 context-free syntax // entity members
 
@@ -47,15 +51,15 @@ context-free syntax // entity members
     <ID> : <PrimitiveType><Multiplicity?>
   >
   Attribute.DerivationAttribute = <
-    <ID> : <PrimitiveType><Multiplicity?> = <Exp>
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
   >
   Attribute.DefaultAttribute    = <
-    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)
+    <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
   >
   DerivationType.DefaultValue   = <(default)>
   DerivationType.Derivation     = <>
 
-  Role.Role                     = <<ID><DotID?><SpaceMultiplicity><SpaceOrdering?><SpaceArrowID?>>
+  Role.Role                     = <<ID><DotID?><SpaceMultiplicity?><SpaceArrowID?>>
   DotID                         = <.<ID>>
   SpaceArrowID                  = [ -> [ID]]
 

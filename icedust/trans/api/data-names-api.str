@@ -33,17 +33,20 @@ rules // entity instance
   entityinstancename-get-rolevaluenames      = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
   entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
   entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+  entityinstancename-get-rri-left            = entityinstancename-get-membervaluenames;filter(membervaluename-is-left)
   
   entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
   
   entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
   
   entityinstancename-get-modulename = nabl-name-parent
+  
+  entityinstancename-get-entityname = get-type2
 
 rules // member values
 
   membervaluename-get-expr = index-get-prop(|AST());Hd
-  membervaluename-get-values = index-get-prop(|Rel())
+  membervaluename-get-values = index-get-prop(|Rel()); origin-sort-anno
   membervaluename-get-values-inv = index-get-prop(|RelInv())
   membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
@@ -56,3 +59,5 @@ rules // member values
   membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
   
   membervaluename-get-entityinstancename = nabl-name-parent
+  
+  membervaluename-is-left = where(membervaluename-get-origin; name-is-left)

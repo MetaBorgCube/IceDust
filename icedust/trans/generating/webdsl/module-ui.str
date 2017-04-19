@@ -36,7 +36,7 @@ rules //crud
       elem_hiddenvars*      := <entityname-get-attributenames2-default-derivation;fmap(attributename-get-expr-tiersplit-vars);map(var-to-hidden-elem)>x_entityName;
       elem_relationInputs*  := <entityname-get-relroleinvnames;filter(name-is-one);map(attributename-to-input-elem)>x_entityName; //TODO: add roles/inverses
       elem_relationOutputs* := <entityname-get-relroleinvnames;map(relationname-to-output-elem)>x_entityName;
-      def_relationPages*    := <entityname-get-relroleinvnames;map(relationname-to-page-def)>x_entityName
+      def_relationPages*    := <entityname-get-relroleinvnames;filter(name-is-normal);map(relationname-to-page-def)>x_entityName
     with
       result := def* |[
         page x_manageEntity(){
@@ -142,9 +142,15 @@ rules //crud
       x_setname := <attributename-entityname-set>x_name;
       x_getname := <name-get> x_name
     with
-      result := elem |[
-        relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp)[]{"Edit "}})
-      ]|
+      if name-is-normal-default then
+        result := elem |[
+          relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp)[]{"Edit "}})
+        ]|
+      else
+        result := elem |[
+          relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {})
+        ]|
+      end
     
   relationname-to-page-def: x_name -> result
     with
@@ -309,7 +315,7 @@ rules //crud
   
   name-to-input-elem: x_name -> result
     with
-      if _get-type;Boolean(); !x_name;(attributename-is-default<+name-is-zeroorone) then
+      if get-type2;Boolean(); !x_name;(attributename-is-default<+name-is-zeroorone) then
         result := elem |[ inputNonRequiredBool(temp.x_name) ]|
       else
         result := elem |[ input(temp.x_name) ]|
@@ -319,7 +325,7 @@ rules //crud
     with
       x_getname := <name-get>x_name
     with
-      if <_get-type;Datetime()>x_name then
+      if <get-type2;Datetime()>x_name then
         result := elem |[outputNonRef(temp.x_getname())]|
       else
         result := elem |[output(temp.x_getname())]|
