@@ -1,0 +1,74 @@
+module api/data-api
+
+imports // constructors
+
+  signatures/Data-sig
+  signatures/icedust2-sig
+//  signatures/Modules-sig
+  signatures/Model-sig
+  signatures/Types-sig
+//  desugaring/constructors
+
+imports // functions
+    
+  lib/origin
+
+rules // query
+  
+  datadef-get-data = ?DataSection(<id>)
+  
+  entityinstance-get-type = ?EntityInstance(_, EntityType(<id>), _)
+  entityinstance-get-type = ?EntityInstanceNoType(_, _);!None() // no type in concrete syntax (type inferred)
+  entityinstance-get-name = ?EntityInstance(<id>, _, _)
+  entityinstance-get-name = ?EntityInstanceNoType(<id>, _)
+  entityinstance-get-name = ?EntityInstanceRef(<id>)
+  entityinstance-get-name = ?EntityInstanceWrapper(_, <entityinstance-get-name>)
+  entityinstance-get-membervalues = ?EntityInstance(_, _, <id>)
+  entityinstance-get-membervalues = ?EntityInstanceNoType(_, <id>)
+  
+  relation-instance-get-name = ?RelationInstanceNoType(<id> ,[])
+  relation-instance-get-name = ?EntityInstanceWrapper(<relation-instance-get-name>,_)
+  
+  membervalue-get-name = ?MemberValue(<id>, _)
+  membervalue-get-expr = ?MemberValue(_, [LitVal(<id>)])
+  membervalue-get-expr = ?MemberValue(_, <id>) //if not litval
+
+rules // properties
+  
+  is-datadef = ?DataSection(_)
+  
+  is-entityinstance = ?EntityInstance(_, _, _)
+  
+  is-membervalue = ?MemberValue(_,_)
+
+  entityinstance-has-no-name = ?EntityInstance(None(), _, _)
+  entityinstance-has-no-name = ?EntityInstanceNoType(None(), _)
+  entityinstance-has-no-name = ?RelationInstance(None(), _, _)
+  entityinstance-has-no-name = ?RelationInstanceNoType(None(), _)
+
+rules // manipulate
+  
+  datadef-set-data(|op) = DataSection(!op)
+  
+  entityinstance-set-name(|name) = EntityInstance(!name, id, id)
+  entityinstance-set-name(|name) = EntityInstanceNoType(!name, id)
+  entityinstance-set-name(|name) = RelationInstance(!name, id, id)
+  entityinstance-set-name(|name) = RelationInstanceNoType(!name, id)
+  
+  membervalue-set-member(member) = MemberValue(member, id)
+  
+  
+//rules // representations    
+//  
+//  entityinstance-to-entityinstanceref: EntityInstanceRef(ei)             -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members)   -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstanceNoType(ei, members) -> EntityInstanceRef(ei)
+////  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
+
+rules
+
+  membervalue-getall-einames = collect-all(eiwrefnames)
+
+  eirefname: EntityInstanceRef(name) -> name
+  eiwrefnames: EntityInstanceWrapper(EntityInstanceRef(relname), EntityInstanceRef(name)) -> (relname,name)
+  eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)

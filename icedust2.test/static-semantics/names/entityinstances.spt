@@ -1,0 +1,31 @@
+module names-entityinstances
+
+language icedust2
+
+fixture [[
+  module test
+  model
+  entity User{}
+  
+  [[...]]
+]]
+
+test Duplicate entity fails [[
+  data
+  [[u]] : User {}
+  [[u]] : User {}
+]] 2 errors at #1,#2
+
+test Resolve Identifier to entity [[
+  data
+  [[u]] : User {}
+  execute
+  [[u]]
+]] resolve #2 to #1
+
+test Resolve invalid Identifier fails [[
+  data
+  u : User {}
+  execute
+  [[v]]
+]] >= 1 error at #1

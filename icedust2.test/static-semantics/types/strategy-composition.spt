@@ -1,0 +1,33 @@
+module types-strategy-composition
+
+language icedust2
+
+fixture [[
+  module test
+  model
+    entity X{
+      a : Int
+      b : Int = a (on-demand)
+      c : Int = a (incremental)
+      d : Int = a (eventual)
+      e : Int = a + b + c + d (on-demand eventual)
+      f : Int = [[...]] (on-demand eventual)
+    }
+  data
+    x : X {
+      a = 5
+    }
+  execute
+    3
+]]
+
+test calculation strategy of base-value field         [[a]] run get-strategy to Incremental()
+test calculation strategy of on-demand field          [[b]] run get-strategy to OnDemand()
+test calculation strategy of incremental field        [[c]] run get-strategy to Incremental()
+test calculation strategy of eventual field           [[d]] run get-strategy to Eventual()
+test calculation strategy of on-demand eventual field [[e]] run get-strategy to OnDemandEventual()
+
+test base-value and on-demand   [[a + b]] run get-strategy to OnDemand()
+test base-value and incremental [[a * c]] run get-strategy to Incremental()
+test base-value and eventual    [[a - d]] run get-strategy to Eventual()
+test on-demand and eventual     [[b + d]] run get-strategy to OnDemandEventual()

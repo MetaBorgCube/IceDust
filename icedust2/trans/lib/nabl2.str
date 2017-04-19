@@ -1,0 +1,94 @@
+module lib/nabl2
+
+imports // functions
+
+  api/_generated
+  api/_runtime
+  lib/debug
+  lib/lists-tuples
+  nabl2/api
+
+signature constructors
+
+  Namespace : String -> Namespace
+
+  
+rules // store analysis to be able to query without passing the analysis
+  
+  store-analysis-resource: path -> None()
+    where
+      is-string
+    with
+      <nabl2-custom-analysis-info(|"Storing analysis")>path;
+      analysis := <nabl2-get-resource-analysis>path;
+      rules(StoredAnalysis : None() -> analysis)
+  
+  store-analysis-resource: analysis -> None()
+    where
+      not(is-string)
+    with
+      rules(StoredAnalysis : None() -> analysis)
+  
+  store-analysis-ast: term -> term
+    with
+      analysis := <nabl2-get-ast-analysis>term;
+      rules(StoredAnalysis : None() -> analysis)
+    with
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+      
+  
+  get-stored-analysis = ?t;(
+    !None();StoredAnalysis <+ // get stored analysis
+    !t;nabl2-get-ast-analysis;debug(!$[Used analysis stored on term [<write-to-string>t]]) <+ // or get analysis from term
+    fatal-err(|$[Error: Analysis is not stored. Please store with <store-analysis-resource>path. Also no ast-analysis available for term "[<write-to-string>t]"]))   
+
+rules // wrap nabl2 api with stored analysis
+
+  get-type-property         = nabl2-get-type(|<get-stored-analysis>)              //@type decl:Occurrence -> Type
+  get-property(|prop)       = nabl2-get-property(|<get-stored-analysis>,prop)     //@type decl:Occurrence -> Term   prop:String
+  get-all-decls(|)          = nabl2-get-all-decls(|<get-stored-analysis>)         //@type _ -> List(Occurrences)
+  get-all-refs(|)           = nabl2-get-all-refs(|<get-stored-analysis>)          //@type _ -> List(Occurrences)
+  get-all-scopes(|)         = nabl2-get-all-scopes(|<get-stored-analysis>)        //@type _ -> List(Scope)
+  get-ref-scope(|)          = nabl2-get-ref-scope(|<get-stored-analysis>)         //@type ref:Occurrence -> Scope
+  get-decl-scope(|)         = nabl2-get-decl-scope(|<get-stored-analysis>)        //@type decl:Occurrence -> Scope
+  get-scope-decls(|)        = nabl2-get-scope-decls(|<get-stored-analysis>)       //@type Scope -> List(Occurrence)
+  get-scope-refs(|)         = nabl2-get-scope-refs(|<get-stored-analysis>)        //@type Scope -> List(Occurrence)
+  get-scope-direct-edges(|) = nabl2-get-direct-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Scope))
+  get-scope-direct-edges-inv= nabl2-get-direct-edges-inv(|<get-stored-analysis>)  //@type Scope -> List((Label,Scope))
+  get-scope-named-edges(|)  = nabl2-get-import-edges(|<get-stored-analysis>)      //@type Scope -> List((Label,Occurrence))
+  get-decl-assocs(|)        = nabl2-get-assoc-edges(|<get-stored-analysis>)       //@type decl:Occurrence -> List((Label,Scope))
+  get-scope-assocs(|)       = nabl2-get-assoc-edges-inv(|<get-stored-analysis>);map(Swap) //@type Scope -> List((Occurrence,Label))
+  get-visible-decls(|)      = nabl2-get-visible-decls(|<get-stored-analysis>)     //@type Scope -> List(Occurrence)
+  get-reachable-decls(|)    = nabl2-get-reachable-decls(|<get-stored-analysis>)   //@type Scope -> List(Occurrence)
+  get-resolved-name(|)      = nabl2-get-resolved-name(|<get-stored-analysis>)     //@type ref:Occurrence -> (decl:Occurrence, Path)
+
+rules // compose nabl2 calls (hide occurrence behind namespaces)
+
+  get-type-property(|ns)            = nabl2-mk-occurrence(|ns);get-type-property
+  get-property(|ns, prop)           = get-decl(|ns);nabl2-mk-occurrence(|ns);get-property(|prop) //@type Term -> Term //TODO: make this work for references as well
+//  get-property(|ns, prop)           = nabl2-mk-occurrence(|ns);get-property(|prop)   //@type Term -> Term
+  get-decl-assocs-with-labels(|ns)  = nabl2-mk-occurrence(|ns);get-decl-assocs       //@type Term -> List((Label,Scope))
+  get-decl-assoc-with-labels(|ns)   = get-decl-assocs-with-labels(|ns);Hd            //@type Term -> (Label,Scope)
+  get-decl-assocs(|ns)              = get-decl-assocs-with-labels(|ns);map(Snd)      //@type Term -> List(Scope)
+  get-decl-assoc(|ns)               = get-decl-assocs(|ns);Hd                        //@type Term -> Scope
+  get-decl-scope(|ns)               = nabl2-mk-occurrence(|ns);get-decl-scope        //@type Term -> Scope
+  get-ref-scope(|ns)                = nabl2-mk-occurrence(|ns);get-ref-scope         //@type Term -> Scope
+  get-scope(|ns)                    = get-decl-scope(|ns)+get-ref-scope(|ns)         //@type Term -> Scope
+  get-scope-decl-names              = get-scope-decls;map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-decl-names(|ns)         = get-scope-decl-names;filter(is-decl(|ns))      //@type Scope -> List(Term)
+  get-scope-assoc-names-with-labels = get-scope-assocs;map(split2(nabl2-get-occurrence-name,id)) //@type Scope -> List((Term,Label))
+  get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
+  get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
+  get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
+  get-scope-reachable-names(|ns)    = get-reachable-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-reachable-names2(|ns)   = get-scope-reachable-names(|ns) <+ ![]          //@type Scope -> List(Term)
+  get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
+  get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
+  get-resolved-name(|ns)            = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@Type Term -> Term
+  is-decl(|ns)                      = where(get-decl-scope(|ns))                     //@type Term -> Term
+  is-ref(|ns)                       = where(get-ref-scope(|ns))                      //@type Term -> Term
+  get-decl(|ns)                     = is-decl(|ns)                                   //@Type Term -> Term
+  get-decl(|ns)                     = is-ref(|ns);get-resolved-name(|ns)             //@Type Term -> Term
+//  get-decl(|ns)                     = debug(|"get-decl: is-decl and is-ref both failed, defaulting to decl")
+

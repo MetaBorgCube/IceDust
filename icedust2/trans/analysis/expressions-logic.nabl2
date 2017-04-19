@@ -1,0 +1,119 @@
+module expressions-logic
+
+rules
+  
+  [[ Not(e1) ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsBoolean().
+  
+  [[ Equal(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ Inequal(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] := // identical to Equal
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ LessThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ LessThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] := // identical to LessThan
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ GreaterThan(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] := // identical to LessThan
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ GreaterThanEqual(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] := // identical to LessThan
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? CanCompare(),
+    out_type is sub.lub of (e1_type,e2_type),
+    out_type <test? IsType(), // make sure it evaluates to something
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ And(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? IsBoolean(),
+    e2_type <test? IsBoolean(),
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ Or(e1, e2) ^ (s) : TTuple(TBoolean(), out_mult, out_strat) ]] := // identical to And
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type <test? IsBoolean(),
+    e2_type <test? IsBoolean(),
+    out_mult is mulOrd.lub of (e1_mult,e2_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e1_mult]] @ e1,
+    e2_mult_u is multUpper of e2_mult,
+    e2_mult_u == TUOne() | error $[Multiplicity mismatch: expected One or ZeroOrOne got [e2_mult]] @ e2.
+  
+  [[ If(e1, e2, e3) ^ (s) : TTuple(out_type, out_mult, out_strat') ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    [[ e3 ^ (s) : TTuple(e3_type, e3_mult, e3_strat) ]],
+    e1_type <test? IsBoolean(),
+    out_type is sub.lub of (e2_type,e3_type),
+    out_mult is mulOrd.lub of (e2_mult,e3_mult),
+    out_strat is strat.lub of (e1_strat,e2_strat),
+    out_strat' is strat.lub of (out_strat,e3_strat),
+    e1_mult == TOne() | warning $[Expected condition multiplicity of One got [e1_mult]]@e1.
+    

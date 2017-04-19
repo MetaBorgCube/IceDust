@@ -1,0 +1,121 @@
+module types-references-attributes-direct
+
+language icedust2
+
+fixture [[
+  module test
+  [[...]]
+]]
+
+
+test type of ref attribute (Identifier) [[
+  model
+  entity X{
+    i : Int = [[i]]
+  }
+]] run get-type2 on #1 to Int()
+
+test type of ref this.attribute [[
+  model
+  entity X{
+    i : Int = [[this.i]]
+  }
+]] run get-type2 on #1 to Int()
+
+test type of ref entity.attribute [[
+  model
+  entity X{
+    i : Int = 4 (default)
+  }
+  
+  data
+  x : X {
+    i=3
+  }
+  execute
+  3
+  [[x.i]]
+]] run get-type2 on #1 to Int()
+
+test type of ref role.attribute [[
+  model
+  entity Node{
+    i : Int = [[this.in.out.i]]
+  }
+  relation Edge{
+    Node.in 1  -> in
+    Node.out 1 -> out
+    in.a <-> out.b
+  }
+]] run get-type2 on #1 to Int()
+
+
+test multiplicity of ref attribute (Identifier) One [[
+  model
+  entity X{
+    i : Int = [[i]]
+  }
+]] run get-multiplicity on #1 to One()
+
+test multiplicity of ref attribute (Identifier) ZeroOrOne [[
+  model
+  entity X{
+    i : Int ? = [[i]]
+  }
+]] run get-multiplicity on #1 to ZeroOrOne()
+
+test multiplicity of ref this.attribute One [[
+  model
+  entity X{
+    i : Int = [[this.i]]
+  }
+]] run get-multiplicity on #1 to One()
+
+test multiplicity of ref this.attribute ZeroOrOne [[
+  model
+  entity X{
+    i : Int ? = [[this.i]]
+  }
+]] run get-multiplicity on #1 to ZeroOrOne()
+
+test multiplicity of ref entity.attribute One [[
+  model
+  entity X{
+    i : Int = 4 (default)
+  }
+  
+  data
+  x : X {
+    i=3
+  }
+  execute
+  3
+  [[x.i]]
+]] run get-multiplicity on #1 to One()
+
+test multiplicity of ref entity.attribute ZeroOrOne [[
+  model
+  entity X{
+    i : Int ? = 3
+  }
+  
+  data
+  x : X {}
+  execute
+  4
+  [[x.i]]
+]] run get-multiplicity on #1 to ZeroOrOne()
+
+test ordering of ref entity.attribute Ordered [[
+  model
+  entity X{
+    i : Int ?
+  }
+  
+  data
+  x : X {}
+  
+  execute
+  3
+  [[x.i]]
+]] run get-multiplicity on #1 to ZeroOrOne() // is ordered

@@ -1,0 +1,55 @@
+module java/pp/class/method-declaration
+rules
+
+  java-to-box:
+    MethodDec(dec, b@Block(_)) -> V vs=0 [~dec b]
+
+  java-to-box:
+    MethodDec(dec, NoMethodBody()) -> H hs=0 [~dec ";"]
+
+  java-to-box:
+    MethodDecHead(mods, type-params, type, Id(n), params, None())
+      ->
+    box |[ H hs=1 [~*foo ~type H hs=0 [~lit:n ~args]] ]|
+    where
+      <list-to-args> params => args
+    ; <type-params-to-boxes> type-params => targboxes
+    ; !Conc(mods, targboxes) => foo
+
+  java-to-box:
+    MethodDecHead(mods, type-params, type, Id(n), params, Some(throws))
+      ->
+    box |[ H hs=1 [~*foo ~type H hs=0 [~lit:n ~args] ~throws] ]|
+    where
+      <list-to-args> params => args
+    ; <type-params-to-boxes> type-params => targboxes
+    ; !Conc(mods, targboxes) => foo
+
+  java-to-box:
+    DeprMethodDecHead(mods, type-params, type, Id(n), params, dims, throws)
+      ->
+    H hs=1 [~*mods ~type b* H hs=0 [~lit:n ~args] H hs=0 [~*dims] ~throws]
+    where
+      <list-to-args> params => args
+    ; <type-params-to-boxes> type-params => b*
+
+rules
+
+  java-to-box:
+    Param(mods, type, vardecid) -> H hs=1 [~*mods ~type ~vardecid]
+
+  java-to-box:
+    VarArityParam(mods, type, vardecid) -> H hs=1 [~*mods ~type "..." ~vardecid]
+
+rules
+
+  java-to-box:
+    ThrowsDec(exceptions) -> H hs=1 [KW["throws"] ~excs]
+    where
+      <separate-by-comma> exceptions => excs
+
+rules
+
+  java-to-box:
+    Void() -> box |[ KW["void"] ]|
+

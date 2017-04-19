@@ -1,0 +1,80 @@
+module lib/index
+
+imports
+
+  lib/eq
+  lib/lists-tuples
+
+rules // @type List(String, List(String, List(Term)))
+
+  index-get = ?name;_index-get;index-data-get(|name)
+
+  index-get(|prop) = ?name;_index-get;index-data-get(|name, prop)
+  
+  index-get2(|prop) = index-get(|prop) <+ ![] //always succeed
+
+//  index-clear: name -> None()
+//    with
+//      index  := <_index-get>;
+//      index' := <filter(Fst;not(?name))>index;
+//      <_index-set>index'
+//
+//  index-clear(|prop): name -> None()
+//    with
+//      index  := <_index-get>;
+//      index' := <map(if Fst;?name then filter(Fst;not(?prop)) else id end)>index;
+//      <_index-set>index'
+
+  index-set(|name, prop) = ?val;_index-get;index-data-set(|name, prop, val);_index-set;!val
+  index-add(|name, prop) = ?val;_index-get;index-data-add(|name, prop, val);_index-set;!val
+  
+  index-set = ?(name, prop, val);!val;index-set(|name, prop)
+  index-add = ?(name, prop, val);!val;index-add(|name, prop)
+  
+  index-set-prop(|prop) = ?(name, val);!val;index-set(|name, prop)
+  index-add-prop(|prop) = ?(name, val);!val;index-add(|name, prop)
+  
+  index-debug = _index-get;index-data-debug
+  
+rules // internal storage
+
+  _index-set = ?index; rules(Index := index)
+  _index-get = Index <+ ![]
+
+rules // internal data structure
+  
+  index-data-get(|name): index -> prop*
+    where
+      prop* := <lookup2(eq-origin)>(name, index)
+      
+  index-data-get(|name, prop): index -> val*
+    where
+      prop* := <lookup2(eq-origin)>(name, index);
+      val*  := <lookup>(prop, prop*)
+
+  index-data-set(|name, prop, vals): index -> index'
+    with
+      if index-data-get(|name, prop) then
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;?prop);split2(id,!vals))))))>index
+      else
+        if index-data-get(|name) then
+          index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,vals)))))>index
+        else
+          index' := <append(|(name, [(prop,vals)]))>index
+        end
+      end
+
+  index-data-add(|name, prop, val): index -> index'
+    with
+      if index-data-get(|name, prop) then
+        index'   := <map(try(where(Fst;eq-origin(|name));split2(id,map(try(where(Fst;?prop);split2(id,append(|val)))))))>index
+      else
+        if index-data-get(|name) then
+          index' := <map(try(where(Fst;eq-origin(|name));split2(id,append(|(prop,[val])))))>index
+        else
+          index' := <append(|(name, [(prop,[val])]))>index
+        end
+      end
+  
+  index-data-debug = map(\ (name, props) -> <!props;map(\ (prop, vals) -> <!vals;map(\ val -> <debug>(name,prop,val) \)> \)> \) 
+  

@@ -1,0 +1,24 @@
+module generating/java/execute
+
+imports // constructors
+
+  java/Java
+  signatures/Execute-sig
+  signatures/Modules-sig
+
+imports // functions
+
+  generating/java/expressions
+
+rules
+
+  execute-expr-to-java-stm(err): exp -> result
+    with
+      (stms*, exp') := <exp-to-java-stm(err|0)>exp
+    with
+      result := java:block-stm |[
+        {
+          ~stms*
+          System.out.println(~exp');
+        }
+      ]|

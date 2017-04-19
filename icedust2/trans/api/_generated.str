@@ -1,0 +1,18 @@
+module api/_generated
+
+imports // generated language file
+  
+  libspoofax/term/position
+  libspoofax/core/parse
+  libspoofax/core/language
+  libspoofax/resource/path
+  
+rules
+  
+  _language = language
+  _project-path = project-path
+  
+  _parse-file = parse-file
+  _refresh-workspace-file = id //refresh-workspace-file // should not be needed anymore
+  
+  _parent-at-position(|position) = parent-at-position(|position)

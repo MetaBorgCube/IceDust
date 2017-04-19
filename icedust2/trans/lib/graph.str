@@ -1,0 +1,15 @@
+module lib/graph
+
+rules
+
+  /*
+   * Implements a topological sort of the strongly connected components in the graph using the Tarjan algorithm.
+   * http://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
+   * http://dx.doi.org/10.1137/0201010
+   *
+   * @type traverse-edges a -> List(a)
+   * @type                List(a) -> List(List(a))
+   */
+  external graph-topological-sort(traverse-edges|)  
+
+rules

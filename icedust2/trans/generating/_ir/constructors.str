@@ -1,0 +1,20 @@
+module generating/_ir/constructors
+
+imports
+
+signature sorts
+  
+  TargetLanguage
+  
+signature constructors
+  
+  Java               : TargetLanguage
+  WebDSL             : TargetLanguage
+  WebDSLEager        : TargetLanguage
+  WebDSLEventual     : TargetLanguage
+  
+  ImplStrategy : CompilerOptions
+  UIStyle      : CompilerOptions
+  
+  NoUI       : UIStyle
+  ExplorerUI : UIStyle

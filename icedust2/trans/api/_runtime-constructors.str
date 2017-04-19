@@ -1,0 +1,42 @@
+module api/_runtime-constructors
+
+signature constructors // copy from runtime library
+    
+  Result : TaskID -> Result
+
+  Def          : URI    -> Key
+  Alias        : URI    -> Key
+  InverseAlias : URI    -> Key
+  Use          : Result -> Key
+  
+  URI          : Language * List(Segment)     -> URI
+
+  Prop         : URI * Property -> Key
+
+  Type         : Type
+  
+  Rewrite      : ID * Result -> Instruction
+  
+  // File(source, initial-ast, parse-time)
+  File : String * Term * Int -> File
+  // File(source, initial-ast, transformed-ast, parse-time)
+  File : String * Term * Term * Int -> File
+
+  // Result(file-result*, message-result*, affected-source*, debug-result, time-result)
+  Result : List(OutputResult) * List(OutputResult) * List(String) * DebugResult * TimeResult -> Result
+
+  // FileResult(source, initial-ast, analyzed-ast, error*, warning*, note*)
+  FileResult : String * Term * Term * List(Term) * List(Term) * List(Term) -> OutputResult
+  // FileResult(source, error*, warning*, note*)
+  MessageResult : String * List(Term) * List(Term) * List(Term) -> OutputResult
+
+  // CollectDebugResult(removed-entry-count, added-entry-count, removed-task-count, added-task-count, invalidated-task-count)
+  CollectDebugResult : Int * Int * Int * Int * Int -> CollectDebugResult
+
+  // DebugResult(collect-debug-result, evaluated-task*, skipped-task*, unevaluated-task*)
+  DebugResult : CollectDebugResult * List(TaskID) * List(TaskID) * List(TaskID) -> DebugResult
+
+  // TimeResult(parse-time, pre-trans-time, collect-time, perform-time, post-trans-time, index-persist-time, task-persist-time)
+  TimeResult : Real * Real * Real * Real * Real * Real * Real -> TimeResult
+
+  Eq: Relation

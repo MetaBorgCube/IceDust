@@ -1,0 +1,53 @@
+module expressions-aggregation
+
+rules
+  
+  [[ Min(e1) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult,
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    
+  [[ Max(e1) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] := // identical to Min
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult,
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    
+  [[ Avg(e1) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] := // identical to Min
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsNumeric(),
+    out_mult is upperboundOne of e1_mult,
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    
+  [[ Sum(e1) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsNumeric(),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    
+  [[ Conj(e1) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsBoolean(),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+
+  [[ Disj(e1) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] := // identical to Conj
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsBoolean(),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+
+  [[ Concat(e1) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsString(),
+    e1_mult_u is multUpper of e1_mult,
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+
+  [[ Count(e1) ^ (s) : TTuple(TInt(), TOne(), e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_type <test? IsType(). // make sure it evaluates to something
+ 

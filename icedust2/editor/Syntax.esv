@@ -1,0 +1,33 @@
+module Syntax
+
+imports 
+
+  completion/colorer/icedust2-cc-esv
+
+language
+
+  table         : target/metaborg/sdf.tbl
+  start symbols : Start
+
+  line comment  : "//"
+  block comment : "/*" * "*/"
+  fences        : [ ] ( ) { }
+
+menus
+  
+  menu: "Syntax" (openeditor)
+    
+    action: "Format"          = editor-format (source)
+    action: "Show parsed AST" = debug-show-aterm (source)
+    action: "Show desugared AST" = debug-show-desugared (source)
+    action: "Show desugared prettyprint" = debug-show-desugared-pp (source)
+    
+    
+  menu: "Debug"
+
+    action: "debug-get-ast-value" = debug-get-ast-value
+
+views
+  
+  outline view: editor-outline (source)
+    expand to level: 3

@@ -1,0 +1,249 @@
+module java/pp/main
+imports
+  libstratego-lib
+  libstratego-gpp
+  java/Java
+  
+  java/pp/helpers
+  java/pp/statement
+  java/pp/expression
+  java/pp/literal
+  java/pp/name
+  java/pp/modifier
+
+  java/pp/type/parameterized
+  java/pp/type/variable
+  java/pp/type/primitive
+  java/pp/type/reference
+
+  java/pp/class/enum-declaration
+  java/pp/class/method-declaration
+
+  java/pp/interface/annotation
+  java/pp/interface/annotation-type
+  
+  java/Java-parenthesize
+
+strategies
+
+  /**
+   * @type Java -> String
+   */
+  pp-java5-to-string =
+    pp-java5-to-abox
+    ; box2text-string(|80)
+
+  /**
+   * @type Java -> Box
+   */
+  pp-java5-to-abox =
+    pp-java5-to-abox(fail)
+    
+  /**
+   *  @param extension  Strategy that converts an aterm to an abox,
+   *                    overriding the default pretty printing rules.
+   */
+  pp-java5-to-abox(extension) =    
+    parenthesize-Java
+    ; topdown(
+        try(very-special-conflict)
+        ; try(pp-comments(extension <+ java-to-box))
+        ; repeat(extension <+ java-to-box)
+      )
+
+rules
+
+  very-special-conflict:
+    Minus(Minus(e)) -> Minus(Parenthetical(Minus(e)))
+
+  very-special-conflict:
+    Plus(Plus(e)) -> Plus(Parenthetical(Plus(e)))
+
+rules
+
+  pp-comments(pprules) =
+    ?t{a*}
+
+    ; where(
+        <fetch(?(Comment(_), s))> a*
+      ; <pprules> t => b
+      )
+
+    ; if !b => V(_, _) then
+        !|[ V vs=0 [s b] ]|
+      else
+        if <explode-string> s => cs@['/', '/' | _] then
+          <trim(?'\n' + ?'\r' + ?' ' + ?'\t'); implode-string> cs => s1
+          ; !|[ V vs=0 [s1 b] ]|
+        else
+          !|[ H hs=1 [s b] ]|
+        end
+      end
+ 
+rules
+
+  java-to-box:
+    CompilationUnit(Some(package), imports, types) -> box |[ V vs=1 [~package V vs=0 [ ~*imports ] V vs=1 [ ~*types ]] ]|
+
+  java-to-box:
+    CompilationUnit(None(), imports, types) -> box |[ V vs=1 [V vs=0 [~*imports] V vs=1 [~*types]] ]|
+
+  java-to-box:
+    PackageDec(annos, name) -> V hs=0 [~*annos H [KW["package"] H hs=0 [~name ";"]]]
+
+rules
+
+  java-to-box:
+    TypeImportDec(tname) -> H [KW["import"] H hs=0 [~tname ";"]]
+
+  java-to-box:
+    TypeImportOnDemandDec(pname) -> H hs=1 [KW["import"] H hs=0 [~pname ".*;"]]
+
+  java-to-box:
+    StaticImportDec(tname, Id(s)) -> H hs=1 [KW["import"] KW["static"] H hs=0 [~tname "." s ";"]] 
+
+  java-to-box:
+    StaticImportOnDemandDec(tname)  -> H hs=1 [KW["import"] KW["static"] H hs=0 [~tname "." "*" ";"]] 
+
+rules
+
+  java-to-box:
+    Semicolon() -> box |[ ";" ]|
+
+  java-to-box:
+    InterfaceDec(InterfaceDecHead(mods, Id(name), type-args, implements), body)
+      ->
+    V vs=0 [H hs=1 [ ~*mods KW["interface"] H hs=0[~lit:name b*] ~implements] b2]
+    where
+      <type-params-to-boxes> type-args => b*
+    ; <block-structure> (1, body) => b2
+
+  java-to-box:
+    ClassDec(ClassDecHead(mods, Id(name), type-args, extends, implements), body)
+      ->
+    V vs=0 [H hs=1 [~*mods KW["class"] H hs=0[~lit:name b*] ~extends ~implements] ~body]
+    where
+      <type-params-to-boxes> type-args => b*
+
+  java-to-box:
+    ClassBody(decs) -> <block-structure> (1, decs)
+
+  java-to-box:
+    None() -> box |[ H hs=0 [""] ]|
+
+  java-to-box:
+    Some(c) -> c
+
+  java-to-box:
+    SuperDec(c) -> box |[ H hs=1 [KW["extends"] ~c] ]|
+
+  java-to-box:
+    ImplementsDec(is) -> box |[ H hs=1 [KW["implements"] ~interfaces] ]|
+      where <separate-by-comma> is; ?interfaces
+
+  java-to-box:
+    ExtendsInterfaces(is) -> box |[ H hs=1 [KW["extends"] ~interfaces] ]|
+      where <separate-by-comma> is; ?interfaces
+
+rules
+
+  java-to-box:
+    StaticInit(b)   -> box |[ V vs=0 [KW["static"] ~b] ]|
+
+  java-to-box:
+    InstanceInit(b) -> b
+
+rules
+
+  java-to-box:
+    AbstractMethodDec(mods, type-params, type, Id(n), params, throws)
+      ->
+    box |[ H hs=0 [ ~MethodDecHead(mods, type-params, type, Id(n), params, throws) ";" ] ]|
+
+  java-to-box:
+    ConstrDec(ConstrDecHead(mods, type-params, class, params, throws), body)
+      ->
+    V vs=0 [H hs=1 [~*foo ~class ~args ~throws] ~body]
+    where 
+      <list-to-args> params => args 
+    ; <type-params-to-boxes> type-params => targboxes 
+    ; !Conc(mods, targboxes) => foo 
+
+  java-to-box:
+    ConstrBody(None(), stms) -> <block-structure> (0, stms)
+
+  java-to-box:
+    ConstrBody(Some(cinvoke), stms) -> <block-structure> (0, [cinvoke | stms])
+
+  java-to-box:
+    FieldDec(mods, type, ds)
+      ->
+    H hs=1 [~*mods ~type H hs=0 [~decs ";"]]
+    where
+      <separate-by-comma> ds => decs
+
+  java-to-box:
+    ConstantDec(mods, type, ds) -> FieldDec(mods, type, ds)
+
+  java-to-box:
+    VarDec(i) -> i
+
+  java-to-box:
+    VarDec(i, init) -> H hs=1 [~i "=" ~init]
+
+  java-to-box:
+    Id(s) -> box |[ s ]|
+
+  java-to-box:
+    ArrayVarDecId(Id(s), b*) -> H hs=0 [s b*]
+
+  java-to-box:
+    Dim() -> H hs=0 ["[" "]"]
+
+  java-to-box:
+    Dim(e) -> H hs=0 ["[" ~e "]"]
+
+  java-to-box:
+    ArrayInit(exprs) -> H hs=0 ["{" ~vals "}"]
+    where
+      <separate-by-comma> exprs => vals
+
+  java-to-box:
+    AltConstrInv(type-args, exprs) -> H hs=0 [~*b1* KW["this"] ~args ";"]
+    where
+      <list-to-args> exprs => args
+    ; <type-args-to-boxes> type-args => b1*
+
+  java-to-box:
+    SuperConstrInv(type-args, exprs) -> box |[ H hs=0 [~*b1* KW["super"] b2 ";"] ]|
+    where
+      <list-to-args> exprs => b2
+    ; <type-args-to-boxes> type-args => b1*
+
+  java-to-box:
+    QSuperConstrInv(b0, type-args, exprs) -> box |[ H hs=0 [b0 "." b1* KW["super"] b2 ";"] ]|
+    where
+      <list-to-args> exprs => b2
+    ; <type-args-to-boxes> type-args => b1*
+
+  java-to-box :
+    amb(alts) -> V vs=0[V vs=0 is=2 [ "amb>" ~*alts' ] "<amb"]
+    where
+      <map-with-index({s: \
+         (i, b) -> H hs=1 [ H hs=0 [s ">"] b]
+         where
+           <int-to-string> i => s
+       \})> alts => alts'
+
+  // java-to-box :
+  //   PreEBlock(stms, e) -> V vs=0 [ V is=2 ["{|" ~*stms] H hs=1 ["|" ~e "|}"]]
+
+signature
+  constructors
+    Comment   : String -> AnnoKey
+    amb       : List(A) -> A
+
+    /**
+     * Construct from Dryad. Dirty, but useful to have here.
+     */
+    Field     : Id -> Expr

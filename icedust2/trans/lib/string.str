@@ -1,0 +1,66 @@
+module lib/string
+
+imports
+
+  lib/origin
+
+rules // truncating
+  
+  truncate-string(|maxlen): s -> s'
+    with
+      if <gt>(<strlen>s, maxlen) then
+        trunc := <explode-string;split-at(|<dec;dec;dec>maxlen);?(<id>,_);implode-string>s;
+        s':= <conc-strings>(trunc, "...")
+      else
+        s' := s
+      end
+
+rules // casing
+  
+  first-is-upper = where(explode-string;Hd;is-upper)
+  
+  lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
+  lcfirst = keep-origin(string-as-chars(lcfirst-chars))
+
+  ucfirst-chars: [c|rest] -> [<to-upper>c|rest]
+  ucfirst = keep-origin(string-as-chars(ucfirst-chars))
+
+rules // prepend indefinite article
+  
+  string-prep-a-an = where(string-starts-with-vowel);    ?a;!$[an [a]]
+  string-prep-a-an = where(string-starts-with-consonant);?b;!$[a [b]]
+  
+  string-starts-with-vowel =
+    string-starts-with(|"a") <+
+    string-starts-with(|"A") <+
+    string-starts-with(|"e") <+
+    string-starts-with(|"E") <+
+    string-starts-with(|"i") <+
+    string-starts-with(|"I") <+
+    string-starts-with(|"o") <+
+    string-starts-with(|"O") <+
+    string-starts-with(|"u") <+
+    string-starts-with(|"U")
+  
+  string-starts-with-consonant = not(string-starts-with-vowel)
+
+rules // sorting (keeping annotations)
+  
+  string-sort-anno      = qsort(string-lt)
+  string-sort-anno-desc = qsort(string-gt)
+  
+rules // concat with 
+
+  concat-strings(|sep) = separate-by(|sep);concat-strings
+
+rules // string repeat
+
+  whitespace = ?i;!" ";string-repeat(|i)
+
+  string-repeat(|i) = ?s;!"";repeat(string-append(|s)|i)
+  
+  string-append(|s2): s1 -> $[[s1][s2]]
+  
+rules
+
+  copy-string = keep-origin(explode-string;implode-string)

@@ -1,0 +1,56 @@
+module prettyprint-program1
+
+language icedust2
+
+fixture [[
+  module [[...]]
+  model
+    entity Foo {
+      i : Int ?
+      a : Int = i <+ 0
+    }
+    entity Bar {}
+    entity Baz {}
+    relation Bar.baz <-> Baz.bar
+  data
+    foo:Foo{}
+    bar:Bar{
+      baz=baz{}
+    }
+  execute
+    foo.a
+    1+1
+]]
+
+test pretty printer not crashing [[test]] transform "Syntax -> Format" to
+"module test
+
+model
+
+  entity Foo {
+    i : Int?
+    a : Int  = i <+ 0
+  }
+
+  entity Bar {
+  }
+
+  entity Baz {
+  }
+
+  relation Bar.baz <-> Baz.bar
+
+data
+
+  foo : Foo { }
+  bar : Bar {
+    baz =
+      baz {
+      }
+  }
+
+execute
+
+  foo.a
+  1 + 1
+"

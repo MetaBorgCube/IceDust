@@ -1,0 +1,153 @@
+module generating/webdsl/module
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+//  desugaring/constructors
+  signatures/Types-sig
+  analysis2/path
+  tiersplit/constructors
+
+imports // functions
+  
+  generating/_ir/model 
+  generating/webdsl/module-derivations
+  generating/webdsl/module-ui
+  generating/webdsl/model
+  generating/webdsl/data
+  generating/webdsl/types
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  lib/lists-tuples
+  lib/string
+
+rules // module
+
+  modulename-to-webdsl-application(err): x_moduleName -> result
+    where
+      <is-modulename> x_moduleName
+    with
+      def_model*     := <modulename-get-entitynames; map(model-entityname-to-webdsl-def(err))>x_moduleName;
+      stat_initdata* := <data-modulename-to-webdsl-stms(err)>x_moduleName
+    with
+      if modulename-is-explorerui then
+        def_crud*      := <modulename-get-entitynames;fmap(entityname-to-webdsl-defs)>x_moduleName;
+        elem_menu*     := <modulename-get-entitynames; map(entityname-to-webdsl-elem)>x_moduleName
+      end
+    with
+      def_dirtyReqVar* := <modulename-get-arrinames-default-derived-incremental-eventual;map(attributename-to-webdsl-def)>x_moduleName;
+      stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
+    with
+      stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-stat)>x_moduleName;
+      native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
+      stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
+    with
+      sec_modelData* := section* |[
+        section data
+          
+          init {
+            stat_initdata*
+          }
+        
+        section model
+        
+          def_model*
+      ]|
+    with
+      if modulename-is-explorerui then
+        sec_ui* := section* |[
+          section ui
+          
+            define applicationmenu() {
+              elem_menu*
+            }
+            
+            def_crud*
+        ]|
+      end
+    with
+      sec_cachesDirtyflag* := section* |[
+        section caches and dirty flags
+        
+          def_dirtyReqVar*
+          
+          function updateDerivations(){
+            stat_cach*
+          }
+      ]|
+    with
+      sec_asyncDirtyflag* :=  section* |[
+        section async dirty flags
+          
+          function flagDirtyAsync(){
+            stat_flagasync*
+          }
+          
+          function updateDerivationsAsync(){
+            stat_cachAsync*
+          }
+          
+          invoke updateDerivationsAsync() every 1 milliseconds
+          
+          native class derivations.DirtyCollections as DirtyCollections {
+            native1*
+          }
+          
+          native class java.util.Queue as Queue{
+            offer(String) : Bool
+            add(String) : Bool
+            addAll(List<String>) : Bool
+            poll() : String
+            contains(String) : Bool
+            isEmpty() : Bool
+          }
+      ]|
+    with
+      sec_hibernateTriggers* :=  section* |[
+        section triggers
+      
+          function beforeTransactionCompletion(){
+            updateDerivations();
+            flush();
+          }
+          
+          function afterTransactionCompletionCommitted(){
+            flagDirtyAsync();
+          }
+      ]|
+    with
+      if modulename-is-explorerui then
+        result := application |[
+          application x_moduleName
+        
+          imports lib/icedust/modelexplorer-ui
+          imports lib/icedust/non-required-inputs
+          imports lib/icedust/Expressions
+      
+          sec_modelData*
+          
+          sec_ui*
+        
+          sec_cachesDirtyflag*
+        
+          sec_asyncDirtyflag*
+        
+          sec_hibernateTriggers*
+        ]|
+      else //embedded model
+        result := module |[
+          module x_moduleName
+        
+          imports lib/icedust/Expressions
+      
+          sec_modelData*
+        
+          sec_cachesDirtyflag*
+        
+          sec_asyncDirtyflag*
+        
+          sec_hibernateTriggers*
+        ]|
+      end

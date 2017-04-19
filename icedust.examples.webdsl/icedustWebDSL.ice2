@@ -1,0 +1,10 @@
+module icedustWebDSL
+
+model
+
+  entity Foo{
+    bar : String
+    bar2 : String = bar
+  }
+  
+  relation Foo.o (ordered) <-> Foo.u

@@ -1,0 +1,29 @@
+module generating/webdsl-java/generate
+
+imports // constructors
+
+  signatures/Modules-sig
+
+imports // functions
+
+  api/module-api
+  java/pretty-print
+  generating/webdsl/java/module
+
+rules // documentation
+  
+  /*
+   * Generate a native java java.util.concurrent.ConcurrentLinkedQueue<E> for each type.
+   * Each normal page request can flag items dirty in these queues.
+   * The central eventual consistent thread empties these queues and computes everything.
+   * Items may be added during computation, the algorithm will do those first in order to avoid unnecessary computation (note this might lead to starvation during heavy use).
+   */
+
+rules // Builders
+  
+  generate-webdsl-java-code(err):moduleName -> (result, errors)
+    with
+      java-ast := <modulename-to-java-compilationunit2(err)> moduleName;
+      errors   := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+      java-ast':= <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> java-ast;
+      result   := <pp-java-string> java-ast'

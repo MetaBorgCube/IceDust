@@ -1,0 +1,22 @@
+module generating/webdsl/generate
+
+imports // constructors
+
+  signatures/Modules-sig
+
+imports // functions
+
+  api/module-api
+  generating/webdsl/module
+  webdsl/pp-webdsl
+  webdsl/WebDSL-parenthesize
+
+rules // Builders
+  
+  generate-webdsl-code(err): moduleName -> (result, errors)
+    with
+      webdsl-ast   := <modulename-to-webdsl-application(err)> moduleName;
+      errors       := <collect-om(\("ERROR_PLACEHOLDER", msg) -> msg\)>;
+      webdsl-ast'  := <bottomup(try(\("ERROR_PLACEHOLDER", msg) -> []\))> webdsl-ast;
+      webdsl-ast'' := <parenthesize-WebDSL>webdsl-ast';
+      result       := <pp-webdsl-to-string> webdsl-ast''

@@ -1,0 +1,30 @@
+module types
+
+rules
+  
+  [[ EntityType(e) ^ (s) : TEntity(e_def) ]] :=
+    Entity{e} -> s,
+    Entity{e} |-> e_def.
+
+  [[ Boolean()           ^ (s) : ty ]] := ty == TBoolean().
+  [[ Datetime()          ^ (s) : ty ]] := ty == TDatetime().
+  [[ Float()             ^ (s) : ty ]] := ty == TFloat().
+  [[ Int()               ^ (s) : ty ]] := ty == TInt().
+  [[ String()            ^ (s) : ty ]] := ty == TString().
+
+  [[ One()               ^ (s) : mu ]] := mu == TOne().
+  [[ ZeroOrOne()         ^ (s) : mu ]] := mu == TZeroOrOne().
+  [[ OneOrMore()         ^ (s) : mu ]] := mu == TOneOrMore().
+  [[ ZeroOrMore()        ^ (s) : mu ]] := mu == TZeroOrMore().
+  [[ OneOrMoreOrdered()  ^ (s) : mu ]] := mu == TOneOrMoreOrdered().
+  [[ ZeroOrMoreOrdered() ^ (s) : mu ]] := mu == TZeroOrMoreOrdered().
+
+  [[ Some(Incremental())       ^ (s) : st ]] := st == TIncremental().
+  [[ Some(OnDemand())          ^ (s) : st ]] := st == TOnDemand().
+  [[ Some(Eventual())          ^ (s) : st ]] := st == TEventual().
+  [[ Some(OnDemandEventual())  ^ (s) : st ]] := st == TOnDemandEventual().
+  [[ None()                    ^ (s) : st ]] :=
+    Implicit{"this"} -> s,
+    Implicit{"this"} |-> this_def,
+    this_def : this_ty,
+    this_ty == TTuple(this_type, this_mult, st).

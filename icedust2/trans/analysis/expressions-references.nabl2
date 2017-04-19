@@ -1,0 +1,30 @@
+module expressions-references
+
+rules
+
+  [[ This() ^ (s) : TTuple(this_type, TOne(), TIncremental()) ]] :=
+    Implicit{"this"} -> s,
+    Implicit{"this"} |-> this_def,
+    this_def : TTuple(this_type, TOne(), this_strat_attrs).
+
+  [[ Ref(r) ^ (s) : r_def_tup ]] :=
+    Member{r} -> s,
+    Member{r} |-> r_def,
+    r_def : r_def_tup,
+    r_def_tup == TTuple(r_def_type, r_def_mult, r_def_strat),
+    r_def.side := r_def_side,
+    materialization is materialization of (r_def_strat, r_def_side),
+    materialization == TMaterialized() | note $[Error: Right-hand side of relation is not materialized with [r_def_strat], use Incremental() or Eventual()] @r.
+      
+  [[ MemberAccess(expr, r) ^ (s) : TTuple(r_def_type, out_mult, out_strat) ]] :=
+    [[expr ^ (s) : TTuple(expr_type, expr_mult, expr_strat) ]],
+    expr_type == TEntity(expr_type_entity),
+    expr_type_entity ?=I=> entity_scope,
+    new_scope -I-> entity_scope,
+    Member{r} -> new_scope,
+    Member{r} |-> r_def,
+    r_def : r_def_tup,
+    r_def_tup == TTuple(r_def_type, r_def_mult, r_def_strat),
+    out_mult is mulOrd.lub of (expr_mult,r_def_mult),
+    out_strat is strat.lub of (expr_strat,r_def_strat),
+    new new_scope.

@@ -1,0 +1,10 @@
+module expressions-literals
+
+rules
+  [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ,TIncremental()) ]] := true.
+  [[ Float(_)     ^ (s) : TTuple(TFloat()   , TOne()      ,TIncremental()) ]] := true.
+  [[ True()       ^ (s) : TTuple(TBoolean() , TOne()      ,TIncremental()) ]] := true.
+  [[ False()      ^ (s) : TTuple(TBoolean() , TOne()      ,TIncremental()) ]] := true.
+  [[ Datetime(_)  ^ (s) : TTuple(TDatetime(), TOne()      ,TIncremental()) ]] := true.
+  [[ LitString(_) ^ (s) : TTuple(TString()  , TOne()      ,TIncremental()) ]] := true.
+  [[ NoValue()    ^ (s) : TTuple(TNoValue() , TZeroOrOne(),TIncremental()) ]] := true.

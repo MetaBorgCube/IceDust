@@ -1,0 +1,17 @@
+src-gen
+target
+/.classpath
+/.project
+/.settings
+**/nativejava
+**/stylesheets
+**/.saved-but-not-built
+**/javascript
+**/*.class
+**/*.java
+**/lib
+/*/*/*.class
+/*/*/*.java
+/*/*/lib
+**/.saved-but-not-built
+**/common_.css

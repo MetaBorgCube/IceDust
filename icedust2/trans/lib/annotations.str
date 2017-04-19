@@ -1,0 +1,14 @@
+module lib/annotations
+
+imports
+  
+rules
+  
+  has-annotation(|kind) = where(get-annotation(|kind))
+  
+  get-annotation(|kind) = get-annos;fetch-elem(?(kind, <id>))
+
+  set-annotations(|annos): term -> <set-annotations>(term, annos)
+  
+  _rm-annotations = rm-annotations
+  

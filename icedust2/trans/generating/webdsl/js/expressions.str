@@ -1,0 +1,53 @@
+module generating/webdsl/js/expressions
+
+imports // constructors
+
+  lib/js/signatures/spoofaxJS-sig
+  signatures/Expressions-sig  
+  tiersplit/constructors
+
+imports // functions
+
+  generating/webdsl/js/js-helper
+
+rules // lib expression calls
+
+  expr-to-js: expr -> js
+    where
+      lib-call
+    with
+      arg*            := <get-arguments>expr;
+      exp_args*       := <map(expr-to-js)>arg*;
+      exp_call        := Identifier(<lib-method-name>expr) //TODO: proper js literal syntax
+    with
+      js := js-ex |[
+        exp_call(exp_args*)
+      ]|
+
+rules // literals
+
+  expr-to-js: LitString(str1) -> <js-string> str1
+  expr-to-js: Float(f)        -> FloatLiteral(f)
+  expr-to-js: Int(i)          -> IntegerLiteral(i)
+  expr-to-js: True()          -> True()
+  expr-to-js: False()         -> False()
+  expr-to-js: NoValue()       -> Null()
+  expr-to-js: Datetime(str1)  -> js-ex |[ parseDatetime(exp_1) ]| with exp_1 := String(str1)
+  
+rules // casts
+  
+  expr-to-js: Cast(ex1, ex1-ty) -> js-cast
+    with
+      exp_1    := <expr-to-js>ex1;
+      exp_call := Identifier($[as[<postfix-id>ex1-ty]]); //TODO: proper js literal syntax
+      js-cast  := js-ex |[ exp_call(exp_1) ]|
+
+rules // references
+
+  expr-to-js: Ref(attributeName) -> js-ex |[ get(exp_attributeName) ]|
+    with
+      exp_attributeName := <attributename-entityname;js-string>attributeName
+
+  expr-to-js: TierSplit(name) -> js-ex |[ getPartialVar(exp_name) ]|
+    with exp_name := <js-string> name
+        

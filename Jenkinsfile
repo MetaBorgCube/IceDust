@@ -21,8 +21,8 @@ node{
     stage('Build and Test') {
       withMaven(
         //mavenLocalRepo: "${env.JENKINS_HOME}/m2repos/${env.EXECUTOR_NUMBER}", //http://yellowgrass.org/issue/SpoofaxWithCore/173
-        mavenLocalRepo: ".repository",
-        mavenOpts: '-Xmx1G -Xms1G -Xss16m'
+		mavenLocalRepo: ".repository",
+        mavenOpts: '-Xmx2G -Xms2G -Xss16m'
       ){
         sh 'mvn -B -U clean verify -DforceContextQualifier=\$(date +%Y%m%d%H%M)'
       }
@@ -30,7 +30,7 @@ node{
 
     stage('Archive') {
       archiveArtifacts(
-        artifacts: 'icedust.eclipse.updatesite/target/site/',
+        artifacts: 'icedust2.eclipse.site/target/site/,icedust.eclipse.updatesite/target/site/',
         excludes: null,
         onlyIfSuccessful: true
       )
