@@ -19,7 +19,7 @@ imports // functions
   prettyprinting/pp
   names/naming/names
   completion/IceDust-cp
-  runtime/completion/-
+  libspoofax/editor/completion/-
   
 rules // Editor services
   

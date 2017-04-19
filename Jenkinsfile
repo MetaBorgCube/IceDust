@@ -1,10 +1,10 @@
 properties([
-  pipelineTriggers([
-    upstream(
-      threshold: hudson.model.Result.SUCCESS,
-      upstreamProjects: '/metaborg/spoofax-releng/master'
-    )
-  ]),
+  //pipelineTriggers([
+  //  upstream(
+  //    threshold: hudson.model.Result.SUCCESS,
+  //    upstreamProjects: '/metaborg/spoofax-releng/master'
+  //  )
+  //]),
   buildDiscarder(logRotator(artifactNumToKeepStr: '3')),
   disableConcurrentBuilds()
 ])
@@ -30,7 +30,7 @@ node{
 
     stage('Archive') {
       archiveArtifacts(
-        artifacts: 'icedust2.eclipse.site/target/site/',
+        artifacts: 'icedust2.eclipse.site/target/site/,icedust.eclipse.updatesite/target/site/',
         excludes: null,
         onlyIfSuccessful: true
       )

@@ -1,0 +1,45 @@
+module types-multiplicity-op-merge
+
+language IceDust
+
+fixture [[
+  module test
+  model
+  entity X{
+    i : Int ?
+  }
+  relation X.yOrdered * (ordered) <-> * X.yUnordered
+  data
+  x : X {
+    i=9
+  }
+  execute
+    3
+    [[...]]
+]]
+
+
+test type of merge Int    [[4 ++ 3]]     run get-type2 to Int()
+test type of merge String [["a" ++ "b"]] run get-type2 to String()
+
+test mul ZeroOrOne  merge ZeroOrOne  [[x.i        ++ x.i]]        run get-multiplicity to ZeroOrMoreOrdered()
+test mul ZeroOrOne  merge One        [[x.i        ++ 3]]          run get-multiplicity to OneOrMoreOrdered()
+test mul ZeroOrOne  merge ZeroOrMore [[x.i        ++ (x.i++x.i)]] run get-multiplicity to ZeroOrMoreOrdered()
+test mul ZeroOrOne  merge OneOrMore  [[x.i        ++ (3++2)]]     run get-multiplicity to OneOrMoreOrdered()
+test mul One        merge ZeroOrOne  [[4          ++ x.i]]        run get-multiplicity to OneOrMoreOrdered()
+test mul One        merge One        [[4          ++ 3]]          run get-multiplicity to OneOrMoreOrdered()
+test mul One        merge ZeroOrMore [[4          ++ (x.i++x.i)]] run get-multiplicity to OneOrMoreOrdered()
+test mul One        merge OneOrMore  [[4          ++ (3++2)]]     run get-multiplicity to OneOrMoreOrdered()
+test mul ZeroOrMore merge ZeroOrOne  [[(x.i++x.i) ++ x.i]]        run get-multiplicity to ZeroOrMoreOrdered()
+test mul ZeroOrMore merge One        [[(x.i++x.i) ++ 3]]          run get-multiplicity to OneOrMoreOrdered()
+test mul ZeroOrMore merge ZeroOrMore [[(x.i++x.i) ++ (x.i++x.i)]] run get-multiplicity to ZeroOrMoreOrdered()
+test mul ZeroOrMore merge OneOrMore  [[(x.i++x.i) ++ (3++2)]]     run get-multiplicity to OneOrMoreOrdered()
+test mul OneOrMore  merge ZeroOrOne  [[(3++2)     ++ x.i]]        run get-multiplicity to OneOrMoreOrdered()
+test mul OneOrMore  merge One        [[(3++2)     ++ 3]]          run get-multiplicity to OneOrMoreOrdered()
+test mul OneOrMore  merge ZeroOrMore [[(3++2)     ++ (x.i++x.i)]] run get-multiplicity to OneOrMoreOrdered()
+test mul OneOrMore  merge OneOrMore  [[(3++2)     ++ (3++2)]]     run get-multiplicity to OneOrMoreOrdered()
+
+test ord Ordered   merge Ordered     [[x.yOrdered   ++ x.yOrdered   ]] run get-multiplicity to ZeroOrMoreOrdered() // is ordered
+test ord Ordered   merge Unordered   [[x.yOrdered   ++ x.yUnordered ]] run get-multiplicity to ZeroOrMore() // is unordered
+test ord Unordered merge Unordered   [[x.yUnordered ++ x.yUnordered ]] run get-multiplicity to ZeroOrMore() // is unordered
+test ord Unordered merge Ordered     [[x.yUnordered ++ x.yOrdered   ]] run get-multiplicity to ZeroOrMore() // is unordered

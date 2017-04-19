@@ -1,0 +1,48 @@
+module generate-expressions-roles-inverses
+
+language IceDust
+
+fixture [[
+  module ExpressionsRolesInverses
+  
+  model
+  
+    entity Person {
+      name : String
+    }
+  
+    relation Marriage {
+      Person.marriage  ? -> husband
+      Person.marriage2 ? -> wife
+    }
+  
+    relation Counseling {
+      Person *   -> counselor
+      Marriage 1 -> counselled
+    }
+  
+  data
+  
+    man : Person {
+      name = "Bob"
+      wife =
+        < theMarriage { } >
+        woman {
+          name = "Alice"
+        }
+    }
+    counsellor : Person {
+      name = "Charles"
+      counselled = theMarriage
+    }
+  
+  execute
+  
+  
+    man.marriage.counseling.counselor.name // and then get the counselor of this marriage
+    [[...]]
+]]
+
+//test Expressions Roles Inverses  execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//"Charles
+//"

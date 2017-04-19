@@ -25,13 +25,13 @@ rules
   
   analyse-post-analysis(|context): e@Ref(a) -> e{(NablProp_multiplicity(), mu), (Type(), ty)}
     with
-      ty := <_get-type>a;
+      ty := <get-type2>a;
       mu := <get-multiplicity>a
       
   analyse-post-analysis(|context): e@MemberAccess(expr, member) -> MemberAccess(expr', member){(NablProp_multiplicity(), mu), (Type(), ty)}
     with
       expr'     := <analyse-post-analysis(|context)>expr;
-      ty        := <_get-type>member;
+      ty        := <get-type2>member;
       expr-mu   := <get-multiplicity>expr';
       member-mu := <get-multiplicity>member;
       mu        := <cartesian-product>(expr-mu, member-mu)

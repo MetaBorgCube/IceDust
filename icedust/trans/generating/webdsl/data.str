@@ -32,7 +32,7 @@ rules // entity instances
 
   entityinstancename-to-webdsl-stm(err): x_eiName -> result
     with
-      srt1 := <_get-type>x_eiName
+      srt1 := <get-type2>x_eiName
     with
       result := stat |[
         var x_eiName := srt1 {};

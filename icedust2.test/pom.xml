@@ -7,20 +7,20 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
   <artifactId>icedust2.test</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.6.3-SNAPSHOT</version>
   <packaging>spoofax-test</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>parent.language</artifactId>
-    <version>2.2.0-SNAPSHOT</version>
+    <version>2.2.0</version>
   </parent>
   
   <dependencies>
     <dependency>
       <groupId>org.metaborg.lang</groupId>
       <artifactId>icedust2</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>0.6.3-SNAPSHOT</version>
       <type>spoofax-language</type>
     </dependency>
     <dependency>
@@ -39,7 +39,7 @@
         <artifactId>spoofax-maven-plugin</artifactId>
         <version>${metaborg-version}</version>
         <configuration>
-          <languageUnderTest>org.metaborg.lang:icedust2:0.1.0-SNAPSHOT</languageUnderTest>
+          <languageUnderTest>org.metaborg.lang:icedust2:0.6.3-SNAPSHOT</languageUnderTest>
         </configuration>
       </plugin>
     </plugins>
