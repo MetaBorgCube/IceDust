@@ -1,9 +1,10 @@
-id: org.metaborg:icedust.test:0.6.1
+id: org.metaborg:icedust.test:0.6.2
 name: IceDust
-metaborgVersion: 2.1.0
+metaborgVersion: 2.2.0
 dependencies:
   compile:
-  - org.metaborg:icedust:0.6.1
+  - org.metaborg:icedust:0.6.2
   - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lang.analysis:${metaborgVersion}
 build:
   useBuildSystemSpec: true

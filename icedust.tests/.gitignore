@@ -11,3 +11,7 @@ target
 /.classpath
 /.project
 /.settings
+**/nativejava
+**/stylesheets
+**/.saved-but-not-built
+**/javascript

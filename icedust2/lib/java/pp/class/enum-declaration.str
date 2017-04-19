@@ -1,0 +1,32 @@
+module java/pp/class/enum-declaration
+rules
+
+  java-to-box:
+    EnumDec(head, body) -> box |[ V hs=0 [~head ~body] ]|
+
+  java-to-box:
+    EnumDecHead(mods, Id(name), implements)
+      ->
+    box |[ H hs=1 [~*mods KW["enum"] ~lit:name ~implements] ]|
+
+  java-to-box:
+    EnumBody(consts, body) -> <block-structure> (1, [consts2, body2])
+    where
+      <separate-by-comma> consts => consts2
+    ; (!body => None() < ![] +  ![body]) => body2
+
+  java-to-box:
+    EnumConst(Id(s), None(), None()) -> box |[ s ]|
+
+  java-to-box:
+    EnumConst(Id(s), Some(args), None()) -> box |[ H hs=0 [s ~args'] ]|
+    where
+      <list-to-args> args => args'
+
+  java-to-box:
+    EnumConst(Id(s), args, Some(body)) -> box |[ V vs=0 [~enum  ~body] ]|
+    where
+      !EnumConst(Id(s), args, None()) => enum
+
+  java-to-box:
+   EnumBodyDecs(decs) -> box |[ V vs=1 [";" ~*decs] ]|

@@ -1,0 +1,39 @@
+module lib/new-name
+
+rules // alternative implementation of newname, passing the names and counters around
+  
+  new-name: (prefix, history) -> (name, history')
+    with
+      history' := <update-history>(prefix, history);
+      name := $[[prefix][<in-history>(prefix, history')]]
+
+  in-history : (prefix, history) -> count
+    where
+      [(_, count)] := <filter(in-history-prefix(|prefix))>history
+      
+  in-history-prefix(|prefix): (prefix2, count) -> <id>
+    where
+      <eq>(prefix, prefix2)
+      
+  update-history: (prefix, history) -> [(prefix,1)|history]
+    where
+      not(in-history)
+
+  update-history: (prefix, history) -> <map(try(update-history-prefix(|prefix)))>history
+    where
+      in-history
+  
+  update-history-prefix(|prefix): (prefix2, count) -> (prefix2, <inc>count)
+    where
+      <eq>(prefix, prefix2)
+      
+rules
+  
+  test-new-name: a -> a
+    with
+      (name1, history1) := <new-name;debug>("a",[]);
+      (name2, history2) := <new-name;debug>("a",history1);
+      (name3, history3) := <new-name;debug>("b",history2);
+      (name4, history4) := <new-name;debug>("a",history3)
+
+

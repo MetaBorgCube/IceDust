@@ -1,0 +1,30 @@
+module lib/eq
+
+imports
+
+  api/_runtime
+
+rules
+
+  eq-no-anno(|x): y -> y
+    where
+      x2 := <rm-annotations>x;
+      y2 := <rm-annotations>y;
+      <equal(|x2)>y2
+
+rules
+
+  eq(|a) = equal(|a)
+
+rules
+
+  eq-origin(|x): y -> y
+    where
+      x-o := <origin-offset>x;
+      y-o := <origin-offset>y
+    where
+      <eq(|x  )>y;
+      <eq(|x-o)>y-o
+  
+  eq-origin = ?(x, y);!y;eq-origin(|x)
+  

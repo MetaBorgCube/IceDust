@@ -1,0 +1,16 @@
+module lib/js/signatures/MethodDecl-sig
+
+imports
+  lib/js/signatures/Common-sig
+  lib/js/signatures/Statement-sig
+  lib/js/signatures/Expression-sig
+  lib/js/signatures/Parameter-sig
+
+
+signature
+  constructors
+    method           : ID * List(Parameter) * List(Statement) -> MethodDecl
+    MethodDecl-Plhdr : MethodDecl
+    ID-Plhdr         : ID
+    Parameter-Plhdr  : Parameter
+    Statement-Plhdr  : Statement

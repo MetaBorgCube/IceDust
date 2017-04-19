@@ -1,0 +1,79 @@
+module lib/lists-tuples
+
+imports
+
+rules // (|b) a -> (a, b)
+  
+  tuple-with(|b): a -> (a, b)
+
+rules // (|a) b -> (a, b)
+  
+  tuple-with-rev(|a): b -> (a, b)
+
+rules // tuple -> tuple
+
+  tuple-reverse = TupleToList;reverse;ListToTuple
+
+rules // (a * List(b)) -> List((a * b))
+  
+  zip-repeat-1: (a, bs) -> <map(tuple-with-rev(|a))>bs
+
+rules // (List(a) * b) -> List((a * b))
+
+  zip-repeat-2: (as, b) -> <map(tuple-with(|b))>as
+
+rules // List -> List
+  
+  make-set-ordered = reverse;make-set
+
+rules // List -> List or fail
+  
+  list-empty     = ?[]
+  list-not-empty = not(?[])
+
+rules // s1:a->List(b)  s2:a->List(b)  a->List(b)
+
+  concat(s1,s2): t -> <concat>[<s1>t, <s2>t]
+  concat(s1,s2,s3): t -> <concat>[<s1>t, <s2>t, <s3>t]
+  concat(s1,s2,s3,s4): t -> <concat>[<s1>t, <s2>t, <s3>t, <s4>t]
+  concat(s1,s2,s3,s4,s5): t -> <concat>[<s1>t, <s2>t, <s3>t, <s4>t, <s5>t]
+
+rules // s1:a->b  s2:a->c  a->(a, b)
+  
+  ttuple(s1,s2): t -> (<s1>t, <s2>t)
+  ttuple(s1,s2,s3): t -> (<s1>t, <s2>t, <s3>t)
+
+rules // List -> List
+  
+  list-duplicates : [] -> []
+  list-duplicates : [h|tail] -> [h|<list-duplicates>tail] where <elem>     (h,tail)
+  list-duplicates : [h|tail] ->    <list-duplicates>tail  where <not(elem)>(h,tail)
+
+rules // List(a) -> a
+  
+  lFst:   [x | xs] -> x
+  lSnd:   [x, y | xs] -> y
+  lThird: [x, y, z | xs] -> z
+
+rules // s1:a->a'   s2:b->b'  (a,b)->(a',b')
+
+  split2(s1,s2) = !(<Fst;s1>,<Snd;s2>) //fixed version of split
+
+rules
+
+  append(|t) = ?t*;![t*,t]
+
+rules // s:(a,a)->a/fail  (a, List(a, b)) -> b
+
+  lookup2(keyeq) = lookup(split2(id,Fst);keyeq);Snd
+  
+rules
+
+  list-add(|h): t -> [h | t]
+  
+  list-max(|lowerbound) = list-add(|lowerbound);list-max
+  
+rules
+
+  diff-no-annos = diff(strip-annos)
+  

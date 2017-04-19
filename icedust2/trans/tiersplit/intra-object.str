@@ -1,0 +1,60 @@
+module tiersplit/intra-object
+
+imports // constructors
+
+  signatures/Types-sig
+  signatures/Expressions-sig
+  tiersplit/constructors
+
+imports // functions
+
+  api/expressions-api
+  api/model-names-api
+  lib/debug
+  lib/new-name
+  lib/traverse
+  generating/_ir/model
+  
+rules
+
+  attributename-get-expr-tiersplit-expr = attributename-get-expr-tiersplit;Fst
+  attributename-get-expr-tiersplit-vars = attributename-get-expr-tiersplit;Snd
+
+  attributename-get-expr-tiersplit: attrName -> (e', vars')
+    with
+      expr        := <attributename-get-expr>attrName;
+      prefix      := <attributename-entityname-prefix>attrName;
+      (e', vars') := <split-expr(|prefix)>expr
+
+rules
+
+  on-client = ?This()
+  on-client = ?Ref(name);!name;where(is-attributename)
+  on-client = get-arguments;where(one(on-client))
+  on-client = ?None() // no parent means this code is executed from client
+  
+  on-server = not(on-client)
+  
+  split-on: (term, parent) -> <id>
+    where
+      <is-expr>term;
+      <not(is-literal)>term;
+      <on-server>term;
+      <on-client>parent
+  
+  split-strat(|prefix): (term, parent, fold-value*) -> (term', fold-value')
+    where
+      <split-on>(term, parent)
+    with
+      n           := <length;int-to-string>fold-value*;
+      name        := $[[prefix][n]];
+      term'       := TierSplit(name);
+      fold-value' := [fold-value*, TierSplit(name, term)]
+    
+  split-strat(|prefix): (term, parent, fold-value) -> (term, fold-value)
+    where
+      <not(split-on)>(term, parent)
+    
+  split-expr(|prefix): e -> (e', vars)
+    with
+      (e', vars) := <topdown-parent-fold-keep-anno(split-strat(|prefix))>(e, None(), [])

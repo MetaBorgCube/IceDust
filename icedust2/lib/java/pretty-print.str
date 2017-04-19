@@ -1,0 +1,42 @@
+/**
+ * Main interface for pretty-printing.
+ * 
+ * @author Martin Bravenboer
+ */
+module pretty-print
+
+imports
+  
+  java/pp/main
+
+strategies
+
+  /**
+   * Pretty-prints the Java AST to a string.
+   *
+   * @type Java -> String
+   */
+  pp-java-string =
+    pp-java5-to-string
+
+  /**
+   * Pretty-prints the Java AST to the Stream.
+   *
+   * @param Stream
+   * @type Java -> Stream
+   */
+  // pp-java-stream(|stream) =
+  //   pp-java-box
+  //   ; box2text-stream(|80, stream)
+
+  /**
+   * Pretty-prints the Java AST to a Box representation.
+   *
+   * @type Java -> Box
+   */
+  pp-java-box =
+    pp-java-box(fail)
+
+  pp-java-box(extension) =
+    pp-java5-to-abox(extension)
+

@@ -1,0 +1,92 @@
+module names-members
+
+language icedust2
+
+fixture [[
+  module members
+
+  model
+  
+  [[...]]
+
+]]
+
+test error on attribute and role with same name [[
+  entity Student{  }
+  
+  relation Enrollment{
+    Student.enrollment * -> [[student]]
+    [[student]] : Int
+  }
+]] 2 errors at #1,#2
+
+test error on attribute and inverse with same name [[
+  entity Student{
+    [[enrollment]] : Int
+  }
+  
+  relation Enrollment{
+    Student.[[enrollment]] * -> student
+  }
+]] 2 errors at #1,#2
+
+test error on attribute and shortcut with same name [[
+  entity Student{
+    [[course]] : Int
+  }
+  
+  entity Course{
+    
+  }
+  
+  relation Enrollment{
+    Student.enrollment * -> student
+    Course.enrollment +  -> course
+    
+    student.[[course]] <-> course.student
+  }
+]] 2 errors at #1,#2
+
+test error on role and inverse with same name [[
+  relation Student{
+    Enrollment.x * -> [[enrollment]]
+  }
+  
+  relation Enrollment{
+    Student.[[enrollment]] * -> student
+  }
+]] 2 errors at #1,#2
+
+test error on role and shortcut with same name [[
+  relation Student{
+    Course.x * -> [[course]]
+  }
+  
+  entity Course{
+    
+  }
+  
+  relation Enrollment{
+    Student.y * -> student
+    Course.z *  -> course
+    
+    student.[[course]] <-> course.student
+  }
+]] 2 errors at #1,#2
+
+test error on inverse and shortcut with same name [[
+  relation Student{
+    Course.[[student]] * -> course
+  }
+  
+  entity Course{
+    
+  }
+  
+  relation Enrollment{
+    Student.y * -> student
+    Course.z *  -> course
+    
+    student.courseShort <-> course.[[student]]
+  }
+]] 2 errors at #1,#2

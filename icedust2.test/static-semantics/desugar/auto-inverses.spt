@@ -1,0 +1,32 @@
+module desugar-auto-inverses
+
+language icedust2
+
+fixture [[
+  module test
+  
+  model
+  
+    entity Node { }
+  
+    relation Tree {
+      Node * -> parent
+      Node ? -> child
+    }
+    
+    entity Foo{}
+    entity Bar{}
+    relation Rel{Foo * Bar *}
+
+  data
+    
+    n : Node {}
+    foo : Foo {}
+    
+  execute
+    3
+    [[...]]
+]]
+
+test auto inverse on self relation  [[n.treeAsParent]]  run get-type2 to "Tree"
+test auto inverse on other relation [[foo.rel       ]]  run get-type2 to "Rel"

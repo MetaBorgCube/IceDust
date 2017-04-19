@@ -18,8 +18,8 @@ imports // functions
   lib/string
   prettyprinting/pp
   names/naming/names
-  completion/completion
-  runtime/completion/-
+  completion/IceDust-cp
+  libspoofax/editor/completion/-
   
 rules // Editor services
   

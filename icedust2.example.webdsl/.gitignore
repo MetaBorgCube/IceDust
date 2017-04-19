@@ -1,0 +1,22 @@
+bin
+nativejava
+.servletapp
+lib
+stylesheets
+WebContent
+icedustWebDSL2.app
+.settings/
+.webdsl-parsecache
+.dependencies.webdsl
+build.xml
+clean-project.xml
+icedustWebDSL2 build.xml.launch
+icedustWebDSL2 clean-project.xml.launch
+.classpath
+application.ini
+.saved-but-not-built
+javascript/*
+javascript
+.webdsl-fragment-cache
+*.dependson.txt
+*.flowsto.txt

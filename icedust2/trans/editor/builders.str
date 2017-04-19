@@ -1,0 +1,155 @@
+module editor/builders
+
+imports
+  
+  analysis2/path
+  api/data-names-api
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  desugaring/desugar
+  editor/pp
+  lib/debug
+  lib/index
+  lib/nabl2
+  lib/lists-tuples
+  lib/traverse
+  nabl2/api
+
+rules // Debugging
+  
+  debug-show-aterm:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path
+    ; result   := node
+
+  // Prints the analyzed annotated abstract syntax ATerm of a selection.
+  debug-show-desugared:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.aterm")> path;
+      result   := ast'
+      
+  debug-show-desugared-pp:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.ice2")> path;
+      result   := <pp-debug> ast'
+
+rules
+
+  debug-get-ast-value:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      <store-analysis-resource>$[[project-path]/[path]]
+    with
+      <debug>"debug-get-ast-value"
+    with
+      debug
+    with
+      modulename := <collect-one(is-modulename)>ast;
+      <debug>modulename
+//    with
+//      entitynames := <collect-all(is-entityname,conc)>ast;
+//      <debug>entitynames;
+//      <map(debug;entityname-get-attributenames;debug)>entitynames;
+//      <map(debug;entityname-get-attributenames-default-derivation;map(attributename-get-expr);debug)>entitynames;
+//      <map(debug;entityname-get-relationnames ;debug)>entitynames;
+//      <map(debug;entityname-get-rolenames     ;debug)>entitynames;
+//      <map(debug;entityname-get-inversenames  ;debug)>entitynames;
+//      <map(debug;entityname-get-shortcutnames ;debug)>entitynames;
+//      <map(debug;entityname-get-modulename    ;debug)>entitynames
+//    with
+//      attrnames := <collect-all(is-attributename,conc)>ast;
+//      <debug>attrnames;
+//      <map(debug;attributename-get-entityname;debug)>attrnames
+//    with
+//      relationnames := <collect-all(is-relationname,conc)>ast;
+//      <debug>relationnames;
+//      <map(debug;relationname-get-inversename;relationname-get-inversename;relationname-get-inversename;debug)>relationnames;
+//      <filter(relationname-is-left);debug>relationnames
+//    with
+//      rolenames := <collect-all(is-rolename,conc)>ast;
+//      <debug>rolenames
+//    with
+//      inversnames := <collect-all(is-inversename,conc)>ast;
+//      <debug>inversnames
+//    with
+//      shortcutnames := <collect-all(is-shortcutname,conc)>ast;
+//      <debug>shortcutnames
+    with
+      einames := <modulename-get-entityinstancenames>modulename;
+      <debug>einames;
+      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug;map(get-property(|"Member","ns"));debug)>einames;
+      <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
+//      <filter(entityinstancename-get-modulename);debug>einames;
+      id
+//    with
+//      <collect-all(is-decl (|"Member"),conc);debug(!"is-decl  ")>ast;
+//      <collect-all(is-ref  (|"Member"),conc);debug(!"is-ref   ")>ast;
+//      <collect-all(get-decl(|"Member"),conc);debug(!"get-decl ")>ast;
+//      <collect-all(is-decl (|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga1 ")>ast;
+//      <collect-all(get-decl(|"Member"),conc);map(get-property(|"Member", "ns"));debug(!"aga2 ")>ast
+//    with
+//      memvs := <collect-all(is-membervalue)>ast;
+//      <map(debug;membervalue-get-name;debug(!"crash? ");nabl2--get-ast-index;debug)>memvs; 
+//      <map(debug;membervalue-get-name;debug;membervaluename-get-origin;debug;get-property(|"Member","ns");debug);debug>memvs
+//    with
+//      <collect-all(is-string);map(debug;try(nabl2--get-ast-index);debug)>ast
+//    with
+//      memvs     := <collect-all(is-membervalue)>ast;
+//      memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs
+
+  analysis2-builder:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]]
+    with
+      analysis := <get-stored-analysis>
+    with
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"index.aterm")> path;
+      result   := <_index-get>
+      
+  analysis2-builder-trim-termindices = analysis2-builder;split2(id,bottomup-anno(try(?TermIndex(_,<id>))))
+
+  analysis2-builder-key-origins = analysis2-builder;split2(id,all-strings-add-origin)
+  
+rules
+
+  debug-dependson: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"dependson.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-dependson-paths;map(path-pp));concat-strings(|"\n")>ast
+
+  debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"flowsto.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths;map(path-pp));concat-strings(|"\n")>ast
+      
+  debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"toposort.aterm")> path;
+      result := <module-get-modulename;name-get-toposort;map(map(pp-toposort))>ast
+
+  pp-toposort: name -> (<name-get-toposort>name, $[[<attributename-get-entityname>name].[name]])

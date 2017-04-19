@@ -1,0 +1,11 @@
+id: org.metaborg:icedust2.test:0.6.2
+name: IceDust
+dependencies:
+  compile:
+  - org.metaborg.lang:icedust2:0.6.2
+  - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
+runtime:
+  nabl2:
+    debug: # resolution ## enable to see custom analysis info
+build:
+  useBuildSystemSpec: true

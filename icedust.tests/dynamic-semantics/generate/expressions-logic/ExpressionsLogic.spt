@@ -1,0 +1,23 @@
+module generate-expressions-logic
+
+language IceDust
+
+fixture [[
+  module ExpressionsLogic (on-demand)
+  
+  model
+  entity X {
+    val : Int = (42 >= 4 && !false ? "a" : "b") == "a" ? 5 : 88 + 4
+  }
+  
+  data
+  x : X {}
+  
+  execute
+  x.val
+  [[...]]
+]]
+
+test Expressions Logic execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"5
+"

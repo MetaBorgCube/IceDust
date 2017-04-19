@@ -1,0 +1,97 @@
+module generating/webdsl/data
+
+imports // constructors
+
+  webdsl/WebDSL
+
+imports // functions
+
+  api/data-names-api
+  api/model-names-api
+  api/module-names-api
+  lib/search
+  generating/webdsl/expressions
+//  naming/_notNaBL
+
+rules
+
+  data-modulename-to-webdsl-stms(err): moduleName -> result
+    with
+      eiNames          := <modulename-get-entityinstancenames>moduleName;
+      stat_newObjects* := < map(entityinstancename-to-webdsl-stm(err))>eiNames;
+      stat_membervals* := <fmap(entityinstancename-to-webdsl-stms2(err))>eiNames;
+      stat_saves*      := < map(entityinstancename-to-webdsl-stm3(err))>eiNames
+    with
+      result := stat* |[
+        stat_newObjects*
+        stat_membervals*
+        stat_saves*
+      ]|
+
+rules // entity instances
+
+  entityinstancename-to-webdsl-stm(err): x_eiName -> result
+    with
+      srt1 := <entityinstancename-get-type>x_eiName
+    with
+      result := stat |[
+        var x_eiName := srt1 {};
+      ]|
+      
+  entityinstancename-to-webdsl-stms2(err): x_eiName -> result
+    with
+      stat_attributes* := <entityinstancename-get-attributevaluenames ;fmap(attributevaluename-to-webdsl-stms(err))>x_eiName;
+      stat_relations*  := <entityinstancename-get-relationvaluenames  ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_roles*      := <entityinstancename-get-rolevaluenames      ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName;
+      stat_inverses*   := <entityinstancename-get-inversevaluenames   ;fmap(relationvaluename-to-webdsl-stms (err))>x_eiName
+    with
+      result := stat* |[
+        stat_attributes*
+        stat_relations*
+        stat_roles*
+        stat_inverses*
+      ]|
+
+  entityinstancename-to-webdsl-stm3(err): x_eiName -> result
+    where
+      is-entityinstancename
+    with
+      result := stat |[
+        x_eiName.save();
+      ]|
+      
+rules
+
+  attributevaluename-to-webdsl-stms(err): x_attributevalueName -> result
+    where
+      membervaluename-is-attribute
+    with
+      x_eiName := <membervaluename-get-entityinstancename>x_attributevalueName;
+      valueAst := <membervaluename-get-expr>x_attributevalueName;
+      e_value := <expr-to-webdsl-expr(err)>valueAst
+    with
+      result := stat* |[
+        x_eiName.x_attributevalueName := e_value;
+      ]|
+
+  relationvaluename-to-webdsl-stms(err): x_relationvalueName -> result
+    where
+      membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
+    with
+      x_eiName   := <membervaluename-get-entityinstancename>x_relationvalueName;
+      valueNames := <membervaluename-get-values>x_relationvalueName;
+      result     := <map(relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationvalueName))>valueNames
+
+rules
+
+  relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationName): x_eiName2 -> result
+    with
+      if <membervaluename-get-origin;name-get-multiplicity;upper-one>x_relationName then
+        result := stat |[
+          x_eiName.x_relationName := x_eiName2;
+        ]|
+      else
+        result := stat |[
+          x_eiName.x_relationName.add(x_eiName2);
+        ]|
+      end

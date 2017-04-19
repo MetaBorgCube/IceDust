@@ -1,0 +1,15 @@
+module types-references-this
+
+language icedust2
+
+test type error on this    [[
+module debug
+
+model
+
+  entity Z{
+    b : Boolean
+    d : Boolean = [[this]]
+  }
+]] 1 error at #1
+

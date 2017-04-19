@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: icedust2 language Eclipse plugin
+Bundle-SymbolicName: icedust2.eclipse;singleton:=true
+Bundle-Version: 0.6.2
+Bundle-Vendor: org.metaborg.lang
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.metaborg.spoofax.eclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
