@@ -2,6 +2,6 @@ module desugaring/constructors
   
 signature constructors
   
-  ModuleDesugared  : ID * ModuleSection -> ModuleDesugared
+  ModuleDesugared  : ID * Strategy * ModuleSection -> ModuleDesugared
   
   NaBLHelp : ID * DefUse -> NaBLHelp

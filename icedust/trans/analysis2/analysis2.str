@@ -46,9 +46,14 @@ rules
   store-expressions: ast -> ast
     with
       attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-      <map(attr-store-expr)>attrs;
+      <map(attr-store-expr)>attrs
+    with
+      rels := <collect(is-relation);filter(where(relation-get-expr1))>ast;
+      <map(rel-store-expr)>rels
+    with
       memvs := <collect-all(is-membervalue)>ast;
-      <map(membervalue-store-expr)>memvs;
+      <map(membervalue-store-expr)>memvs
+    with
       <module-store-expr>ast
   
   attr-store-expr: attr -> attr
@@ -56,6 +61,12 @@ rules
       derivation := <attr-get-derivation>attr;
       attrName   := <attr-get-name>attr;
       <index-store-prop(|AST(), attrName)>derivation
+  
+  rel-store-expr: rel -> rel
+    with
+      expr       := <relation-get-expr1>rel;
+      relName    := <relation-get-rel1>rel;
+      <index-store-prop(|AST(), relName)>expr
       
   membervalue-store-expr: memv -> memv
     with
@@ -90,7 +101,7 @@ rules
         riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
         riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
         <index-store-def>riName';
-        <index-store-prop(|Type(), riName')><_get-type>invName
+        <index-store-prop(|Type(), riName')><get-type2>invName
       else
         riName' := riName
       end;
@@ -114,6 +125,9 @@ rules
     with
       attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
       <map(attr-depends-on-and-flows-to)>attrs
+    with
+      rels := <collect(is-relation);filter(where(relation-get-expr1))>ast;
+      <map(rel-depends-on-and-flows-to)>rels
       
   attr-depends-on-and-flows-to: attr -> attr
     with
@@ -128,6 +142,19 @@ rules
       <map(path-store-on-origin)>dependencies;
       <map(path-store-on-origin)>dataflow
       
+  rel-depends-on-and-flows-to: rel -> rel
+    with
+      relName1          := <relation-get-rel1>rel;
+      expr              := <relation-get-expr1>rel;
+      (p*, q*)          := <expr-pathexprs>expr;
+      pathexprs         := [p*, q*];
+      pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
+      dependencies      := <map(path(|relName1))>all-pathexprs;
+      dataflow          := <map(path-inverse)>dependencies;
+      <map(path-store-on-origin)>dependencies;
+      <map(path-store-on-origin)>dataflow
+      
 rules
 
   flows-toposort-2: ast -> ast
@@ -136,13 +163,13 @@ rules
       attributeNames* := <modulename-get-attributenames>moduleName;
       relationNames*  := <modulename-get-relationnames-left>moduleName;
       roleNames*      := <modulename-get-rolenames>moduleName;
-      graphNames      := [attributeNames*, relationNames*, roleNames*];
+      graphNames      := <string-sort-anno>[attributeNames*, relationNames*, roleNames*];
       toposort        := <graph-topological-sort(toposort-edge)>graphNames;
       <index-store-prop(|TopoSort(), moduleName)>toposort;
       numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
       <map(index-store-prop(|TopoSort()))>numbers
 
-  toposort-edge: name -> [names*, inv-names*]
+  toposort-edge: name -> <string-sort-anno>[names*, inv-names*]
     with
       names* := <index-get-prop(|FlowsTo());map(path-last)>name;
       if inv-name := <name-get-inversename>name then

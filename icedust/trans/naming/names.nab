@@ -33,82 +33,136 @@ namespaces
   Inverse
   Shortcut
   This
+  ModuleThis
   MemberType
   MemberValue
+  Var
 
 properties
 
-  derivation-type      of Attribute    : DerivationType  //Derivation(), DefaultValue() or Normal()
-  multiplicity         of Attribute    : Multiplicity
+  derivation-type      of Attribute   : DerivationType  //Derivation(), DefaultValue() or Normal()
+  multiplicity         of Attribute   : Multiplicity
   multiplicity-inverse of Role        : Multiplicity
-  ordering             of Role        : Ordering
-  ordering-inverse     of Role        : Ordering
   inverse              of Role        : Inverse
-  origin-role           of Inverse      : Role
+  origin-role          of Inverse     : Role
   origin-role2         of Shortcut    : Role
   rel-ty               of Shortcut    : Entity
   side                 of Relation    : Term
   member-origin        of MemberValue : Term
+  strategy             of Module      : Strategy
   
 binding rules // modules
 
-  ModuleDesugared(m, _) : 
+  ModuleDesugared(m, Some(s), _) : 
     defines Module m
+      of strategy s
     scopes Entity
     scopes Entity2
     scopes EntityInstance
+    scopes ModuleThis
+    implicitly defines ModuleThis This()
+      of strategy s
 
 binding rules // model
 
-  Entity(e-ty, _) :
+  Entity(e-ty, None(), _) :
     defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
     defines non-unique Entity e-ty
+      of strategy this-s
+      where This() resolves to ModuleThis this2
+      and this2 has strategy this-s
     scopes Attribute
     scopes Role
     scopes This
+    scopes Var
     implicitly defines This This()
       of type e-ty
+      of strategy this-s
+
+  Entity(e-ty, Some(s), _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+      of strategy s
+    scopes Attribute
+    scopes Role
+    scopes This
+    scopes Var
+    implicitly defines This This()
+      of type e-ty
+      of strategy s
       
-  FirstClassRelation(e-ty, _) :
+  FirstClassRelation(e-ty, None(), _) :
     defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
     defines non-unique Entity e-ty
+      of strategy this-s
+      where This() resolves to ModuleThis this2
+      and this2 has strategy this-s
     scopes Attribute
     scopes Role
     scopes This
     implicitly defines This This()
       of type e-ty
+      of strategy this-s
+      
+  FirstClassRelation(e-ty, Some(s), _) :
+    defines Entity2 e-ty             //Nasty Hack to enforce no duplicate entity types
+    defines non-unique Entity e-ty
+      of strategy s
+    scopes Attribute
+    scopes Role
+    scopes This
+    implicitly defines This This()
+      of type e-ty
+      of strategy s
 
   Attribute(a, a-ty, a-mu) :
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
       
-  DerivationAttribute(a, a-ty, a-mu, _) :
+  DerivationAttribute(a, a-ty, a-mu, _, None()) :
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
-      of derivation-type Derivation() 
+      of derivation-type Derivation()
+      of strategy this-s
+      where This() resolves to This this2
+      and this2 has strategy this-s
+      
+  DerivationAttribute(a, a-ty, a-mu, _, Some(s)) :
+    defines Attribute a
+      of type a-ty
+      of multiplicity a-mu
+      of derivation-type Derivation()
+      of strategy s
           
-  DefaultAttribute(a, a-ty, a-mu, _) :
+  DefaultAttribute(a, a-ty, a-mu, _, None()) :
     defines Attribute a
       of type a-ty
       of multiplicity a-mu
-      of ordering Ordered()
       of derivation-type DefaultValue()
+      of strategy this-s
+      where This() resolves to This this2
+      and this2 has strategy this-s
+          
+  DefaultAttribute(a, a-ty, a-mu, _, Some(s)) :
+    defines Attribute a
+      of type a-ty
+      of multiplicity a-mu
+      of derivation-type DefaultValue()
+      of strategy s
 
-  Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role-ord, role) :
+  Role(NaBLHelp(role-ty, role-ty2), inverseName, role-mu, role) :
     refers to Entity2 role-ty //triggers unresolved reference errors, but provides no resolving
     defines Role role
       of type role-ty2
       of multiplicity One()
       of multiplicity-inverse role-mu
-      of ordering Ordered()
-      of ordering-inverse role-ord
       of inverse inverseName
       of rel-ty this-ty2
+      of strategy Incremental() // bottom of lattice
       where This() resolves to This this2
       and this2 has type this-ty2
     defines non-unique Entity role-ty2
@@ -116,10 +170,9 @@ binding rules // model
     defines Inverse inverseName
       of multiplicity role-mu
       of multiplicity-inverse One()
-      of ordering role-ord
-      of ordering-inverse Ordered()
       of type this-ty
       of origin-role role
+      of strategy Incremental() // bottom of lattice
       where This() resolves to This this
       and this has type this-ty
 
@@ -129,49 +182,101 @@ binding rules // model
     defines Shortcut shortcut1
       of type type2
       of multiplicity mu1
-      of ordering or1
       of origin-role role1
       of origin-role2 role2
       of rel-ty rel-ty1
+      of strategy Incremental() // bottom of lattice
       where role1 resolves to Role role1def
       and role1def has multiplicity-inverse mu1
-      and role1def has ordering-inverse or1
       and role1def has rel-ty rel-ty1
     defines non-unique Entity type2
       scopes Shortcut
     defines Shortcut shortcut2
       of type type1
       of multiplicity mu2
-      of ordering or2
       of origin-role role2
       of origin-role2 role1
       of rel-ty rel-ty2
+      of strategy Incremental() // bottom of lattice
       where role2 resolves to Role role2def
       and role2def has multiplicity-inverse mu2
-      and role2def has ordering-inverse or2
       and role2def has rel-ty rel-ty2
 
-  Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, left-or, right-mu, right-or, NaBLHelp(right-ty1, right-ty2), right-name):
+  Relation(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, right-mu, NaBLHelp(right-ty1, right-ty2), right-name):
     defines non-unique Entity left-ty2
       scopes Relation
     defines Relation left-name
       of multiplicity left-mu
       of multiplicity-inverse right-mu
-      of ordering left-or
-      of ordering-inverse right-or
       of type right-ty2
       of inverse right-name
       of side Left()
+      of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
     defines non-unique Entity right-ty2
       scopes Relation
     defines Relation right-name
       of multiplicity right-mu
       of multiplicity-inverse left-mu
-      of ordering right-or
-      of ordering-inverse left-or
       of type left-ty2
       of inverse left-name
       of side Right()
+      of derivation-type Normal()
+      of strategy Incremental() // bottom of lattice
+
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, expr, right-mu, NaBLHelp(right-ty1, right-ty2), right-name, None()):
+    defines non-unique Entity right-ty2
+      scopes Relation
+    defines Relation right-name
+      of multiplicity right-mu
+      of multiplicity-inverse left-mu
+      of type left-ty2
+      of inverse left-name
+      of side Right()
+      of derivation-type Derivation()
+      of strategy this-s
+      where This() resolves to ModuleThis this2
+      and this2 has strategy this-s
+    defines non-unique Entity left-ty2
+      scopes Var
+      scopes Relation
+      scopes This
+      implicitly defines This This()
+        of type left-ty2
+    defines Relation left-name
+      of multiplicity left-mu
+      of multiplicity-inverse right-mu
+      of type right-ty2
+      of inverse right-name
+      of side Left()
+      of derivation-type Derivation() 
+      of strategy this-s
+
+  RelationDerived(NaBLHelp(left-ty1, left-ty2), left-name, left-mu, expr, right-mu, NaBLHelp(right-ty1, right-ty2), right-name, Some(strategy)):
+    defines non-unique Entity right-ty2
+      scopes Relation
+    defines Relation right-name
+      of multiplicity right-mu
+      of multiplicity-inverse left-mu
+      of type left-ty2
+      of inverse left-name
+      of side Right()
+      of derivation-type Derivation()
+      of strategy strategy
+    defines non-unique Entity left-ty2
+      scopes Var
+      scopes Relation
+      scopes This
+      implicitly defines This This()
+        of type left-ty2
+    defines Relation left-name
+      of multiplicity left-mu
+      of multiplicity-inverse right-mu
+      of type right-ty2
+      of inverse right-name
+      of side Left()
+      of derivation-type Derivation()
+      of strategy strategy
 
 binding rules // data
 
@@ -179,19 +284,16 @@ binding rules // data
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
     scopes MemberValue
     scopes This
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       
   EntityInstance(e, None(), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       where MemberType() resolves to MemberType membertype
       and membertype has type e-ty
     scopes MemberValue
@@ -199,25 +301,21 @@ binding rules // data
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
 
   RelationInstance(e, EntityRef(e-ty), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
     scopes MemberValue
     scopes This
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       
   RelationInstance(e, None(), _) :
     defines EntityInstance e
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
       where MemberType() resolves to MemberType membertype
       and membertype has rel-ty e-ty
     scopes MemberValue
@@ -225,7 +323,6 @@ binding rules // data
     implicitly defines This This()
       of type e-ty
       of multiplicity One()
-      of ordering Ordered()
 
   MemberValue(NaBLHelp(m@MemberRef(m-name), m2), value) :
     defines MemberValue m2
@@ -240,7 +337,7 @@ binding rules // data
 binding rules // references
 
   Ref(x) :
-    refers to EntityInstance x
+    refers to Var x
   otherwise
     refers to Attribute x  in Entity e-ty
     where This() resolves to This this
@@ -261,6 +358,8 @@ binding rules // references
     refers to Shortcut x in Entity e-ty
     where This() resolves to This this
     and this has type e-ty
+  otherwise
+    refers to EntityInstance x
 
   MemberAccess(exp, a) :
     refers to Attribute a in Entity e-ty
@@ -318,4 +417,22 @@ binding rules // references
   This() :
     refers to This This()
 
+binding rules // expressions
 
+  Filter(expr1, var, expr2):
+    scopes Var
+    defines Var var
+      of type ty1
+      of multiplicity One()
+      of strategy st1
+    where expr1 has type ty1
+      and expr1 has strategy st1
+
+  Find(expr1, var, expr2):
+    scopes Var
+    defines Var var
+      of type ty1
+      of multiplicity One()
+      of strategy st1
+    where expr1 has type ty1
+      and expr1 has strategy st1

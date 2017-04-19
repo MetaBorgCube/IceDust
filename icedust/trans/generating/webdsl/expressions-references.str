@@ -10,6 +10,7 @@ imports // functions
 
   api/_runtime
   api/data-names-api
+  api/expressions-names-api
   api/model-names-api
   generating/_ir/model
   generating/webdsl/types
@@ -22,13 +23,13 @@ rules // member access
     with
       e1       := <expr-to-webdsl-expr(err)>ex1;
       x_getter := <name-get>x_name;
-      x_srt    := <_get-type>ex1
+      x_srt    := <get-type2>ex1
 
 rules // direct references
 
   expr-to-webdsl-expr(err): Ref(x_entityName) ->  webdsl:e |[ x_entityName ]|
     where
-      <is-entityinstancename>x_entityName
+      <is-entityinstancename <+ is-varname>x_entityName
 
   expr-to-webdsl-expr(err): ex1@Ref(x_name) -> webdsl:e |[  x_srt1.x_getter(this)  ]|
     with

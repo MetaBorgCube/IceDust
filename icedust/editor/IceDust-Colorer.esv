@@ -20,10 +20,11 @@ colorer Entity and Role namespaces
   
 colorer Multiplicity
 
-  Multiplicity: 160 0 0 bold
-  MultiplicityZ:160 0 0 bold
+  Multiplicity        : 160 0 0 bold
+  MultiplicityOrdering: 160 0 0 bold
 
 colorer Primitive types
+
   _.LitString: 0 0 255 
 
 colorer Default, token-based highlighting

@@ -18,3 +18,5 @@ application.ini
 javascript/*
 javascript
 .webdsl-fragment-cache
+*.dependson.txt
+*.flowsto.txt

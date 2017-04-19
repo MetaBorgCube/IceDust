@@ -1,5 +1,9 @@
 module lib/string
 
+imports
+
+  lib/origin
+
 rules // truncating
   
   truncate-string(|maxlen): s -> s'
@@ -13,13 +17,13 @@ rules // truncating
 
 rules // casing
   
-  first-is-upper = explode-string;Hd;is-upper
+  first-is-upper = where(explode-string;Hd;is-upper)
   
   lcfirst-chars: [c|rest] -> [<to-lower>c|rest]
-  lcfirst = string-as-chars(lcfirst-chars)
+  lcfirst = keep-origin(string-as-chars(lcfirst-chars))
 
   ucfirst-chars: [c|rest] -> [<to-upper>c|rest]
-  ucfirst = string-as-chars(ucfirst-chars)
+  ucfirst = keep-origin(string-as-chars(ucfirst-chars))
 
 rules // prepend indefinite article
   

@@ -25,12 +25,7 @@ type rules
   
   EntityInstance(ei, e, mem) has multiplicity One()
   
-  EntityInstance(ei, e, mem) has ordering Ordered()
-  
   EntityInstanceWrapper(ri, ei) : ei-ty
   where ei : ei-ty
   
   EntityInstanceWrapper(ri, ei) has multiplicity One()
-  
-  EntityInstanceWrapper(ri, ei) has ordering Ordered()
-  

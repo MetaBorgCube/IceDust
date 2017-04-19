@@ -1,0 +1,31 @@
+module generate-auto-shortcuts
+
+language IceDust
+
+fixture [[
+  module AutoShortcuts (on-demand)
+  
+  model
+  entity Node{
+    value : Int ? = avg( this.child.value ) (default)
+  }
+  relation Tree{
+    Node.tree_as_parent * -> parent
+    Node.tree_as_child  ? -> child
+  }
+  
+  data
+    n3 : Node {
+      child = 
+        n1 : Node {value=2},
+        n2 : Node {value=4}
+    }
+  
+  execute
+  n3.value
+  [[...]]
+]]
+
+//test Expressions Auto Shortcuts execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: fix analysis
+//"3
+//"
