@@ -7,10 +7,10 @@ imports // generated runtime
 //  runtime/analysis/legacy
   runtime/analysis/core
   runtime/analysis/resolve
-  runtime/editor/annotations  
-  runtime/editor/origins
-  runtime/editor/outline-library
-  runtime/editor/properties
+  libspoofax/term/annotation  
+  libspoofax/term/origin
+  libspoofax/editor/outline
+  runtime/properties/editor
   runtime/index/core
   runtime/index/legacy
   runtime/index/query
