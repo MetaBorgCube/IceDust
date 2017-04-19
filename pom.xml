@@ -21,6 +21,11 @@
     <module>icedust.eclipse.feature</module>
     <module>icedust.eclipse.updatesite</module>
     <module>icedust.tests</module>
+    <module>icedust2</module>
+    <module>icedust2.eclipse</module>
+    <module>icedust2.eclipse.feature</module>
+    <module>icedust2.eclipse.site</module>
+    <module>icedust2.test</module>
   </modules>
 
   <repositories>
