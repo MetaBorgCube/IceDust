@@ -1,9 +1,9 @@
-id: org.metaborg:icedust.test:0.6.2-SNAPSHOT
+id: org.metaborg:icedust.test:0.6.3-SNAPSHOT
 name: IceDust
 metaborgVersion: 2.2.0
 dependencies:
   compile:
-  - org.metaborg:icedust:0.6.2-SNAPSHOT
+  - org.metaborg:icedust:0.6.3-SNAPSHOT
   - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.lang.analysis:${metaborgVersion}
 build:
