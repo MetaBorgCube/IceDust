@@ -1,0 +1,201 @@
+module generate
+
+imports
+  api/module-names-api
+  api/model-names-api
+  
+  signatures/Types-sig
+
+
+rules
+  generate-react-code(err): moduleName -> (result, errors)
+    with
+      stmt_invalidations* := <generate-invalidations> moduleName
+      ; debug
+      ; program := js-program |[stmt_invalidations*]|
+      ; result := <parenthesize-spoofaxJS
+        ; prettyprint-spoofaxJS
+        ; !V([], <id>)
+        ; box2text-string(|120)> program
+      ; errors := [] 
+      
+      
+      
+  lub-simple: (One(), ZeroOrOne()) -> ZeroOrOne()
+  lub-simple: (ZeroOrOne(), One()) -> ZeroOrOne()
+  lub-simple: (ZeroOrMore(), _) -> ZeroOrMore()
+  lub-simple: (_, ZeroOrMore()) -> ZeroOrMore()
+  lub-simple: (_, OneOrMore()) -> ZeroOrMore()
+  lub-simple: (OneOrMore(), _) -> ZeroOrMore()
+  lub-simple: (x, x) -> x
+  
+      
+  generate-invalidations: moduleName -> functions
+    where
+      is-modulename
+    with
+      fields := <modulename-get-entitynames; mapconcat(\entityName -> <map(!(entityName, <id>))> <conc> (<entityname-get-attributenames> entityName, <entityname-get-relationnames> entityName) \)>
+      ; debug
+      ; flows := <map(!(<id>, <Snd; name-get-flowsto-paths>))> fields 
+      ; debug
+      ; functions := <map(generate-invalidation-function)> flows
+      
+  
+  generate-invalidation-function : ((entity, field), flows) ->
+    js-stmt |[ 
+        export function x_name (state, id) {
+            stmt_derivedValueInvalidation*
+            stmt_paths*
+            return state;
+        }
+    ]|
+    with
+        debug
+        
+        ; x_name := $[invalidate[entity]_[field]]
+        ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> (entity, field)
+        ; stmt_paths* := <mapconcat(generate-flow-invalidation)> flows
+//        ; debug
+    
+  generate-derived-value-invalidation: (entity, field) ->
+    js-stmt* |[
+        state = state.update(exp_invalidationField, set => set.remove(id));
+    ]|
+    where
+      <name-is-derived> field
+    with
+      exp_invalidationField := String($["[entity]_[field]"])
+    
+  generate-derived-value-invalidation = ![]
+  
+  
+  
+  generate-flow-invalidation: DataflowPath(_, exp) ->
+  
+    js-stmt* |[
+        {
+            let entities = id;
+            stmt_invalidation*
+        }
+    ]|
+    
+    where
+        stmt_invalidation* := <flow-invalidation> exp
+  
+  flow-invalidation: Ref(field) -> js-stmt* |[state = x_invalidateFunction(id);]|
+        with
+            e_target := <attributename-get-entityname> field
+            ; x_invalidateFunction := $[invalidate[e_target]_[field]]
+            
+  
+  flow-invalidation: MemberAccess(exp, field) -> template  
+    where
+        debug ;
+        template := <access(|[], field)> exp
+       
+       
+  
+  fieldFromState : field -> js-exp |[state.get(exp_field)]|
+    with
+        entity := <attributename-get-entityname> field
+        ; exp_field := String($["[entity]_[field]"])
+  
+  
+  access(|names, f): Ref(field) -> result
+    where
+        result := <doAccess(|One(), f)> [field | names]
+        
+  access(|names, f): MemberAccess(exp, field) -> <access(|[field | names], f)> exp
+  
+  doAccess(|m, f) : [ x | xs ] -> templ 
+    where
+        m2 :=  <name-get-multiplicity> x
+        ; lub := <lub-simple> (m, m2) 
+        ; rest := <doAccess(|lub, f)> xs
+        ; templ := <accessTemplate> (m, m2, x, rest)
+  
+  doAccess(|m, f) : [] -> <invalidateTemplate> (m, e, f)
+    where
+        e := <attributename-get-entityname> f
+  
+    
+  accessTemplate : (One(), _, field, stmt_rest*) -> 
+    js-stmt* |[
+        entities = exp_field.get(entities);
+        stmt_rest*
+    ]|
+    
+    with
+        exp_field := <fieldFromState> field
+  
+  
+  
+  
+  accessTemplate : (ZeroOrOne(), _, field, stmt_rest*) -> 
+    js-stmt* |[
+        if(entities !== null){
+          entities = exp_field.get(entities);
+          stmt_rest*
+        }
+    ]|
+    with
+        exp_field := <fieldFromState> field
+    
+    
+  accessTemplate : (ZeroOrMore(), ZeroOrMore(), field, stmt_rest*) -> 
+    js-stmt* |[
+        entities = entities.flatMap(exp_field.get);
+        stmt_rest*
+    ]|
+    with
+        exp_field := <fieldFromState> field
+      
+  accessTemplate : (ZeroOrMore(), One(), field, stmt_rest*) -> 
+    js-stmt* |[
+      entities = entities.map(exp_field.get);
+      stmt_rest*
+    ]|
+    with
+      exp_field := <fieldFromState> field
+    
+  accessTemplate : (ZeroOrMore(), ZeroOrOne(), field, stmt_rest*) -> 
+    js-stmt* |[
+        entities = entities.flatMap(id => {
+          const value = exp_field.get(id);
+          if(value !== null){
+            return [value];
+          } else {
+            return [];
+          }
+        });
+        stmt_rest*
+    ]|
+    with
+        exp_field := <fieldFromState> field
+  
+  
+  invalidateTemplate : (One(), entity, field) -> 
+    js-stmt* |[state = x_invalidate(state, entities);]|
+    with
+        x_invalidate := $[invalidate[entity]_[field]]
+    
+  
+  invalidateTemplate : (ZeroOrOne(), entity, field) -> 
+    js-stmt* |[
+        if(entities !== null){
+          state = x_invalidate(state, id);
+        }
+    ]|
+    with
+        x_invalidate := $[invalidate[entity]_[field]]    
+  
+  invalidateTemplate : (ZeroOrMore(), entity, field) ->
+    js-stmt* |[
+        entities.forEach(id => {
+            state = x_invalidate(state, id);
+        });
+    ]|
+    with
+        x_invalidate := $[invalidate[entity]_[field]]
+     
+  

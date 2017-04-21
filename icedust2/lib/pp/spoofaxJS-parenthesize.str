@@ -1,0 +1,639 @@
+module pp/spoofaxJS-parenthesize
+
+imports
+  libstratego-lib
+  signatures/-
+
+
+strategies
+  io-spoofaxJS-parenthesize =
+    io-wrap(parenthesize-spoofaxJS)
+
+  parenthesize-spoofaxJS =
+    innermost(spoofaxJSParenthesize)
+
+
+rules
+
+  spoofaxJSParenthesize :
+    Substraction(t_0, t_1) -> Substraction(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Substraction(t_0, t_1) -> Substraction(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Addition(t_0, t_1) -> Addition(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Addition(t_0, t_1) -> Addition(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Addition(_, _)
+            + ?Substraction(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Division(t_0, t_1) -> Division(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Division(t_0, t_1) -> Division(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + ?Division(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Property(t_0, t_1) -> Property(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Property(t_0, t_1) -> Property(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + ?Property(_, _)
+            + ?Call(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Call(t_0, t_1) -> Call(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Call(t_0, t_1) -> Call(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Or(t_0, t_1) -> Or(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Or(t_0, t_1) -> Or(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    And(t_0, t_1) -> And(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    And(t_0, t_1) -> And(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    NotEquals(t_0, t_1) -> NotEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    NotEquals(t_0, t_1) -> NotEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEquals(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    EqualsStrict(t_0, t_1) -> EqualsStrict(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    EqualsStrict(t_0, t_1) -> EqualsStrict(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?EqualsStrict(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Equals(t_0, t_1) -> Equals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Equals(t_0, t_1) -> Equals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?Equals(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    LowerEquals(t_0, t_1) -> LowerEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    LowerEquals(t_0, t_1) -> LowerEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    GreaterEquals(t_0, t_1) -> GreaterEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    GreaterEquals(t_0, t_1) -> GreaterEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?LowerEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Lower(t_0, t_1) -> Lower(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Lower(t_0, t_1) -> Lower(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?Lower(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Greater(t_0, t_1) -> Greater(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Greater(t_0, t_1) -> Greater(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?Greater(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(Parenthetical(t_0), t_1, t_2)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(t_0, Parenthetical(t_1), t_2)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(t_0, t_1, Parenthetical(t_2))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + fail)> t_2
+
+  spoofaxJSParenthesize :
+    Negate(t_0) -> Negate(Parenthetical(t_0))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?Assignment(_, _)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Assignment(t_0, t_1) -> Assignment(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Assignment(t_0, t_1) -> Assignment(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + fail)> t_1
+
+  spoofaxJSParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(Parenthetical(t_0), t_1, t_2)
+    where <(?Lambda(_, _) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, Parenthetical(t_1), t_2)
+    where <(?Lambda(_, _) + fail)> t_1
+
+  spoofaxJSParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, t_1, Parenthetical(t_2))
+    where <(?Lambda(_, _) + fail)> t_2
+
+  spoofaxJSParenthesize :
+    String(t_0) -> String(Parenthetical(t_0))
+    where <(?String(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    Identifier(t_0) -> Identifier(Parenthetical(t_0))
+    where <(?Identifier(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    FloatLiteral(t_0) -> FloatLiteral(Parenthetical(t_0))
+    where <(?FloatLiteral(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    IntegerLiteral(t_0) -> IntegerLiteral(Parenthetical(t_0))
+    where <(?IntegerLiteral(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
+    IfElse(t_0, t_1, t_2) -> IfElse(t_0, Parenthetical(t_1), t_2)
+    where <(?If(_, _) + fail)> t_1
+
+
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown
+

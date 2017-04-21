@@ -1,0 +1,153 @@
+module pp/spoofaxJS-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  signatures/spoofaxJS-sig
+
+
+imports
+  signatures/js/Common-sig
+  signatures/js/Lexical-sig
+  signatures/js/Expression-sig
+  signatures/js/Statement-sig
+
+
+imports
+  pp/js/Common-pp
+  pp/js/Lexical-pp
+  pp/js/Expression-pp
+  pp/js/Statement-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS-start-symbols =
+    prettyprint-spoofaxJS-Start
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-Start
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-Start>
+    where <?"Start"> sort
+
+  prettyprint-spoofaxJS-Start :
+    Program(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [t1__']
+                       )
+                     ]
+    with t1__' := <pp-V-list(prettyprint-spoofaxJS-Statement|"1")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-Start =
+    ?Program(_)
+
+  spoofaxJS-get-indent :
+    (t@Program(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@Program(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             separator := "\n\n"
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@Program(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-spoofaxJS-Start =
+    fail
+
+  prettyprint-spoofaxJS-Start :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-Start> h
+
+  prettyprint-spoofaxJS-Start :
+    Start-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("[[Start]]")]
+                       )
+                     ]
+
+  is-spoofaxJS-Start =
+    ?Start-Plhdr()
+
+  prettyprint-spoofaxJS-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("[[Statement]]")]
+                           )
+                         ]
+
+  is-spoofaxJS-Statement =
+    ?Statement-Plhdr()
+
+  prettyprint-spoofaxJS-Start :
+    Start-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("[[Start]]")]
+                        )
+                      ]
+
+  is-spoofaxJS-Start =
+    ?Start-Plhdr(_)
+
+  prettyprint-spoofaxJS-Statement :
+    Statement-Plhdr(_) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[Statement]]")]
+                            )
+                          ]
+
+  is-spoofaxJS-Statement =
+    ?Statement-Plhdr(_)
+
+  prettyprint-spoofaxJS-Statement :
+    Statement-Opt-Plhdr() -> [ H(
+                                 []
+                               , [S("")]
+                               )
+                             ]
+
+  is-spoofaxJS-Statement =
+    ?Statement-Opt-Plhdr()

@@ -10,6 +10,7 @@ signature constructors
   
   Java               : TargetLanguage
   WebDSL             : TargetLanguage
+  React              : TargetLanguage
   WebDSLEager        : TargetLanguage
   WebDSLEventual     : TargetLanguage
   

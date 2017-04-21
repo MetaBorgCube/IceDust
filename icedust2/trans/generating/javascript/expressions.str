@@ -1,0 +1,8 @@
+module expressions
+
+
+
+rules
+  sda: x -> x
+    with
+      dsa := js-ex |[5]|

@@ -1,0 +1,9 @@
+module signatures/js/Lexical-sig
+
+imports
+  signatures/js/Common-sig
+
+
+signature
+  constructors
+     : String -> KEYWORD

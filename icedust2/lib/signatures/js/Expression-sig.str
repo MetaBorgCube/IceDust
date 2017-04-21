@@ -1,0 +1,72 @@
+module signatures/js/Expression-sig
+
+imports
+  signatures/js/Common-sig
+  signatures/js/Statement-sig
+
+
+signature
+  sorts
+    CondMid
+
+  constructors
+    Property                 : Expression * ID -> Expression
+    Call                     : Expression * List(Expression) -> Expression
+    IntegerLiteral           : INT -> Expression
+    FloatLiteral             : FLOAT -> Expression
+    True                     : Expression
+    False                    : Expression
+    Null                     : Expression
+    Undefined                : Expression
+    Identifier               : ID -> Expression
+    String                   : STRING -> Expression
+    This                     : Expression
+    Addition                 : Expression * Expression -> Expression
+    Substraction             : Expression * Expression -> Expression
+    Multiplication           : Expression * Expression -> Expression
+    Division                 : Expression * Expression -> Expression
+    Greater                  : Expression * Expression -> Expression
+    Lower                    : Expression * Expression -> Expression
+    GreaterEquals            : Expression * Expression -> Expression
+    LowerEquals              : Expression * Expression -> Expression
+    Equals                   : Expression * Expression -> Expression
+    EqualsStrict             : Expression * Expression -> Expression
+    NotEquals                : Expression * Expression -> Expression
+    NotEqualsStrict          : Expression * Expression -> Expression
+    And                      : Expression * Expression -> Expression
+    Or                       : Expression * Expression -> Expression
+    FunctionExpression       : Option(ID) * List(ID) * List(Statement) -> Expression
+    Negate                   : Expression -> Expression
+    Cond                     : Expression * CondMid * Expression -> Expression
+    ObjectLiteral            : List(ObjectProperty) -> Expression
+    ObjectProperty           : ID * Expression -> ObjectProperty
+    PropertyFromVariable     : ID -> ObjectProperty
+    ArrayLiteral             : List(Expression) -> Expression
+    Lambda                   : LambdaParameters * Expression -> Expression
+    LambdaBlock              : LambdaParameters * BlockStatement -> Expression
+    LambdaParameters         : List(ID) -> LambdaParameters
+    SingleParameter          : ID -> LambdaParameters
+    INT-Plhdr                : INT
+    FLOAT-Plhdr              : FLOAT
+    STRING-Plhdr             : STRING
+    Statement-Plhdr          : Statement
+    CondMid-Plhdr            : CondMid
+    ObjectProperty-Plhdr     : ObjectProperty
+    Expression-Plhdr         : Expression
+    BlockStatement-Plhdr     : BlockStatement
+    LambdaParameters-Plhdr   : LambdaParameters
+    ID-Plhdr                 : ID
+    INT-Plhdr                : COMPLETION-INSERTION -> INT
+    FLOAT-Plhdr              : COMPLETION-INSERTION -> FLOAT
+    STRING-Plhdr             : COMPLETION-INSERTION -> STRING
+    Statement-Plhdr          : COMPLETION-INSERTION -> Statement
+    CondMid-Plhdr            : COMPLETION-INSERTION -> CondMid
+    ObjectProperty-Plhdr     : COMPLETION-INSERTION -> ObjectProperty
+    Expression-Plhdr         : COMPLETION-INSERTION -> Expression
+    BlockStatement-Plhdr     : COMPLETION-INSERTION -> BlockStatement
+    LambdaParameters-Plhdr   : COMPLETION-INSERTION -> LambdaParameters
+    ID-Plhdr                 : COMPLETION-INSERTION -> ID
+    Statement-Opt-Plhdr      : Statement
+    ObjectProperty-Opt-Plhdr : ObjectProperty
+    Expression-Opt-Plhdr     : Expression
+    ID-Opt-Plhdr             : ID

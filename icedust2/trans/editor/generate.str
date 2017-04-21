@@ -15,10 +15,11 @@ imports // functions
   api/module-names-api
   desugaring/desugar
   generating/_ir/paths
-  generating/java/generate
-  generating/webdsl/generate
-  generating/webdsl/java/generate
-  generating/webdsl/js/generate
+//  generating/java/generate
+//  generating/webdsl/generate
+//  generating/webdsl/java/generate
+//  generating/webdsl/js/generate
+  generating/react/generate
   lib/files
   lib/call-external
   lib/index
@@ -50,6 +51,8 @@ rules // Builders
   generate-webdsl-eventual-test      = build(error-handler-tests |WebDSL(),None(),NoUI(),1)
   generate-webdsl-eventual-explorerui= build(error-handler-editor|WebDSL(),None(),ExplorerUI(),1)
 
+  generate-react                     = build(error-handler-editor| React(), None(), NoUI(), 1)
+
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
   error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
@@ -61,6 +64,8 @@ rules // Error handlers (editor: report error, do not fail, tests: fail with err
       with(fail|msg)
 
 rules // Build in steps
+
+  react-generated-path(|path)            = !path;guarantee-extension(|"js") //TODO move to generating/_ir/paths
 
   build(error-handler|lang, implstr, uistyle, phase): (selected, position, ast, path, project-path) -> result
     with
@@ -90,23 +95,27 @@ rules // Build in steps
       else
         // phase 1: generate files
         switch !lang
-          case ?Java():
-            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
-            targetFileName := <java-generated-path(|relativePath)>;
-            java-library-paths(|fullPath);copy-dir
-          case ?WebDSL():
-            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
-            targetFileName := <webdsl-generated-path(|relativePath)>;
-            webdsl-library-paths(|fullPath);copy-dir;
-            webdsl-java-library-paths(|fullPath);copy-dir;
-            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
-            if <modulename-is-explorerui> moduleName then
-              jsString := <generate-webdsl-js-code> moduleName;
-              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
-            end;
-            (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
-            targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
-            <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
+//          case ?Java():
+//            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
+//            targetFileName := <java-generated-path(|relativePath)>;
+//            java-library-paths(|fullPath);copy-dir
+//          case ?WebDSL():
+//            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+//            targetFileName := <webdsl-generated-path(|relativePath)>;
+//            webdsl-library-paths(|fullPath);copy-dir;
+//            webdsl-java-library-paths(|fullPath);copy-dir;
+//            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+//            if <modulename-is-explorerui> moduleName then
+//              jsString := <generate-webdsl-js-code> moduleName;
+//              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
+//            end;
+//            (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+//            targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+//            <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)
+          case ?React():
+            (targetCode, error') := <generate-react-code(error-handler)>moduleName;
+            targetFileName := <react-generated-path(|relativePath)>;
+            <write-file> (targetFileName, targetCode)
         end;
         if <eq>(1, phase) then
           result := (targetFileName, targetCode)

@@ -1,0 +1,56 @@
+module signatures/js/Statement-sig
+
+imports
+  signatures/js/Common-sig
+  signatures/js/Expression-sig
+  signatures/js/Import-sig
+  signatures/js/Export-sig
+  signatures/js/Class-sig
+  signatures/js/Assignment-sig
+
+
+signature
+  constructors
+    BlockStatement                   : List(Statement) -> BlockStatement
+                                     : BlockStatement -> Statement
+    ExpStmt                          : Expression -> Statement
+    Assignment                       : Expression * Expression -> Statement
+    For                              : Declaration * Expression * Expression * List(Statement) -> Statement
+    While                            : Expression * List(Statement) -> Statement
+    If                               : Expression * Statement -> Statement
+    IfElse                           : Expression * Statement * Statement -> Statement
+    Return                           : Expression -> Statement
+                                     : Import -> Statement
+                                     : Export -> Statement
+                                     : Declaration -> Statement
+                                     : ClassDeclaration -> Statement
+    VarDeclaration                   : LeftHandSideExpression * Expression -> Declaration
+    ConstDeclaration                 : LeftHandSideExpression * Expression -> Declaration
+    LetDeclaration                   : LeftHandSideExpression * Expression -> Declaration
+                                     : HoistableDeclaration -> Declaration
+                                     : FunctionDeclaration -> HoistableDeclaration
+    FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
+    BlockStatement-Plhdr             : BlockStatement
+    Import-Plhdr                     : Import
+    Export-Plhdr                     : Export
+    ClassDeclaration-Plhdr           : ClassDeclaration
+    Expression-Plhdr                 : Expression
+    Declaration-Plhdr                : Declaration
+    HoistableDeclaration-Plhdr       : HoistableDeclaration
+    FunctionDeclaration-Plhdr        : FunctionDeclaration
+    ID-Plhdr                         : ID
+    LeftHandSideExpression-Plhdr     : LeftHandSideExpression
+    Statement-Plhdr                  : Statement
+    BlockStatement-Plhdr             : COMPLETION-INSERTION -> BlockStatement
+    Import-Plhdr                     : COMPLETION-INSERTION -> Import
+    Export-Plhdr                     : COMPLETION-INSERTION -> Export
+    ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
+    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
+    Declaration-Plhdr                : COMPLETION-INSERTION -> Declaration
+    HoistableDeclaration-Plhdr       : COMPLETION-INSERTION -> HoistableDeclaration
+    FunctionDeclaration-Plhdr        : COMPLETION-INSERTION -> FunctionDeclaration
+    ID-Plhdr                         : COMPLETION-INSERTION -> ID
+    LeftHandSideExpression-Plhdr     : COMPLETION-INSERTION -> LeftHandSideExpression
+    Statement-Plhdr                  : COMPLETION-INSERTION -> Statement
+    LeftHandSideExpression-Opt-Plhdr : LeftHandSideExpression
+    Statement-Opt-Plhdr              : Statement
