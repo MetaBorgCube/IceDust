@@ -33,6 +33,12 @@ rules
     ; prettyprint-icedust2
     ; !V([], <id>)
     ; box2text-string(|120)
+    
+  pp-partial-icedust2-string(|sort) =
+    parenthesize-icedust2
+    ; prettyprint-icedust2(|sort)
+    ; !V([], <id>)
+    ; box2text-string(|120)  
       
   pp-debug :
     ast -> result

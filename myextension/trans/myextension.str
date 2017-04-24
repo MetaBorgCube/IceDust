@@ -1,0 +1,10 @@
+module myextension
+
+imports
+  
+  icedust2
+
+rules
+
+  icedust-extended-artifactid = !"myextension"
+

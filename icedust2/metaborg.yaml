@@ -18,6 +18,30 @@ exports:
     - lib-webdsl/**/*
     - lib/webdsl/HQL-pretty.pp.af
     - lib/webdsl/WebDSL-pretty.pp.af
+- language: ATerm
+  directory: src-gen/syntax
+- language: SDF
+  directory: src-gen/syntax
+  includes: "**/*.sdf"
+- language: TemplateLang
+  directory: syntax
+  includes: "**/*.sdf3"
+- language: Stratego-Sugar
+  directory: trans
+  includes: "**/*.str"
+- language: Stratego-Sugar
+  directory: src-gen
+  includes: "**/*.str"
+  excludes: "nabl2/**/*.str"
+- language: Stratego-Sugar
+  directory: src-gen/nabl2
+  includes: "**/*.str"
+- language: EditorService
+  directory: src-gen
+  includes: "**/*.esv"
+- language: EditorService
+  directory: editor
+  includes: "**/*.esv"
 pardonedLanguages:
 - EditorService
 - Stratego-Sugar

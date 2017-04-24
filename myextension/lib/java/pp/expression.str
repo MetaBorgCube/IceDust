@@ -1,0 +1,173 @@
+module java/pp/expression
+
+strategies
+
+  java-to-box =
+    expr-to-box
+
+  java-to-box: Lit(l) -> l
+
+  expr-to-box: Parenthetical(e)           -> box |[ H hs=0 ["(" ~e ")"] ]|
+  expr-to-box: Assign(lval, e)            -> box |[ H hs=1 [~lval "="    ~e] ]|
+  expr-to-box: AssignMul(lval, e)         -> box |[ H hs=1 [~lval "*="   ~e] ]|
+  expr-to-box: AssignDiv(lval, e)         -> box |[ H hs=1 [~lval "/="   ~e] ]|
+  expr-to-box: AssignRemain(lval, e)      -> box |[ H hs=1 [~lval "%="   ~e] ]|
+  expr-to-box: AssignPlus(lval, e)        -> box |[ H hs=1 [~lval "+="   ~e] ]|
+  expr-to-box: AssignMinus(lval, e)       -> box |[ H hs=1 [~lval "-="   ~e] ]|
+  expr-to-box: AssignLeftShift(lval, e)   -> box |[ H hs=1 [~lval "<<="  ~e] ]|
+  expr-to-box: AssignRightShift(lval, e)  -> box |[ H hs=1 [~lval ">>="  ~e] ]|
+  expr-to-box: AssignURightShift(lval, e) -> box |[ H hs=1 [~lval ">>>=" ~e] ]|
+  expr-to-box: AssignAnd(lval, e)         -> box |[ H hs=1 [~lval "&="   ~e] ]|
+  expr-to-box: AssignExcOr(lval, e)       -> box |[ H hs=1 [~lval "^="   ~e] ]|
+  expr-to-box: AssignOr(lval, e)          -> box |[ H hs=1 [~lval "|="   ~e] ]|
+
+  expr-to-box: Plus(e)     -> H hs=0 [   "+"  ~e]
+  expr-to-box: Minus(e)    -> H hs=0 [   "-"  ~e]
+  expr-to-box: PreIncr(e)  -> H hs=0 [   "++" ~e]
+  expr-to-box: PreDecr(e)  -> H hs=0 [   "--" ~e]
+  expr-to-box: PostIncr(e) -> H hs=0 [~e "++"   ]
+  expr-to-box: PostDecr(e) -> H hs=0 [~e "--"   ]
+
+  expr-to-box: Mul(e1, e2)          -> H hs=1 [~e1  "*"   ~e2]
+  expr-to-box: Div(e1, e2)          -> H hs=1 [~e1  "/"   ~e2]
+  expr-to-box: Remain(e1, e2)       -> H hs=1 [~e1  "%"   ~e2]
+  expr-to-box: Plus(e1, e2)         -> H hs=1 [~e1  "+"   ~e2]
+  expr-to-box: Minus(e1, e2)        -> H hs=1 [~e1  "-"   ~e2]
+  expr-to-box: LeftShift(e1, e2)    -> H hs=1 [~e1  "<<"  ~e2]
+  expr-to-box: RightShift(e1, e2)   -> H hs=1 [~e1  ">>"  ~e2]
+  expr-to-box: URightShift(e1, e2)  -> H hs=1 [~e1  ">>>" ~e2]
+
+  expr-to-box: Lt(e1, e2)           -> H hs=1 [~e1  "<"   ~e2]
+  expr-to-box: Gt(e1, e2)           -> H hs=1 [~e1  ">"   ~e2]
+  expr-to-box: LtEq(e1, e2)         -> H hs=1 [~e1  "<="  ~e2]
+  expr-to-box: GtEq(e1, e2)         -> H hs=1 [~e1  ">="  ~e2]
+  expr-to-box: Eq(e1, e2)           -> H hs=1 [~e1  "=="  ~e2]
+  expr-to-box: NotEq(e1, e2)        -> H hs=1 [~e1  "!="  ~e2]
+  expr-to-box: LazyAnd(e1, e2)      -> H hs=1 [~e1  "&&"  ~e2]
+  expr-to-box: LazyOr(e1, e2)       -> H hs=1 [~e1  "||"  ~e2]
+  expr-to-box: And(e1, e2)          -> H hs=1 [~e1  "&"   ~e2]
+  expr-to-box: ExcOr(e1, e2)        -> H hs=1 [~e1  "^"   ~e2]
+  expr-to-box: Or(e1, e2)           -> H hs=1 [~e1  "|"   ~e2]
+
+  expr-to-box: InstanceOf(e1, e2)   -> H hs=1 [~e1 "instanceof" ~e2]
+
+  expr-to-box: Complement(e)         -> box |[ H hs=0 ["~" ~e] ]|
+  expr-to-box: Not(e)                -> box |[ H hs=0 ["!" ~e] ]|
+  expr-to-box: Cond(e1, e2, e3)    -> box |[ H hs=1 [~e1  "?" ~e2 ":"  ~e3] ]|
+
+  /* java-to-box: Name(s) -> s */
+
+  java-to-box: This()   -> box |[ KW["this"] ]|
+  java-to-box: QThis(q) -> box |[ H hs=0 [~q "." KW["this"]] ]|
+
+/**
+ * Method Invocations
+ */
+rules
+  java-to-box: 
+    Invoke(method, exprs) -> box |[ H hs=0 [~method ~args] ]|
+      where <list-to-args> exprs => args
+
+  java-to-box: 
+    Method(n) -> n
+
+  java-to-box: 
+    Method(e, type-args, Id(s)) -> box |[ H hs=0 [~e "." ~*type-args' s] ]|
+    where
+      <type-args-to-boxes> type-args => type-args'
+
+  java-to-box: 
+    SuperMethod(type-args, Id(s)) -> box |[ H hs=0 [KW["super"] "." ~*type-args' s] ]|
+    where
+      <type-args-to-boxes> type-args => type-args'
+
+  java-to-box: 
+    QSuperMethod(q, type-args, Id(s)) -> box |[ H hs=0 [~q "." KW["super"] "." ~*type-args' s] ]|
+    where
+      <type-args-to-boxes> type-args => type-args'
+
+  java-to-box: 
+    GenericMethod(type-name, type-args, Id(s)) -> box |[ H hs=0 [~type-name "." ~*type-args' s] ]|
+    where
+      <type-args-to-boxes> Some(type-args) => type-args'
+
+/**
+ * New instance without body
+ */
+rules
+
+  java-to-box: 
+    NewInstance(type-args, type, exprs, None()) -> box |[ H hs=0 [H hs=1 [KW["new"] H hs=0[~type-args' ~type]] ~args] ]|
+    where
+      <list-to-args> exprs => args
+      ; <type-args-to-boxes> type-args => type-args'
+
+  java-to-box: 
+    QNewInstance(e, type-args1, Id(s), type-args2, exprs, None())
+      ->
+    box |[ H hs=0 [~e "." H hs=1 [KW["new"] H hs=0 [~*type-args1' s ~*type-args2']] ~args] ]|
+    where
+      <list-to-args> exprs => args
+      ; <type-args-to-boxes> type-args1 => type-args1'
+      ; <type-args-to-boxes> type-args2 => type-args2'
+
+/**
+ * New instance with body
+ */
+rules
+
+  java-to-box: 
+    NewInstance(type-args, type, exprs, Some(body)) -> box |[ V vs=0[H hs=0 [H hs=1 [KW["new"] H hs=0 [~*type-args' ~type]] ~args] ~body] ]|
+    where
+      <list-to-args> exprs => args
+      ; <type-args-to-boxes> type-args => type-args'
+
+  java-to-box: 
+    QNewInstance(e, type-args1, Id(s), type-args2, exprs, Some(body))
+      ->
+    box |[ V vs=0 [H hs=0 [~e "."  H hs=1 [KW["new"] H hs=0 [~*type-args1' s ~*type-args2']] ~args] ~body] ]|
+    where
+      <list-to-args> exprs => args
+      ; <type-args-to-boxes> type-args1 => type-args1'
+      ; <type-args-to-boxes> type-args2 => type-args2'
+
+rules
+
+  java-to-box: 
+    NewArray(type, dimexprs, dims) -> box |[ H hs=0 [H hs=1 [KW["new"] ~type] ~*dimexprs ~*dims] ]|
+    where
+        <is-list> dimexprs
+      ; <is-list> dims
+
+  java-to-box: 
+    NewArray(type, dims, init@ArrayInit(_)) -> box |[ H hs=0 [H hs=1 [KW["new"] ~type] ~*dims ~init] ]|
+
+  /**
+   * Special ArrayBaseType
+   */
+  java-to-box: 
+    UnboundWld(name) -> box |[ H hs=0 [ ~name "<" "?" ">"] ]|
+
+rules
+
+  java-to-box: 
+    ArrayAccess(b1, b2) -> H hs=0 [ b1 "[" b2 "]"]
+
+  java-to-box: 
+    CastPrim(b1, b2) -> H hs=0 ["(" b1 ")" b2]
+
+  java-to-box: 
+    CastRef(b1, b2) -> H hs=0 ["(" b1 ")" b2]
+
+  java-to-box: 
+    Field(b, Id(s)) -> H hs=0 [b "." s]
+
+  java-to-box: 
+    SuperField(Id(s)) -> H hs=0 [KW["super"] "." s]
+
+  java-to-box: 
+    QSuperField(b, Id(s)) -> H hs=0 [b "." KW["super"] "." s]
+
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown

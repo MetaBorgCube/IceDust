@@ -1,0 +1,55 @@
+module pp
+
+imports
+
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/editor/refactoring/-
+  pp/myextension-parenthesize
+  pp/myextension-pp
+  
+  prettyprinting/pp
+
+rules
+
+  editor-format:
+    (node, _, ast, path, project-path) -> (filename, result)
+    with
+      ext      := <get-extension> path
+    ; filename := <guarantee-extension(|$[pp.[ext]])> path
+    ; result   := <pp-debug> node
+
+rules
+  
+  pp-myextension-string = pp-icedust2-string
+  pp-partial-myextension-string = pp-partial-icedust2-string
+  pp-partial-myextension-string(|sort) = pp-partial-icedust2-string(|sort)
+  
+//  pp-myextension-string =
+//    parenthesize-myextension
+//    ; prettyprint-myextension-start-symbols
+//    ; !V([], <id>)
+//    ; box2text-string(|120)
+//      
+//  pp-partial-myextension-string =
+//    parenthesize-myextension
+//    ; prettyprint-myextension
+//    ; !V([], <id>)
+//    ; box2text-string(|120)
+//    
+//  pp-partial-myextension-string(|sort) =
+//    parenthesize-myextension
+//    ; prettyprint-myextension(|sort)
+//    ; !V([], <id>)
+//    ; box2text-string(|120)  
+      
+  pp-debug :
+    ast -> result
+    with
+       result := <pp-myextension-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-myextension-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+
+rules
+  
+  construct-textual-change = construct-textual-change(pp-partial-myextension-string, parenthesize, override-reconstruction, resugar)

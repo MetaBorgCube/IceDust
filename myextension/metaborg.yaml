@@ -1,0 +1,44 @@
+---
+id: org.example:myextension:0.1.0-SNAPSHOT
+name: myextension
+dependencies:
+  compile:
+  - org.metaborg:org.metaborg.meta.lang.esv:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lang.template:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.nabl2.lang:${metaborgVersion}
+  source:
+  - org.metaborg:meta.lib.spoofax:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.nabl2.shared:${metaborgVersion}
+  - org.metaborg:org.metaborg.meta.nabl2.runtime:${metaborgVersion}
+  - org.metaborg.lang:icedust2:0.6.3-SNAPSHOT
+pardonedLanguages:
+- EditorService
+- Stratego-Sugar
+- SDF
+debug:
+  typesmart: false
+language:
+  sdf:
+    pretty-print: icedust2
+    # If set to java, set the table in editor/Syntax.esv to target/metaborg/sdf-new.tbl
+    sdf2table: c
+    placeholder:
+      prefix: "$"
+  stratego:
+    format: ctree
+    args:
+    - -la
+    - stratego-lib
+    - -la
+    - stratego-sglr
+    - -la
+    - stratego-gpp
+    - -la
+    - stratego-xtc
+    - -la
+    - stratego-aterm
+    - -la
+    - stratego-sdf
+    - -la
+    - strc

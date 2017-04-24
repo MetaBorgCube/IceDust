@@ -1,0 +1,15 @@
+module Main
+
+imports
+
+  Syntax
+  Analysis
+  Colorer
+  Menus
+  
+language
+
+  extensions : mye
+
+  provider : target/metaborg/stratego.ctree
+  provider : target/metaborg/stratego-javastrat.jar

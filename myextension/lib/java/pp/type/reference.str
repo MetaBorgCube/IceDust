@@ -1,0 +1,25 @@
+module java/pp/type/reference
+strategies
+
+  java-to-box:
+    ClassOrInterfaceType(b1, type-args) -> box |[ H hs=0 [b1 b2*] ]|
+    where
+      <type-args-to-boxes> type-args => b2*
+
+  java-to-box:
+    ClassType(b1, type-args) -> box |[ H hs=0 [ b1 b2*] ]|
+    where
+      <type-args-to-boxes> type-args => b2*
+
+  java-to-box:
+    InterfaceType(b1, type-args) -> box |[ H hs=0 [ b1 b2*] ]|
+    where
+      <type-args-to-boxes> type-args => b2*
+
+  java-to-box:
+    ArrayType(t) -> box |[ H hs=0 [~t "[" "]"] ]|
+    
+  // java-to-box:
+  //   TypeVar(x) -> x
+
+
