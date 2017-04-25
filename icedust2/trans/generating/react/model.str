@@ -1,0 +1,166 @@
+module model
+
+imports
+  api/model-names-api
+  api/module-names-api
+  
+  js/js-util
+  
+  signatures/Types-sig
+  
+  generating/react/invalidation
+  generating/react/names
+  generating/react/common
+
+rules
+    
+  generate-model-statements : moduleName -> js-stmt* |[
+      stmt_invalidations*
+      stmt_setters*
+  ]|
+  with
+    attributes := <
+      modulename-get-entitynames 
+      ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
+    > moduleName
+    ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
+    ; stmt_setters* := <map(generate-setter)> attributes
+  
+          
+  generate-setter: attribute -> js-stmt |[
+    export function x_methodname (state, id, value){
+      stmt_setter*
+      return state;
+    }
+  ]|
+    with
+      entity := <attributename-get-entityname> attribute
+      ; x_methodname := <setter-function-name> attribute
+      ; stmt_setter* := <setter-statements> attribute
+      
+  setter-statements : x_attribute -> js-stmt* |[      
+    const prop = {x_attribute: value}; 
+    state = state.update(exp_table, table => table.update(id, e => Object.assign({}, e, prop))); 
+    state = x_invalidationFunction(state, id);
+  ]|
+    where
+      is-attributename ; attributename-is-normal
+    with
+      x_invalidationFunction := <invalidation-function-name> x_attribute
+      ; exp_table := <attribute-table-expression> x_attribute
+      
+  
+  
+  setter-statements : x_attribute -> js-stmt* |[
+    const tableName = exp_table;
+    const inverseTableName = exp_inverseTable;
+    const previousValue = state.get(tableName).get(id) || exp_empty;
+    
+    state = state.update(tableName, table => table.set(id, value));
+    state = x_invalidationFunction(state, id);
+    
+    stmt_updateInverse*
+    
+  ]|
+    where
+      is-relationname
+    with
+      x_inverse := <relationname-get-inversename> x_attribute
+      ; exp_table := <attribute-name ; js-string> x_attribute
+      ; exp_inverseTable := <attribute-name ; js-string> x_inverse
+      ; exp_empty := <name-get-multiplicity ; exp-empty> x_attribute
+      ; stmt_updateInverse* := <setter-relation-inverse-statements> (x_attribute, x_inverse)
+      ; x_invalidationFunction := <invalidation-function-name> x_attribute
+      
+//  setter-relation : x_relation -> stmt
+//    with
+//      exp_table := <attribute-table-expression> x_relation
+//      ; x_invalidationFunction := <invalidation-function-name> x_relation
+//    with
+//      switch name-get-multiplicity
+//        case One(): 
+//          stmt := js-stmt* |[
+//            state = state.update(exp_table, table => table.set(id, value));
+//            state = x_invalidationFunction(state, id);
+//          ]|
+//        otherwise:
+//          stmt := js-stmt* |[iDontKnow();]|
+//      end
+      
+  
+  
+  setter-relation-inverse-statements: (x_attribute, x_inverse) -> stmt*
+    with
+      debug;
+      m_attribute := <name-get-multiplicity ; simplify-multiplicity> x_attribute
+      ; m_inverse := <name-get-multiplicity ; simplify-multiplicity> x_inverse
+      ; <debug> (m_attribute, m_inverse)
+      ; exp_set := <setter-relation-inverse-set> m_inverse
+      ; exp_unset := <setter-relation-inverse-unset> m_inverse
+      ; x_inverseInvalidationFunction := <invalidation-function-name> x_inverse
+      
+    with
+      switch !m_attribute
+        case ZeroOrMore():
+          stmt* := js-stmt* |[
+            const added = value.subtract(previousValue);
+            const removed = previousValue.subtract(value);
+            
+            added.forEach(addedId => {
+              state = state.update(inverseTableName, exp_set);
+              state = x_inverseInvalidationFunction(state, addedId);
+            });
+            
+            removed.forEach(removedId => {
+              state = state.update(inverseTableName, exp_unset);
+              state = x_inverseInvalidationFunction(state, removedId);
+            });
+          ]|
+          
+        case One():
+          stmt* := js-stmt* |[
+            if(value != null) {
+              let addedId = value;
+              state = state.update(inverseTableName, exp_set);
+              state = x_inverseInvalidationFunction(state, addedId);
+            }
+            
+            if(previousValue != null){
+              let removedId = previousValue;
+              state = state.update(inverseTableName, exp_unset);
+              state = x_inverseInvalidationFunction(state, removedId);
+            }
+          ]|
+        otherwise:
+          stmt* := js-stmt* |[notImplementedYet();]|
+      end
+  
+  
+  setter-relation-inverse-set: One() -> js-exp |[Inverse => Inverse.set(addedId, id)]|
+  setter-relation-inverse-set: ZeroOrMore() ->  js-exp |[
+    Inverse => Inverse.update(addedId, set => {
+      if(set !== undefined) {
+        return set.add(id);
+      } else {
+        return Set([id]);
+      }
+    })
+  ]|
+  
+  setter-relation-inverse-unset: One() -> js-exp |[Inverse => Inverse.set(removedId, null)]|
+  setter-relation-inverse-unset: ZeroOrMore() -> js-exp |[
+    Inverse => Inverse.update(removedId, set => {
+      if(set !== undefined) {
+        return set.remove(id);
+      } else {
+        return Set();
+      }
+    })
+  ]|
+  
+  
+  
+  setter-statements : attribute -> js-stmt* |[notImplemented();]|
+  
+  
+    

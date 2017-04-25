@@ -38,6 +38,7 @@ signature
     FunctionExpression       : Option(ID) * List(ID) * List(Statement) -> Expression
     Negate                   : Expression -> Expression
     Cond                     : Expression * CondMid * Expression -> Expression
+    CondMid                  : Expression -> CondMid
     ObjectLiteral            : List(ObjectProperty) -> Expression
     ObjectProperty           : ID * Expression -> ObjectProperty
     PropertyFromVariable     : ID -> ObjectProperty

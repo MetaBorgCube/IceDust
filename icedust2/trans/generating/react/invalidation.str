@@ -1,0 +1,166 @@
+module invalidation
+
+imports
+  api/module-names-api
+  api/model-names-api
+  
+  signatures/Types-sig
+  js/js-util
+  analysis2/path
+  
+  generating/react/model
+  generating/react/names
+  generating/react/common
+  
+rules
+  
+  generate-invalidation-function : attribute ->
+    js-stmt |[ 
+        export function x_name (state, id) {
+            stmt_derivedValueInvalidation*
+            stmt_paths*
+            return state;
+        }
+    ]|
+    with
+      x_name := <invalidation-function-name> attribute
+      ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> attribute
+      ; flows := <name-get-flowsto-paths> attribute
+      ; stmt_paths* := <mapconcat(generate-flow-invalidation)> flows
+    
+  generate-derived-value-invalidation: attribute ->
+    js-stmt* |[
+        state = state.update(exp_invalidationattribute, set => set.remove(id));
+    ]|
+    where
+      <name-is-derived> attribute
+    with
+      exp_invalidationattribute := <attribute-name ; js-string> attribute
+    
+  generate-derived-value-invalidation = ![]
+  
+  
+  
+  generate-flow-invalidation: DataflowPath(_, exp) ->
+    js-stmt* |[
+        {
+            let entities = id;
+            stmt_invalidation*
+        }
+    ]|
+    where
+      stmt_invalidation* := <flow-invalidation> exp
+  
+  flow-invalidation: Ref(attribute) -> js-stmt* |[state = x_invalidateFunction(state, id);]|
+    with
+      e_target := <attributename-get-entityname> attribute
+      ; x_invalidateFunction := <invalidation-function-name> attribute
+  
+  flow-invalidation: MemberAccess(exp, attribute) -> template  
+    where
+      template := <access(|[], attribute)> exp
+       
+  attributeFromState : attribute -> js-exp |[state.get(exp_attribute)]|
+    with
+      entity := <attributename-get-entityname> attribute
+      ; exp_attribute := String($["[entity]_[attribute]"])
+  
+  access(|names, f): Ref(attribute) -> result
+    where
+      result := <doAccess(|One(), f)> [attribute | names]
+        
+  access(|names, f): MemberAccess(exp, attribute) -> <access(|[attribute | names], f)> exp
+  
+  doAccess(|m, f) : [ x | xs ] -> templ 
+    where
+      m2 :=  <name-get-multiplicity> x
+      ; lub := <lub-simple> (m, m2) 
+      ; rest := <doAccess(|lub, f)> xs
+      ; templ := <accessTemplate> (m, m2, x, rest)
+  
+  doAccess(|m, f) : [] -> <invalidateTemplate> (m, e, f)
+    where
+      e := <attributename-get-entityname> f
+  
+  exp-accessSingle : (x_attribute, m) ->
+    js-exp |[
+      exp_attribute.get(entities) || exp_empty 
+    ]|
+    with
+      exp_attribute := <attributeFromState> x_attribute
+      ; exp_empty := <exp-empty> m 
+    
+  
+  accessTemplate : (One(), m2, attribute, stmt_rest*) -> 
+    js-stmt* |[
+      entities = exp_accessSingle;
+      stmt_rest*
+    ]|
+    with
+      exp_accessSingle := <exp-accessSingle> (attribute, m2)
+        
+  accessTemplate : (ZeroOrOne(), m2, attribute, stmt_rest*) -> 
+    js-stmt* |[
+        if(entities != null){
+          entities = exp_accessSingle;
+          stmt_rest*
+        }
+    ]|
+    with
+      exp_accessSingle := <exp-accessSingle> (attribute, m2)
+    
+  accessTemplate : (ZeroOrMore(), ZeroOrMore(), attribute, stmt_rest*) -> 
+    js-stmt* |[
+        entities = entities.flatMap(exp_attribute.get);
+        stmt_rest*
+    ]|
+    with
+      exp_attribute := <attributeFromState> attribute
+      
+  accessTemplate : (ZeroOrMore(), One(), attribute, stmt_rest*) -> 
+    js-stmt* |[
+      entities = entities.map(exp_attribute.get);
+      stmt_rest*
+    ]|
+    with
+      exp_attribute := <attributeFromState> attribute
+    
+  accessTemplate : (ZeroOrMore(), ZeroOrOne(), attribute, stmt_rest*) -> 
+    js-stmt* |[
+      entities = entities.flatMap(id => {
+        const value = exp_attribute.get(id);
+        if(value != null){
+          return [value];
+        } else {
+          return [];
+        }
+      });
+      stmt_rest*
+    ]|
+    with
+      exp_attribute := <attributeFromState> attribute
+  
+  invalidateTemplate : (One(), entity, attribute) -> js-stmt* |[state = x_invalidate(state, entities);]|
+    with
+      x_invalidate := $[invalidate[entity]_[attribute]]
+    
+  
+  invalidateTemplate : (ZeroOrOne(), entity, attribute) -> 
+    js-stmt* |[
+      if(entities != null){
+        state = x_invalidate(state, id);
+      }
+    ]|
+    with
+      x_invalidate := $[invalidate[entity]_[attribute]]    
+  
+  invalidateTemplate : (ZeroOrMore(), entity, attribute) ->
+    js-stmt* |[
+      entities.forEach(id => {
+          state = x_invalidate(state, id);
+      });
+    ]|
+    with
+      x_invalidate := $[invalidate[entity]_[attribute]]
+     
+  

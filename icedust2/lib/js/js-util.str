@@ -1,0 +1,7 @@
+module js/js-util
+
+imports
+    signatures/js/Expression-sig
+    
+rules
+    js-string: s -> String($["[s]"])

@@ -2,3 +2,9 @@
 /.classpath
 /.settings
 *.analysis.txt
+*.flowsto.txt
+*.dependson.txt
+*.class
+*.js
+*.java
+scratchpad.ice2

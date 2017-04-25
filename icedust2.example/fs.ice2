@@ -1,0 +1,39 @@
+module fs
+
+model
+
+  entity File {
+    name : String
+    size : Int
+  }
+
+  entity Directory {
+    name : String
+    size : Int    = sum(files.size) + sum(subDirectories.parent.subDirectories.size)
+//    size : Int    = sum(files.size) + sum(subDirectories.size)
+  }
+
+  relation File.directory 1 <-> * Directory.files
+  relation Directory.parent ? <-> * Directory.subDirectories
+  
+data
+  root: Directory{
+    name = "root"
+    files = 
+      f1 {
+        name = "f1"
+        size = 25
+      }
+    subDirectories =
+      d1 {
+        name = "d1"
+        files = 
+          f2 {
+            name = "f2"
+            size = 15
+          }
+      }
+  }
+  
+execute
+  sum(root.files.size)

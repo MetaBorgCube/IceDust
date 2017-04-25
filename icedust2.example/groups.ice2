@@ -1,0 +1,13 @@
+module groups
+
+model
+
+entity User {
+
+}
+
+entity Group {
+
+}
+
+relation Group.users * <-> * User.groups

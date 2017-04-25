@@ -1446,15 +1446,51 @@ strategies
          end
 
   prettyprint-spoofaxJS-CondMid :
-    Parenthetical(t1__) -> [ H(
-                               [SOpt(HS(), "0")]
-                             , [ S("? ")
-                               , t1__'
-                               , S(" :")
-                               ]
-                             )
-                           ]
+    CondMid(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S("? ")
+                         , t1__'
+                         , S(" :")
+                         ]
+                       )
+                     ]
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-CondMid =
+    ?CondMid(_)
+
+  spoofaxJS-get-indent :
+    (t@CondMid(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@CondMid(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@CondMid(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
 
   prettyprint-spoofaxJS-Expression :
     ObjectLiteral(t1__) -> [ H(

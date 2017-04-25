@@ -1,0 +1,30 @@
+module common
+
+imports
+
+  signatures/Types-sig
+  api/model-names-api  
+
+rules
+
+  exp-empty : m -> exp
+      with
+        switch !m ; simplify-multiplicity
+          case One():
+            exp := js-exp |[null]|
+          case ZeroOrMore:
+            exp := js-exp |[Set()]|
+        end
+        
+        
+  simplify-multiplicity : ZeroOrOne() -> One()
+  simplify-multiplicity : OneOrMore() -> ZeroOrMore()
+  simplify-multiplicity = id 
+  
+  lub-simple: (One(), ZeroOrOne()) -> ZeroOrOne()
+  lub-simple: (ZeroOrOne(), One()) -> ZeroOrOne()
+  lub-simple: (ZeroOrMore(), _) -> ZeroOrMore()
+  lub-simple: (_, ZeroOrMore()) -> ZeroOrMore()
+  lub-simple: (_, OneOrMore()) -> ZeroOrMore()
+  lub-simple: (OneOrMore(), _) -> ZeroOrMore()
+  lub-simple: (x, x) -> x
