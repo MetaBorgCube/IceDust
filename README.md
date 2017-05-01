@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fon-demand-incremental/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fon-demand-incremental/)
+[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/master/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/master/)
 
 # IceDust
 
