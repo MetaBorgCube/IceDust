@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature
-  id="icedust2.eclipse.feature"
-  label="icedust2 language Eclipse plugin"
-  version="0.6.2"
->
-  <plugin id="icedust2.eclipse" version="0.6.2" unpack="true" />
-  <includes id="org.metaborg.spoofax.eclipse.feature" version="0" />
-</feature>

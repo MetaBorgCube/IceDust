@@ -27,11 +27,8 @@ rules // newline a member value if it is a list or an entity
 
   pp-variation: MemberValue(a, b) -> MemberValuePP(a, b)
     where
-      EntityInstanceWrapper(_, EntityInstance(_, _, _)) := b
-      
-  pp-variation: MemberValue(a, b) -> MemberValuePP(a, b)
-    where
-      <is-comma>b
+      not([LitVal(_)] := b);
+      not([EntityInstanceRef(_)] := b)
 
 rules // single line an entity instance if it has no attributes
 
@@ -44,7 +41,7 @@ rules // newline a derivation expression if subexpression is multiline + align c
   pp-variation: e -> e'
     where
       is-entity
-    where
+    with
       maxnamelength := <entity-get-members;filter(is-attr);map(attr-get-name);map(strlen);list-max(|0)>e;
       maxtypelenght := <entity-get-members;filter(is-attr);map(ttuple(attr-get-type,attr-get-mult);pp-type-and-multiplicity;strlen);list-max(|0)>e;
       e'            := <topdown(try(pp-variation(|maxnamelength, maxtypelenght)))>e
@@ -56,9 +53,9 @@ rules // newline a derivation expression if subexpression is multiline + align c
   pp-variation(|n,t): DefaultAttribute   (a, b, c, d, e) -> DefaultAttributePPMultiLine   (a, a', b, c, c', d, e) where <    multiline-expression >d with a' := <subt;whitespace>(n,<strlen>a) with c' := <subt;whitespace>(t,<pp-type-and-multiplicity;strlen>(b,c))
 
   pp-type-and-multiplicity: (ty, mu) -> $[[pp-ty][pp-mu]]
-    where
-      pp-ty := <          prettyprint-IceDust-PrimitiveType ;!V([], <id>);box2text-string(|120)>ty;
-      pp-mu := <pp-option(prettyprint-IceDust-Multiplicity );!V([], <id>);box2text-string(|120)>mu
+    with
+      pp-ty := <          prettyprint-icedust-PrimitiveType ;!V([], <id>);box2text-string(|120)>ty;
+      pp-mu := <pp-option(prettyprint-icedust-Multiplicity );!V([], <id>);box2text-string(|120)>mu
 
 rules // multiline an expression if one of the subexpressions is multiline or long
 
@@ -69,12 +66,12 @@ rules
   
   multiline-expression: e -> e
     where
-      e-pp := <prettyprint-IceDust-Exp;!V([], <id>);box2text-string(|120)>e;
+      e-pp := <prettyprint-icedust-Exp;!V([], <id>);box2text-string(|120)>e;
       [_, _ | _ ] := <get-lines>e-pp // minimal two lines
 
   long-expression: e -> e
     where
-      e-pp := <prettyprint-IceDust-Exp;!V([], <id>);box2text-string(|120)>e;
+      e-pp := <prettyprint-icedust-Exp;!V([], <id>);box2text-string(|120)>e;
       e-pp-len := <strlen>e-pp;
       <gt>(e-pp-len, 80)
       

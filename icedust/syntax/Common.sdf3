@@ -11,6 +11,7 @@ lexical restrictions
 
 lexical syntax // Keywords
 
+  Keyword = "abstract"
   Keyword = "and"
   Keyword = "as"
   Keyword = "avg"
@@ -29,6 +30,7 @@ lexical syntax // Keywords
   Keyword = "false"
   Keyword = "Float"
   Keyword = "if"
+  Keyword = "inline"
   Keyword = "Int"
   Keyword = "max"
   Keyword = "match"
@@ -38,6 +40,7 @@ lexical syntax // Keywords
   Keyword = "no"
   Keyword = "not"
   Keyword = "or"
+  Keyword = "orderBy"
   Keyword = "ordered"
   Keyword = "relation"
   Keyword = "String"

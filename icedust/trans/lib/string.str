@@ -60,3 +60,7 @@ rules // string repeat
   string-repeat(|i) = ?s;!"";repeat(string-append(|s)|i)
   
   string-append(|s2): s1 -> $[[s1][s2]]
+  
+rules
+
+  copy-string = keep-origin(explode-string;implode-string)

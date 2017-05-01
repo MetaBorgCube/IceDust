@@ -2,62 +2,96 @@ module api/data-names-api
 
 imports // constructors
 
-  signatures/Model-sig
-  api/_runtime-constructors
-  desugaring/constructors
-  names/naming/names
+//  signatures/Model-sig
+//  api/_runtime-constructors
+//  desugaring/constructors
+//  names/naming/names
   analysis2/constructors
+  analysis/_constructors
 
 imports // functions
 
-  api/_runtime
+//  api/_runtime
   api/model-names-api
-  lib/origin
-  lib/search
+  api/types-names-api
+//  lib/origin
+//  lib/search
   lib/index
-  lib/nabl-ext
+//  lib/nabl-ext
   lib/lists-tuples
+  lib/debug
+  lib/eq
   lib/string
-
+  lib/nabl2
+  nabl2/api
+  
 rules // entity instance
 
-  is-entityinstancename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntityInstance())
+  is-entityinstancename = where(is-string;get-property(|"Member","ns");?EntityInstance())
 
-  entityinstancename-get-exprs = index-get-prop(|AST());Hd
-  entityinstancename-get-membervalues = index-get-prop(|AST())
+//  entityinstancename-get-exprs = index-get-prop(|AST());Hd
+//  entityinstancename-get-membervalues = index-get-prop(|AST())
 
-  entityinstancename-get-membervaluenames = _nabl-get-child-definitions(|NablNsMemberValue()) ;map(def-to-name); string-sort-anno
+  entityinstancename-get-membervaluenames    = concat(entityinstancename-get-membervaluenames-sg, entityinstancename-get-membervaluenames-i);filter(membervaluename-has-origin);string-sort-anno
+  entityinstancename-get-membervaluenames-sg = get-decl-assoc(|"Member");get-scope-decl-names;filter(is-membervaluename) <+ ![]
+  entityinstancename-get-membervaluenames-i  = index-get2(|"Member")
 
-  entityinstancename-get-attributevaluenames = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
-  entityinstancename-get-relationvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
-  entityinstancename-get-rolevaluenames      = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
-  entityinstancename-get-inversevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
-  entityinstancename-get-shortcutvaluenames  = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
-  entityinstancename-get-rri-left            = entityinstancename-get-membervaluenames;filter(membervaluename-is-left)
+  entityinstancename-get-attributevaluenames   = entityinstancename-get-membervaluenames;filter(membervaluename-is-attribute)
+  entityinstancename-get-relationvaluenames    = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation)
+  entityinstancename-get-rolevaluenames        = entityinstancename-get-membervaluenames;filter(membervaluename-is-role)
+  entityinstancename-get-inversevaluenames     = entityinstancename-get-membervaluenames;filter(membervaluename-is-inverse)
+  entityinstancename-get-shortcutvaluenames    = entityinstancename-get-membervaluenames;filter(membervaluename-is-shortcut)
+  entityinstancename-get-relation-role-inverse = entityinstancename-get-membervaluenames;filter(membervaluename-is-relation-role-inverse)
+  entityinstancename-get-rri-left              = entityinstancename-get-membervaluenames;filter(membervaluename-is-left)
   
-  entityinstancename-get-membervaluename(|memberName) = name-get-childname(|NablNsMemberValue(), memberName)
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-get-membervaluenames;filter(eq-no-anno(|membername));Hd
+  entityinstancename-get-membervaluename(|membername) = entityinstancename-decl-membervaluename(|membername)
   
-  entityinstancename-get-membervaluename-inv(|eiName) : memberName -> <entityinstancename-get-membervaluename(|memberName)>eiName
+  entityinstancename-get-membervaluename-inv(|eiName) = ?memberName;!eiName;entityinstancename-get-membervaluename(|memberName)
   
-  entityinstancename-get-modulename = nabl-name-parent
+  entityinstancename-get-modulename = get-scope(|"Member");get-scope-direct-edge-scope;get-scope-assoc-name
+
+  entityinstancename-get-type          = entityinstancename-get-entityname
+  entityinstancename-get-entityname    = entityinstancename-get-entityname-sg <+ entityinstancename-get-entityname-i
+  entityinstancename-get-entityname-sg = get-type-property(|"Member");normalize-type
+  entityinstancename-get-entityname-i  = index-get(|"type")
   
-  entityinstancename-get-entityname = get-type2
+
+  entityinstancename-decl-membervaluename(|membername): eiName -> memvname
+    with
+      memvname    := membername{eiName};
+      entityname  := <entityinstancename-get-entityname>eiName
+    where
+      membername' := <entityname-get-membername(|membername)>entityname // fail if entity does not have that member
+    with
+      <index-add(|eiName  , "Member")>memvname;
+      <index-set(|memvname, "Parent")>eiName;
+      <index-set(|memvname, "origin")>membername'
 
 rules // member values
 
-  membervaluename-get-expr = index-get-prop(|AST());Hd
-  membervaluename-get-values = index-get-prop(|Rel()); origin-sort-anno
-  membervaluename-get-values-inv = index-get-prop(|RelInv())
-  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
+  is-membervaluename = where(is-string;get-property(|"MemberValue","ns");?MemberValue())
+
+  membervaluename-get-expr   = index-get(|AST())
+  membervaluename-get-values = index-get2(|Assoc())
+//  membervaluename-get-values-inv = index-get-prop(|RelInv())
+//  membervaluename-get-values-all = concat(membervaluename-get-values, membervaluename-get-values-inv)
   
-  membervaluename-get-origin = get-member-origin
+  membervaluename-has-origin    = where(membervaluename-get-origin-sg <+ membervaluename-get-origin-i)
+  membervaluename-get-origin    = membervaluename-get-origin-sg <+ membervaluename-get-origin-i <+ debug-term(|"membervaluename-get-origin failed");with(fail)
+  membervaluename-get-origin-sg = get-property(|"MemberValue","origin");nabl2-get-occurrence-name
+  membervaluename-get-origin-i  = index-get(|"origin")
   
-  membervaluename-is-attribute = where(get-member-origin; is-attributename)
-  membervaluename-is-relation  = where(get-member-origin; is-relationname)
-  membervaluename-is-role      = where(get-member-origin; is-rolename)
-  membervaluename-is-inverse   = where(get-member-origin; is-inversename)
-  membervaluename-is-shortcut  = where(get-member-origin; is-shortcutname)
+  membervaluename-is-attribute = where(membervaluename-get-origin; is-attributename)
+  membervaluename-is-relation  = where(membervaluename-get-origin; is-relationname)
+  membervaluename-is-role      = where(membervaluename-get-origin; is-rolename)
+  membervaluename-is-inverse   = where(membervaluename-get-origin; is-inversename)
+  membervaluename-is-shortcut  = where(membervaluename-get-origin; is-shortcutname)
   
-  membervaluename-get-entityinstancename = nabl-name-parent
+  membervaluename-is-relation-role-inverse = membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse
+  
+  membervaluename-get-entityinstancename    = membervaluename-get-entityinstancename-sg <+ membervaluename-get-entityinstancename-i
+  membervaluename-get-entityinstancename-sg = get-scope(|"MemberValue");get-scope-assoc-name
+  membervaluename-get-entityinstancename-i  = index-get(|"Parent")
   
   membervaluename-is-left = where(membervaluename-get-origin; name-is-left)

@@ -6,18 +6,19 @@ imports // constructors
   webdsl/WebDSL
   signatures/Data-sig
   signatures/Expressions-sig  
-  desugaring/constructors
+//  desugaring/constructors
   tiersplit/constructors
 
 imports // functions
 
   api/_runtime  
   api/module-names-api
+  api/types-api
   generating/_ir/expressions
   generating/webdsl/model
   generating/webdsl/data
   generating/webdsl/types
-  names/naming/names
+//  names/naming/names
   generating/_ir/model
 
 rules // WebDSL specific: no generics, explicit casts
@@ -28,6 +29,7 @@ rules // WebDSL specific: no generics, explicit casts
   webdsl-lib-call-cast = ?ChoiceLeft(_, _)
   
   webdsl-lib-call-cast = ?First(_)
+  webdsl-lib-call-cast = ?First(_,_)
   webdsl-lib-call-cast = ?ElemAt(_,_)
 
 rules // lib expression calls
@@ -78,9 +80,21 @@ rules // filter
       srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
     with
       result := exp |[
-        [ x_var | x_var : srt1 in e1 where e2]
+        [ x_var | x_var : srt1 in e1 where Expressions.nullSafeBoolean(e2)]
       ]|
-      
+
+rules // order by
+
+  expr-to-webdsl-expr(err): OrderBy(ex1, x_var, ex2) -> result
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      e2 := <expr-to-webdsl-expr(err)>ex2;
+      srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
+    with
+      result := exp |[
+        [ x_var | x_var : srt1 in e1 order by e2]
+      ]|
+
 rules // find
 
   expr-to-webdsl-expr(err): Find(ex1, x_var, ex2) -> result
@@ -90,5 +104,30 @@ rules // find
       srt1 := <get-type2;type-to-webdsl-srt(err)>ex1
     with
       result := exp |[
-        Expressions.first([ x_var | x_var : srt1 in e1 where e2]) as srt1
+        Expressions.first([ x_var | x_var : srt1 in e1 where Expressions.nullSafeBoolean(e2)]) as srt1
+      ]|
+
+rules // filter type
+
+  expr-to-webdsl-expr(err): e@FilterType(ex1, ty1) -> result
+    where
+      <get-multiplicity;upper-one>ex1
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      srt2 := <get-type2;type-to-webdsl-srt(err)>e
+    with
+      result := exp |[
+        if(e1 is a srt2) e1 as srt2 else null
+      ]|
+
+  expr-to-webdsl-expr(err): e@FilterType(ex1, ty1) -> result
+    where
+      <get-multiplicity;upper-many>ex1
+    with
+      e1 := <expr-to-webdsl-expr(err)>ex1;
+      srt1 := <get-type2;type-to-webdsl-srt(err)>ex1;
+      srt2 := <get-type2;type-to-webdsl-srt(err)>e
+    with
+      result := exp |[
+        [a as srt2 | a : srt1 in e1 where (a is a srt2)]
       ]|

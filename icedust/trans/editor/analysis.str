@@ -1,0 +1,51 @@
+module analysis
+
+imports
+  
+  nabl2/api
+  nabl2shared
+  nabl2runtime
+  
+  static-semantics
+
+  editor/pp
+
+  analysis/_constructors
+
+  desugaring/desugar
+  
+  analysis2/analysis2
+
+  lib/time
+
+rules // Analysis: NaBL2 hooks
+
+  editor-analyze = nabl2-analyze(desugar-before-analysis)
+
+  nabl2-custom-analysis-init-hook: resource -> []
+
+  nabl2-custom-analysis-unit-hook: (resource, ast, customInitialResult) -> customUnitResult
+    with
+      customUnitResult := (resource, ast)
+  
+  nabl2-custom-analysis-final-hook(|a):(resource , customInitialResult, customUnitResult*) -> (error*, warning*, note*, customFinalResult)
+    with
+      ast := <Hd;Snd>customUnitResult*
+      ;<nabl2-custom-analysis-info(|"AST")>ast
+    with
+      (error*, warning*, note*, customFinalResult) := <measure-time(nabl2-after-analysis(|resource,ast),?analysis2-time)>a
+      ;<nabl2-custom-analysis-info(|$[analysis2 [analysis2-time]s])> (error*, warning*, note*, customFinalResult)
+
+rules // Debugging
+  
+  // Prints the abstract syntax ATerm of a selection.
+  debug-show-aterm: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"aterm")> path
+       ; result   := selected
+
+  // Prints the analyzed annotated abstract syntax ATerm of a selection.
+  debug-show-analyzed: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"analyzed.aterm")> path
+       ; result   := selected
+
+

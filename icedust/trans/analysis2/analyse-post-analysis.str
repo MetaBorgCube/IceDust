@@ -1,0 +1,63 @@
+module analysis2/analyse-post-analysis
+
+imports // constructors
+  
+  analysis2/constructors
+  signatures/Expressions-sig
+  signatures/Types-sig
+//  api/_runtime-constructors
+//  names/naming/names
+
+imports // functions
+  
+//  api/_runtime
+  api/model-names-api
+  lib/annotations
+  lib/debug
+  lib/nabl2
+
+rules
+
+  
+  analyse-post-analysis(|context): e@This() -> e{(Mult(), One()), (Type(), ty)}
+    with
+      ty := context
+  
+  analyse-post-analysis(|context): e@Ref(member) -> e{(Mult(), mu), (Type(), ty)}
+    with
+      member-decl := <get-decl(|"Member")>member;
+      ty          := <name-get-type>member-decl;
+      mu          := <name-get-multiplicity>member-decl
+      
+  analyse-post-analysis(|context): e@MemberAccess(expr, member) -> MemberAccess(expr', member){(Mult(), mu), (Type(), member-ty)}
+    with
+      expr'       := <analyse-post-analysis(|context)>expr;
+      member-decl := <get-decl(|"Member")>member;
+      member-ty   := <name-get-type>member-decl;
+      member-mu   := <name-get-multiplicity>member-decl;
+      expr-mu     := <get-multiplicity>expr';
+      mu          := <cartesian-product>(expr-mu, member-mu)
+      
+  analyse-post-analysis(|context): e@FilterType(expr, ty) -> FilterType(expr', ty){(Mult(), expr-mu), (Type(), ty)}
+    with
+      expr'       := <analyse-post-analysis(|context)>expr;
+      expr-mu     := <get-multiplicity>expr'
+      
+    
+
+rules
+  
+  cartesian-product: (x-mu, y-mu) -> mu
+    with
+      if !x-mu;?One() ; !y-mu;?One()                then !One()        ;?mu else
+      if (!x-mu;?ZeroOrOne() <+ !x-mu;?One()) ;
+         (!y-mu;?ZeroOrOne() <+ !y-mu;?One())       then !ZeroOrOne()  ;?mu else
+      if !x-mu;?ZeroOrMore() <+ !y-mu;?ZeroOrMore() then !ZeroOrMore() ;?mu else
+      if !x-mu;?OneOrMore() ; !y-mu;?ZeroOrOne() <+
+         !y-mu;?OneOrMore() ; !x-mu;?ZeroOrOne()    then !ZeroOrMore() ;?mu else
+                                                         !OneOrMore()  ;?mu
+      end
+      end
+      end
+      end
+rules

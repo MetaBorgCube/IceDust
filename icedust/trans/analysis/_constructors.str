@@ -1,0 +1,27 @@
+module analysis/_constructors
+
+signature constructors
+
+  Attribute      : NameSpace
+  Entity         : NameSpace
+  EntityInstance : NameSpace
+  Inverse        : NameSpace
+  MemberValue    : NameSpace
+  Module         : NameSpace
+  Relation       : NameSpace
+  Role           : NameSpace
+  Shortcut       : NameSpace
+  Variable       : NameSpace
+
+  Normal       : DerivationType
+  Derivation   : DerivationType
+  DefaultValue : DerivationType
+  Abstract     : DerivationType
+
+  Left  : Side
+  Right : Side
+  
+  Entity   : Term
+  Relation : Term
+  Trait    : Term
+  

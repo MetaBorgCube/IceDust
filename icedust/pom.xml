@@ -5,16 +5,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
   <modelVersion>4.0.0</modelVersion>
+  <groupId>org.metaborg.lang</groupId>
   <artifactId>icedust</artifactId>
-  <version>0.6.2</version>
-  <name>IceDust</name>  
+  <version>0.7.0</version>
   <packaging>spoofax-language</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>parent.language</artifactId>
     <version>2.2.0</version>
-    <relativePath />
   </parent>
   
   <repositories>
@@ -38,19 +37,8 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>spoofax-eclipse-repo</id>
-      <url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.2.0/org.metaborg.spoofax.eclipse.updatesite-2.2.0-assembly.zip-unzip/</url>
-      <layout>p2</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
   </repositories>
-
+  
   <pluginRepositories>
     <pluginRepository>
       <id>metaborg-release-repo</id>

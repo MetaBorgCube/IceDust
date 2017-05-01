@@ -11,7 +11,7 @@ imports // functions
   api/data-names-api
   api/expressions-names-api
   api/model-names-api
-  names/naming/names
+//  names/naming/names
   generating/_ir/model
   generating/java/types
 

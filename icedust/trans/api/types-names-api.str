@@ -1,0 +1,47 @@
+module api/types-names-api
+
+imports // signatures
+
+  analysis2/constructors
+  static-semantics
+  signatures/Types-sig
+  
+imports // functions
+
+  lib/annotations
+
+rules
+
+  get-type2        = get-annotation(|Type()) <+ nabl2-get-ast-type;normalize-type
+  get-multiplicity = get-annotation(|Mult()) <+ nabl2-get-ast-type;normalize-multiplicity
+  get-strategy     =                            nabl2-get-ast-type;normalize-strategy
+  
+  normalize-type = ?TTuple(<id>,_,_);?TInt()     ;!Int()
+  normalize-type = ?TTuple(<id>,_,_);?TFloat()   ;!Float()
+  normalize-type = ?TTuple(<id>,_,_);?TDatetime();!Datetime()
+  normalize-type = ?TTuple(<id>,_,_);?TBoolean() ;!Boolean()
+  normalize-type = ?TTuple(<id>,_,_);?TString()  ;!String()
+  normalize-type = ?TTuple(<id>,_,_);?TNoValue() ;!NoValue()
+  normalize-type = ?TTuple(<id>,_,_);?TEntity(Occurrence(_,<id>,_))
+  normalize-type = debug(!"normalize-type: ");fail
+  
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOne()              ;!One()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrOne()        ;!ZeroOrOne()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMore()       ;!ZeroOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMore()        ;!OneOrMore()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TZeroOrMoreOrdered();!ZeroOrMoreOrdered()
+  normalize-multiplicity = ?TTuple(_,<id>,_);?TOneOrMoreOrdered() ;!OneOrMoreOrdered()
+  normalize-multiplicity = debug(!"normalize-multiplicity: ");fail
+  
+  normalize-strategy = ?TTuple(_,_,<id>);?TIncremental()        ;!Incremental()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemand()           ;!OnDemand()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandIncremental();!OnDemandIncremental()
+  normalize-strategy = ?TTuple(_,_,<id>);?TEventual()           ;!Eventual()
+  normalize-strategy = ?TTuple(_,_,<id>);?TOnDemandEventual()   ;!OnDemandEventual()
+  normalize-strategy = debug(!"normalize-strategy: ");fail
+  
+  normalize-strategy-2 = ?TIncremental()        ;!Incremental()
+  normalize-strategy-2 = ?TOnDemand()           ;!OnDemand()
+  normalize-strategy-2 = ?TOnDemandIncremental();!OnDemandIncremental()
+  normalize-strategy-2 = ?TEventual()           ;!Eventual()
+  normalize-strategy-2 = ?TOnDemandEventual()   ;!OnDemandEventual()

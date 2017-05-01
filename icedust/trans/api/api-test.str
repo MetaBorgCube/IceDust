@@ -3,73 +3,85 @@ module api/api-test
 
 imports // functions
 
-  api/data-api
-  api/data-names-api
   api/model-api
   api/model-names-api
   api/module-api
   api/module-names-api
+  lib/nabl2
 
 rules
 
-  entityname-get-attributenames-test       = entityname-get-attributenames
-  entityname-get-relationnames-test        = entityname-get-relationnames
-  entityname-get-rolenames-test            = entityname-get-rolenames
-  entityname-get-inversenames-test         = entityname-get-inversenames
-  entityname-get-shortcutnames-test        = entityname-get-shortcutnames
+  entityname-get-attributenames-test       = store-analysis-ast; entityname-get-attributenames
+  entityname-get-relationnames-test        = store-analysis-ast; entityname-get-relationnames
+  entityname-get-rolenames-test            = store-analysis-ast; entityname-get-rolenames
+  entityname-get-inversenames-test         = store-analysis-ast; entityname-get-inversenames
+  entityname-get-shortcutnames-test        = store-analysis-ast; entityname-get-shortcutnames
 
-  entityname-get-relroleinvnames-test      = entityname-get-relroleinvnames
-  entityname-get-membernames-test          = entityname-get-membernames
+  entityname-get-relroleinvnames-test      = store-analysis-ast; entityname-get-relroleinvnames
+  entityname-get-membernames-test          = store-analysis-ast; entityname-get-membernames
   
-  entityname-get-modulename-test           = entityname-get-modulename
-
-rules
-
-  attributename-get-entityname-test        = try(attr-get-name); attributename-get-entityname
+  entityname-get-modulename-test           = store-analysis-ast; entityname-get-modulename
   
-  attributename-get-expr-test              = try(attr-get-name); attributename-get-expr
-
-rules
-
-  shortcutname-get-rolename1-test          = shortcutname-get-rolename1
-  shortcutname-get-rolename2-test          = shortcutname-get-rolename2
+  entityname-get-parentnames-test          = store-analysis-ast; entityname-get-parentnames
+  entityname-get-rootnames-test            = store-analysis-ast; entityname-get-rootnames
+  entityname-get-ancestornames-test        = store-analysis-ast; entityname-get-ancestornames
   
-  shortcutname-get-inversename-test        = shortcutname-get-inversename
-  shortcutname-get-rolename-test           = shortcutname-get-rolename
-  shortcutname-get-inverseandrolename-test = shortcutname-get-inverseandrolename
+  entityname-get-arrinames-defined-test    = store-analysis-ast; entityname-get-arrinames-defined
+
+rules
+
+  attributename-get-entityname-test        = try(attr-get-name); store-analysis-ast; attributename-get-entityname
   
-  shortcutname-get-entityname-test         = shortcutname-get-entityname
-
-rules
-
-  name-get-dependson-paths-test            = try(attr-get-name); name-get-dependson-paths
-  name-get-flowsto-paths-test              = try(attr-get-name); name-get-flowsto-paths
-  name-get-toposort-test                   = try(attr-get-name); name-get-toposort
+  attributename-get-expr-test              = try(attr-get-name); store-analysis-ast; attributename-get-expr
   
-  name-get-dependson-pathexprs-test        = try(attr-get-name); name-get-dependson-pathexprs
-  name-get-flowsto-pathexprs-test          = try(attr-get-name); name-get-flowsto-pathexprs
-
-  name-get-type-test                       = try(attr-get-name); name-get-type
+  attributename-get-root-get-entityname-test = try(attr-get-name); store-analysis-ast; attributename-get-root-get-entityname
 
 rules
 
-  modulename-get-entitynames-test          = try(module-get-modulename); modulename-get-entitynames
-  modulename-get-entityinstancenames-test  = try(module-get-modulename); modulename-get-entityinstancenames
-  modulename-get-attributenames-test       = try(module-get-modulename); modulename-get-attributenames
-  modulename-get-attributenames-topo-test  = try(module-get-modulename); modulename-get-attributenames-topo
-  modulename-get-exprs-test                = try(module-get-modulename); modulename-get-exprs
+  shortcutname-get-rolename1-test          = store-analysis-ast; shortcutname-get-rolename1
+  shortcutname-get-rolename2-test          = store-analysis-ast; shortcutname-get-rolename2
+  
+  shortcutname-get-inversename-test        = store-analysis-ast; shortcutname-get-inversename
+  shortcutname-get-rolename-test           = store-analysis-ast; shortcutname-get-rolename
+  shortcutname-get-inverseandrolename-test = store-analysis-ast; shortcutname-get-inverseandrolename
+  
+  shortcutname-get-entityname-test         = store-analysis-ast; shortcutname-get-entityname
 
 rules
 
-  entityinstancename-get-membervaluenames-test = debug; entityinstancename-get-membervaluenames
-  entityinstancename-get-rri-left-test         = entityinstancename-get-rri-left
-  entityinstancename-get-modulename-test       = entityinstancename-get-modulename
-  entityinstancename-get-entityname-test       = entityinstancename-get-entityname
+  name-get-dependson-paths-test            = try(attr-get-name); store-analysis-ast; name-get-dependson-paths
+  name-get-flowsto-paths-test              = try(attr-get-name); store-analysis-ast; name-get-flowsto-paths
+  name-get-toposort-test                   = try(attr-get-name); store-analysis-ast; name-get-toposort
+  
+  name-get-dependson-pathexprs-test        = try(attr-get-name); store-analysis-ast; name-get-dependson-pathexprs 
+  name-get-flowsto-pathexprs-test          = try(attr-get-name); store-analysis-ast; name-get-flowsto-pathexprs
+
+  name-get-type-test                       = try(attr-get-name); store-analysis-ast; name-get-type
+  
+  name-get-parent-test                     = try(attr-get-name); store-analysis-ast; name-get-parent
+  name-has-parent-test                     = try(attr-get-name); store-analysis-ast; ((name-has-parent;!"yes")<+!"no")
+
+  name-get-inlining-test                   = try(attr-get-name); store-analysis-ast; name-get-inlining
 
 rules
 
-  membervaluename-get-origin-test              = debug; membervaluename-get-origin
-  membervaluename-get-entityinstancename-test  = membervaluename-get-entityinstancename
-  membervaluename-get-expr-test                = membervaluename-get-expr
-  membervaluename-get-values-test              = membervaluename-get-values
+  modulename-get-entitynames-test          = try(module-get-modulename); store-analysis-ast; modulename-get-entitynames
+  modulename-get-entityinstancenames-test  = try(module-get-modulename); store-analysis-ast; modulename-get-entityinstancenames
+  modulename-get-attributenames-test       = try(module-get-modulename); store-analysis-ast; modulename-get-attributenames
+  modulename-get-attributenames-topo-test  = try(module-get-modulename); store-analysis-ast; modulename-get-attributenames-topo
+  modulename-get-exprs-test                = try(module-get-modulename); store-analysis-ast; modulename-get-exprs
+
+rules
+
+  entityinstancename-get-membervaluenames-test = debug; store-analysis-ast; entityinstancename-get-membervaluenames
+  entityinstancename-get-rri-left-test         = store-analysis-ast; entityinstancename-get-rri-left
+  entityinstancename-get-modulename-test       = store-analysis-ast; entityinstancename-get-modulename
+  entityinstancename-get-entityname-test       = store-analysis-ast; entityinstancename-get-entityname
+
+rules
+
+  membervaluename-get-origin-test              = debug; store-analysis-ast; membervaluename-get-origin
+  membervaluename-get-entityinstancename-test  = store-analysis-ast; membervaluename-get-entityinstancename
+  membervaluename-get-expr-test                = store-analysis-ast; membervaluename-get-expr
+  membervaluename-get-values-test              = store-analysis-ast; membervaluename-get-values
   

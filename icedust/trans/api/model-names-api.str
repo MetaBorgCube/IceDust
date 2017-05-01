@@ -2,45 +2,56 @@ module api/model-names-api
 
 imports // constructors
 
-  signatures/Model-sig
-  api/_runtime-constructors
-  api/constructors
-  desugaring/constructors
-  names/naming/names
-  naming/_notNaBL
+//  signatures/Model-sig
+//  api/_runtime-constructors
+//  api/constructors
+//  desugaring/constructors
+//  names/naming/names
+//  naming/_notNaBL
   analysis2/constructors
+  analysis/_constructors
+  static-semantics
 
 imports // functions
 
-  api/_runtime
   api/api-test
+//  api/_runtime
   api/module-names-api
   api/types-api
+  api/types-names-api
   lib/eq
   lib/origin
-  lib/search
+//  lib/search
   lib/string
   lib/index
-  lib/nabl-ext
+//  lib/nabl-ext
   lib/lists-tuples
   analysis2/path
+  lib/nabl2
 
 rules // entity
 
-  is-entityname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsEntity())
+  is-entityname = where(is-string;get-property(|"Entity","ns");?Entity())
 
-  entityname-get-attributenames = _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); string-sort-anno
-  entityname-get-attributenames2= _nabl-get-child-definitions(|NablNsAttribute()) ;map(def-to-name); origin-sort-anno
-  entityname-get-relationnames  = _nabl-get-child-definitions(|NablNsRelation())  ;map(def-to-name); string-sort-anno
-  entityname-get-rolenames      = _nabl-get-child-definitions(|NablNsRole())      ;map(def-to-name); string-sort-anno
-  entityname-get-inversenames   = _nabl-get-child-definitions(|NablNsInverse())   ;map(def-to-name); string-sort-anno
-  entityname-get-shortcutnames  = _nabl-get-child-definitions(|NablNsShortcut())  ;map(def-to-name); string-sort-anno
+  entityname-get-attributenames  = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-attributename);string-sort-anno
+  entityname-get-attributenames2 = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-attributename);origin-sort-anno
+  entityname-get-relationnames   = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-relationname );string-sort-anno
+  entityname-get-rolenames       = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-rolename     );string-sort-anno
+  entityname-get-inversenames    = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-inversename  );string-sort-anno
+  entityname-get-shortcutnames   = get-decl-assoc(|"Entity");get-scope-visible-names2(|"Member");filter(is-shortcutname );string-sort-anno
 
   entityname-get-relroleinvnames = concat(entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
-  entityname-get-membernames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
-  entityname-get-arrinames = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+  entityname-get-membernames     = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames, entityname-get-shortcutnames)
+  entityname-get-arrinames       = concat(entityname-get-attributenames, entityname-get-relationnames, entityname-get-rolenames, entityname-get-inversenames)
+  entityname-get-arrleftnames    = concat(entityname-get-attributenames, entityname-get-relationnames;filter(relationname-is-left), entityname-get-rolenames)
+  entityname-get-arrleftrootnames= entityname-get-arrleftnames;filter(not(name-has-parent))
+  entityname-get-arrleftnames-not-inline = entityname-get-arrleftnames;filter(not(name-is-inline))
   
-  entityname-get-modulename = nabl-name-parent
+  entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
+  
+  entityname-get-arrinames-defined       = ?e;entityname-get-arrinames      ;filter(where(attributename-get-entityname;?e))
+  entityname-get-shortcutnames-defined   = ?e;entityname-get-shortcutnames  ;filter(where(attributename-get-entityname;?e))
+  entityname-get-relroleinvnames-defined = ?e;entityname-get-relroleinvnames;filter(where(attributename-get-entityname;?e))
   
   entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
   entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
@@ -49,59 +60,69 @@ rules // entity
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
   entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)  
   
-  entityname-get-attributenames-normal-default = entityname-get-attributenames;filter(attributename-is-normal-default)
+  entityname-get-attributenames-normal-default     = entityname-get-attributenames;filter(attributename-is-normal-default)
   entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
   
-  entityname-get-attributenames2-default = entityname-get-attributenames2;filter(attributename-is-default)
-  entityname-get-attributenames2-normal-default = entityname-get-attributenames2;filter(attributename-is-normal-default)
+  entityname-get-attributenames2-default            = entityname-get-attributenames2;filter(attributename-is-default)
+  entityname-get-attributenames2-normal-default     = entityname-get-attributenames2;filter(attributename-is-normal-default)
   entityname-get-attributenames2-default-derivation = entityname-get-attributenames2;filter(attributename-is-default-derivation)
   
   entityname-get-membername(|memberName) = entityname-get-membernames;filter(eq-no-anno(|memberName));Hd
   
+  entityname-get-parentnames   = get-decl-assoc(|"Entity");get-scope-scope(|"J");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);map(nabl2-mk-occurrence(|"Entity"));map(get-resolved-name;Fst;nabl2-get-occurrence-name)
+//entityname-get-parentnames   = debug-nabl2(|"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);debug-nabl2(|"3b ");map(nabl2-mk-occurrence(|"Entity");debug-nabl2(|"x"));map(get-resolved-name;Fst;nabl2-get-occurrence-name);debug-nabl2(|"4 ")
+//entityname-get-parentnames   = debug-nabl2(|"entityname-get-parents ");get-decl-assoc(|"Entity");debug(!"1 ");get-scope-scope(|"J");debug(!"2 ");get-scope-named-edges;map(Snd;nabl2-get-occurrence-name);debug-nabl2(|"3b ");map(nabl2-mk-occurrence(|"Entity");debug-nabl2(|"x");     get-resolved-name;Fst;nabl2-get-occurrence-name);debug-nabl2(|"4 ")      //does not work...
+  entityname-get-rootnames     = (entityname-get-parentnames;not(?[]);fmap(entityname-get-rootnames));string-sort-anno <+ MkSingleton //@type name -> List(name)
+  entityname-get-ancestornames = concat(MkSingleton,entityname-get-parentnames;fmap(entityname-get-ancestornames));string-sort-anno
+  entityname-has-ancestor(|a)  = where(entityname-get-ancestornames;?as;!(a,as);elem)
+  
+  entityname-get-parentname    = entityname-get-parentnames;Hd
+  entityname-has-parentname    = where(entityname-get-parentname)
+  
 rules // attributes
+
+  is-attributename = where(is-string;                             get-property(|"Member","ns");?Attribute())
+//  is-attributename = where(is-string;get-resolved-name(|"Member");get-property(|"Member","ns");?Attribute())
+
+  attributename-is-derivation = where(is-string;get-property(|"Member","derivationtype");?Derivation())
+  attributename-is-default    = where(is-string;get-property(|"Member","derivationtype");?DefaultValue())
+  attributename-is-normal     = where(is-string;get-property(|"Member","derivationtype");?Normal())
   
-  is-attributename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsAttribute())
+  attributename-is-normal-default     = where(attributename-is-normal  <+ attributename-is-default)
+  attributename-is-default-derivation = where(attributename-is-default <+ attributename-is-derivation)
   
-  attributename-is-derivation = name-is-derived
-  attributename-is-default    = name-is-default
-  attributename-is-normal     = name-is-normal
+  attributename-get-entityname = get-decl(|"Member");get-scope(|"Member");(get-scope-assoc-name <+ (get-scope-scope-inv;get-scope-assoc-name)) ; try(get-resolved-name(|"Entity")) // try to resolve the name in the end because of possibly external definitions
   
-  attributename-is-normal-default     = name-is-normal-default
-  attributename-is-default-derivation = name-is-default-derived
-  
-  attributename-get-entityname = nabl-name-parent
-  
-  attributename-get-expr = name-get-expr
+  attributename-get-expr = get-property(|"Member","expr")
   
   attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
   
   attributename-pp2-type-multiplicity: attrName -> x
     with
-      x := <pp2-type-multiplicity>(<get-type2>attrName, <get-multiplicity>attrName)
+      x := <pp2-type-multiplicity>(<name-get-type<+get-type2>attrName, <name-get-multiplicity<+get-multiplicity>attrName)
+      
+  attributename-get-root-get-entityname = name-get-root;attributename-get-entityname
 
 rules // relations
 
-  is-relationname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRelation())
+  is-relationname = where(is-string;get-property(|"Member","ns");?Relation())
   
-  relationname-get-inversename = get-inverse
+  relationname-get-inversename = get-property(|"Member","inverse")
   
-  relationname-is-left  = where(get-side;?Left())
-  relationname-is-right = where(get-side;?Right())
-  
-  relationname-is-derivation = where(get-derivation-type;?Derivation())
-  relationname-is-normal     = where(get-derivation-type;?Normal())
+  relationname-is-left  = where(get-property(|"Member","side");?Left())
+  relationname-is-right = where(get-property(|"Member","side");?Right())
 
 rules // roles
   
-  is-rolename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsRole())
+  is-rolename = where(is-string;get-property(|"Member","ns");?Role())
   
-  rolename-get-inversename = get-inverse
+  rolename-get-inversename = get-property(|"Member","inverse")
   
 rules // inverses
   
-  is-inversename = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsInverse())
+  is-inversename = where(is-string;get-property(|"Member","ns");?Inverse())
 
-  inversename-get-rolename = get-origin-role
+  inversename-get-rolename = get-property(|"Member","role")
 
 rules
 
@@ -109,7 +130,7 @@ rules
 
   name-is-unidirectional = is-attributename
   name-is-bidirectional  = is-relationname <+ is-rolename <+ is-inversename <+ is-shortcutname
-
+  
 rules
 
   name-get-inversename = where(is-relationname);relationname-get-inversename
@@ -120,72 +141,111 @@ rules
   name-is-incremental = name-is-calconwrite
   name-is-eventual    = name-is-eventuallyconsistent
   
-  name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
+  name-is-ondemandinc-incremental          = name-is-ondemandinc <+ name-is-incremental
+  name-is-ondemandinc-incremental-eventual = name-is-ondemandinc <+ name-is-incremental <+ name-is-eventual
+  name-is-incremental-eventual             = name-is-incremental <+ name-is-eventual
   
-  name-get-implstr = _get-property(|NablProp_strategy())
+  name-is-incremental-eventual-parent-not = name-is-incremental-eventual;where(not(name-get-parent;name-is-incremental-eventual))
   
-  name-is-calconread           = where(name-get-implstr;?OnDemand())
-  name-is-calconread           = where(name-get-implstr;?OnDemandEventual())
-  name-is-calconwrite          = where(name-get-implstr;?Incremental())
-  name-is-eventuallyconsistent = where(name-get-implstr;?Eventual())
+  name-get-calculation-strategy = get-property(|"Member","calculationstrategy");normalize-strategy-2
+  name-has-calculation-strategy = where(name-get-calculation-strategy)
+  
+  name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemand())
+  name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-ondemandeventual     = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-ondemandinc          = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandIncremental())
+  name-is-calconwrite          = where(not(name-is-inline);name-get-calculation-strategy;?Incremental())
+  name-is-eventuallyconsistent = where(not(name-is-inline);name-get-calculation-strategy;?Eventual())
   
   name-is-calconwrite-eventuallyconsistent = where(name-is-calconwrite <+ name-is-eventuallyconsistent)
   
-  name-is-left  = where(is-rolename    <+ is-relationname;relationname-is-left)
+  name-is-left =  where(is-rolename    <+ is-relationname;relationname-is-left)
   name-is-right = where(is-inversename <+ is-relationname;relationname-is-right)
   
-  name-is-one                = where(get-multiplicity;lower-one;upper-one)
-  name-is-zeroorone          = where(get-multiplicity;lower-zero;upper-one)
+  name-get-inlining = get-property(|"Member","inlining")
   
-  name-is-to-one             = where(get-multiplicity;upper-one)
-  name-is-to-many            = where(get-multiplicity;upper-many)
-  name-is-to-many-ordered    = where(get-multiplicity;upper-many-ordered)
-  name-is-to-many-unordered  = where(get-multiplicity;upper-many-unordered)
-  name-is-ordered            = where(get-multiplicity;ordered)
-  name-is-unordered          = where(get-multiplicity;unordered)
+  name-is-inline    = where(name-get-inlining;?Inline())
+  
+  name-is-one                = where(name-get-multiplicity;lower-one;upper-one)
+  name-is-zeroorone          = where(name-get-multiplicity;lower-zero;upper-one)
+  
+  name-is-to-one             = where(name-get-multiplicity;upper-one)
+  name-is-to-many            = where(name-get-multiplicity;upper-many)
+  
+  name-is-to-many-ordered   = name-is-to-many;name-is-ordered
+  name-is-to-many-unordered = name-is-to-many;name-is-unordered
   
   name-inverse-is-to-one             = where(name-get-inversename;name-is-to-one)
   name-inverse-is-to-many            = where(name-get-inversename;name-is-to-many)
   name-inverse-is-to-many-ordered    = where(name-get-inversename;name-is-to-many-ordered)
   name-inverse-is-to-many-unordered  = where(name-get-inversename;name-is-to-many-unordered)
 
-  name-get-type = get-type2
+  name-get-type         = get-type-property(|"Member");normalize-type
+  name-get-multiplicity = get-type-property(|"Member");normalize-multiplicity
   
-  name-is-derived = where(get-derivation-type;?Derivation())
-  name-is-default = where(get-derivation-type;?DefaultValue())
-  name-is-normal  = where(get-derivation-type;?Normal())
+  name-is-ordered            = where(name-get-multiplicity;ordered)
+  name-is-unordered          = where(name-get-multiplicity;unordered)
+  
+  name-is-derived = where(get-property(|"Member","derivationtype");?Derivation())
+  name-is-default = where(get-property(|"Member","derivationtype");?DefaultValue())
+  name-is-normal  = where(get-property(|"Member","derivationtype");?Normal())
+  name-is-abstract= where(get-property(|"Member","derivationtype");?Abstract())
   
   name-is-normal-default  = where(name-is-normal  <+ name-is-default)
   name-is-default-derived = where(name-is-default <+ name-is-derived)
   
-  name-get-expr = index-get-prop(|AST());Hd
+  name-is-normal-default-parent-not  = name-is-normal-default ;where(not(name-get-parent;name-is-normal-default))
+  name-is-default-derived-parent-not = name-is-default-derived;where(not(name-get-parent;name-is-default-derived))
+  
+  name-is-default-derived-ondemandinc-incremental-eventual = name-is-default-derived; name-is-ondemandinc-incremental-eventual
+  name-is-default-derived-incremental-eventual             = name-is-default-derived; name-is-incremental-eventual
+  name-is-default-derived-ondemandinc                      = name-is-default-derived; name-is-ondemandinc
+  
+  name-is-default-derived-ondemandinc-incremental-eventual-parent-not = name-is-default-derived-ondemandinc-incremental-eventual;where(not(name-get-parent;name-is-default-derived-ondemandinc-incremental-eventual))
+  name-is-default-derived-incremental-eventual-parent-not             = name-is-default-derived-incremental-eventual            ;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
+  name-is-default-derived-ondemandinc-parent-not                      = name-is-default-derived-ondemandinc                     ;where(not(name-get-parent;name-is-default-derived-ondemandinc))
+  
+  name-get-expr = get-property(|"Member","expr")
   
   name-has-expr = where(name-get-expr)
+  
+  name-get-parent = ?n;get-decl-name(|"Member");where(not(eq(|n)))
+  name-get-parent2= (name-get-parent;MkSingleton)<+![]
+  name-has-parent = where(name-get-parent)
+  name-get-root   = (name-get-parent;name-get-root) <+ id
+  name-is-root    = where(not(name-has-parent))
 
 rules // shortcuts
 
-  is-shortcutname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsShortcut())
+  is-shortcutname = where(is-string;get-property(|"Member","ns");?Shortcut())
   
-  shortcutname-get-rolename1          = get-origin-role
-  shortcutname-get-rolename2          = get-origin-role2
+  shortcutname-get-rolename1          = get-property(|"Member","originrole") ;get-resolved-name(|"Member")
+  shortcutname-get-rolename2          = get-property(|"Member","originrole2");get-resolved-name(|"Member")
   
   shortcutname-get-inversename        = shortcutname-get-rolename1;rolename-get-inversename
   shortcutname-get-rolename           = shortcutname-get-rolename2
   shortcutname-get-inverseandrolename = ?s;!(<shortcutname-get-inversename>s, <shortcutname-get-rolename>s)
   
-  shortcutname-get-entityname = nabl-name-parent
+  shortcutname-get-entityname = shortcutname-get-inversename;get-scope(|"Member");get-scope-assoc-name
 
 rules // combined
   
-  name-get-dependson-paths = index-get-prop(|DependsOn())
-  name-get-flowsto-paths   = index-get-prop(|FlowsTo())
-  name-get-toposort        = index-get-prop(|TopoSort())
+  name-get-dependson-paths = index-get2(|DependsOn())
+  name-get-flowsto-paths   = index-get2(|FlowsTo())
+  name-get-toposort        = index-get(|TopoSort())
+  
+  name-get-root-get-toposort = name-get-root;name-get-toposort
+  
+  name-get-dependson-paths-all = concat(name-get-dependson-paths, name-get-parent;name-get-dependson-paths-all<+![])
+  name-get-flowsto-paths-all   = concat(name-get-flowsto-paths,   name-get-parent;name-get-flowsto-paths-all  <+![])
   
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
-  name-get-flowsto-pathexprs   = name-get-flowsto-paths;map(path-pathexpr)
+  name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
   
   name-get-flowsto-pathexprs-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental-eventual))
+  
+  name-get-flowsto-pathexprs-ondemandinc-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-ondemandinc-incremental-eventual))
 
-rules // helper
-
-  def-to-name: d@Def(uri) -> name{d} with  name := <_nabl-uri-name>uri
+//rules // helper
+//
+//  def-to-name: d@Def(uri) -> name{d} with  name := <_nabl-uri-name>uri

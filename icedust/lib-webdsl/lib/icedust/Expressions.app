@@ -12,6 +12,7 @@ section java implementations
     static merge_Many_One(List<Object>, Object) : List<Object>
     static merge_Many_Many(List<Object>, List<Object>) : List<Object>
     static first(List<Object>) : Object
+    static first(List<Object>, Int) : List<Object>
     static indexOf(List<Object>, Object) : Int
     static elemAt(List<Object>, Int) : Object
     static plus_String(String, String) : String
@@ -75,4 +76,5 @@ section java implementations
     static asString(Object) : String
     static asString(List<Object>) : List<String>
     static parseDatetime(String):DateTime
+    static nullSafeBoolean(Bool) : Bool
   }

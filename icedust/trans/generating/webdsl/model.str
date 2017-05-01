@@ -2,8 +2,8 @@ module generating/webdsl/model
 
 imports // constructors
 
-  api/constructors
-  desugaring/constructors
+//  api/constructors
+//  desugaring/constructors
   tiersplit/constructors
   webdsl/WebDSL
   signatures/Model-sig
@@ -22,8 +22,8 @@ imports // functions
   generating/webdsl/expressions-references
   generating/webdsl/types
   lib/search
-  names/naming/names
-  naming/_notNaBL
+//  names/naming/names
+//  naming/_notNaBL
   tiersplit/intra-object
   lib/traverse
 
@@ -33,23 +33,24 @@ rules // entities
     where
       <is-entityname> x_entityName
     with
-      ebd_members*    := <entityname-get-arrinames     ;fmap(model-membername-to-webdsl-ebds(err)       )>x_entityName;
-      ebd_shortcuts*  := <entityname-get-shortcutnames; fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
+      ebd_members*    := <entityname-get-arrinames-defined     ;fmap(model-membername-to-webdsl-ebds(err)       )>x_entityName;
+      ebd_shortcuts*  := <entityname-get-shortcutnames-defined ;fmap(model-shortcutname-to-webdsl-ebds(err))     >x_entityName
     with
-      if entityname-is-explorerui then
-        result := def |[
-          entity x_entityName {
-            ebd_members*
-            ebd_shortcuts*
-          }
-        ]|
-      else
-        result := def |[
-          extend entity x_entityName {
-            ebd_members*
-            ebd_shortcuts*
-          }
-        ]|
+      switch id
+        case x_parentName := <entityname-get-parentname>x_entityName:
+          result := def |[
+            entity x_entityName : x_parentName {
+              ebd_members*
+              ebd_shortcuts*
+            }
+          ]|
+        otherwise:
+          result := def |[
+            entity x_entityName {
+              ebd_members*
+              ebd_shortcuts*
+            }
+          ]|
       end
 
 rules
@@ -60,7 +61,7 @@ rules
     with
       x_entityName       := <attributename-get-entityname>x_name;
       x_moduleName       := <entityname-get-modulename>x_entityName;
-      srt_type           := <get-type2;type-to-webdsl-srt(err)>x_name;
+      srt_type           := <name-get-type;type-to-webdsl-srt(err)>x_name;
       srt_multType       := <name-to-webdsl-srt(err)>x_name;
       e_name             := String(x_name);
       e_qualifiedName    := String($[[x_entityName].[x_name]]);
@@ -96,12 +97,15 @@ rules
       x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
-      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name
+//      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
+      x_updateOneCacheAsync  := <name-updateonecacheasync>x_name;
+      x_isUpToDate       := <name-isuptodate>x_name;
+      x_topoSort         := <(name-get-toposort<+!0);int-to-string>x_name
     with
       if name-is-bidirectional then
         x_inverseName            := <name-get-inversename>x_name;
         x_inverseEntityName      := <attributename-get-entityname>x_inverseName;
-        srt_inverseType          := <get-type2;type-to-webdsl-srt(err)>x_inverseName;
+        srt_inverseType          := <name-get-type;type-to-webdsl-srt(err)>x_inverseName;
         x_inverseCache           := <name-cache>x_inverseName;
         x_inverseSetIncr         := <name-set-incremental>x_inverseName;
         x_inverseAddIncr         := <name-add-incremental>x_inverseName;
@@ -115,15 +119,24 @@ rules
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_name
       end
     with
-      if name-is-incremental-eventual then
-        stat_flowsTo* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
-      end
+      stat_flowsTo* := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
         case name-has-expr; attributename-is-explorerui:
           ebd_calculateTiersplitVar* := <attributename-get-expr-tiersplit-vars;map(var-to-webdsl-function(err))>x_name
         otherwise:
           ebd_calculateTiersplitVar* := []
+      end
+    with // Recalculation report layer
+      switch id
+        case name-is-default-derived; (name-is-eventual<+name-is-ondemandeventual):
+          ebd_isUpToDate* := ebd* |[
+            static function x_isUpToDate () : Bool {
+              return DirtyCollections.getI() > x_topoSort;
+            }
+          ]|
+        otherwise:
+          ebd_isUpToDate* := []
       end
     with // Recalculate cache Layer
       switch id
@@ -137,6 +150,22 @@ rules
           ebd_updateCache* := ebd* |[
             function x_updateCache(){
               x_cache := x_calculate().set(); // convert to set
+            }
+          ]|
+        case name-is-ondemandinc; name-is-default-derived; name-is-ordered:
+          ebd_updateCache* := ebd* |[
+            function x_updateCache(){
+              x_cache := x_calculate();
+              x_dirty := false;
+              log("Updating " + e_qualifiedName);
+            }
+          ]|
+        case name-is-ondemandinc; name-is-default-derived; name-is-unordered: //TODO: get rid of this special case
+          ebd_updateCache* := ebd* |[
+            function x_updateCache(){
+              x_cache := x_calculate().set(); // convert to set
+              x_dirty := false;
+              log("Updating " + e_qualifiedName);
             }
           ]|
         otherwise:
@@ -173,36 +202,50 @@ rules
               x_qualifiedDirty := Set<x_entityName>();
 //              DirtyCollections.x_getQueue().addAll([v.id.toString()|v : x_entityName in dirtyValues]);
               var queue := DirtyCollections.x_getQueue();
-              for(s:String in [ v.id.toString() | v : x_entityName in dirtyValues ]){ // TODO: move 'add if not contains' out of the code generator, into the stdlib
-                if(!queue.contains(s)){
-                  queue.add(s);
-                }
+              for(s:String in [ v.id.toString() | v : x_entityName in dirtyValues ]){ 
+//                if(!queue.contains(s)){
+                queue.add(s);
+//                }
+              }
+              if(dirtyValues.length != 0){
+                DirtyCollections.dirtyI(x_topoSort);
               }
             }
   
             static function x_receiveOneDirtyAsync() : x_entityName {
               var queue := DirtyCollections.x_getQueue();
-              if(!queue.isEmpty()){
-                var v : x_entityName := loadEntity(e_entityName, UUIDFromString(queue.poll() as String)) as x_entityName;
+              if(queue.length != 0){
+                var key := queue.first as String;
+                queue.remove(key);
+                var v : x_entityName := loadEntity(e_entityName, UUIDFromString(key)) as x_entityName;
                 return v;
               }
               return null;
             }
             
-            static function x_updateAllCacheAsync () {
-              var i := 1;
-              while( x_entityName.x_hasDirtyAsync() ){
+//            static function x_updateAllCacheAsync () {
+//              var i := 1;
+//              while( x_entityName.x_hasDirtyAsync() ){
+//                var en := x_entityName.x_receiveOneDirtyAsync();
+//                log("Updating " + e_qualifiedName + ": " + i + " " + en.id);
+//                en.x_updateCache();
+//                commitAndStartNewTransaction();
+//                i := i + 1;
+//              }
+//            }
+            
+            static function x_updateOneCacheAsync () {
+              if( x_entityName.x_hasDirtyAsync() ){
                 var en := x_entityName.x_receiveOneDirtyAsync();
-                log("Updating " + e_qualifiedName + ": " + i + " " + en.getName());
+                log("Updating " + e_qualifiedName + ": " + en.id);
                 en.x_updateCache();
                 commitAndStartNewTransaction();
-                i := i + 1;
               }
             }
       
             static function x_hasDirtyAsync () : Bool {
               var queue := DirtyCollections.x_getQueue();
-              return !queue.isEmpty();
+              return queue.length != 0;
             }
           ]|
         otherwise:
@@ -210,7 +253,7 @@ rules
       end
     with // Set, maintain incremental Layer
       switch id
-        case name-is-normal-default; name-is-to-one; name-is-incremental-eventual:
+        case name-is-normal-default; name-is-to-one; name-is-ondemandinc-incremental-eventual:
           ebd_setIncremental* := ebd* |[
             extend function x_set(newValue : srt_type){
               if(x_name != newValue){
@@ -218,7 +261,7 @@ rules
               }
             }
           ]|
-        case name-is-normal-default; name-is-to-many; name-is-incremental-eventual:
+        case name-is-normal-default; name-is-to-many; name-is-ondemandinc-incremental-eventual:
           ebd_setIncremental* := ebd* |[
             extend function x_addTo(en : srt_type){
               if(en != null){ //TODO: should check if its already in there for sets
@@ -236,7 +279,7 @@ rules
       end
     with
       switch id
-        case name-is-default-derived; name-is-to-one; name-is-incremental-eventual:
+        case name-is-to-one; name-is-default-derived-incremental-eventual-parent-not:
           ebd_setCacheIncr* := ebd* |[
             extend function x_setCache(newValue : srt_type){
               if(x_cache != newValue){ //TODO: should check if there is a userField, and if it has a value
@@ -244,7 +287,7 @@ rules
               }
             }
           ]|
-        case name-is-default-derived; name-is-to-many; name-is-incremental-eventual:
+        case name-is-to-many; name-is-default-derived-incremental-eventual-parent-not:
           ebd_setCacheIncr* := ebd* |[
             extend function x_addToCache(en : srt_type){
               if(en != null){ //TODO: should check if its already in there for sets //TODO: should check if there is a userField, and if it has a value
@@ -314,12 +357,24 @@ rules
               return this.x_getCalculated();
             }
             
-            x_name : srt_multType := x_get()
+//            x_name : srt_multType := x_get()
+          ]|
+        case name-is-abstract; name-is-to-one:
+          ebd_get* := ebd* |[
+            function x_get() : srt_multType {
+              return null;
+            }
+          ]|
+        case name-is-abstract; name-is-to-many:
+          ebd_get* := ebd* |[
+            function x_get() : srt_multType {
+              return List<Object>();
+            }
           ]|
       end
     with // Getter, calcualted value Layer
       switch id
-        case name-is-default-derived; name-is-ondemand:
+        case name-is-default-derived; (name-is-ondemand<+name-is-inline):
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               return x_calculate();
@@ -332,6 +387,36 @@ rules
             }
           ]|
         case name-is-default-derived; name-is-incremental-eventual; name-is-to-many: //TODO: get rid of this special case
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-one; name-has-expr:
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              if(x_dirty==null || x_dirty){
+                x_updateCache();
+              }
+              return x_cache;
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-many; name-has-expr: //TODO: get rid of this special case
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              if(x_dirty==null || x_dirty){
+                x_updateCache();
+              }
+              return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-one; not(name-has-expr):
+          ebd_getCalculated* := ebd* |[
+            function x_getCalculated() : srt_multType {
+              return x_cache;
+            }
+          ]|
+        case name-is-default-derived; name-is-ondemandinc; name-is-to-many; not(name-has-expr): //TODO: get rid of this special case
           ebd_getCalculated* := ebd* |[
             function x_getCalculated() : srt_multType {
               return [en | en : srt_type in x_cache ]; // list comprehension to convert set or list to list
@@ -359,14 +444,19 @@ rules
       end
     with
       switch id
-        case name-is-incremental-eventual:
+        case name-is-root:
           ebd_dirtyFlagFlows* := ebd* |[          
             function x_dirtyFlagFlows() {
               stat_flowsTo*
             }
           ]|
         otherwise:
-          ebd_dirtyFlagFlows* := []
+          ebd_dirtyFlagFlows* := ebd* |[          
+            function x_dirtyFlagFlows() {
+              super.x_dirtyFlagFlows();
+              stat_flowsTo*
+            }
+          ]|
       end
     with
       switch id
@@ -382,44 +472,67 @@ rules
               x_qualifiedDirty.addAll(ens);
             }
             
-            extend function x_entityName(){
+            extend function x_entityName(){ // flag dirty in constructor
               x_entityName.x_flagDirty(this);
             }
+          ]|
+        case name-is-ondemandinc; name-is-default-derived:
+          ebd_flagDirty* := ebd* |[
+            function x_flagDirty() {
+              if(x_dirty==null || !x_dirty){
+                x_dirty := true;
+                x_dirtyFlagFlows();
+              }
+            }
+            
+            static function x_flagDirty(en : x_entityName) {
+              if(en != null){
+                en.x_flagDirty();
+              }
+            }
+            
+            static function x_flagDirty(ens : [x_entityName]) {
+              for(en:x_entityName in ens){
+                en.x_flagDirty();
+              }
+            }
+            
+            // not flag dirty in constructor, dirty field is initialized with true
           ]|
         otherwise:
           ebd_flagDirty* := []
       end
     with // Data Structure Layer
       switch id
-        case name-is-left; name-is-zeroorone; name-is-normal-default:
+        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-one; name-is-normal-default:
+        case name-is-left; name-is-one; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-normal-default:
+        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : [srt_type] (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-normal-default:
+        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-one; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-one; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default:
+        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
             x_name : {srt_type}
           ]|
@@ -428,27 +541,27 @@ rules
       end
     with
       switch id
-        case name-is-left; name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-one; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : srt_type (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-many-ordered; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : [srt_type] (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-default-derived; name-is-incremental-eventual:
+        case name-is-left; name-is-to-many-unordered; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : {srt_type} (inverse=x_inverseEntityName.x_inverseCache)
           ]|
-        case (name-is-right + is-attributename); name-is-to-one; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-one; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-default-derived; name-is-incremental-eventual:
+        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-default-derived-ondemandinc-incremental-eventual-parent-not:
           ebd_cacheField* := ebd* |[
             x_cache : {srt_type}
           ]|
@@ -456,7 +569,17 @@ rules
           ebd_cacheField* := []
       end
     with
+      switch id
+        case name-is-default-derived-ondemandinc-parent-not:
+          ebd_dirty* := ebd* |[
+            x_dirty : Bool (default=true)
+          ]|
+        otherwise:
+          ebd_dirty* := []
+      end
+    with
       result := ebd* |[
+        ebd_isUpToDate*
         ebd_updateCache*
         ebd_updateAllCache*
         ebd_flagDirtyAsync*
@@ -471,13 +594,14 @@ rules
         ebd_flagDirty*
         ebd_field*
         ebd_cacheField*
+        ebd_dirty*
       ]|
 
 rules
       
   var-to-webdsl-function(err): TierSplit(name, expr) -> result
     with
-      x_getVar     := <name-get> name;
+      x_getVar     := <name-get>name;
       srt_multType := <expr-to-webdsl-srt(err)>expr;
       e_calculate  := <expr-to-webdsl-expr(err)> expr
     with
@@ -507,7 +631,7 @@ rules
       is-shortcutname
     with
       x_sourceEntityName := <attributename-get-entityname>x_shortcutName;
-      x_targetEntityName := <get-type2>x_shortcutName;
+      x_targetEntityName := <name-get-type>x_shortcutName;
       x_inverseName      := <shortcutname-get-inversename>x_shortcutName;
       x_roleName         := <shortcutname-get-rolename>x_shortcutName;
       x_relationName     := <attributename-get-entityname>x_roleName;

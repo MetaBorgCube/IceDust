@@ -1,0 +1,298 @@
+module static-semantics
+
+imports
+
+  data
+  expressions-aggregation
+  expressions-casts
+  expressions-collections
+  expressions-literals
+  expressions-logic
+  expressions-math
+  expressions-multiplicity-operators
+  expressions-references
+  map3
+  model
+  module
+  types
+
+signature
+
+  constructors
+
+    TBoolean  : Type
+    TDatetime : Type
+    TFloat    : Type
+    TInt      : Type
+    TString   : Type
+    TNoValue  : Type
+    TEntity   : occurrence -> Type
+    
+    TOne               : Mult
+    TZeroOrOne         : Mult
+    TOneOrMore         : Mult
+    TZeroOrMore        : Mult
+    TOneOrMoreOrdered  : Mult
+    TZeroOrMoreOrdered : Mult
+    
+    TIncremental         : Strat
+    TOnDemand            : Strat
+    TOnDemandIncremental : Strat
+    TEventual            : Strat
+    TOnDemandEventual    : Strat
+    
+    Normal       : DerivationType
+    Abstract     : DerivationType
+    Derivation   : DerivationType
+    DefaultValue : DerivationType
+    
+    TUOne  : MultU
+    TUMany : MultU
+    
+    TTuple : Type * Mult * Strat -> RichType
+
+    IsType      : TypeTest // type classes
+    IsNumeric   : TypeTest
+    IsString    : TypeTest
+    IsBoolean   : TypeTest
+    CanCompare  : TypeTest
+    CanAdd      : TypeTest
+    CanSubtract : TypeTest
+    CanDivide   : TypeTest
+    
+    TNonZeroConst : TNonZeroConst
+    TPossiblyZero : TNonZeroConst
+    
+    TMaterialized    : TMaterialization
+    TNonMaterialized : TMaterialization
+    
+    Inline    : Inlining
+    NotInline : Inlining
+
+  relations
+
+    reflexive, anti-symmetric, transitive sub    : Type * Type
+    reflexive, anti-symmetric, transitive mulOrd : Mul * Mul
+    reflexive, anti-symmetric, transitive strat  : Strat * Strat
+    reflexive, anti-symmetric, transitive deriv  : DerivationType * DerivationType
+    
+    anti-symmetric, anti-transitive test : Type * TypeTest
+    
+    irreflexive cast : Type * Type
+ 
+  functions
+    
+    nonZeroConst: Term -> TNonZeroConst {
+      Float("0.0") -> TPossiblyZero(),
+      Int("0")     -> TPossiblyZero(),
+      Float(i)     -> TNonZeroConst(),
+      Int(i)       -> TNonZeroConst(),
+      expr         -> TPossiblyZero()
+    }
+
+    divisionMult : Mult -> Mult {
+      (TZeroOrOne() , nonzeroconst)    -> TZeroOrOne(),
+      (TZeroOrMore(), nonzeroconst)    -> TZeroOrMore(),
+      (TOne()       , TNonZeroConst()) -> TOne(),
+      (TOne()       , TPossiblyZero()) -> TZeroOrOne(),
+      (TOneOrMore() , TNonZeroConst()) -> TOneOrMore(),
+      (TOneOrMore() , TPossiblyZero()) -> TZeroOrMore()
+    }
+
+    subtractionType : Type -> Type {
+      TInt()      -> TInt(),
+      TFloat()    -> TFloat(),
+      TDatetime() -> TInt(),
+      TNoValue()  -> TNoValue()
+    }
+
+    upperboundOne : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrOne(),
+      TZeroOrMoreOrdered() -> TZeroOrOne(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOne(),
+      TOneOrMoreOrdered()  -> TOne()
+    }
+
+    lowerboundZero : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMore(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TZeroOrOne(),
+      TOneOrMore()         -> TZeroOrMore(),
+      TOneOrMoreOrdered()  -> TZeroOrMoreOrdered()
+    }
+
+    toOrdered : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMoreOrdered(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOneOrMoreOrdered(),
+      TOneOrMoreOrdered()  -> TOneOrMoreOrdered()
+    }
+
+    choiceLeftMult : (Mult * Mult) -> Mult {
+      (TOne()              , mult                ) -> TOne(),               // [1,_] -> always left-hand side operand
+      (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] -> always left-hand side operand
+      (TOneOrMoreOrdered() , mult                ) -> TOneOrMoreOrdered(),  // [1,_] -> always left-hand side operand
+      (TZeroOrOne()        , mult                ) -> mult,                 // [0,1] -> always right-hand side multiplicity
+      (mult                , TZeroOrMore()       ) -> TZeroOrMore(),        // [0,_] <+ [0,n) unordered -> always [0,n) unordered
+      (mult                , TOneOrMore()        ) -> TOneOrMore(),         // [0,_] <+ [1,n) unordered -> always [1,n) unordered
+      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOne()              ) -> TOneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,n) ordered -> upper-bound many
+      (TZeroOrMoreOrdered(), TOneOrMoreOrdered() ) -> TOneOrMoreOrdered(),  // [0,n) ordered -> upper-bound many
+      (TZeroOrMore()       , TZeroOrOne()        ) -> TZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOne()              ) -> TOneOrMore(),         // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TZeroOrMoreOrdered()) -> TZeroOrMore(),        // [0,n) unordered -> upper-bound many, drop ordering
+      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> TOneOrMore()          // [0,n) unordered -> upper-bound many, drop ordering
+    }
+ 
+    mergeMult : (Mult * Mult) -> Mult {
+      (TOneOrMore()        , mult                ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
+      (mult                , TOneOrMore()        ) -> TOneOrMore(),         // [1,_] unordered -> [1,n) unordered
+      (TZeroOrMore()       , TOne()              ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TOne()              , TZeroOrMore()       ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TZeroOrMore()       , TOneOrMoreOrdered() ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TOneOrMoreOrdered() , TZeroOrMore()       ) -> TOneOrMore(),         // [0,n) unordered ++ [1,_] -> [1,n) unordered
+      (TZeroOrMore()       , mult                ) -> TZeroOrMore(),        // [0,n) unordered remaining -> [0,n) unordered
+      (mult                , TZeroOrMore()       ) -> TZeroOrMore(),        // [0,n) unordered remaining -> [0,n) unordered
+      (TZeroOrOne()        , TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrOne()        , TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
+      (mult1               , mult2               ) -> TOneOrMoreOrdered()   // rest -> [1,n) ordered
+    }
+    
+    multUpper : Mult -> MultU {
+      TZeroOrOne()         -> TUOne(),
+      TOne()               -> TUOne(),
+      TZeroOrMore()        -> TUMany(),
+      TOneOrMore()         -> TUMany(),
+      TZeroOrMoreOrdered() -> TUMany(),
+      TOneOrMoreOrdered()  -> TUMany()
+    }
+    
+    materialization : (Strat * Side) -> TMaterialization {
+      (strat                 , None() ) -> TMaterialized(),    // unidirectional -> materialized
+      (strat                 , Left() ) -> TMaterialized(),    // left-hand side -> materialized
+      (TIncremental()        , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TEventual()           , Right()) -> TMaterialized(),    // push-based -> materialized
+      (TOnDemandIncremental(), Right()) -> TNonMaterialized(), // pull-based (flags push-based, but that is not enough) -> not materialized
+      (TOnDemand()           , Right()) -> TNonMaterialized(), // pull-based -> not materialized
+      (TOnDemandEventual()   , Right()) -> TNonMaterialized()  // pull-based -> not materialized
+    }
+
+  name resolution
+  
+    labels
+    //D // definition
+      I // import
+      J // lower priority import
+      P // parent
+      S // requires a J to be wellformed
+//      N // no edge at all (used for inverse querying)
+
+    order
+      D < I,
+      D < J,
+      D < P,
+      D < S,
+      S < I,
+      S < J,
+      S < P,
+      I < J,
+      I < P,
+      J < P
+
+    well-formedness
+      P* . (S.J)? . (I|J)*
+
+rules
+
+  init ^ (init_scope) :=
+  
+    // type classes
+  
+    TBoolean()  <test! IsType(),
+    TDatetime() <test! IsType(),
+    TFloat()    <test! IsType(),
+    TInt()      <test! IsType(),
+    TString()   <test! IsType(),
+    TNoValue()  <test! IsType(),
+    
+    TFloat()    <test! IsNumeric(),
+    TInt()      <test! IsNumeric(),
+    TNoValue()  <test! IsNumeric(),
+
+    TString()   <test! IsString(),
+    TNoValue()  <test! IsString(),
+
+    TBoolean()  <test! IsBoolean(),
+    TNoValue()  <test! IsBoolean(),
+    
+    TDatetime() <test! CanCompare(),
+    TFloat()    <test! CanCompare(),
+    TInt()      <test! CanCompare(),
+    TString()   <test! CanCompare(),
+    TNoValue()  <test! CanCompare(),
+    
+    TFloat()    <test! CanAdd(),
+    TInt()      <test! CanAdd(),
+    TString()   <test! CanAdd(),
+    TNoValue()  <test! CanAdd(),
+
+    TFloat()    <test! CanDivide(),
+    TInt()      <test! CanDivide(),
+    TNoValue()  <test! CanDivide(),
+  
+    // multiplicity/ordering lattice
+  
+    TOne()               <mulOrd! TZeroOrOne(),         //                 TZeroOrMore()
+    TOne()               <mulOrd! TOneOrMoreOrdered(),  //                  /    \
+    TZeroOrOne()         <mulOrd! TZeroOrMoreOrdered(), // ZeroOrMoreOrdered()  TOneOrMore()
+    TOneOrMoreOrdered()  <mulOrd! TZeroOrMoreOrdered(), //             /    \    /
+    TOneOrMoreOrdered()  <mulOrd! TOneOrMore(),         //  TZeroOrOne()  TOneOrMoreOrdered()
+    TZeroOrMoreOrdered() <mulOrd! TZeroOrMore(),        //             \    /
+    TOneOrMore()         <mulOrd! TZeroOrMore(),        //             TOne()
+    
+    // strategy lattice
+    
+    TIncremental()         <strat! TOnDemandIncremental(), //         TOnDemandEventual()
+    TOnDemandIncremental() <strat! TEventual(),            //              /      \
+    TOnDemandIncremental() <strat! TOnDemand(),            //      TEventual()   TOnDemand()
+    TOnDemand()            <strat! TOnDemandEventual(),    //              \      /
+    TEventual()            <strat! TOnDemandEventual(),    //       TOnDemandIncremental()
+                                                           //                 |
+                                                           //            TIncremental()
+    // derivation type lattice
+    
+    DefaultValue() <deriv! Normal(),     //       Abstract()
+    DefaultValue() <deriv! Derivation(), //        /      \ 
+    Normal()       <deriv! Abstract(),   //  Normal()    Derivation()
+    Derivation()   <deriv! Abstract(),   //        \      /
+                                         //     DefaultValue()
+    // subtype relation 
+  
+    TNoValue() <sub! TInt(),
+    TNoValue() <sub! TFloat(),
+    TNoValue() <sub! TBoolean(),
+    TNoValue() <sub! TDatetime(),
+    TNoValue() <sub! TString(),
+
+    // casting relation
+    
+    TInt()    <cast! TFloat(),
+    TInt()    <cast! TNoValue(),
+    TFloat()  <cast! TInt(),
+    TFloat()  <cast! TNoValue(),
+    TString() <cast! TInt(),
+    TString() <cast! TFloat(),
+    TString() <cast! TBoolean(),
+    TString() <cast! TDatetime(),
+    TString() <cast! TNoValue(),
+
+    new init_scope.
+ 

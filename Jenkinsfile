@@ -30,7 +30,7 @@ node{
 
     stage('Archive') {
       archiveArtifacts(
-        artifacts: 'icedust2.eclipse.site/target/site/,icedust.eclipse.updatesite/target/site/',
+        artifacts: 'icedust.eclipse.site/target/site/',
         excludes: null,
         onlyIfSuccessful: true
       )

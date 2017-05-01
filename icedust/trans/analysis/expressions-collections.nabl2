@@ -1,0 +1,74 @@
+module expressions-collections
+
+rules
+
+  [[ Filter(e1, x, e2) ^ (s) : TTuple(e1_type, out_mult, out_strat) ]] :=
+    new s2,
+    s2 -P-> s,
+    Member{x} <- s2,
+    Member{x} : TTuple(e1_type, TOne(), e1_strat),
+    Member{x}.ns := Variable(),
+    Member{x}.reltype := None(),
+    Member{x}.side := None(),
+    [[ e1 ^ (s)  : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s2) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e2_type == TBoolean() | error $[Type mismatch: expected Boolean got [e2_type]]@e2,
+    e2_mult == TOne()     | error $[Multiplicity mismatch: expected One got [e2_type]]@e2,
+    out_mult is lowerboundZero of e1_mult,
+    out_strat is strat.lub of (e1_strat, e2_strat).
+
+  [[ OrderBy(e1, x, e2) ^ (s) : TTuple(e1_type, out_mult, out_strat) ]] :=
+    new s2,
+    s2 -P-> s,
+    Member{x} <- s2,
+    Member{x} : TTuple(e1_type, TOne(), e1_strat),
+    Member{x}.ns := Variable(),
+    Member{x}.reltype := None(),
+    Member{x}.side := None(),
+    [[ e1 ^ (s)  : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s2) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e2_type <test? CanCompare() | error $[Type mismatch: expected comparable type got [e2_type]]@e2,
+    e2_mult == TOne()           | error $[Multiplicity mismatch: expected One got [e2_type]]@e2,
+    out_mult is toOrdered of e1_mult,
+    out_strat is strat.lub of (e1_strat, e2_strat).
+
+  [[ Find(e1, x, e2) ^ (s) : TTuple(e1_type, TZeroOrOne(), out_strat) ]] :=
+    new s2,
+    s2 -P-> s,
+    Member{x} <- s2,
+    Member{x} : TTuple(e1_type, TOne(), e1_strat),
+    Member{x}.ns := Variable(),
+    Member{x}.reltype := None(),
+    Member{x}.side := None(),
+    [[ e1 ^ (s)  : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s2) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e2_type == TBoolean() | error $[Type mismatch: expected Boolean got [e2_type]]@e2,
+    e2_mult == TOne()     | error $[Multiplicity mismatch: expected One got [e2_type]]@e2,
+    out_strat is strat.lub of (e1_strat, e2_strat).
+
+  [[ First(e1) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    out_mult is upperboundOne of e1_mult.
+
+  [[ First(e1, e2) ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e2_type == TInt() | error $[Type mismatch: expected Integer got [e2_type]]@e2,
+    e2_mult == TOne() | error $[Multiplicity mismatch: expected One got [e2_type]]@e2,
+    out_mult is upperboundOne of e1_mult.
+
+  [[ ElemAt(e1, e2) ^ (s) : TTuple(e1_type, TZeroOrOne(), out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e2_type == TInt() | error $[Type mismatch: expected Int got [e2_type]]@e2,
+    e2_mult_upper is multUpper of e2_mult,
+    e2_mult_upper == TUOne() | error $[Multiplicity mismatch: Expected One or ZeroOrOne got [e2_mult]]@e2,
+    out_strat is strat.lub of (e1_strat, e2_strat).
+
+  [[ IndexOf(e1, e2) ^ (s) : TTuple(TInt(), TZeroOrOne(), out_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_type == e2_type | error $[Type mismatch: expected [e1_type] got [e2_type]]@e2,
+    e2_mult_upper is multUpper of e2_mult,
+    e2_mult_upper == TUOne() | error $[Multiplicity mismatch: Expected One or ZeroOrOne got [e2_mult]]@e2,
+    out_strat is strat.lub of (e1_strat, e2_strat).

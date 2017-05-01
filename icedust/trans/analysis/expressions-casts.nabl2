@@ -1,0 +1,16 @@
+module expressions-casts
+
+rules
+  
+  [[ Cast(e1, t) ^ (s) : TTuple(t_type, e1_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ t ^ (s) : t_type ]],
+    t_type <cast? e1_type.
+
+
+  [[ FilterType(e1, t) ^ (s) : TTuple(t_type, out_mult, e1_strat) ]] :=
+    [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    [[ t ^ (s) : t_type ]],
+    t_type <sub? e1_type | error $[[t] is not a sub type of [e1_type]] @t,
+    out_mult is lowerboundZero of e1_mult.
+    

@@ -3,9 +3,11 @@ module api/data-api
 imports // constructors
 
   signatures/Data-sig
-  signatures/Modules-sig
+  signatures/icedust-sig
+//  signatures/Modules-sig
   signatures/Model-sig
-  desugaring/constructors
+  signatures/Types-sig
+//  desugaring/constructors
 
 imports // functions
     
@@ -15,18 +17,21 @@ rules // query
   
   datadef-get-data = ?DataSection(<id>)
   
-  entityinstance-get-type = ?EntityInstance(_, EntityRef(<id>), _)
-  entityinstance-get-type = ?EntityInstance(_, <id>, _) // no type in concrete syntax (type inferred)
+  entityinstance-get-type = ?EntityInstance(_, EntityType(<id>), _)
+  entityinstance-get-type = ?EntityInstanceNoType(_, _);!None() // no type in concrete syntax (type inferred)
   entityinstance-get-name = ?EntityInstance(<id>, _, _)
-  entityinstance-get-rolevalues = ?EntityInstance(_, _, <id>)
-  entityinstance-get-attrvalues = ?EntityInstance(_, _, <id>)
+  entityinstance-get-name = ?EntityInstanceNoType(<id>, _)
+  entityinstance-get-name = ?EntityInstanceRef(<id>)
+  entityinstance-get-name = ?EntityInstanceWrapper(_, <entityinstance-get-name>)
   entityinstance-get-membervalues = ?EntityInstance(_, _, <id>)
+  entityinstance-get-membervalues = ?EntityInstanceNoType(_, <id>)
   
-  membervalue-get-name = ?MemberValue(MemberRef(<id>), _)
-  membervalue-get-name = ?MemberValue(NaBLHelp(_, <id>), _)
-  membervalue-get-membername = ?MemberValue(MemberRef(<id>), _)
-  membervalue-get-membername = ?MemberValue(NaBLHelp(MemberRef(<id>), _), _)
-  membervalue-get-expr = ?MemberValue(_, <id>)
+  relation-instance-get-name = ?RelationInstanceNoType(<id> ,[])
+  relation-instance-get-name = ?EntityInstanceWrapper(<relation-instance-get-name>,_)
+  
+  membervalue-get-name = ?MemberValue(<id>, _)
+  membervalue-get-expr = ?MemberValue(_, [LitVal(<id>)])
+  membervalue-get-expr = ?MemberValue(_, <id>) //if not litval
 
 rules // properties
   
@@ -37,24 +42,28 @@ rules // properties
   is-membervalue = ?MemberValue(_,_)
 
   entityinstance-has-no-name = ?EntityInstance(None(), _, _)
+  entityinstance-has-no-name = ?EntityInstanceNoType(None(), _)
   entityinstance-has-no-name = ?RelationInstance(None(), _, _)
+  entityinstance-has-no-name = ?RelationInstanceNoType(None(), _)
 
 rules // manipulate
   
   datadef-set-data(|op) = DataSection(!op)
   
   entityinstance-set-name(|name) = EntityInstance(!name, id, id)
+  entityinstance-set-name(|name) = EntityInstanceNoType(!name, id)
   entityinstance-set-name(|name) = RelationInstance(!name, id, id)
+  entityinstance-set-name(|name) = RelationInstanceNoType(!name, id)
   
   membervalue-set-member(member) = MemberValue(member, id)
   
-  membervalue-dup-member   = membervalue-set-member(\r@MemberRef(m) -> NaBLHelp(r, m)\)
-  membervalue-dedup-member = membervalue-set-member(\NaBLHelp(r, _) -> r\)
   
-rules // representations    
-  
-  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members) -> EntityInstanceRef(ei)
-  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
+//rules // representations    
+//  
+//  entityinstance-to-entityinstanceref: EntityInstanceRef(ei)             -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstance(ei, ty, members)   -> EntityInstanceRef(ei)
+//  entityinstance-to-entityinstanceref: EntityInstanceNoType(ei, members) -> EntityInstanceRef(ei)
+////  entityinstance-to-entityinstanceref: RelationInstance(ei, ty, members) -> EntityInstanceRef(ei)
 
 rules
 
@@ -63,8 +72,3 @@ rules
   eirefname: EntityInstanceRef(name) -> name
   eiwrefnames: EntityInstanceWrapper(EntityInstanceRef(relname), EntityInstanceRef(name)) -> (relname,name)
   eiwrefnames: EntityInstanceWrapper(None(), EntityInstanceRef(name))                                       -> (None(),name)
-
-rules
-
-  is-comma = ?Comma(_, _)
-  

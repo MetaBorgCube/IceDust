@@ -1,0 +1,25 @@
+module generate-expressions-references
+
+language icedust
+
+fixture [[
+  module ExpressionsMultiplicities (on-demand)
+  
+  model
+  entity Foo{
+    input1  : Int = 5
+    input2  : Int?
+    value   : Int = input1
+  }
+  
+  data
+  f : Foo {}
+  
+  execute
+  f.value
+  [[...]]
+]]
+
+test Expressions References execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"5
+"
