@@ -108,7 +108,7 @@ rules
         (calculate-stms*, calculate-exp) := <name-get-expr;exp-to-java-stm(err|0)>x_name
       end
     with
-      flowsto-stms* := <name-get-flowsto-pathexprs-incremental-eventual;map(model-pathexpr-to-java-stm(err))>x_name
+      flowsto-stms* := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-java-stm(err))>x_name
     with // Recalculate layer
       switch id
         case name-is-incremental; name-is-default-derived:
@@ -130,6 +130,15 @@ rules
               for(x_entityName en : ens){
                 en.x_updateCache();
               }
+            }
+          ]|
+        case name-is-ondemandinc; name-is-default-derived:
+          result-updateCache* := class-body-dec* |[
+            protected void x_updateCache()
+            {
+              System.out.println("Updating " + ~qualifiedName-exp);
+              x_setCache(x_calculate());
+              x_dirty = false;
             }
           ]|
         otherwise:
@@ -261,14 +270,14 @@ rules
       end
     with
       switch id
-        case name-is-unidirectional; name-is-to-one; name-is-default-derived; name-is-incremental:
+        case name-is-unidirectional; name-is-to-one; name-is-default-derived; name-is-ondemandinc-incremental:
           result-setCache* := class-body-dec* |[
             public void x_setCache(x_type en)
             { 
               x_setCacheIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-one; name-is-default-derived; name-is-incremental:
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-one; name-is-default-derived; name-is-ondemandinc-incremental:
           result-setCache* := class-body-dec* |[
             public void x_setCache(x_type en)
             { 
@@ -285,7 +294,7 @@ rules
               this.x_setCacheIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-many; name-is-default-derived; name-is-incremental:
+        case name-is-bidirectional; name-is-to-one; name-inverse-is-to-many; name-is-default-derived; name-is-ondemandinc-incremental:
           result-setCache* := class-body-dec* |[
             public void x_setCache(x_type en)
             { 
@@ -298,7 +307,7 @@ rules
               this.x_setCacheIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-default-derived; name-is-incremental:
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-one; name-is-default-derived; name-is-ondemandinc-incremental:
           result-setCache* := class-body-dec* |[
             public void x_setCache(Collection<x_type> en)
             { 
@@ -323,7 +332,7 @@ rules
               x_setCacheIncr(en);
             }
           ]|
-        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-default-derived; name-is-incremental:
+        case name-is-bidirectional; name-is-to-many; name-inverse-is-to-many; name-is-default-derived; name-is-ondemandinc-incremental:
           result-setCache* := class-body-dec* |[
             public void x_setCache(Collection<x_type> en)
             { 
@@ -458,6 +467,13 @@ rules
               }
             }
           ]|
+        case name-is-default-derived; name-is-ondemandinc:
+          result-setCacheIncr* := class-body-dec* |[
+            protected void x_setCacheIncr(~multType en)
+            { 
+              this.x_cache = en;
+            }
+          ]|
         otherwise:
           result-setCacheIncr* := []
       end
@@ -560,6 +576,15 @@ rules
               return x_cache;
             }
           ]|
+        case name-is-default-derived; name-is-ondemandinc:
+          result-getCalculated* := class-body-dec* |[
+            private ~type:multType x_getCalculated()
+            { 
+              if(x_dirty)
+                x_updateCache();
+              return x_cache;
+            }
+          ]|
         otherwise:
           result-getCalculated* := []
         end
@@ -616,6 +641,28 @@ rules
               x_dirty.addAll(ens);
             }
           ]|
+        case name-is-ondemandinc; name-is-default-derived:
+          result-flagDirty* := class-body-dec* |[
+            protected void x_flagDirty(){
+              if(!x_dirty){
+                x_dirty = true;
+                x_dirtyFlagFlows();
+              }
+            }
+            
+            protected static void x_flagDirty(x_entityName en)
+            { 
+              if(en != null)
+                en.x_flagDirty();
+            }
+          
+            protected static void x_flagDirty(Collection<x_entityName> ens)
+            { 
+              for(x_entityName en : ens){
+                en.x_flagDirty();
+              }
+            }
+          ]|
         otherwise :
           result-flagDirty* := []
       end
@@ -634,11 +681,11 @@ rules
       end
     with
       switch id
-        case name-is-incremental; name-is-default-derived; name-is-to-one:
+        case name-is-ondemandinc-incremental; name-is-default-derived; name-is-to-one:
           result-cacheField* := class-body-dec* |[
             protected x_type x_cache;
           ]|
-        case name-is-incremental; name-is-default-derived; name-is-to-many:
+        case name-is-ondemandinc-incremental; name-is-default-derived; name-is-to-many:
           result-cacheField* := class-body-dec* |[
             protected Collection<x_type> x_cache = Expressions.emptyCollection();
           ]|
@@ -650,6 +697,10 @@ rules
         case name-is-incremental; name-is-default-derived:
           result-dirtyFlags* := class-body-dec* |[
             private static Collection<x_entityName> x_dirty = new HashSet<x_entityName>();
+          ]|
+        case name-is-ondemandinc; name-is-default-derived:
+          result-dirtyFlags* := class-body-dec* |[
+            private boolean x_dirty = true;
           ]|
         otherwise :
           result-dirtyFlags* := []

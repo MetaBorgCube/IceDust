@@ -49,8 +49,9 @@ rules // entity
   
   entityname-get-modulename = get-scope(|"Entity");get-scope-assoc-name
   
-  entityname-get-arrinames-defined     = ?e;entityname-get-arrinames    ;filter(where(attributename-get-entityname;?e))
-  entityname-get-shortcutnames-defined = ?e;entityname-get-shortcutnames;filter(where(attributename-get-entityname;?e))
+  entityname-get-arrinames-defined       = ?e;entityname-get-arrinames      ;filter(where(attributename-get-entityname;?e))
+  entityname-get-shortcutnames-defined   = ?e;entityname-get-shortcutnames  ;filter(where(attributename-get-entityname;?e))
+  entityname-get-relroleinvnames-defined = ?e;entityname-get-relroleinvnames;filter(where(attributename-get-entityname;?e))
   
   entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
   entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
@@ -140,7 +141,9 @@ rules
   name-is-incremental = name-is-calconwrite
   name-is-eventual    = name-is-eventuallyconsistent
   
-  name-is-incremental-eventual = name-is-incremental <+ name-is-eventual
+  name-is-ondemandinc-incremental          = name-is-ondemandinc <+ name-is-incremental
+  name-is-ondemandinc-incremental-eventual = name-is-ondemandinc <+ name-is-incremental <+ name-is-eventual
+  name-is-incremental-eventual             = name-is-incremental <+ name-is-eventual
   
   name-is-incremental-eventual-parent-not = name-is-incremental-eventual;where(not(name-get-parent;name-is-incremental-eventual))
   
@@ -149,6 +152,8 @@ rules
   
   name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemand())
   name-is-calconread           = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-ondemandeventual     = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandEventual())
+  name-is-ondemandinc          = where(not(name-is-inline);name-get-calculation-strategy;?OnDemandIncremental())
   name-is-calconwrite          = where(not(name-is-inline);name-get-calculation-strategy;?Incremental())
   name-is-eventuallyconsistent = where(not(name-is-inline);name-get-calculation-strategy;?Eventual())
   
@@ -192,9 +197,13 @@ rules
   name-is-normal-default-parent-not  = name-is-normal-default ;where(not(name-get-parent;name-is-normal-default))
   name-is-default-derived-parent-not = name-is-default-derived;where(not(name-get-parent;name-is-default-derived))
   
-  name-is-default-derived-incremental-eventual = name-is-default-derived; name-is-incremental-eventual
+  name-is-default-derived-ondemandinc-incremental-eventual = name-is-default-derived; name-is-ondemandinc-incremental-eventual
+  name-is-default-derived-incremental-eventual             = name-is-default-derived; name-is-incremental-eventual
+  name-is-default-derived-ondemandinc                      = name-is-default-derived; name-is-ondemandinc
   
-  name-is-default-derived-incremental-eventual-parent-not = name-is-default-derived-incremental-eventual;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
+  name-is-default-derived-ondemandinc-incremental-eventual-parent-not = name-is-default-derived-ondemandinc-incremental-eventual;where(not(name-get-parent;name-is-default-derived-ondemandinc-incremental-eventual))
+  name-is-default-derived-incremental-eventual-parent-not             = name-is-default-derived-incremental-eventual            ;where(not(name-get-parent;name-is-default-derived-incremental-eventual))
+  name-is-default-derived-ondemandinc-parent-not                      = name-is-default-derived-ondemandinc                     ;where(not(name-get-parent;name-is-default-derived-ondemandinc))
   
   name-get-expr = get-property(|"Member","expr")
   
@@ -234,6 +243,8 @@ rules // combined
   name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
   
   name-get-flowsto-pathexprs-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-incremental-eventual))
+  
+  name-get-flowsto-pathexprs-ondemandinc-incremental-eventual = name-get-flowsto-pathexprs;filter(where(pathexpr-last;name-is-ondemandinc-incremental-eventual))
 
 //rules // helper
 //

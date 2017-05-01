@@ -36,7 +36,7 @@ rules //crud
       elem_hiddenvars*      := <entityname-get-attributenames2-default-derivation;fmap(attributename-get-expr-tiersplit-vars);map(var-to-hidden-elem)>x_entityName;
       elem_relationInputs*  := <entityname-get-relroleinvnames;filter(name-is-one);map(attributename-to-input-elem)>x_entityName; //TODO: add roles/inverses
       elem_relationOutputs* := <entityname-get-relroleinvnames;map(relationname-to-output-elem)>x_entityName;
-      def_relationPages*    := <entityname-get-relroleinvnames;filter(name-is-normal);map(relationname-to-page-def)>x_entityName
+      def_relationPages*    := <entityname-get-relroleinvnames-defined;filter(name-is-normal);map(relationname-to-page-def)>x_entityName
     with
       result := def* |[
         page x_manageEntity(){
@@ -140,11 +140,12 @@ rules //crud
     with
       e_name    := <ucfirst;webdsl-expr>x_name;
       x_setname := <attributename-entityname-set>x_name;
-      x_getname := <name-get> x_name
+      x_getname := <name-get>x_name;
+      x_entityname := <attributename-get-entityname>x_name
     with
       if name-is-normal-default then
         result := elem |[
-          relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp)[]{"Edit "}})
+          relationEdit(e_name, {""if(temp.x_getname()!=null){output(temp.x_getname())}}, {navigate x_setname(temp as x_entityname)[]{"Edit "}})
         ]|
       else
         result := elem |[
@@ -295,16 +296,17 @@ rules //crud
       e_typestr     := <attributename-pp2-type-multiplicity;webdsl-expr>x_name;
       e_flows       := <name-get-flowsto-paths;filter(dataflowpath-direct-ref);map(attributename-entityname);concat-strings(|" ");webdsl-expr>x_name;
       elem_input    := <name-to-input-elem> x_name;
-      elem_output   := <name-to-output-elem>x_name
+      elem_output   := <name-to-output-elem>x_name;
+      elem_note     := <name-to-note-elem>x_name
     with
-      if <attributename-is-derivation>x_name then
+      if <attributename-is-derivation<+name-is-abstract>x_name then
         result := elem |[
-          attributeDerived(e_name, e_derivedname, e_typestr, e_flows){""elem_output}
+          attributeDerived(e_name, e_derivedname, e_typestr, e_flows, {""elem_note}){""elem_output}
         ]|
       else
       if <attributename-is-default> x_name then
           result := elem |[
-            attributeDefault(e_name, e_derivedname, e_typestr, e_flows,{""elem_input}){""elem_output}
+            attributeDefault(e_name, e_derivedname, e_typestr, e_flows, {""elem_note},{""elem_input}){""elem_output}
           ]|
         else
           result := elem |[
@@ -329,4 +331,15 @@ rules //crud
         result := elem |[outputNonRef(temp.x_getname())]|
       else
         result := elem |[output(temp.x_getname())]|
+      end
+      
+  name-to-note-elem: x_name ->  result
+    with
+      x_entityName       := <attributename-get-entityname>x_name;
+      x_isUpToDate       := <name-isuptodate>x_name
+    with
+      if <name-is-eventual<+name-is-ondemandeventual>x_name then
+        result := elem |[div[class="note"]{output(if(x_entityName.x_isUpToDate()) "up to date" else "possibly outdated")}]|
+      else
+        result := elem |[""]|
       end

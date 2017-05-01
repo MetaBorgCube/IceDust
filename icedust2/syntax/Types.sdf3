@@ -26,8 +26,9 @@ context-free syntax
   MultiplicityOrdering.ZeroOrMoreOrdered = <* (ordered)>
   MultiplicityOrdering.OneOrMoreOrdered  = <+ (ordered)>
 
-  Strategy.OnDemand         = <(on-demand)>
-  Strategy.Incremental      = <(incremental)>
-  Strategy.Eventual         = <(eventual)>
-  Strategy.OnDemandEventual = <(on-demand eventual)>
+  Strategy.OnDemand            = <(on-demand)>
+  Strategy.OnDemandIncremental = <(on-demand incremental)>
+  Strategy.Incremental         = <(incremental)>
+  Strategy.Eventual            = <(eventual)>
+  Strategy.OnDemandEventual    = <(on-demand eventual)>
   

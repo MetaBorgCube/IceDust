@@ -45,8 +45,8 @@ rules // module
       native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
       stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
     with
-      elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row    )>x_moduleName;
-      elem_manageActions* := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-elems-action)>x_moduleName
+      elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row   )>x_moduleName;
+      def_manage*         := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-defs-manage)>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -91,22 +91,18 @@ rules // module
           
           function updateDerivationsAsync(){
             stat_cachAsync*
+            DirtyCollections.cleanI(2147483647);
           }
           
           invoke updateDerivationsAsync() every 1 milliseconds
           
           native class derivations.DirtyCollections as DirtyCollections {
+            static getI() : Int
+            static dirtyI(Int)
+            static cleanI(Int)
+          
             native1*
           }
-          
-//          native class java.util.Queue as Queue{
-//            offer(String) : Bool
-//            add(String) : Bool
-//            addAll(List<String>) : Bool
-//            poll() : String
-//            contains(String) : Bool
-//            isEmpty() : Bool
-//          }
       ]|
     with
       sec_hibernateTriggers* :=  section* |[
@@ -128,22 +124,41 @@ rules // module
           page derivedvalues() {
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
-            tableStriped{
-              theader{
-                th{ "Order" }
-                th{ "Name" }
-                th{ "Type" }
-                th{ "Status" }
-                th{ "Actions" }
+            table{
+              row{
+                column{ "Order" }
+                column{ "Name" }
+                column{ "Type" }
+                column{ "Status" }
+                column{ "Actions" }
+              }
+              row{
+                column{  }
+                column{  }
+                column{  }
+                column{  }
+                column{
+                  submit action{
+                    flagAllIncrementalDirty();
+                    log("Updating derivations");
+                    updateDerivations();
+                    log("Updating derivations done");
+                  } { "flag all incremental fields dirty" }
+                  br
+                  submit action{
+                    flagAllOnDemandIncDirty();
+                  } { "flag all on-demand incremental fields dirty" }
+                }
               }
               elem_manageRows*
             }
-            elem_manageActions*
           }
           
-        access control rules
-        
-          rule page derivedvalues() { true }
+          def_manage*
+          
+          function flagAllIncrementalDirty(){}
+          
+          function flagAllOnDemandIncDirty(){}
       ]|
     with
       if modulename-is-explorerui then
@@ -181,5 +196,9 @@ rules // module
           sec_hibernateTriggers*
         
           sec_manage*
+          
+            access control rules
+            
+              rule page derivedvalues() { true }
         ]|
       end
