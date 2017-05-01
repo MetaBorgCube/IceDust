@@ -10,11 +10,11 @@ rules
   //   |          \
   //   |           P
   //   v            \
-  // Entity{e} =I=> entity_scope ---> Implicit{"this"}
-  //               /       \       __^  ^
-  //              I         J  __/      |
-  //             /      __/  \          |
-  //            v     /       v         |
+  // Entity{e} =I=> entity_scope     Implicit{"this"}
+  //               /       \       __^  
+  //              I         J  __/      
+  //             /      __/  \          
+  //            v     /       v         
   // entity_scope_local      entity_scope_inherit
   //   |          ||              ||
   //   |          I               I
@@ -37,9 +37,7 @@ rules
     TNoValue() <sub! e_type,
 
     Entity{e}.ns := Entity(),
-//    Implicit{"this"} <- entity_scope,
     Implicit{"this"} <- entity_scope_local,
-//    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
     Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
@@ -50,7 +48,6 @@ rules
     Entity{e}.constructor := Entity(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
-//    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
@@ -70,9 +67,7 @@ rules
     TNoValue() <sub! e_type,
 
     Entity{e}.ns := Entity(),
-//    Implicit{"this"} <- entity_scope,
     Implicit{"this"} <- entity_scope_local,
-//    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
     Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
@@ -83,7 +78,6 @@ rules
     Entity{e}.constructor := Relation(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
-//    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
