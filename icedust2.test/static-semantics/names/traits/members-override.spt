@@ -26,7 +26,7 @@ test error on overriding field with wrong type [[
   entity BasicAssignment extends Assignment {
     size : [[String]]
   }
-]] >= 1 error at #1
+]] >= 1 error //at #1
 
 test error on overriding field with wrong multiplicity [[
   entity Assignment {
@@ -36,17 +36,17 @@ test error on overriding field with wrong multiplicity [[
   entity BasicAssignment extends Assignment {
     size : Int [[?]]
   }
-]] >= 1 error at #1
+]] >= 1 error //at #1
 
-test no error on overriding field with tighter multiplicity [[
-  entity Assignment {
-    size : Int?
-  }
-
-  entity BasicAssignment extends Assignment {
-    size : Int
-  }
-]] 0 errors
+//test no error on overriding field with tighter multiplicity [[
+//  entity Assignment {
+//    size : Int?
+//  }
+//
+//  entity BasicAssignment extends Assignment {
+//    size : Int
+//  }
+//]] 0 errors
 
 test resolve to overriden member [[
   entity Assignment {
