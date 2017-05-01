@@ -10,11 +10,11 @@ rules
   //   |          \
   //   |           P
   //   v            \
-  // Entity{e} =I=> entity_scope ---> Implicit{"this"}
-  //               /       \       __^  ^
-  //              I         J  __/      |
-  //             /      __/  \          |
-  //            v     /       v         |
+  // Entity{e} =I=> entity_scope     Implicit{"this"}
+  //               /       \       __^  
+  //              I         J  __/      
+  //             /      __/  \          
+  //            v     /       v         
   // entity_scope_local      entity_scope_inherit
   //   |          ||              ||
   //   |          I               I
@@ -37,9 +37,7 @@ rules
     TNoValue() <sub! e_type,
 
     Entity{e}.ns := Entity(),
-//    Implicit{"this"} <- entity_scope,
     Implicit{"this"} <- entity_scope_local,
-//    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
     Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
@@ -50,7 +48,6 @@ rules
     Entity{e}.constructor := Entity(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
-//    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
@@ -70,9 +67,7 @@ rules
     TNoValue() <sub! e_type,
 
     Entity{e}.ns := Entity(),
-//    Implicit{"this"} <- entity_scope,
     Implicit{"this"} <- entity_scope_local,
-//    Implicit{"this"} <- entity_scope_inherit,
     Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
     [[ st ^ (module_scope) : e_strat ]],
     Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
@@ -83,7 +78,6 @@ rules
     Entity{e}.constructor := Relation(),
     new entity_scope_local,
     entity_scope -I-> entity_scope_local,
-//    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
     new entity_scope_inherit,
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
@@ -170,8 +164,10 @@ rules
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
     a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
-    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
-    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+    a_type == a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+    a_mult == a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+//    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+//    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
        
   [[ AbstractAttribute(a, t, m, st) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
@@ -196,8 +192,10 @@ rules
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
     a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
-    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
-    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+    a_type == a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+    a_mult == a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+//    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+//    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
     
   [[ DerivationAttribute(a, t, m, e, st) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
@@ -227,9 +225,12 @@ rules
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
     a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
-    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
-    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
-    a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
+    a_type == a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+    a_mult == a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+    a_strat == a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
+//    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+//    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+//    a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
     
   [[ DefaultAttribute(a, t, m, e, st) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
@@ -259,9 +260,12 @@ rules
     a_overridden : TTuple(a_overridden_type, a_overridden_mult, a_overridden_strat),
     a_overridden.derivationtype := a_overridden_deriv,
     a_overridden.inlining := NotInline() | error $[Error: overriding inlined field.]@a,
-    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
-    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
-    a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
+    a_type == a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+    a_mult == a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+    a_strat == a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
+//    a_type <sub? a_overridden_type | error $[Overriding type error: expected [a_overridden_type] got [a_type].]@t,
+//    a_mult <mulOrd? a_overridden_mult | error $[Overriding multiplicity error: expected [a_overridden_mult] got [a_mult].]@m,
+//    a_strat <strat? a_overridden_strat | error $[Overriding calculation strategy error: expected [a_overridden_strat] got [a_strat].]@st,
     a_deriv <deriv? a_overridden_deriv | error $[Overriding derivation type error: expected [a_overridden_deriv] got [a_deriv].]@a.
     
   [[ InlineAttribute(a, t, m, e) ^ (entity_scope_local, entity_scope, module_scope) ]] :=
