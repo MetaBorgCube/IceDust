@@ -10,32 +10,36 @@ imports
 context-free syntax
 
   MemberValue.MemberValuePP = <
-    <MemberRef> =
-      <Value>
+    <ID> =
+      <{Value ",\n  "}+>
   >
 
 context-free syntax
 
   EntityInstance.EntityInstancePP = <
-    <IDSpace?><ColonEntityRefSpace?>{<{MemberValue "\n"}*> }
+    <IDSpace?>: <EntityType> {<{MemberValue "\n"}*> }
+  >
+  
+  EntityInstance.EntityInstanceNoTypePP = <
+    <IDSpace?>{<{MemberValue "\n"}*> }
   >
 
 context-free syntax
   
-  Attribute.AttributePP = <
+  Member.AttributePP = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?>
   >   
-  Attribute.DerivationAttributePP = <
+  Member.DerivationAttributePP = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp><Strategy?>
   >  
-  Attribute.DerivationAttributePPMultiLine = <
+  Member.DerivationAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
       <Exp><Strategy?>
   >
-  Attribute.DefaultAttributePP = <
+  Member.DefaultAttributePP = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> = <Exp> (default)<Strategy?>
   >
-  Attribute.DefaultAttributePPMultiLine = <
+  Member.DefaultAttributePPMultiLine = <
     <ID><MyLayOut> : <PrimitiveType><Multiplicity?><MyLayOut> =
       <Exp> (default)<Strategy?>
   >

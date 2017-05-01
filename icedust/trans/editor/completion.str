@@ -1,0 +1,45 @@
+module completion
+
+imports
+  
+  libspoofax/editor/completion/-
+  completion/icedust-cp
+  pp/Common-pp
+  pp/Data-pp
+  pp/Execute-pp
+  pp/Expressions-pp
+  pp/Model-pp
+  pp/Types-pp
+  pp/icedust-parenthesize
+  prettyprinting/pp
+ 
+  
+rules
+  
+  get-proposals-empty-program-icedust                         = get-proposals-empty-program(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-left-recursive-icedust                        = get-proposals-left-recursive(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-right-recursive-icedust                       = get-proposals-right-recursive(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-placeholder-icedust                           = get-proposals-placeholder(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-optional-icedust                              = get-proposals-optional(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-list-icedust                                  = get-proposals-list(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-incorrect-programs-icedust                    = get-proposals-incorrect-programs(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-incorrect-programs-nested-icedust             = get-proposals-incorrect-programs-nested(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)
+  get-proposals-incorrect-programs-single-placeholder-icedust = get-proposals-incorrect-programs-single-placeholder(pp-partial-icedust-string, parenthesize-icedust, 
+                                                                                             icedust-get-indent, icedust-get-leading-ws, 
+                                                                                             icedust-get-separator)

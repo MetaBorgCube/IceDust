@@ -31,9 +31,11 @@ rules // generic names
   name-getandemptydirty:   name -> $[getAndEmptyDirty[<ucfirst>name]]
   name-updateallcache:     name -> $[updateAll[<ucfirst>name]Cache]
   name-updateallcacheasync:name -> $[updateAll[<ucfirst>name]CacheAsync]
+  name-updateonecacheasync:name -> $[updateOne[<ucfirst>name]CacheAsync]
   name-hasdirty:           name -> $[hasDirty[<ucfirst>name]]
   name-hasdirtyasync:      name -> $[hasDirty[<ucfirst>name]Async]
   name-flagdirty:          name -> $[flagDirty[<ucfirst>name]]
+  name-flagdirtyall:       name -> $[flagDirtyAll[<ucfirst>name]]
   name-dirtyflagflowsto:   name -> $[dirtyFlagFlowsto[<ucfirst>name]]
   name-default:            name -> $[default[<ucfirst>name]]
   name-set-trigger:        name -> $[set[<ucfirst>name]]
@@ -49,6 +51,7 @@ rules // generic names
   name-flagdirtyasync:     name -> $[flagDirtyAsync[<ucfirst>name]]
   name-receivedirtyasync:  name -> $[receiveDirtyAsync[<ucfirst>name]]
   name-receiveonedirtyasync:name-> $[receiveOneDirtyAsync[<ucfirst>name]]
+  name-isuptodate:         name -> $[isUpToDate[<ucfirst>name]]
   name-view:               name -> $[[<lcfirst>name]]
 
 rules // prefixed names
@@ -78,6 +81,14 @@ rules // prefixed names
       entityname := <attributename-get-entityname>attributename
       
   attributename-entityname: attributename -> $[[entityname]_[attributename]]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-flagallaction: attributename -> $[[entityname][<ucfirst>attributename]FlagAllDirtyAction]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-flagdirtyall: attributename -> $[[entityname][<ucfirst>attributename]FlagDirtyAll]
     with
       entityname := <attributename-get-entityname>attributename
   

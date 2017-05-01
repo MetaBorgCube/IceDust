@@ -14,7 +14,7 @@ imports // functions
   lib/lists-tuples
   lib/string
   lib/traverse
-   names/naming/names
+//  names/naming/names
 
 rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
   
@@ -101,6 +101,49 @@ rules // filter expression
         ]|
       )
 
+rules // order by expression
+
+  exp-to-java-stm(err|i): e@OrderBy(e1, x_compvar, e2) -> result
+    with
+      (e1stms*, e1exp) := <exp-to-java-stm(err|i)>e1;
+      i' := <add>(i, <length>e1stms*);
+      i'' := <inc>i';
+      x_var := $[var[i'']];
+      (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
+      refty := <expr-to-java-type(err)>e;
+      refty2 := <expr-to-java-type(err)>e2;
+      x_type := <get-type2;type-to-java-type(err)>e;
+      x_comptype := <get-type2;type-to-java-type(err)>e2
+    with
+      result := (
+        bstm*|[
+          ~e1stms*
+          ArrayList<x_type> x_var = new ArrayList<x_type>();
+          x_var.addAll(~e1exp);
+          x_var.sort(new Comparator<x_type>() {
+            public int compare(x_type obj1, x_type obj2) {
+              return getVal(obj1).compareTo(getVal(obj2));
+            }
+            private refty2 getVal(Bar x_compvar){
+              ~e2stms*
+              return ~e2exp;
+            }
+          });
+//          Collections.sort(x_var, new Comparator<x_type>() {
+//            public int compare(x_type obj1, x_type obj2) {
+//              return getVal(obj1).compareTo(getVal(obj2));
+//            }
+//            private x_comptype getVal(x_type x_compvar){
+//              ~e2stms*
+//              return ~e2exp;
+//            }
+//          });
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
+
 rules // find expression
 
   exp-to-java-stm(err|i): e@Find(e1, x_loopvar, e2) -> result
@@ -119,15 +162,32 @@ rules // find expression
           refty x_var = null;
           for(x_type x_loopvar : ~e1exp){
             ~e2stms*
-            if(~e2exp!=null && ~e2exp)
+            if(~e2exp!=null && ~e2exp){
               x_var = x_loopvar;
               break;
+            }
           }
         ]|,
         expr |[
           x_var
         ]|
       )
+
+rules // filter type
+
+  exp-to-java-stm(err|i): e@FilterType(e1, e1-ty) -> (stms, exp)
+    with
+      (exp1s*, exp1j) := <exp-to-java-stm(err|i)>e1;
+      j := <add>(i, <length>exp1s*);
+      refty := <expr-to-java-type(err)>e;
+      x_var := $[var[<inc>j]];
+      x_type := <get-type2;type-to-java-type(err)>e
+    with
+      stms := bstm*|[
+        ~exp1s*
+        refty x_var = Expressions.filterType(~exp1j,x_type.class);
+      ]|;
+      exp := expr |[x_var]|
 
 rules
 

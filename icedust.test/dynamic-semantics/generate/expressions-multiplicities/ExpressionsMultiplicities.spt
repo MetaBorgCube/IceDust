@@ -1,0 +1,23 @@
+module generate-expressions-multiplicities
+
+language icedust
+
+fixture [[
+  module ExpressionsMultiplicities (on-demand)
+  
+  model
+  entity Foo{
+    input1  : Int = 5
+    input2  : Int?
+    value    : Int = input2 <+ input1
+  }
+  
+  data
+  f : Foo {}
+  
+  execute
+  f.input1 ++ f.input2[[...]] ]]
+
+test Expressions Multiplicities execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+"[5]
+"

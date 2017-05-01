@@ -1,0 +1,112 @@
+module editor/builders
+
+imports
+  
+  analysis2/path
+  api/data-names-api
+  api/model-names-api
+  api/module-api
+  api/module-names-api
+  desugaring/desugar
+  editor/pp
+  lib/debug
+  lib/index
+  lib/nabl2
+  lib/lists-tuples
+  lib/traverse
+  nabl2/api
+
+rules // Debugging
+  
+  debug-show-aterm:
+    (node, _, _, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"aterm")> path
+    ; result   := node
+
+  // Prints the analyzed annotated abstract syntax ATerm of a selection.
+  debug-show-desugared:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.aterm")> path;
+      result   := ast'
+      
+  debug-show-desugared-pp:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      ast'                    := <desugar-before-analysis> ast;
+      filename := <guarantee-extension(|"desugared.ice2")> path;
+      result   := <pp-debug> ast'
+
+rules
+
+  debug-get-ast-value:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      <store-analysis-resource>$[[project-path]/[path]]
+    with
+      <debug>"debug-get-ast-value"
+    with
+      debug
+    with
+      modulename := <collect-one(is-modulename)>ast;
+      <debug>modulename
+    with
+      einames := <modulename-get-entityinstancenames>modulename;
+      <debug>einames;
+      <map(debug;entityinstancename-get-membervaluenames;debug;map(membervaluename-get-origin);debug;map(get-property(|"Member","ns"));debug)>einames;
+      <map(debug;entityinstancename-get-membervaluename(|"i");debug)>einames;
+//      <filter(entityinstancename-get-modulename);debug>einames;
+      id
+
+  analysis2-builder:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]]
+    with
+      analysis := <get-stored-analysis>
+    with
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"index.aterm")> path;
+      result   := <_index-get>
+      
+  analysis2-builder-trim-termindices = analysis2-builder;split2(id,bottomup-anno(try(?TermIndex(_,<id>))))
+
+  analysis2-builder-key-origins = analysis2-builder;split2(id,all-strings-add-origin)
+  
+rules
+
+  debug-dependson: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"dependson.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-dependson-paths;map(path-pp));concat-strings(|"\n")>ast
+
+  debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"flowsto.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths;map(path-pp));concat-strings(|"\n")>ast
+      
+  debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"toposort.aterm")> path;
+      result := <module-get-modulename;name-get-toposort;map(map(pp-toposort))>ast
+
+  pp-toposort: name -> (<name-get-toposort>name, $[[<attributename-get-entityname>name].[name]])

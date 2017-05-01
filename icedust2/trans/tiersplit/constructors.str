@@ -1,6 +1,0 @@
-module tiersplit/constructors
-
-signature constructors
-
-  TierSplit: STRING       -> Exp
-  TierSplit: STRING * Exp -> Exp

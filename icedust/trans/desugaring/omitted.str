@@ -37,7 +37,7 @@ rules
 rules // module strategy
 
   module-generate-strategy = is-module; try( module-has-no-strategy; ?m; module-set-strategy(!<custom-origin(|<module-get-modulename>m)>Some(<custom-origin(|<module-get-modulename>m)>Incremental())))
-    
+
 rules // attr fields
 
   attr-generate-mult = attr-has-no-mult; attr-set-mult(!One())
@@ -167,11 +167,11 @@ rules // shortcuts (context sensitive)
       
   pair-with(|h): t -> (h,t)
 
-  create-shortcut-with-same-name: (role1,role2) -> <create-shortcut(|role1, role2, role2, role1)>
+  create-shortcut-with-same-name: (role1,role2) -> Shortcut(role1, role2, role2, role1)
 
-rules // shortcutrels -> shortcut relations
+rules // shortcutrels -> shortcut relations 
 
-  shortcutrel-to-rel: scr@ShortcutRelation(EntityRef(e1), s1, m1, m2, EntityRef(e2), s2, strategy, attrs) -> result
+  shortcutrel-to-rel: scr@ShortcutRelation(e1, s1, m1, m2, e2, s2, strategy, attrs) -> result
     with
       relname  := <custom-origin(|e1)>$[[e1][<ucfirst>s1]Relation];
       invname1 := <custom-origin(|e1)>$[[s2]Relation];
@@ -179,10 +179,11 @@ rules // shortcutrels -> shortcut relations
     with
       result := <custom-origin(|scr)>FirstClassRelation(
         relname
+      , None()
       , strategy
       , [ <custom-origin(|e2)>Role(e1, invname2, m1, s2)
         , <custom-origin(|e1)>Role(e2, invname1, m2, s1)
-        , <custom-origin(|e1)><create-shortcut(|s1, s2, s2, s1)>
+        , <custom-origin(|e1)>Shortcut(<copy-string>s1, <copy-string>s2, <copy-string>s2, <copy-string>s1)
         | attrs
         ]
       )  

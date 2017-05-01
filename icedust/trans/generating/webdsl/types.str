@@ -6,14 +6,16 @@ imports // constructors
   webdsl/WebDSL
   signatures/Expressions-sig
   signatures/Types-sig
-  desugaring/constructors
+//  desugaring/constructors
 
 imports // functions
 
   api/_runtime
   api/model-names-api
-  names/naming/names
-  naming/_notNaBL
+  api/types-api
+  api/types-names-api
+//  names/naming/names
+//  naming/_notNaBL
   
 rules // primitives
   
@@ -32,19 +34,19 @@ rules // types of expressions and names (uses type and multiplicity)
   
   name-to-webdsl-srt(err): name -> result
     with
-      srt1 := <get-type2;type-to-webdsl-srt(err)>name
+      srt1 := <(name-get-type<+get-type2);type-to-webdsl-srt(err)>name
     with
       switch id
-        case name-is-to-one:
+        case (name-get-multiplicity<+get-multiplicity);upper-one:
           result := webdsl |[ //webdsl srt
             srt1
           ]|
-        case name-is-to-many:
-//        case name-is-to-many-ordered:
+        case (name-get-multiplicity<+get-multiplicity);upper-many:
+//        case (name-get-multiplicity<+get-multiplicity);upper-many-ordered:
           result := webdsl |[ //webdsl srt
             [srt1]
           ]|
-//        case name-is-to-many-unordered:
+//        case (name-get-multiplicity<+get-multiplicity);upper-many-unordered:
 //          result := webdsl |[ //webdsl srt
 //            {srt1}
 //          ]|

@@ -1,22 +1,16 @@
 module api/types-api
 
-imports
+imports // signatures
 
   signatures/Types-sig
 
-//imports
-//
-//  pp/Types-pp
-
 rules
-
-//  is-type = is-PrimitiveType
-
   is-type = ?Boolean()
   is-type = ?Float()
   is-type = ?Datetime()
   is-type = ?Int()
   is-type = ?String()
+  is-type = ?EntityType(_)
 
   is-multiplicity = ?One()
   is-multiplicity = ?ZeroOrOne()

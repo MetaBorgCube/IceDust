@@ -4,7 +4,7 @@ imports // constructors
 
   webdsl/constructors
   webdsl/WebDSL
-  desugaring/constructors
+//  desugaring/constructors
   tiersplit/constructors
 
 imports // functions
@@ -27,8 +27,8 @@ imports // functions
   generating/webdsl/expressions-references
   generating/webdsl/types
   lib/search
-  names/naming/names
-  naming/_notNaBL
+//  names/naming/names
+//  naming/_notNaBL
   tiersplit/intra-object
   generating/webdsl/js/expressions
   generating/webdsl/js/js-helper

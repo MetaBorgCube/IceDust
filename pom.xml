@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>icedust.build</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
@@ -16,18 +16,11 @@
   </parent>
 
   <modules>
-<!--
     <module>icedust</module>
     <module>icedust.eclipse</module>
     <module>icedust.eclipse.feature</module>
-    <module>icedust.eclipse.updatesite</module>
-    <module>icedust.tests</module>
--->
-    <module>icedust2</module>
-    <module>icedust2.eclipse</module>
-    <module>icedust2.eclipse.feature</module>
-    <module>icedust2.eclipse.site</module>
-    <module>icedust2.test</module>
+    <module>icedust.eclipse.site</module>
+    <module>icedust.test</module>
   </modules>
 
   <repositories>

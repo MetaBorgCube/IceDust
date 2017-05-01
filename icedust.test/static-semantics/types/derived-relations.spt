@@ -1,0 +1,99 @@
+module types-derived-relations
+
+language icedust
+
+fixture [[
+  module test
+  
+  [[...]]
+]]
+
+test warning on non-* multiplicity on right-hand side of derived relation [[
+model
+
+  entity Assignment (on-demand) {
+  }
+  
+  entity Student {
+  }
+  
+  entity Submission {
+  }
+  
+  relation Submission.student    1           <-> * Student.submissions
+  relation Submission.assignment 1           <-> * Assignment.submissions
+  relation Assignment.children   * (ordered) <-> ? Assignment.parent
+  
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> [[?]] Submission.parent
+]] 1 warning at #1
+
+test error on accessing non-materialized right-hand side of derived relation [[
+model
+
+  entity Assignment (on-demand) {
+  }
+  
+  entity Student {
+  }
+  
+  entity Submission {
+    name       : String
+    parentName : String? = [[parent]].name (on-demand)
+  }
+  
+  relation Submission.student    1 <-> * Student.submissions
+  relation Submission.assignment 1 <-> * Assignment.submissions
+  relation Assignment.children   * <-> ? Assignment.parent
+  
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> ? Submission.parent (on-demand)
+]] >= 1 error at #1
+
+test error on accessing non-materialized right-hand side of derived relation 2 [[
+model
+
+  entity Assignment (on-demand) {
+  }
+  
+  entity Student {
+  }
+  
+  entity Submission {
+    name       : String
+    parentName : String? = [[parent]].name (on-demand eventual)
+  }
+  
+  relation Submission.student    1 <-> * Student.submissions
+  relation Submission.assignment 1 <-> * Assignment.submissions
+  relation Assignment.children   * <-> ? Assignment.parent
+  
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> ? Submission.parent (on-demand)
+]] >= 1 error at #1
+
+test no error on accessing materialized right-hand side of derived relation [[
+model
+
+  entity Assignment (on-demand) {
+  }
+  
+  entity Student {
+  }
+  
+  entity Submission {
+    name       : String
+    parentName : String? = parent.name (on-demand)
+  }
+  
+  relation Submission.student    1 <-> * Student.submissions
+  relation Submission.assignment 1 <-> * (ordered) Assignment.submissions
+  relation Assignment.children   * (ordered) <-> ? Assignment.parent
+  
+  relation Submission.children   * (ordered) = 
+    assignment.children.submissions.filter(x => x.student == student)
+                                             <-> ? Submission.parent (incremental)
+]] 0 errors

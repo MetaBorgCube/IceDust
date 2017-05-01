@@ -1,0 +1,20 @@
+module api-flowsto2
+
+language icedust
+
+fixture [[
+  module test
+  model
+    entity Student {
+      foo : Int
+      [[...]] : Int = count(courses.students) + foo
+    }
+    entity Course { }
+    relation Student.courses <-> Course.students
+]]
+
+test Query attribute depends on 2 [[b]] run name-get-dependson-pathexprs-test to !ATerm[
+  MemberAccess(Ref("courses"),"students"),
+  Ref("courses"),
+  Ref("foo")
+]

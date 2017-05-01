@@ -1,73 +1,83 @@
 module Model
 
 imports
+
   Common
   Expressions
   Types
-
+  
 context-free syntax // entities
 
   Model.Entity = <
-    entity <ID><Strategy?> {
+    entity <ID> <OptionalExtends?><Strategy?>{
       <{Member "\n"}*>
     }
   >
+  
   Model.FirstClassRelation = <
-    relation <ID><Strategy?> {
+    relation <ID> <OptionalExtends?><Strategy?>{
       <{Member "\n"}*>
     }
   >
-  EntityOrRelation.EntityType = <entity>
-  EntityOrRelation.RelationType = <relation>
 
+//  Model.Trait = <
+//    trait <ID> <OptionalExtends?><Strategy?>{
+//      <{Member "\n"}*>
+//    }
+//  >
+//  
+//  OptionalExtends.OptionalExtends = [extends [{Extends ", "}+] ] // need a constructor to dispatch on in NaBL2
+  
+  OptionalExtends.OptionalExtends = [extends [Extends] ] // need a constructor to dispatch on in NaBL2
+  
+  Extends.Extends = <<ID>>
+  
 context-free syntax // shortcut relations
 
   Model.ShortcutRelation = [
-    relation [EntityRef][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [EntityRef][DotID?][Strategy?] {
-      [{Attribute "\n"}*]
+    relation [ID][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [ID][DotID?][Strategy?] {
+      [{Member "\n"}*]
     }
   ]
-
+  
 context-free syntax // non-first-class relation
 
   Model.Relation = [
-    relation [EntityRef][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [EntityRef][DotID?]
+    relation [ID][DotID?][SpaceMultiplicity?] <->[SpaceMultiplicity?] [ID][DotID?]
   ]
 
   Model.RelationDerived = [
-    relation [EntityRef][DotID?][SpaceMultiplicity?] = [Exp]
-      <->[SpaceMultiplicity?] [EntityRef][DotID?][Strategy?]
+    relation [ID][DotID?][SpaceMultiplicity?] = [Exp]
+      <->[SpaceMultiplicity?] [ID][DotID?][Strategy?]
   ]
   
-  SpaceMultiplicity             = [ [MultiplicityOrdering]]
 
 context-free syntax // entity members
 
-  Member                        = <<Attribute>>
-  Member                        = <<Role>>
-  Member                        = <<Shortcut>>
-
-  Attribute.Attribute           = <
+  Member.Attribute           = <
     <ID> : <PrimitiveType><Multiplicity?>
   >
-  Attribute.DerivationAttribute = <
+  Member.AbstractAttribute   = <
+    <ID> : <PrimitiveType><Multiplicity?> (abstract)<Strategy?>
+  >
+  Member.DerivationAttribute = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp><Strategy?>
   >
-  Attribute.DefaultAttribute    = <
+  Member.DefaultAttribute    = <
     <ID> : <PrimitiveType><Multiplicity?> = <Exp> (default)<Strategy?>
   >
-  DerivationType.DefaultValue   = <(default)>
-  DerivationType.Derivation     = <>
-
-  Role.Role                     = <<ID><DotID?><SpaceMultiplicity?><SpaceArrowID?>>
-  DotID                         = <.<ID>>
-  SpaceArrowID                  = [ -> [ID]]
-
-  Shortcut.Shortcut             = <<RoleRef>.<ID> \<-\> <RoleRef>.<ID>>
-
-context-free syntax // specific references
+  Member.InlineAttribute    = <
+    <ID> : <AnyType><MultiplicityOrdering?> = <Exp> (inline)
+  >
   
-  EntityRef.EntityRef           = ID
-  AttributeRef.AttributeRef     = ID
-  RoleRef.RoleRef               = ID
-  MemberRef.MemberRef           = ID // attr or shortcut
+  Member.Role = [
+    [ID][DotID?][SpaceMultiplicity?][SpaceArrowID?]
+  ]
+  
+  Member.Shortcut = [
+    [ID][DotID?] <-> [ID][DotID?]
+  ]
+  
+  DotID             = <.<ID>>
+  SpaceArrowID      = [ -> [ID]]
+  SpaceMultiplicity = [ [MultiplicityOrdering]]

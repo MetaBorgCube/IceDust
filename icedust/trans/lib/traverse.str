@@ -3,6 +3,7 @@ module lib/traverse
 imports
 
   lib/origin
+  nabl2/api
 
 rules // apply strategy on a list left-to-right and carry over a history
 
@@ -26,6 +27,7 @@ rules // apply strategy on a tree top-down and carry over a history
   // for terms
   topdown-fold(map-strategy): (term, fold-value) -> (term''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value);
@@ -38,7 +40,7 @@ rules // apply strategy on a tree top-down and carry over a history
   topdown-fold(map-strategy): (term, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(explode-term)+is-string>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value)
       
@@ -53,6 +55,7 @@ rules // apply strategy on a tree top-down and carry over a history
   // for terms
   topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term'''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       annotations := <get-annotations> term;
@@ -67,7 +70,7 @@ rules // apply strategy on a tree top-down and carry over a history
   topdown-fold-keep-anno(map-strategy): (term, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(explode-term)+is-string>term
     with
       (term', fold-value') := <map-strategy>(term, fold-value)
 
@@ -82,8 +85,9 @@ rules //
       (input-rest', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(input-rest, parent, fold-value')
 
   // for terms
-  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term'''', fold-value'')
+  topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term''''', fold-value'')
     where
+      <not(is-string)>term;
       <explode-term>term
     with
       annotations := <get-annotations> term;
@@ -92,13 +96,14 @@ rules //
       (args', fold-value'') := <topdown-parent-fold-keep-anno(map-strategy)>(args, term, fold-value');
       term'' := <mkterm>(cons, args');
       term''' := <custom-origin(|term)>term'';
-      term'''' := <set-annotations> (term''', annotations)
+      term'''' := <set-annotations> (term''', annotations);
+      term''''' := <try(nabl2-copy-ast-index(|term))>term'''' //copy NaBL2 attachments
 
   // for not(list) not(term)
   topdown-parent-fold-keep-anno(map-strategy): (term, parent, fold-value) -> (term', fold-value')
     where
       <not(is-list)>term;
-      <not(explode-term)>term
+      <not(where(explode-term);not(is-string))>term
     with
       (term', fold-value') := <map-strategy>(term, parent, fold-value)
 
@@ -138,7 +143,7 @@ rules // apply strategy on a tree top-down and carry over a history, dont carry 
 
 rules // bottom up traversal including annotations
   
-  bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup(s)>a}); s
+  bottomup-anno(s) = all(bottomup-anno(s)); try(?t{a};!t{<bottomup-anno(s)>a}); s
 
 rules // a -> List(a)
 

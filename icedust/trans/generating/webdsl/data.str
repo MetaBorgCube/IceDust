@@ -11,7 +11,7 @@ imports // functions
   api/module-names-api
   lib/search
   generating/webdsl/expressions
-  naming/_notNaBL
+//  naming/_notNaBL
 
 rules
 
@@ -32,7 +32,7 @@ rules // entity instances
 
   entityinstancename-to-webdsl-stm(err): x_eiName -> result
     with
-      srt1 := <get-type2>x_eiName
+      srt1 := <entityinstancename-get-type>x_eiName
     with
       result := stat |[
         var x_eiName := srt1 {};
@@ -86,7 +86,7 @@ rules
 
   relationvaluenameitem-to-webdsl-stm(err|x_eiName, x_relationName): x_eiName2 -> result
     with
-      if <get-member-origin;get-multiplicity;upper-one>x_relationName then
+      if <membervaluename-get-origin;name-get-multiplicity;upper-one>x_relationName then
         result := stat |[
           x_eiName.x_relationName := x_eiName2;
         ]|
