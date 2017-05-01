@@ -21,12 +21,20 @@ rules
   entityname-get-membernames-test          = store-analysis-ast; entityname-get-membernames
   
   entityname-get-modulename-test           = store-analysis-ast; entityname-get-modulename
+  
+  entityname-get-parentnames-test          = store-analysis-ast; entityname-get-parentnames
+  entityname-get-rootnames-test            = store-analysis-ast; entityname-get-rootnames
+  entityname-get-ancestornames-test        = store-analysis-ast; entityname-get-ancestornames
+  
+  entityname-get-arrinames-defined-test    = store-analysis-ast; entityname-get-arrinames-defined
 
 rules
 
   attributename-get-entityname-test        = try(attr-get-name); store-analysis-ast; attributename-get-entityname
   
   attributename-get-expr-test              = try(attr-get-name); store-analysis-ast; attributename-get-expr
+  
+  attributename-get-root-get-entityname-test = try(attr-get-name); store-analysis-ast; attributename-get-root-get-entityname
 
 rules
 
@@ -49,6 +57,11 @@ rules
   name-get-flowsto-pathexprs-test          = try(attr-get-name); store-analysis-ast; name-get-flowsto-pathexprs
 
   name-get-type-test                       = try(attr-get-name); store-analysis-ast; name-get-type
+  
+  name-get-parent-test                     = try(attr-get-name); store-analysis-ast; name-get-parent
+  name-has-parent-test                     = try(attr-get-name); store-analysis-ast; ((name-has-parent;!"yes")<+!"no")
+
+  name-get-inlining-test                   = try(attr-get-name); store-analysis-ast; name-get-inlining
 
 rules
 

@@ -54,11 +54,11 @@ rules // Editor services
         [
           ("Target",               <language-pp                                       <+ !None()>t),
           ("Target Constructor",   <pp-cons                                           <+ !None()>t),
-          ("Type",                 <get-type2        <+ name-get-type                 <+ !None()>t), //TODO: make this work on declaration names
-          ("Multiplicity",         <get-multiplicity <+ name-get-multiplicity         <+ !None()>t), //TODO: make this work on declaration names
-          ("Calculation Strategy", <get-strategy     <+ name-get-calculation-strategy <+ !None()>t), //TODO: make this work on declaration names
+          ("Type",                 <get-type2        <+ name-get-type                 <+ !None()>t),
+          ("Multiplicity",         <get-multiplicity <+ name-get-multiplicity         <+ !None()>t),
+          ("Calculation Strategy", <get-strategy     <+ name-get-calculation-strategy <+ !None()>t),
           ("Depends On",           <name-get-dependson-paths                          <+ !None()>t),
-          ("Flows To",             <name-get-flowsto-paths                            <+ !None()>t),
+          ("Flows To",             <name-get-flowsto-paths-all                        <+ !None()>t),
           ("Topological Sort",     <name-get-toposort                                 <+ !None()>t)
         ]
   

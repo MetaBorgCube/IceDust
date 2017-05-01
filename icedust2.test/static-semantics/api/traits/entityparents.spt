@@ -1,0 +1,142 @@
+module api-traits-entityparents
+
+language icedust2
+
+test Query entity get parent [[
+module test
+model
+  entity A {
+    i : Int
+  }
+  entity [[B]] extends A {
+    i : Int
+  }
+]] run entityname-get-parentnames-test on #1 to !ATerm["A"]
+
+//test Query entity get parent 2 [[ //test disabled: only supporting single inheritance for now
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  trait C {}
+//  entity [[B]] extends A, C {
+//    i : Int
+//  }
+//]] run entityname-get-parentnames-test on #1 to !ATerm["A","C"]
+
+test Query entity has no parent [[
+module test
+model
+  entity [[A]] {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+]] run entityname-get-parentnames-test on #1 to !ATerm[]
+
+test Query entity get root names [[
+module test
+model
+  entity A {
+    i : Int
+  }
+  entity [[B]] extends A {
+    i : Int
+  }
+]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
+
+test Query entity get root names 2 [[
+module test
+model
+  entity A {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+  entity [[C]] extends B {
+    i : Int
+  }
+]] run entityname-get-rootnames-test on #1 to !ATerm["A"]
+
+//test Query entity get root names 3 [[ //test disabled: only supporting single inheritance for now
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  trait B  {
+//    i : Int
+//  }
+//  entity [[C]] extends B, A {
+//    i : Int
+//  }
+//]] run entityname-get-rootnames-test on #1 to !ATerm["A","B"]
+
+//test Query entity get root names 4 [[ //test disabled: only supporting single inheritance for now
+//module test
+//model
+//  trait X {
+//  
+//  }
+//  trait A extends X {
+//    i : Int
+//  }
+//  trait B  {
+//    i : Int
+//  }
+//  trait [[C]] extends B, A {
+//    i : Int
+//  }
+//  trait D extends C {
+//  
+//  }
+//]] run entityname-get-rootnames-test on #1 to !ATerm["B", "X"]
+
+test Query entity get ancestor names [[
+module test
+model
+  entity A {
+    i : Int
+  }
+  entity B extends A {
+    i : Int
+  }
+  entity [[C]] extends B {
+    i : Int
+  }
+]] run entityname-get-ancestornames-test on #1 to !ATerm["A","B","C"]
+
+//test Query entity get ancestor names 2 [[ //test disabled: only supporting single inheritance for now
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  trait B  {
+//    i : Int
+//  }
+//  entity [[C]] extends B, A {
+//    i : Int
+//  }
+//]] run entityname-get-ancestornames-test on #1 to !ATerm["A","B","C"]
+
+//test Query entity get ancestor names 3 [[ //test disabled: only supporting single inheritance for now
+//module test
+//model
+//  trait A {
+//    i : Int
+//  }
+//  trait B  {
+//    i : Int
+//  }
+//  trait [[C]] extends B, A {
+//    i : Int
+//  }
+//  trait D extends C {
+//  
+//  }
+//]] run entityname-get-ancestornames-test on #1 to !ATerm["A","B","C"]
+

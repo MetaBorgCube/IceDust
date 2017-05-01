@@ -31,6 +31,7 @@ rules // generic names
   name-getandemptydirty:   name -> $[getAndEmptyDirty[<ucfirst>name]]
   name-updateallcache:     name -> $[updateAll[<ucfirst>name]Cache]
   name-updateallcacheasync:name -> $[updateAll[<ucfirst>name]CacheAsync]
+  name-updateonecacheasync:name -> $[updateOne[<ucfirst>name]CacheAsync]
   name-hasdirty:           name -> $[hasDirty[<ucfirst>name]]
   name-hasdirtyasync:      name -> $[hasDirty[<ucfirst>name]Async]
   name-flagdirty:          name -> $[flagDirty[<ucfirst>name]]
@@ -78,6 +79,10 @@ rules // prefixed names
       entityname := <attributename-get-entityname>attributename
       
   attributename-entityname: attributename -> $[[entityname]_[attributename]]
+    with
+      entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-flagallaction: attributename -> $[[entityname][<ucfirst>attributename]FlagAllDirtyAction]
     with
       entityname := <attributename-get-entityname>attributename
   

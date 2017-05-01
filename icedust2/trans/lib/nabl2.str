@@ -77,12 +77,16 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope(|ns)                    = get-decl-scope(|ns)+get-ref-scope(|ns)         //@type Term -> Scope
   get-scope-decl-names              = get-scope-decls;map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-decl-names(|ns)         = get-scope-decl-names;filter(is-decl(|ns))      //@type Scope -> List(Term)
+  get-scope-ref-names               = get-scope-refs;map(nabl2-get-occurrence-name)  //@type Scope -> List(Term)
+  get-scope-ref-names(|ns)          = get-scope-ref-names;filter(is-ref(|ns))        //@type Scope -> List(Term)
   get-scope-assoc-names-with-labels = get-scope-assocs;map(split2(nabl2-get-occurrence-name,id)) //@type Scope -> List((Term,Label))
   get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
   get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
   get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
   get-scope-reachable-names(|ns)    = get-reachable-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-reachable-names2(|ns)   = get-scope-reachable-names(|ns) <+ ![]          //@type Scope -> List(Term)
+  get-scope-visible-names(|ns)      = get-visible-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-visible-names2(|ns)     = get-scope-visible-names(|ns) <+ ![]          //@type Scope -> List(Term)
   get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
   get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
   get-resolved-name(|ns)            = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@Type Term -> Term
@@ -91,4 +95,17 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-decl(|ns)                     = is-decl(|ns)                                   //@Type Term -> Term
   get-decl(|ns)                     = is-ref(|ns);get-resolved-name(|ns)             //@Type Term -> Term
 //  get-decl(|ns)                     = debug(|"get-decl: is-decl and is-ref both failed, defaulting to decl")
+  get-scope-scopes-with-labels      = get-scope-direct-edges                         //@type Scope -> List((Label,Scope))
+  get-scope-scopes                  = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
+  get-scope-scopes(|label)          = get-scope-direct-edges;filter(where(Fst;?Label(label));Snd) //@type Scope -> List(Scope)
+  get-scope-scope                   = get-scope-scopes;Hd                            //@type Scope -> Scope
+  get-scope-scope(|label)           = get-scope-scopes(|label);Hd                    //@type Scope -> Scope
+  get-scope-scopes-inv-with-labels  = get-scope-direct-edges-inv                         //@type Scope -> List((Label,Scope))
+  get-scope-scopes-inv              = get-scope-direct-edges-inv;map(Snd)                //@type Scope -> List(Scope)
+  get-scope-scopes-inv(|label)      = get-scope-direct-edges-inv;filter(where(Fst;?Label(label));Snd) //@type Scope -> List(Scope)
+  get-scope-scope-inv               = get-scope-scopes-inv;Hd                            //@type Scope -> Scope
+  get-scope-scope-inv(|label)       = get-scope-scopes-inv(|label);Hd                    //@type Scope -> Scope
+  get-scope-names-with-labels       = get-scope-named-edges                          //@type Scope -> List((Label,Occurrence))
+  get-scope-names                   = get-scope-named-edges;map(Snd;nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-decl-name(|ns)                = nabl2-mk-occurrence(|ns);get-resolved-name;Fst;nabl2-get-occurrence-name //@type Term -> Term
 

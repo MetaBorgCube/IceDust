@@ -11,6 +11,7 @@ imports
   expressions-math
   expressions-multiplicity-operators
   expressions-references
+  map3
   model
   module
   types
@@ -39,6 +40,11 @@ signature
     TEventual         : Strat
     TOnDemandEventual : Strat
     
+    Normal       : DerivationType
+    Abstract     : DerivationType
+    Derivation   : DerivationType
+    DefaultValue : DerivationType
+    
     TUOne  : MultU
     TUMany : MultU
     
@@ -58,13 +64,19 @@ signature
     
     TMaterialized    : TMaterialization
     TNonMaterialized : TMaterialization
+    
+    Inline    : Inlining
+    NotInline : Inlining
 
   relations
 
-    anti-symmetric, anti-transitive test : Type * TypeTest
+    reflexive, anti-symmetric, transitive sub    : Type * Type
     reflexive, anti-symmetric, transitive mulOrd : Mul * Mul
-    reflexive, anti-symmetric, transitive strat : Strat * Strat
-    reflexive, anti-symmetric, transitive sub : Type * Type
+    reflexive, anti-symmetric, transitive strat  : Strat * Strat
+    reflexive, anti-symmetric, transitive deriv  : DerivationType * DerivationType
+    
+    anti-symmetric, anti-transitive test : Type * TypeTest
+    
     irreflexive cast : Type * Type
  
   functions
@@ -109,6 +121,15 @@ signature
       TOne()               -> TZeroOrOne(),
       TOneOrMore()         -> TZeroOrMore(),
       TOneOrMoreOrdered()  -> TZeroOrMoreOrdered()
+    }
+
+    toOrdered : Mult -> Mult {
+      TZeroOrOne()         -> TZeroOrOne(),
+      TZeroOrMore()        -> TZeroOrMoreOrdered(),
+      TZeroOrMoreOrdered() -> TZeroOrMoreOrdered(),
+      TOne()               -> TOne(),
+      TOneOrMore()         -> TOneOrMoreOrdered(),
+      TOneOrMoreOrdered()  -> TOneOrMoreOrdered()
     }
 
     choiceLeftMult : (Mult * Mult) -> Mult {
@@ -161,7 +182,32 @@ signature
       (TOnDemand()        , Right()) -> TNonMaterialized(), // pull-based -> not materialized
       (TOnDemandEventual(), Right()) -> TNonMaterialized()  // pull-based -> not materialized
     }
- 
+
+  name resolution
+  
+    labels
+    //D // definition
+      I // import
+      J // lower priority import
+      P // parent
+      S // requires a J to be wellformed
+//      N // no edge at all (used for inverse querying)
+
+    order
+      D < I,
+      D < J,
+      D < P,
+      D < S,
+      S < I,
+      S < J,
+      S < P,
+      I < J,
+      I < P,
+      J < P
+
+    well-formedness
+      P* . (S.J)? . (I|J)*
+
 rules
 
   init ^ (init_scope) :=
@@ -217,6 +263,13 @@ rules
     TOnDemand()    <strat! TOnDemandEventual(), //  TEventual()   TOnDemand()
     TEventual()    <strat! TOnDemandEventual(), //          \       /
                                                 //        TIncremental()
+    // derivation type lattice
+    
+    DefaultValue() <deriv! Normal(),     //       Abstract()
+    DefaultValue() <deriv! Derivation(), //        /      \ 
+    Normal()       <deriv! Abstract(),   //  Normal()    Derivation()
+    Derivation()   <deriv! Abstract(),   //        \      /
+                                         //     DefaultValue()
     // subtype relation 
   
     TNoValue() <sub! TInt(),

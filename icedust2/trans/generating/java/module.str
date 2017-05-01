@@ -27,7 +27,9 @@ rules
     with
       result := compilation-unit |[
         import lib.icedust.*;
+        import java.util.ArrayList;
         import java.util.Collection;
+        import java.util.Comparator;
         import java.util.Date;
         import java.util.HashSet;
         import javax.lang.model.type.NullType;

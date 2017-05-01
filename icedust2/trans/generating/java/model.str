@@ -27,21 +27,36 @@ rules
     where
       is-entityname
     with
-      membersJava*      := <entityname-get-arrinames     ;fmap(model-membername-to-java-classbodydecs(err)       )>x_entityName;
-      shortcutsJava*    := <entityname-get-shortcutnames ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
-      initCachesJava*   := <entityname-get-arrinames     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
+      membersJava*      := <entityname-get-arrinames-defined     ;fmap(model-membername-to-java-classbodydecs(err)       )>x_entityName;
+      shortcutsJava*    := <entityname-get-shortcutnames-defined ;fmap(model-shortcutname-to-java-classbodydecs(err)     )>x_entityName;
+      initCachesJava*   := <entityname-get-arrinames-defined     ;fmap(model-init-name-to-java-stms(err)                 )>x_entityName
     with
-      result := type-dec |[
-        class x_entityName
-        {
-          public x_entityName()
-          {
-            ~initCachesJava*
-          }
-          ~membersJava*
-          ~shortcutsJava*
-        }
-      ]|
+      switch id
+        case x_parentName := <entityname-get-parentname>x_entityName:
+          result := type-dec |[
+            class x_entityName extends x_parentName
+            {
+              public x_entityName()
+              {
+                ~initCachesJava*
+              }
+              ~membersJava*
+              ~shortcutsJava*
+            }
+          ]|
+        otherwise:
+          result := type-dec |[
+            class x_entityName
+            {
+              public x_entityName()
+              {
+                ~initCachesJava*
+              }
+              ~membersJava*
+              ~shortcutsJava*
+            }
+          ]|
+      end
 
 rules
 
@@ -400,14 +415,14 @@ rules
       end
     with // Set, maintain incremental Layer
       switch id
-        case name-is-normal-default; where([] := flowsto-stms*):
-          result-setIncr* := class-body-dec* |[
-            protected void x_setIncr(~multType en)
-            { 
-              this.x_name = en;
-            }
-          ]|
-        case name-is-normal-default; where(not([] := flowsto-stms*)):
+//        case name-is-normal-default; where([] := flowsto-stms*):
+//          result-setIncr* := class-body-dec* |[
+//            protected void x_setIncr(~multType en)
+//            { 
+//              this.x_name = en;
+//            }
+//          ]|
+        case name-is-normal-default: // parent can have flowsto stms
           result-setIncr* := class-body-dec* |[
             protected void x_setIncr(~multType en)
             { 
@@ -424,14 +439,14 @@ rules
       end
     with
       switch id
-        case name-is-default-derived; name-is-incremental; where([] := flowsto-stms*):
-          result-setCacheIncr* := class-body-dec* |[
-            protected void x_setCacheIncr(~multType en)
-            { 
-              this.x_cache = en;
-            }
-          ]|
-        case name-is-default-derived; name-is-incremental; where(not([] := flowsto-stms*)):
+//        case name-is-default-derived; name-is-incremental; where([] := flowsto-stms*):
+//          result-setCacheIncr* := class-body-dec* |[
+//            protected void x_setCacheIncr(~multType en)
+//            { 
+//              this.x_cache = en;
+//            }
+//          ]|
+        case name-is-default-derived; name-is-incremental: // parent can have flowsto stms
           result-setCacheIncr* := class-body-dec* |[
             protected void x_setCacheIncr(~multType en)
             { 
@@ -448,7 +463,7 @@ rules
       end
     with // Getter, many valued Layer
       switch id
-        case name-is-to-one:
+        case name-is-to-one; name-is-root:
           result-getStatic* := class-body-dec* |[
             public static x_type x_get(x_entityName en)
             { 
@@ -466,7 +481,7 @@ rules
               return result;
             }
           ]|
-        case name-is-to-many:
+        case name-is-to-many; name-is-root:
           result-getStatic* := class-body-dec* |[
             public static Collection<x_type> x_get(x_entityName en)
             { 
@@ -512,12 +527,26 @@ rules
               return x_getCalculated();
             }
           ]|
+        case name-is-abstract; name-is-to-one:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return null;
+            }
+          ]|
+        case name-is-abstract; name-is-to-many:
+          result-get* := class-body-dec* |[
+            public ~type:multType x_get()
+            { 
+              return Expressions.emptyCollection();
+            }
+          ]|
         otherwise:
           result-get* := []
         end
     with // Getter, calculated value Layer
       switch id
-        case name-is-default-derived; name-is-ondemand:
+        case name-is-default-derived; (name-is-ondemand<+name-is-inline):
           result-getCalculated* := class-body-dec* |[
             private ~type:multType x_getCalculated()
             { 
@@ -555,12 +584,23 @@ rules
           result-calculate* := []
       end
     with
-      result-dirtyFlagFlows* := class-body-dec* |[
-        public void x_dirtyFlagFlows()
-        {
-          ~flowsto-stms*
-        }
-      ]|
+      switch id
+        case name-is-root:
+          result-dirtyFlagFlows* := class-body-dec* |[
+            public void x_dirtyFlagFlows()
+            {
+              ~flowsto-stms*
+            }
+          ]|
+        otherwise:
+          result-dirtyFlagFlows* := class-body-dec* |[
+            public void x_dirtyFlagFlows()
+            {
+              super.x_dirtyFlagFlows();
+              ~flowsto-stms*
+            }
+          ]|
+      end
     with
       switch id
         case name-is-incremental; name-is-default-derived:

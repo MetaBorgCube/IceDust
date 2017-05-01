@@ -56,6 +56,7 @@ rules // multiplicities
 rules // collections
 
   lib-call:                  First(_)               ->"first"
+  lib-call:                  First(_,_)             ->"first"
   lib-call:                  IndexOf(_, _)          ->"indexOf"
   lib-call:                  ElemAt(_, _)           ->"elemAt"
 

@@ -1,0 +1,37 @@
+module names-traits-members-multiple
+
+language icedust2
+
+fixture [[
+  module test
+  model
+  [[...]]
+]]
+
+//test error on duplicate attributes in multiple parents [[ //test disabled: only supporting single inheritance for now
+//  trait HasName {
+//    name : String
+//  }
+//  
+//  trait Foo{
+//    name : String
+//  }
+//  
+//  entity Bar [[extends HasName, Foo]]{
+//    
+//  }
+//]] >= 1 errors at #1
+//
+//test no error on non conflicting multiple parents [[ //test disabled: only supporting single inheritance for now
+//  trait HasName {
+//    name : String
+//  }
+//  
+//  trait HasSize{
+//    size : Int
+//  }
+//  
+//  entity Bar extends HasName, HasSize{
+//    
+//  }
+//]] 0 errors

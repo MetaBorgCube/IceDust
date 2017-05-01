@@ -1,0 +1,24 @@
+module api-roleinverse
+
+language icedust2
+
+fixture [[
+  module test
+  model
+    entity Foo {
+      b : Int
+    }
+    
+    entity Bar { }
+    
+    relation XYZ {
+      Foo.xyz -> foo
+      [[...]]
+    
+    }
+]]
+
+test Query inverse entity name [[ Bar.[[xyz]] -> bar ]]                run attributename-get-entityname-test on #1 to "Bar"
+test Query role entity name    [[ Bar.xyz -> [[bar]] ]]                run attributename-get-entityname-test on #1 to "XYZ"
+test Query inverse type        [[ Bar.[[xyz]] -> bar ]]                run name-get-type-test on #1 to "XYZ"
+test Query role type           [[ Bar.xyz -> [[bar]] ]]                run name-get-type-test on #1 to "Bar"

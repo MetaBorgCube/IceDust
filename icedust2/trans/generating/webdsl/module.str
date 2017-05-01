@@ -13,6 +13,7 @@ imports // functions
   
   generating/_ir/model 
   generating/webdsl/module-derivations
+  generating/webdsl/module-manage
   generating/webdsl/module-ui
   generating/webdsl/model
   generating/webdsl/data
@@ -43,6 +44,9 @@ rules // module
       stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-stat)>x_moduleName;
       native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
       stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
+    with
+      elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row    )>x_moduleName;
+      elem_manageActions* := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-elems-action)>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -95,14 +99,14 @@ rules // module
             native1*
           }
           
-          native class java.util.Queue as Queue{
-            offer(String) : Bool
-            add(String) : Bool
-            addAll(List<String>) : Bool
-            poll() : String
-            contains(String) : Bool
-            isEmpty() : Bool
-          }
+//          native class java.util.Queue as Queue{
+//            offer(String) : Bool
+//            add(String) : Bool
+//            addAll(List<String>) : Bool
+//            poll() : String
+//            contains(String) : Bool
+//            isEmpty() : Bool
+//          }
       ]|
     with
       sec_hibernateTriggers* :=  section* |[
@@ -116,6 +120,30 @@ rules // module
           function afterTransactionCompletionCommitted(){
             flagDirtyAsync();
           }
+      ]|
+    with
+      sec_manage* :=  section* |[
+        section manage
+        
+          page derivedvalues() {
+            title{ "Manage Derived Values" }
+            h1{ "Manage Derived Values" }
+            tableStriped{
+              theader{
+                th{ "Order" }
+                th{ "Name" }
+                th{ "Type" }
+                th{ "Status" }
+                th{ "Actions" }
+              }
+              elem_manageRows*
+            }
+            elem_manageActions*
+          }
+          
+        access control rules
+        
+          rule page derivedvalues() { true }
       ]|
     with
       if modulename-is-explorerui then
@@ -135,6 +163,8 @@ rules // module
           sec_asyncDirtyflag*
         
           sec_hibernateTriggers*
+        
+          sec_manage*
         ]|
       else //embedded model
         result := module |[
@@ -149,5 +179,7 @@ rules // module
           sec_asyncDirtyflag*
         
           sec_hibernateTriggers*
+        
+          sec_manage*
         ]|
       end
