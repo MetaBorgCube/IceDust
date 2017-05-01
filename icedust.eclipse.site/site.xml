@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/icedust.eclipse.feature_0.6.3.qualifier.jar" id="icedust.eclipse.feature" version="0.6.3.qualifier">
+      <category name="icedust"/>
+   </feature>
+   <category-def name="icedust" label="icedust language Eclipse plugin">
+      <description>
+         icedust language Eclipse plugin.
+      </description>
+   </category-def>
+</site>

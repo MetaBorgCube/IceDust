@@ -1,0 +1,11 @@
+module icedust
+
+imports
+  
+  editor/analysis
+  editor/builders
+  editor/completion
+  editor/generate
+  editor/pp
+  editor/outline
+  editor/services

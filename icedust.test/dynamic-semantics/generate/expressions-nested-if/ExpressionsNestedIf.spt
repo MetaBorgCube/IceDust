@@ -1,0 +1,29 @@
+module generate-expressions-nested-if
+
+language icedust
+
+fixture [[
+  module ExpressionsNestedIf (on-demand)
+  
+  model
+  
+    entity Z{
+      b : Boolean
+      c : Boolean = (if(b) this else this).b
+  //    d : Boolean = this
+    }
+  
+  data
+  
+    z:Z{b=true}
+  
+  execute
+  
+    z.c
+    [[...]]
+]]
+
+
+test Expressions Nested If execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+"true
+"

@@ -1,0 +1,219 @@
+module names-traits-members-override
+
+language icedust
+
+fixture [[
+  module test
+  model
+  [[...]]
+]]
+
+test no error on overriding field [[
+  entity Assignment {
+    size : Int ? (abstract)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int ? = 1
+  }
+]] 0 errors
+
+test error on overriding field with wrong type [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : [[String]]
+  }
+]] >= 1 error //at #1
+
+test error on overriding field with wrong multiplicity [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int [[?]]
+  }
+]] >= 1 error //at #1
+
+//test no error on overriding field with tighter multiplicity [[
+//  entity Assignment {
+//    size : Int?
+//  }
+//
+//  entity BasicAssignment extends Assignment {
+//    size : Int
+//  }
+//]] 0 errors
+
+test resolve to overriden member [[
+  entity Assignment {
+    [[size]] : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int
+  }
+]] resolve #2 to #1
+
+test error on overriding field with wrong derivation type [[
+  entity Assignment {
+    size : Int = 5 (default)
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 2 [[
+  entity Assignment {
+    size : Int = 5 (default)
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int = 6
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 3 [[
+  entity Assignment {
+    size : Int = 5 (default)
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int (abstract)
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 4 [[
+  entity Assignment {
+    size : Int = 5
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int (abstract)
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 5 [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int (abstract)
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 6 [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int = 5
+  }
+]] >= 1 error at #1
+
+test error on overriding field with wrong derivation type 7 [[
+  entity Assignment {
+    size : Int = 7
+  }
+
+  entity BasicAssignment extends Assignment {
+    [[size]] : Int
+  }
+]] >= 1 error at #1
+
+test no error on overriding field with correct derivation type [[
+  entity Assignment {
+    size : Int (abstract)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int (abstract)
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 2 [[
+  entity Assignment {
+    size : Int 1 (abstract)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int 1
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 3 [[
+  entity Assignment {
+    size : Int 1 (abstract)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int 1 = 5
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 4 [[
+  entity Assignment {
+    size : Int 1 (abstract)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int 1 = 5 (default)
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 5 [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 6 [[
+  entity Assignment {
+    size : Int
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int = 5 (default)
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 7 [[
+  entity Assignment {
+    size : Int = 9
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int = 5
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 8 [[
+  entity Assignment {
+    size : Int = 9
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int = 5 (default)
+  }
+]] 0 errors
+
+test no error on overriding field with correct derivation type 9 [[
+  entity Assignment {
+    size : Int = 9 (default)
+  }
+
+  entity BasicAssignment extends Assignment {
+    size : Int = 5 (default)
+  }
+]] 0 errors

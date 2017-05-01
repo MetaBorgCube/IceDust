@@ -1,0 +1,33 @@
+module generate-expressions-aggregation-recursive
+
+language icedust
+
+fixture [[
+  module ExpressionsAggregationRecursive (on-demand)
+
+  model
+  
+    entity Node {
+      value : Int ? = avg ( this.children.value ) (default)
+    }
+  
+    relation Node.parent ? <-> * Node.children {}
+  
+  
+  data
+  
+    root : Node {
+      children = 
+        n1 : Node {value=2},
+        n2 : Node {value=4}
+    }
+  
+  execute
+  
+    root.value
+    [[...]] 
+]]
+
+//test Expressions Aggregation Recursive execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: analysis fails
+//"5
+//"

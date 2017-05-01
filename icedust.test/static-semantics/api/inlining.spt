@@ -1,0 +1,15 @@
+module api-inlining
+
+language icedust
+
+fixture [[
+  module test
+  model
+    entity Foo {
+      b : Int
+      [[...]]
+    }
+]]
+
+test Query attribute inlining         [[ [[bla]]  : Int = 5          ]]            run name-get-inlining-test       on #1 to NotInline()
+test Query attribute inlining 2       [[ [[bla]]  : Int = 5 (inline) ]]            run name-get-inlining-test       on #1 to Inline()

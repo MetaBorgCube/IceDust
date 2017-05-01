@@ -1,0 +1,53 @@
+module prettyprinting/pp
+
+imports
+
+  libstratego-gpp
+//  runtime/refactoring/-
+  pp/icedust-parenthesize
+  pp/icedust-pp
+  prettyprinting/variations
+  
+  pp/_PrettyPrint-pp
+  pp/Common-pp
+  pp/Model-pp
+  pp/Modules-pp
+  pp/icedust-pp
+  pp/Data-pp
+  pp/Execute-pp
+  pp/Expressions-pp
+  pp/Types-pp
+
+rules
+  
+  pp-icedust-string =
+    parenthesize-icedust
+    ; apply-pp-variation
+    ; prettyprint-icedust-start-symbols
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-partial-icedust-string =
+    parenthesize-icedust
+    ; apply-pp-variation
+    ; prettyprint-icedust
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-debug :
+    ast -> result
+    with
+       result := <pp-icedust-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-icedust-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
+
+rules
+  
+  construct-textual-change = construct-textual-change(pp-partial-icedust-string, parenthesize, override-reconstruction, resugar)
+
+rules
+
+  pp-option(pp): x -> <pp>x
+    where
+      not(None() := x);
+      not(Some(_) := x)
