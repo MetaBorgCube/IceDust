@@ -2,6 +2,8 @@ module lib/lists-tuples
 
 imports
 
+  lib/eq
+
 rules // (|b) a -> (a, b)
   
   tuple-with(|b): a -> (a, b)
@@ -72,4 +74,12 @@ rules
   list-add(|h): t -> [h | t]
   
   list-max(|lowerbound) = list-add(|lowerbound);list-max
+  
+rules
+
+  diff-no-annos = diff(strip-annos)
+  
+rules
+
+  make-set-no-annos = foldr(![], union(eq-no-anno-r), ![<id>])
   

@@ -3,48 +3,63 @@ module api/model-api
 imports // constructors
 
   signatures/Model-sig
-  desugaring/constructors
+//  desugaring/constructors
 
 imports // functions
 
-  lib/origin
   lib/lists-tuples
 
 rules // entities
   
-  is-entity = ?Entity            (_,_,_)
-  is-entity = ?FirstClassRelation(_,_,_)
+  is-entity = ?Entity            (_,_,_,_)
+  is-entity = ?FirstClassRelation(_,_,_,_)
+//  is-entity = ?Trait             (_,_,_,_)
   
-  entity-get-name    = ?Entity            (<id>, _, _)
-  entity-get-name    = ?FirstClassRelation(<id>, _, _)
-  entity-get-members = ?Entity            (_, _, <id>)
-  entity-get-members = ?FirstClassRelation(_, _, <id>)
+  entity-get-name    = ?Entity            (<id>, _, _, _)
+  entity-get-name    = ?FirstClassRelation(<id>, _, _, _)
+//  entity-get-name    = ?Trait             (<id>, _, _, _)
+  entity-get-members = ?Entity            (_, _, _, <id>)
+  entity-get-members = ?FirstClassRelation(_, _, _, <id>)
+//  entity-get-members = ?Trait             (_, _, _, <id>)
   
   entity-set-members(|members) = entity-set-members(!members)
-  entity-set-members(members) = Entity            (id, id, members)
-  entity-set-members(members) = FirstClassRelation(id, id, members)
+  entity-set-members(members) = Entity            (id, id, id, members)
+  entity-set-members(members) = FirstClassRelation(id, id, id, members)
+//  entity-set-members(members) = Trait             (id, id, id, members)
 
 rules // attributes
 
-  is-attr = ?Attribute(_, _, _)
+  is-attr = ?Attribute          (_, _, _)
   is-attr = ?DerivationAttribute(_, _, _, _, _)
-  is-attr = ?DefaultAttribute(_, _, _, _, _)
+  is-attr = ?DefaultAttribute   (_, _, _, _, _)
+  is-attr = ?AbstractAttribute  (_, _, _, _)
+  is-attr = ?InlineAttribute    (_, _, _, _)
 
-  attr-get-name       = ?Attribute(<id>, _, _)
-  attr-get-type       = ?Attribute(_, <id>, _)
-  attr-get-mult       = ?Attribute(_, _, <id>)
+  attr-get-name       = ?Attribute          (<id>, _, _)
+  attr-get-type       = ?Attribute          (_, <id>, _)
+  attr-get-mult       = ?Attribute          (_, _, <id>)
   attr-get-name       = ?DerivationAttribute(<id>, _, _, _, _)
   attr-get-type       = ?DerivationAttribute(_, <id>, _, _, _)
   attr-get-mult       = ?DerivationAttribute(_, _, <id>, _, _)
   attr-get-derivation = ?DerivationAttribute(_, _, _, <id>, _)
-  attr-get-name       = ?DefaultAttribute(<id>, _, _, _, _)
-  attr-get-type       = ?DefaultAttribute(_, <id>, _, _, _)
-  attr-get-mult       = ?DefaultAttribute(_, _, <id>, _, _)
-  attr-get-derivation = ?DefaultAttribute(_, _, _, <id>, _)
+  attr-get-name       = ?DefaultAttribute   (<id>, _, _, _, _)
+  attr-get-type       = ?DefaultAttribute   (_, <id>, _, _, _)
+  attr-get-mult       = ?DefaultAttribute   (_, _, <id>, _, _)
+  attr-get-derivation = ?DefaultAttribute   (_, _, _, <id>, _)
+  attr-get-name       = ?AbstractAttribute  (<id>, _, _, _)
+  attr-get-type       = ?AbstractAttribute  (_, <id>, _, _)
+  attr-get-mult       = ?AbstractAttribute  (_, _, <id>, _)
+  attr-get-derivation = ?AbstractAttribute  (_, _, _, <id>)
+  attr-get-name       = ?InlineAttribute    (<id>, _, _, _)
+  attr-get-type       = ?InlineAttribute    (_, <id>, _, _)
+  attr-get-mult       = ?InlineAttribute    (_, _, <id>, _)
+  attr-get-derivation = ?InlineAttribute    (_, _, _, <id>)
   
-  attr-set-mult(s) = Attribute(id, id, s)
+  attr-set-mult(s) = Attribute          (id, id, s)
   attr-set-mult(s) = DerivationAttribute(id, id, s, id, id)
-  attr-set-mult(s) = DefaultAttribute(id, id, s, id, id)
+  attr-set-mult(s) = DefaultAttribute   (id, id, s, id, id)
+  attr-set-mult(s) = AbstractAttribute  (id, id, s, id)
+  attr-set-mult(s) = InlineAttribute    (id, id, s, id)
   
   attr-has-no-mult = where(attr-get-mult;?None())
   
@@ -52,7 +67,6 @@ rules // roles
 
   is-role = ?Role(_, _, _, _)
   
-  role-get-type = ?Role(NaBLHelp(<id>, _), _, _, _)
   role-get-type = ?Role(<id>, _, _, _)
   role-get-inv  = ?Role(_, <id>, _, _)
   role-get-mult = ?Role(_, _, <id>, _)
@@ -71,13 +85,9 @@ rules // shortcuts
   
   is-shortcut = ?Shortcut(_, _, _, _)
 
-  shortcut-get-role1     = ?Shortcut(NaBLHelp(RoleRef(<id>), _), _, _, _)
-  shortcut-get-role1     = ?Shortcut(RoleRef(<id>), _, _, _)
-  shortcut-get-type1     = ?Shortcut(NaBLHelp(_, <id>), _, _, _)
+  shortcut-get-role1     = ?Shortcut(<id>, _, _, _)
   shortcut-get-shortcut1 = ?Shortcut(_, <id>, _, _)
-  shortcut-get-role2     = ?Shortcut(_, _, NaBLHelp(RoleRef(<id>), _), _)
-  shortcut-get-role2     = ?Shortcut(_, _, RoleRef(<id>), _)
-  shortcut-get-type2     = ?Shortcut(_, _, NaBLHelp(_, <id>), _)
+  shortcut-get-role2     = ?Shortcut(_, _, <id>, _)
   shortcut-get-shortcut2 = ?Shortcut(_, _, _, <id>)
   
   shortcut-set-role1    (s) = Shortcut(s, id, id, id)
@@ -98,19 +108,19 @@ rules // relations
   is-relation = ?Relation(_, _, _, _, _, _)
   is-relation = ?RelationDerived(_, _, _, _, _, _, _, _)
   
-  relation-get-type1 = ?Relation(EntityRef(<id>), _, _, _, _, _)
+  relation-get-type1 = ?Relation(<id>, _, _, _, _, _)
   relation-get-rel1  = ?Relation(_, <id>, _, _, _, _)
   relation-get-mult1 = ?Relation(_, _, <id>, _, _, _)
   relation-get-mult2 = ?Relation(_, _, _, <id>, _, _)
-  relation-get-type2 = ?Relation(_, _, _, _, EntityRef(<id>), _)
+  relation-get-type2 = ?Relation(_, _, _, _, <id>, _)
   relation-get-rel2  = ?Relation(_, _, _, _, _, <id>) 
   
-  relation-get-type1 = ?RelationDerived(EntityRef(<id>), _, _, _, _, _, _, _)
+  relation-get-type1 = ?RelationDerived(<id>, _, _, _, _, _, _, _)
   relation-get-rel1  = ?RelationDerived(_, <id>, _, _, _, _, _, _)
   relation-get-mult1 = ?RelationDerived(_, _, <id>, _, _, _, _, _)
   relation-get-expr1 = ?RelationDerived(_, _, _, <id>, _, _, _, _)
   relation-get-mult2 = ?RelationDerived(_, _, _, _, <id>, _, _, _)
-  relation-get-type2 = ?RelationDerived(_, _, _, _, _, EntityRef(<id>), _, _)
+  relation-get-type2 = ?RelationDerived(_, _, _, _, _, <id>, _, _)
   relation-get-rel2  = ?RelationDerived(_, _, _, _, _, _, <id>, _) 
   
   relation-set-type1(s) = Relation(s, id, id, id, id, id)
@@ -134,18 +144,15 @@ rules // relations
   
   relation-is-same-type = where(<eq>(<relation-get-type1>,<relation-get-type2>))
   
-  relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
-  relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
-  
 rules // shortcutrel
   
   is-shortcutrel = ?ShortcutRelation(_, _, _, _, _, _, _, _)
   
-  shortcutrel-get-type1 = ?ShortcutRelation(EntityRef(<id>), _, _, _, _, _, _, _)
+  shortcutrel-get-type1 = ?ShortcutRelation(<id>, _, _, _, _, _, _, _)
   shortcutrel-get-rel1  = ?ShortcutRelation(_, <id>, _, _, _, _, _, _)
   shortcutrel-get-mult1 = ?ShortcutRelation(_, _, <id>, _, _, _, _, _)
   shortcutrel-get-mult2 = ?ShortcutRelation(_, _, _, <id>, _, _, _, _)
-  shortcutrel-get-type2 = ?ShortcutRelation(_, _, _, _, EntityRef(<id>), _, _, _)
+  shortcutrel-get-type2 = ?ShortcutRelation(_, _, _, _, <id>, _, _, _)
   shortcutrel-get-rel2  = ?ShortcutRelation(_, _, _, _, _, <id>, _, _)
   shortcutrel-get-attrs = ?ShortcutRelation(_, _, _, _, _, _, _, <id>) 
   
@@ -163,26 +170,4 @@ rules // shortcutrel
   shortcutrel-has-no-rel2  = where(shortcutrel-get-rel2 ;?None())
   
   shortcutrel-is-same-type = where(<eq>(<shortcutrel-get-type1>,<shortcutrel-get-type2>))
-
-rules // query
-  
-  entity-get-type: Entity            (_,_,_) -> EntityType()
-  entity-get-type: FirstClassRelation(_,_,_) -> RelationType()
-
-rules // properties
-  
-  entity-is-entitytype = entity-get-type;?EntityType()
-  
-rules // manipulation
-
-  role-dup-type   = role-set-type(\a -> NaBLHelp(a, a)\)
-  role-dedup-type = role-set-type(\NaBLHelp(a, _) -> a\)
-  
-  relation-dup-types   = relation-set-type1(\e@EntityRef(a) -> NaBLHelp(e, a)\);relation-set-type2(\e@EntityRef(a) -> NaBLHelp(e, a)\)
-  relation-dedup-types = relation-set-type1(\NaBLHelp(a, _) -> a\);relation-set-type2(\NaBLHelp(a, _) -> a\)
-
-rules // creation
-  
-  create-shortcut(|role1, shortcut1, role2, shortcut2) = !Shortcut(<custom-origin(|role1)>RoleRef(role1), shortcut1, <custom-origin(|role2)>RoleRef(role2), shortcut2)
-  create-shortcut(|role1, type1, shortcut1, role2, type2, shortcut2) = !Shortcut(NaBLHelp(<custom-origin(|role1)>RoleRef(role1), type1), shortcut1, NaBLHelp(<custom-origin(|role2)>RoleRef(role2), type2), shortcut2)
   

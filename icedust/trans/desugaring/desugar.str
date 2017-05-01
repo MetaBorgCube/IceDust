@@ -1,15 +1,8 @@
 module desugaring/desugar
 
-imports // constructors
-  
-  signatures/Modules-sig
-  signatures/Types-sig
-  desugaring/constructors
-
 imports // functions
 
   desugaring/alternatives
-  desugaring/nablhelp
   desugaring/omitted
   lib/origin
   
@@ -19,20 +12,14 @@ rules
     desugar-somes;
     desugar-alternatives;
     generate-omitted;
-    nablhelp-before;
-    desugar-done;
     warning-on-missing-origin
 
-  desugar-after-analysis = 
-    nablhelp-after;
-    warning-on-missing-origin
+//  desugar-after-analysis = 
+//    warning-on-missing-origin
 
 
 rules // general
 
   desugar-somes = bottomup(try(desugar-some))
-  desugar-some: Some(a) -> a where !a;not(?OnDemand());not(?Incremental());not(?Eventual());not(?OnDemandEventual())
-
-  desugar-done = keep-origin(desugar-done2)
-  desugar-done2: Module(moduleName, strategy, section*) -> ModuleDesugared(moduleName, strategy, section*)
+  desugar-some: Some(a) -> a where !a;not(?OnDemand());not(?Incremental());not(?Eventual());not(?OnDemandEventual());not(?OnDemandIncremental())
 

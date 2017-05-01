@@ -1,45 +1,51 @@
 module Data
 
 imports
-  Common
-  Model
-  Expressions
 
-context-free syntax   // entity instances
+  Common
+  Expressions
+  Types
+
+context-free syntax
 
   Data = EntityInstance
 
   EntityInstance.EntityInstance = <
-    <IDSpace?><ColonEntityRefSpace?>{
+    <IDSpace?>: <EntityType> {
+      <{MemberValue "\n"}*>
+    }
+  >
+  
+  EntityInstance.EntityInstanceNoType = <
+    <IDSpace?>{
       <{MemberValue "\n"}*>
     }
   >
   
   RelationInstance.RelationInstance = [
-    < [IDSpace?][ColonEntityRefSpace?]{
+    < [IDSpace?]: [EntityType] {
       [{MemberValue "\n"}*]
     } >
   ]
-
-  IDSpace             = <<ID> >
-  ColonEntityRefSpace = <: <EntityRef> >
-
+  
+  RelationInstance.RelationInstanceNoType = [
+    < [IDSpace?]{
+      [{MemberValue "\n"}*]
+    } >
+  ]
+  
   MemberValue.MemberValue = <
-    <MemberRef> = <Value>
+    <ID> = <{Value ",\n  "}+>
   >
   
-  Value.Comma = <
-    <Value>,
-    <Value>
-  > {right}
-  Value = LitVal
-  Value = EntityInstanceWrapper
+  Value.LitVal = LitVal
   
-  EntityInstanceWrapper.EntityInstanceWrapper = <<RelationInstance?><EntityInstanceValue>>
+  Value = EntityInstanceValue
   
-  EntityInstanceValue = EntityInstanceRef
+  Value.EntityInstanceWrapper = <<RelationInstance> <EntityInstanceValue>>
+  
+  EntityInstanceValue.EntityInstanceRef = ID
   EntityInstanceValue = EntityInstance
 
-context-free syntax // specific references
+  IDSpace = <<ID> >
   
-  EntityInstanceRef.EntityInstanceRef = <<ID>>

@@ -58,3 +58,6 @@ rules
   split-expr(|prefix): e -> (e', vars)
     with
       (e', vars) := <topdown-parent-fold-keep-anno(split-strat(|prefix))>(e, None(), [])
+      
+  topdown-parent-fold-keep-anno(map-strategy): (term@Filter(_,_,_), parent, fold-value) -> (term, fold-value) // hack out of higher order function
+  topdown-parent-fold-keep-anno(map-strategy): (term@Find  (_,_,_), parent, fold-value) -> (term, fold-value) // no splitting on children of (first child would be ok, but nested expression needs environment)

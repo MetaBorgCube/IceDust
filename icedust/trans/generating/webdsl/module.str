@@ -4,7 +4,7 @@ imports // constructors
 
   webdsl/constructors
   webdsl/WebDSL
-  desugaring/constructors
+//  desugaring/constructors
   signatures/Types-sig
   analysis2/path
   tiersplit/constructors
@@ -13,6 +13,7 @@ imports // functions
   
   generating/_ir/model 
   generating/webdsl/module-derivations
+  generating/webdsl/module-manage
   generating/webdsl/module-ui
   generating/webdsl/model
   generating/webdsl/data
@@ -43,6 +44,9 @@ rules // module
       stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-stat)>x_moduleName;
       native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
       stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
+    with
+      elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row   )>x_moduleName;
+      def_manage*         := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-defs-manage)>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -87,21 +91,17 @@ rules // module
           
           function updateDerivationsAsync(){
             stat_cachAsync*
+            DirtyCollections.cleanI(2147483647);
           }
           
           invoke updateDerivationsAsync() every 1 milliseconds
           
           native class derivations.DirtyCollections as DirtyCollections {
-            native1*
-          }
+            static getI() : Int
+            static dirtyI(Int)
+            static cleanI(Int)
           
-          native class java.util.Queue as Queue{
-            offer(String) : Bool
-            add(String) : Bool
-            addAll(List<String>) : Bool
-            poll() : String
-            contains(String) : Bool
-            isEmpty() : Bool
+            native1*
           }
       ]|
     with
@@ -116,6 +116,49 @@ rules // module
           function afterTransactionCompletionCommitted(){
             flagDirtyAsync();
           }
+      ]|
+    with
+      sec_manage* :=  section* |[
+        section manage
+        
+          page derivedvalues() {
+            title{ "Manage Derived Values" }
+            h1{ "Manage Derived Values" }
+            table{
+              row{
+                column{ "Order" }
+                column{ "Name" }
+                column{ "Type" }
+                column{ "Status" }
+                column{ "Actions" }
+              }
+              row{
+                column{  }
+                column{  }
+                column{  }
+                column{  }
+                column{
+                  submit action{
+                    flagAllIncrementalDirty();
+                    log("Updating derivations");
+                    updateDerivations();
+                    log("Updating derivations done");
+                  } { "flag all incremental fields dirty" }
+                  br
+                  submit action{
+                    flagAllOnDemandIncDirty();
+                  } { "flag all on-demand incremental fields dirty" }
+                }
+              }
+              elem_manageRows*
+            }
+          }
+          
+          def_manage*
+          
+          function flagAllIncrementalDirty(){}
+          
+          function flagAllOnDemandIncDirty(){}
       ]|
     with
       if modulename-is-explorerui then
@@ -135,6 +178,8 @@ rules // module
           sec_asyncDirtyflag*
         
           sec_hibernateTriggers*
+        
+          sec_manage*
         ]|
       else //embedded model
         result := module |[
@@ -149,5 +194,11 @@ rules // module
           sec_asyncDirtyflag*
         
           sec_hibernateTriggers*
+        
+          sec_manage*
+          
+            access control rules
+            
+              rule page derivedvalues() { true }
         ]|
       end

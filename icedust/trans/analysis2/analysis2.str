@@ -3,177 +3,194 @@ module analysis2/analysis2
 imports // constructors
   
   signatures/Expressions-sig
-  api/_runtime-constructors
+//  api/_runtime-constructors
   analysis2/constructors
 
 imports // functions
 
+  analysis2/check
   analysis2/path
-  api/_runtime
-  api/data-api
-  api/execute-api
+//  api/_runtime
+//  api/execute-api
   api/data-api
   api/data-names-api
-  api/model-api
+//  api/model-api
   api/model-names-api
   api/module-api
   api/module-names-api
-  lib/nabl-ext
+//  lib/nabl-ext
   lib/graph
   lib/index
   lib/lists-tuples
-  lib/string
+//  lib/string
+  lib/origin
   lib/traverse
-  names/naming/names
-  naming/_notNaBL
+//  names/naming/names
+//  naming/_notNaBL
+  lib/nabl2
 
 rules
 
-  analysis2 =
-    analysis2-clear-index;
-    store-expressions;
-    depends-on-and-flows-to-2;
-    flows-toposort-2
-
-rules
-
-  analysis2-clear-index: a -> a
+  nabl2-after-analysis(|source,ast): analysis -> (error*, [], [], index)
     with
-      <_index-clear-source>"analysis2"
-
-rules
-  
-  store-expressions: ast -> ast
+      <store-analysis-resource>analysis
     with
-      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-      <map(attr-store-expr)>attrs
+      modulename := <collect-one(is-modulename)>ast
     with
-      rels := <collect(is-relation);filter(where(relation-get-expr1))>ast;
-      <map(rel-store-expr)>rels
+      <depends-on-and-flows-to-2>modulename
     with
-      memvs := <collect-all(is-membervalue)>ast;
-      <map(membervalue-store-expr)>memvs
+      <flows-toposort-2>modulename
     with
-      <module-store-expr>ast
-  
-  attr-store-expr: attr -> attr
-    with
-      derivation := <attr-get-derivation>attr;
-      attrName   := <attr-get-name>attr;
-      <index-store-prop(|AST(), attrName)>derivation
-  
-  rel-store-expr: rel -> rel
-    with
-      expr       := <relation-get-expr1>rel;
-      relName    := <relation-get-rel1>rel;
-      <index-store-prop(|AST(), relName)>expr
-      
-  membervalue-store-expr: memv -> memv
-    with
-      expr := <membervalue-get-expr>memv;
-      expr':= <try(sometd(entityinstance-to-entityinstanceref))>expr;
-      name := <membervalue-get-name>memv;
-      <index-store-prop(|AST(), name)>expr';
-      eiNamesTuples := <membervalue-getall-einames;filter((?None()<+is-entityinstancename,is-entityinstancename))>expr' // not all identifiers might be resolved in erroneous programs
-    with
-      if <membervaluename-is-relation <+ membervaluename-is-role <+ membervaluename-is-inverse>name then
-        eiNames := <map(Snd)>eiNamesTuples;
-        <map(index-store-prop    (|Rel(),    name))>eiNames;
-        eiName := <membervaluename-get-entityinstancename>name;
-        names  := <map(entityinstancename-get-membervaluename(|<membervaluename-get-origin;name-get-inversename>name))>eiNames;
-        <map(index-store-prop-inv(|RelInv(), eiName))>names
-      end
-    with
-      if <membervaluename-is-shortcut>name then
-        invName := <get-member-origin;shortcutname-get-inversename>name;
-        invvalueName := <membervaluename-get-entityinstancename;entityinstancename-get-membervaluename(|invName)>name;
-        <index-store-def>invvalueName;
-        <index-store-prop(|NablProp_member-origin(), invvalueName)>invName;
-        roleName := <get-member-origin;shortcutname-get-rolename>name;
-        <map(store-shortcut-helper(|invvalueName, invName, roleName))>eiNamesTuples
-      end
-      
-  store-shortcut-helper(|invvalueName, invName, roleName): (riName, eiName2) -> None()
-    with
-      eiName       := <membervaluename-get-entityinstancename>invvalueName;
-      relationName := <attributename-get-entityname>roleName;
-      if None() := riName then
-        riName-string := $[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
-        riName' := <entityinstancename-get-modulename;modulename-get-entityinstancename(|riName-string)>eiName;
-        <index-store-def>riName';
-        <index-store-prop(|Type(), riName')><get-type2>invName
-      else
-        riName' := riName
+      if <not(check-nabl2-attachments)>ast then
+        <debug>"missing nabl2 attachments";
+        with(fail)
       end;
-      <index-store-prop(|Rel(), invvalueName)>riName';
-      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>invName)>riName')>eiName;
-      rolevalueName := <entityinstancename-get-membervaluename(|roleName)>riName';
-      <index-store-def>rolevalueName;
-      <index-store-prop(|NablProp_member-origin(), rolevalueName)>roleName;
-      <index-store-prop(|Rel(), rolevalueName)>eiName2;
-      <index-store-prop(|RelInv(), <entityinstancename-get-membervaluename(|<name-get-inversename>roleName)>eiName2)>riName'
-  
-  module-store-expr: mod -> mod
+//      if <check-nabl2-attachments>ast then // workaround http://yellowgrass.org/issue/NaBL2/15. Also means there are no analysis2 error msgs in editor
+        <ast-store-membervalues>ast;
+        error* := <analysis2check>modulename;
+        <module-store-expr>ast;
+//      else
+//        error* := []
+//      end;
+      <map(nabl2-custom-analysis-info(|"Error"))>error*
     with
-      exprs := <collect-all(is-execute);fmap(execute-get-exprs)>mod;
-      name  := <module-get-modulename>mod;
-      <index-store-prop(|AST(), name)>exprs
+      index := <_index-get>
 
 rules
 
-  depends-on-and-flows-to-2: ast -> ast
+  check-nabl2-attachments = where(collect-all(is-string,conc);(map(nabl2--get-ast-index) <+ filter(not(nabl2--get-ast-index));debug(!"The following terms do not have an nabl2 attachment ");fail))
+  nabl2--get-ast-index = fail //is an internal nabl2 strategy
+
+rules
+
+  ast-store-membervalues: ast -> ast
     with
-      attrs  := <collect(is-attr);filter(where(attr-get-derivation))>ast;
-      <map(attr-depends-on-and-flows-to)>attrs
+      memvs     := <collect-all(is-membervalue,conc);filter(where(membervalue-get-name;membervaluename-has-origin))>ast;
+      memvs-a   := <filter(where(membervalue-get-name;membervaluename-is-attribute            ))>memvs;
+      memvs-rri := <filter(where(membervalue-get-name;membervaluename-is-relation-role-inverse))>memvs;
+      memvs-s   := <filter(where(membervalue-get-name;membervaluename-is-shortcut             ))>memvs
     with
-      rels := <collect(is-relation);filter(where(relation-get-expr1))>ast;
-      <map(rel-depends-on-and-flows-to)>rels
+      ast*    := <map(ttuple(membervalue-get-name, membervalue-get-expr))>memvs-a
+    with
+      <nabl2-custom-analysis-info-msg(|"asts         ")>ast*
+    with
+      <map(index-set-prop(|AST()))>ast*
+    with
+      assoc1* := <fmap(membervalue-rri-assocs)>memvs-rri;
+      assoc2* := <fmap(membervalue-s-assocs  )>memvs-s;
+      assoc*  := [assoc1*, assoc2*]
+    with
+      <nabl2-custom-analysis-info-msg(|"assocs       ")>assoc*
+    with
+      <map(index-add-prop(|Assoc()))>assoc*
       
-  attr-depends-on-and-flows-to: attr -> attr
+  membervalue-rri-assocs: memv -> [assoc1*, assoc2*]
     with
-      attrName          := <attr-get-name>attr;
-      expr              := <attr-get-derivation>attr;
+      name        := <membervalue-get-name>memv;
+      name2origin := <membervalue-get-name;membervaluename-get-origin;name-get-inversename>memv;
+      ei          := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
+      expr        := <membervalue-get-expr>memv;
+      ei2*        := <map(entityinstance-get-name;get-decl(|"Member")) <+ ![]>expr //if LitVal, empty list
+    with
+      assoc1* := <map   (\ei2->(name,                                                      ei2)\)>ei2*;
+      assoc2* := <filter(\ei2->(<entityinstancename-get-membervaluename(|name2origin)>ei2, ei )\)>ei2*  //filter out wrong types
+      
+  membervalue-s-assocs: memv -> assoc*
+    with
+      assoc* := <membervalue-get-expr;fmap(membervalue-s-expr-assocs(|memv))>memv
+
+  membervalue-s-expr-assocs(|memv): expr -> [assoc1*, assoc2, assoc3, assoc4*]
+    with
+      name         := <membervalue-get-name>memv;
+      eiName       := <membervalue-get-name;membervaluename-get-entityinstancename>memv;
+      eiName2      := <entityinstance-get-name;get-decl(|"Member")>expr;
+      roleName1    := <membervaluename-get-origin;shortcutname-get-rolename1>name;
+      roleName2    := <membervaluename-get-origin;shortcutname-get-rolename2>name;
+      inverseName1 := <rolename-get-inversename>roleName1;
+      inverseName2 := <rolename-get-inversename>roleName2;
+      if riName    := <relation-instance-get-name>expr then
+        id
+      else
+        relationName  := <attributename-get-entityname>roleName1;
+        modulename    := <entityinstancename-get-modulename>eiName;
+        riName-string := <custom-origin(|name)>$[[eiName][<ucfirst>eiName2][<ucfirst>relationName]];
+        riName        := <entityinstancename-get-modulename;modulename-decl-entityinstancename(|riName-string, relationName)>eiName
+      end;
+      memv-r1-name := <entityinstancename-get-membervaluename(|roleName1)>riName;
+      memv-r2-name := <entityinstancename-get-membervaluename(|roleName2)>riName;
+      memv-i1-name*:= <filter(entityinstancename-get-membervaluename(|inverseName1))>[eiName]; // membervaluename can fail if ei1 has wrong type
+      memv-i2-name*:= <filter(entityinstancename-get-membervaluename(|inverseName2))>[eiName2] // membervaluename can fail if ei2 has wrong type
+    with
+      if memv-i1-name := <Hd>memv-i1-name* then
+        assoc1* := [(memv-i1-name, riName)]
+      else
+        assoc1* := []
+      end;
+      assoc2 := (memv-r1-name, eiName);
+      assoc3 := (memv-r2-name, eiName2);
+      if memv-i2-name := <Hd>memv-i2-name* then
+        assoc4* := [(memv-i2-name, riName)]
+      else
+        assoc4* := []
+      end
+
+  module-store-expr: ast -> ast
+    with
+      name  := <module-get-modulename>ast;
+      exprs := <module-get-exprs>ast;
+      <index-set(|name, AST())>exprs
+
+rules
+
+  depends-on-and-flows-to-2: modulename -> modulename
+    with
+      arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
+    with
+      dependencies := <fmap(arriname-dependencies)>arrinames;
+      dataflow     := <map(path-inverse)>dependencies
+    with
+      <nabl2-custom-analysis-info-msg(|"dependencies ")>dependencies;
+      <nabl2-custom-analysis-info-msg(|"dataflow     ")>dataflow
+    with
+      <map(path-store-on-origin)>dependencies;
+      <map(path-store-on-origin)>dataflow
+
+  arriname-dependencies: attrName -> dependencies
+    with
+      expr              := <name-get-expr>attrName;
       (p*, q*)          := <expr-pathexprs>expr;
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
-      dependencies      := <map(path(|attrName))>all-pathexprs;
-      dataflow          := <map(path-inverse)>dependencies;
-      <map(path-store-on-origin)>dependencies;
-      <map(path-store-on-origin)>dataflow
-      
-  rel-depends-on-and-flows-to: rel -> rel
-    with
-      relName1          := <relation-get-rel1>rel;
-      expr              := <relation-get-expr1>rel;
-      (p*, q*)          := <expr-pathexprs>expr;
-      pathexprs         := [p*, q*];
-      pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set>pathexprs-no-this;
-      dependencies      := <map(path(|relName1))>all-pathexprs;
-      dataflow          := <map(path-inverse)>dependencies;
-      <map(path-store-on-origin)>dependencies;
-      <map(path-store-on-origin)>dataflow
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set-no-annos>pathexprs-no-this;
+      dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules
 
-  flows-toposort-2: ast -> ast
+  flows-toposort-2: moduleName -> moduleName
     with
-      moduleName      := <module-get-modulename>ast;
-      attributeNames* := <modulename-get-attributenames>moduleName;
-      relationNames*  := <modulename-get-relationnames-left>moduleName;
-      roleNames*      := <modulename-get-rolenames>moduleName;
-      graphNames      := <string-sort-anno>[attributeNames*, relationNames*, roleNames*];
-      toposort        := <graph-topological-sort(toposort-edge)>graphNames;
-      <index-store-prop(|TopoSort(), moduleName)>toposort;
-      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort;
-      <map(index-store-prop(|TopoSort()))>numbers
+      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName;
+      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames';
+      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
+      <index-set(|moduleName, TopoSort())>toposort';
+      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort';
+      <map(index-set-prop(|TopoSort()))>numbers
+      
+    annotate-with-parent-entity    = id
+    de-annotate-with-parent-entity = id
+      
+//  annotate-with-parent-entity    = try(nabl2--preserve-ast-index(?name;attributename-get-entityname;?ent;!name{("parent-entity",ent)}))
+//  de-annotate-with-parent-entity = try(nabl2--preserve-ast-index(?name{("parent-entity",_)};!name{}))
 
-  toposort-edge: name -> <string-sort-anno>[names*, inv-names*]
+  toposort-edge: name -> all-names*
     with
-      names* := <index-get-prop(|FlowsTo());map(path-last)>name;
-      if inv-name := <name-get-inversename>name then
-        inv-names* := <index-get-prop(|FlowsTo());map(path-last)>inv-name
+      name' := <de-annotate-with-parent-entity>name;
+      names* := <index-get2(|FlowsTo());map(path-last)>name';
+      if inv-name := <name-get-inversename>name' then
+        inv-names* := <index-get2(|FlowsTo());map(path-last)>inv-name
       else
         inv-names* := []
-      end
+      end;
+      parent-names* := <name-get-parent2>name;
+      all-names* := <map(annotate-with-parent-entity)>[names*, inv-names*, parent-names*]
+      

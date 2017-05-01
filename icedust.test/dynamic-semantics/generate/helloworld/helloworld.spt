@@ -1,0 +1,29 @@
+module generate-helloworld
+
+language icedust
+
+fixture [[
+  module helloworld
+  
+  model
+  entity Message {
+    text     : String
+  }
+  
+  data
+  hello : Message {
+    text="Hello World!"
+  }
+  
+  execute
+  hello.text
+  [[...]]
+]]
+
+test Hello World generate-java [[ ]] transform "SPT -> to Java -> Generate"
+
+test Hello World compile-java [[ ]] transform "SPT -> to Java -> Compile"
+
+test Hello World execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+"Hello World!
+"

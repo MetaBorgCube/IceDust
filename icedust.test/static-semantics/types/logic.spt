@@ -1,0 +1,62 @@
+module types-logic
+
+language icedust
+
+fixture [[
+  module test
+  model
+  entity X{
+    b : Boolean ?
+    s : String ?
+  }
+  data
+  x : X {}
+  execute
+  3
+  [[...]]
+]]
+
+test type of and  [[true && false]] run get-type2 to Boolean()
+test type of and2 [[true and false]] run get-type2 to Boolean()
+test type of or   [[true || false]] run get-type2 to Boolean()
+test type of or 2 [[true or false]] run get-type2 to Boolean()
+test type of lte  [[1 <= 3]] run get-type2 to Boolean()
+test type of lte  [[3 < 2]] run get-type2 to Boolean()
+test type of gte  [[8 > 8]] run get-type2 to Boolean()
+test type of gt   [[4 >= 7]] run get-type2 to Boolean()
+test type of gt 2 [[4.4 >= 7.7]] run get-type2 to Boolean()
+test type of eq   [[8 == 3]] run get-type2 to Boolean()
+test type of neq  [[8 != 3]] run get-type2 to Boolean()
+test type of not  [[! false]] run get-type2 to Boolean()
+test type of not2 [[not false]] run get-type2 to Boolean()
+
+test type of eq  String [["a" == "b"]] run get-type2 to Boolean()
+
+test type of inline if [[true?6:3]] run get-type2 to Int()
+test type of inline if 2 [[if(true) 6 else 3]] run get-type2 to Int()
+test type of inline if 3 [[switch{ case true => 6 case false => 4 default => 3}]] run get-type2 to Int()
+test type of inline if String [[true?"a":"b"]] run get-type2 to String()
+test type of inline if Boolean() [[true?false:false]] run get-type2 to Boolean()
+
+test error on Boolean and Int  [[ true && 3 ]] 1 error
+test error on String gt Int [[ "b" > 4 ]] >= 1 errors
+test (TS/6) error on String inline if [[ "a" ? 3 : 4 ]] >= 1 error
+test error on inline if String Int [[ true ? "a" : 4 ]] 1 error
+
+
+test multiplicity of One gte One  [[8 > 8]] run get-multiplicity to One()
+test multiplicity of One eq One    [[true == false]] run get-multiplicity to One()
+test multiplicity of One inline if One One[[true?4:5]] run get-multiplicity to One()
+
+test multiplicity of One and ZeroOrOne          [[true && x.b]] run get-multiplicity to ZeroOrOne()
+test multiplicity of One eq ZeroOrOne           [["s" == x.s]] run get-multiplicity to ZeroOrOne()
+test multiplicity of One inline if ZeroOrOne One[[false ? x.s : "a"]] run get-multiplicity to ZeroOrOne()
+
+test error on ZeroOrOne inline if One One[[ [[x.b]] ? 4 : 6]] 1 error at #1
+
+test error on One and OneOrMore [[ true && [[(false ++ false)]] ]] 1 error at #1 // should be warning
+
+test ordering of not  [[! false]] run get-multiplicity to One() // is ordered
+test ordering of Ordered gte Ordered  [[8 > 8]] run get-multiplicity to One() // is ordered
+
+test multiplicity of one armed if [[if(false) 3]] run get-multiplicity to ZeroOrOne()

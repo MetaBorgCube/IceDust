@@ -11,8 +11,8 @@ imports // functions
   api/module-names-api
   generating/_ir/model
   generating/java/expressions
-  names/naming/names
-  naming/_notNaBL
+//  names/naming/names
+//  naming/_notNaBL
 
 rules
  
@@ -31,7 +31,7 @@ rules
 
   entityinstancename-to-java-stm(err): x_eiName -> result
     with
-      x_type := <get-type2>x_eiName
+      x_type := <entityinstancename-get-type>x_eiName
     with
       result := bstm |[
         x_type x_eiName = new x_type();
@@ -40,15 +40,11 @@ rules
   entityinstancename-to-java-stms2(err): x_eiName -> result
     with
       result-attributes* := <entityinstancename-get-attributevaluenames;fmap(attributevaluename-to-java-stms(err))>x_eiName;
-      result-relations*  := <entityinstancename-get-relationvaluenames ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result-roles*      := <entityinstancename-get-rolevaluenames     ;fmap(relationvaluename-to-java-stms (err))>x_eiName;
-      result-inverses*   := <entityinstancename-get-inversevaluenames  ;fmap(relationvaluename-to-java-stms (err))>x_eiName
+      result-rri*        := <entityinstancename-get-rri-left           ;fmap(relationvaluename-to-java-stms (err))>x_eiName
     with
       result := bstm* |[
         ~result-attributes*
-        ~result-relations*
-        ~result-roles*
-        ~result-inverses*
+        ~result-rri*
       ]|
 
 rules
@@ -80,7 +76,7 @@ rules
     with
       x_set := <name-set>relationName;
       x_add := <name-add>relationName;
-      if <get-member-origin;get-multiplicity;upper-one>relationName then
+      if <membervaluename-get-origin;name-get-multiplicity;upper-one>relationName then
         result := java:block-stm |[
           x_eiName.x_set(x_eiName2);
         ]|

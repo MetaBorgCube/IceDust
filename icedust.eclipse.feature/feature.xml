@@ -1,40 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="icedust.eclipse.feature"
-      label="IceDust Language Editor"
-      version="0.6.3.qualifier">
-
-   <description url="https://github.com/metaborg/icedust">
-      The IceDust Language Editor
-   </description>
-
-   <copyright url="https://github.com/metaborg/icedust">
-      Copyright (c) Daco Harkes 2014
-   </copyright>
-
-   <license url="https://github.com/metaborg/icedust">
-      IceDust Language License Information
-      
-This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-Most Spoofax/IMP code is licensed under the GNU Lesser General Public License (LGPL). Runtime components related to the IMP, EMF and GMF libraries are licensed under the Eclipse Public License (EPL).
-   </license>
-
-   <includes
-         id="org.metaborg.spoofax.eclipse.feature"
-         version="0.0.0"
-         optional="true"
-         search-location="both"/>
-
-   <includes
-         id="org.metaborg.spoofax.eclipse.meta.feature"
-         version="0.0.0"
-         optional="true"
-         search-location="both"/>
-
-   <plugin
-         id="icedust.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.6.3.qualifier"/>
-
+  id="icedust.eclipse.feature"
+  label="icedust language Eclipse plugin"
+  version="0.6.3.qualifier"
+>
+  <plugin id="icedust.eclipse" version="0.6.3.qualifier" unpack="true" />
+  <includes id="org.metaborg.spoofax.eclipse.feature" version="0" />
 </feature>

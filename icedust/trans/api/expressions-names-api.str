@@ -2,7 +2,6 @@ module api/expressions-names-api
 
 imports // constructors
 
-  names/naming/names
 
 imports // functions
 
@@ -10,4 +9,4 @@ imports // functions
 
 rules
 
-  is-varname = where(is-string;_nabl-uri;_nabl-uri-namespace;?NablNsVar())
+  is-varname = where(is-string;get-property(|"Member","ns");?Variable())

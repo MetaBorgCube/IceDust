@@ -8,8 +8,8 @@ imports // constructors
 imports // functions
 
   api/_runtime
-   names/naming/names
-  naming/_notNaBL
+//  names/naming/names
+//  naming/_notNaBL
 
 rules // primitives
   
@@ -28,9 +28,9 @@ rules // types of expressions and names (uses type and multiplicity)
   
   name-to-java-type(err): name -> result
     with
-      x_type := <get-type2;type-to-string-java>name
+      x_type := <(name-get-type<+get-type2);type-to-string-java>name
     with
-      if <get-multiplicity;upper-one>name then
+      if <(name-get-multiplicity<+get-multiplicity);upper-one>name then
       result := type |[
         x_type
       ]|

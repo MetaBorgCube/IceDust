@@ -1,0 +1,16 @@
+module literals-layout
+
+
+language icedust
+
+fixture [[
+  module test
+  
+  execute
+  
+    3
+    [[...]]
+]]
+
+test literal String whitespace [[" Asdf "]] parse to LitString(" Asdf ")
+
