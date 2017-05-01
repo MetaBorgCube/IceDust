@@ -3,6 +3,8 @@ module generate
 imports
   
   generating/react/model
+  generating/react/common
+  
   
   libstratego-gpp
   pp/spoofaxJS-pp

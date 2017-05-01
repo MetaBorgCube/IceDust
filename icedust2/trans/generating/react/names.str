@@ -20,7 +20,7 @@ rules
       
   attribute-table-expression: attribute -> <js-string> x_entity
     where
-      is-attributename ; attributename-is-normal
+      is-attributename ; attributename-is-normal-default
     with
       x_entity := <attributename-get-entityname> attribute
       

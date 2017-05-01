@@ -15,7 +15,7 @@ imports // functions
   api/module-names-api
   desugaring/desugar
   generating/_ir/paths
-//  generating/java/generate
+  generating/java/generate
 //  generating/webdsl/generate
 //  generating/webdsl/java/generate
 //  generating/webdsl/js/generate
@@ -95,10 +95,10 @@ rules // Build in steps
       else
         // phase 1: generate files
         switch !lang
-//          case ?Java():
-//            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
-//            targetFileName := <java-generated-path(|relativePath)>;
-//            java-library-paths(|fullPath);copy-dir
+          case ?Java():
+            (targetCode, error') := <generate-java-code(error-handler)>moduleName;
+            targetFileName := <java-generated-path(|relativePath)>;
+            java-library-paths(|fullPath);copy-dir
 //          case ?WebDSL():
 //            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
 //            targetFileName := <webdsl-generated-path(|relativePath)>;

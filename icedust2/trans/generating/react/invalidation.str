@@ -11,6 +11,7 @@ imports
   generating/react/model
   generating/react/names
   generating/react/common
+  generating/react/access
   
 rules
   
@@ -18,7 +19,8 @@ rules
     js-stmt |[ 
         export function x_name (state, id) {
             stmt_derivedValueInvalidation*
-            stmt_paths*
+            stmt_access*
+            stmt_invalidations*
             return state;
         }
     ]|
@@ -26,7 +28,48 @@ rules
       x_name := <invalidation-function-name> attribute
       ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> attribute
       ; flows := <name-get-flowsto-paths> attribute
-      ; stmt_paths* := <mapconcat(generate-flow-invalidation)> flows
+      ; stmt_access* := <statements-flow-access> flows
+      ; stmt_invalidations* := <map(flowsto-to-statement-invalidation)> flows
+  
+  
+  
+  statements-flow-access: flows -> stmt_access*
+    with
+      paths := <
+        filter(flow-to-access-exp)
+      ; mapconcat(collect-access)
+      ; make-set 
+      ; sort-paths
+      > flows
+    ; stmt_access* := <map(access-statement)> paths
+      
+  
+  flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
+    with
+      (m1, m2, x_var, field) := <collect-things> exp
+    ; m_lub := <lub-simple> (m1, m2)
+    ; x_functionName := <invalidation-function-name> field
+    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
+  
+  statement-invalidation : (One(), x_functionName, x_var) -> js-stmt |[
+    state = x_functionName(state, x_var);
+  ]|
+  
+  statement-invalidation : (ZeroOrOne(), x_functionName, x_var) -> js-stmt |[
+    if(x_var !== null) {
+      state = x_functionName(state, x_var);
+    }
+  ]|
+  
+  statement-invalidation : (ZeroOrMore(), x_functionName, x_var) -> js-stmt |[
+    x_var.forEach(id => {
+      state = x_functionName(state, id);
+    });
+  ]|
+      
+  flow-to-access-exp : DataflowPath(_, MemberAccess(inner, _)) -> inner
+    
+  sort-paths = qsort((pp-partial-icedust2-string, pp-partial-icedust2-string) ; string-lt)  
     
   generate-derived-value-invalidation: attribute ->
     js-stmt* |[
@@ -129,11 +172,7 @@ rules
     js-stmt* |[
       entities = entities.flatMap(id => {
         const value = exp_attribute.get(id);
-        if(value != null){
-          return [value];
-        } else {
-          return [];
-        }
+        return value != null ? [value] : [];
       });
       stmt_rest*
     ]|

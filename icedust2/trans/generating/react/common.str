@@ -28,3 +28,6 @@ rules
   lub-simple: (_, OneOrMore()) -> ZeroOrMore()
   lub-simple: (OneOrMore(), _) -> ZeroOrMore()
   lub-simple: (x, x) -> x
+  
+  with-prefix: ("", str) -> str
+  with-prefix: (prefix, str) -> $[[prefix]_[str]]

@@ -24,7 +24,7 @@ rules
       ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
     > moduleName
     ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
-    ; stmt_setters* := <map(generate-setter)> attributes
+    ; stmt_setters* := <filter(generate-setter)> attributes
   
           
   generate-setter: attribute -> js-stmt |[
@@ -36,7 +36,8 @@ rules
     with
       entity := <attributename-get-entityname> attribute
       ; x_methodname := <setter-function-name> attribute
-      ; stmt_setter* := <setter-statements> attribute
+    where
+      stmt_setter* := <setter-statements> attribute
       
   setter-statements : x_attribute -> js-stmt* |[      
     const prop = {x_attribute: value}; 
@@ -44,7 +45,7 @@ rules
     state = x_invalidationFunction(state, id);
   ]|
     where
-      is-attributename ; attributename-is-normal
+      is-attributename ; attributename-is-normal-default
     with
       x_invalidationFunction := <invalidation-function-name> x_attribute
       ; exp_table := <attribute-table-expression> x_attribute
@@ -91,10 +92,8 @@ rules
   
   setter-relation-inverse-statements: (x_attribute, x_inverse) -> stmt*
     with
-      debug;
       m_attribute := <name-get-multiplicity ; simplify-multiplicity> x_attribute
       ; m_inverse := <name-get-multiplicity ; simplify-multiplicity> x_inverse
-      ; <debug> (m_attribute, m_inverse)
       ; exp_set := <setter-relation-inverse-set> m_inverse
       ; exp_unset := <setter-relation-inverse-unset> m_inverse
       ; x_inverseInvalidationFunction := <invalidation-function-name> x_inverse
@@ -157,10 +156,6 @@ rules
       }
     })
   ]|
-  
-  
-  
-  setter-statements : attribute -> js-stmt* |[notImplemented();]|
   
   
     
