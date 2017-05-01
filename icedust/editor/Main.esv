@@ -9,7 +9,7 @@ imports
 
 language
 
-  extensions : ice2
+  extensions : ice
 
   provider : target/metaborg/stratego.ctree
   provider : target/metaborg/stratego-javastrat.jar
