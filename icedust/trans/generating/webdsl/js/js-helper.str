@@ -1,9 +1,0 @@
-module generating/webdsl/js/js-helper
-
-imports // constructors
-
-  lib/js/signatures/Expression-sig
-  
-rules
-
-  js-string: s -> String($["[s]"])
