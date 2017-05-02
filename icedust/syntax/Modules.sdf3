@@ -3,6 +3,7 @@ module Modules
 imports
 
   Common
+  Config
   Model
   Data
   Execute
@@ -15,6 +16,12 @@ context-free syntax // modules
     
     <{ModuleSection "\n\n"}*>
     
+  >
+
+  ModuleSection.ConfigSection = <
+    config
+    
+      <{Config "\n\n"}*>
   >
 
   ModuleSection.ModelSection = <

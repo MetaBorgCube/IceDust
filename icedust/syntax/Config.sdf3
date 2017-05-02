@@ -1,0 +1,36 @@
+module Config
+
+context-free syntax
+
+  Config.JavaBackend = <
+    backend : Java
+      <Phase?>
+  >
+  
+  Phase.Generate = <phase : generate>
+  Phase.Compile  = <phase : compile>
+  Phase.Execute  = <phase : execute>
+  
+  Config.WebDSLBackend = <
+    backend : WebDSL
+      <UI?>
+  >
+  
+  UI.None = <ui : None>
+  UI.ModelExplorer = <
+    ui : Model Explorer
+      <TierSplit?>
+  >
+  
+  TierSplit.None        = <tiersplit : None>
+  TierSplit.IntraObject = <tiersplit : Object>
+  
+  Config.LanguageFeatures = <
+    language features : <{LanguageFeature ","}*>
+  >
+  
+  LanguageFeature.DerivedRelations    = <derived relations>
+  LanguageFeature.FirstClassRelations = <first-class relations>
+  LanguageFeature.Inlines             = <inlines>
+  LanguageFeature.Strategies          = <strategies>
+  LanguageFeature.SubTyping           = <subtyping>
