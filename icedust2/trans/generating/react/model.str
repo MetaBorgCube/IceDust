@@ -9,6 +9,7 @@ imports
   signatures/Types-sig
   
   generating/react/invalidation
+  generating/react/access
   generating/react/names
   generating/react/common
 
@@ -17,6 +18,7 @@ rules
   generate-model-statements : moduleName -> js-stmt* |[
       stmt_invalidations*
       stmt_setters*
+      stmt_memoize*
   ]|
   with
     attributes := <
@@ -25,7 +27,7 @@ rules
     > moduleName
     ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
     ; stmt_setters* := <filter(generate-setter)> attributes
-  
+    ; stmt_memoize* := <filter(generate-memoize)> attributes
           
   generate-setter: attribute -> js-stmt |[
     export function x_methodname (state, id, value){
@@ -137,25 +139,37 @@ rules
   
   setter-relation-inverse-set: One() -> js-exp |[Inverse => Inverse.set(addedId, id)]|
   setter-relation-inverse-set: ZeroOrMore() ->  js-exp |[
-    Inverse => Inverse.update(addedId, set => {
-      if(set !== undefined) {
-        return set.add(id);
+    Inverse => Inverse.update(addedId, seq => {
+      if(seq !== undefined) {
+        return seq.push(id);
       } else {
-        return Set([id]);
+        return exp_singleton;
       }
     })
   ]|
+    with
+      exp_singleton := <exp-collection> js-exp |[[id]]|
   
   setter-relation-inverse-unset: One() -> js-exp |[Inverse => Inverse.set(removedId, null)]|
   setter-relation-inverse-unset: ZeroOrMore() -> js-exp |[
-    Inverse => Inverse.update(removedId, set => {
-      if(set !== undefined) {
-        return set.remove(id);
+    Inverse => Inverse.update(removedId, seq => {
+      if(seq !== undefined) {
+        return seq.remove(seq.indexOf(id));
       } else {
-        return Set();
+        return exp_emptyCollection;
       }
     })
   ]|
+    with
+      exp_emptyCollection := <exp-empty-many>
   
+  generate-memoize: attribute -> js-stmt |[null;]|
+    where
+      attributename-is-derivation
+    with
+      exp := <attributename-get-expr> attribute
+    ; debug
+    ; collect-om(collect-access)
+    ; debug
   
     

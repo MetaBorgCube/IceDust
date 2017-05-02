@@ -7,15 +7,21 @@ imports
 
 rules
 
-  exp-empty : m -> exp
-      with
-        switch !m ; simplify-multiplicity
-          case One():
-            exp := js-exp |[null]|
-          case ZeroOrMore:
-            exp := js-exp |[Set()]|
-        end
+
+  
+  exp-empty : One() -> <exp-empty-one>
+  exp-empty : ZeroOrOne() -> <exp-empty-one>
+  exp-empty : ZeroOrMore() -> <exp-empty-many>
+  exp-empty : OneOrMore() -> <exp-empty-many>
         
+  exp-empty-one = !js-exp |[null]|
+  exp-empty-many = empty-collection-name ; ?x_name ; !js-exp |[x_name()]|
+  
+  exp-collection : exp_inner -> js-exp |[x_name(exp_inner)]|
+    with
+      x_name := <empty-collection-name>
+  
+  empty-collection-name = !"List"
         
   simplify-multiplicity : ZeroOrOne() -> One()
   simplify-multiplicity : OneOrMore() -> ZeroOrMore()

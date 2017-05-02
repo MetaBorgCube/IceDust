@@ -3,7 +3,7 @@ module generate
 imports
   
   generating/react/model
-  generating/react/common
+  generating/react/init
   
   
   libstratego-gpp
@@ -16,8 +16,10 @@ rules
     with
       stmt_model* := <generate-model-statements> moduleName
       ; stmt_imports* := <generate-imports>
+      ; stmt_init* := <generate-init> moduleName
       ; program := js-program |[
             stmt_imports*
+            stmt_init*
             stmt_model*
         ]|
       ; result := <parenthesize-spoofaxJS
@@ -28,5 +30,6 @@ rules
   
   
   generate-imports = !js-stmt* |[
-    import { Set } from 'immutable';
+    import { List, Set, Map } from 'immutable';
   ]|
+  

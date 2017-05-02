@@ -40,8 +40,8 @@ signature
     Cond                     : Expression * CondMid * Expression -> Expression
     CondMid                  : Expression -> CondMid
     ObjectLiteral            : List(ObjectProperty) -> Expression
-    ObjectProperty           : ID * Expression -> ObjectProperty
     PropertyFromVariable     : ID -> ObjectProperty
+    ObjectProperty           : Expression * Expression -> ObjectProperty
     ArrayLiteral             : List(Expression) -> Expression
     Lambda                   : LambdaParameters * Expression -> Expression
     LambdaBlock              : LambdaParameters * BlockStatement -> Expression

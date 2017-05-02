@@ -1495,14 +1495,17 @@ strategies
   prettyprint-spoofaxJS-Expression :
     ObjectLiteral(t1__) -> [ H(
                                [SOpt(HS(), "0")]
-                             , [ S("{")
-                               , t1__'
-                               , S("}")
-                               ]
+                             , [S("{")]
+                             )
+                           , t1__'
+                           , H(
+                               [SOpt(HS(), "0")]
+                             , [S("}")]
                              )
                            ]
-    with t1__' := <pp-H-list(prettyprint-spoofaxJS-ObjectProperty|",")
-                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-ObjectProperty|"0", ",")
+                                       <+ pp-one-Z(prettyprint-completion-aux)> t1__
+                                    ]
 
   is-spoofaxJS-Expression =
     ?ObjectLiteral(_)
@@ -1513,7 +1516,7 @@ strategies
           ; <?"Expression"> sort
     with switch !index
            case ?1 :
-             indent := ""
+             indent := "  "
            otherwise :
              indent := ""
          end
@@ -1524,7 +1527,7 @@ strategies
           ; <?"Expression"> sort
     with switch !index
            case ?1 :
-             separator := ","
+             separator := ",\n"
            otherwise :
              separator := ""
          end
@@ -1535,58 +1538,7 @@ strategies
           ; <?"Expression"> sort
     with switch !index
            case ?1 :
-             ws := ""
-           otherwise :
-             ws := ""
-         end
-
-  prettyprint-spoofaxJS-ObjectProperty :
-    ObjectProperty(t1__, t2__) -> [ H(
-                                      [SOpt(HS(), "0")]
-                                    , [t1__', S(" : "), t2__']
-                                    )
-                                  ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
-
-  is-spoofaxJS-ObjectProperty =
-    ?ObjectProperty(_, _)
-
-  spoofaxJS-get-indent :
-    (t@ObjectProperty(t1__, t2__), index) -> indent
-    where sort := <ia-get-sort> t
-          ; <?"ObjectProperty"> sort
-    with switch !index
-           case ?1 :
-             indent := ""
-           case ?2 :
-             indent := ""
-           otherwise :
-             indent := ""
-         end
-
-  spoofaxJS-get-separator :
-    (t@ObjectProperty(t1__, t2__), index) -> separator
-    where sort := <ia-get-sort> t
-          ; <?"ObjectProperty"> sort
-    with switch !index
-           case ?1 :
-             separator := ""
-           case ?2 :
-             separator := ""
-           otherwise :
-             separator := ""
-         end
-
-  spoofaxJS-get-leading-ws :
-    (t@ObjectProperty(t1__, t2__), index) -> ws
-    where sort := <ia-get-sort> t
-          ; <?"ObjectProperty"> sort
-    with switch !index
-           case ?1 :
-             ws := ""
-           case ?2 :
-             ws := " "
+             ws := "\n  "
            otherwise :
              ws := ""
          end
@@ -1631,6 +1583,57 @@ strategies
     with switch !index
            case ?1 :
              ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ObjectProperty :
+    ObjectProperty(t1__, t2__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [t1__', S(" : "), t2__']
+                                    )
+                                  ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-spoofaxJS-ObjectProperty =
+    ?ObjectProperty(_, _)
+
+  spoofaxJS-get-indent :
+    (t@ObjectProperty(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@ObjectProperty(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@ObjectProperty(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
            otherwise :
              ws := ""
          end
