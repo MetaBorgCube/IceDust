@@ -11,7 +11,7 @@ imports
 context-free syntax // modules
 
   Start.Module = <
-    module <ID><Strategy?>
+    module <ID> <Strategy?>
     
     <{ModuleSection "\n\n"}*>
     

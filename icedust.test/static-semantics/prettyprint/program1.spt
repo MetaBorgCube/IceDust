@@ -23,7 +23,7 @@ fixture [[
 ]]
 
 test pretty printer not crashing [[test]] transform "Syntax -> Format" to
-"module test
+"module test 
 
 model
 
