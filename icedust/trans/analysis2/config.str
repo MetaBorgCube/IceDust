@@ -1,0 +1,55 @@
+module analysis2/config
+
+imports // constructors
+
+  signatures/Config-sig
+  signatures/Data-sig
+  signatures/Model-sig
+  
+imports // functions
+
+  api/config-api
+  api/module-api
+  api/types-api
+  lib/eq
+
+rules
+
+  check-config-section: ast -> [error1*, error2*, error3*, error4*]
+    with
+      [config|configs]     := <module-get-config-sections>ast;
+      [backend|backends]   := <configsection-get-backends>config;
+      [_|featuress]        := <configsection-get-featuress>config;
+      features             := <configsection-get-features>config;
+      error1*              := <map(error-on(|$[Duplicate config section]))>configs;
+      error2*              := <map(error-on(|$[Duplicate backend section]))>backends;
+      error3*              := <map(error-on(|$[Duplicate language features section]))>featuress
+    with
+      if JavaBackend(_) := backend then
+        eventual* := <filter(?EventualCalculation())>features;
+        error4*   := <map(error-on(|$[Eventual calculation is not implemented in the Java backend]))>eventual*
+      else
+        error4*   := []
+      end
+
+rules
+
+  error-on(|msg): configsection -> error
+    with
+      error := (configsection, msg)
+
+rules
+
+  derived-relations-constr    = ?RelationDerived(_,_,_,_,_,_,_,_)
+  first-class-relation-constr = ?FirstClassRelation(_,_,_,_)
+  first-class-relation-constr = ?RelationInstance(_,_,_)
+  first-class-relation-constr = ?RelationInstanceNoType(_,_)
+  inline-constr               = ?InlineAttribute(_,_,_,_)
+  strategy-constr             = is-strategy
+  eventual-calculation-constr = ?Eventual()
+  eventual-calculation-constr = ?OnDemandEventual()
+  subtyping-constr            = ?OptionalExtends(_)
+  
+rules
+
+  

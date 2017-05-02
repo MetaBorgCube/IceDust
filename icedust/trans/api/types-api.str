@@ -5,6 +5,7 @@ imports // signatures
   signatures/Types-sig
 
 rules
+
   is-type = ?Boolean()
   is-type = ?Float()
   is-type = ?Datetime()
@@ -18,6 +19,12 @@ rules
   is-multiplicity = ?ZeroOrMoreOrdered()
   is-multiplicity = ?OneOrMore()
   is-multiplicity = ?ZeroOrMore()
+  
+  is-strategy = ?OnDemand()
+  is-strategy = ?OnDemandIncremental()
+  is-strategy = ?Incremental()
+  is-strategy = ?Eventual()
+  is-strategy = ?OnDemandEventual()
 
 rules
 

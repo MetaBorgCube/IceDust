@@ -26,10 +26,11 @@ context-free syntax
   TierSplit.IntraObject = <tiersplit : Object>
   
   Config.LanguageFeatures = <
-    language features : <{LanguageFeature ","}*>
+    language features : <{LanguageFeature ", "}*>
   >
   
   LanguageFeature.DerivedRelations    = <derived relations>
+  LanguageFeature.EventualCalculation = <eventual calculation>
   LanguageFeature.FirstClassRelations = <first-class relations>
   LanguageFeature.Inlines             = <inlines>
   LanguageFeature.Strategies          = <strategies>
