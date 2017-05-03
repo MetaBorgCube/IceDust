@@ -148,3 +148,4 @@ model
 
 We welcome contributions of any sort. Whether you are a student, someone from industry, or an enthousiast, you are welcome to contribute. See [Contributing](CONTRIBUTING.md) for more details.
 
+Some contributions are language extensions instead of IceDust contributions itself. The process for language extensions is described in [language-extension](language-extension.md).
