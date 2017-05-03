@@ -195,6 +195,28 @@ rules // shortcutrels -> shortcut relations
 
 rules // module config section
 
+  icedust-language-extension-fixed-config = fail // implemented by language extensions
+//  icedust-language-extension-fixed-config = ! // example configuration
+//    ConfigSection([
+//      JavaBackend(Execute()),
+//      LanguageFeatures([
+//        DerivedRelations(),
+//        Inlines(),
+//        Strategies(),
+//        SubTyping()
+//      ])
+//    ])
+
+  module-generate-config-section: m -> m'
+    where
+      is-module
+    where
+      config    := <icedust-language-extension-fixed-config;custom-origin-all(|<module-get-modulename>m)>m
+    with
+      sections  := <module-get-sections>m;
+      sections' := [config | sections];
+      m'        := <module-set-sections(!sections')>m
+
   module-generate-config-section: m -> m'
     where
       module-has-no-config-section
@@ -224,11 +246,11 @@ rules // config
     where
       configsection-has-no-features
     with
-      features := <custom-origin(|c)>LanguageFeatures([
-                    <custom-origin(|c)>DerivedRelations(),
-                    <custom-origin(|c)>Inlines(),
-                    <custom-origin(|c)>Strategies(),
-                    <custom-origin(|c)>SubTyping()
+      features := <custom-origin-all(|c)>LanguageFeatures([
+                    DerivedRelations(),
+                    Inlines(),
+                    Strategies(),
+                    SubTyping()
                   ]);
       c'       := <configsection-add(!features)>c
       

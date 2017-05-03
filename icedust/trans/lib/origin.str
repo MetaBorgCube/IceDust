@@ -18,6 +18,8 @@ rules // rewrite terms to have an origin
   
   custom-origin-internal(|term) : custom-origin -> term
   
+  custom-origin-all(|custom-origin) = bottomup(custom-origin(|custom-origin))
+  
 rules // check AST whether every sub term has an origin
   
   warning-on-missing-origin: term -> <id>
