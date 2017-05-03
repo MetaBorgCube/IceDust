@@ -1,10 +1,11 @@
-module lib/js/pp/Common-pp
+module js/pp/Common-pp
 
 imports
   libstratego-gpp
-  runtime/tmpl/pp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
   libstratego-sglr
-  lib/js/signatures/Common-sig
+  js/signatures/Common-sig
 
 
 strategies
@@ -24,92 +25,145 @@ strategies
 
 
 strategies
-  prettyprint-ID =
-    ![S(<is-string>)]
-
-  prettyprint-INT =
-    ![S(<is-string>)]
-
-  prettyprint-FLOAT =
-    ![S(<is-string>)]
-
-  prettyprint-STRING =
-    ![S(<is-string>)]
-
-  prettyprint-StringChar =
-    ![S(<is-string>)]
-
-  prettyprint-BackSlashChar =
-    ![S(<is-string>)]
-
-  prettyprint-CommentChar =
-    ![S(<is-string>)]
-
-  prettyprint-InsideComment =
-    ![S(<is-string>)]
-
-  prettyprint-NewLineEOF =
-    ![S(<is-string>)]
-
-  prettyprint-EOF =
-    ![S(<is-string>)]
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-ID
 
   prettyprint-spoofaxJS =
-    prettyprint-ID
+    prettyprint-spoofaxJS-INT
 
   prettyprint-spoofaxJS =
-    prettyprint-INT
+    prettyprint-spoofaxJS-FLOAT
 
   prettyprint-spoofaxJS =
-    prettyprint-FLOAT
+    prettyprint-spoofaxJS-STRING
 
   prettyprint-spoofaxJS =
-    prettyprint-STRING
+    prettyprint-spoofaxJS-StringChar
 
   prettyprint-spoofaxJS =
-    prettyprint-StringChar
+    prettyprint-spoofaxJS-AltStringChar
 
   prettyprint-spoofaxJS =
-    prettyprint-BackSlashChar
+    prettyprint-spoofaxJS-BackSlashChar
 
   prettyprint-spoofaxJS =
-    prettyprint-CommentChar
+    prettyprint-spoofaxJS-CommentChar
 
   prettyprint-spoofaxJS =
-    prettyprint-InsideComment
+    prettyprint-spoofaxJS-InsideComment
 
   prettyprint-spoofaxJS =
-    prettyprint-NewLineEOF
+    prettyprint-spoofaxJS-NewLineEOF
 
   prettyprint-spoofaxJS =
-    prettyprint-EOF
+    prettyprint-spoofaxJS-EOF
 
-  prettyprint-ID :
-    amb([h|hs]) -> <prettyprint-ID> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-ID>
+    where <?"ID"> sort
 
-  prettyprint-INT :
-    amb([h|hs]) -> <prettyprint-INT> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-INT>
+    where <?"INT"> sort
 
-  prettyprint-FLOAT :
-    amb([h|hs]) -> <prettyprint-FLOAT> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-FLOAT>
+    where <?"FLOAT"> sort
 
-  prettyprint-STRING :
-    amb([h|hs]) -> <prettyprint-STRING> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-STRING>
+    where <?"STRING"> sort
 
-  prettyprint-StringChar :
-    amb([h|hs]) -> <prettyprint-StringChar> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-StringChar>
+    where <?"StringChar"> sort
 
-  prettyprint-BackSlashChar :
-    amb([h|hs]) -> <prettyprint-BackSlashChar> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-AltStringChar>
+    where <?"AltStringChar"> sort
 
-  prettyprint-CommentChar :
-    amb([h|hs]) -> <prettyprint-CommentChar> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-BackSlashChar>
+    where <?"BackSlashChar"> sort
 
-  prettyprint-InsideComment :
-    amb([h|hs]) -> <prettyprint-InsideComment> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-CommentChar>
+    where <?"CommentChar"> sort
 
-  prettyprint-NewLineEOF :
-    amb([h|hs]) -> <prettyprint-NewLineEOF> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-InsideComment>
+    where <?"InsideComment"> sort
 
-  prettyprint-EOF :
-    amb([h|hs]) -> <prettyprint-EOF> h
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-NewLineEOF>
+    where <?"NewLineEOF"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-EOF>
+    where <?"EOF"> sort
+
+  prettyprint-spoofaxJS-ID =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-INT =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-FLOAT =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-STRING =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-StringChar =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-AltStringChar =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-BackSlashChar =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-CommentChar =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-InsideComment =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-NewLineEOF =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-EOF =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-ID :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-ID> h
+
+  prettyprint-spoofaxJS-INT :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-INT> h
+
+  prettyprint-spoofaxJS-FLOAT :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-FLOAT> h
+
+  prettyprint-spoofaxJS-STRING :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-STRING> h
+
+  prettyprint-spoofaxJS-StringChar :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-StringChar> h
+
+  prettyprint-spoofaxJS-AltStringChar :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-AltStringChar> h
+
+  prettyprint-spoofaxJS-BackSlashChar :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-BackSlashChar> h
+
+  prettyprint-spoofaxJS-CommentChar :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-CommentChar> h
+
+  prettyprint-spoofaxJS-InsideComment :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-InsideComment> h
+
+  prettyprint-spoofaxJS-NewLineEOF :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-NewLineEOF> h
+
+  prettyprint-spoofaxJS-EOF :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-EOF> h

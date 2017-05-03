@@ -1,0 +1,42 @@
+module generating/js/init
+
+imports
+  api/module-names-api
+  api/model-names-api
+  js/js-util
+
+  generating/js/names
+  
+rules
+  generate-init: moduleName -> js-stmt* |[
+    export const emptyState = exp_initialState;
+  ]|
+    with
+      exp_initialState := <exp-initial-state> moduleName
+      
+      
+  exp-initial-state : moduleName -> js-exp |[
+    Map({
+      prop_entity*,
+      prop_initAttribute*
+    })
+  ]|
+    with
+      entity* := <modulename-get-entitynames> moduleName
+    ; prop_entity* := <map(entityname-to-prop)> entity*
+    ; field* := <mapconcat(
+      !(<entityname-get-attributenames>, <entityname-get-relationnames>)
+      ; conc  
+    )> entity*
+    ; prop_initAttribute* := <filter(field-to-prop)> field*
+    
+  entityname-to-prop : entityName -> js-prop |[exp_entityName: Map()]|
+    with 
+      exp_entityName := <js-string> entityName
+      
+  field-to-prop: attribute -> js-prop |[exp_key : Map()]|
+    where
+      attributename-is-derivation <+ is-relationname
+    with
+      exp_key := <attribute-table-expression> attribute
+      

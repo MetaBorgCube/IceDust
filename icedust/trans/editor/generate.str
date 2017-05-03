@@ -16,9 +16,10 @@ imports // functions
   desugaring/desugar
   generating/_ir/paths
   generating/java/generate
-  generating/webdsl/generate
-  generating/webdsl/java/generate
-  generating/webdsl/js/generate
+  generating/js/generate
+//  generating/webdsl/generate
+//  generating/webdsl/java/generate
+//  generating/webdsl/js/generate
   lib/files
   lib/call-external
   lib/index
@@ -49,6 +50,8 @@ rules // Builders
   generate-webdsl-eventual           = build(error-handler-editor|WebDSL(),None(),NoUI(),1)
   generate-webdsl-eventual-test      = build(error-handler-tests |WebDSL(),None(),NoUI(),1)
   generate-webdsl-eventual-explorerui= build(error-handler-editor|WebDSL(),None(),ExplorerUI(),1)
+
+  generate-javascript                = build(error-handler-editor| JavaScript(), None(), NoUI(), 1)
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
@@ -94,19 +97,23 @@ rules // Build in steps
             (targetCode, error') := <generate-java-code(error-handler)>moduleName;
             targetFileName := <java-generated-path(|relativePath)>;
             java-library-paths(|fullPath);copy-dir
-          case ?WebDSL():
-            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
-            targetFileName := <webdsl-generated-path(|relativePath)>;
-            webdsl-library-paths(|fullPath);copy-dir;
-            webdsl-java-library-paths(|fullPath);copy-dir;
-            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
-            if <modulename-is-explorerui> moduleName then
-              jsString := <generate-webdsl-js-code> moduleName;
-              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
-            end;
-            (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
-            targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
-            <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)              
+//          case ?WebDSL():
+//            (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+//            targetFileName := <webdsl-generated-path(|relativePath)>;
+//            webdsl-library-paths(|fullPath);copy-dir;
+//            webdsl-java-library-paths(|fullPath);copy-dir;
+//            !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+//            if <modulename-is-explorerui> moduleName then
+//              jsString := <generate-webdsl-js-code> moduleName;
+//              <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
+//            end;
+//            (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+//            targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+//            <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2)
+          case ?JavaScript():
+            (targetCode, error') := <generate-javascript-code(error-handler)>moduleName;
+            targetFileName := <javascript-generated-path(|relativePath)>;
+            <write-file> (targetFileName, targetCode)
         end;
         if <eq>(1, phase) then
           result := (targetFileName, targetCode)

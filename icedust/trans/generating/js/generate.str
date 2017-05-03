@@ -1,0 +1,35 @@
+module generating/js/generate
+
+imports
+  
+  generating/js/model
+  generating/js/init
+  
+  
+  libstratego-gpp
+  lib/js/pp/spoofaxJS-pp
+  lib/js/pp/spoofaxJS-parenthesize
+  
+
+rules
+  generate-javascript-code(err): moduleName -> (result, errors)
+    with
+      stmt_model* := <generate-model-statements> moduleName
+      ; stmt_imports* := <generate-imports>
+      ; stmt_init* := <generate-init> moduleName
+      ; program := js-program |[
+            stmt_imports*
+            stmt_init*
+            stmt_model*
+        ]|
+      ; result := <parenthesize-spoofaxJS
+        ; prettyprint-spoofaxJS
+        ; !V([], <id>)
+        ; box2text-string(|120)> program
+      ; errors := [] 
+  
+  
+  generate-imports = !js-stmt* |[
+    import { List, Set, Map } from 'immutable';
+  ]|
+  

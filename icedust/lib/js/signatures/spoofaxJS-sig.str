@@ -1,15 +1,17 @@
-module lib/js/signatures/spoofaxJS-sig
+module js/signatures/spoofaxJS-sig
 
 imports
-  lib/js/signatures/Common-sig
-  lib/js/signatures/Expression-sig
-  lib/js/signatures/Statement-sig
-  lib/js/signatures/MethodDecl-sig
+  js/signatures/Common-sig
+  js/signatures/Lexical-sig
+  js/signatures/Expression-sig
+  js/signatures/Statement-sig
 
 
 signature
   constructors
-    Empty           : Start
-    Program         : List(Statement) -> Start
-    Start-Plhdr     : Start
-    Statement-Plhdr : Statement
+    Program             : List(Statement) -> Start
+    Start-Plhdr         : Start
+    Statement-Plhdr     : Statement
+    Start-Plhdr         : COMPLETION-INSERTION -> Start
+    Statement-Plhdr     : COMPLETION-INSERTION -> Statement
+    Statement-Opt-Plhdr : Statement

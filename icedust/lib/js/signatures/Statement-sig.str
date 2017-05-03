@@ -1,21 +1,56 @@
-module lib/js/signatures/Statement-sig
+module js/signatures/Statement-sig
 
 imports
-  lib/js/signatures/Common-sig
-  lib/js/signatures/Expression-sig
-  lib/js/signatures/MethodDecl-sig
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+  js/signatures/Import-sig
+  js/signatures/Export-sig
+  js/signatures/Class-sig
+  js/signatures/Assignment-sig
 
 
 signature
   constructors
-    expStmt          : Expression -> Statement
-    varDecl          : ID * Expression -> Statement
-    assignment       : ID * Expression -> Statement
-    for              : Statement * Expression * Expression * List(Statement) -> Statement
-    while            : Expression * List(Statement) -> Statement
-    return           : Expression -> Statement
-                     : MethodDecl -> Statement
-    ID-Plhdr         : ID
-    Expression-Plhdr : Expression
-    Statement-Plhdr  : Statement
-    MethodDecl-Plhdr : MethodDecl
+    BlockStatement                   : List(Statement) -> BlockStatement
+                                     : BlockStatement -> Statement
+    ExpStmt                          : Expression -> Statement
+    Assignment                       : Expression * Expression -> Statement
+    For                              : Declaration * Expression * Expression * List(Statement) -> Statement
+    While                            : Expression * List(Statement) -> Statement
+    If                               : Expression * Statement -> Statement
+    IfElse                           : Expression * Statement * Statement -> Statement
+    Return                           : Expression -> Statement
+                                     : Import -> Statement
+                                     : Export -> Statement
+                                     : Declaration -> Statement
+                                     : ClassDeclaration -> Statement
+    VarDeclaration                   : LeftHandSideExpression * Expression -> Declaration
+    ConstDeclaration                 : LeftHandSideExpression * Expression -> Declaration
+    LetDeclaration                   : LeftHandSideExpression * Expression -> Declaration
+                                     : HoistableDeclaration -> Declaration
+                                     : FunctionDeclaration -> HoistableDeclaration
+    FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
+    BlockStatement-Plhdr             : BlockStatement
+    Import-Plhdr                     : Import
+    Export-Plhdr                     : Export
+    ClassDeclaration-Plhdr           : ClassDeclaration
+    Expression-Plhdr                 : Expression
+    Declaration-Plhdr                : Declaration
+    HoistableDeclaration-Plhdr       : HoistableDeclaration
+    FunctionDeclaration-Plhdr        : FunctionDeclaration
+    ID-Plhdr                         : ID
+    LeftHandSideExpression-Plhdr     : LeftHandSideExpression
+    Statement-Plhdr                  : Statement
+    BlockStatement-Plhdr             : COMPLETION-INSERTION -> BlockStatement
+    Import-Plhdr                     : COMPLETION-INSERTION -> Import
+    Export-Plhdr                     : COMPLETION-INSERTION -> Export
+    ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
+    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
+    Declaration-Plhdr                : COMPLETION-INSERTION -> Declaration
+    HoistableDeclaration-Plhdr       : COMPLETION-INSERTION -> HoistableDeclaration
+    FunctionDeclaration-Plhdr        : COMPLETION-INSERTION -> FunctionDeclaration
+    ID-Plhdr                         : COMPLETION-INSERTION -> ID
+    LeftHandSideExpression-Plhdr     : COMPLETION-INSERTION -> LeftHandSideExpression
+    Statement-Plhdr                  : COMPLETION-INSERTION -> Statement
+    LeftHandSideExpression-Opt-Plhdr : LeftHandSideExpression
+    Statement-Opt-Plhdr              : Statement

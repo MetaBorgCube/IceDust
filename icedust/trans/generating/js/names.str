@@ -1,0 +1,27 @@
+module generating/js/names
+
+imports
+  api/model-names-api
+  lib/js/js-util
+
+rules
+
+  attribute-name: attribute -> $[[entity]_[attribute]]
+    with
+      entity := <attributename-get-entityname> attribute
+  
+  setter-function-name: attribute -> $[set[name]]
+    with
+      name := <attribute-name> attribute
+
+  invalidation-function-name: attribute -> $[invalidate[name]]
+    with
+      name := <attribute-name> attribute
+      
+  attribute-table-expression: attribute -> <js-string> x_entity
+    where
+      is-attributename ; attributename-is-normal-default
+    with
+      x_entity := <attributename-get-entityname> attribute
+      
+  attribute-table-expression = attribute-name ; js-string

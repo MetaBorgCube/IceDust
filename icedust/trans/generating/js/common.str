@@ -1,0 +1,39 @@
+module generating/js/common
+
+imports
+
+  signatures/Types-sig
+  api/model-names-api  
+
+rules
+
+
+  
+  exp-empty : One() -> <exp-empty-one>
+  exp-empty : ZeroOrOne() -> <exp-empty-one>
+  exp-empty : ZeroOrMore() -> <exp-empty-many>
+  exp-empty : OneOrMore() -> <exp-empty-many>
+        
+  exp-empty-one = !js-exp |[null]|
+  exp-empty-many = empty-collection-name ; ?x_name ; !js-exp |[x_name()]|
+  
+  exp-collection : exp_inner -> js-exp |[x_name(exp_inner)]|
+    with
+      x_name := <empty-collection-name>
+  
+  empty-collection-name = !"List"
+        
+  simplify-multiplicity : ZeroOrOne() -> One()
+  simplify-multiplicity : OneOrMore() -> ZeroOrMore()
+  simplify-multiplicity = id 
+  
+  lub-simple: (One(), ZeroOrOne()) -> ZeroOrOne()
+  lub-simple: (ZeroOrOne(), One()) -> ZeroOrOne()
+  lub-simple: (ZeroOrMore(), _) -> ZeroOrMore()
+  lub-simple: (_, ZeroOrMore()) -> ZeroOrMore()
+  lub-simple: (_, OneOrMore()) -> ZeroOrMore()
+  lub-simple: (OneOrMore(), _) -> ZeroOrMore()
+  lub-simple: (x, x) -> x
+  
+  with-prefix: ("", str) -> str
+  with-prefix: (prefix, str) -> $[[prefix]_[str]]

@@ -1,0 +1,813 @@
+module js/pp/Import-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/Import-sig
+
+
+imports
+  js/signatures/Common-sig
+
+
+imports
+  js/pp/Common-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-Import
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-ImportClause
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-ImportedBinding
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-NameSpaceImport
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-NamedImports
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-ImportSpecifier
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-NonDefaultImport
+
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-FromClause
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-Import>
+    where <?"Import"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-ImportClause>
+    where <?"ImportClause"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-ImportedBinding>
+    where <?"ImportedBinding"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-NameSpaceImport>
+    where <?"NameSpaceImport"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-NamedImports>
+    where <?"NamedImports"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-ImportSpecifier>
+    where <?"ImportSpecifier"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-NonDefaultImport>
+    where <?"NonDefaultImport"> sort
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-FromClause>
+    where <?"FromClause"> sort
+
+  prettyprint-spoofaxJS-Import :
+    Import(t1__, t2__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("import ")
+                              , t1__'
+                              , S(" ")
+                              , t2__'
+                              , S(" ; ")
+                              ]
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ImportClause) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-spoofaxJS-Import =
+    ?Import(_, _)
+
+  spoofaxJS-get-indent :
+    (t@Import(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Import"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@Import(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Import"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@Import(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Import"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportClause :
+    ImportedDefaultBinding(t1__) -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [t1__']
+                                      )
+                                    ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-ImportClause =
+    ?ImportedDefaultBinding(_)
+
+  spoofaxJS-get-indent :
+    (t@ImportedDefaultBinding(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@ImportedDefaultBinding(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@ImportedDefaultBinding(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportClause :
+    DefaultWithNonDefaultImport(t1__, t2__) -> [ H(
+                                                   [SOpt(HS(), "0")]
+                                                 , [t1__', S(", "), t2__']
+                                                 )
+                                               ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ImportedBinding) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-NonDefaultImport) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-spoofaxJS-ImportClause =
+    ?DefaultWithNonDefaultImport(_, _)
+
+  spoofaxJS-get-indent :
+    (t@DefaultWithNonDefaultImport(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@DefaultWithNonDefaultImport(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@DefaultWithNonDefaultImport(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportClause :
+    NameSpaceImport(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("* as "), t1__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ImportedBinding) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-ImportClause =
+    ?NameSpaceImport(_)
+
+  spoofaxJS-get-indent :
+    (t@NameSpaceImport(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@NameSpaceImport(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@NameSpaceImport(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportClause :
+    NamedImports(t1__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("{")
+                              , t1__'
+                              , S("}")
+                              ]
+                            )
+                          ]
+    with t1__' := <pp-H-list(prettyprint-spoofaxJS-ImportSpecifier|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-ImportClause =
+    ?NamedImports(_)
+
+  spoofaxJS-get-indent :
+    (t@NamedImports(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@NamedImports(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@NamedImports(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ImportClause"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportedBinding :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-spoofaxJS-ImportedBinding)
+    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-spoofaxJS-NameSpaceImport :
+    NameSpaceImport(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("* as "), t1__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-NameSpaceImport =
+    ?NameSpaceImport(_)
+
+  spoofaxJS-get-indent :
+    (t@NameSpaceImport(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NameSpaceImport"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@NameSpaceImport(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NameSpaceImport"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@NameSpaceImport(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NameSpaceImport"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-NamedImports :
+    NamedImports(t1__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("{")
+                              , t1__'
+                              , S(" \",\"}*")
+                              ]
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ImportSpecifier) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-NamedImports =
+    ?NamedImports(_)
+
+  spoofaxJS-get-indent :
+    (t@NamedImports(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamedImports"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@NamedImports(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamedImports"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@NamedImports(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamedImports"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-spoofaxJS-ImportSpecifier)
+    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-ImportedBinding) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    NamedImportSpecifier(t1__, t2__) -> [ H(
+                                            [SOpt(HS(), "0")]
+                                          , [t1__', S(" as "), t2__']
+                                          )
+                                        ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-ImportedBinding) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-spoofaxJS-ImportSpecifier =
+    ?NamedImportSpecifier(_, _)
+
+  spoofaxJS-get-indent :
+    (t@NamedImportSpecifier(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ImportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@NamedImportSpecifier(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ImportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@NamedImportSpecifier(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ImportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-NonDefaultImport :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-spoofaxJS-NonDefaultImport)
+    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-NameSpaceImport) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-spoofaxJS-NonDefaultImport :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-spoofaxJS-NonDefaultImport)
+    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-NamedImports) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-spoofaxJS-FromClause :
+    FromClause(t1__) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("from "), t1__']
+                          )
+                        ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-STRING) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-FromClause =
+    ?FromClause(_)
+
+  spoofaxJS-get-indent :
+    (t@FromClause(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"FromClause"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@FromClause(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"FromClause"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@FromClause(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"FromClause"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-spoofaxJS-Import =
+    fail
+
+  is-spoofaxJS-ImportClause =
+    fail
+
+  is-spoofaxJS-ImportedBinding =
+    fail
+
+  is-spoofaxJS-NameSpaceImport =
+    fail
+
+  is-spoofaxJS-NamedImports =
+    fail
+
+  is-spoofaxJS-ImportSpecifier =
+    fail
+
+  is-spoofaxJS-NonDefaultImport =
+    fail
+
+  is-spoofaxJS-FromClause =
+    fail
+
+  prettyprint-spoofaxJS-Import :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-Import> h
+
+  prettyprint-spoofaxJS-ImportClause :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-ImportClause> h
+
+  prettyprint-spoofaxJS-ImportedBinding :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-ImportedBinding> h
+
+  prettyprint-spoofaxJS-NameSpaceImport :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-NameSpaceImport> h
+
+  prettyprint-spoofaxJS-NamedImports :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-NamedImports> h
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-ImportSpecifier> h
+
+  prettyprint-spoofaxJS-NonDefaultImport :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-NonDefaultImport> h
+
+  prettyprint-spoofaxJS-FromClause :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-FromClause> h
+
+  prettyprint-spoofaxJS-Import :
+    Import-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("[[Import]]")]
+                        )
+                      ]
+
+  is-spoofaxJS-Import =
+    ?Import-Plhdr()
+
+  prettyprint-spoofaxJS-ImportClause :
+    ImportClause-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("[[ImportClause]]")]
+                              )
+                            ]
+
+  is-spoofaxJS-ImportClause =
+    ?ImportClause-Plhdr()
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    ImportSpecifier-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("[[ImportSpecifier]]")]
+                                 )
+                               ]
+
+  is-spoofaxJS-ImportSpecifier =
+    ?ImportSpecifier-Plhdr()
+
+  prettyprint-spoofaxJS-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("[[ID]]")]
+                    )
+                  ]
+
+  is-spoofaxJS-ID =
+    ?ID-Plhdr()
+
+  prettyprint-spoofaxJS-ImportedBinding :
+    ImportedBinding-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("[[ImportedBinding]]")]
+                                 )
+                               ]
+
+  is-spoofaxJS-ImportedBinding =
+    ?ImportedBinding-Plhdr()
+
+  prettyprint-spoofaxJS-NameSpaceImport :
+    NameSpaceImport-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("[[NameSpaceImport]]")]
+                                 )
+                               ]
+
+  is-spoofaxJS-NameSpaceImport =
+    ?NameSpaceImport-Plhdr()
+
+  prettyprint-spoofaxJS-NonDefaultImport :
+    NonDefaultImport-Plhdr() -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("[[NonDefaultImport]]")]
+                                  )
+                                ]
+
+  is-spoofaxJS-NonDefaultImport =
+    ?NonDefaultImport-Plhdr()
+
+  prettyprint-spoofaxJS-NamedImports :
+    NamedImports-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("[[NamedImports]]")]
+                              )
+                            ]
+
+  is-spoofaxJS-NamedImports =
+    ?NamedImports-Plhdr()
+
+  prettyprint-spoofaxJS-FromClause :
+    FromClause-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("[[FromClause]]")]
+                            )
+                          ]
+
+  is-spoofaxJS-FromClause =
+    ?FromClause-Plhdr()
+
+  prettyprint-spoofaxJS-STRING :
+    STRING-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("[[STRING]]")]
+                        )
+                      ]
+
+  is-spoofaxJS-STRING =
+    ?STRING-Plhdr()
+
+  prettyprint-spoofaxJS-Import :
+    Import-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("[[Import]]")]
+                         )
+                       ]
+
+  is-spoofaxJS-Import =
+    ?Import-Plhdr(_)
+
+  prettyprint-spoofaxJS-ImportClause :
+    ImportClause-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("[[ImportClause]]")]
+                               )
+                             ]
+
+  is-spoofaxJS-ImportClause =
+    ?ImportClause-Plhdr(_)
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    ImportSpecifier-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("[[ImportSpecifier]]")]
+                                  )
+                                ]
+
+  is-spoofaxJS-ImportSpecifier =
+    ?ImportSpecifier-Plhdr(_)
+
+  prettyprint-spoofaxJS-ID :
+    ID-Plhdr(_) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("[[ID]]")]
+                     )
+                   ]
+
+  is-spoofaxJS-ID =
+    ?ID-Plhdr(_)
+
+  prettyprint-spoofaxJS-ImportedBinding :
+    ImportedBinding-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("[[ImportedBinding]]")]
+                                  )
+                                ]
+
+  is-spoofaxJS-ImportedBinding =
+    ?ImportedBinding-Plhdr(_)
+
+  prettyprint-spoofaxJS-NameSpaceImport :
+    NameSpaceImport-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("[[NameSpaceImport]]")]
+                                  )
+                                ]
+
+  is-spoofaxJS-NameSpaceImport =
+    ?NameSpaceImport-Plhdr(_)
+
+  prettyprint-spoofaxJS-NonDefaultImport :
+    NonDefaultImport-Plhdr(_) -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [S("[[NonDefaultImport]]")]
+                                   )
+                                 ]
+
+  is-spoofaxJS-NonDefaultImport =
+    ?NonDefaultImport-Plhdr(_)
+
+  prettyprint-spoofaxJS-NamedImports :
+    NamedImports-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("[[NamedImports]]")]
+                               )
+                             ]
+
+  is-spoofaxJS-NamedImports =
+    ?NamedImports-Plhdr(_)
+
+  prettyprint-spoofaxJS-FromClause :
+    FromClause-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("[[FromClause]]")]
+                             )
+                           ]
+
+  is-spoofaxJS-FromClause =
+    ?FromClause-Plhdr(_)
+
+  prettyprint-spoofaxJS-STRING :
+    STRING-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("[[STRING]]")]
+                         )
+                       ]
+
+  is-spoofaxJS-STRING =
+    ?STRING-Plhdr(_)
+
+  prettyprint-spoofaxJS-ImportSpecifier :
+    ImportSpecifier-Opt-Plhdr() -> [ H(
+                                       []
+                                     , [S("")]
+                                     )
+                                   ]
+
+  is-spoofaxJS-ImportSpecifier =
+    ?ImportSpecifier-Opt-Plhdr()

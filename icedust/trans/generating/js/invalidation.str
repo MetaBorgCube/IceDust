@@ -1,0 +1,85 @@
+module generating/js/invalidation
+
+imports
+  api/module-names-api
+  api/model-names-api
+  
+  signatures/Types-sig
+  lib/js/js-util
+  analysis2/path
+  
+  generating/js/model
+  generating/js/names
+  generating/js/common
+  generating/js/access
+  
+rules
+  
+  generate-invalidation-function : attribute ->
+    js-stmt |[ 
+        export function x_name (state, id) {
+            stmt_derivedValueInvalidation*
+            stmt_access*
+            stmt_invalidations*
+            return state;
+        }
+    ]|
+    with
+      x_name := <invalidation-function-name> attribute
+      ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> attribute
+      ; flows := <name-get-flowsto-paths> attribute
+      ; stmt_access* := <statements-flow-access> flows
+      ; stmt_invalidations* := <map(flowsto-to-statement-invalidation)> flows
+  
+  
+  
+  statements-flow-access: flows -> stmt_access*
+    with
+      paths := <
+        filter(flow-to-access-exp)
+      ; mapconcat(collect-access)
+      ; make-set 
+      ; sort-paths
+      > flows
+    ; stmt_access* := <map(access-statement)> paths
+      
+  
+  flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
+    with
+      (m1, m2, x_var, field) := <collect-things> exp
+    ; m_lub := <lub-simple> (m1, m2)
+    ; x_functionName := <invalidation-function-name> field
+    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
+  
+  statement-invalidation : (One(), x_functionName, x_var) -> js-stmt |[
+    state = x_functionName(state, x_var);
+  ]|
+  
+  statement-invalidation : (ZeroOrOne(), x_functionName, x_var) -> js-stmt |[
+    if(x_var !== null) {
+      state = x_functionName(state, x_var);
+    }
+  ]|
+  
+  statement-invalidation : (ZeroOrMore(), x_functionName, x_var) -> js-stmt |[
+    x_var.forEach(id => {
+      state = x_functionName(state, id);
+    });
+  ]|
+      
+  flow-to-access-exp : DataflowPath(_, MemberAccess(inner, _)) -> inner
+    
+  sort-paths = qsort((pp-partial-icedust-string, pp-partial-icedust-string) ; string-lt)  
+    
+  generate-derived-value-invalidation: attribute ->
+    js-stmt* |[
+        state = state.update(exp_invalidationattribute, set => set.remove(id));
+    ]|
+    where
+      <name-is-derived> attribute
+    with
+      exp_invalidationattribute := <attribute-name ; js-string> attribute
+    
+  generate-derived-value-invalidation = ![]
+     
+  

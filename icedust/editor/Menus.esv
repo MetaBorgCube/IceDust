@@ -66,6 +66,9 @@ menus
 //        action: "Embedded Model (no UI, extend entities)" = generate-webdsl-eventual (openeditor)
 //      end
     end
+    submenu: "to JavaScript"
+        action: "Generate"                      = generate-javascript (openeditor)
+    end
 
     action: "Cleanup Generated Code" = cleanup-generated-files
 

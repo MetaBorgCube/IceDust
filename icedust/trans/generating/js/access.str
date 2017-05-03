@@ -1,0 +1,85 @@
+module generating/js/access
+
+imports
+
+  signatures/Expressions-sig
+  signatures/Types-sig
+
+  generating/js/names
+  generating/js/common
+  
+  api/model-names-api
+
+  prettyprinting/pp
+  
+rules  
+  collect-things: Ref(name) -> (One(), m_current, "id", name)
+    with
+      m_current := <name-get-multiplicity> name
+      
+  collect-things: MemberAccess(inner, name) -> (m_lub, m_current, x_name, name)
+    with
+    (m1, m2, x_previous, attribute_previous) := <collect-things> inner
+    ; m_lub := <lub-simple> (m1, m2)
+    ; m_current := <name-get-multiplicity> name
+    ; x_name := <with-prefix> (x_previous, attribute_previous)      
+  
+  collect-previous-and-attribute: x -> x  
+  
+  path-previous-multiplicity: Ref(_) -> One()
+  path-previous-multiplicity : MemberAccess(inner, name) -> m 
+    with 
+      m1 := <name-get-multiplicity> name
+    ; m2 := <get-previous-multiplicity> inner 
+    ; m := <lub-simple> (m1, m2) 
+    
+  exp-get-multiplicity: Ref(name) -> <name-get-multiplicity> name
+  exp-get-multiplicity: MemberAccess(_, name) -> <name-get-multiplicity> name
+    
+    
+  get-previous-multiplicity : MemberAccess(Ref(name), _) -> <name-get-multiplicity> name
+   
+  collect-access : ref @ Ref(_) -> [ref]
+  collect-access : access @ MemberAccess(exp, _) -> [access | <collect-access> exp]
+      
+  get-attribute-from-state : attribute -> js-exp |[state.get(exp_attribute).get(id)]|
+    with
+      exp_attribute := <attribute-table-expression> attribute
+
+  access-statement : path -> js-stmt |[
+    const x_name = exp_access || exp_empty; 
+  ]| 
+    with
+      <pp-partial-icedust-string ; debug> path ;
+      (m1, m2, prefix, attribute) := <collect-things ; debug> path
+    ; exp_attribute := <attribute-table-expression> attribute
+    ; x_name := <with-prefix> (prefix, attribute)
+    ; exp_access := <access-exp> (m1, m2, prefix, exp_attribute)
+    ; exp_empty := <lub-simple ; exp-empty> (m1, m2)
+
+  access-exp: (One(), _, x_previous, exp_attribute) -> js-exp |[
+    state.get(exp_attribute).get(x_previous)
+  ]|
+  
+  access-exp: (ZeroOrOne(), _, x_previous, exp_attribute) -> js-exp |[
+    state.get(exp_attribute).get(x_previous)
+  ]|
+      
+  access-exp: (ZeroOrMore(), One(), x_previous, exp_attribute) -> js-exp |[
+    x_previous.map(id => state.get(exp_attribute).get)
+  ]|
+  
+  access-exp: (ZeroOrMore(), ZeroOrMore(), x_previous, exp_attribute) -> js-exp |[
+    x_previous.flatMap(id => state.get(exp_attribute).get)
+  ]|
+  
+  access-exp: (ZeroOrMore(), ZeroOrOne(), x_previous, exp_attribute) -> js-exp |[
+    x_previous.flatMap(id => {
+      const value = state.get(exp_attribute).get(id);
+      return value == null ? [] : [value];
+    })
+  ]|
+    
+      
+      
+      

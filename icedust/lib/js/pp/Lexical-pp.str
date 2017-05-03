@@ -1,0 +1,47 @@
+module js/pp/Lexical-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/Lexical-sig
+
+
+imports
+  js/signatures/Common-sig
+
+
+imports
+  js/pp/Common-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-spoofaxJS
+
+  prettyprint-spoofaxJS =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-spoofaxJS-start-symbols
+
+  prettyprint-spoofaxJS-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-spoofaxJS =
+    prettyprint-spoofaxJS-KEYWORD
+
+  prettyprint-spoofaxJS(|sort):
+    t -> <prettyprint-spoofaxJS-KEYWORD>
+    where <?"KEYWORD"> sort
+
+  prettyprint-spoofaxJS-KEYWORD =
+    ![S(<is-string>)]
+
+  prettyprint-spoofaxJS-KEYWORD :
+    amb([h|hs]) -> <prettyprint-spoofaxJS-KEYWORD> h

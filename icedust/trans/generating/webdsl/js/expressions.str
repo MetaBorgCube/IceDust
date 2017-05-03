@@ -2,7 +2,7 @@ module generating/webdsl/js/expressions
 
 imports // constructors
 
-  lib/js/signatures/spoofaxJS-sig
+  js/signatures/spoofaxJS-sig
   signatures/Expressions-sig  
   tiersplit/constructors
 
