@@ -3,6 +3,7 @@ module Modules
 imports
 
   Common
+  Config
   Model
   Data
   Execute
@@ -11,10 +12,16 @@ imports
 context-free syntax // modules
 
   Start.Module = <
-    module <ID><Strategy?>
+    module <ID> <Strategy?>
     
     <{ModuleSection "\n\n"}*>
     
+  >
+
+  ModuleSection.ConfigSection = <
+    config
+    
+      <{Config "\n\n"}*>
   >
 
   ModuleSection.ModelSection = <

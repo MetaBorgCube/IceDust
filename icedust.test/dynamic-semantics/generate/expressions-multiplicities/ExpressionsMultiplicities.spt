@@ -18,6 +18,6 @@ fixture [[
   execute
   f.input1 ++ f.input2[[...]] ]]
 
-test Expressions Multiplicities execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+test Expressions Multiplicities execute-java [[ ]] transform "SPT -> Build" to
 "[5]
 "

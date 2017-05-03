@@ -5,6 +5,10 @@ language icedust
 fixture [[
   module test
   
+  config
+  
+    backend : WebDSL
+  
   [[...]]
 ]]
 

@@ -1,0 +1,65 @@
+module generating/java
+
+imports
+
+  signatures/Config-sig
+
+imports
+
+  generating/_ir/paths
+  generating/java/generate
+  lib/eq
+  lib/files
+  lib/call-external
+
+rules
+
+  build(error-handler|backend, moduleName, relativePath): _ -> result
+    where
+      JavaBackend(phase) := backend
+    with
+      fullPath    := <full-path(|relativePath)>;
+      eclipsePath := <eclipse-path>relativePath
+    with
+      error* := []; //TODO: fetch list of errors from NaBL2
+      if not([] := error*) then
+        <error-handler>"Fix errors before generating code. Exiting code generation.";
+        result := None()
+      else
+        // phase 1: generate files
+        (targetCode, error') := <generate-java-code(error-handler)>moduleName;
+        targetFileName := <java-generated-path(|relativePath)>;
+        java-library-paths(|fullPath);copy-dir;
+        if <eq-no-anno>(Generate(), phase) then
+          result := (targetFileName, targetCode)
+        else
+          if not([] := error') then
+            <error-handler>"Code generation failed.";
+            result := None()
+          else
+            // phase 2: compile generated files
+            <write-file> (targetFileName, targetCode);
+            (exitCode, stdOut, stdErr) := <call-javac(|<java-generated-path(|fullPath)>)>;
+            if not(0 := exitCode) then
+              <error-handler>stdOut;
+              <error-handler>stdErr;
+              <error-handler>"Java compilation failed."
+            end;
+            if <eq-no-anno>(Compile(), phase) then
+              result := None()
+            else
+              // phase 3: execute compiled code
+              (exitCode', stdOut', stdErr') := <call-java(|<java-compiled-path(|fullPath)>)>;
+              if not(0 := exitCode') then
+                <error-handler>stdOut';
+                <error-handler>stdErr';
+                <error-handler>"Java execution failed.";
+                result := None()
+              else
+                result := stdOut';
+                debug
+              end
+            end 
+          end 
+        end 
+      end

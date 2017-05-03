@@ -32,7 +32,7 @@ model
     
     summary    : String  = "The course " + name + " has " + numStudents as String + " students, " +
                            ("has a pass percentage of " + passPerc as String + "%" <+ "has no passing students") + ", and " +
-                           ("passing students have an average grade of " + avgGrade as String + "." <+ "has no average grade.") (on-demand eventual)
+                           ("passing students have an average grade of " + avgGrade as String + "." <+ "has no average grade.") (on-demand)
   }
   
   entity Enrollment {
@@ -271,7 +271,7 @@ execute
   [[...]]
 ]]
 
-test Weblab 2 execute-java (strategy composition & derived relations & subtyping) [[ ]] transform "SPT -> to Java -> Execute" to
+test Weblab 2 execute-java (strategy composition & derived relations & subtyping) [[ ]] transform "SPT -> Build" to
 "Updating Submission.deadline: 15
 Updating Submission.extension: 15
 Updating Submission.parent: 15

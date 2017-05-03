@@ -5,6 +5,12 @@ language icedust
 fixture [[
 module ExpressionsRolesInversesMultiplicities (on-demand)
 
+config
+
+  backend : Java
+    phase : generate
+  language features : first-class relations
+
 model
 entity Node{
   a : Int  = 1
@@ -23,20 +29,20 @@ execute
 [[...]]
 ]]
 
-test Expressions Roles Inverses Multiplicities generate-java 1 in single [[ n2.childTree.parent . a ]] transform "SPT -> to Java -> Generate"
+test Expressions Roles Inverses Multiplicities generate-java 1 in single [[ n2.childTree.parent . a ]] transform "SPT -> Build"
 //test Expressions Roles Inverses Multiplicities compile-java 1 in single  [[ n2.childTree.parent . a ]] transform "SPT -> to Java -> Compile" //FIXME: fix generated code
-//test Expressions Roles Inverses Multiplicities execute-java 1 in single  [[ n2.childTree.parent . a ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//test Expressions Roles Inverses Multiplicities execute-java 1 in single  [[ n2.childTree.parent . a ]] transform "SPT -> Build" to //FIXME: fix generated code
 //"1
 //"
 
-//test Expressions Roles Inverses Multiplicities execute-java 0 in single  [[ n1.childTree.parent . a ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//test Expressions Roles Inverses Multiplicities execute-java 0 in single  [[ n1.childTree.parent . a ]] transform "SPT -> Build" to //FIXME: fix generated code
 //"null
 //"
 
-//test Expressions Roles Inverses Multiplicities execute-java 1 in many  [[ n1.parentTree.child . a ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//test Expressions Roles Inverses Multiplicities execute-java 1 in many  [[ n1.parentTree.child . a ]] transform "SPT -> Build" to //FIXME: fix generated code
 //"[1]
 //"
 
-//test Expressions Roles Inverses Multiplicities execute-java 0 in many  [[ n2.parentTree.child . a ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//test Expressions Roles Inverses Multiplicities execute-java 0 in many  [[ n2.parentTree.child . a ]] transform "SPT -> Build" to //FIXME: fix generated code
 //"[]
 //"

@@ -1,0 +1,86 @@
+module analysis2/config
+
+imports // constructors
+
+  signatures/Config-sig
+  signatures/Data-sig
+  signatures/Model-sig
+  signatures/Types-sig
+  
+imports // functions
+
+  api/config-api
+  api/module-api
+  api/types-api
+  lib/eq
+
+rules
+
+  check-config-section: ast -> [error1*, error2*, error3*, error4*, error5*]
+    with
+      [config|configs]     := <module-get-config-sections>ast;
+      [backend|backends]   := <configsection-get-backends>config;
+      [_|featuress]        := <configsection-get-featuress>config;
+      features             := <configsection-get-features>config;
+      error1*              := <map(error-on(|$[Duplicate config section]))>configs;
+      error2*              := <map(error-on(|$[Duplicate backend section]))>backends;
+      error3*              := <map(error-on(|$[Duplicate language features section]))>featuress
+    with
+      if JavaBackend(_) := backend then
+        eventual* := <filter(?EventualCalculation())>features;
+        error4*   := <map(error-on(|$[Eventual calculation is not implemented in the Java backend]))>eventual*
+      else
+        error4*   := []
+      end
+    with
+      error5* := <module-get-sections;collect-om(error-on-constr(|features))>ast //run on sections instead of full module to allow toplevel implicit strategy
+
+rules
+
+  error-on(|msg): configsection -> error
+    with
+      error := (configsection, msg)
+
+rules
+
+  derived-relations-constr    = ?RelationDerived(_,_,_,_,_,_,_,_)
+  first-class-relation-constr = ?FirstClassRelation(_,_,_,_)
+  first-class-relation-constr = ?RelationInstance(_,_,_)
+  first-class-relation-constr = ?RelationInstanceNoType(_,_)
+  inline-constr               = ?InlineAttribute(_,_,_,_)
+  strategy-constr             = is-strategy
+  eventual-calculation-constr = ?Eventual()
+  eventual-calculation-constr = ?OnDemandEventual()
+  subtyping-constr            = ?OptionalExtends(_)
+  
+rules
+
+  config-error-constr(|features) = ?RelationDerived(_,_,_,_,_,_,_,_);where(<not(elem)>(DerivedRelations   (),features))
+  config-error-constr(|features) = ?FirstClassRelation(_,_,_,_)     ;where(!FirstClassRelations();not(fetch(?features)))
+  config-error-constr(|features) = ?RelationInstance(_,_,_)         ;where(!FirstClassRelations();not(fetch(?features)))
+  config-error-constr(|features) = ?RelationInstanceNoType(_,_)     ;where(!FirstClassRelations();not(fetch(?features)))
+  config-error-constr(|features) = ?InlineAttribute(_,_,_,_)        ;where(!Inlines            ();not(fetch(?features)))
+  config-error-constr(|features) = is-strategy                      ;where(<not(elem(eq-no-anno))>(Strategies         (),features))
+  config-error-constr(|features) = ?Eventual()                      ;where(!EventualCalculation();not(fetch(?features)))
+  config-error-constr(|features) = ?OnDemandEventual()              ;where(!EventualCalculation();not(fetch(?features)))
+  config-error-constr(|features) = ?OptionalExtends(_)              ;where(!SubTyping          ();not(fetch(?features)))
+
+  config-error-constr = ?RelationDerived(_,_,_,_,_,_,_,_);!DerivedRelations   ()
+  config-error-constr = ?FirstClassRelation(_,_,_,_)     ;!FirstClassRelations()
+  config-error-constr = ?RelationInstance(_,_,_)         ;!FirstClassRelations()
+  config-error-constr = ?RelationInstanceNoType(_,_)     ;!FirstClassRelations()
+  config-error-constr = ?InlineAttribute(_,_,_,_)        ;!Inlines            ()
+  config-error-constr = ?Eventual()                      ;!EventualCalculation()
+  config-error-constr = ?OnDemandEventual()              ;!EventualCalculation()
+  config-error-constr = is-strategy                      ;!Strategies         () //order matters, EventualCalculation() first
+  config-error-constr = ?OptionalExtends(_)              ;!SubTyping          ()
+  
+  error-on-constr(|features): t -> error
+    where
+      feature := <config-error-constr>t
+    where
+      <not(elem(eq-no-anno))>(feature,features)
+    with
+      error := (t, $[Feature [<get-constructor>feature] disabled.])
+
+  

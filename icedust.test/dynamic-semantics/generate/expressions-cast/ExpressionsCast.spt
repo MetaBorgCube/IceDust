@@ -10,6 +10,6 @@ fixture [[
     [[...]]
 ]]
 
-test Expressions Cast execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+test Expressions Cast execute-java [[ ]] transform "SPT -> Build" to
 "5.0 true 5
 "

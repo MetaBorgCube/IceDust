@@ -28,6 +28,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Shortcuts execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: fix analysis
+//test Expressions Shortcuts execute-java [[ ]] transform "SPT -> Build" to //FIXME: fix analysis
 //"3
 //"

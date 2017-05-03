@@ -9,6 +9,7 @@ imports // constructors
 imports // functions
 
   analysis2/check
+  analysis2/config
   analysis2/path
 //  api/_runtime
 //  api/execute-api
@@ -31,7 +32,9 @@ imports // functions
 
 rules
 
-  nabl2-after-analysis(|source,ast): analysis -> (error*, [], [], index)
+  nabl2-after-analysis(|source,ast): analysis -> ([error2*, error*], [], [], index)
+    with
+      error2* := <check-config-section>ast
     with
       <store-analysis-resource>analysis
     with

@@ -11,6 +11,6 @@ fixture [[
     [[...]] 
 ]]
 
-test Expressions Datetime execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+test Expressions Datetime execute-java [[ ]] transform "SPT -> Build" to
 "24
 "
