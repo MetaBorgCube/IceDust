@@ -16,8 +16,7 @@ rules
 
   build(error-handler|backend, moduleName, relativePath): _ -> result
     where
-      JavaBackend(phase) := backend;
-      <debug>phase
+      JavaBackend(phase) := backend
     with
       fullPath    := <full-path(|relativePath)>;
       eclipsePath := <eclipse-path>relativePath
