@@ -5,6 +5,10 @@ language icedust
 fixture [[
 module ExpressionsRolesInversesMultiplicities (on-demand)
 
+config
+
+  language features : first-class relations
+
 model
 entity Node{
   a : Int  = 1

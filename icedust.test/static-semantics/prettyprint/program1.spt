@@ -4,6 +4,11 @@ language icedust
 
 fixture [[
   module [[...]]
+
+  config
+  
+    language features : first-class relations
+    
   model
     entity Foo {
       i : Int ?
@@ -24,6 +29,10 @@ fixture [[
 
 test pretty printer not crashing [[test]] transform "Syntax -> Format" to
 "module test 
+
+config
+
+  language features : first-class relations
 
 model
 

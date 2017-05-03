@@ -8,6 +8,10 @@ module weblabTest (incremental)
 
 //================================================================================
 
+config
+
+  backend : WebDSL
+
 model
 
   entity Assignment (eventual) {
