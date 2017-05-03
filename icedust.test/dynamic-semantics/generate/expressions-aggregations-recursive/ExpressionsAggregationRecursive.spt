@@ -28,6 +28,6 @@ fixture [[
     [[...]] 
 ]]
 
-//test Expressions Aggregation Recursive execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: analysis fails
+//test Expressions Aggregation Recursive execute-java [[ ]] transform "SPT -> Build" to //FIXME: analysis fails
 //"5
 //"

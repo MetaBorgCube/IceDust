@@ -1,0 +1,51 @@
+module generating/webdsl
+
+imports
+
+  generating/_ir/constructors
+  signatures/Config-sig
+
+imports
+
+  api/module-names-api
+  generating/_ir/paths
+  generating/webdsl/generate
+  generating/webdsl/java/generate
+  generating/webdsl/js/generate
+  lib/files
+  lib/index
+
+rules
+
+  build(error-handler|backend, moduleName, relativePath): _ -> result
+    where
+      WebDSLBackend(uistyle) := backend
+    with
+      fullPath    := <full-path(|relativePath)>;
+      eclipsePath := <eclipse-path>relativePath
+    with
+      if ModelExplorer(_) := uistyle then
+        <index-set(|moduleName, UIStyle())>ExplorerUI()
+      else
+        <index-set(|moduleName, UIStyle())>NoUI()
+      end
+    with
+      error* := []; //TODO: fetch list of errors from NaBL2
+      if not([] := error*) then
+        <error-handler>"Fix errors before generating code. Exiting code generation.";
+        result := None()
+      else
+        (targetCode, error') := <generate-webdsl-code(error-handler)>moduleName;
+        targetFileName := <webdsl-generated-path(|relativePath)>;
+        webdsl-library-paths(|fullPath);copy-dir;
+        webdsl-java-library-paths(|fullPath);copy-dir;
+        !(<webdsl-saved-but-not-build(|fullPath)>,"");write-file;
+        if <modulename-is-explorerui> moduleName then
+          jsString := <generate-webdsl-js-code> moduleName;
+          <write-file>(<webdsl-js-generated-path(|fullPath)>, jsString)
+        end;
+        (targetCode2, error2') := <generate-webdsl-java-code(error-handler)>moduleName;
+        targetFileName2 := <webdsl-java-generated-path(|fullPath)>;
+        <write-file>(<webdsl-java-generated-path(|fullPath)>,targetCode2);              
+        result := (targetFileName, targetCode)
+      end

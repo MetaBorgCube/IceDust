@@ -5,6 +5,11 @@ language icedust
 fixture [[
   module helloworld
   
+  config
+  
+    backend : Java
+      phase : [[...]]
+  
   model
   entity Message {
     text     : String
@@ -17,13 +22,12 @@ fixture [[
   
   execute
   hello.text
-  [[...]]
 ]]
 
-test Hello World generate-java [[ ]] transform "SPT -> to Java -> Generate"
+test Hello World generate-java [[ generate ]] transform "SPT -> Build"
 
-test Hello World compile-java [[ ]] transform "SPT -> to Java -> Compile"
+test Hello World compile-java [[ compile ]] transform "SPT -> Build"
 
-test Hello World execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+test Hello World execute-java [[ execute ]] transform "SPT -> Build" to 
 "Hello World!
 "

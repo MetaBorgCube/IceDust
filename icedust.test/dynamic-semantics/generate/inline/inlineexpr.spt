@@ -51,7 +51,7 @@ execute
   [[...]]
 ]]
 
-test Inline field execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+test Inline field execute-java [[ ]] transform "SPT -> Build" to 
 "Updating Foo.v: 1
 42
 "

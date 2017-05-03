@@ -491,8 +491,9 @@ rules
               Collection<x_type> result = Expressions.emptyCollection();
               for(x_entityName en : ens)
               { 
-                if(en.x_get() != null)
-                  result.add(en.x_get());
+              	x_type var1 = en.x_get();
+                if(var1 != null)
+                  result.add(var1);
               }
               return result;
             }

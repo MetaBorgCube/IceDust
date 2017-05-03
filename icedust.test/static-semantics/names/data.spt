@@ -39,6 +39,8 @@ test Error on non existing attribute in entity instance without type [[
 
 test No error on existing attribute in entity instance without type [[
   module test
+  config
+    language features : first-class relations
   model
     entity Foo {
       i : Int

@@ -24,6 +24,6 @@ fixture [[
 ]]
 
 
-test Expressions Nested If execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+test Expressions Nested If execute-java [[ ]] transform "SPT -> Build" to 
 "true
 "

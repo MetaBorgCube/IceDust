@@ -24,6 +24,8 @@ test Duplicate relation fails [[
     User.x * -> user1
     Book.y 1 -> book1
   }
+  config
+    language features : first-class relations
 ]] 2 errors at #1,#2
 
 test Resolve relation member to entity [[

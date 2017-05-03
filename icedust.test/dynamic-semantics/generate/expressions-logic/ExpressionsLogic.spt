@@ -18,6 +18,6 @@ fixture [[
   [[...]]
 ]]
 
-test Expressions Logic execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+test Expressions Logic execute-java [[ ]] transform "SPT -> Build" to
 "5
 "

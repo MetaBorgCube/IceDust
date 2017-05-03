@@ -103,9 +103,16 @@ There are three backends:
 
 ### Java backend
 
-To use the Java backend use the menu `Spoofax > Generation > to Java > Calculate on Read > Generate, Compile and Execute`.
+To execute the Java backend use the menu `Spoofax > Generation > Build`.
 
-Or use `Spoofax > Generation > to Java > Calculate on Read > Generate` to generate Java code (make sure the generated Java files are on the classpath and that your eclipse project has the Java nature and Java builder).
+For only generating Java code (and not compiling and executing it) add the following config:
+
+```
+config
+  backend : Java
+    phase : generate
+```
+Note: make sure the generated Java files are on the classpath and that your eclipse project has the Java nature and Java builder.
 
 ### WebDSL backend - Standalone Application (CRUD-interface)
 
@@ -122,24 +129,20 @@ And `Demo.rel`:
 ```
 module Demo
 
+config
+
+  backend : WebDSL
+    ui : Model Explorer // remove this line if no UI is desired
+
 model
 
   //...
 ```
 
-1. Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Standalone Application` to generate the `.app` file.
+1. Use `Spoofax > Generation > Build` to generate the `.app` file.
 2. Import the project in the [WebDSL editor](http://buildfarm.metaborg.org/job/webdsl-eclipsegen/).
 3. Convert the project to a WebDSL project by right-clicking the project in the WebDSL editor.
 4. Press `Cmd + Alt + B` in the `.app` file to trigger the WebDSL compiler, the compiler will build the project and automatically launch a webserver and open the main web page of the application.
-
-Known issue: the CRUD interface does not work properly for optional values (all values are required), and also not for default values (as those are optional as well).
-
-### WebDSL backend - Embedded Model
-
-Use `Spoofax > Generation > to WebDSL > Calculate on Read > Generate, Embedded Model` to generate the `.app` file.
-
-You need to create a main `.app` file that includes the generated `.app` file.
-The generated `.app` file has `extend` entities, so the main `.app` file needs to define the entities to the generated code can extend these.
 
 ## Contributing
 

@@ -1,0 +1,45 @@
+module editor/build
+
+imports // backends
+
+  generating/java
+  generating/javascript
+  generating/webdsl
+
+imports // functions
+
+  api/config-api
+  api/module-api
+  lib/index
+  lib/nabl2
+  nabl2/api
+
+rules // builders
+
+  build      = build(error-handler-editor)
+  build-test = build(error-handler-tests)
+
+  build(error-handler): (selected, position, ast, path, project-path) -> result
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      moduleName  := <module-get-modulename>selected;
+      backend     := <module-get-config-section;configsection-get-backend>selected;
+      result      := <build(error-handler|backend, moduleName, path) <+ backend-not-enabled(|backend)>selected
+      
+  build(error-handler|backend, moduleName, relativePath) = fail // implemented by backends
+  
+  backend-not-enabled(|backend) = !$[The backend [<write-to-string>backend] is not enabled.];debug
+
+rules // Error handlers (editor: report error, do not fail, tests: fail with error)
+
+  error-handler-editor : msg -> ("ERROR_PLACEHOLDER", msg)
+    with
+      err-msg(|msg)
+
+  error-handler-tests : msg -> None()
+    with
+      with(fail|msg)

@@ -6,6 +6,7 @@ imports // constructors
   
 imports
 
+  lib/origin
   lib/traverse
   
 rules
@@ -17,6 +18,7 @@ rules
   module-get-sections   = ?Module(_, _, <id>)
   
   module-set-strategy(s) = Module(id, s, id)
+  module-set-sections(s) = ?m;Module(id, id, s);custom-origin(|m)
 
   module-has-no-strategy = where(module-get-strategy;?None())
   
@@ -29,4 +31,11 @@ rules
   is-execute = ?ExecuteSection(_)
   
   execute-get-exprs = ?ExecuteSection(<id>)
+
+rules
+
+  module-get-config-sections = module-get-sections;filter(?ConfigSection(_))
+  module-get-config-section  = module-get-config-sections;Hd
+
+  module-has-no-config-section = where(module-get-config-sections;?[])
   

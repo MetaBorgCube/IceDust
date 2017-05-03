@@ -89,11 +89,11 @@ execute
   consultant.monthlyNetto
 ]]
 
-test Job Offers execute-java [[ (on-demand) ]] transform "SPT -> to Java -> Execute" to 
+test Job Offers execute-java [[ (on-demand) ]] transform "SPT -> Build" to 
 "1996
 "
 
-test Job Offers execute-java incremental [[ (incremental) ]] transform "SPT -> to Java -> Execute" to
+test Job Offers execute-java incremental [[ (incremental) ]] transform "SPT -> Build" to
 "Updating JobOffer.leaseCarAddition: 7
 Updating JobOffer.lease: 7
 Updating JobOffer.slice1boundrary: 7

@@ -41,6 +41,8 @@ test error on duplicate inverse [[
     Node.[[edge]] 1 -> b
     a.b <-> b.a
   }
+  config
+    language features : first-class relations
 ]] 2 errors at #1,#2
 
 test error on duplicate inverse by desugaring [[

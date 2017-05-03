@@ -1,0 +1,18 @@
+module generating/javascript
+
+imports
+  generating/js/generate
+  generating/_ir/paths
+  
+  signatures/Config-sig
+
+rules
+
+  is-javascript-backend = ?JavascriptBackend()
+
+  build(error-handler|backend, moduleName, relativePath): _ -> (filename, result)
+    where 
+     <is-javascript-backend> backend
+    with
+      (result, error') := <generate-javascript-code(error-handler)>moduleName
+    ; filename := <javascript-generated-path(|relativePath)>

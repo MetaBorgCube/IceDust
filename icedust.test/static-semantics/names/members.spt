@@ -5,6 +5,10 @@ language icedust
 fixture [[
   module members
 
+  config
+  
+    language features : first-class relations
+
   model
   
   [[...]]
