@@ -37,6 +37,10 @@ This can be done by implementing a stratego hook:
     ])
 ```
 
+Note that with this forced configuration the existing IceDust test suite is not compatible anymore.
+These tests can be disabled by removing the icedust.test project as a maven module.
+It is recommended that you add your own tests in a separate test project as a maven module.
+
 Moreover, unused backends can be disabled completely by removing the stratego imports to their entry files in https://github.com/MetaBorgCube/IceDust/blob/develop/icedust/trans/editor/build.str.
 
 ## List of language extensions
