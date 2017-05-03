@@ -43,6 +43,6 @@ fixture [[
     [[...]]
 ]]
 
-//test Expressions Roles Inverses  execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: fix generated code
+//test Expressions Roles Inverses  execute-java [[ ]] transform "SPT -> Build" to //FIXME: fix generated code
 //"Charles
 //"

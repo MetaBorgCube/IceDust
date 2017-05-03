@@ -22,6 +22,6 @@ fixture [[
   [[...]]
 ]]
 
-//test Expressions Aggregation execute-java [[ ]] transform "SPT -> to Java -> Execute" to //FIXME: code generator fails 
+//test Expressions Aggregation execute-java [[ ]] transform "SPT -> Build" to //FIXME: code generator fails 
 //"5
 //"

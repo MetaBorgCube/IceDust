@@ -271,7 +271,7 @@ execute
   [[...]]
 ]]
 
-test Weblab 2 execute-java (strategy composition & derived relations & subtyping) [[ ]] transform "SPT -> to Java -> Execute" to
+test Weblab 2 execute-java (strategy composition & derived relations & subtyping) [[ ]] transform "SPT -> Build" to
 "Updating Submission.deadline: 15
 Updating Submission.extension: 15
 Updating Submission.parent: 15

@@ -35,6 +35,7 @@ rules
 rules
 
   module-get-config-sections = module-get-sections;filter(?ConfigSection(_))
+  module-get-config-section  = module-get-config-sections;Hd
 
   module-has-no-config-section = where(module-get-config-sections;?[])
   

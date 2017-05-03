@@ -20,6 +20,6 @@ fixture [[
   [[...]]
 ]]
 
-test Expressions References execute-java [[ ]] transform "SPT -> to Java -> Execute" to
+test Expressions References execute-java [[ ]] transform "SPT -> Build" to
 "5
 "

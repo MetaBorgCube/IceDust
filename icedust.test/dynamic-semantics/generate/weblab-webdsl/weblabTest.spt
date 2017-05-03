@@ -11,6 +11,7 @@ module weblabTest (incremental)
 config
 
   backend : WebDSL
+    [[...]]
 
 model
 
@@ -112,9 +113,8 @@ execute
 
   math.passPerc
   math.avgGrade
-  [[...]]
 ]]
 
-test Weblab generate-webdsl Model Explorer (strategy composition & derived relations) [[ ]] transform "SPT -> to WebDSL -> Model Explorer"
+test Weblab generate-webdsl Model Explorer (strategy composition & derived relations) [[ ui : Model Explorer ]] transform "SPT -> Build"
 
-test Weblab generate-webdsl Embedded Model (strategy composition & derived relations) [[ ]] transform "SPT -> to WebDSL -> Embedded Model"
+test Weblab generate-webdsl Embedded Model (strategy composition & derived relations) [[                     ]] transform "SPT -> Build"

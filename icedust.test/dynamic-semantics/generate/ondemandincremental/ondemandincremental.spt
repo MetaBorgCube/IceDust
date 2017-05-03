@@ -24,7 +24,7 @@ execute
   [[...]]
 ]]
 
-test On-demand incremental execute-java [[ ]] transform "SPT -> to Java -> Execute" to 
+test On-demand incremental execute-java [[ ]] transform "SPT -> Build" to 
 "Updating Foo.v4
 Updating Foo.v2
 11
