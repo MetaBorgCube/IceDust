@@ -11,6 +11,7 @@ imports // functions
   api/module-api
   lib/index
   lib/nabl2
+  nabl2/api
 
 rules // builders
 
@@ -26,9 +27,11 @@ rules // builders
     with
       moduleName  := <module-get-modulename>selected;
       backend     := <module-get-config-section;configsection-get-backend>selected;
-      result      := <build(error-handler|backend, moduleName, path)>selected
+      result      := <build(error-handler|backend, moduleName, path) <+ backend-not-enabled(|backend)>selected
       
   build(error-handler|backend, moduleName, relativePath) = fail // implemented by backends
+  
+  backend-not-enabled(|backend) = !$[The backend [<write-to-string>backend] is not enabled.];debug
 
 rules // Error handlers (editor: report error, do not fail, tests: fail with error)
 
