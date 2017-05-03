@@ -18,6 +18,27 @@ This means language extensions require some coordination with the IceDust develo
 
 TODO: write a shell script that renames the language and changes the extension (without changing all paths of files).
 
+### Use a subset of IceDust
+
+IceDust features a config section in which a backend can be selected and language features can be enabled or disabled.
+For an IceDust language extension it makes sense to fix the set of language features (and the backend).
+This can be done by implementing a stratego hook:
+
+```
+  icedust-language-extension-fixed-config = ! // example configuration
+    ConfigSection([
+      JavaBackend(Execute()),
+      LanguageFeatures([
+        DerivedRelations(),
+        Inlines(),
+        Strategies(),
+        SubTyping()
+      ])
+    ])
+```
+
+Moreover, unused backends can be disabled completely by removing the stratego imports to their entry files in https://github.com/MetaBorgCube/IceDust/blob/develop/icedust/trans/editor/build.str.
+
 ## List of language extensions
 
 * [IceDSL](https://github.com/MetaBorgCube/IceDSL): IceDust extension with WebDSL-specific features
