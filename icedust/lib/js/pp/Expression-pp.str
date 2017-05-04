@@ -1333,6 +1333,50 @@ strategies
          end
 
   prettyprint-spoofaxJS-Expression :
+    Not(t1__) -> [ H(
+                     [SOpt(HS(), "0")]
+                   , [S("!"), t1__']
+                   )
+                 ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-Expression =
+    ?Not(_)
+
+  spoofaxJS-get-indent :
+    (t@Not(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@Not(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@Not(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-Expression :
     Negate(t1__) -> [ H(
                         [SOpt(HS(), "0")]
                       , [S("- "), t1__']
@@ -1372,6 +1416,94 @@ strategies
     with switch !index
            case ?1 :
              ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-Expression :
+    Increment(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("++")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-Expression =
+    ?Increment(_)
+
+  spoofaxJS-get-indent :
+    (t@Increment(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@Increment(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@Increment(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-Expression :
+    Decrement(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("--")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-Expression =
+    ?Decrement(_)
+
+  spoofaxJS-get-indent :
+    (t@Decrement(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@Decrement(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@Decrement(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
            otherwise :
              ws := ""
          end

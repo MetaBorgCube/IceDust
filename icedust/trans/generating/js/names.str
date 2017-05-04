@@ -2,6 +2,8 @@ module generating/js/names
 
 imports
   api/model-names-api
+  api/types-api
+  
   lib/js/js-util
 
 rules
@@ -13,10 +15,23 @@ rules
   setter-function-name: attribute -> $[set[name]]
     with
       name := <attribute-name> attribute
-
-  invalidation-function-name: attribute -> $[invalidate[name]]
-    with
-      name := <attribute-name> attribute
+  
+  function-name-many = !$[[<id>]_Many]
+  
+  
+  attribute-function-name(|prefix) = debug ; (attribute-name, multiplicity-function-postfix) ; debug ; !$[[prefix][<Fst>][<Snd>]]
+  
+  getter-function-name = attribute-function-name(|"get")
+  setter-function-name = attribute-function-name(|"set")
+  invalidation-function-name = attribute-function-name(|"invalidate")
+  memoize-function-name = attribute-function-name(|"memoize")
+  
+  multiplicity-function-postfix = upper-one ; !""
+  multiplicity-function-postfix = upper-many ; !"_Many"
+  
+  
+  id-var = upper-one ; !"id"
+  id-var = upper-many ; !"ids"
       
   attribute-table-expression: attribute -> <js-string> x_entity
     where

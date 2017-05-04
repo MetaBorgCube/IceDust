@@ -36,7 +36,10 @@ signature
     And                      : Expression * Expression -> Expression
     Or                       : Expression * Expression -> Expression
     FunctionExpression       : Option(ID) * List(ID) * List(Statement) -> Expression
+    Not                      : Expression -> Expression
     Negate                   : Expression -> Expression
+    Increment                : Expression -> Expression
+    Decrement                : Expression -> Expression
     Cond                     : Expression * CondMid * Expression -> Expression
     CondMid                  : Expression -> CondMid
     ObjectLiteral            : List(ObjectProperty) -> Expression

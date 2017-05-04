@@ -1,0 +1,69 @@
+module generating/js/getter
+
+imports
+  signatures/Types-sig
+  
+  api/types-api
+  api/model-names-api
+  
+  generating/js/names
+  generating/js/common
+
+rules
+  
+  
+  getter-function-multiplicities = ![One(), ZeroOrMore()]
+  
+  getter-functions = ?attribute ; getter-function-multiplicities ; map(!(attribute, <id>) ; getter-function)
+  
+  getter-function: (attribute, m) -> js-stmt |[
+    function x_functionName(state, x_var){
+      stmt_body*
+      return result;
+    }
+  ]|
+    with
+      x_functionName := <getter-function-name> (attribute, m)
+    ; x_var := <id-var> m
+    ; m_attribute := <name-get-multiplicity> attribute
+    ; stmt_body* := <getter-body> (m, m_attribute, attribute, x_var)
+  
+  getter-body: (m1, m2, attribute, x_name) -> stmt_body* 
+    with
+      exp_table := <attribute-table-expression> attribute
+    with
+      switch !(m1, m2)
+        case debug; (?One() <+ ?ZeroOrOne(), id):
+          exp_empty := <exp-empty> m2
+        ; stmt_body* := js-stmt* |[
+            let result = state.get(exp_table).get(x_name) || exp_empty;
+          ]|
+        case ?(ZeroOrMore(), m2):
+          stmt_push* := <getter-push-statements> m2
+        ; stmt_body* := js-stmt* |[
+            let result = [];
+            const table = state.get(exp_table);
+            for(let id of x_name){
+              stmt_push*
+            }
+          ]|
+        otherwise:
+          stmt_body* := js-stmt* |[fail();]|
+      end
+  
+  getter-push-statements: One() -> js-stmt* |[
+    result.push(table.get(id));
+  ]|
+  
+  getter-push-statements: ZeroOrMore() -> js-stmt* |[
+    for(let value of table.get(id)){
+      result.push(value);
+    }
+  ]|
+  
+  getter-push-statements: ZeroOrOne() -> js-stmt* |[
+    let value = table.get(id);
+    if(value != null) {
+      result.push(value);
+    }
+  ]|

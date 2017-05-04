@@ -12,22 +12,25 @@ imports
   generating/js/access
   generating/js/names
   generating/js/common
+  generating/js/getter
 
 rules
     
   generate-model-statements : moduleName -> js-stmt* |[
-      stmt_invalidations*
-      stmt_setters*
-      stmt_memoize*
+//      stmt_invalidations*
+      stmt_getters*
+//      stmt_setters*
+//      stmt_memoize*
   ]|
   with
     attributes := <
       modulename-get-entitynames 
       ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
     > moduleName
-    ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
-    ; stmt_setters* := <filter(generate-setter)> attributes
-    ; stmt_memoize* := <filter(generate-memoize)> attributes
+//    ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
+    ; stmt_getters* := <mapconcat(getter-functions)> attributes
+//    ; stmt_setters* := <filter(generate-setter)> attributes
+//    ; stmt_memoize* := <filter(generate-memoize)> attributes
           
   generate-setter: attribute -> js-stmt |[
     export function x_methodname (state, id, value){
@@ -75,23 +78,7 @@ rules
       ; stmt_updateInverse* := <setter-relation-inverse-statements> (x_attribute, x_inverse)
       ; x_invalidationFunction := <invalidation-function-name> x_attribute
       
-//  setter-relation : x_relation -> stmt
-//    with
-//      exp_table := <attribute-table-expression> x_relation
-//      ; x_invalidationFunction := <invalidation-function-name> x_relation
-//    with
-//      switch name-get-multiplicity
-//        case One(): 
-//          stmt := js-stmt* |[
-//            state = state.update(exp_table, table => table.set(id, value));
-//            state = x_invalidationFunction(state, id);
-//          ]|
-//        otherwise:
-//          stmt := js-stmt* |[iDontKnow();]|
-//      end
       
-  
-  
   setter-relation-inverse-statements: (x_attribute, x_inverse) -> stmt*
     with
       m_attribute := <name-get-multiplicity ; simplify-multiplicity> x_attribute
@@ -104,8 +91,10 @@ rules
       switch !m_attribute
         case ZeroOrMore():
           stmt* := js-stmt* |[
+            
             const added = value.subtract(previousValue);
             const removed = previousValue.subtract(value);
+            
             
             added.forEach(addedId => {
               state = state.update(inverseTableName, exp_set);
@@ -132,8 +121,6 @@ rules
               state = x_inverseInvalidationFunction(state, removedId);
             }
           ]|
-        otherwise:
-          stmt* := js-stmt* |[notImplementedYet();]|
       end
   
   
@@ -141,14 +128,14 @@ rules
   setter-relation-inverse-set: ZeroOrMore() ->  js-exp |[
     Inverse => Inverse.update(addedId, seq => {
       if(seq !== undefined) {
-        return seq.push(id);
+        return [].concat(seq, [id]);
       } else {
         return exp_singleton;
       }
     })
   ]|
     with
-      exp_singleton := <exp-collection> js-exp |[[id]]|
+      exp_singleton := <exp-collection> [js-exp |[id]|]
   
   setter-relation-inverse-unset: One() -> js-exp |[Inverse => Inverse.set(removedId, null)]|
   setter-relation-inverse-unset: ZeroOrMore() -> js-exp |[

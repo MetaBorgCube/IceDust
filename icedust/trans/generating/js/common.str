@@ -15,13 +15,11 @@ rules
   exp-empty : OneOrMore() -> <exp-empty-many>
         
   exp-empty-one = !js-exp |[null]|
-  exp-empty-many = empty-collection-name ; ?x_name ; !js-exp |[x_name()]|
+  exp-empty-many = <exp-collection> []
   
-  exp-collection : exp_inner -> js-exp |[x_name(exp_inner)]|
-    with
-      x_name := <empty-collection-name>
-  
-  empty-collection-name = !"List"
+  exp-collection : exp_elements* -> js-exp |[
+    [exp_elements*] 
+  ]|
         
   simplify-multiplicity : ZeroOrOne() -> One()
   simplify-multiplicity : OneOrMore() -> ZeroOrMore()

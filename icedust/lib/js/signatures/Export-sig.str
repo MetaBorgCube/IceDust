@@ -14,6 +14,7 @@ signature
     FromImportBlock               : List(ExportSpecifier) * FromClause -> Export
     ExportBlock                   : List(ExportSpecifier) -> Export
     ExportDeclaration             : Declaration -> Export
+    ExportHoistableDeclaration    : HoistableDeclaration -> Export
     ExportDefaultDeclaration      : HoistableDeclaration -> Export
     ExportDefaultClassDeclaration : ClassDeclaration -> Export
     ExportDefaultExpression       : Expression -> Export

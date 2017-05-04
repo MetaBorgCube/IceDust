@@ -206,7 +206,10 @@ strategies
   prettyprint-spoofaxJS-Export :
     ExportDeclaration(t1__) -> [ H(
                                    [SOpt(HS(), "0")]
-                                 , [S("export "), t1__']
+                                 , [ S("export ")
+                                   , t1__'
+                                   , S(";")
+                                   ]
                                  )
                                ]
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
@@ -238,6 +241,50 @@ strategies
 
   spoofaxJS-get-leading-ws :
     (t@ExportDeclaration(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-Export :
+    ExportHoistableDeclaration(t1__) -> [ H(
+                                            [SOpt(HS(), "0")]
+                                          , [S("export "), t1__']
+                                          )
+                                        ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-spoofaxJS-Export =
+    ?ExportHoistableDeclaration(_)
+
+  spoofaxJS-get-indent :
+    (t@ExportHoistableDeclaration(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@ExportHoistableDeclaration(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@ExportHoistableDeclaration(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
     with switch !index

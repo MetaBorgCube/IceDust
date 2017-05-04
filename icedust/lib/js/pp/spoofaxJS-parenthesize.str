@@ -613,6 +613,10 @@ rules
     where <(?Lambda(_, _) + fail)> t_2
 
   spoofaxJSParenthesize :
+    Not(t_0) -> Not(Parenthetical(t_0))
+    where <(?Not(_) + fail)> t_0
+
+  spoofaxJSParenthesize :
     String(t_0) -> String(Parenthetical(t_0))
     where <(?String(_) + fail)> t_0
 

@@ -16,18 +16,21 @@ signature
     ExpStmt                          : Expression -> Statement
     Assignment                       : Expression * Expression -> Statement
     For                              : Declaration * Expression * Expression * List(Statement) -> Statement
+    ForOf                            : Declaration * Expression * List(Statement) -> Statement
+    ForIn                            : Declaration * Expression * List(Statement) -> Statement
     While                            : Expression * List(Statement) -> Statement
     If                               : Expression * Statement -> Statement
     IfElse                           : Expression * Statement * Statement -> Statement
     Return                           : Expression -> Statement
                                      : Import -> Statement
                                      : Export -> Statement
-                                     : Declaration -> Statement
+    DeclarationStatement             : Declaration -> Statement
+                                     : FunctionDeclaration -> Statement
                                      : ClassDeclaration -> Statement
-    VarDeclaration                   : LeftHandSideExpression * Expression -> Declaration
-    ConstDeclaration                 : LeftHandSideExpression * Expression -> Declaration
-    LetDeclaration                   : LeftHandSideExpression * Expression -> Declaration
-                                     : HoistableDeclaration -> Declaration
+    InitializeAssignment             : Expression -> InitializeAssignment
+    VarDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+    ConstDeclaration                 : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+    LetDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
                                      : FunctionDeclaration -> HoistableDeclaration
     FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
     BlockStatement-Plhdr             : BlockStatement
@@ -36,6 +39,7 @@ signature
     ClassDeclaration-Plhdr           : ClassDeclaration
     Expression-Plhdr                 : Expression
     Declaration-Plhdr                : Declaration
+    InitializeAssignment-Plhdr       : InitializeAssignment
     HoistableDeclaration-Plhdr       : HoistableDeclaration
     FunctionDeclaration-Plhdr        : FunctionDeclaration
     ID-Plhdr                         : ID
@@ -47,10 +51,12 @@ signature
     ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
     Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
     Declaration-Plhdr                : COMPLETION-INSERTION -> Declaration
+    InitializeAssignment-Plhdr       : COMPLETION-INSERTION -> InitializeAssignment
     HoistableDeclaration-Plhdr       : COMPLETION-INSERTION -> HoistableDeclaration
     FunctionDeclaration-Plhdr        : COMPLETION-INSERTION -> FunctionDeclaration
     ID-Plhdr                         : COMPLETION-INSERTION -> ID
     LeftHandSideExpression-Plhdr     : COMPLETION-INSERTION -> LeftHandSideExpression
     Statement-Plhdr                  : COMPLETION-INSERTION -> Statement
+    InitializeAssignment-Opt-Plhdr   : InitializeAssignment
     LeftHandSideExpression-Opt-Plhdr : LeftHandSideExpression
     Statement-Opt-Plhdr              : Statement
