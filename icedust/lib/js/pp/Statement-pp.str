@@ -264,7 +264,7 @@ strategies
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
     with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
     with t3__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t3__
-    with t4__' := <pp-indent(|"2")> [ <pp-H-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t4__
+    with t4__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t4__
                                     ]
 
   is-spoofaxJS-Statement =
@@ -303,7 +303,7 @@ strategies
            case ?3 :
              separator := ""
            case ?4 :
-             separator := ""
+             separator := "\n"
            otherwise :
              separator := ""
          end
@@ -345,7 +345,7 @@ strategies
                                ]
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
     with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
-    with t3__' := <pp-indent(|"2")> [ <pp-H-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t3__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
                                     ]
 
   is-spoofaxJS-Statement =
@@ -380,7 +380,7 @@ strategies
            case ?2 :
              separator := ""
            case ?3 :
-             separator := ""
+             separator := "\n"
            otherwise :
              separator := ""
          end
@@ -420,7 +420,7 @@ strategies
                                ]
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
     with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
-    with t3__' := <pp-indent(|"2")> [ <pp-H-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t3__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
                                     ]
 
   is-spoofaxJS-Statement =
@@ -455,7 +455,7 @@ strategies
            case ?2 :
              separator := ""
            case ?3 :
-             separator := ""
+             separator := "\n"
            otherwise :
              separator := ""
          end
@@ -492,7 +492,7 @@ strategies
                            )
                          ]
     with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-indent(|"2")> [ <pp-H-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t2__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t2__
                                     ]
 
   is-spoofaxJS-Statement =
@@ -519,7 +519,7 @@ strategies
            case ?1 :
              separator := ""
            case ?2 :
-             separator := ""
+             separator := "\n"
            otherwise :
              separator := ""
          end

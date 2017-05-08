@@ -28,21 +28,10 @@ rules
       x_name := <invalidation-function-name> attribute
       ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> attribute
       ; flows := <name-get-flowsto-paths> attribute
-      ; stmt_access* := <statements-flow-access> flows
+      ; stmt_access* := <flowsto-to-access-statements> flows
       ; stmt_invalidations* := <map(flowsto-to-statement-invalidation)> flows
   
-  
-  
-  statements-flow-access: flows -> stmt_access*
-    with
-      paths := <
-        filter(flow-to-access-exp)
-      ; mapconcat(collect-access)
-      ; make-set 
-      ; sort-paths
-      > flows
-    ; stmt_access* := <map(access-statement)> paths
-      
+   
   
   flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
     with
@@ -62,14 +51,11 @@ rules
   ]|
   
   statement-invalidation : (ZeroOrMore(), x_functionName, x_var) -> js-stmt |[
-    x_var.forEach(id => {
+    for(let id of x_var){
       state = x_functionName(state, id);
-    });
+    }
   ]|
       
-  flow-to-access-exp : DataflowPath(_, MemberAccess(inner, _)) -> inner
-    
-  sort-paths = qsort((pp-partial-icedust-string, pp-partial-icedust-string) ; string-lt)  
     
   generate-derived-value-invalidation: attribute ->
     js-stmt* |[

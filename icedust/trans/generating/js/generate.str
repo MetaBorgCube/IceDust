@@ -31,5 +31,6 @@ rules
   
   generate-imports = !js-stmt* |[
     import { List, Set, Map } from 'immutable';
+    import _ from 'lodash';
   ]|
   

@@ -17,7 +17,7 @@ rules
   getter-functions = ?attribute ; getter-function-multiplicities ; map(!(attribute, <id>) ; getter-function)
   
   getter-function: (attribute, m) -> js-stmt |[
-    function x_functionName(state, x_var){
+    export function x_functionName(state, x_var){
       stmt_body*
       return result;
     }
@@ -33,7 +33,7 @@ rules
       exp_table := <attribute-table-expression> attribute
     with
       switch !(m1, m2)
-        case debug; (?One() <+ ?ZeroOrOne(), id):
+        case (?One() <+ ?ZeroOrOne(), id):
           exp_empty := <exp-empty> m2
         ; stmt_body* := js-stmt* |[
             let result = state.get(exp_table).get(x_name) || exp_empty;

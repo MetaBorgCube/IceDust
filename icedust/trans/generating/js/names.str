@@ -4,6 +4,8 @@ imports
   api/model-names-api
   api/types-api
   
+  signatures/Types-sig
+  
   lib/js/js-util
 
 rules
@@ -19,12 +21,15 @@ rules
   function-name-many = !$[[<id>]_Many]
   
   
-  attribute-function-name(|prefix) = debug ; (attribute-name, multiplicity-function-postfix) ; debug ; !$[[prefix][<Fst>][<Snd>]]
+  default-multiplicity = (id, id) <+ !(<id>, One())
+  
+  attribute-function-name(|prefix) = default-multiplicity ; (attribute-name, multiplicity-function-postfix) ; !$[[prefix][<Fst>][<Snd>]]
   
   getter-function-name = attribute-function-name(|"get")
   setter-function-name = attribute-function-name(|"set")
   invalidation-function-name = attribute-function-name(|"invalidate")
   memoize-function-name = attribute-function-name(|"memoize")
+  calculate-function-name = attribute-function-name(|"calculate")
   
   multiplicity-function-postfix = upper-one ; !""
   multiplicity-function-postfix = upper-many ; !"_Many"

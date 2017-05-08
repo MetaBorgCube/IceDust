@@ -1,0 +1,25 @@
+module generating/js/calculate
+
+imports
+  api/model-names-api
+
+  generating/js/names
+  generating/js/access
+
+rules
+
+  generate-calculate-function: attribute -> js-stmt|[
+    export function x_calculateFunctionName(state, id){
+      stmt_access*
+      stmt_calculate*
+      return state;
+    }
+  ]|
+    where
+      exp_attribute := <attributename-get-expr> attribute
+    with
+      x_calculateFunctionName := <calculate-function-name> attribute
+    ; dependson := <name-get-dependson-paths> attribute
+    ; stmt_access* := <dependson-to-access-statements> dependson
+    ; stmt_calculate* := [] 
+      

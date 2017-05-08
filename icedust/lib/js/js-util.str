@@ -1,7 +1,7 @@
-module lib/js/js-util
+module js/js-util
 
 imports
     js/signatures/Expression-sig
-    
+
 rules
     js-string: s -> String($["[s]"])
