@@ -57,29 +57,6 @@ rules
     ; exp_attribute := <attribute-table-expression> attribute
     ; x_name := <with-prefix> (x_prefix, attribute)
     ; x_getterFunction := <getter-function-name> (attribute, m1)
-
-  access-exp: (One(), _, x_previous, exp_attribute) -> js-exp |[
-    state.get(exp_attribute).get(x_previous)
-  ]|
-  
-  access-exp: (ZeroOrOne(), _, x_previous, exp_attribute) -> js-exp |[
-    state.get(exp_attribute).get(x_previous)
-  ]|
-      
-  access-exp: (ZeroOrMore(), One(), x_previous, exp_attribute) -> js-exp |[
-    x_previous.map(id => state.get(exp_attribute).get)
-  ]|
-  
-  access-exp: (ZeroOrMore(), ZeroOrMore(), x_previous, exp_attribute) -> js-exp |[
-    x_previous.flatMap(id => state.get(exp_attribute).get)
-  ]|
-  
-  access-exp: (ZeroOrMore(), ZeroOrOne(), x_previous, exp_attribute) -> js-exp |[
-    x_previous.flatMap(id => {
-      const value = state.get(exp_attribute).get(id);
-      return value == null ? [] : [value];
-    })
-  ]|
   
   flowsto-to-access-statements = 
       filter(flow-to-access-exp)

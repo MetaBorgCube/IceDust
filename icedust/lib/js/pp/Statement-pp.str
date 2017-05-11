@@ -189,61 +189,6 @@ strategies
          end
 
   prettyprint-spoofaxJS-Statement :
-    Assignment(t1__, t2__) -> [ H(
-                                  [SOpt(HS(), "0")]
-                                , [ t1__'
-                                  , S(" = ")
-                                  , t2__'
-                                  , S(";")
-                                  ]
-                                )
-                              ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
-
-  is-spoofaxJS-Statement =
-    ?Assignment(_, _)
-
-  spoofaxJS-get-indent :
-    (t@Assignment(t1__, t2__), index) -> indent
-    where sort := <ia-get-sort> t
-          ; <?"Statement"> sort
-    with switch !index
-           case ?1 :
-             indent := ""
-           case ?2 :
-             indent := ""
-           otherwise :
-             indent := ""
-         end
-
-  spoofaxJS-get-separator :
-    (t@Assignment(t1__, t2__), index) -> separator
-    where sort := <ia-get-sort> t
-          ; <?"Statement"> sort
-    with switch !index
-           case ?1 :
-             separator := ""
-           case ?2 :
-             separator := ""
-           otherwise :
-             separator := ""
-         end
-
-  spoofaxJS-get-leading-ws :
-    (t@Assignment(t1__, t2__), index) -> ws
-    where sort := <ia-get-sort> t
-          ; <?"Statement"> sort
-    with switch !index
-           case ?1 :
-             ws := ""
-           case ?2 :
-             ws := " "
-           otherwise :
-             ws := ""
-         end
-
-  prettyprint-spoofaxJS-Statement :
     For(t1__, t2__, t3__, t4__) -> [ H(
                                        [SOpt(HS(), "0")]
                                      , [ S("for (")
@@ -998,6 +943,59 @@ strategies
     with switch !index
            case ?1 :
              ws := " "
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-spoofaxJS-Declaration :
+    GlobalDeclaration(t1__, t2__) -> [ H(
+                                         [SOpt(HS(), "0")]
+                                       , [t1__', S(" "), t2__']
+                                       )
+                                     ]
+    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-option(
+                     pp-one-Z(prettyprint-spoofaxJS-InitializeAssignment) <+ pp-one-Z(prettyprint-completion-aux)
+                   )> t2__
+
+  is-spoofaxJS-Declaration =
+    ?GlobalDeclaration(_, _)
+
+  spoofaxJS-get-indent :
+    (t@GlobalDeclaration(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Declaration"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  spoofaxJS-get-separator :
+    (t@GlobalDeclaration(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Declaration"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  spoofaxJS-get-leading-ws :
+    (t@GlobalDeclaration(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Declaration"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
            case ?2 :
              ws := " "
            otherwise :

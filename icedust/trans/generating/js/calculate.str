@@ -5,21 +5,65 @@ imports
 
   generating/js/names
   generating/js/access
+  generating/js/expression
 
 rules
 
+  generate-calculate-functions: attribute -> [
+    stmt_single,
+    stmt_many
+  ]
+    where
+      stmt_single := <generate-calculate-function> attribute
+    with
+      stmt_many := <generate-calculate-many-function> attribute
+  
+
+  generate-calculate-many-function: attribute -> js-stmt |[
+    export function x_calculateManyFunctionName(state, ids){
+      let result = [];
+      for(let id of ids){
+        let calc = x_calculateFunctionName(state, id);
+        state = calc.state;
+        result.push(calc.result);    
+      }
+      return {
+        state,
+        result
+      };
+    }
+  ]|
+    with
+      x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_calculateManyFunctionName := <calculate-function-name> (attribute, ZeroOrMore())
+     
+      
+      
   generate-calculate-function: attribute -> js-stmt|[
     export function x_calculateFunctionName(state, id){
-      stmt_access*
-      stmt_calculate*
-      return state;
+      let x_result = x_getterFunctionName(state, id);
+      if(x_result === undefined){
+        let x_first = id;
+        stmt_calculate*
+        x_result = exp_result;
+      }
+      state = state.update(exp_table, table => table.set(id, result));
+      
+      return {
+        state,
+        x_result
+      };
     }
   ]|
     where
-      exp_attribute := <attributename-get-expr> attribute
+      exp_attribute := <attributename-get-expr ; debug> attribute
     with
-      x_calculateFunctionName := <calculate-function-name> attribute
-    ; dependson := <name-get-dependson-paths> attribute
-    ; stmt_access* := <dependson-to-access-statements> dependson
-    ; stmt_calculate* := [] 
+      exp_table := <attribute-table-expression> attribute
+    ; x_result := "result"
+    ; x_getterFunctionName := <getter-function-name> attribute
+    ; x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_first := <int-to-varname> 0
+//    ; dependson := <name-get-dependson-paths> attribute
+//    ; stmt_access* := <dependson-to-access-statements> dependson
+    ; (exp_result, stmt_calculate*, _) := <exp-to-js-stmts(|1) ; debug> exp_attribute 
       

@@ -5,3 +5,10 @@ imports
 
 rules
     js-string: s -> String($["[s]"])
+    js-int: s -> IntegerLiteral(s)
+    js-float: s -> FloatLiteral(s)
+    
+    
+    js-add = !Addition(<Fst>, <Snd>)
+    
+    js-var: x_var -> js-exp |[x_var]|

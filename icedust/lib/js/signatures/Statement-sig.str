@@ -14,7 +14,6 @@ signature
     BlockStatement                   : List(Statement) -> BlockStatement
                                      : BlockStatement -> Statement
     ExpStmt                          : Expression -> Statement
-    Assignment                       : Expression * Expression -> Statement
     For                              : Declaration * Expression * Expression * List(Statement) -> Statement
     ForOf                            : Declaration * Expression * List(Statement) -> Statement
     ForIn                            : Declaration * Expression * List(Statement) -> Statement
@@ -31,6 +30,7 @@ signature
     VarDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
     ConstDeclaration                 : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
     LetDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+    GlobalDeclaration                : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
                                      : FunctionDeclaration -> HoistableDeclaration
     FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
     BlockStatement-Plhdr             : BlockStatement

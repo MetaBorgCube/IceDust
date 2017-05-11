@@ -1,0 +1,107 @@
+module expression
+
+imports
+
+  api/types-names-api
+  api/model-names-api
+
+  signatures/Expressions-sig
+  js/js-util
+  
+  generating/js/names
+  generating/js/common
+  
+rules
+
+
+  generate-expression-statements: e -> js-stmt* |[]|
+  
+  int-to-varname : i -> $[_[i]]   
+  
+  //binary expressions
+  
+  binexp-to-js-stmts(get, merge|i) : e -> result
+    where
+      (e1, e2) := <get> e
+    with
+      (exp_l, stmts_l, i') := <exp-to-js-stmts(|i)> e1
+    ; (exp_r, stmts_r, i'') := <exp-to-js-stmts(|i')> e2
+    ; exp_merge := <merge> (exp_l, exp_r)
+    ; stmts := <conc> (stmts_l, stmts_r)
+    ; result := (exp_merge, stmts, i'')
+  
+  
+  exp-to-js-stmts(|i) = binexp-to-js-stmts(?Addition(e1, e2) ; !(e1,e2), js-add|i) 
+  
+  exp-to-js-stmts(|i) = literal-to-js-exp ; !(<id>, [], i)
+  
+  
+  //operations
+  
+  exp-to-js-stmts(|i) : Sum(e) -> result
+    with
+      (exp_inner, stmt_inner*, i') := <exp-to-js-stmts(|i)> e
+    ; x_var := <int-to-varname> i'
+    ; exp_var := js-exp |[x_var]|
+    ; stmts := js-stmt* |[
+      stmt_inner*
+      let x_var = sum(exp_inner);
+    ]|
+    ; result := (exp_var, stmts, <inc> i')
+    
+  
+  exp-to-js-stmts(|i) : m@MemberAccess(e, x_attribute) -> result
+    with
+      (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e
+    ; m_inner := <get-multiplicity> e
+    ; debug
+    ; (exp_outer, stmts_outer, i'') := <access-to-js-stmts(|i')> (x_attribute, m_inner, exp_inner)
+    ; result := (exp_outer, <conc> (stmts_inner, stmts_outer), i'')  
+    
+  exp-to-js-stmts(|i) : r@Ref(x_attribute) -> <access-to-js-stmts(|i)> (x_attribute, One(), exp_source) 
+    with
+      exp_source := <int-to-varname ; js-var> 0 
+  
+  
+  access-to-js-stmts(|i) : (x_attribute, m_previous, exp_source) -> result
+    where
+      <name-is-derived> x_attribute
+    with
+      x_calc := <calculate-function-name> (x_attribute, m_previous)
+      ; exp_calc := js-exp |[x_calc(state, exp_source)]|
+      ; x_var := <int-to-varname> i
+      ; exp_var := js-exp |[x_var]|
+      ; stmts := js-stmt* |[
+          let x_var;
+          {
+            let calc = exp_calc;
+            state = calc.state;
+            x_var = calc.result;
+          }
+        ]|
+      ; result := (exp_var, stmts, <inc> i)
+        
+  
+  access-to-js-stmts(|i) : (x_attribute, m_previous, exp_source) -> result
+    with
+      x_getter := <getter-function-name> (x_attribute, m_previous)
+    ; exp_get := js-exp |[x_getter(state, exp_source)]|
+    ; x_var := <int-to-varname> i
+    ; exp_var := js-exp |[x_var]|
+    ; stmts := js-stmt* |[
+        let x_var = exp_get;
+      ]|
+    ; result := (exp_var, stmts, <inc> i)
+    
+    
+  // literal expressions
+  
+  literal-to-js-exp: LitString(s) -> <js-string> s
+  literal-to-js-exp: True() -> js-exp |[true]|
+  literal-to-js-exp: True() -> js-exp |[false]|
+  literal-to-js-exp: Int(i) -> <js-int> i
+  literal-to-js-exp: Float(f) -> <js-float> f
+  literal-to-js-exp: Datetime(d) -> js-exp |[moment(exp_dateString)]|
+    with
+      exp_dateString := <js-string> d
+  exp-to-js-exp: NoValue() -> js-exp |[null]|

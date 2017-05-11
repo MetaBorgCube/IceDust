@@ -33,7 +33,7 @@ rules
     ; stmt_getters* := <mapconcat(getter-functions)> attributes
     ; stmt_setters* := <filter(generate-setter)> attributes
     ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
-    ; stmt_calculate* := <filter(generate-calculate-function)> attributes
+    ; stmt_calculate* := <filter(generate-calculate-functions) ; concat> attributes
 //    ; stmt_memoize* := <filter(generate-memoize)> attributes
           
   

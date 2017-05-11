@@ -25,45 +25,74 @@ rules
     with
       x_functionName := <getter-function-name> (attribute, m)
     ; x_var := <id-var> m
+    ; x_result := "result"
+    ; x_value := "value"
     ; m_attribute := <name-get-multiplicity> attribute
-    ; stmt_body* := <getter-body> (m, m_attribute, attribute, x_var)
+    ; stmt_body* := <getter-body> (m, m_attribute, attribute, x_var, x_result, x_value)
   
-  getter-body: (m1, m2, attribute, x_name) -> stmt_body* 
+  getter-body: (m1, m2, attribute, x_name, x_result, x_value) -> stmt_body* 
     with
       exp_table := <attribute-table-expression> attribute
     with
       switch !(m1, m2)
         case (?One() <+ ?ZeroOrOne(), id):
-          exp_empty := <exp-empty> m2
+          exp_empty := <exp-attribute-empty> attribute
+        ; stmt_attribute* := <reference-attribute-in-object> (attribute, x_result, x_result)  
         ; stmt_body* := js-stmt* |[
-            let result = state.get(exp_table).get(x_name) || exp_empty;
+            let x_result = state.get(exp_table).get(x_name);
+            if(x_result === undefined){
+              x_result = exp_empty;
+            } 
+            stmt_attribute*
           ]|
         case ?(ZeroOrMore(), m2):
-          stmt_push* := <getter-push-statements> m2
+          stmt_push* := <getter-push-statements> (attribute, m2, x_result, x_value)
         ; stmt_body* := js-stmt* |[
-            let result = [];
+            let x_result = [];
             const table = state.get(exp_table);
             for(let id of x_name){
+              let x_value = table.get(id);
               stmt_push*
             }
           ]|
-        otherwise:
-          stmt_body* := js-stmt* |[fail();]|
+      end
+      
+  reference-attribute-in-object : (x_attribute, x_result, x_value) -> js-stmt* |[
+    if(x_value != null){
+      x_result = x_value.x_attribute;
+    }
+  ]|
+    where
+      <is-attributename ; attributename-is-normal-default> x_attribute
+    with
+      exp_empty := <name-get-multiplicity ; exp-empty> x_attribute
+  
+  reference-attribute-in-object = ![]
+        
+  getter-push-statements: (attribute, m, x_result, x_value) -> stmt_push*
+    with
+      stmts_attribute := <reference-attribute-in-object> (attribute, x_value, x_value)
+    with
+      switch !m
+        case One():
+          stmt_push* := js-stmt* |[
+            stmts_attribute
+            x_result.push(x_value);
+          ]|
+        case ZeroOrOne():
+          stmt_push* := js-stmt* |[
+            stmts_attribute
+            if(value !== null){
+              x_result.push(x_value);
+            }
+          ]|
+        case ZeroOrMore():
+          stmt_push* := js-stmt* |[
+            for(x_value of x_value){
+              stmts_attribute
+              x_result.push(x_value);
+            }
+          ]|
       end
   
-  getter-push-statements: One() -> js-stmt* |[
-    result.push(table.get(id));
-  ]|
   
-  getter-push-statements: ZeroOrMore() -> js-stmt* |[
-    for(let value of table.get(id)){
-      result.push(value);
-    }
-  ]|
-  
-  getter-push-statements: ZeroOrOne() -> js-stmt* |[
-    let value = table.get(id);
-    if(value != null) {
-      result.push(value);
-    }
-  ]|

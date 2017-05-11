@@ -4,6 +4,7 @@ imports
 
   signatures/Types-sig
   api/model-names-api  
+  api/types-api
 
 rules
 
@@ -17,6 +18,15 @@ rules
   exp-empty-one = !js-exp |[null]|
   exp-empty-many = <exp-collection> []
   
+  exp-attribute-empty: attribute -> js-exp |[undefined]|
+    where
+      name-is-derived ; debug 
+    ; <name-get-multiplicity ; upper-one> attribute
+    ; debug
+    
+  exp-attribute-empty = debug ; name-get-multiplicity ; debug ; exp-empty
+      
+    
   exp-collection : exp_elements* -> js-exp |[
     [exp_elements*] 
   ]|
