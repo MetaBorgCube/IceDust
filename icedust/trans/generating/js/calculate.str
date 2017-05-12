@@ -56,14 +56,12 @@ rules
     }
   ]|
     where
-      exp_attribute := <attributename-get-expr ; debug> attribute
+      exp_attribute := <attributename-get-expr> attribute
     with
       exp_table := <attribute-table-expression> attribute
     ; x_result := "result"
     ; x_getterFunctionName := <getter-function-name> attribute
     ; x_calculateFunctionName := <calculate-function-name> attribute
     ; x_first := <int-to-varname> 0
-//    ; dependson := <name-get-dependson-paths> attribute
-//    ; stmt_access* := <dependson-to-access-statements> dependson
-    ; (exp_result, stmt_calculate*, _) := <exp-to-js-stmts(|1) ; debug> exp_attribute 
+    ; (exp_result, stmt_calculate*, _) := <exp-to-js-stmts(|1)> exp_attribute 
       

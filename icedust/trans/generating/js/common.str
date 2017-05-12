@@ -16,15 +16,14 @@ rules
   exp-empty : OneOrMore() -> <exp-empty-many>
         
   exp-empty-one = !js-exp |[null]|
-  exp-empty-many = <exp-collection> []
+  exp-empty-many = !js-exp |[EMPTY_ARRAY]|
   
   exp-attribute-empty: attribute -> js-exp |[undefined]|
     where
-      name-is-derived ; debug 
+      name-is-derived 
     ; <name-get-multiplicity ; upper-one> attribute
-    ; debug
     
-  exp-attribute-empty = debug ; name-get-multiplicity ; debug ; exp-empty
+  exp-attribute-empty = name-get-multiplicity ; exp-empty
       
     
   exp-collection : exp_elements* -> js-exp |[

@@ -33,6 +33,18 @@ rules
     import { List, Set, Map } from 'immutable';
     import _ from 'lodash';
     import moment from 'moment';
-    import { sum } from 'lib/expression';
+    import { 
+      sum, 
+      min,
+      max,
+      avg,
+      concat,
+      count,
+      conj,
+      disj
+    } from 'lib/expression';
+    import {
+      EMPTY_ARRAY
+    } from 'lib/runtime';
   ]|
   

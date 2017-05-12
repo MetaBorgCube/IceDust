@@ -10,5 +10,18 @@ rules
     
     
     js-add = !Addition(<Fst>, <Snd>)
+    js-subtract = !Substraction(<Fst>, <Snd>)
+    js-mul = !Multiplication(<Fst>, <Snd>)
+    js-div = !Division(<Fst>, <Snd>)
+    js-gt = !Greater(<Fst>, <Snd>)
+    js-gte = !GreaterEquals(<Fst>, <Snd>)
+    js-lt = !Lower(<Fst>, <Snd>)
+    js-lte = !LowerEquals(<Fst>, <Snd>)
+    js-eq = !Equals(<Fst>, <Snd>)
+    js-eqq = !EqualsStrict(<Fst>, <Snd>)
+    js-neq = !NotEquals(<Fst>, <Snd>)
+    js-neqq = !NotEqualsStrict(<Fst>, <Snd>)
+    js-and = !And(<Fst>, <Snd>)
+    js-or = !Or(<Fst>, <Snd>)
     
     js-var: x_var -> js-exp |[x_var]|

@@ -4,6 +4,7 @@ imports
 
   api/types-names-api
   api/model-names-api
+  api/expressions-api
 
   signatures/Expressions-sig
   js/js-util
@@ -22,16 +23,73 @@ rules
   
   binexp-to-js-stmts(get, merge|i) : e -> result
     where
-      (e1, e2) := <get> e
+      (e1, e2) := <get ; debug> e
     with
       (exp_l, stmts_l, i') := <exp-to-js-stmts(|i)> e1
     ; (exp_r, stmts_r, i'') := <exp-to-js-stmts(|i')> e2
     ; exp_merge := <merge> (exp_l, exp_r)
-    ; stmts := <conc> (stmts_l, stmts_r)
-    ; result := (exp_merge, stmts, i'')
+    ; x_merge := <int-to-varname> i''
+    ; stmt_merge := js-stmt* |[let x_merge = exp_merge; ]|
+    ; stmts := <conc> (stmts_l, stmts_r, stmt_merge)
+    ; result := (<js-var> x_merge, stmts, <inc> i'')
   
   
-  exp-to-js-stmts(|i) = binexp-to-js-stmts(?Addition(e1, e2) ; !(e1,e2), js-add|i) 
+  exp-to-js-stmts(|i) = ?Addition(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-add|i) 
+  exp-to-js-stmts(|i) = ?Subtraction(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-subtract|i)
+  exp-to-js-stmts(|i) = ?Multiplication(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-mul|i)
+  exp-to-js-stmts(|i) = ?Division(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-div|i) 
+  exp-to-js-stmts(|i) = ?FloorDivision(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), \(exp_lhs, exp_rhs) -> js-exp|[
+    Math.floor(exp_lhs / exp_rhs)
+  ]|\|i)
+  
+  exp-to-js-stmts(|i) = ?LessThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-lt|i)
+  exp-to-js-stmts(|i) = ?LessThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck( !(e1,e2), js-lte|i)
+  exp-to-js-stmts(|i) = ?GreaterThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gt|i)
+  exp-to-js-stmts(|i) = ?GreaterThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gte|i)
+  exp-to-js-stmts(|i) = ?Equals(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-eqq|i)
+  exp-to-js-stmts(|i) = ?Inequal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-neqq|i)
+  exp-to-js-stmts(|i) = ?And(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
+  exp-to-js-stmts(|i) = ?And2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
+  exp-to-js-stmts(|i) = ?Or(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-or|i)
+  exp-to-js-stmts(|i) = ?Or2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2),js-or|i)
+  
+  exp-to-js-stmts(|i) = ?ChoiceLeft(e1, e2) ; binexp-to-js-stmts(
+      !(e1,e2) 
+    , \(exp_lhs, exp_rhs) -> <merge-choice-left> (e1, e2, exp_lhs, exp_rhs)\
+    | i
+  )
+  
+  merge-choice-left : (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
+    exp_lhs !== exp_empty ? exp_lhs : exp_rhs
+  ]|
+    with exp_empty := <get-multiplicity ; exp-empty> e1 
+  
+  
+  binexp-to-js-stmts-with-nullcheck(get, merge|i) = get ; ?(e1, e2) ; binexp-to-js-stmts(!(e1, e2), merge-null-check(merge|e1, e2)|i)
+  
+  merge-null-check(merge|e1, e2) : (exp_lhs, exp_rhs) -> exp_result
+    with
+      exp_merge := <merge> (exp_lhs, exp_rhs)
+      ; switch !(e1, e2)
+        case (is-literal, is-literal):
+          exp_result := exp_merge
+        case (is-literal, id):
+          exp_result := js-exp |[exp_rhs !== null ? exp_merge : null]|
+        case (id, is-literal):
+          exp_result := js-exp |[exp_lhs !== null ? exp_merge : null]|
+        case (id, id):
+          exp_result := js-exp |[exp_lhs !== null && exp_rhs !== null ? exp_merge : null]|
+      end
+  
+//  merge-choice-left: (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
+//  
+//    exp_lhs === exp_empty ? 
+//  ]|
+//    with
+//      exp_empty := <get-multiplicity ; exp-empty> e1
+      
+  
+  
   
   exp-to-js-stmts(|i) = literal-to-js-exp ; !(<id>, [], i)
   
@@ -49,12 +107,12 @@ rules
     ]|
     ; result := (exp_var, stmts, <inc> i')
     
+  //dereferencing
   
   exp-to-js-stmts(|i) : m@MemberAccess(e, x_attribute) -> result
     with
       (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e
     ; m_inner := <get-multiplicity> e
-    ; debug
     ; (exp_outer, stmts_outer, i'') := <access-to-js-stmts(|i')> (x_attribute, m_inner, exp_inner)
     ; result := (exp_outer, <conc> (stmts_inner, stmts_outer), i'')  
     
