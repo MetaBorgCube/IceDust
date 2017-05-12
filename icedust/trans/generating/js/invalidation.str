@@ -36,9 +36,11 @@ rules
   flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
     with
       (m1, m2, x_var, field) := <collect-things> exp
+    ; debug
     ; m_lub := <lub-simple> (m1, m2)
     ; x_functionName := <invalidation-function-name> field
-    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
+//    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
+    ; stmt_invalidation := <statement-invalidation> (m1, x_functionName, x_var)
   
   statement-invalidation : (One(), x_functionName, x_var) -> js-stmt |[
     state = x_functionName(state, x_var);

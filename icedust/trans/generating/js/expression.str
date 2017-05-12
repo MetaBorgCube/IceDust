@@ -113,15 +113,17 @@ rules
     with
       (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e
     ; m_inner := <get-multiplicity> e
-    ; (exp_outer, stmts_outer, i'') := <access-to-js-stmts(|i')> (x_attribute, m_inner, exp_inner)
+    ; m_outer := <get-multiplicity> m
+    ; (exp_outer, stmts_outer, i'') := <access-to-js-stmts(|i')> (x_attribute, m_inner, m_outer, exp_inner)
     ; result := (exp_outer, <conc> (stmts_inner, stmts_outer), i'')  
     
-  exp-to-js-stmts(|i) : r@Ref(x_attribute) -> <access-to-js-stmts(|i)> (x_attribute, One(), exp_source) 
+  exp-to-js-stmts(|i) : r@Ref(x_attribute) -> <access-to-js-stmts(|i)> (x_attribute, One(), m, exp_source) 
     with
       exp_source := <int-to-varname ; js-var> 0 
+    ; m := <get-multiplicity> r
   
   
-  access-to-js-stmts(|i) : (x_attribute, m_previous, exp_source) -> result
+  access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     where
       <name-is-derived> x_attribute
     with
@@ -129,18 +131,25 @@ rules
       ; exp_calc := js-exp |[x_calc(state, exp_source)]|
       ; x_var := <int-to-varname> i
       ; exp_var := js-exp |[x_var]|
+      ; exp_emptyPrevious := <exp-empty> m_previous
+      ; m_lub := <lub-simple> (m_previous, m_current)
+      ; exp_empty := <exp-empty> m_lub
       ; stmts := js-stmt* |[
           let x_var;
           {
-            let calc = exp_calc;
-            state = calc.state;
-            x_var = calc.result;
+            if(exp_source !== exp_emptyPrevious){
+              let calc = exp_calc;
+              state = calc.state;
+              x_var = calc.result;
+            } else {
+              x_var = exp_empty;
+            }
           }
         ]|
       ; result := (exp_var, stmts, <inc> i)
         
   
-  access-to-js-stmts(|i) : (x_attribute, m_previous, exp_source) -> result
+  access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     with
       x_getter := <getter-function-name> (x_attribute, m_previous)
     ; exp_get := js-exp |[x_getter(state, exp_source)]|
