@@ -60,6 +60,9 @@ rules
   reference-attribute-in-object : (x_attribute, x_result, x_value) -> js-stmt* |[
     if(x_value != null){
       x_result = x_value.x_attribute;
+      if(x_result === undefined){
+        x_result = exp_empty;
+      }
     }
   ]|
     where

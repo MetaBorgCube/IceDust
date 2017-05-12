@@ -24,4 +24,9 @@ rules
     js-and = !And(<Fst>, <Snd>)
     js-or = !Or(<Fst>, <Snd>)
     
+    js-not = !Not(<id>)
+    
+    js-null = !Null()
+    js-undefined = !Undefined()
+    
     js-var: x_var -> js-exp |[x_var]|

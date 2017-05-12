@@ -1,6 +1,8 @@
 module generating/js/calculate
 
 imports
+  js/js-util
+  
   api/model-names-api
 
   generating/js/names
@@ -42,13 +44,12 @@ rules
   generate-calculate-function: attribute -> js-stmt|[
     export function x_calculateFunctionName(state, id){
       let x_result = x_getterFunctionName(state, id);
-      if(x_result === undefined){
+      if(x_result === exp_uncalculatedValue){
         let x_first = id;
         stmt_calculate*
         x_result = exp_result;
+        state = state.update(exp_table, exp_updateTable);
       }
-      state = state.update(exp_table, table => table.set(id, result));
-      
       return {
         state,
         x_result
@@ -56,12 +57,25 @@ rules
     }
   ]|
     where
-      exp_attribute := <attributename-get-expr> attribute
+      exp_attribute := <attributename-get-expr ; debug> attribute
     with
       exp_table := <attribute-table-expression> attribute
     ; x_result := "result"
     ; x_getterFunctionName := <getter-function-name> attribute
+    ; exp_uncalculatedValue := <exp-uncalculated-value> attribute
     ; x_calculateFunctionName := <calculate-function-name> attribute
     ; x_first := <int-to-varname> 0
     ; (exp_result, stmt_calculate*, _) := <exp-to-js-stmts(|1)> exp_attribute 
+    ; exp_updateTable := <exp-update-table> (attribute, x_result)
       
+  exp-uncalculated-value = name-is-default ; js-null
+  exp-uncalculated-value = js-undefined
+      
+  exp-update-table: (x_attribute, x_result) -> js-exp |[
+    table => table.update(id, e => Object.assign({}, e, {x_attribute: x_result}))
+  ]|
+    where
+      <name-is-default> x_attribute
+      
+  exp-update-table: (x_attribute, x_result) -> js-exp |[table => table.set(id, x_result)]|
+  

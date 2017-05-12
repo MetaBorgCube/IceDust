@@ -23,7 +23,7 @@ rules
   
   binexp-to-js-stmts(get, merge|i) : e -> result
     where
-      (e1, e2) := <get ; debug> e
+      (e1, e2) := <get> e
     with
       (exp_l, stmts_l, i') := <exp-to-js-stmts(|i)> e1
     ; (exp_r, stmts_r, i'') := <exp-to-js-stmts(|i')> e2
@@ -46,7 +46,7 @@ rules
   exp-to-js-stmts(|i) = ?LessThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck( !(e1,e2), js-lte|i)
   exp-to-js-stmts(|i) = ?GreaterThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gt|i)
   exp-to-js-stmts(|i) = ?GreaterThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gte|i)
-  exp-to-js-stmts(|i) = ?Equals(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-eqq|i)
+  exp-to-js-stmts(|i) = ?Equal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-eqq|i)
   exp-to-js-stmts(|i) = ?Inequal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-neqq|i)
   exp-to-js-stmts(|i) = ?And(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
   exp-to-js-stmts(|i) = ?And2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
@@ -64,6 +64,29 @@ rules
   ]|
     with exp_empty := <get-multiplicity ; exp-empty> e1 
   
+  exp-to-js-stmts(|i) = ?Merge(e1, e2) ; binexp-to-js-stmts(
+      !(e1, e2)
+    , \(exp_lhs, exp_rhs) -> <merge-merge> (e1, e2, exp_lhs, exp_rhs)\
+    | i
+  )
+  
+  merge-merge : (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
+    exp_lhs2.concat(exp_rhs2)
+  ]|
+    with
+      exp_lhs2 := <exp-to-list> (e1, exp_lhs) 
+    ; exp_rhs2 := <exp-to-list> (e2, exp_rhs)
+  
+  exp-to-list: (e, exp_e) -> exp_result
+    with
+      exp_empty := <exp-empty> ZeroOrMore()
+    ; switch <get-multiplicity> e
+        case upper-one:
+          exp_result := js-exp |[exp_e == null ? exp_empty : [exp_e]]|
+        case upper-many:
+          exp_result := exp_e
+      end
+    
   
   binexp-to-js-stmts-with-nullcheck(get, merge|i) = get ; ?(e1, e2) ; binexp-to-js-stmts(!(e1, e2), merge-null-check(merge|e1, e2)|i)
   
@@ -81,31 +104,80 @@ rules
           exp_result := js-exp |[exp_lhs !== null && exp_rhs !== null ? exp_merge : null]|
       end
   
-//  merge-choice-left: (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
-//  
-//    exp_lhs === exp_empty ? 
-//  ]|
-//    with
-//      exp_empty := <get-multiplicity ; exp-empty> e1
-      
+  //unary expressions
+  
+  exp-to-js-stmts(|i) = ?Not(e) ; unexp-to-js-stmts(!e, js-not|i)
+  exp-to-js-stmts(|i) = ?Cast(e, _) ; unexp-to-js-stmts(
+      !e 
+    , \exp_e -> js-exp |[
+      exp_e
+    ]|\
+    | i
+  )
+  
+  exp-to-js-stmts(|i) = ?Sum(e) ; unexp-to-js-stmts(!e, js-sum|i)
+  exp-to-js-stmts(|i) = ?Min(e) ; unexp-to-js-stmts(!e, js-min|i)
+  exp-to-js-stmts(|i) = ?Max(e) ; unexp-to-js-stmts(!e, js-max|i)
+  exp-to-js-stmts(|i) = ?Avg(e) ; unexp-to-js-stmts(!e, js-avg|i)
+  exp-to-js-stmts(|i) = ?Conj(e) ; unexp-to-js-stmts(!e, js-conj|i)
+  exp-to-js-stmts(|i) = ?Disj(e) ; unexp-to-js-stmts(!e, js-disj|i)
+  exp-to-js-stmts(|i) = ?Count(e) ; unexp-to-js-stmts(!e, !(e, <id>); exp-to-list ; js-count|i)
+  
+  js-sum = js-call(|"sum")
+  js-min = js-call(|"min")
+  js-max = js-call(|"max")
+  js-avg = js-call(|"avg")
+  js-count = js-call(|"count")
+  js-conj = js-call(|"conj")
+  js-disj = js-call(|"disj")
   
   
-  
-  exp-to-js-stmts(|i) = literal-to-js-exp ; !(<id>, [], i)
-  
+  js-call(|x_fn): exp_e -> js-exp |[x_fn(exp_e)]|
   
   //operations
   
-  exp-to-js-stmts(|i) : Sum(e) -> result
+//  exp-to-js-stmts(|i) : Sum(e) -> result
+//    with
+//      (exp_inner, stmt_inner*, i') := <exp-to-js-stmts(|i)> e
+//    ; x_var := <int-to-varname> i'
+//    ; exp_var := js-exp |[x_var]|
+//    ; stmts := js-stmt* |[
+//      stmt_inner*
+//      let x_var = sum(exp_inner);
+//    ]|
+//    ; result := (exp_var, stmts, <inc> i')    
+  
+  
+  unexp-to-js-stmts(get, merge|i): e -> result
+    where
+      e_inner := <get> e
+      ; debug
     with
-      (exp_inner, stmt_inner*, i') := <exp-to-js-stmts(|i)> e
-    ; x_var := <int-to-varname> i'
-    ; exp_var := js-exp |[x_var]|
-    ; stmts := js-stmt* |[
-      stmt_inner*
-      let x_var = sum(exp_inner);
+     (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e_inner
+    ; x_merge := <int-to-varname> i'
+    ; exp_merge := <merge> exp_inner
+    ; stmts_result := js-stmt* |[
+      let x_merge = exp_merge;
     ]|
-    ; result := (exp_var, stmts, <inc> i')
+    ; exp_result := <js-var> x_merge
+    ; stmts := <conc> (stmts_inner, stmts_result)
+    ; result := (exp_result, stmts, <inc> i')
+  
+    
+  // if statement
+  
+  exp-to-js-stmts(|i): If(e_cond, e_true, e_false) -> result 
+    with
+      (exp_cond, stmts_cond, i') := <exp-to-js-stmts(|i)> e_cond
+    ; (exp_true, stmts_true, i'') := <exp-to-js-stmts(|i')> e_true
+    ; (exp_false, stmts_false, i''') := <exp-to-js-stmts(|i'')> e_false
+    ; x_var := <int-to-varname> i'''
+    ; stmts_exec := js-stmt* |[
+      let x_var = exp_cond ? exp_true : exp_false;
+    ]|
+    ; stmts := <conc> (stmts_cond, stmts_true, stmts_false, stmts_exec)
+    ; exp_result := <js-var> x_var
+    ; result := (exp_result, stmts, <inc> i''')
     
   //dereferencing
   
@@ -163,9 +235,11 @@ rules
     
   // literal expressions
   
+  exp-to-js-stmts(|i) = literal-to-js-exp ; !(<id>, [], i)
+  
   literal-to-js-exp: LitString(s) -> <js-string> s
   literal-to-js-exp: True() -> js-exp |[true]|
-  literal-to-js-exp: True() -> js-exp |[false]|
+  literal-to-js-exp: False() -> js-exp |[false]|
   literal-to-js-exp: Int(i) -> <js-int> i
   literal-to-js-exp: Float(f) -> <js-float> f
   literal-to-js-exp: Datetime(d) -> js-exp |[moment(exp_dateString)]|
