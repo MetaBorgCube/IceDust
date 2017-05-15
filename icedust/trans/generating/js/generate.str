@@ -5,7 +5,7 @@ imports
   generating/js/model
   generating/js/init
   generating/js/data
-  
+  generating/js/execute
   
   libstratego-gpp
   lib/js/pp/spoofaxJS-pp
@@ -19,11 +19,13 @@ rules
       ; stmt_imports* := <generate-imports>
       ; stmt_init* := <generate-init> moduleName
       ; stmt_data* := <generate-data> moduleName
+      ; stmt_execute := <generate-execute> moduleName
       ; program := js-program |[
             stmt_imports*
             stmt_init*
             stmt_model*
             stmt_data*
+            stmt_execute
         ]|
       ; result := <parenthesize-spoofaxJS
         ; prettyprint-spoofaxJS

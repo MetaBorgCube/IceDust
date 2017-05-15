@@ -34,6 +34,7 @@ rules
     ; result := (<js-var> x_merge, stmts, <inc> i'')
   
   
+  exp-to-js-stmts = exp-to-js-stmts(|1)
   exp-to-js-stmts(|i) = ?Addition(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-add|i) 
   exp-to-js-stmts(|i) = ?Subtraction(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-subtract|i)
   exp-to-js-stmts(|i) = ?Multiplication(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-mul|i)
@@ -222,6 +223,8 @@ rules
         
   
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
+    where
+      <name-is-normal> x_attribute
     with
       x_getter := <getter-function-name> (x_attribute, m_previous)
     ; exp_get := js-exp |[x_getter(state, exp_source)]|
@@ -232,7 +235,13 @@ rules
       ]|
     ; result := (exp_var, stmts, <inc> i)
     
-    
+  
+  //no attribute access. default to access field of source
+  access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
+    with
+      exp_access := js-exp |[exp_source.x_attribute]|
+    ; result := (exp_access, [], i)
+  
   // literal expressions
   
   exp-to-js-stmts(|i) = literal-to-js-exp ; !(<id>, [], i)

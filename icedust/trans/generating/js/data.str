@@ -1,4 +1,4 @@
-module data
+module generating/js/data
 
 imports
 
@@ -23,12 +23,23 @@ rules
     export function init(state){
       stmts_instances
       stmts_set
-      return state;
+      return {
+        state,
+        ids: exp_ids
+      };
     }
   ]|
     with 
       stmts_instances := <mapconcat(init-data-objects)> entitynames
     ; stmts_set := <mapconcat(init-data-set-attributes)> entitynames
+    ; prop_id* := <map(instance-to-id-prop)> entitynames
+    ; exp_ids := js-exp |[
+      {
+        prop_id*
+      }
+    ]|
+    
+  instance-to-id-prop : x_instance -> js-prop |[x_instance : x_instance.id]|
     
   init-data-objects : x_instance -> js-stmt* |[
     const x_instance = {id: exp_id};
