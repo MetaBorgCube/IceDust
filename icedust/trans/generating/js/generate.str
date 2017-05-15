@@ -4,6 +4,7 @@ imports
   
   generating/js/model
   generating/js/init
+  generating/js/data
   
   
   libstratego-gpp
@@ -17,10 +18,12 @@ rules
       stmt_model* := <generate-model-statements> moduleName
       ; stmt_imports* := <generate-imports>
       ; stmt_init* := <generate-init> moduleName
+      ; stmt_data* := <generate-data> moduleName
       ; program := js-program |[
             stmt_imports*
             stmt_init*
             stmt_model*
+            stmt_data*
         ]|
       ; result := <parenthesize-spoofaxJS
         ; prettyprint-spoofaxJS
@@ -44,7 +47,8 @@ rules
       disj
     } from 'lib/expression';
     import {
-      EMPTY_ARRAY
+      EMPTY_ARRAY,
+      generateUniqueId
     } from 'lib/runtime';
   ]|
   

@@ -1,0 +1,34 @@
+module data
+
+imports
+
+  api/module-names-api
+  api/data-names-api
+  
+  generating/js/names
+
+rules
+
+  generate-data : x_module -> js-stmt* |[
+    stmt_initFunction
+  ]|
+    with
+      entityNames := <modulename-get-entityinstancenames ; debug> x_module
+    ; stmt_initFunction := <generate-init-function> entityNames
+  
+  generate-init-function: entitynames -> js-stmt |[
+    export function init(state){
+      stmts_instances
+    }
+  ]|
+    with 
+      stmts_instances := <mapconcat(init-data-objects)> entitynames
+    
+  init-data-objects : x_instance -> js-stmt* |[
+    const x_instance = {id: generateUniqueId()};
+    state = state.update(exp_table, table => {return table.set(x_instance.id, x_instance);});
+  ]|
+    with
+      x_tpe := <entityinstancename-get-type> x_instance
+    ; exp_table := <attribute-table-expression> x_tpe
+        

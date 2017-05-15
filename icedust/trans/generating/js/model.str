@@ -23,7 +23,6 @@ rules
       stmt_setters*
       stmt_invalidations*
       stmt_calculate*
-//      stmt_memoize*
   ]|
   with
     attributes := <

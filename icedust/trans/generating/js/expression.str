@@ -197,7 +197,7 @@ rules
   
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     where
-      <name-is-derived> x_attribute
+      <name-is-derived <+ name-is-default> x_attribute
     with
       x_calc := <calculate-function-name> (x_attribute, m_previous)
       ; exp_calc := js-exp |[x_calc(state, exp_source)]|
