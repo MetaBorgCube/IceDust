@@ -21,6 +21,7 @@ rules
   generate-model-statements : moduleName -> js-stmt* |[
       stmt_getters*
       stmt_setters*
+      stmt_add*
       stmt_invalidations*
       stmt_calculate*
   ]|
@@ -31,6 +32,7 @@ rules
     > moduleName
     ; stmt_getters* := <mapconcat(getter-functions)> attributes
     ; stmt_setters* := <filter(generate-setter)> attributes
+    ; stmt_add* := <filter(generate-add)> attributes
     ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
     ; stmt_calculate* := <filter(generate-calculate-functions) ; concat> attributes
 //    ; stmt_memoize* := <filter(generate-memoize)> attributes

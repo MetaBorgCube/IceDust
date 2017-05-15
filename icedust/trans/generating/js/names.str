@@ -27,6 +27,7 @@ rules
   
   getter-function-name = attribute-function-name(|"get")
   setter-function-name = attribute-function-name(|"set")
+  add-function-name = attribute-function-name(|"add")
   invalidation-function-name = attribute-function-name(|"invalidate")
   memoize-function-name = attribute-function-name(|"memoize")
   calculate-function-name = attribute-function-name(|"calculate")
@@ -40,11 +41,11 @@ rules
       
   attribute-table-expression: attribute -> <js-string> x_name
     with
-      switch !attribute
-        case attributename-is-normal-default:
+      switch id
+        case is-attributename ; attributename-is-normal-default:
           x_name := <attributename-get-entityname> attribute
-        case is-attributename:
+        case attributename-is-derivation <+ is-relationname:
           x_name := <attribute-name> attribute
         case is-string:
-          x_name := attribute 
+          x_name := attribute
       end

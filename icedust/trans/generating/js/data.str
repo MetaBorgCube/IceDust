@@ -2,10 +2,13 @@ module data
 
 imports
 
+  js/js-util
+
   api/module-names-api
   api/data-names-api
   
   generating/js/names
+  generating/js/expression
 
 rules
 
@@ -19,16 +22,74 @@ rules
   generate-init-function: entitynames -> js-stmt |[
     export function init(state){
       stmts_instances
+      stmts_set
+      return state;
     }
   ]|
     with 
       stmts_instances := <mapconcat(init-data-objects)> entitynames
+    ; stmts_set := <mapconcat(init-data-set-attributes)> entitynames
     
   init-data-objects : x_instance -> js-stmt* |[
-    const x_instance = {id: generateUniqueId()};
+    const x_instance = {id: exp_id};
     state = state.update(exp_table, table => {return table.set(x_instance.id, x_instance);});
   ]|
     with
       x_tpe := <entityinstancename-get-type> x_instance
     ; exp_table := <attribute-table-expression> x_tpe
+    ; exp_id := <js-string> x_instance
         
+        
+  init-data-set-attributes: x_instance -> js-stmt* |[
+    stmts_attributes
+    stmts_relations
+  ]|
+    with
+      attributes := <entityinstancename-get-attributevaluenames> x_instance
+    ; stmts_attributes := <mapconcat(attributevalue-to-js-stmts)> attributes
+    ; relations := <entityinstancename-get-rri-left> x_instance
+    ; stmts_relations := <mapconcat(relationvalue-to-js-stmts)> relations
+    
+    
+  attributevalue-to-js-stmts : x_attribute -> stmts_result
+    with
+      x_instance := <membervaluename-get-entityinstancename> x_attribute
+    ; x_setterFunction := <setter-function-name> x_attribute
+    ; e_value := <membervaluename-get-expr> x_attribute
+    ; (exp_value, stmts_value, _) := <exp-to-js-stmts(|0)> e_value
+    ; stmt_setter := js-stmt |[
+      state = x_setterFunction(state, x_instance.id, exp_value);
+    ]|
+    ; switch !stmts_value
+      case ?Nil():
+        stmts_result := [stmt_setter]
+      otherwise:
+        stmts_result := js-stmt*|[
+          {
+            stmts_value
+            stmt_setter
+          }
+        ]|
+    end
+    
+  relationvalue-to-js-stmts: x_relation -> stmts_result
+    with
+      x_instance := <membervaluename-get-entityinstancename> x_relation
+    ; values := <membervaluename-get-values> x_relation
+    ; stmts_result := <map(relation-setter-js-stmt(|x_instance, x_relation))> values
+    
+  relation-setter-js-stmt(|x_instance, x_relation): x_item -> js-stmt |[
+    state = x_function(state, x_instance.id, x_item.id);
+  ]|
+    with
+      x_origin := <membervaluename-get-origin> x_relation
+    ; m_origin := <name-get-multiplicity> x_origin
+    with
+      switch !m_origin
+        case upper-many:
+          x_function := <add-function-name> x_origin
+        otherwise:
+          x_function := <setter-function-name> x_origin
+      end
+      
+    

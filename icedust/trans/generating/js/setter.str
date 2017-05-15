@@ -7,13 +7,14 @@ imports
   js/js-util
   
   api/model-names-api
+  api/types-api
   
   generating/js/names
   generating/js/common
 
 rules
 
-generate-setter: attribute -> js-stmt |[
+  generate-setter: attribute -> js-stmt |[
     export function x_methodname (state, id, value){
       stmt_setter*
       return state;
@@ -131,3 +132,21 @@ generate-setter: attribute -> js-stmt |[
     }
     inverseTable = inverseTable.set(removedId, inverseIds);
   ]|
+  
+  
+  //add functions
+  
+  generate-add: x_attribute -> js-stmt |[
+    export function x_addFunction(state, id, value) {
+      const previousValue = x_getter(state, id);
+      const nextValue = previousValue.concat(value);
+      return x_setter(state, id, nextValue);
+    }
+  ]|
+    where
+      <is-relationname ; name-get-multiplicity ; upper-many> x_attribute
+    with
+      x_addFunction := <add-function-name> x_attribute
+    ; x_getter := <getter-function-name> x_attribute
+    ; x_setter := <setter-function-name> x_attribute
+      
