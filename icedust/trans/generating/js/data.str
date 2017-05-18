@@ -13,21 +13,22 @@ imports
 rules
 
   generate-data : x_module -> js-stmt* |[
-    stmt_initFunction
+    stmts_initFunction
   ]|
     with
-      entityNames := <modulename-get-entityinstancenames ; debug> x_module
-    ; stmt_initFunction := <generate-init-function> entityNames
+      entityNames := <modulename-get-entityinstancenames> x_module
+    ; stmts_initFunction := <generate-init-function> entityNames
   
-  generate-init-function: entitynames -> js-stmt |[
-    export function init(state){
+  generate-init-function: entitynames -> js-stmt* |[
+    function init(state){
       stmts_instances
       stmts_set
       return {
-        state,
+        state: state,
         ids: exp_ids
       };
     }
+    module.exports.init = init;
   ]|
     with 
       stmts_instances := <mapconcat(init-data-objects)> entitynames
@@ -42,8 +43,10 @@ rules
   instance-to-id-prop : x_instance -> js-prop |[x_instance : x_instance.id]|
     
   init-data-objects : x_instance -> js-stmt* |[
-    const x_instance = {id: exp_id};
-    state = state.update(exp_table, table => {return table.set(x_instance.id, x_instance);});
+    var x_instance = {id: exp_id};
+    state = state.update(exp_table, function(table){
+      return table.set(x_instance.id, x_instance);
+    });
   ]|
     with
       x_tpe := <entityinstancename-get-type> x_instance

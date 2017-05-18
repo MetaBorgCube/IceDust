@@ -1,4 +1,4 @@
-module js/signatures/spoofaxJS-sig
+module js/signatures/javascript-sig
 
 imports
   js/signatures/Common-sig

@@ -9,7 +9,8 @@ imports
   
 rules
   generate-init: moduleName -> js-stmt* |[
-    export const emptyState = exp_initialState;
+    var emptyState = exp_initialState;  
+    module.exports.emptyState = emptyState;
   ]|
     with
       exp_initialState := <exp-initial-state> moduleName

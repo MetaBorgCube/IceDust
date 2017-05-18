@@ -8,15 +8,16 @@ imports
 
 rules
 
-  generate-execute: x_moduleName -> js-stmt |[
-    export function execute(state, x_scope){
-      let x_result = [];
+  generate-execute: x_moduleName -> js-stmt* |[
+    function execute(state, x_scope){
+      var x_result = [];
       stmts_expressions
       return {
-        state,
-        x_result
+        state: state,
+        x_result: x_result
       };
     }
+    module.exports.execute = execute;
   ]|
     with
       x_result := "result"
@@ -26,40 +27,14 @@ rules
   
   generate-execute-expression-stmt(|x_result, x_scope): e -> js-stmt |[
     {
-      let x_var = x_scope;
+      var x_var = x_scope;
       stmts_e
-      x_result = x_result.concat(exp_ref);
+      x_result = x_result.concat([exp_ref]);
     }
   ]|
     with
       x_var := <int-to-varname> 0
     ; (exp_ref, stmts_e, _) := <exp-to-js-stmts(|1)> e
-  
-  
-//  generate-execute-expression: MemberAccess(e_inner, x_ref) -> (exp_inner, stmts)
-//    with
-//      exp_ref := js-exp |[ids.x_ref]|
-//    ; i := 0
-//    ; x_var := <int-to-varname> i
-//    ; stmt_ref := js-stmt |[let x_var = exp_ref;]|
-//    ; (exp_inner, stmts_inner, _) := <exp-to-js-stmts(|i)> e_inner
-//    ; stmts := js-stmt* |[
-//      let x_var = ids;
-//      stmts_inner
-//    ]| 
-//    
-//  
-//  generate-execute-expression: Ref(x_ref) -> (exp_ref, [])
-//    with
-//      exp_ref := js-exp |[ids.x_ref]|
-//      
-//      
-//  generate-execute-expression: e -> (exp_ref, stmts_e)
-//    with
-//      (exp_ref, stmts_e, _) := <exp-to-js-stmts> e 
-  
-  
-  
   
   
   

@@ -3,6 +3,7 @@ module expression
 imports
 
   api/types-names-api
+  api/types-api
   api/model-names-api
   api/expressions-api
 
@@ -29,7 +30,7 @@ rules
     ; (exp_r, stmts_r, i'') := <exp-to-js-stmts(|i')> e2
     ; exp_merge := <merge> (exp_l, exp_r)
     ; x_merge := <int-to-varname> i''
-    ; stmt_merge := js-stmt* |[let x_merge = exp_merge; ]|
+    ; stmt_merge := js-stmt* |[var x_merge = exp_merge; ]|
     ; stmts := <conc> (stmts_l, stmts_r, stmt_merge)
     ; result := (<js-var> x_merge, stmts, <inc> i'')
   
@@ -59,6 +60,7 @@ rules
     , \(exp_lhs, exp_rhs) -> <merge-choice-left> (e1, e2, exp_lhs, exp_rhs)\
     | i
   )
+  
   
   merge-choice-left : (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
     exp_lhs !== exp_empty ? exp_lhs : exp_rhs
@@ -124,16 +126,16 @@ rules
   exp-to-js-stmts(|i) = ?Disj(e) ; unexp-to-js-stmts(!e, js-disj|i)
   exp-to-js-stmts(|i) = ?Count(e) ; unexp-to-js-stmts(!e, !(e, <id>); exp-to-list ; js-count|i)
   
-  js-sum = js-call(|"sum")
-  js-min = js-call(|"min")
-  js-max = js-call(|"max")
-  js-avg = js-call(|"avg")
-  js-count = js-call(|"count")
-  js-conj = js-call(|"conj")
-  js-disj = js-call(|"disj")
+  js-sum = js-exp-call(|"sum")
+  js-min = js-exp-call(|"min")
+  js-max = js-exp-call(|"max")
+  js-avg = js-exp-call(|"avg")
+  js-count = js-exp-call(|"count")
+  js-conj = js-exp-call(|"conj")
+  js-disj = js-exp-call(|"disj")
   
   
-  js-call(|x_fn): exp_e -> js-exp |[x_fn(exp_e)]|
+  js-exp-call(|x_fn): exp_e -> js-exp |[expression.x_fn(exp_e)]|
   
   //operations
   
@@ -152,13 +154,12 @@ rules
   unexp-to-js-stmts(get, merge|i): e -> result
     where
       e_inner := <get> e
-      ; debug
     with
      (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e_inner
     ; x_merge := <int-to-varname> i'
     ; exp_merge := <merge> exp_inner
     ; stmts_result := js-stmt* |[
-      let x_merge = exp_merge;
+      var x_merge = exp_merge;
     ]|
     ; exp_result := <js-var> x_merge
     ; stmts := <conc> (stmts_inner, stmts_result)
@@ -174,12 +175,38 @@ rules
     ; (exp_false, stmts_false, i''') := <exp-to-js-stmts(|i'')> e_false
     ; x_var := <int-to-varname> i'''
     ; stmts_exec := js-stmt* |[
-      let x_var = exp_cond ? exp_true : exp_false;
+      var x_var = exp_cond ? exp_true : exp_false;
     ]|
     ; stmts := <conc> (stmts_cond, stmts_true, stmts_false, stmts_exec)
     ; exp_result := <js-var> x_var
     ; result := (exp_result, stmts, <inc> i''')
     
+    
+  // filter
+  
+//  exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
+//    with
+//      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
+//    ; x_result := <int-to-varname> i'
+//    ; exp_res := <js-var> x_result
+//    ; i'' := <inc> i'
+//    ; x_scope := <int-to-varname> i''
+//    ; i''' := <inc> i''
+//    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
+//    ; stmts := js-stmt* |[
+//        stmts_source
+//        let x_result = EMPTY_ARRAY;
+//        for(var i = 0 ; i < exp_source.length ; i++){
+//          var x_var = exp_source[i];
+//          let x_scope = {x_var: x_var};
+//          stmts_body
+//          if(exp_body){
+//            x_result = x_result.concat(x_var);
+//          }
+//        }
+//      ]|
+//    ; result := (exp_res, stmts, <inc> i'''')
+  
   //dereferencing
   
   exp-to-js-stmts(|i) : m@MemberAccess(e, x_attribute) -> result
@@ -192,7 +219,7 @@ rules
     
   exp-to-js-stmts(|i) : r@Ref(x_attribute) -> <access-to-js-stmts(|i)> (x_attribute, One(), m, exp_source) 
     with
-      exp_source := <int-to-varname ; js-var> 0 
+      exp_source := <int-to-varname ; js-var> 0
     ; m := <get-multiplicity> r
   
   
@@ -208,10 +235,10 @@ rules
       ; m_lub := <lub-simple> (m_previous, m_current)
       ; exp_empty := <exp-empty> m_lub
       ; stmts := js-stmt* |[
-          let x_var;
+          var x_var;
           {
             if(exp_source !== exp_emptyPrevious){
-              let calc = exp_calc;
+              var calc = exp_calc;
               state = calc.state;
               x_var = calc.result;
             } else {
@@ -231,7 +258,7 @@ rules
     ; x_var := <int-to-varname> i
     ; exp_var := js-exp |[x_var]|
     ; stmts := js-stmt* |[
-        let x_var = exp_get;
+        var x_var = exp_get;
       ]|
     ; result := (exp_var, stmts, <inc> i)
     
@@ -254,4 +281,6 @@ rules
   literal-to-js-exp: Datetime(d) -> js-exp |[moment(exp_dateString)]|
     with
       exp_dateString := <js-string> d
-  exp-to-js-exp: NoValue() -> js-exp |[null]|
+  literal-to-js-exp: NoValue() -> js-exp |[null]|
+  
+  

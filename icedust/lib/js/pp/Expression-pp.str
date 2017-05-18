@@ -20,50 +20,53 @@ imports
 
 strategies
   prettyprint-example =
-    prettyprint-spoofaxJS
+    prettyprint-javascript
 
-  prettyprint-spoofaxJS =
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
     fail
 
 
 strategies
   prettyprint-SDF-start-symbols =
-    prettyprint-spoofaxJS-start-symbols
+    prettyprint-javascript-start-symbols
 
-  prettyprint-spoofaxJS-start-symbols =
+  prettyprint-javascript-start-symbols =
     fail
 
 
 strategies
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-CondMid
+  prettyprint-javascript =
+    prettyprint-javascript-CondMid
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-ObjectProperty
+  prettyprint-javascript =
+    prettyprint-javascript-ObjectProperty
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-Expression
+  prettyprint-javascript =
+    prettyprint-javascript-Expression
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-LambdaParameters
+  prettyprint-javascript =
+    prettyprint-javascript-LambdaParameters
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-CondMid>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-CondMid>
     where <?"CondMid"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-ObjectProperty>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ObjectProperty>
     where <?"ObjectProperty"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-Expression>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Expression>
     where <?"Expression"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-LambdaParameters>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-LambdaParameters>
     where <?"LambdaParameters"> sort
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Parenthetical(t1__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [ S(" ( ")
@@ -72,21 +75,21 @@ strategies
                                ]
                              )
                            ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Property(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S("."), t2__']
                               )
                             ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Property(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Property(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -99,7 +102,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Property(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -112,7 +115,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Property(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -125,7 +128,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Call(t1__, t2__) -> [ H(
                             [SOpt(HS(), "0")]
                           , [ t1__'
@@ -135,14 +138,14 @@ strategies
                             ]
                           )
                         ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-H-list(prettyprint-spoofaxJS-Expression|",")
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-Expression|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Call(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Call(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -155,7 +158,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Call(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -168,7 +171,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Call(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -181,18 +184,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     IntegerLiteral(t1__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__']
                               )
                             ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-INT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-INT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?IntegerLiteral(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@IntegerLiteral(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -203,7 +206,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@IntegerLiteral(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -214,7 +217,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@IntegerLiteral(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -225,18 +228,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     FloatLiteral(t1__) -> [ H(
                               [SOpt(HS(), "0")]
                             , [t1__']
                             )
                           ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-FLOAT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-FLOAT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?FloatLiteral(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@FloatLiteral(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -247,7 +250,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@FloatLiteral(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -258,7 +261,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@FloatLiteral(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -269,17 +272,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     True() -> [ H(
                   [SOpt(HS(), "0")]
                 , [S("true")]
                 )
               ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?True()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@True(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -288,7 +291,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@True(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -297,7 +300,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@True(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -306,17 +309,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     False() -> [ H(
                    [SOpt(HS(), "0")]
                  , [S("false")]
                  )
                ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?False()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@False(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -325,7 +328,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@False(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -334,7 +337,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@False(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -343,17 +346,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Null() -> [ H(
                   [SOpt(HS(), "0")]
                 , [S("null")]
                 )
               ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Null()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Null(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -362,7 +365,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Null(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -371,7 +374,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Null(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -380,17 +383,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Undefined() -> [ H(
                        [SOpt(HS(), "0")]
                      , [S("undefined")]
                      )
                    ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Undefined()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Undefined(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -399,7 +402,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Undefined(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -408,7 +411,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Undefined(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -417,18 +420,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Identifier(t1__) -> [ H(
                             [SOpt(HS(), "0")]
                           , [t1__']
                           )
                         ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Identifier(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Identifier(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -439,7 +442,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Identifier(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -450,7 +453,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Identifier(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -461,18 +464,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     String(t1__) -> [ H(
                         [SOpt(HS(), "0")]
                       , [t1__']
                       )
                     ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-STRING) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-STRING) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?String(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@String(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -483,7 +486,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@String(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -494,7 +497,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@String(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -505,17 +508,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     This() -> [ H(
                   [SOpt(HS(), "0")]
                 , [S("this")]
                 )
               ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?This()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@This(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -524,7 +527,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@This(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -533,7 +536,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@This(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -542,19 +545,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Addition(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S(" + "), t2__']
                               )
                             ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Addition(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Addition(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -567,7 +570,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Addition(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -580,7 +583,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Addition(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -593,19 +596,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Substraction(t1__, t2__) -> [ H(
                                     [SOpt(HS(), "0")]
                                   , [t1__', S(" - "), t2__']
                                   )
                                 ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Substraction(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Substraction(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -618,7 +621,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Substraction(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -631,7 +634,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Substraction(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -644,19 +647,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Multiplication(t1__, t2__) -> [ H(
                                       [SOpt(HS(), "0")]
                                     , [t1__', S(" * "), t2__']
                                     )
                                   ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Multiplication(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Multiplication(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -669,7 +672,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Multiplication(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -682,7 +685,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Multiplication(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -695,19 +698,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Division(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S(" / "), t2__']
                               )
                             ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Division(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Division(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -720,7 +723,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Division(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -733,7 +736,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Division(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -746,19 +749,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Greater(t1__, t2__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [t1__', S(" > "), t2__']
                              )
                            ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Greater(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Greater(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -771,7 +774,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Greater(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -784,7 +787,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Greater(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -797,19 +800,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Lower(t1__, t2__) -> [ H(
                              [SOpt(HS(), "0")]
                            , [t1__', S(" < "), t2__']
                            )
                          ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Lower(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Lower(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -822,7 +825,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Lower(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -835,7 +838,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Lower(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -848,19 +851,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     GreaterEquals(t1__, t2__) -> [ H(
                                      [SOpt(HS(), "0")]
                                    , [t1__', S(" >= "), t2__']
                                    )
                                  ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?GreaterEquals(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@GreaterEquals(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -873,7 +876,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@GreaterEquals(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -886,7 +889,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@GreaterEquals(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -899,19 +902,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     LowerEquals(t1__, t2__) -> [ H(
                                    [SOpt(HS(), "0")]
                                  , [t1__', S(" <= "), t2__']
                                  )
                                ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?LowerEquals(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@LowerEquals(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -924,7 +927,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@LowerEquals(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -937,7 +940,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@LowerEquals(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -950,19 +953,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Equals(t1__, t2__) -> [ H(
                               [SOpt(HS(), "0")]
                             , [t1__', S(" == "), t2__']
                             )
                           ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Equals(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Equals(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -975,7 +978,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Equals(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -988,7 +991,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Equals(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1001,19 +1004,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     EqualsStrict(t1__, t2__) -> [ H(
                                     [SOpt(HS(), "0")]
                                   , [t1__', S(" === "), t2__']
                                   )
                                 ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?EqualsStrict(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@EqualsStrict(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1026,7 +1029,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@EqualsStrict(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1039,7 +1042,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@EqualsStrict(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1052,19 +1055,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     NotEquals(t1__, t2__) -> [ H(
                                  [SOpt(HS(), "0")]
                                , [t1__', S(" != "), t2__']
                                )
                              ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?NotEquals(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@NotEquals(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1077,7 +1080,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@NotEquals(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1090,7 +1093,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@NotEquals(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1103,19 +1106,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     NotEqualsStrict(t1__, t2__) -> [ H(
                                        [SOpt(HS(), "0")]
                                      , [t1__', S(" !== "), t2__']
                                      )
                                    ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?NotEqualsStrict(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@NotEqualsStrict(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1128,7 +1131,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@NotEqualsStrict(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1141,7 +1144,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@NotEqualsStrict(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1154,19 +1157,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     And(t1__, t2__) -> [ H(
                            [SOpt(HS(), "0")]
                          , [t1__', S(" && "), t2__']
                          )
                        ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?And(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@And(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1179,7 +1182,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@And(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1192,7 +1195,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@And(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1205,19 +1208,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Or(t1__, t2__) -> [ H(
                           [SOpt(HS(), "0")]
                         , [t1__', S(" || "), t2__']
                         )
                       ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Or(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Or(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1230,7 +1233,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Or(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1243,7 +1246,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Or(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1256,7 +1259,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     FunctionExpression(t1__, t2__, t3__) -> [ H(
                                                 [SOpt(HS(), "0")]
                                               , [ S("function ")
@@ -1270,18 +1273,18 @@ strategies
                                             , t4__'
                                             ]
     with t1__' := <pp-option(
-                     pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)
+                     pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)
                    )> t1__
-    with t2__' := <pp-H-list(prettyprint-spoofaxJS-ID|",")
+    with t2__' := <pp-H-list(prettyprint-javascript-ID|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t2__
-    with t3__' := <pp-indent(|"8")> [ <pp-V-list(prettyprint-spoofaxJS-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t3__' := <pp-indent(|"8")> [ <pp-V-list(prettyprint-javascript-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
                                     ]
     with t4__' := <pp-indent(|"4")> [S("}")]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?FunctionExpression(_, _, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     ( t@FunctionExpression(t1__, t2__, t3__)
     , index
     ) -> indent
@@ -1298,7 +1301,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     ( t@FunctionExpression(t1__, t2__, t3__)
     , index
     ) -> separator
@@ -1315,7 +1318,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     ( t@FunctionExpression(t1__, t2__, t3__)
     , index
     ) -> ws
@@ -1332,18 +1335,73 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
+    Index(t1__, t2__) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [ t1__'
+                             , S("[")
+                             , t2__'
+                             , S("]")
+                             ]
+                           )
+                         ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Index(_, _)
+
+  javascript-get-indent :
+    (t@Index(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Index(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Index(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Not(t1__) -> [ H(
                      [SOpt(HS(), "0")]
                    , [S("!"), t1__']
                    )
                  ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Not(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Not(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1354,7 +1412,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Not(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1365,7 +1423,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Not(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1376,18 +1434,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Negate(t1__) -> [ H(
                         [SOpt(HS(), "0")]
                       , [S("- "), t1__']
                       )
                     ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Negate(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Negate(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1398,7 +1456,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Negate(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1409,7 +1467,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Negate(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1420,18 +1478,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Increment(t1__) -> [ H(
                            [SOpt(HS(), "0")]
                          , [t1__', S("++")]
                          )
                        ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Increment(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Increment(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1442,7 +1500,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Increment(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1453,7 +1511,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Increment(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1464,18 +1522,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Decrement(t1__) -> [ H(
                            [SOpt(HS(), "0")]
                          , [t1__', S("--")]
                          )
                        ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Decrement(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Decrement(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1486,7 +1544,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Decrement(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1497,7 +1555,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Decrement(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1508,7 +1566,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Cond(t1__, t2__, t3__) -> [ H(
                                   [SOpt(HS(), "0")]
                                 , [ t1__'
@@ -1519,14 +1577,14 @@ strategies
                                   ]
                                 )
                               ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-CondMid) <+ pp-one-Z(prettyprint-completion-aux)> t2__
-    with t3__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-CondMid) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t3__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Cond(_, _, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     ( t@Cond(t1__, t2__, t3__)
     , index
     ) -> indent
@@ -1543,7 +1601,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     ( t@Cond(t1__, t2__, t3__)
     , index
     ) -> separator
@@ -1560,7 +1618,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     ( t@Cond(t1__, t2__, t3__)
     , index
     ) -> ws
@@ -1577,7 +1635,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-CondMid :
+  prettyprint-javascript-CondMid :
     CondMid(t1__) -> [ H(
                          [SOpt(HS(), "0")]
                        , [ S("? ")
@@ -1586,12 +1644,12 @@ strategies
                          ]
                        )
                      ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-CondMid =
+  is-javascript-CondMid =
     ?CondMid(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@CondMid(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"CondMid"> sort
@@ -1602,7 +1660,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@CondMid(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"CondMid"> sort
@@ -1613,7 +1671,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@CondMid(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"CondMid"> sort
@@ -1624,7 +1682,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     ObjectLiteral(t1__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [S("{")]
@@ -1635,14 +1693,14 @@ strategies
                              , [S("}")]
                              )
                            ]
-    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-spoofaxJS-ObjectProperty|"0", ",")
+    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-javascript-ObjectProperty|"0", ",")
                                        <+ pp-one-Z(prettyprint-completion-aux)> t1__
                                     ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?ObjectLiteral(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ObjectLiteral(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1653,7 +1711,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ObjectLiteral(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1664,7 +1722,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ObjectLiteral(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1675,18 +1733,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-ObjectProperty :
+  prettyprint-javascript-ObjectProperty :
     PropertyFromVariable(t1__) -> [ H(
                                       [SOpt(HS(), "0")]
                                     , [t1__']
                                     )
                                   ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     ?PropertyFromVariable(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@PropertyFromVariable(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1697,7 +1755,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@PropertyFromVariable(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1708,7 +1766,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@PropertyFromVariable(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1719,19 +1777,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-ObjectProperty :
+  prettyprint-javascript-ObjectProperty :
     ObjectProperty(t1__, t2__) -> [ H(
                                       [SOpt(HS(), "0")]
                                     , [t1__', S(" : "), t2__']
                                     )
                                   ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     ?ObjectProperty(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ObjectProperty(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1744,7 +1802,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ObjectProperty(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1757,7 +1815,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ObjectProperty(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ObjectProperty"> sort
@@ -1770,7 +1828,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     ArrayLiteral(t1__) -> [ H(
                               [SOpt(HS(), "0")]
                             , [ S("[")
@@ -1779,13 +1837,13 @@ strategies
                               ]
                             )
                           ]
-    with t1__' := <pp-H-list(prettyprint-spoofaxJS-Expression|",")
+    with t1__' := <pp-H-list(prettyprint-javascript-Expression|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?ArrayLiteral(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ArrayLiteral(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1796,7 +1854,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ArrayLiteral(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1807,7 +1865,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ArrayLiteral(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1818,19 +1876,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Lambda(t1__, t2__) -> [ H(
                               [SOpt(HS(), "0")]
                             , [t1__', S(" => "), t2__']
                             )
                           ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Lambda(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Lambda(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1843,7 +1901,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Lambda(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1856,7 +1914,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Lambda(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1869,19 +1927,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     LambdaBlock(t1__, t2__) -> [ H(
                                    [SOpt(HS(), "0")]
                                  , [t1__', S(" => "), t2__']
                                  )
                                ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-BlockStatement) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-BlockStatement) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?LambdaBlock(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@LambdaBlock(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1894,7 +1952,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@LambdaBlock(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1907,7 +1965,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@LambdaBlock(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Expression"> sort
@@ -1920,7 +1978,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-LambdaParameters :
+  prettyprint-javascript-LambdaParameters :
     LambdaParameters(t1__) -> [ H(
                                   [SOpt(HS(), "0")]
                                 , [ S("(")
@@ -1929,13 +1987,13 @@ strategies
                                   ]
                                 )
                               ]
-    with t1__' := <pp-H-list(prettyprint-spoofaxJS-ID|",")
+    with t1__' := <pp-H-list(prettyprint-javascript-ID|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-LambdaParameters =
+  is-javascript-LambdaParameters =
     ?LambdaParameters(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@LambdaParameters(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -1946,7 +2004,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@LambdaParameters(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -1957,7 +2015,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@LambdaParameters(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -1968,18 +2026,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-LambdaParameters :
+  prettyprint-javascript-LambdaParameters :
     SingleParameter(t1__) -> [ H(
                                  [SOpt(HS(), "0")]
                                , [t1__']
                                )
                              ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-LambdaParameters =
+  is-javascript-LambdaParameters =
     ?SingleParameter(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@SingleParameter(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -1990,7 +2048,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@SingleParameter(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -2001,7 +2059,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@SingleParameter(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"LambdaParameters"> sort
@@ -2012,266 +2070,266 @@ strategies
              ws := ""
          end
 
-  is-spoofaxJS-CondMid =
+  is-javascript-CondMid =
     fail
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     fail
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     fail
 
-  is-spoofaxJS-LambdaParameters =
+  is-javascript-LambdaParameters =
     fail
 
-  prettyprint-spoofaxJS-CondMid :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-CondMid> h
+  prettyprint-javascript-CondMid :
+    amb([h|hs]) -> <prettyprint-javascript-CondMid> h
 
-  prettyprint-spoofaxJS-ObjectProperty :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-ObjectProperty> h
+  prettyprint-javascript-ObjectProperty :
+    amb([h|hs]) -> <prettyprint-javascript-ObjectProperty> h
 
-  prettyprint-spoofaxJS-Expression :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-Expression> h
+  prettyprint-javascript-Expression :
+    amb([h|hs]) -> <prettyprint-javascript-Expression> h
 
-  prettyprint-spoofaxJS-LambdaParameters :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-LambdaParameters> h
+  prettyprint-javascript-LambdaParameters :
+    amb([h|hs]) -> <prettyprint-javascript-LambdaParameters> h
 
-  prettyprint-spoofaxJS-INT :
+  prettyprint-javascript-INT :
     INT-Plhdr() -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("[[INT]]")]
+                     , [S("$INT")]
                      )
                    ]
 
-  is-spoofaxJS-INT =
+  is-javascript-INT =
     ?INT-Plhdr()
 
-  prettyprint-spoofaxJS-FLOAT :
+  prettyprint-javascript-FLOAT :
     FLOAT-Plhdr() -> [ H(
                          [SOpt(HS(), "0")]
-                       , [S("[[FLOAT]]")]
+                       , [S("$FLOAT")]
                        )
                      ]
 
-  is-spoofaxJS-FLOAT =
+  is-javascript-FLOAT =
     ?FLOAT-Plhdr()
 
-  prettyprint-spoofaxJS-STRING :
+  prettyprint-javascript-STRING :
     STRING-Plhdr() -> [ H(
                           [SOpt(HS(), "0")]
-                        , [S("[[STRING]]")]
+                        , [S("$STRING")]
                         )
                       ]
 
-  is-spoofaxJS-STRING =
+  is-javascript-STRING =
     ?STRING-Plhdr()
 
-  prettyprint-spoofaxJS-Statement :
+  prettyprint-javascript-Statement :
     Statement-Plhdr() -> [ H(
                              [SOpt(HS(), "0")]
-                           , [S("[[Statement]]")]
+                           , [S("$Statement")]
                            )
                          ]
 
-  is-spoofaxJS-Statement =
+  is-javascript-Statement =
     ?Statement-Plhdr()
 
-  prettyprint-spoofaxJS-CondMid :
+  prettyprint-javascript-CondMid :
     CondMid-Plhdr() -> [ H(
                            [SOpt(HS(), "0")]
-                         , [S("[[CondMid]]")]
+                         , [S("$CondMid")]
                          )
                        ]
 
-  is-spoofaxJS-CondMid =
+  is-javascript-CondMid =
     ?CondMid-Plhdr()
 
-  prettyprint-spoofaxJS-ObjectProperty :
+  prettyprint-javascript-ObjectProperty :
     ObjectProperty-Plhdr() -> [ H(
                                   [SOpt(HS(), "0")]
-                                , [S("[[ObjectProperty]]")]
+                                , [S("$ObjectProperty")]
                                 )
                               ]
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     ?ObjectProperty-Plhdr()
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Expression-Plhdr() -> [ H(
                               [SOpt(HS(), "0")]
-                            , [S("[[Expression]]")]
+                            , [S("$Expression")]
                             )
                           ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Expression-Plhdr()
 
-  prettyprint-spoofaxJS-BlockStatement :
+  prettyprint-javascript-BlockStatement :
     BlockStatement-Plhdr() -> [ H(
                                   [SOpt(HS(), "0")]
-                                , [S("[[BlockStatement]]")]
+                                , [S("$BlockStatement")]
                                 )
                               ]
 
-  is-spoofaxJS-BlockStatement =
+  is-javascript-BlockStatement =
     ?BlockStatement-Plhdr()
 
-  prettyprint-spoofaxJS-LambdaParameters :
+  prettyprint-javascript-LambdaParameters :
     LambdaParameters-Plhdr() -> [ H(
                                     [SOpt(HS(), "0")]
-                                  , [S("[[LambdaParameters]]")]
+                                  , [S("$LambdaParameters")]
                                   )
                                 ]
 
-  is-spoofaxJS-LambdaParameters =
+  is-javascript-LambdaParameters =
     ?LambdaParameters-Plhdr()
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr() -> [ H(
                       [SOpt(HS(), "0")]
-                    , [S("[[ID]]")]
+                    , [S("$ID")]
                     )
                   ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr()
 
-  prettyprint-spoofaxJS-INT :
+  prettyprint-javascript-INT :
     INT-Plhdr(_) -> [ H(
                         [SOpt(HS(), "0")]
-                      , [S("[[INT]]")]
+                      , [S("$INT")]
                       )
                     ]
 
-  is-spoofaxJS-INT =
+  is-javascript-INT =
     ?INT-Plhdr(_)
 
-  prettyprint-spoofaxJS-FLOAT :
+  prettyprint-javascript-FLOAT :
     FLOAT-Plhdr(_) -> [ H(
                           [SOpt(HS(), "0")]
-                        , [S("[[FLOAT]]")]
+                        , [S("$FLOAT")]
                         )
                       ]
 
-  is-spoofaxJS-FLOAT =
+  is-javascript-FLOAT =
     ?FLOAT-Plhdr(_)
 
-  prettyprint-spoofaxJS-STRING :
+  prettyprint-javascript-STRING :
     STRING-Plhdr(_) -> [ H(
                            [SOpt(HS(), "0")]
-                         , [S("[[STRING]]")]
+                         , [S("$STRING")]
                          )
                        ]
 
-  is-spoofaxJS-STRING =
+  is-javascript-STRING =
     ?STRING-Plhdr(_)
 
-  prettyprint-spoofaxJS-Statement :
+  prettyprint-javascript-Statement :
     Statement-Plhdr(_) -> [ H(
                               [SOpt(HS(), "0")]
-                            , [S("[[Statement]]")]
+                            , [S("$Statement")]
                             )
                           ]
 
-  is-spoofaxJS-Statement =
+  is-javascript-Statement =
     ?Statement-Plhdr(_)
 
-  prettyprint-spoofaxJS-CondMid :
+  prettyprint-javascript-CondMid :
     CondMid-Plhdr(_) -> [ H(
                             [SOpt(HS(), "0")]
-                          , [S("[[CondMid]]")]
+                          , [S("$CondMid")]
                           )
                         ]
 
-  is-spoofaxJS-CondMid =
+  is-javascript-CondMid =
     ?CondMid-Plhdr(_)
 
-  prettyprint-spoofaxJS-ObjectProperty :
+  prettyprint-javascript-ObjectProperty :
     ObjectProperty-Plhdr(_) -> [ H(
                                    [SOpt(HS(), "0")]
-                                 , [S("[[ObjectProperty]]")]
+                                 , [S("$ObjectProperty")]
                                  )
                                ]
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     ?ObjectProperty-Plhdr(_)
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Expression-Plhdr(_) -> [ H(
                                [SOpt(HS(), "0")]
-                             , [S("[[Expression]]")]
+                             , [S("$Expression")]
                              )
                            ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Expression-Plhdr(_)
 
-  prettyprint-spoofaxJS-BlockStatement :
+  prettyprint-javascript-BlockStatement :
     BlockStatement-Plhdr(_) -> [ H(
                                    [SOpt(HS(), "0")]
-                                 , [S("[[BlockStatement]]")]
+                                 , [S("$BlockStatement")]
                                  )
                                ]
 
-  is-spoofaxJS-BlockStatement =
+  is-javascript-BlockStatement =
     ?BlockStatement-Plhdr(_)
 
-  prettyprint-spoofaxJS-LambdaParameters :
+  prettyprint-javascript-LambdaParameters :
     LambdaParameters-Plhdr(_) -> [ H(
                                      [SOpt(HS(), "0")]
-                                   , [S("[[LambdaParameters]]")]
+                                   , [S("$LambdaParameters")]
                                    )
                                  ]
 
-  is-spoofaxJS-LambdaParameters =
+  is-javascript-LambdaParameters =
     ?LambdaParameters-Plhdr(_)
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr(_) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("[[ID]]")]
+                     , [S("$ID")]
                      )
                    ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr(_)
 
-  prettyprint-spoofaxJS-Statement :
+  prettyprint-javascript-Statement :
     Statement-Opt-Plhdr() -> [ H(
                                  []
                                , [S("")]
                                )
                              ]
 
-  is-spoofaxJS-Statement =
+  is-javascript-Statement =
     ?Statement-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-ObjectProperty :
+  prettyprint-javascript-ObjectProperty :
     ObjectProperty-Opt-Plhdr() -> [ H(
                                       []
                                     , [S("")]
                                     )
                                   ]
 
-  is-spoofaxJS-ObjectProperty =
+  is-javascript-ObjectProperty =
     ?ObjectProperty-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Expression-Opt-Plhdr() -> [ H(
                                   []
                                 , [S("")]
                                 )
                               ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Expression-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Opt-Plhdr() -> [ H(
                           []
                         , [S("")]
                         )
                       ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Opt-Plhdr()

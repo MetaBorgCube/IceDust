@@ -36,6 +36,7 @@ signature
     And                      : Expression * Expression -> Expression
     Or                       : Expression * Expression -> Expression
     FunctionExpression       : Option(ID) * List(ID) * List(Statement) -> Expression
+    Index                    : Expression * Expression -> Expression
     Not                      : Expression -> Expression
     Negate                   : Expression -> Expression
     Increment                : Expression -> Expression

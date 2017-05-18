@@ -14,13 +14,14 @@ rules
   
   getter-function-multiplicities = ![One(), ZeroOrMore()]
   
-  getter-functions = ?attribute ; getter-function-multiplicities ; map(!(attribute, <id>) ; getter-function)
+  getter-functions = ?attribute ; getter-function-multiplicities ; mapconcat(!(attribute, <id>) ; getter-function)
   
-  getter-function: (attribute, m) -> js-stmt |[
-    export function x_functionName(state, x_var){
+  getter-function: (attribute, m) -> js-stmt* |[
+    function x_functionName(state, x_var){
       stmt_body*
       return result;
     }
+    module.exports.x_functionName = x_functionName;
   ]|
     with
       x_functionName := <getter-function-name> (attribute, m)
@@ -39,7 +40,7 @@ rules
           exp_empty := <exp-attribute-empty> attribute
         ; stmt_attribute* := <reference-attribute-in-object> (attribute, x_result, x_result)  
         ; stmt_body* := js-stmt* |[
-            let x_result = state.get(exp_table).get(x_name);
+            var x_result = state.get(exp_table).get(x_name);
             if(x_result === undefined){
               x_result = exp_empty;
             } 
@@ -48,10 +49,10 @@ rules
         case ?(ZeroOrMore(), m2):
           stmt_push* := <getter-push-statements> (attribute, m2, x_result, x_value)
         ; stmt_body* := js-stmt* |[
-            let x_result = [];
-            const table = state.get(exp_table);
-            for(let id of x_name){
-              let x_value = table.get(id);
+            var x_result = [];
+            var table = state.get(exp_table);
+            for(var i = 0 ; i < x_name.length ; i++){
+              var x_value = table.get(x_name[i]);
               stmt_push*
             }
           ]|
@@ -91,7 +92,9 @@ rules
           ]|
         case ZeroOrMore():
           stmt_push* := js-stmt* |[
-            for(x_value of x_value){
+            var value2 = x_value;
+            for(var j = 0 ; j < value2.length ; j++){
+              var x_value = value2[j];
               stmts_attribute
               x_result.push(x_value);
             }

@@ -49,7 +49,7 @@ rules
       exp_attribute := <attribute-table-expression> attribute
 
   access-statement : path -> js-stmt |[
-    const x_name = x_getterFunction(state, x_prefix); 
+    var x_name = x_getterFunction(state, x_prefix); 
   ]| 
     with
       <pp-partial-icedust-string> path ;

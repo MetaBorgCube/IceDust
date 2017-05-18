@@ -26,47 +26,50 @@ imports
 
 strategies
   prettyprint-example =
-    prettyprint-spoofaxJS
+    prettyprint-javascript
 
-  prettyprint-spoofaxJS =
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
     fail
 
 
 strategies
   prettyprint-SDF-start-symbols =
-    prettyprint-spoofaxJS-start-symbols
+    prettyprint-javascript-start-symbols
 
-  prettyprint-spoofaxJS-start-symbols =
+  prettyprint-javascript-start-symbols =
     fail
 
 
 strategies
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-Export
+  prettyprint-javascript =
+    prettyprint-javascript-Export
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-ExportSpecifier
+  prettyprint-javascript =
+    prettyprint-javascript-ExportSpecifier
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-Export>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Export>
     where <?"Export"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-ExportSpecifier>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ExportSpecifier>
     where <?"ExportSpecifier"> sort
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     FromImport(t1__) -> [ H(
                             [SOpt(HS(), "0")]
                           , [S("export * "), t1__']
                           )
                         ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?FromImport(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@FromImport(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -77,7 +80,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@FromImport(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -88,7 +91,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@FromImport(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -99,7 +102,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     FromImportBlock(t1__, t2__) -> [ H(
                                        [SOpt(HS(), "0")]
                                      , [ S("export {")
@@ -109,14 +112,14 @@ strategies
                                        ]
                                      )
                                    ]
-    with t1__' := <pp-H-list(prettyprint-spoofaxJS-ExportSpecifier|",")
+    with t1__' := <pp-H-list(prettyprint-javascript-ExportSpecifier|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t2__' := <pp-one-Z(prettyprint-javascript-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?FromImportBlock(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@FromImportBlock(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -129,7 +132,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@FromImportBlock(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -142,7 +145,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@FromImportBlock(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -155,7 +158,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportBlock(t1__) -> [ H(
                              [SOpt(HS(), "0")]
                            , [ S("export {")
@@ -164,13 +167,13 @@ strategies
                              ]
                            )
                          ]
-    with t1__' := <pp-H-list(prettyprint-spoofaxJS-ExportSpecifier|",")
+    with t1__' := <pp-H-list(prettyprint-javascript-ExportSpecifier|",")
                    <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportBlock(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportBlock(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -181,7 +184,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportBlock(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -192,7 +195,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportBlock(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -203,7 +206,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportDeclaration(t1__) -> [ H(
                                    [SOpt(HS(), "0")]
                                  , [ S("export ")
@@ -212,12 +215,12 @@ strategies
                                    ]
                                  )
                                ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportDeclaration(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportDeclaration(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -228,7 +231,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportDeclaration(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -239,7 +242,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportDeclaration(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -250,18 +253,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportHoistableDeclaration(t1__) -> [ H(
                                             [SOpt(HS(), "0")]
                                           , [S("export "), t1__']
                                           )
                                         ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportHoistableDeclaration(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportHoistableDeclaration(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -272,7 +275,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportHoistableDeclaration(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -283,7 +286,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportHoistableDeclaration(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -294,18 +297,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportDefaultDeclaration(t1__) -> [ H(
                                           [SOpt(HS(), "0")]
                                         , [S("export default "), t1__']
                                         )
                                       ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportDefaultDeclaration(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportDefaultDeclaration(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -316,7 +319,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportDefaultDeclaration(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -327,7 +330,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportDefaultDeclaration(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -338,18 +341,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportDefaultClassDeclaration(t1__) -> [ H(
                                                [SOpt(HS(), "0")]
                                              , [S("export default "), t1__']
                                              )
                                            ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ClassDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ClassDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportDefaultClassDeclaration(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportDefaultClassDeclaration(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -360,7 +363,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportDefaultClassDeclaration(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -371,7 +374,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportDefaultClassDeclaration(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -382,7 +385,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     ExportDefaultExpression(t1__) -> [ H(
                                          [SOpt(HS(), "0")]
                                        , [ S("export default ")
@@ -391,12 +394,12 @@ strategies
                                          ]
                                        )
                                      ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?ExportDefaultExpression(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportDefaultExpression(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -407,7 +410,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportDefaultExpression(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -418,7 +421,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportDefaultExpression(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Export"> sort
@@ -429,18 +432,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-ExportSpecifier :
+  prettyprint-javascript-ExportSpecifier :
     ExportSpecifier(t1__) -> [ H(
                                  [SOpt(HS(), "0")]
                                , [t1__']
                                )
                              ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     ?ExportSpecifier(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ExportSpecifier(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -451,7 +454,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ExportSpecifier(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -462,7 +465,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ExportSpecifier(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -473,19 +476,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-ExportSpecifier :
+  prettyprint-javascript-ExportSpecifier :
     NamedExportSpecifier(t1__, t2__) -> [ H(
                                             [SOpt(HS(), "0")]
                                           , [t1__', S(" as "), t2__']
                                           )
                                         ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     ?NamedExportSpecifier(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@NamedExportSpecifier(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -498,7 +501,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@NamedExportSpecifier(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -511,7 +514,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@NamedExportSpecifier(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ExportSpecifier"> sort
@@ -524,184 +527,184 @@ strategies
              ws := ""
          end
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     fail
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     fail
 
-  prettyprint-spoofaxJS-Export :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-Export> h
+  prettyprint-javascript-Export :
+    amb([h|hs]) -> <prettyprint-javascript-Export> h
 
-  prettyprint-spoofaxJS-ExportSpecifier :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-ExportSpecifier> h
+  prettyprint-javascript-ExportSpecifier :
+    amb([h|hs]) -> <prettyprint-javascript-ExportSpecifier> h
 
-  prettyprint-spoofaxJS-FromClause :
+  prettyprint-javascript-FromClause :
     FromClause-Plhdr() -> [ H(
                               [SOpt(HS(), "0")]
-                            , [S("[[FromClause]]")]
+                            , [S("$FromClause")]
                             )
                           ]
 
-  is-spoofaxJS-FromClause =
+  is-javascript-FromClause =
     ?FromClause-Plhdr()
 
-  prettyprint-spoofaxJS-Declaration :
+  prettyprint-javascript-Declaration :
     Declaration-Plhdr() -> [ H(
                                [SOpt(HS(), "0")]
-                             , [S("[[Declaration]]")]
+                             , [S("$Declaration")]
                              )
                            ]
 
-  is-spoofaxJS-Declaration =
+  is-javascript-Declaration =
     ?Declaration-Plhdr()
 
-  prettyprint-spoofaxJS-HoistableDeclaration :
+  prettyprint-javascript-HoistableDeclaration :
     HoistableDeclaration-Plhdr() -> [ H(
                                         [SOpt(HS(), "0")]
-                                      , [S("[[HoistableDeclaration]]")]
+                                      , [S("$HoistableDeclaration")]
                                       )
                                     ]
 
-  is-spoofaxJS-HoistableDeclaration =
+  is-javascript-HoistableDeclaration =
     ?HoistableDeclaration-Plhdr()
 
-  prettyprint-spoofaxJS-ClassDeclaration :
+  prettyprint-javascript-ClassDeclaration :
     ClassDeclaration-Plhdr() -> [ H(
                                     [SOpt(HS(), "0")]
-                                  , [S("[[ClassDeclaration]]")]
+                                  , [S("$ClassDeclaration")]
                                   )
                                 ]
 
-  is-spoofaxJS-ClassDeclaration =
+  is-javascript-ClassDeclaration =
     ?ClassDeclaration-Plhdr()
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     Export-Plhdr() -> [ H(
                           [SOpt(HS(), "0")]
-                        , [S("[[Export]]")]
+                        , [S("$Export")]
                         )
                       ]
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?Export-Plhdr()
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Expression-Plhdr() -> [ H(
                               [SOpt(HS(), "0")]
-                            , [S("[[Expression]]")]
+                            , [S("$Expression")]
                             )
                           ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Expression-Plhdr()
 
-  prettyprint-spoofaxJS-ExportSpecifier :
+  prettyprint-javascript-ExportSpecifier :
     ExportSpecifier-Plhdr() -> [ H(
                                    [SOpt(HS(), "0")]
-                                 , [S("[[ExportSpecifier]]")]
+                                 , [S("$ExportSpecifier")]
                                  )
                                ]
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     ?ExportSpecifier-Plhdr()
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr() -> [ H(
                       [SOpt(HS(), "0")]
-                    , [S("[[ID]]")]
+                    , [S("$ID")]
                     )
                   ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr()
 
-  prettyprint-spoofaxJS-FromClause :
+  prettyprint-javascript-FromClause :
     FromClause-Plhdr(_) -> [ H(
                                [SOpt(HS(), "0")]
-                             , [S("[[FromClause]]")]
+                             , [S("$FromClause")]
                              )
                            ]
 
-  is-spoofaxJS-FromClause =
+  is-javascript-FromClause =
     ?FromClause-Plhdr(_)
 
-  prettyprint-spoofaxJS-Declaration :
+  prettyprint-javascript-Declaration :
     Declaration-Plhdr(_) -> [ H(
                                 [SOpt(HS(), "0")]
-                              , [S("[[Declaration]]")]
+                              , [S("$Declaration")]
                               )
                             ]
 
-  is-spoofaxJS-Declaration =
+  is-javascript-Declaration =
     ?Declaration-Plhdr(_)
 
-  prettyprint-spoofaxJS-HoistableDeclaration :
+  prettyprint-javascript-HoistableDeclaration :
     HoistableDeclaration-Plhdr(_) -> [ H(
                                          [SOpt(HS(), "0")]
-                                       , [S("[[HoistableDeclaration]]")]
+                                       , [S("$HoistableDeclaration")]
                                        )
                                      ]
 
-  is-spoofaxJS-HoistableDeclaration =
+  is-javascript-HoistableDeclaration =
     ?HoistableDeclaration-Plhdr(_)
 
-  prettyprint-spoofaxJS-ClassDeclaration :
+  prettyprint-javascript-ClassDeclaration :
     ClassDeclaration-Plhdr(_) -> [ H(
                                      [SOpt(HS(), "0")]
-                                   , [S("[[ClassDeclaration]]")]
+                                   , [S("$ClassDeclaration")]
                                    )
                                  ]
 
-  is-spoofaxJS-ClassDeclaration =
+  is-javascript-ClassDeclaration =
     ?ClassDeclaration-Plhdr(_)
 
-  prettyprint-spoofaxJS-Export :
+  prettyprint-javascript-Export :
     Export-Plhdr(_) -> [ H(
                            [SOpt(HS(), "0")]
-                         , [S("[[Export]]")]
+                         , [S("$Export")]
                          )
                        ]
 
-  is-spoofaxJS-Export =
+  is-javascript-Export =
     ?Export-Plhdr(_)
 
-  prettyprint-spoofaxJS-Expression :
+  prettyprint-javascript-Expression :
     Expression-Plhdr(_) -> [ H(
                                [SOpt(HS(), "0")]
-                             , [S("[[Expression]]")]
+                             , [S("$Expression")]
                              )
                            ]
 
-  is-spoofaxJS-Expression =
+  is-javascript-Expression =
     ?Expression-Plhdr(_)
 
-  prettyprint-spoofaxJS-ExportSpecifier :
+  prettyprint-javascript-ExportSpecifier :
     ExportSpecifier-Plhdr(_) -> [ H(
                                     [SOpt(HS(), "0")]
-                                  , [S("[[ExportSpecifier]]")]
+                                  , [S("$ExportSpecifier")]
                                   )
                                 ]
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     ?ExportSpecifier-Plhdr(_)
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr(_) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("[[ID]]")]
+                     , [S("$ID")]
                      )
                    ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr(_)
 
-  prettyprint-spoofaxJS-ExportSpecifier :
+  prettyprint-javascript-ExportSpecifier :
     ExportSpecifier-Opt-Plhdr() -> [ H(
                                        []
                                      , [S("")]
                                      )
                                    ]
 
-  is-spoofaxJS-ExportSpecifier =
+  is-javascript-ExportSpecifier =
     ?ExportSpecifier-Opt-Plhdr()

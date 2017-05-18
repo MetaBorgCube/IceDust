@@ -1,4 +1,4 @@
-module js/pp/spoofaxJS-parenthesize
+module js/pp/javascript-parenthesize
 
 imports
   libstratego-lib
@@ -6,16 +6,16 @@ imports
 
 
 strategies
-  io-spoofaxJS-parenthesize =
-    io-wrap(parenthesize-spoofaxJS)
+  io-javascript-parenthesize =
+    io-wrap(parenthesize-javascript)
 
-  parenthesize-spoofaxJS =
-    innermost(spoofaxJSParenthesize)
+  parenthesize-javascript =
+    innermost(javascriptParenthesize)
 
 
 rules
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Substraction(t_0, t_1) -> Substraction(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -34,7 +34,7 @@ rules
             + ?Greater(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Substraction(t_0, t_1) -> Substraction(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -55,7 +55,7 @@ rules
             + ?Addition(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Addition(t_0, t_1) -> Addition(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -74,7 +74,7 @@ rules
             + ?Greater(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Addition(t_0, t_1) -> Addition(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -95,7 +95,7 @@ rules
             + ?Substraction(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Division(t_0, t_1) -> Division(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -116,7 +116,7 @@ rules
             + ?Addition(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Division(t_0, t_1) -> Division(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -139,7 +139,7 @@ rules
             + ?Multiplication(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Multiplication(t_0, t_1) -> Multiplication(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -160,7 +160,7 @@ rules
             + ?Addition(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Multiplication(t_0, t_1) -> Multiplication(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -183,7 +183,53 @@ rules
             + ?Division(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
+    Index(t_0, t_1) -> Index(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Index(t_0, t_1) -> Index(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
     Property(t_0, t_1) -> Property(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -206,7 +252,7 @@ rules
             + ?Multiplication(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Property(t_0, t_1) -> Property(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -228,10 +274,11 @@ rules
             + ?Division(_, _)
             + ?Multiplication(_, _)
             + ?Property(_, _)
+            + ?Index(_, _)
             + ?Call(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Call(t_0, t_1) -> Call(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -254,7 +301,7 @@ rules
             + ?Multiplication(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Call(t_0, t_1) -> Call(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -277,7 +324,7 @@ rules
             + ?Multiplication(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Or(t_0, t_1) -> Or(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -286,7 +333,7 @@ rules
             + ?Negate(_)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Or(t_0, t_1) -> Or(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -296,7 +343,7 @@ rules
             + ?Or(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     And(t_0, t_1) -> And(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -306,7 +353,7 @@ rules
             + ?Or(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     And(t_0, t_1) -> And(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -317,7 +364,7 @@ rules
             + ?And(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -328,7 +375,7 @@ rules
             + ?And(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -343,7 +390,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     NotEquals(t_0, t_1) -> NotEquals(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -354,7 +401,7 @@ rules
             + ?And(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     NotEquals(t_0, t_1) -> NotEquals(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -369,7 +416,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     EqualsStrict(t_0, t_1) -> EqualsStrict(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -380,7 +427,7 @@ rules
             + ?And(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     EqualsStrict(t_0, t_1) -> EqualsStrict(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -395,7 +442,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Equals(t_0, t_1) -> Equals(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -406,7 +453,7 @@ rules
             + ?And(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Equals(t_0, t_1) -> Equals(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -421,7 +468,7 @@ rules
             + ?EqualsStrict(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     LowerEquals(t_0, t_1) -> LowerEquals(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -436,7 +483,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     LowerEquals(t_0, t_1) -> LowerEquals(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -455,7 +502,7 @@ rules
             + ?Greater(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     GreaterEquals(t_0, t_1) -> GreaterEquals(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -470,7 +517,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     GreaterEquals(t_0, t_1) -> GreaterEquals(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -489,7 +536,7 @@ rules
             + ?Greater(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Lower(t_0, t_1) -> Lower(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -504,7 +551,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Lower(t_0, t_1) -> Lower(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -523,7 +570,7 @@ rules
             + ?Greater(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Greater(t_0, t_1) -> Greater(Parenthetical(t_0), t_1)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -538,7 +585,7 @@ rules
             + ?Equals(_, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Greater(t_0, t_1) -> Greater(t_0, Parenthetical(t_1))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -557,7 +604,7 @@ rules
             + ?Lower(_, _)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Cond(t_0, t_1, t_2) -> Cond(Parenthetical(t_0), t_1, t_2)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -565,21 +612,21 @@ rules
             + ?Cond(_, _, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Cond(t_0, t_1, t_2) -> Cond(t_0, Parenthetical(t_1), t_2)
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
             + ?DeclarationStatement(_)
             + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Cond(t_0, t_1, t_2) -> Cond(t_0, t_1, Parenthetical(t_2))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
             + ?DeclarationStatement(_)
             + fail)> t_2
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Negate(t_0) -> Negate(Parenthetical(t_0))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
@@ -588,45 +635,45 @@ rules
             + ?Negate(_)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     DeclarationStatement(t_0) -> DeclarationStatement(Parenthetical(t_0))
     where <(?Lambda(_, _)
             + ?FunctionExpression(_, _, _)
             + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(Parenthetical(t_0), t_1, t_2)
     where <(?Lambda(_, _) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, Parenthetical(t_1), t_2)
     where <(?Lambda(_, _) + fail)> t_1
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, t_1, Parenthetical(t_2))
     where <(?Lambda(_, _) + fail)> t_2
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Not(t_0) -> Not(Parenthetical(t_0))
     where <(?Not(_) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     String(t_0) -> String(Parenthetical(t_0))
     where <(?String(_) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     Identifier(t_0) -> Identifier(Parenthetical(t_0))
     where <(?Identifier(_) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     FloatLiteral(t_0) -> FloatLiteral(Parenthetical(t_0))
     where <(?FloatLiteral(_) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     IntegerLiteral(t_0) -> IntegerLiteral(Parenthetical(t_0))
     where <(?IntegerLiteral(_) + fail)> t_0
 
-  spoofaxJSParenthesize :
+  javascriptParenthesize :
     IfElse(t_0, t_1, t_2) -> IfElse(t_0, Parenthetical(t_1), t_2)
     where <(?If(_, _) + fail)> t_1
 

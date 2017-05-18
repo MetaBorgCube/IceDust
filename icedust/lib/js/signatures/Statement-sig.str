@@ -30,15 +30,18 @@ signature
     VarDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
     ConstDeclaration                 : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
     LetDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
-    GlobalDeclaration                : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+                                     : TopLevelDeclaration -> Declaration
+    GlobalDeclaration                : LeftHandSideExpression * Option(InitializeAssignment) -> TopLevelDeclaration
+    ExpressionAssignment             : Expression * InitializeAssignment -> TopLevelDeclaration
                                      : FunctionDeclaration -> HoistableDeclaration
     FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
     BlockStatement-Plhdr             : BlockStatement
     Import-Plhdr                     : Import
     Export-Plhdr                     : Export
     ClassDeclaration-Plhdr           : ClassDeclaration
-    Expression-Plhdr                 : Expression
     Declaration-Plhdr                : Declaration
+    TopLevelDeclaration-Plhdr        : TopLevelDeclaration
+    Expression-Plhdr                 : Expression
     InitializeAssignment-Plhdr       : InitializeAssignment
     HoistableDeclaration-Plhdr       : HoistableDeclaration
     FunctionDeclaration-Plhdr        : FunctionDeclaration
@@ -49,8 +52,9 @@ signature
     Import-Plhdr                     : COMPLETION-INSERTION -> Import
     Export-Plhdr                     : COMPLETION-INSERTION -> Export
     ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
-    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
     Declaration-Plhdr                : COMPLETION-INSERTION -> Declaration
+    TopLevelDeclaration-Plhdr        : COMPLETION-INSERTION -> TopLevelDeclaration
+    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
     InitializeAssignment-Plhdr       : COMPLETION-INSERTION -> InitializeAssignment
     HoistableDeclaration-Plhdr       : COMPLETION-INSERTION -> HoistableDeclaration
     FunctionDeclaration-Plhdr        : COMPLETION-INSERTION -> FunctionDeclaration

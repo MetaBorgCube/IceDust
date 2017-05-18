@@ -18,30 +18,33 @@ imports
 
 strategies
   prettyprint-example =
-    prettyprint-spoofaxJS
+    prettyprint-javascript
 
-  prettyprint-spoofaxJS =
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
     fail
 
 
 strategies
   prettyprint-SDF-start-symbols =
-    prettyprint-spoofaxJS-start-symbols
+    prettyprint-javascript-start-symbols
 
-  prettyprint-spoofaxJS-start-symbols =
+  prettyprint-javascript-start-symbols =
     fail
 
 
 strategies
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-KEYWORD
+  prettyprint-javascript =
+    prettyprint-javascript-KEYWORD
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-KEYWORD>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-KEYWORD>
     where <?"KEYWORD"> sort
 
-  prettyprint-spoofaxJS-KEYWORD =
+  prettyprint-javascript-KEYWORD =
     ![S(<is-string>)]
 
-  prettyprint-spoofaxJS-KEYWORD :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-KEYWORD> h
+  prettyprint-javascript-KEYWORD :
+    amb([h|hs]) -> <prettyprint-javascript-KEYWORD> h

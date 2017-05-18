@@ -31,9 +31,9 @@ rules
       ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
     > moduleName
     ; stmt_getters* := <mapconcat(getter-functions)> attributes
-    ; stmt_setters* := <filter(generate-setter)> attributes
-    ; stmt_add* := <filter(generate-add)> attributes
-    ; stmt_invalidations* := <map(generate-invalidation-function)> attributes
+    ; stmt_setters* := <filter(generate-setter) ; concat> attributes
+    ; stmt_add* := <filter(generate-add) ; concat> attributes
+    ; stmt_invalidations* := <mapconcat(generate-invalidation-function)> attributes
     ; stmt_calculate* := <filter(generate-calculate-functions) ; concat> attributes
 //    ; stmt_memoize* := <filter(generate-memoize)> attributes
           

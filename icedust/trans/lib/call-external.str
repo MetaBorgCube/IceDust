@@ -29,6 +29,13 @@ rules
       <delete-file>"stdout.txt";
       <delete-file>"stderr.txt"
 
+
+  call-external-printcmd-read-output(|program, args): _ -> <call-external-read-output(|program, args)>
+    with
+      cmd := <mapconcat(![<id>, " "]) ; init ; concat-strings> ["npm" | args]
+    ; log(|Info(), cmd)
+    
+    
 rules
 
   /**
@@ -46,4 +53,17 @@ rules
   call-java(|mainFile): _ -> <call-external-read-output(|"java", ["-cp", <dirname;local-path>mainFile, className])> 
     with
       className := <base-filename;remove-extension> mainFile 
+      
+  call-npm-task(|baseDir, task): _ -> <call-external-printcmd-read-output(|"npm", args)>
+    with
+      args := <concat>
+        [
+          
+          ["--prefix", baseDir],
+          ["run-script", task]
+        ]
+        
+  call-node(|mainFile): _ -> <call-external-printcmd-read-output(|"node", args)>
+    with
+      args := [mainFile]
       

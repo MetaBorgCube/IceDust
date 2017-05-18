@@ -21,7 +21,6 @@ rules
   exp-attribute-empty: attribute -> js-exp |[undefined]|
     where
       name-is-derived 
-    ; <name-get-multiplicity ; upper-one> attribute
     
   exp-attribute-empty = name-get-multiplicity ; exp-empty
       

@@ -10,105 +10,113 @@ imports
 
 imports
   js/signatures/Common-sig
+  js/signatures/Expression-sig
 
 
 imports
   js/pp/Common-pp
+  js/pp/Expression-pp
 
 
 strategies
   prettyprint-example =
-    prettyprint-spoofaxJS
+    prettyprint-javascript
 
-  prettyprint-spoofaxJS =
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
     fail
 
 
 strategies
   prettyprint-SDF-start-symbols =
-    prettyprint-spoofaxJS-start-symbols
+    prettyprint-javascript-start-symbols
 
-  prettyprint-spoofaxJS-start-symbols =
+  prettyprint-javascript-start-symbols =
     fail
 
 
 strategies
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-LeftHandSideExpression
+  prettyprint-javascript =
+    prettyprint-javascript-LeftHandSideExpression
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-AssignmentProperty
+  prettyprint-javascript =
+    prettyprint-javascript-AssignmentProperty
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-AssignElement
+  prettyprint-javascript =
+    prettyprint-javascript-AssignElement
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-AssignElements
+  prettyprint-javascript =
+    prettyprint-javascript-AssignElements
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-Elem
+  prettyprint-javascript =
+    prettyprint-javascript-Elem
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-ElemTail
+  prettyprint-javascript =
+    prettyprint-javascript-ElemTail
 
-  prettyprint-spoofaxJS =
-    prettyprint-spoofaxJS-AssignmentElement
+  prettyprint-javascript =
+    prettyprint-javascript-AssignmentElement
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-LeftHandSideExpression>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-LeftHandSideExpression>
     where <?"LeftHandSideExpression"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-AssignmentProperty>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignmentProperty>
     where <?"AssignmentProperty"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-AssignElement>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignElement>
     where <?"AssignElement"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-AssignElements>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignElements>
     where <?"AssignElements"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-Elem>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Elem>
     where <?"Elem"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-ElemTail>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ElemTail>
     where <?"ElemTail"> sort
 
-  prettyprint-spoofaxJS(|sort):
-    t -> <prettyprint-spoofaxJS-AssignmentElement>
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignmentElement>
     where <?"AssignmentElement"> sort
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
+  prettyprint-javascript-LeftHandSideExpression :
     ObjectAssignmentPattern(t1__) -> [ H(
                                          [SOpt(HS(), "0")]
-                                       , [ S("{")
-                                         , t1__'
-                                         , S("}")
-                                         ]
+                                       , [S("{")]
+                                       )
+                                     , t1__'
+                                     , H(
+                                         [SOpt(HS(), "0")]
+                                       , [S("}")]
                                        )
                                      ]
-    with t1__' := <pp-V-list(prettyprint-spoofaxJS-AssignmentProperty|"0", ",")
-                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-javascript-AssignmentProperty|"0", ",")
+                                       <+ pp-one-Z(prettyprint-completion-aux)> t1__
+                                    ]
 
-  is-spoofaxJS-LeftHandSideExpression =
+  is-javascript-LeftHandSideExpression =
     ?ObjectAssignmentPattern(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ObjectAssignmentPattern(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
     with switch !index
            case ?1 :
-             indent := ""
+             indent := "  "
            otherwise :
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ObjectAssignmentPattern(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
@@ -119,18 +127,18 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ObjectAssignmentPattern(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
     with switch !index
            case ?1 :
-             ws := ""
+             ws := "\n  "
            otherwise :
              ws := ""
          end
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
+  prettyprint-javascript-LeftHandSideExpression :
     ArrayAssignmentPattern(t1__) -> [ H(
                                         [SOpt(HS(), "0")]
                                       , [ S("[")
@@ -139,12 +147,12 @@ strategies
                                         ]
                                       )
                                     ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-AssignElements) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-AssignElements) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-LeftHandSideExpression =
+  is-javascript-LeftHandSideExpression =
     ?ArrayAssignmentPattern(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@ArrayAssignmentPattern(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
@@ -155,7 +163,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@ArrayAssignmentPattern(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
@@ -166,7 +174,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@ArrayAssignmentPattern(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"LeftHandSideExpression"> sort
@@ -177,37 +185,37 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
+  prettyprint-javascript-LeftHandSideExpression :
     t1__ -> [ H(
                 [SOpt(HS(), "0")]
               , [t1__']
               )
             ]
-    where not(is-spoofaxJS-LeftHandSideExpression)
-    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    where not(is-javascript-LeftHandSideExpression)
+    where t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-spoofaxJS-AssignmentProperty :
+  prettyprint-javascript-AssignmentProperty :
     t1__ -> [ H(
                 [SOpt(HS(), "0")]
               , [t1__']
               )
             ]
-    where not(is-spoofaxJS-AssignmentProperty)
-    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    where not(is-javascript-AssignmentProperty)
+    where t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-spoofaxJS-AssignmentProperty :
+  prettyprint-javascript-AssignmentProperty :
     Reference(t1__, t2__) -> [ H(
                                  [SOpt(HS(), "0")]
                                , [t1__', S(" : "), t2__']
                                )
                              ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-AssignmentProperty =
+  is-javascript-AssignmentProperty =
     ?Reference(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Reference(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"AssignmentProperty"> sort
@@ -220,7 +228,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Reference(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"AssignmentProperty"> sort
@@ -233,7 +241,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Reference(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"AssignmentProperty"> sort
@@ -246,18 +254,18 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-AssignElement :
+  prettyprint-javascript-AssignElement :
     AssignElement(t1__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [t1__']
                              )
                            ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     ?AssignElement(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@AssignElement(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -268,7 +276,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@AssignElement(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -279,7 +287,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@AssignElement(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -290,17 +298,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-AssignElement :
+  prettyprint-javascript-AssignElement :
     Elision() -> [ H(
                      []
                    , [S("")]
                    )
                  ]
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     ?Elision()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Elision(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -309,7 +317,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Elision(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -318,7 +326,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Elision(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"AssignElement"> sort
@@ -327,19 +335,19 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-AssignElements :
+  prettyprint-javascript-AssignElements :
     AssignElements(t1__, t2__) -> [ H(
                                       [SOpt(HS(), "0")]
                                     , [t1__', S(" "), t2__']
                                     )
                                   ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-Elem) <+ pp-one-Z(prettyprint-completion-aux)> t1__
-    with t2__' := <pp-H-list(prettyprint-spoofaxJS-ElemTail) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Elem) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-ElemTail) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-spoofaxJS-AssignElements =
+  is-javascript-AssignElements =
     ?AssignElements(_, _)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@AssignElements(t1__, t2__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"AssignElements"> sort
@@ -352,7 +360,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@AssignElements(t1__, t2__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"AssignElements"> sort
@@ -365,7 +373,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@AssignElements(t1__, t2__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"AssignElements"> sort
@@ -378,17 +386,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Elem :
+  prettyprint-javascript-Elem :
     NoElement() -> [ H(
                        []
                      , [S("")]
                      )
                    ]
 
-  is-spoofaxJS-Elem =
+  is-javascript-Elem =
     ?NoElement()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@NoElement(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"Elem"> sort
@@ -397,7 +405,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@NoElement(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"Elem"> sort
@@ -406,7 +414,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@NoElement(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"Elem"> sort
@@ -415,27 +423,27 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-Elem :
+  prettyprint-javascript-Elem :
     t1__ -> [ H(
                 [SOpt(HS(), "0")]
               , [t1__']
               )
             ]
-    where not(is-spoofaxJS-Elem)
-    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    where not(is-javascript-Elem)
+    where t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-spoofaxJS-ElemTail :
+  prettyprint-javascript-ElemTail :
     CommaRule(t1__) -> [ H(
                            [SOpt(HS(), "0")]
                          , [S(", "), t1__']
                          )
                        ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     ?CommaRule(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@CommaRule(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -446,7 +454,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@CommaRule(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -457,7 +465,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@CommaRule(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -468,17 +476,17 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-ElemTail :
+  prettyprint-javascript-ElemTail :
     Empty() -> [ H(
                    [SOpt(HS(), "0")]
                  , [S(",")]
                  )
                ]
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     ?Empty()
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@Empty(), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -487,7 +495,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@Empty(), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -496,7 +504,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@Empty(), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"ElemTail"> sort
@@ -505,27 +513,27 @@ strategies
              ws := ""
          end
 
-  prettyprint-spoofaxJS-AssignmentElement :
+  prettyprint-javascript-AssignmentElement :
     t1__ -> [ H(
                 [SOpt(HS(), "0")]
               , [t1__']
               )
             ]
-    where not(is-spoofaxJS-AssignmentElement)
-    where t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    where not(is-javascript-AssignmentElement)
+    where t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-spoofaxJS-AssignmentElement :
+  prettyprint-javascript-AssignmentElement :
     RestElement(t1__) -> [ H(
                              [SOpt(HS(), "0")]
                            , [S("... "), t1__']
                            )
                          ]
-    with t1__' := <pp-one-Z(prettyprint-spoofaxJS-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-spoofaxJS-AssignmentElement =
+  is-javascript-AssignmentElement =
     ?RestElement(_)
 
-  spoofaxJS-get-indent :
+  javascript-get-indent :
     (t@RestElement(t1__), index) -> indent
     where sort := <ia-get-sort> t
           ; <?"AssignmentElement"> sort
@@ -536,7 +544,7 @@ strategies
              indent := ""
          end
 
-  spoofaxJS-get-separator :
+  javascript-get-separator :
     (t@RestElement(t1__), index) -> separator
     where sort := <ia-get-sort> t
           ; <?"AssignmentElement"> sort
@@ -547,7 +555,7 @@ strategies
              separator := ""
          end
 
-  spoofaxJS-get-leading-ws :
+  javascript-get-leading-ws :
     (t@RestElement(t1__), index) -> ws
     where sort := <ia-get-sort> t
           ; <?"AssignmentElement"> sort
@@ -558,244 +566,244 @@ strategies
              ws := ""
          end
 
-  is-spoofaxJS-LeftHandSideExpression =
+  is-javascript-LeftHandSideExpression =
     fail
 
-  is-spoofaxJS-AssignmentProperty =
+  is-javascript-AssignmentProperty =
     fail
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     fail
 
-  is-spoofaxJS-AssignElements =
+  is-javascript-AssignElements =
     fail
 
-  is-spoofaxJS-Elem =
+  is-javascript-Elem =
     fail
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     fail
 
-  is-spoofaxJS-AssignmentElement =
+  is-javascript-AssignmentElement =
     fail
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-LeftHandSideExpression> h
+  prettyprint-javascript-LeftHandSideExpression :
+    amb([h|hs]) -> <prettyprint-javascript-LeftHandSideExpression> h
 
-  prettyprint-spoofaxJS-AssignmentProperty :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-AssignmentProperty> h
+  prettyprint-javascript-AssignmentProperty :
+    amb([h|hs]) -> <prettyprint-javascript-AssignmentProperty> h
 
-  prettyprint-spoofaxJS-AssignElement :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-AssignElement> h
+  prettyprint-javascript-AssignElement :
+    amb([h|hs]) -> <prettyprint-javascript-AssignElement> h
 
-  prettyprint-spoofaxJS-AssignElements :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-AssignElements> h
+  prettyprint-javascript-AssignElements :
+    amb([h|hs]) -> <prettyprint-javascript-AssignElements> h
 
-  prettyprint-spoofaxJS-Elem :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-Elem> h
+  prettyprint-javascript-Elem :
+    amb([h|hs]) -> <prettyprint-javascript-Elem> h
 
-  prettyprint-spoofaxJS-ElemTail :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-ElemTail> h
+  prettyprint-javascript-ElemTail :
+    amb([h|hs]) -> <prettyprint-javascript-ElemTail> h
 
-  prettyprint-spoofaxJS-AssignmentElement :
-    amb([h|hs]) -> <prettyprint-spoofaxJS-AssignmentElement> h
+  prettyprint-javascript-AssignmentElement :
+    amb([h|hs]) -> <prettyprint-javascript-AssignmentElement> h
 
-  prettyprint-spoofaxJS-AssignmentProperty :
+  prettyprint-javascript-AssignmentProperty :
     AssignmentProperty-Plhdr() -> [ H(
                                       [SOpt(HS(), "0")]
-                                    , [S("[[AssignmentProperty]]")]
+                                    , [S("$AssignmentProperty")]
                                     )
                                   ]
 
-  is-spoofaxJS-AssignmentProperty =
+  is-javascript-AssignmentProperty =
     ?AssignmentProperty-Plhdr()
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr() -> [ H(
                       [SOpt(HS(), "0")]
-                    , [S("[[ID]]")]
+                    , [S("$ID")]
                     )
                   ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr()
 
-  prettyprint-spoofaxJS-AssignElement :
+  prettyprint-javascript-AssignElement :
     AssignElement-Plhdr() -> [ H(
                                  [SOpt(HS(), "0")]
-                               , [S("[[AssignElement]]")]
+                               , [S("$AssignElement")]
                                )
                              ]
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     ?AssignElement-Plhdr()
 
-  prettyprint-spoofaxJS-AssignElements :
+  prettyprint-javascript-AssignElements :
     AssignElements-Plhdr() -> [ H(
                                   [SOpt(HS(), "0")]
-                                , [S("[[AssignElements]]")]
+                                , [S("$AssignElements")]
                                 )
                               ]
 
-  is-spoofaxJS-AssignElements =
+  is-javascript-AssignElements =
     ?AssignElements-Plhdr()
 
-  prettyprint-spoofaxJS-Elem :
+  prettyprint-javascript-Elem :
     Elem-Plhdr() -> [ H(
                         [SOpt(HS(), "0")]
-                      , [S("[[Elem]]")]
+                      , [S("$Elem")]
                       )
                     ]
 
-  is-spoofaxJS-Elem =
+  is-javascript-Elem =
     ?Elem-Plhdr()
 
-  prettyprint-spoofaxJS-ElemTail :
+  prettyprint-javascript-ElemTail :
     ElemTail-Plhdr() -> [ H(
                             [SOpt(HS(), "0")]
-                          , [S("[[ElemTail]]")]
+                          , [S("$ElemTail")]
                           )
                         ]
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     ?ElemTail-Plhdr()
 
-  prettyprint-spoofaxJS-AssignmentElement :
+  prettyprint-javascript-AssignmentElement :
     AssignmentElement-Plhdr() -> [ H(
                                      [SOpt(HS(), "0")]
-                                   , [S("[[AssignmentElement]]")]
+                                   , [S("$AssignmentElement")]
                                    )
                                  ]
 
-  is-spoofaxJS-AssignmentElement =
+  is-javascript-AssignmentElement =
     ?AssignmentElement-Plhdr()
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
+  prettyprint-javascript-LeftHandSideExpression :
     LeftHandSideExpression-Plhdr() -> [ H(
                                           [SOpt(HS(), "0")]
-                                        , [S("[[LeftHandSideExpression]]")]
+                                        , [S("$LeftHandSideExpression")]
                                         )
                                       ]
 
-  is-spoofaxJS-LeftHandSideExpression =
+  is-javascript-LeftHandSideExpression =
     ?LeftHandSideExpression-Plhdr()
 
-  prettyprint-spoofaxJS-AssignmentProperty :
+  prettyprint-javascript-AssignmentProperty :
     AssignmentProperty-Plhdr(_) -> [ H(
                                        [SOpt(HS(), "0")]
-                                     , [S("[[AssignmentProperty]]")]
+                                     , [S("$AssignmentProperty")]
                                      )
                                    ]
 
-  is-spoofaxJS-AssignmentProperty =
+  is-javascript-AssignmentProperty =
     ?AssignmentProperty-Plhdr(_)
 
-  prettyprint-spoofaxJS-ID :
+  prettyprint-javascript-ID :
     ID-Plhdr(_) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("[[ID]]")]
+                     , [S("$ID")]
                      )
                    ]
 
-  is-spoofaxJS-ID =
+  is-javascript-ID =
     ?ID-Plhdr(_)
 
-  prettyprint-spoofaxJS-AssignElement :
+  prettyprint-javascript-AssignElement :
     AssignElement-Plhdr(_) -> [ H(
                                   [SOpt(HS(), "0")]
-                                , [S("[[AssignElement]]")]
+                                , [S("$AssignElement")]
                                 )
                               ]
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     ?AssignElement-Plhdr(_)
 
-  prettyprint-spoofaxJS-AssignElements :
+  prettyprint-javascript-AssignElements :
     AssignElements-Plhdr(_) -> [ H(
                                    [SOpt(HS(), "0")]
-                                 , [S("[[AssignElements]]")]
+                                 , [S("$AssignElements")]
                                  )
                                ]
 
-  is-spoofaxJS-AssignElements =
+  is-javascript-AssignElements =
     ?AssignElements-Plhdr(_)
 
-  prettyprint-spoofaxJS-Elem :
+  prettyprint-javascript-Elem :
     Elem-Plhdr(_) -> [ H(
                          [SOpt(HS(), "0")]
-                       , [S("[[Elem]]")]
+                       , [S("$Elem")]
                        )
                      ]
 
-  is-spoofaxJS-Elem =
+  is-javascript-Elem =
     ?Elem-Plhdr(_)
 
-  prettyprint-spoofaxJS-ElemTail :
+  prettyprint-javascript-ElemTail :
     ElemTail-Plhdr(_) -> [ H(
                              [SOpt(HS(), "0")]
-                           , [S("[[ElemTail]]")]
+                           , [S("$ElemTail")]
                            )
                          ]
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     ?ElemTail-Plhdr(_)
 
-  prettyprint-spoofaxJS-AssignmentElement :
+  prettyprint-javascript-AssignmentElement :
     AssignmentElement-Plhdr(_) -> [ H(
                                       [SOpt(HS(), "0")]
-                                    , [S("[[AssignmentElement]]")]
+                                    , [S("$AssignmentElement")]
                                     )
                                   ]
 
-  is-spoofaxJS-AssignmentElement =
+  is-javascript-AssignmentElement =
     ?AssignmentElement-Plhdr(_)
 
-  prettyprint-spoofaxJS-LeftHandSideExpression :
+  prettyprint-javascript-LeftHandSideExpression :
     LeftHandSideExpression-Plhdr(_) -> [ H(
                                            [SOpt(HS(), "0")]
-                                         , [S("[[LeftHandSideExpression]]")]
+                                         , [S("$LeftHandSideExpression")]
                                          )
                                        ]
 
-  is-spoofaxJS-LeftHandSideExpression =
+  is-javascript-LeftHandSideExpression =
     ?LeftHandSideExpression-Plhdr(_)
 
-  prettyprint-spoofaxJS-AssignmentProperty :
+  prettyprint-javascript-AssignmentProperty :
     AssignmentProperty-Opt-Plhdr() -> [ H(
                                           []
                                         , [S("")]
                                         )
                                       ]
 
-  is-spoofaxJS-AssignmentProperty =
+  is-javascript-AssignmentProperty =
     ?AssignmentProperty-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-AssignElement :
+  prettyprint-javascript-AssignElement :
     AssignElement-Opt-Plhdr() -> [ H(
                                      []
                                    , [S("")]
                                    )
                                  ]
 
-  is-spoofaxJS-AssignElement =
+  is-javascript-AssignElement =
     ?AssignElement-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-ElemTail :
+  prettyprint-javascript-ElemTail :
     ElemTail-Opt-Plhdr() -> [ H(
                                 []
                               , [S("")]
                               )
                             ]
 
-  is-spoofaxJS-ElemTail =
+  is-javascript-ElemTail =
     ?ElemTail-Opt-Plhdr()
 
-  prettyprint-spoofaxJS-Elem :
+  prettyprint-javascript-Elem :
     Elem-Opt-Plhdr() -> [ H(
                             []
                           , [S("")]
                           )
                         ]
 
-  is-spoofaxJS-Elem =
+  is-javascript-Elem =
     ?Elem-Opt-Plhdr()

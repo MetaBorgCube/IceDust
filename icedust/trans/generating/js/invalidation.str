@@ -16,13 +16,14 @@ imports
 rules
   
   generate-invalidation-function : attribute ->
-    js-stmt |[ 
-        export function x_name (state, id) {
+    js-stmt* |[ 
+        function x_name (state, id) {
             stmt_derivedValueInvalidation*
             stmt_access*
             stmt_invalidations*
             return state;
         }
+        module.exports.x_name = x_name;
     ]|
     with
       x_name := <invalidation-function-name> attribute
@@ -36,7 +37,6 @@ rules
   flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
     with
       (m1, m2, x_var, field) := <collect-things> exp
-    ; debug
     ; m_lub := <lub-simple> (m1, m2)
     ; x_functionName := <invalidation-function-name> field
 //    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
@@ -53,15 +53,17 @@ rules
   ]|
   
   statement-invalidation : (ZeroOrMore(), x_functionName, x_var) -> js-stmt |[
-    for(let id of x_var){
-      state = x_functionName(state, id);
+    for(var i = 0 ; i < x_var.length ; i++){
+      state = x_functionName(state, x_var[i]);
     }
   ]|
       
     
   generate-derived-value-invalidation: attribute ->
     js-stmt* |[
-        state = state.update(exp_invalidationattribute, set => set.remove(id));
+      state = state.update(exp_invalidationattribute, function(set) { 
+        return set.remove(id);
+      });
     ]|
     where
       <name-is-derived> attribute
