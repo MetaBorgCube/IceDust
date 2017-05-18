@@ -2,25 +2,43 @@ module generating/javascript
 
 imports
 
-  lib/call-external
   lib/files
+  lib/call-external
+  
+  libstratego-gpp
+  js/pp/javascript-pp
+  js/pp/javascript-parenthesize
   
   api/config-api
   
   generating/js/generate
   generating/_ir/paths
   
+  generating/js/runner
+  
   signatures/Config-sig
 
 rules
 
-  build(error-handler|backend, moduleName, relativePath): _ -> (filename, result)
+  build(error-handler|backend, moduleName, relativePath): _ -> result
     where 
-     <is-javascript-backend> backend
+     JavascriptBackend(phase) := backend
     with
-      (result, error') := <generate-javascript-code(error-handler)>moduleName
+      program := <generate-javascript-program> moduleName
     ; filename := <javascript-generated-path(|relativePath)>
-//    ; relativeDir := <dirname> relativePath
-//    ; call-npm-task(|relativeDir, "build") ; Snd ; get-lines ; map(debug)
+    ; switch !phase
+      case ?Generate() <+ ?Compile():
+        program-pp := <pp-js-program> program
+      ; result := (filename, program-pp)
+      case ?Execute():
+        runner := <runner-wrap-module> program
+      ; output := <eval-javascript> runner
+      ; result := output
+    end
     
-    
+  pp-js-program = 
+    parenthesize-javascript
+    ; prettyprint-javascript
+    ; !V([], <id>)
+    ; box2text-string(|120)
+  

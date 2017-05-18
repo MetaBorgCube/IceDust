@@ -11,6 +11,8 @@ dependencies:
   - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.shared:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.nabl2.runtime:${metaborgVersion}
+  java:
+  - com.coveo:nashorn-commonjs-modules:1.0.7
 exports:
 - directory: ./
   includes:
@@ -18,6 +20,7 @@ exports:
     - lib-webdsl/**/*
     - lib/webdsl/HQL-pretty.pp.af
     - lib/webdsl/WebDSL-pretty.pp.af
+    - lib-js/**/*
 pardonedLanguages:
 - EditorService
 - Stratego-Sugar

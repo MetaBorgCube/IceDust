@@ -6,14 +6,9 @@ imports
   generating/js/init
   generating/js/data
   generating/js/execute
-  
-  libstratego-gpp
-  lib/js/pp/javascript-pp
-  lib/js/pp/javascript-parenthesize
-  
 
 rules
-  generate-javascript-code(err): moduleName -> (result, errors)
+  generate-javascript-program: moduleName -> program
     with
       stmts_model := <generate-model-statements> moduleName
       ; stmts_imports := <generate-imports>
@@ -27,13 +22,6 @@ rules
             stmts_data
             stmts_execute
         ]|
-      ; debug
-      ; result := <parenthesize-javascript
-        ; prettyprint-javascript
-        ; !V([], <id>)
-        ; box2text-string(|120)> program
-      ; errors := [] 
-  
   
   generate-imports = !js-stmt* |[
     var _immutable = require('immutable');

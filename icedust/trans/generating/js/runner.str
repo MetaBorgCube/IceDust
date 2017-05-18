@@ -1,0 +1,15 @@
+module runner
+
+imports
+
+rules
+  runner-wrap-module: Program(stmts_program)-> js-program |[
+    var runner = require('./lib/runner');
+    var module = {
+      exports: {}
+    };
+    (function(module){
+      stmts_program
+    })(module);
+    runner(module.exports, print);
+  ]| 

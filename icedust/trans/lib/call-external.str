@@ -35,6 +35,7 @@ rules
       cmd := <mapconcat(![<id>, " "]) ; init ; concat-strings> ["npm" | args]
     ; log(|Info(), cmd)
     
+  external eval-javascript(|)
     
 rules
 
