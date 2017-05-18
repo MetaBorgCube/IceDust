@@ -44,7 +44,9 @@ Fixpoint tc (e : expr) : ty :=
   | plus e1 e2 => 
       let t1 := tc e1 in
       let t2 := tc e2 in
-      intty
+      match t1, t2 with
+      | intty, intty => intty
+      end
   end.
 
 Example test_tc_1 :
