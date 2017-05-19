@@ -1,4 +1,4 @@
-module java-programs-incometax
+module javascript-programs-incometax
 
 language icedust
 
@@ -93,8 +93,8 @@ execute
   consultant.monthlyNetto
 ]]
 
-test Job Offers execute-java [[ generate ]] transform "SPT -> Build"
+test Job Offers execute-javascript [[ generate ]] transform "SPT -> Build"
 
-test Job Offers execute-java incremental [[ execute ]] transform "SPT -> Build" to
+test Job Offers execute-javascript [[ execute ]] transform "SPT -> Build" to
 "1996
 "
