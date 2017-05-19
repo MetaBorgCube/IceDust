@@ -24,7 +24,7 @@ rules
   generate-calculate-many-function: attribute -> js-stmt* |[
     function x_calculateManyFunctionName(state, ids){
       var result = [];
-      for(var i = 0 ; i < ids.length ; ids++){
+      for(var i = 0 ; i < ids.length ; i++){
         var id = ids[i];
         var calc = x_calculateFunctionName(state, id);
         state = calc.state;

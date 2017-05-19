@@ -27,12 +27,23 @@ rules
       program := <generate-javascript-program> moduleName
     ; filename := <javascript-generated-path(|relativePath)>
     ; switch !phase
-      case ?Generate() <+ ?Compile():
+      case ?Generate():
         program-pp := <pp-js-program> program
       ; result := (filename, program-pp)
       case ?Execute():
         runner := <runner-wrap-module> program
       ; output := <eval-javascript> runner
+      ; result := output
+      case ?Eval(options):
+        <debug> options;
+        inFile := <remove-extension ; !$[[<id>]-eval] ; guarantee-extension(|"js")> filename
+      ; if not(file-exists) <+ <?Options(<id>) ; fetch(?Overwrite())> options then 
+          <debug> "writing file";
+          program-pp := <runner-wrap-module ; pp-js-program> program
+        ; <write-file> (inFile, program-pp)
+      end
+      ; programS := <read-file> inFile
+      ; output := <eval-javascript> programS
       ; result := output
     end
     

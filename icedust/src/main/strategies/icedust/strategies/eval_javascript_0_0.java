@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.metaborg.util.log.ILogger;
 import org.metaborg.util.log.Level;
 import org.metaborg.util.log.LoggerUtils;
 import org.metaborg.util.log.LoggingOutputStream;
+import org.spoofax.interpreter.stratego.Fail;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
@@ -41,6 +44,8 @@ public class eval_javascript_0_0 extends Strategy {
 		if(engine == null){
 			logger.warn("failed to load Nashorn javascript engine");
 		} else{
+			createConsole(engine);
+			
 			Writer loggeroutput = new OutputStreamWriter(new LoggingOutputStream(logger, Level.Info));
 			engine.getContext().setWriter(loggeroutput);
 			engine.getContext().setErrorWriter(loggeroutput);
@@ -53,11 +58,21 @@ public class eval_javascript_0_0 extends Strategy {
 		}
 	}
 	
+	public static void createConsole(ScriptEngine engine){
+		Bindings console = engine.createBindings();
+		console.put("log", engine.get("print"));
+		engine.put("console", console);
+	}
+	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-		IStrategoTerm ppJsTerm = context.invokeStrategy("pp-js-program", current);
-		String program = ((IStrategoString) ppJsTerm).stringValue();
-		
+		String program = null;
+		if(current.getTermType() == IStrategoTerm.STRING){
+			program = ((IStrategoString) current).stringValue();
+		} else {
+			IStrategoTerm ppJsTerm = context.invokeStrategy("pp-js-program", current);
+			program = ((IStrategoString) ppJsTerm).stringValue();
+		}
 		
 		final Writer w = engine.getContext().getWriter();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();

@@ -11,5 +11,5 @@ rules
     (function(module){
       stmts_program
     })(module);
-    runner(module.exports, print);
+    runner(module.exports, console.log);
   ]| 
