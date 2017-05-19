@@ -1,0 +1,42 @@
+module java-programs-helloworld
+
+language icedust
+
+fixture [[
+  module helloworld
+  
+  config
+    [[...]]
+    
+  
+  model
+  entity Message {
+    text     : String
+  }
+  
+  data
+  hello : Message {
+    text="Hello World!"
+  }
+  
+  execute
+  hello.text
+]]
+
+
+
+
+test Hello World generate-java [[ backend: Java phase: generate ]] transform "SPT -> Build"
+
+test Hello World compile-java [[ backend: Java phase: compile ]] transform "SPT -> Build"
+
+test Hello World execute-java [[ backend: Java phase: execute ]] transform "SPT -> Build" to 
+"Hello World!
+"
+
+test Hello World generate-javascript [[ backend: Javascript phase: generate ]] transform "SPT -> Build"
+
+test Hello World execute-javascript [[ backend: Javascript phase: execute ]] transform "SPT -> Build" to
+"Hello World!
+"
+
