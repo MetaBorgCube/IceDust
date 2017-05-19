@@ -28,7 +28,7 @@ import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 public class eval_javascript_0_0 extends Strategy {
 
-	private ILogger logger = LoggerUtils.logger(getClass());
+	private static final ILogger logger = LoggerUtils.logger("Javascript interpreter");
 	
 	public static final eval_javascript_0_0 instance = new eval_javascript_0_0();
 	
@@ -44,8 +44,8 @@ public class eval_javascript_0_0 extends Strategy {
 		if(engine == null){
 			logger.warn("failed to load Nashorn javascript engine");
 		} else{
+			logger.info("initializing Nashorn javascript engine");
 			createConsole(engine);
-			
 			Writer loggeroutput = new OutputStreamWriter(new LoggingOutputStream(logger, Level.Info));
 			engine.getContext().setWriter(loggeroutput);
 			engine.getContext().setErrorWriter(loggeroutput);
@@ -55,6 +55,7 @@ public class eval_javascript_0_0 extends Strategy {
 			} catch (ScriptException e) {
 				logger.warn(e.getMessage());
 			}
+			loadPolyfill(engine);
 		}
 	}
 	
@@ -63,6 +64,14 @@ public class eval_javascript_0_0 extends Strategy {
 		console.put("log", engine.get("print"));
 		engine.put("console", console);
 	}
+	
+	public static void loadPolyfill(ScriptEngine engine){
+        try {
+            engine.eval("require('./lib/nashorn-polyfill');");
+        } catch (ScriptException e) {
+            logger.warn(e.getMessage());
+        }
+    }
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {

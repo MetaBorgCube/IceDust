@@ -41,7 +41,7 @@ rules
   exp-to-js-stmts(|i) = ?Multiplication(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-mul|i)
   exp-to-js-stmts(|i) = ?Division(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-div|i) 
   exp-to-js-stmts(|i) = ?FloorDivision(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), \(exp_lhs, exp_rhs) -> js-exp|[
-    Math.floor(exp_lhs / exp_rhs)
+    parseInt(exp_lhs / exp_rhs)
   ]|\|i)
   
   exp-to-js-stmts(|i) = ?LessThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-lt|i)
@@ -54,6 +54,7 @@ rules
   exp-to-js-stmts(|i) = ?And2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
   exp-to-js-stmts(|i) = ?Or(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-or|i)
   exp-to-js-stmts(|i) = ?Or2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2),js-or|i)
+  exp-to-js-stmts(|i) = ?Modulo(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2),js-modulo|i)
   
   exp-to-js-stmts(|i) = ?ChoiceLeft(e1, e2) ; binexp-to-js-stmts(
       !(e1,e2) 
@@ -110,13 +111,13 @@ rules
   //unary expressions
   
   exp-to-js-stmts(|i) = ?Not(e) ; unexp-to-js-stmts(!e, js-not|i)
-  exp-to-js-stmts(|i) = ?Cast(e, _) ; unexp-to-js-stmts(
-      !e 
-    , \exp_e -> js-exp |[
-      exp_e
-    ]|\
-    | i
-  )
+  exp-to-js-stmts(|i): e_cast@Cast(e, t2) -> result
+    with
+      t1 := <get-type2 ; debug> e
+    ; result := <unexp-to-js-stmts(!e, !(<id>, t1, t2) ; do-cast|i)> e_cast 
+  
+  do-cast: (exp_e, Float(), Int()) -> js-exp |[parseInt(exp_e)]|
+  do-cast: (exp_e, _, _) -> exp_e
   
   exp-to-js-stmts(|i) = ?Sum(e) ; unexp-to-js-stmts(!e, js-sum|i)
   exp-to-js-stmts(|i) = ?Min(e) ; unexp-to-js-stmts(!e, js-min|i)
@@ -126,7 +127,6 @@ rules
   exp-to-js-stmts(|i) = ?Disj(e) ; unexp-to-js-stmts(!e, js-disj|i)
   exp-to-js-stmts(|i) = ?Count(e) ; unexp-to-js-stmts(!e, !(e, <id>); exp-to-list ; js-count|i)
   exp-to-js-stmts(|i) = ?Concat(e) ; unexp-to-js-stmts(!e, js-concat|i)
-  
   
   js-sum = js-exp-call(|"sum")
   js-min = js-exp-call(|"min")
@@ -272,5 +272,6 @@ rules
     with
       exp_dateString := <js-string> d
   literal-to-js-exp: NoValue() -> js-exp |[null]|
+  literal-to-js-exp: This() -> <int-to-varname ; js-var> 0
   
   

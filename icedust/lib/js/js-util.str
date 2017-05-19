@@ -23,6 +23,7 @@ rules
     js-neqq = !NotEqualsStrict(<Fst>, <Snd>)
     js-and = !And(<Fst>, <Snd>)
     js-or = !Or(<Fst>, <Snd>)
+    js-modulo = !Modulo(<Fst>, <Snd>)
     
     js-not = !Not(<id>)
     

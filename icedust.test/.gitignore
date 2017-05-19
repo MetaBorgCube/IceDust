@@ -6,7 +6,6 @@ target
 **/nativejava
 **/stylesheets
 **/.saved-but-not-built
-**/javascript
 **/*.class
 **/*.java
 **/lib

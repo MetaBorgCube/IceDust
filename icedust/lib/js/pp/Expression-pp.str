@@ -750,6 +750,57 @@ strategies
          end
 
   prettyprint-javascript-Expression :
+    Modulo(t1__, t2__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [t1__', S(" % "), t2__']
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Modulo(_, _)
+
+  javascript-get-indent :
+    (t@Modulo(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Modulo(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Modulo(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Greater(t1__, t2__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [t1__', S(" > "), t2__']

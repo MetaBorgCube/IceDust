@@ -25,6 +25,7 @@ signature
     Substraction             : Expression * Expression -> Expression
     Multiplication           : Expression * Expression -> Expression
     Division                 : Expression * Expression -> Expression
+    Modulo                   : Expression * Expression -> Expression
     Greater                  : Expression * Expression -> Expression
     Lower                    : Expression * Expression -> Expression
     GreaterEquals            : Expression * Expression -> Expression
