@@ -1,0 +1,53 @@
+module config-first-class-relations
+
+language icedust
+
+test no error on first-class relations enabled [[
+module test
+
+config
+
+  language features : first-class relations
+
+model
+
+  entity Student { }
+  
+  relation Enrollment {
+    Student
+    Course
+  }
+  
+  entity Course { }
+  
+data
+
+  bob : Student {
+    course = <enr{}>math{}
+  }
+]] 0 errors
+
+test error on first-class relation disabled [[
+module test
+
+config
+
+  language features : 
+
+model
+
+  entity Student { }
+  
+  [[relation Enrollment {
+    Student
+    Course
+  }]]
+  
+  entity Course { }
+  
+data
+
+  bob : Student {
+    course = [[<enr{}>]]math{}
+  }
+]] 2 errors at #1, #2

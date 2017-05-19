@@ -70,6 +70,10 @@ test error on duplicate shortcut [[
     
     a.[[node]] <-> b.[[node]]
   }
+  
+config
+
+  language features : first-class relations
 ]] 2 errors at #1,#2
 
 test error on duplicate shortcut by desugaring [[

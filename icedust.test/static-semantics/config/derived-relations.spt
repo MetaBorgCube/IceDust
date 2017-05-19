@@ -1,0 +1,35 @@
+module config-derived-relations
+
+language icedust
+
+test no error on derived relations enabled [[
+module test
+
+config
+
+  language features : derived relations
+
+model
+
+  entity Node { }
+  
+  relation Node.forward <-> Node.backward
+  
+  relation Node.twice = forward.forward <-> Node.twiceInv
+]] 0 errors
+
+test error on derived relation disabled [[
+module test
+
+config
+
+  language features :
+
+model
+
+  entity Node { }
+  
+  relation Node.forward <-> Node.backward
+  
+  [[relation Node.twice = forward.forward <-> Node.twiceInv]]
+]] 1 error at #1

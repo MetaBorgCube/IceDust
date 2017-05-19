@@ -1,0 +1,48 @@
+module config-config-section
+
+language icedust
+
+test error on duplicate config section [[
+module test
+
+config
+
+  backend : Java
+  
+[[config]]
+
+]] 1 error at #1
+
+test error on duplicate backend section [[
+module test
+
+config
+
+  backend : Java
+  
+  [[backend : Java]]
+
+]] 1 error at #1
+
+test error on duplicate language features section [[
+module test
+
+config
+
+  language features : derived relations, inlines, strategies, subtyping
+  
+  [[language features : derived relations, inlines, strategies, subtyping]]
+
+]] 1 error at #1
+
+
+test error on eventual with java backend [[
+module test
+
+config
+
+  backend : Java
+
+  language features : derived relations, inlines, strategies, subtyping, [[eventual calculation]]
+
+]] 1 error at #1

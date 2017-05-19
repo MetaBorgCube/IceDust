@@ -9,6 +9,11 @@ module icedustWebDSL2 (incremental)
 //  - personal deadlines and deadline extensions, teachers can assign students a personal deadline
 //  - assignment and course statistics
 
+config
+
+  backend : WebDSL
+    ui : Model Explorer
+
 model
 
   entity Student {
