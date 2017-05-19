@@ -1,0 +1,29 @@
+module java-features-expressions-nestedIf
+
+language icedust
+
+fixture [[
+  module nestedIf (on-demand)
+  
+  model
+  
+    entity Z{
+      b : Boolean
+      c : Boolean = (if(b) this else this).b
+  //    d : Boolean = this
+    }
+  
+  data
+  
+    z:Z{b=true}
+  
+  execute
+  
+    z.c
+    [[...]]
+]]
+
+
+test nestedIf [[ ]] transform "SPT -> Build" to 
+"true
+"

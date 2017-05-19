@@ -1,0 +1,15 @@
+module java-features-expressions-cast
+
+language icedust
+
+fixture [[
+  module cast (on-demand)
+  
+  execute
+    concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
+    [[...]]
+]]
+
+test cast [[ ]] transform "SPT -> Build" to
+"5.0 true 5
+"
