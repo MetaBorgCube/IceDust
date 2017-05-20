@@ -1,0 +1,51 @@
+module generating/js/names
+
+imports
+  api/model-names-api
+  api/types-api
+  
+  signatures/Types-sig
+  
+  lib/js/js-util
+
+rules
+
+  attribute-name: attribute -> $[[entity]_[attribute]]
+    with
+      entity := <attributename-get-entityname> attribute
+  
+  setter-function-name: attribute -> $[set[name]]
+    with
+      name := <attribute-name> attribute
+  
+  function-name-many = !$[[<id>]_Many]
+  
+  
+  default-multiplicity = (id, id) <+ !(<id>, One())
+  
+  attribute-function-name(|prefix) = default-multiplicity ; (attribute-name, multiplicity-function-postfix) ; !$[[prefix][<Fst>][<Snd>]]
+  
+  getter-function-name = attribute-function-name(|"get")
+  setter-function-name = attribute-function-name(|"set")
+  add-function-name = attribute-function-name(|"add")
+  invalidation-function-name = attribute-function-name(|"invalidate")
+  memoize-function-name = attribute-function-name(|"memoize")
+  calculate-function-name = attribute-function-name(|"calculate")
+  
+  multiplicity-function-postfix = upper-one ; !""
+  multiplicity-function-postfix = upper-many ; !"_Many"
+  
+  
+  id-var = upper-one ; !"id"
+  id-var = upper-many ; !"ids"
+      
+  attribute-table-expression: attribute -> <js-string> x_name
+    with
+      switch id
+        case is-attributename ; attributename-is-normal-default:
+          x_name := <attributename-get-entityname> attribute
+        case attributename-is-derivation <+ is-relationname:
+          x_name := <attribute-name> attribute
+        case is-string:
+          x_name := attribute
+      end

@@ -1,0 +1,39 @@
+module js/signatures/Export-sig
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Statement-sig
+  js/signatures/Import-sig
+  js/signatures/Class-sig
+  js/signatures/Expression-sig
+
+
+signature
+  constructors
+    FromImport                    : FromClause -> Export
+    FromImportBlock               : List(ExportSpecifier) * FromClause -> Export
+    ExportBlock                   : List(ExportSpecifier) -> Export
+    ExportDeclaration             : Declaration -> Export
+    ExportHoistableDeclaration    : HoistableDeclaration -> Export
+    ExportDefaultDeclaration      : HoistableDeclaration -> Export
+    ExportDefaultClassDeclaration : ClassDeclaration -> Export
+    ExportDefaultExpression       : Expression -> Export
+    ExportSpecifier               : ID -> ExportSpecifier
+    NamedExportSpecifier          : ID * ID -> ExportSpecifier
+    FromClause-Plhdr              : FromClause
+    Declaration-Plhdr             : Declaration
+    HoistableDeclaration-Plhdr    : HoistableDeclaration
+    ClassDeclaration-Plhdr        : ClassDeclaration
+    Export-Plhdr                  : Export
+    Expression-Plhdr              : Expression
+    ExportSpecifier-Plhdr         : ExportSpecifier
+    ID-Plhdr                      : ID
+    FromClause-Plhdr              : COMPLETION-INSERTION -> FromClause
+    Declaration-Plhdr             : COMPLETION-INSERTION -> Declaration
+    HoistableDeclaration-Plhdr    : COMPLETION-INSERTION -> HoistableDeclaration
+    ClassDeclaration-Plhdr        : COMPLETION-INSERTION -> ClassDeclaration
+    Export-Plhdr                  : COMPLETION-INSERTION -> Export
+    Expression-Plhdr              : COMPLETION-INSERTION -> Expression
+    ExportSpecifier-Plhdr         : COMPLETION-INSERTION -> ExportSpecifier
+    ID-Plhdr                      : COMPLETION-INSERTION -> ID
+    ExportSpecifier-Opt-Plhdr     : ExportSpecifier

@@ -1,0 +1,83 @@
+module generating/js/access
+
+imports
+
+  signatures/Expressions-sig
+  signatures/Types-sig
+
+  generating/js/names
+  generating/js/common
+  analysis2/path
+  
+  api/model-names-api
+  api/types-names-api
+
+  prettyprinting/pp
+  
+rules  
+  collect-things: r@Ref(name) -> (One(), m_current, "id", name)
+    with
+      m_current := <get-multiplicity> r
+      
+  collect-things: ma@MemberAccess(inner, name) -> (m_lub, m_current, x_name, name)
+    with
+    (m1, m2, x_previous, attribute_previous) := <collect-things> inner
+    ; m_lub := <lub-simple> (m1, m2)
+    ; m_current := <get-multiplicity> ma
+    ; x_name := <with-prefix> (x_previous, attribute_previous)      
+  
+  collect-previous-and-attribute: x -> x  
+  
+  path-previous-multiplicity: Ref(_) -> One()
+  path-previous-multiplicity : MemberAccess(inner, name) -> m 
+    with 
+      m1 := <name-get-multiplicity> name
+    ; m2 := <get-previous-multiplicity> inner 
+    ; m := <lub-simple> (m1, m2) 
+    
+  exp-get-multiplicity: Ref(name) -> <name-get-multiplicity> name
+  exp-get-multiplicity: MemberAccess(_, name) -> <name-get-multiplicity> name
+    
+    
+  get-previous-multiplicity : MemberAccess(Ref(name), _) -> <name-get-multiplicity> name
+   
+  collect-access : ref @ Ref(_) -> [ref]
+  collect-access : access @ MemberAccess(exp, _) -> [access | <collect-access> exp]
+      
+  get-attribute-from-state : attribute -> js-exp |[state.get(exp_attribute).get(id)]|
+    with
+      exp_attribute := <attribute-table-expression> attribute
+
+  access-statement : path -> js-stmt |[
+    var x_name = x_getterFunction(state, x_prefix); 
+  ]| 
+    with
+      <pp-partial-icedust-string> path ;
+      (m1, m2, x_prefix, attribute) := <collect-things> path
+    ; exp_attribute := <attribute-table-expression> attribute
+    ; x_name := <with-prefix> (x_prefix, attribute)
+    ; x_getterFunction := <getter-function-name> (attribute, m1)
+  
+  flowsto-to-access-statements = 
+      filter(flow-to-access-exp)
+    ; paths-to-access-statements
+    
+  dependson-to-access-statements =
+      filter(dependson-to-access-exp)
+    ; paths-to-access-statements
+  
+  paths-to-access-statements =
+        mapconcat(collect-access)
+      ; make-set 
+      ; sort-paths
+      ; map(access-statement)
+  
+  flow-to-access-exp : DataflowPath(_, MemberAccess(inner, _)) -> inner
+  
+  dependson-to-access-exp : DependencyPath(_, MemberAccess(inner, _)) -> inner
+    
+  sort-paths = qsort((pp-partial-icedust-string, pp-partial-icedust-string) ; string-lt) 
+    
+      
+      
+      

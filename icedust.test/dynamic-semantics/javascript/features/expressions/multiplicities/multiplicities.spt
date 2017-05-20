@@ -1,0 +1,28 @@
+module javascript-features-expressions-multiplicities
+
+language icedust
+
+fixture [[
+  module multiplicities
+
+  config
+    backend: Javascript
+  
+  model
+  entity Foo{
+    input1  : Int = 5
+    input2  : Int?
+    value    : Int = input2 <+ input1
+  }
+  
+  data
+  f : Foo {}
+  
+  execute
+  f.input1 ++ f.input2
+  [[...]] 
+]]
+
+test multiplicities [[ ]] transform "SPT -> Build" to
+"[5]
+"

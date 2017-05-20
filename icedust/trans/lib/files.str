@@ -47,6 +47,19 @@ rules
       <debug> $[write-file failed, could not open file: [fileName]];
       fail
 
+  read-file: fileName -> fContent
+    with
+      fileDescriptor := <fopen> (fileName, "r")
+    ; fContent := <fgets> fileDescriptor
+    ; <fclose> fileDescriptor
+
+  fgets = fgetca ; implode-string
+
+  fgetca: fileDescriptor -> [c | <fgetca> fileDescriptor]
+    where c := <fgetc> fileDescriptor
+
+  fgetca = ![]
+
 rules
 
   ensure-dir: path -> path

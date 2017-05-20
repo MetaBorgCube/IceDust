@@ -1,0 +1,566 @@
+module js/pp/Class-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/Class-sig
+
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+  js/signatures/Statement-sig
+  js/signatures/Assignment-sig
+
+
+imports
+  js/pp/Common-pp
+  js/pp/Expression-pp
+  js/pp/Statement-pp
+  js/pp/Assignment-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-javascript
+
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-javascript-start-symbols
+
+  prettyprint-javascript-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-javascript =
+    prettyprint-javascript-ClassDeclaration
+
+  prettyprint-javascript =
+    prettyprint-javascript-ClassHeritage
+
+  prettyprint-javascript =
+    prettyprint-javascript-ClassBody
+
+  prettyprint-javascript =
+    prettyprint-javascript-ClassElement
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ClassDeclaration>
+    where <?"ClassDeclaration"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ClassHeritage>
+    where <?"ClassHeritage"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ClassBody>
+    where <?"ClassBody"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ClassElement>
+    where <?"ClassElement"> sort
+
+  prettyprint-javascript-ClassDeclaration :
+    ClassDeclaration(t1__, t2__, t3__) -> [ H(
+                                              [SOpt(HS(), "0")]
+                                            , [ S("class ")
+                                              , t1__'
+                                              , S(" ")
+                                              , t2__'
+                                              , S("  {")
+                                              ]
+                                            )
+                                          , t3__'
+                                          , t4__'
+                                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-ClassHeritage) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-indent(|"7")> [ <pp-one-Z(prettyprint-javascript-ClassBody) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+                                    ]
+    with t4__' := <pp-indent(|"5")> [S("}")]
+
+  is-javascript-ClassDeclaration =
+    ?ClassDeclaration(_, _, _)
+
+  javascript-get-indent :
+    ( t@ClassDeclaration(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ClassDeclaration"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := "       "
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    ( t@ClassDeclaration(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ClassDeclaration"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    ( t@ClassDeclaration(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ClassDeclaration"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := "\n       "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ClassHeritage :
+    Extends(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("extends "), t1__']
+                       )
+                     ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-ClassHeritage =
+    ?Extends(_)
+
+  javascript-get-indent :
+    (t@Extends(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Extends(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Extends(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ClassHeritage :
+    ExtendsObject() -> [ H(
+                           []
+                         , [S("")]
+                         )
+                       ]
+
+  is-javascript-ClassHeritage =
+    ?ExtendsObject()
+
+  javascript-get-indent :
+    (t@ExtendsObject(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExtendsObject(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExtendsObject(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ClassHeritage"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ClassBody :
+    ClassBody(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__']
+                         )
+                       ]
+    with t1__' := <pp-V-list(prettyprint-javascript-ClassElement) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-ClassBody =
+    ?ClassBody(_)
+
+  javascript-get-indent :
+    (t@ClassBody(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ClassBody"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ClassBody(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ClassBody"> sort
+    with switch !index
+           case ?1 :
+             separator := "\n"
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ClassBody(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ClassBody"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ClassElement :
+    MethodDefinition(t1__, t2__, t3__) -> [ H(
+                                              [SOpt(HS(), "0")]
+                                            , [ t1__'
+                                              , S("(")
+                                              , t2__'
+                                              , S("){")
+                                              ]
+                                            )
+                                          , t3__'
+                                          , t4__'
+                                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-LeftHandSideExpression|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-indent(|"6")> [ <pp-H-list(prettyprint-javascript-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+                                    ]
+    with t4__' := <pp-indent(|"4")> [S("}")]
+
+  is-javascript-ClassElement =
+    ?MethodDefinition(_, _, _)
+
+  javascript-get-indent :
+    ( t@MethodDefinition(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ClassElement"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := "      "
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    ( t@MethodDefinition(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ClassElement"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ","
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    ( t@MethodDefinition(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ClassElement"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := "\n      "
+           otherwise :
+             ws := ""
+         end
+
+  is-javascript-ClassDeclaration =
+    fail
+
+  is-javascript-ClassHeritage =
+    fail
+
+  is-javascript-ClassBody =
+    fail
+
+  is-javascript-ClassElement =
+    fail
+
+  prettyprint-javascript-ClassDeclaration :
+    amb([h|hs]) -> <prettyprint-javascript-ClassDeclaration> h
+
+  prettyprint-javascript-ClassHeritage :
+    amb([h|hs]) -> <prettyprint-javascript-ClassHeritage> h
+
+  prettyprint-javascript-ClassBody :
+    amb([h|hs]) -> <prettyprint-javascript-ClassBody> h
+
+  prettyprint-javascript-ClassElement :
+    amb([h|hs]) -> <prettyprint-javascript-ClassElement> h
+
+  prettyprint-javascript-ClassDeclaration :
+    ClassDeclaration-Plhdr() -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$ClassDeclaration")]
+                                  )
+                                ]
+
+  is-javascript-ClassDeclaration =
+    ?ClassDeclaration-Plhdr()
+
+  prettyprint-javascript-Expression :
+    Expression-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Expression")]
+                            )
+                          ]
+
+  is-javascript-Expression =
+    ?Expression-Plhdr()
+
+  prettyprint-javascript-ClassHeritage :
+    ClassHeritage-Plhdr() -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$ClassHeritage")]
+                               )
+                             ]
+
+  is-javascript-ClassHeritage =
+    ?ClassHeritage-Plhdr()
+
+  prettyprint-javascript-ClassBody :
+    ClassBody-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$ClassBody")]
+                           )
+                         ]
+
+  is-javascript-ClassBody =
+    ?ClassBody-Plhdr()
+
+  prettyprint-javascript-ClassElement :
+    ClassElement-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$ClassElement")]
+                              )
+                            ]
+
+  is-javascript-ClassElement =
+    ?ClassElement-Plhdr()
+
+  prettyprint-javascript-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("$ID")]
+                    )
+                  ]
+
+  is-javascript-ID =
+    ?ID-Plhdr()
+
+  prettyprint-javascript-LeftHandSideExpression :
+    LeftHandSideExpression-Plhdr() -> [ H(
+                                          [SOpt(HS(), "0")]
+                                        , [S("$LeftHandSideExpression")]
+                                        )
+                                      ]
+
+  is-javascript-LeftHandSideExpression =
+    ?LeftHandSideExpression-Plhdr()
+
+  prettyprint-javascript-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$Statement")]
+                           )
+                         ]
+
+  is-javascript-Statement =
+    ?Statement-Plhdr()
+
+  prettyprint-javascript-ClassDeclaration :
+    ClassDeclaration-Plhdr(_) -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [S("$ClassDeclaration")]
+                                   )
+                                 ]
+
+  is-javascript-ClassDeclaration =
+    ?ClassDeclaration-Plhdr(_)
+
+  prettyprint-javascript-Expression :
+    Expression-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Expression")]
+                             )
+                           ]
+
+  is-javascript-Expression =
+    ?Expression-Plhdr(_)
+
+  prettyprint-javascript-ClassHeritage :
+    ClassHeritage-Plhdr(_) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$ClassHeritage")]
+                                )
+                              ]
+
+  is-javascript-ClassHeritage =
+    ?ClassHeritage-Plhdr(_)
+
+  prettyprint-javascript-ClassBody :
+    ClassBody-Plhdr(_) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$ClassBody")]
+                            )
+                          ]
+
+  is-javascript-ClassBody =
+    ?ClassBody-Plhdr(_)
+
+  prettyprint-javascript-ClassElement :
+    ClassElement-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$ClassElement")]
+                               )
+                             ]
+
+  is-javascript-ClassElement =
+    ?ClassElement-Plhdr(_)
+
+  prettyprint-javascript-ID :
+    ID-Plhdr(_) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("$ID")]
+                     )
+                   ]
+
+  is-javascript-ID =
+    ?ID-Plhdr(_)
+
+  prettyprint-javascript-LeftHandSideExpression :
+    LeftHandSideExpression-Plhdr(_) -> [ H(
+                                           [SOpt(HS(), "0")]
+                                         , [S("$LeftHandSideExpression")]
+                                         )
+                                       ]
+
+  is-javascript-LeftHandSideExpression =
+    ?LeftHandSideExpression-Plhdr(_)
+
+  prettyprint-javascript-Statement :
+    Statement-Plhdr(_) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Statement")]
+                            )
+                          ]
+
+  is-javascript-Statement =
+    ?Statement-Plhdr(_)
+
+  prettyprint-javascript-ClassHeritage :
+    ClassHeritage-Opt-Plhdr() -> [ H(
+                                     []
+                                   , [S("")]
+                                   )
+                                 ]
+
+  is-javascript-ClassHeritage =
+    ?ClassHeritage-Opt-Plhdr()
+
+  prettyprint-javascript-ClassElement :
+    ClassElement-Opt-Plhdr() -> [ H(
+                                    []
+                                  , [S("")]
+                                  )
+                                ]
+
+  is-javascript-ClassElement =
+    ?ClassElement-Opt-Plhdr()
+
+  prettyprint-javascript-LeftHandSideExpression :
+    LeftHandSideExpression-Opt-Plhdr() -> [ H(
+                                              []
+                                            , [S("")]
+                                            )
+                                          ]
+
+  is-javascript-LeftHandSideExpression =
+    ?LeftHandSideExpression-Opt-Plhdr()
+
+  prettyprint-javascript-Statement :
+    Statement-Opt-Plhdr() -> [ H(
+                                 []
+                               , [S("")]
+                               )
+                             ]
+
+  is-javascript-Statement =
+    ?Statement-Opt-Plhdr()
