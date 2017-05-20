@@ -1,0 +1,160 @@
+module generating/js/setter
+
+imports
+  
+  signatures/Types-sig
+  
+  js/js-util
+  
+  api/model-names-api
+  api/types-api
+  
+  generating/js/names
+  generating/js/common
+
+rules
+
+  generate-setter: attribute -> js-stmt* |[
+    function x_methodname (state, id, value){
+      stmt_setter*
+      return state;
+    }
+    module.exports.x_methodname = x_methodname;
+  ]|
+    with
+      entity := <attributename-get-entityname> attribute
+      ; x_methodname := <setter-function-name> attribute
+    where
+      stmt_setter* := <setter-statements> attribute
+      
+  setter-statements : x_attribute -> js-stmt* |[      
+    var prop = {x_attribute: value}; 
+    state = state.update(exp_table, function(table) {
+      return table.update(id, function(e){ 
+        return _.assign({}, e, prop);
+      });
+    });
+    state = x_invalidationFunction(state, id);
+  ]|
+    where
+      is-attributename ; attributename-is-normal-default
+    with
+      x_invalidationFunction := <invalidation-function-name> x_attribute
+      ; exp_table := <attribute-table-expression> x_attribute
+      
+  
+  
+  setter-statements : x_attribute -> js-stmt* |[
+    var previousValue = x_getterFunction(state, id);
+    var table = state.get(exp_tableName).set(id, value);
+    state = state.set(exp_tableName, table);
+    state = x_invalidationFunction(state, id);
+    
+    stmt_updateInverse*
+  ]|
+    where
+      is-relationname
+    with
+      x_getterFunction := <getter-function-name> x_attribute
+      ; exp_tableName := <attribute-table-expression> x_attribute
+      ; x_invalidationFunction := <invalidation-function-name> x_attribute
+      ; x_inverse := <relationname-get-inversename> x_attribute
+      ; stmt_updateInverse* := <setter-relation-inverse-statements> (x_attribute, x_inverse)
+      
+      
+  setter-relation-inverse-statements: (x_attribute, x_inverse) -> js-stmt* |[
+    var inverseTable = state.get(exp_inverseTableName);
+    stmts_inverse
+    state = state.set(exp_inverseTableName, inverseTable);
+  ]|
+    with
+      exp_inverseTableName := <attribute-table-expression> x_inverse
+      ; m_attribute := <name-get-multiplicity ; simplify-multiplicity> x_attribute
+      ; m_inverse := <name-get-multiplicity ; simplify-multiplicity> x_inverse
+      ; stmts_set := <setter-relation-inverse-set> m_inverse
+      ; stmts_unset := <setter-relation-inverse-unset> m_inverse
+      ; x_inverseInvalidationFunction := <invalidation-function-name> x_inverse
+      
+    with
+      switch !m_attribute
+        case ZeroOrMore():
+          stmts_inverse := js-stmt* |[
+
+            var added = _.difference(value, previousValue);
+            var removed = _.difference(previousValue, value);
+            
+            for(var i = 0 ; i < added.length ; i++){
+              var addedId = added[i];
+              stmts_set
+              state = x_inverseInvalidationFunction(state, addedId);
+            }
+            
+            for(var i = 0 ; i < removed.length ; i++){
+              var removedId = removed[i];
+              stmts_unset
+              state = x_inverseInvalidationFunction(state, removedId);
+            }
+          ]|
+          
+        case One():
+          stmts_inverse := js-stmt* |[
+            if(value != null) {
+              var addedId = value;
+              stmts_set
+              state = x_inverseInvalidationFunction(state, addedId);
+            }
+            
+            if(previousValue != null){
+              var removedId = previousValue;
+              stmts_unset
+              state = x_inverseInvalidationFunction(state, removedId);
+            }
+          ]|
+      end
+  
+  
+  setter-relation-inverse-set: One() -> js-stmt* |[
+    inverseTable = inverseTable.set(addedId, id);
+  ]|
+  
+  setter-relation-inverse-set: ZeroOrMore() ->  js-stmt* |[
+    var inverseIds = inverseTable.get(addedId);
+    if(inverseIds === undefined){
+      inverseIds = [id];
+    } else {
+      inverseIds = inverseIds.concat(id);
+    }
+    inverseTable = inverseTable.set(addedId, inverseIds);
+  ]|
+  
+  setter-relation-inverse-unset: One() -> js-stmt* |[
+    inverseTable = inverseTable.remove(removedId);
+  ]|
+  setter-relation-inverse-unset: ZeroOrMore() -> js-stmt* |[
+    var inverseIds = inverseTable.get(removedId);
+    if(inverseIds === undefined){
+      inverseIds = [];
+    } else{
+      inverseIds = _.without(inverseIds, id);
+    }
+    inverseTable = inverseTable.set(removedId, inverseIds);
+  ]|
+  
+  
+  //add functions
+  
+  generate-add: x_attribute -> js-stmt* |[
+    function x_addFunction(state, id, value) {
+      var previousValue = x_getter(state, id);
+      var nextValue = previousValue.concat(value);
+      return x_setter(state, id, nextValue);
+    }
+    module.exports.x_addFunction = x_addFunction;
+  ]|
+    where
+      <is-relationname ; name-get-multiplicity ; upper-many> x_attribute
+    with
+      x_addFunction := <add-function-name> x_attribute
+    ; x_getter := <getter-function-name> x_attribute
+    ; x_setter := <setter-function-name> x_attribute
+      

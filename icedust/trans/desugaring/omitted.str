@@ -233,7 +233,9 @@ rules // config
     try(config-section-generate-backend);
     try(config-section-generate-features);
     try(config-section-add-eventual);
-    bottomup(try(javabackend-generate-phase))
+    bottomup(try(javabackend-generate-phase));
+    bottomup(try(javascriptbackend-generate-phase))
+    
     
   config-section-generate-backend: c -> c'
     where
@@ -262,3 +264,5 @@ rules // config
       c'*      := <map(try(languagefeatures-add(!eventual)))>c*
       
   javabackend-generate-phase: j@JavaBackend(None()) -> JavaBackend(<custom-origin(|j)>Execute())
+
+  javascriptbackend-generate-phase: j@JavascriptBackend(None()) -> JavascriptBackend(<custom-origin(|j)>Execute())

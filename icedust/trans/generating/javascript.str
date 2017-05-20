@@ -1,0 +1,55 @@
+module generating/javascript
+
+imports
+
+  lib/files
+  lib/call-external
+  
+  libstratego-gpp
+  js/pp/javascript-pp
+  js/pp/javascript-parenthesize
+  
+  api/config-api
+  
+  generating/js/generate
+  generating/_ir/paths
+  
+  generating/js/runner
+  
+  signatures/Config-sig
+
+rules
+
+  build(error-handler|backend, moduleName, relativePath): _ -> result
+    where 
+     JavascriptBackend(phase) := backend
+    with
+      program := <generate-javascript-program> moduleName
+    ; filename := <javascript-generated-path(|relativePath)>
+    ; switch !phase
+      case ?Generate():
+        program-pp := <pp-js-program> program
+      ; result := (filename, program-pp)
+      case ?Execute():
+        runner := <runner-wrap-module> program
+      ; output := <eval-javascript> runner
+      ; result := output
+      case ?Eval(options):
+        <debug> options;
+        inFile := <remove-extension ; !$[[<id>]-eval] ; guarantee-extension(|"js")> filename
+      ; if not(file-exists) <+ <?Options(<id>) ; fetch(?Overwrite())> options then 
+          <debug> "writing file";
+          program-pp := <runner-wrap-module ; pp-js-program> program
+        ; <write-file> (inFile, program-pp)
+      end
+      ; programS := <read-file> inFile
+      ; output := <eval-javascript> programS
+      ; result := output
+    end
+    
+  pp-js-program = 
+    parenthesize-javascript
+    ; prettyprint-javascript
+    ; !V([], <id>)
+    ; box2text-string(|120)
+  

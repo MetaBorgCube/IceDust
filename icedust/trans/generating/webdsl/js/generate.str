@@ -8,8 +8,8 @@ imports // functions
 
   libstratego-gpp
   api/module-api
-  lib/js/pp/spoofaxJS-pp
-  lib/js/pp/spoofaxJS-parenthesize
+  lib/js/pp/javascript-pp
+  lib/js/pp/javascript-parenthesize
   generating/webdsl/java/module
   generating/webdsl/js/module
 
@@ -27,8 +27,8 @@ rules // Builders
     pp-js-string : x -> result
     with
       result :=
-            <parenthesize-spoofaxJS
-            ; prettyprint-spoofaxJS
+            <parenthesize-javascript
+            ; prettyprint-javascript
             ; !V([], <id>)
             ; box2text-string(|120)> x
   

@@ -1,0 +1,94 @@
+module generating/js/calculate
+
+imports
+  js/js-util
+  
+  api/model-names-api
+
+  generating/js/names
+  generating/js/access
+  generating/js/expression
+
+rules
+
+  generate-calculate-functions: attribute -> <concat> [
+      stmts_single
+    , stmts_many
+  ]
+    where
+      stmts_single := <generate-calculate-function> attribute
+    with
+      stmts_many := <generate-calculate-many-function> attribute
+  
+
+  generate-calculate-many-function: attribute -> js-stmt* |[
+    function x_calculateManyFunctionName(state, ids){
+      var result = [];
+      for(var i = 0 ; i < ids.length ; i++){
+        var id = ids[i];
+        var calc = x_calculateFunctionName(state, id);
+        state = calc.state;
+        if(calc.result !== null){
+          result.push(calc.result);
+        }
+      }
+      return {
+        state: state,
+        result: result
+      };
+    }
+    module.exports.x_calculateManyFunctionName = x_calculateManyFunctionName;
+  ]|
+    with
+      x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_calculateManyFunctionName := <calculate-function-name> (attribute, ZeroOrMore())
+     
+      
+      
+  generate-calculate-function: attribute -> js-stmt*|[
+    function x_calculateFunctionName(state, id){
+      var x_result = x_getterFunctionName(state, id);
+      if(x_result === exp_uncalculatedValue){
+        var x_first = id;
+        stmts_calculate
+        x_result = exp_result;
+        state = state.update(exp_table, exp_updateTable);
+      }
+      return {
+        state: state,
+        x_result: x_result
+      };
+    }
+    module.exports.x_calculateFunctionName = x_calculateFunctionName;
+  ]|
+    where
+      exp_attribute := <attributename-get-expr> attribute
+    with
+      exp_table := <attribute-table-expression> attribute
+    ; x_result := "result"
+    ; x_getterFunctionName := <getter-function-name> attribute
+    ; exp_uncalculatedValue := <exp-uncalculated-value> attribute
+    ; x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_first := <int-to-varname> 0
+    ; (exp_result, stmts_calculate, _) := <exp-to-js-stmts(|1)> exp_attribute 
+    ; exp_updateTable := <exp-update-table> (attribute, x_result)
+      
+  exp-uncalculated-value = name-is-default ; js-null
+  exp-uncalculated-value = js-undefined
+      
+  exp-update-table: (x_attribute, x_result) -> js-exp |[
+    function(table){ 
+      return table.update(id, function(e) { 
+        return _.assign({}, e, {x_attribute: x_result});
+      });
+    }
+  ]|
+    where
+      <name-is-default> x_attribute
+      
+  exp-update-table: (x_attribute, x_result) -> js-exp |[
+    function(table) {
+      return table.set(id, x_result); 
+    }
+  ]|
+  
