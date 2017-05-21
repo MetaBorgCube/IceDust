@@ -171,31 +171,32 @@ rules
     ; exp_result := <js-var> x_var
     ; result := (exp_result, stmts, <inc> i''')
     
-    
+/*    
   // filter
   
-//  exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
-//    with
-//      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
-//    ; x_result := <int-to-varname> i'
-//    ; exp_res := <js-var> x_result
-//    ; i'' := <inc> i'
-//    ; x_scope := <int-to-varname> i''
-//    ; i''' := <inc> i''
-//    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
-//    ; stmts := js-stmt* |[
-//        stmts_source
-//        let x_result = EMPTY_ARRAY;
-//        for(var i = 0 ; i < exp_source.length ; i++){
-//          var x_var = exp_source[i];
-//          let x_scope = {x_var: x_var};
-//          stmts_body
-//          if(exp_body){
-//            x_result = x_result.concat(x_var);
-//          }
-//        }
-//      ]|
-//    ; result := (exp_res, stmts, <inc> i'''')
+  exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
+    with
+      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
+    ; x_result := <int-to-varname> i'
+    ; exp_res := <js-var> x_result
+    ; i'' := <inc> i'
+    ; x_scope := <int-to-varname> i''
+    ; i''' := <inc> i''
+    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
+    ; stmts := js-stmt* |[
+        stmts_source
+        let x_result = EMPTY_ARRAY;
+        for(var i = 0 ; i < exp_source.length ; i++){
+          var x_var = exp_source[i];
+          let x_scope = {x_var: x_var};
+          stmts_body
+          if(exp_body){
+            x_result = x_result.concat(x_var);
+          }
+        }
+      ]|
+    ; result := (exp_res, stmts, <inc> i'''')
+*/
   
   //dereferencing
   
