@@ -6,6 +6,8 @@ imports
   
   js/js-util
   
+  lib/option
+  
   api/model-names-api
   api/types-api
   
@@ -27,6 +29,19 @@ rules
     where
       stmt_setter* := <setter-statements> attribute
       
+  
+  attribute-has-setter = 
+    is-attributename ; attributename-is-normal-default <+ is-relationname
+    
+  attribute-has-add = ?attribute ; is-relationname ; name-get-multiplicity ; upper-many ; !attribute 
+  
+  attribute-to-setter-function-names: attribute ->
+      <![ 
+        <try-option(attribute-has-setter ; setter-function-name)> attribute, 
+        <try-option(attribute-has-add ; add-function-name)> attribute
+      ] ; flatten-option-list>
+       
+      
   setter-statements : x_attribute -> js-stmt* |[      
     var prop = {x_attribute: value}; 
     state = state.update(exp_table, function(table) {
@@ -42,7 +57,6 @@ rules
       x_invalidationFunction := <invalidation-function-name> x_attribute
       ; exp_table := <attribute-table-expression> x_attribute
       
-  
   
   setter-statements : x_attribute -> js-stmt* |[
     var previousValue = x_getterFunction(state, id);

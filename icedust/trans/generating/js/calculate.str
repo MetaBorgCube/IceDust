@@ -4,6 +4,8 @@ imports
   js/js-util
   
   api/model-names-api
+  
+  lib/option
 
   generating/js/names
   generating/js/access
@@ -19,13 +21,15 @@ rules
       stmts_single := <generate-calculate-function> attribute
     with
       stmts_many := <generate-calculate-many-function> attribute
-  
+
+
+  attribute-has-calculate = name-has-expr
 
   generate-calculate-many-function: attribute -> js-stmt* |[
-    function x_calculateManyFunctionName(state, ids){
+    function x_calculateManyFunctionName(state, x_id){
       var result = [];
-      for(var i = 0 ; i < ids.length ; i++){
-        var id = ids[i];
+      for(var i = 0 ; i < x_id.length ; i++){
+        var id = x_id[i];
         var calc = x_calculateFunctionName(state, id);
         state = calc.state;
         if(calc.result !== null){
@@ -40,16 +44,17 @@ rules
     module.exports.x_calculateManyFunctionName = x_calculateManyFunctionName;
   ]|
     with
-      x_calculateFunctionName := <calculate-function-name> attribute
-    ; x_calculateManyFunctionName := <calculate-function-name> (attribute, ZeroOrMore())
-     
-      
+      m := ZeroOrMore()
+    ; x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_calculateManyFunctionName := <calculate-function-name> (attribute, m)
+    ; x_id := <id-var> m
+  
       
   generate-calculate-function: attribute -> js-stmt*|[
-    function x_calculateFunctionName(state, id){
-      var x_result = x_getterFunctionName(state, id);
+    function x_calculateFunctionName(state, x_id){
+      var x_result = x_getterFunctionName(state, x_id);
       if(x_result === exp_uncalculatedValue){
-        var x_first = id;
+        var x_first = x_id;
         stmts_calculate
         x_result = exp_result;
         state = state.update(exp_table, exp_updateTable);
@@ -64,9 +69,11 @@ rules
     where
       exp_attribute := <attributename-get-expr> attribute
     with
-      exp_table := <attribute-table-expression> attribute
+      m := One()
+    ; exp_table := <attribute-table-expression> attribute
+    ; x_id := <id-var> m
     ; x_result := "result"
-    ; x_getterFunctionName := <getter-function-name> attribute
+    ; x_getterFunctionName := <getter-function-name> (attribute, m)
     ; exp_uncalculatedValue := <exp-uncalculated-value> attribute
     ; x_calculateFunctionName := <calculate-function-name> attribute
     ; x_first := <int-to-varname> 0
