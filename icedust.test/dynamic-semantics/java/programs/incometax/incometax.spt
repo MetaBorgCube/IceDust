@@ -6,6 +6,9 @@ fixture [[
 
 module incometax [[...]]
 
+config
+  backend: Java
+
 model
   
   entity JobOffer{

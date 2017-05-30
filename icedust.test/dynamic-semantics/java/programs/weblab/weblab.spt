@@ -6,6 +6,9 @@ fixture [[
 
 module weblab (incremental)
 
+config
+  backend: Java
+
 //================================================================================
 
 model
