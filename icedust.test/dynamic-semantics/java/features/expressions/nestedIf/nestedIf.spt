@@ -5,6 +5,9 @@ language icedust
 fixture [[
   module nestedIf (on-demand)
   
+  config
+    backend: Java
+  
   model
   
     entity Z{

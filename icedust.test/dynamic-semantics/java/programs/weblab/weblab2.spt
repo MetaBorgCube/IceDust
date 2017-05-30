@@ -6,6 +6,9 @@ fixture [[
 
 module weblab2
 
+config
+  backend: Java
+
 // A simplified model of a grade calculation and course statistics tool in the university.
 //
 // It features:
