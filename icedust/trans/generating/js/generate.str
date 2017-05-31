@@ -6,6 +6,7 @@ imports
   generating/js/init
   generating/js/data
   generating/js/execute
+  generating/js/names
 
 rules
   generate-javascript-program: moduleName -> program
@@ -23,7 +24,7 @@ rules
             stmts_execute
         ]|
   
-  generate-imports = !js-stmt* |[
+  generate-imports: _ -> js-stmt* |[
     var _immutable = require('immutable');
     var Map = _immutable.Map;
     var _ = require('lodash');
@@ -31,5 +32,9 @@ rules
     var expression = require('./lib/expression');
     var _runtime = require('./lib/runtime');
     var EMPTY_ARRAY = _runtime.EMPTY_ARRAY;
+    var EMPTY_OBJECT = _runtime.EMPTY_OBJECT;
+    var x_scope = EMPTY_OBJECT;
   ]|
+    with
+      x_scope := <scope-var>
   

@@ -171,31 +171,34 @@ rules
     ; exp_result := <js-var> x_var
     ; result := (exp_result, stmts, <inc> i''')
     
-    
+
   // filter
   
-//  exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
-//    with
-//      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
-//    ; x_result := <int-to-varname> i'
-//    ; exp_res := <js-var> x_result
-//    ; i'' := <inc> i'
-//    ; x_scope := <int-to-varname> i''
-//    ; i''' := <inc> i''
-//    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
-//    ; stmts := js-stmt* |[
-//        stmts_source
-//        let x_result = EMPTY_ARRAY;
-//        for(var i = 0 ; i < exp_source.length ; i++){
-//          var x_var = exp_source[i];
-//          let x_scope = {x_var: x_var};
-//          stmts_body
-//          if(exp_body){
-//            x_result = x_result.concat(x_var);
-//          }
-//        }
-//      ]|
-//    ; result := (exp_res, stmts, <inc> i'''')
+  exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
+    with
+      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
+    ; x_result := <int-to-varname> i'
+    ; exp_res := <js-var> x_result
+    ; i'' := <inc> i'
+    ; x_loop := <int-to-varname> i''
+    ; i''' := <inc> i''
+    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
+    ; x_scope := <scope-var>
+    ; stmts := js-stmt* |[
+        stmts_source
+        var x_result = EMPTY_ARRAY;
+        for(var x_loop = 0 ; x_loop < exp_source.length ; x_loop++){
+          var oldScope = scope;
+          (function(){
+            var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
+            stmts_body
+            if(exp_body){
+              x_result = x_result.concat([x_scope.x_var]);
+            }
+          })();
+        }
+      ]|
+    ; result := (exp_res, stmts, <inc> i'''')
   
   //dereferencing
   
@@ -226,14 +229,12 @@ rules
       ; exp_empty := <exp-empty> m_lub
       ; stmts := js-stmt* |[
           var x_var;
-          {
-            if(exp_source !== exp_emptyPrevious){
-              var calc = exp_calc;
-              state = calc.state;
-              x_var = calc.result;
-            } else {
-              x_var = exp_empty;
-            }
+          if(exp_source !== exp_emptyPrevious){
+            var calc = exp_calc;
+            state = calc.state;
+            x_var = calc.result;
+          } else {
+            x_var = exp_empty;
           }
         ]|
       ; result := (exp_var, stmts, <inc> i)
@@ -253,10 +254,11 @@ rules
     ; result := (exp_var, stmts, <inc> i)
     
   
-  //no attribute access. default to access field of source
+  //no attribute access. default to access variable in current scope
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     with
-      exp_access := js-exp |[exp_source.x_attribute]|
+      x_scope := <scope-var>
+    ; exp_access := js-exp |[x_scope.x_attribute]|
     ; result := (exp_access, [], i)
   
   // literal expressions

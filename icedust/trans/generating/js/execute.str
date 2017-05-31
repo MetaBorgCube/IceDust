@@ -5,13 +5,18 @@ imports
   api/module-names-api
   
   generating/js/expression
+  generating/js/names
 
 rules
 
   generate-execute: x_moduleName -> js-stmt* |[
-    function execute(state, x_scope){
+    function execute(state, x_ids){
       var x_result = [];
-      stmts_expressions
+      var oldScope = scope;
+      (function(){
+        var scope = _.assign({}, oldScope, x_ids);
+        stmts_expressions
+      })();
       return {
         state: state,
         x_result: x_result
@@ -21,20 +26,19 @@ rules
   ]|
     with
       x_result := "result"
-    ; x_scope := "ids"
+    ; x_ids := "ids"
+    ; x_scope := <scope-var>
     ; expressions := <modulename-get-exprs> x_moduleName
-    ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result, x_scope))> expressions
-  
-  generate-execute-expression-stmt(|x_result, x_scope): e -> js-stmt |[
-    {
-      var x_var = x_scope;
+    ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result))> expressions
+
+  generate-execute-expression-stmt(|x_result): e -> js-stmt |[
+    (function(){
       stmts_e
       x_result = x_result.concat([exp_ref]);
-    }
+    })();
   ]|
     with
-      x_var := <int-to-varname> 0
-    ; (exp_ref, stmts_e, _) := <exp-to-js-stmts(|1)> e
+      (exp_ref, stmts_e, _) := <exp-to-js-stmts(|0)> e
   
   
   

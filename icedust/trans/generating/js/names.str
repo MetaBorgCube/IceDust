@@ -38,6 +38,8 @@ rules
   
   id-var = upper-one ; !"id"
   id-var = upper-many ; !"ids"
+  
+  scope-var = !"scope"
       
   attribute-table-expression: attribute -> <js-string> x_name
     with
