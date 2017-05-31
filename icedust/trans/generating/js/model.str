@@ -26,18 +26,16 @@ rules
       stmt_calculate*
   ]|
   with
-    attributes := <
-      modulename-get-entitynames 
-      ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
-    > moduleName
+    attributes := <modulename-get-attributes> moduleName
     ; stmt_getters* := <mapconcat(getter-functions)> attributes
     ; stmt_setters* := <filter(generate-setter) ; concat> attributes
     ; stmt_add* := <filter(generate-add) ; concat> attributes
     ; stmt_invalidations* := <mapconcat(generate-invalidation-function)> attributes
     ; stmt_calculate* := <filter(generate-calculate-functions) ; concat> attributes
-//    ; stmt_memoize* := <filter(generate-memoize)> attributes
-          
   
+  modulename-get-attributes = 
+    modulename-get-entitynames 
+    ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
   
   generate-memoize: attribute -> js-stmt |[null;]|
     where

@@ -171,7 +171,6 @@ rules
     ; exp_result := <js-var> x_var
     ; result := (exp_result, stmts, <inc> i''')
     
-
   // filter
   
   exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
