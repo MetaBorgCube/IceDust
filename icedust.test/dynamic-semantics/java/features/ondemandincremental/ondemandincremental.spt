@@ -4,7 +4,10 @@ language icedust
 
 fixture [[
 module ondemandincremental (on-demand incremental)
-  
+
+config
+  backend: Java
+
 model
 
   entity Foo{

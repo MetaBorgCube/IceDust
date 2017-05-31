@@ -5,6 +5,9 @@ language icedust
 fixture [[
   module cast (on-demand)
   
+  config
+    backend: Java
+  
   execute
     concat(5.0 as String + " " + true as String + " " + 5 as String ++ no value as String)
     [[...]]
