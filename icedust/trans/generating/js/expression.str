@@ -8,6 +8,7 @@ imports
   api/expressions-api
 
   signatures/Expressions-sig
+  signatures/Types-sig
   js/js-util
   
   generating/js/names
@@ -37,17 +38,46 @@ rules
   
   exp-to-js-stmts = exp-to-js-stmts(|1)
   exp-to-js-stmts(|i) = ?Addition(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-add|i) 
-  exp-to-js-stmts(|i) = ?Subtraction(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-subtract|i)
+  exp-to-js-stmts(|i) = ?Subtraction(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), \(exp_lhs, exp_rhs) -> <merge-subtract> (e1, e2, exp_lhs, exp_rhs)\|i)
+  
+  
+  merge-subtract: (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
+    exp_lhs.diff(exp_rhs, 's')
+  ]|
+    where
+      (Datetime(), Datetime()) := <(get-type2, get-type2)> (e1, e2)
+    
+  merge-subtract: (e1, e2, exp_lhs, exp_rhs) -> <js-subtract> (exp_lhs, exp_rhs)
+  
   exp-to-js-stmts(|i) = ?Multiplication(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-mul|i)
   exp-to-js-stmts(|i) = ?Division(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-div|i) 
   exp-to-js-stmts(|i) = ?FloorDivision(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), \(exp_lhs, exp_rhs) -> js-exp|[
     parseInt(exp_lhs / exp_rhs)
   ]|\|i)
   
-  exp-to-js-stmts(|i) = ?LessThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-lt|i)
-  exp-to-js-stmts(|i) = ?LessThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck( !(e1,e2), js-lte|i)
-  exp-to-js-stmts(|i) = ?GreaterThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gt|i)
-  exp-to-js-stmts(|i) = ?GreaterThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-gte|i)
+  exp-to-js-stmts(|i) = ?LessThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), merge-compare(js-lt, date-lt|e1, e2)|i)
+  exp-to-js-stmts(|i) = ?LessThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck( !(e1,e2), merge-compare(js-lte, date-lte|e1,e2)|i)
+  exp-to-js-stmts(|i) = ?GreaterThan(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), merge-compare(js-gt, date-gt|e1,e2)|i)
+  exp-to-js-stmts(|i) = ?GreaterThanEqual(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), merge-compare(js-gte, date-gte|e1,e2)|i)
+  
+  date-gt = date-compare(|"isAfter")
+  date-gte = date-compare(|"isSameOrAfter")
+  date-lt = date-compare(|"isBefore")
+  date-lte = date-compare(|"isSameOrBefore")
+  
+  date-compare(|x_compareFunction) : (exp_lhs, exp_rhs) -> js-exp |[
+    exp_lhs.x_compareFunction(exp_rhs)
+  ]|
+  
+  
+  merge-compare(if-numeric, if-date|e1, e2): (exp_lhs, exp_rhs) -> <if-date> (exp_lhs, exp_rhs)
+    where
+      (Datetime(), Datetime()) := <(get-type2, get-type2)> (e1, e2)
+  
+  merge-compare(if-numeric, if-date|e1, e2) = if-numeric
+    
+  
+  
   exp-to-js-stmts(|i) = ?Equal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-eqq|i)
   exp-to-js-stmts(|i) = ?Inequal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-neqq|i)
   exp-to-js-stmts(|i) = ?And(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
@@ -113,7 +143,7 @@ rules
   exp-to-js-stmts(|i) = ?Not(e) ; unexp-to-js-stmts(!e, js-not|i)
   exp-to-js-stmts(|i): e_cast@Cast(e, t2) -> result
     with
-      t1 := <get-type2 ; debug> e
+      t1 := <get-type2> e
     ; result := <unexp-to-js-stmts(!e, !(<id>, t1, t2) ; do-cast|i)> e_cast 
   
   do-cast: (exp_e, Float(), Int()) -> js-exp |[parseInt(exp_e)]|
