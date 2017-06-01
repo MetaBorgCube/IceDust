@@ -10,11 +10,8 @@ rules
 
 
   
-  exp-empty : One() -> <exp-empty-one>
-  exp-empty : ZeroOrOne() -> <exp-empty-one>
-  exp-empty : ZeroOrMore() -> <exp-empty-many>
-  exp-empty : OneOrMore() -> <exp-empty-many>
-        
+  exp-empty = upper-one ; exp-empty-one
+  exp-empty = upper-many ; exp-empty-many
   exp-empty-one = !js-exp |[null]|
   exp-empty-many = !js-exp |[EMPTY_ARRAY]|
   
@@ -31,14 +28,15 @@ rules
         
   simplify-multiplicity : ZeroOrOne() -> One()
   simplify-multiplicity : OneOrMore() -> ZeroOrMore()
+  simplify-multiplicity : ZeroOrMoreOrdered() -> <simplify-multiplicity> ZeroOrMore()
+  simplify-multiplicity : OneOrMoreOrdered() -> <simplify-multiplicity> OneOrMore()
   simplify-multiplicity = id 
+  
   
   lub-simple: (One(), ZeroOrOne()) -> ZeroOrOne()
   lub-simple: (ZeroOrOne(), One()) -> ZeroOrOne()
-  lub-simple: (ZeroOrMore(), _) -> ZeroOrMore()
-  lub-simple: (_, ZeroOrMore()) -> ZeroOrMore()
-  lub-simple: (_, OneOrMore()) -> ZeroOrMore()
-  lub-simple: (OneOrMore(), _) -> ZeroOrMore()
+  lub-simple = (upper-many, id) ; !ZeroOrMore()
+  lub-simple = (id, upper-many) ; !ZeroOrMore()
   lub-simple: (x, x) -> x
   
   with-prefix: ("", str) -> str
