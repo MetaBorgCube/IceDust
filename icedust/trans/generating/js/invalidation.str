@@ -12,52 +12,59 @@ imports
   generating/js/names
   generating/js/common
   generating/js/access
+  generating/js/expression
   
 rules
   
   generate-invalidation-function : attribute ->
     js-stmt* |[ 
         function x_name (state, id) {
-            stmt_derivedValueInvalidation*
-            stmt_access*
-            stmt_invalidations*
+            stmts_derivedValueInvalidation
+            stmts_invalidations
             return state;
         }
         module.exports.x_name = x_name;
     ]|
     with
       x_name := <invalidation-function-name> attribute
-      ; stmt_derivedValueInvalidation* := <generate-derived-value-invalidation> attribute
+      ; stmts_derivedValueInvalidation := <generate-derived-value-invalidation> attribute
       ; flows := <name-get-flowsto-paths> attribute
-      ; stmt_access* := <flowsto-to-access-statements> flows
-      ; stmt_invalidations* := <map(flowsto-to-statement-invalidation)> flows
+      ; stmts_invalidations := <mapconcat(flowsto-to-invalidation-statements)> flows
   
-   
   
-  flowsto-to-statement-invalidation: DataflowPath(_, exp) -> stmt_invalidation
+  flowsto-to-invalidation-statements: DataflowPath(_, MemberAccess(exp, field)) -> js-stmt*|[
+    (function(){
+      var x_first = x_id;
+      stmts_ref
+      stmts_invalidation
+    })();
+  ]|
     with
-      (m1, m2, x_var, field) := <collect-things> exp
-    ; m_lub := <lub-simple> (m1, m2)
+      <debug> exp;
+      x_first := <int-to-varname> 0
+    ; x_id := "id"
+    ; (exp_ref, stmts_ref, _) := <exp-to-js-stmts(|1)> exp
+    ; m := <get-multiplicity ; simplify-multiplicity> exp
     ; x_functionName := <invalidation-function-name> field
-//    ; stmt_invalidation := <statement-invalidation> (m_lub, x_functionName, x_var)
-    ; stmt_invalidation := <statement-invalidation> (m1, x_functionName, x_var)
+    ; stmts_invalidation := <invalidation-statements> (m, x_functionName, exp_ref)
   
-  statement-invalidation : (One(), x_functionName, x_var) -> js-stmt |[
-    state = x_functionName(state, x_var);
-  ]|
+  flowsto-to-invalidation-statements: DataflowPath(_, Ref(field)) -> <invalidation-statements> (m, x_functionName, exp_ref)
+    with
+      m := One()
+    ; x_functionName := <invalidation-function-name> field
+    ; exp_ref := <id-var ; js-var> m
   
-  statement-invalidation : (ZeroOrOne(), x_functionName, x_var) -> js-stmt |[
-    if(x_var !== null) {
-      state = x_functionName(state, x_var);
+  invalidation-statements : (One(), x_functionName, exp_ref) -> js-stmt* |[
+    if(exp_ref != null) {
+      state = x_functionName(state, exp_ref);
     }
   ]|
   
-  statement-invalidation : (ZeroOrMore(), x_functionName, x_var) -> js-stmt |[
-    for(var i = 0 ; i < x_var.length ; i++){
-      state = x_functionName(state, x_var[i]);
+  invalidation-statements : (ZeroOrMore(), x_functionName, exp_ref) -> js-stmt* |[
+    for(var i = 0 ; i < exp_ref.length ; i++){
+      state = x_functionName(state, exp_ref[i]);
     }
-  ]|
-      
+  ]|  
     
   generate-derived-value-invalidation: attribute ->
     js-stmt* |[

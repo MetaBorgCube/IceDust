@@ -57,7 +57,10 @@ rules
         var x_first = x_id;
         stmts_calculate
         x_result = exp_result;
-        state = state.update(exp_table, exp_updateTable);
+        
+        state = x_setterFunction(state, x_id, exp_result);
+//        state = state.update(exp_table, exp_updateTable);
+//        stmts_setInverse
       }
       return {
         state: state,
@@ -70,19 +73,21 @@ rules
       exp_attribute := <attributename-get-expr> attribute
     with
       m := One()
-    ; exp_table := <attribute-table-expression> attribute
+//    ; exp_table := <attribute-table-expression> attribute
     ; x_id := <id-var> m
     ; x_result := "result"
     ; x_getterFunctionName := <getter-function-name> (attribute, m)
     ; exp_uncalculatedValue := <exp-uncalculated-value> attribute
     ; x_calculateFunctionName := <calculate-function-name> attribute
     ; x_first := <int-to-varname> 0
-    ; (exp_result, stmts_calculate, _) := <exp-to-js-stmts(|1)> exp_attribute 
-    ; exp_updateTable := <exp-update-table> (attribute, x_result)
+    ; (exp_result, stmts_calculate, _) := <exp-to-js-stmts(|1)> exp_attribute
+    ; x_setterFunction := <setter-function-name> attribute
+//    ; exp_updateTable := <exp-update-table> (attribute, x_result)
+//    ; stmts_setInverse := <derived-relation-inverse-update-statements>
       
   exp-uncalculated-value = name-is-default ; js-null
   exp-uncalculated-value = js-undefined
-      
+  
   exp-update-table: (x_attribute, x_result) -> js-exp |[
     function(table){ 
       return table.update(id, function(e) { 
@@ -98,4 +103,36 @@ rules
       return table.set(id, x_result); 
     }
   ]|
+  
+  
+  derived-relation-inverse-update-statements: x_attributename -> stmts_updateInverse
+    where
+      <relationname-is-left> x_attributename
+    with
+      m_attribute := <name-get-multiplicity> x_attributename
+    ; x_inverse := <relationname-get-inversename> x_attributename
+    ; m_inverse := <name-get-multiplicity ; simplify-multiplicity> x_inverse
+    ; exp_table := <attribute-table-expression> x_inverse
+    with
+      switch !m_attribute
+        case upper-one:
+          stmts_updateInverse := js-stmt* |[
+            if(result != null){
+              state = state.update(exp_table, function(table){
+                return table.set(result, id);
+              });
+            }
+          ]|
+        case upper-many:
+          stmts_updateInverse := js-stmt* |[
+            state = state.update(exp_table, function(table){
+              for(var i = 0 ; i < result.length ; i++) {
+                table = table.set(result[i], id);
+              }
+              return table;  
+            });
+          ]|
+      end
+  
+  derived-relation-inverse-update-statements: x_attributename -> []
   

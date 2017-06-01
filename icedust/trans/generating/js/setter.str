@@ -31,7 +31,7 @@ rules
       
   
   attribute-has-setter = 
-    is-attributename ; attributename-is-normal-default <+ is-relationname
+    is-attributename <+ is-relationname
     
   attribute-has-add = ?attribute ; is-relationname ; name-get-multiplicity ; upper-many ; !attribute 
   
@@ -52,7 +52,7 @@ rules
     state = x_invalidationFunction(state, id);
   ]|
     where
-      is-attributename ; attributename-is-normal-default
+      is-attributename
     with
       x_invalidationFunction := <invalidation-function-name> x_attribute
       ; exp_table := <attribute-table-expression> x_attribute

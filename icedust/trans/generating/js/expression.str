@@ -247,7 +247,7 @@ rules
   
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     where
-      <name-is-derived <+ name-is-default> x_attribute
+      <name-is-derived ; not(relationname-is-right) <+ name-is-default> x_attribute
     with
       x_calc := <calculate-function-name> (x_attribute, m_previous)
       ; exp_calc := js-exp |[x_calc(state, exp_source)]|
@@ -258,7 +258,7 @@ rules
       ; exp_empty := <exp-empty> m_lub
       ; stmts := js-stmt* |[
           var x_var;
-          if(exp_source !== exp_emptyPrevious){
+          if(exp_source != exp_emptyPrevious){
             var calc = exp_calc;
             state = calc.state;
             x_var = calc.result;
@@ -267,11 +267,13 @@ rules
           }
         ]|
       ; result := (exp_var, stmts, <inc> i)
-        
+  
+  
+  
   
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     where
-      <name-is-normal> x_attribute
+      <is-attributename <+ is-relationname> x_attribute
     with
       x_getter := <getter-function-name> (x_attribute, m_previous)
     ; exp_get := js-exp |[x_getter(state, exp_source)]|
@@ -282,13 +284,13 @@ rules
       ]|
     ; result := (exp_var, stmts, <inc> i)
     
-  
-  //no attribute access. default to access variable in current scope
+  //ref is a variable. access variable in current scope
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     with
       x_scope := <scope-var>
     ; exp_access := js-exp |[x_scope.x_attribute]|
     ; result := (exp_access, [], i)
+  
   
   // literal expressions
   
