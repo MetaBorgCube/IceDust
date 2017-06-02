@@ -93,10 +93,12 @@ rules
         case upper-many():
           stmt_push* := js-stmt* |[
             var value2 = x_value;
-            for(var j = 0 ; j < value2.length ; j++){
-              var x_value = value2[j];
-              stmts_attribute
-              x_result.push(x_value);
+            if(value2 != null){
+              for(var j = 0 ; j < value2.length ; j++){
+                var x_value = value2[j];
+                stmts_attribute
+                x_result.push(x_value);
+              }
             }
           ]|
       end

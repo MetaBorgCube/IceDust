@@ -33,7 +33,7 @@ rules
         var calc = x_calculateFunctionName(state, id);
         state = calc.state;
         if(calc.result !== null){
-          result.push(calc.result);
+          stmts_push
         }
       }
       return {
@@ -45,9 +45,21 @@ rules
   ]|
     with
       m := ZeroOrMore()
+    ; m_attribute := <name-get-multiplicity> attribute
     ; x_calculateFunctionName := <calculate-function-name> attribute
     ; x_calculateManyFunctionName := <calculate-function-name> (attribute, m)
     ; x_id := <id-var> m
+    ; stmts_push := <calculate-push-statements> m_attribute
+  
+  calculate-push-statements: _ -> js-stmt* |[
+    result.push(calc.result);
+  ]|
+    where upper-one
+    
+  calculate-push-statements: _ -> js-stmt* |[
+    result = result.concat(calc.result);
+  ]|
+    where upper-many
   
       
   generate-calculate-function: attribute -> js-stmt*|[
