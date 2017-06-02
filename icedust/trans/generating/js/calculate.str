@@ -10,6 +10,7 @@ imports
   generating/js/names
   generating/js/access
   generating/js/expression
+  generating/js/setter
 
 rules
 
@@ -62,17 +63,14 @@ rules
     where upper-many
   
       
-  generate-calculate-function: attribute -> js-stmt*|[
+  generate-calculate-function: x_attribute -> js-stmt*|[
     function x_calculateFunctionName(state, x_id){
-      var x_result = x_getterFunctionName(state, x_id);
+      var x_result = x_getterFunctionName(state, exp_id);
       if(x_result === exp_uncalculatedValue){
-        var x_first = x_id;
+        var x_first = exp_id;
         stmts_calculate
         x_result = exp_result;
-        
-        state = x_setterFunction(state, x_id, exp_result);
-//        state = state.update(exp_table, exp_updateTable);
-//        stmts_setInverse
+        stmts_setter
       }
       return {
         state: state,
@@ -82,20 +80,19 @@ rules
     module.exports.x_calculateFunctionName = x_calculateFunctionName;
   ]|
     where
-      exp_attribute := <attributename-get-expr> attribute
+      exp_attribute := <attributename-get-expr> x_attribute
     with
       m := One()
-//    ; exp_table := <attribute-table-expression> attribute
     ; x_id := <id-var> m
+    ; exp_id := <js-var> x_id
     ; x_result := "result"
-    ; x_getterFunctionName := <getter-function-name> (attribute, m)
-    ; exp_uncalculatedValue := <exp-uncalculated-value> attribute
-    ; x_calculateFunctionName := <calculate-function-name> attribute
+    ; x_getterFunctionName := <getter-function-name> (x_attribute, m)
+    ; exp_uncalculatedValue := <exp-uncalculated-value> x_attribute
+    ; x_calculateFunctionName := <calculate-function-name> x_attribute
     ; x_first := <int-to-varname> 0
     ; (exp_result, stmts_calculate, _) := <exp-to-js-stmts(|1)> exp_attribute
-    ; x_setterFunction := <setter-function-name> attribute
-//    ; exp_updateTable := <exp-update-table> (attribute, x_result)
-//    ; stmts_setInverse := <derived-relation-inverse-update-statements>
+    ; x_setterFunction := <setter-function-name> x_attribute
+    ; stmts_setter := <setter-statements(![]|exp_id, exp_result)> x_attribute
       
   exp-uncalculated-value = name-is-default ; js-null
   exp-uncalculated-value = js-undefined

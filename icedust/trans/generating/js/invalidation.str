@@ -40,7 +40,6 @@ rules
     })();
   ]|
     with
-      <debug> exp;
       x_first := <int-to-varname> 0
     ; x_id := "id"
     ; (exp_ref, stmts_ref, _) := <exp-to-js-stmts(|1)> exp
