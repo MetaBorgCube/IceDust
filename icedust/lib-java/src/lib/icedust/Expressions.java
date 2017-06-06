@@ -585,6 +585,10 @@ public class Expressions {
       return i.next();
     return null;
   }
+  
+  public static <E> E first(E e) {	  
+    return e;
+  }
 
   public static <E> Collection<E> first(Collection<E> es, Integer n) {
     Collection<E> out = emptyCollection();
@@ -598,6 +602,11 @@ public class Expressions {
     }
     return out;
   }
+  
+  public static <E> E first(E e, Integer n){
+    return e;
+  }
+
 
   public static <E> Integer indexOf(Collection<E> es, E e) {
     if (e == null)

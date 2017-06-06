@@ -1,0 +1,30 @@
+module collections
+
+language icedust
+
+fixture [[
+  module collections
+  
+  model
+    entity A {
+      s: String
+      i: Int
+      b: Boolean
+    }
+    
+    relation A.aa * <-> A.a
+    
+  data
+    a1: A{
+      s = "s"
+      i = 42
+      b = false
+    }
+  execute
+    [[...]]
+]]
+
+test multiplicity of first OneOrMore [[ [[a1]].first() ]]       1 warning at #1
+test multiplicity of first(n) OneOrMore [[ [[a1]].first(0) ]]   1 warning at #1
+test multiplicity of first ZeroOrMore [[ a1.aa.first() ]]       run get-multiplicity to ZeroOrOne()
+test multiplicity of first(2) ZeroOrMore [[ a1.aa.first(2) ]]   run get-multiplicity to ZeroOrMore()
