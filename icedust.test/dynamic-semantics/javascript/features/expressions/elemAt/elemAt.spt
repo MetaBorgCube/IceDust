@@ -1,0 +1,25 @@
+module javascript-features-expressions-elemAt
+
+language icedust
+
+fixture [[
+  module ElemAt
+  
+  config
+    backend: Javascript
+    
+  execute
+    1.elemAt(0)
+    (1 ++ 2).elemAt(0)
+    (1 ++ 2 ++ 3).elemAt(1 + 1)
+    (1 ++ 2 ++ 3).elemAt(3)
+    [[...]]
+]]
+
+
+test first [[ ]] transform "SPT -> Build" to 
+"null
+1
+3
+null
+"

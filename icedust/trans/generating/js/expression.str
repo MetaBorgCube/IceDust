@@ -372,7 +372,22 @@ rules
       end
     with
       result := (<js-var> x_result, <conc> (stmts_source, stmts), i''')
-  
+    
+    //indexOf  
+    exp-to-js-stmts(|i) = ?IndexOf(e_source, e) ; binexp-to-js-stmts-with-nullcheck(!(e_source, e), merge-indexOf(|e_source, e)|i)
+    
+    merge-indexOf(|e_source, e): (exp_source, exp_e) -> <js-null> 
+      where <get-multiplicity ; upper-one> e_source
+      
+    merge-indexOf(|e_source, e): (exp_source, exp_e) -> js-exp |[ 
+      exp_source.indexOf(exp_e) 
+    ]|
+    
+    //elementAt
+    exp-to-js-stmts(|i) = ?ElemAt(e_source, e_index) ; binexp-to-js-stmts-with-nullcheck(!(e_source, e_index), merge-elementAt|i)
+    
+    merge-elementAt: (exp_source, exp_e) -> js-exp |[exp_source[exp_e] !== undefined ? exp_source[exp_e] : null]|
+    
   //dereferencing
   
   exp-to-js-stmts(|i) : m@MemberAccess(e, x_attribute) -> result
@@ -411,9 +426,6 @@ rules
           }
         ]|
       ; result := (exp_var, stmts, <inc> i)
-  
-  
-  
   
   access-to-js-stmts(|i) : (x_attribute, m_previous, m_current, exp_source) -> result
     where
