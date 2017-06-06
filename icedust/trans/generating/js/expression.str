@@ -267,6 +267,48 @@ rules
     ]|
     ; result := (exp_result, stmts, <inc> i8)
   
+  //first
+  
+  exp-to-js-stmts(|i): First(e) -> result
+    with
+      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e
+    ; (x_result, i'') := <int-to-varname-inc> i'
+    with
+      switch <get-multiplicity> e
+        case upper-one:
+          stmts := js-stmt* |[
+            var x_result = exp_source;
+          ]|
+        case upper-many:
+          stmts := js-stmt* |[
+            var x_result = exp_source.length === 0 ? null : exp_source[0];
+          ]|
+      end
+    with
+      result := (<js-var> x_result, <conc> (stmts_source, stmts), i'')
+      
+  exp-to-js-stmts(|i): First(e, n) -> result
+    with
+      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e
+    ; (x_result, i'') := <int-to-varname-inc> i'
+    ; (exp_n, stmts_n, i''') := <exp-to-js-stmts(|i)> n
+    with
+      switch <get-multiplicity> e
+        case upper-one:
+          stmts := js-stmt* |[
+            var x_result = exp_source;
+          ]|
+        case upper-many:
+          stmts := js-stmt* |[
+            stmts_n
+            var x_result = [];
+            for(var i = 0 ; i < exp_n && i < exp_source.length ; i++){
+              x_result.push(exp_source[i]);
+            }
+          ]|
+      end
+    with
+      result := (<js-var> x_result, <conc> (stmts_source, stmts), i''')
   
   //dereferencing
   
