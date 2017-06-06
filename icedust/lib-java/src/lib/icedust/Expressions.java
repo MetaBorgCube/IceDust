@@ -587,7 +587,7 @@ public class Expressions {
   }
   
   public static <E> E first(E e) {	  
-	  return e;
+    return e;
   }
 
   public static <E> Collection<E> first(Collection<E> es, Integer n) {
@@ -604,7 +604,7 @@ public class Expressions {
   }
   
   public static <E> E first(E e, Integer n){
-		return e;
+    return e;
   }
 
 
