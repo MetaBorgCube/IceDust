@@ -19,7 +19,9 @@ rules
 
   generate-expression-statements: e -> js-stmt* |[]|
   
-  int-to-varname : i -> $[_[i]]   
+  int-to-varname : i -> $[_[i]]
+  
+  int-to-varname-inc = !(<int-to-varname>, <inc>)   
   
   //binary expressions
   
@@ -215,6 +217,7 @@ rules
     ; x_scope := <scope-var>
     ; stmts := js-stmt* |[
         stmts_source
+        
         var x_result = EMPTY_ARRAY;
         for(var x_loop = 0 ; x_loop < exp_source.length ; x_loop++){
           var oldScope = scope;
@@ -228,6 +231,42 @@ rules
         }
       ]|
     ; result := (exp_res, stmts, <inc> i'''')
+  
+  
+  // order by
+  exp-to-js-stmts(|i): OrderBy(e_source, x_var, e_body) -> result
+    with
+      (exp_source, stmts_source, i1) := <exp-to-js-stmts(|i)> e_source    
+    ; (x_result, i2) := <int-to-varname-inc> i1
+    ; exp_result := <js-var> x_result
+    ; (x_element, i3) := <int-to-varname-inc> i2
+    ; (x_element2, i4) := <int-to-varname-inc> i3
+    ; (x_res1, i5) := <int-to-varname-inc> i4
+    ; (exp_body, stmts_body, i6) := <exp-to-js-stmts(|i5)> e_body
+    ; (x_res2, i7) := <int-to-varname-inc> i6
+    ; (exp_body2, stmts_body2, i8) := <exp-to-js-stmts(|i7)> e_body
+    ; x_scope := <scope-var>
+    ; stmts := js-stmt*|[
+      stmts_source
+      var oldScope = x_scope;
+      var x_result = exp_source.slice().sort(function(x_element, x_element2){
+        var x_res1;
+        (function(){
+          var scope = _.assign({}, oldScope, {x_var: x_element});
+          stmts_body
+          x_res1 = exp_body;
+        })();
+        var x_res2;
+        (function(){
+          var scope = _.assign({}, oldScope, {x_var: x_element2});
+          stmts_body2
+          x_res2 = exp_body2;
+        })();
+          return x_res1 > x_res2 ? 1 : x_res1 == x_res2 ? 0 : -1;
+      });
+    ]|
+    ; result := (exp_result, stmts, <inc> i8)
+  
   
   //dereferencing
   
