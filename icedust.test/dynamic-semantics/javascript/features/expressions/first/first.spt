@@ -3,7 +3,7 @@ module javascript-features-expressions-first
 language icedust
 
 fixture [[
-  module OrderBy
+  module First
   
   config
     backend: Javascript
@@ -20,7 +20,7 @@ fixture [[
 
 
 test first [[ ]] transform "SPT -> Build" to 
-"[1]
+"1
 []
 [1]
 [1,2]

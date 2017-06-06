@@ -204,7 +204,6 @@ rules
     ; result := (exp_result, stmts, <inc> i''')
     
   // filter
-  
   exp-to-js-stmts(|i): Filter(e_source, x_var, e_body) -> result
     with
       (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
@@ -215,22 +214,86 @@ rules
     ; i''' := <inc> i''
     ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
     ; x_scope := <scope-var>
-    ; stmts := js-stmt* |[
-        stmts_source
-        
-        var x_result = EMPTY_ARRAY;
-        for(var x_loop = 0 ; x_loop < exp_source.length ; x_loop++){
-          var oldScope = scope;
-          (function(){
-            var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
-            stmts_body
-            if(exp_body){
-              x_result = x_result.concat([x_scope.x_var]);
+    with
+      switch <get-multiplicity> e_source
+        case upper-one:
+          stmts := js-stmt* |[
+            stmts_source
+            var oldScope = x_scope;
+            var x_result = null;
+            (function(){
+              var x_scope = _.assign({}, oldScope, {x_var: exp_source});
+              stmts_body
+              if(exp_body){
+                x_result = x_scope.x_var;
+              }
+            })();
+          ]|
+        case upper-many:
+          stmts := js-stmt* |[
+            stmts_source
+            var x_result = EMPTY_ARRAY;
+            for(var x_loop = 0 ; x_loop < exp_source.length ; x_loop++){
+              var oldScope = x_scope;
+              (function(){
+                var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
+                stmts_body
+                if(exp_body){
+                  x_result = x_result.concat([x_scope.x_var]);
+                }
+              })();
             }
-          })();
-        }
-      ]|
-    ; result := (exp_res, stmts, <inc> i'''')
+          ]|
+      end
+    with
+      result := (exp_res, stmts, <inc> i'''')
+  
+  //find
+  
+  exp-to-js-stmts(|i): Find(e_source, x_var, e_body) -> result
+    with
+      (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e_source
+    ; x_result := <int-to-varname> i'
+    ; exp_res := <js-var> x_result
+    ; i'' := <inc> i'
+    ; x_loop := <int-to-varname> i''
+    ; i''' := <inc> i''
+    ; (exp_body, stmts_body, i'''') := <exp-to-js-stmts(|i''')> e_body
+    ; x_scope := <scope-var>
+    with
+      switch <get-multiplicity> e_source
+        case upper-one:
+          stmts := js-stmt* |[
+            stmts_source
+            var x_result = null;
+            var oldScope = x_scope;
+            (function(){
+              var x_scope = _.assign({}, oldScope, {x_var: exp_source});
+              stmts_body
+              if(exp_body){
+                x_result = x_scope.x_var;
+              }
+            })();
+          ]|  
+        case upper-many:
+          stmts := js-stmt* |[
+            stmts_source
+            var x_result = null;
+            for(var x_loop = 0 ; x_loop < exp_source.length && x_result === null ; x_loop++){
+              var oldScope = x_scope;
+              (function(){
+                var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
+                stmts_body
+                if(exp_body){
+                  x_result = x_scope.x_var;
+                }
+              })();
+            }
+          ]|
+      end
+    with
+      result := (exp_res, stmts, <inc> i'''')
+  
   
   
   // order by
