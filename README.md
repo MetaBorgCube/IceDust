@@ -1,6 +1,6 @@
 [![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/)
 
-# IceDust
+# IceDust ![](icedust/icons/icedust-32x32.png "IceDust logo")
 
 IceDust is an information system modeling language; a declarative specification language with first class relations and derived values.
 
