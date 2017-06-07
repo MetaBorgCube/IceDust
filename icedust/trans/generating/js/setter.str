@@ -136,8 +136,8 @@ rules
           
         case One():
           stmts_inverse := js-stmt* |[
-            if(value != null) {
-              var addedId = value;
+            if(exp_value != null) {
+              var addedId = exp_value;
               stmts_invalidateAdd
               stmts_set
             }
