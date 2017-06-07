@@ -26,8 +26,6 @@ rules
     where
       attribute-has-setter
     with 
-      dType :=<get-property(|"Member","derivationtype")> x_attribute
-    ; <debug> (x_attribute, dType) ; 
       entity := <attributename-get-entityname> x_attribute
     ; x_methodname := <setter-function-name> x_attribute
     ; stmt_setter* := <setter-statements(setter-invalidation-statements|<js-var> "id", <js-var> "value")> x_attribute
