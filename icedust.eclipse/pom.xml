@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>parent.eclipse.language</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
     <relativePath />
   </parent>
 
@@ -66,7 +66,7 @@
     </repository>
     <repository>
       <id>spoofax-eclipse-repo</id>
-      <url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.2.0/org.metaborg.spoofax.eclipse.updatesite-2.2.0-assembly.zip-unzip/</url>
+      <url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.2.1/org.metaborg.spoofax.eclipse.updatesite-2.2.1-assembly.zip-unzip/</url>
       <layout>p2</layout>
       <releases>
         <enabled>false</enabled>
