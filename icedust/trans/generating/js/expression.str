@@ -82,23 +82,64 @@ rules
   
   exp-to-js-stmts(|i) = ?Equal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-eqq|i)
   exp-to-js-stmts(|i) = ?Inequal(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-neqq|i)
-  exp-to-js-stmts(|i) = ?And(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
-  exp-to-js-stmts(|i) = ?And2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-and|i)
-  exp-to-js-stmts(|i) = ?Or(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2), js-or|i)
-  exp-to-js-stmts(|i) = ?Or2(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2),js-or|i)
   exp-to-js-stmts(|i) = ?Modulo(e1, e2) ; binexp-to-js-stmts-with-nullcheck(!(e1,e2),js-modulo|i)
   
-  exp-to-js-stmts(|i) = ?ChoiceLeft(e1, e2) ; binexp-to-js-stmts(
-      !(e1,e2) 
-    , \(exp_lhs, exp_rhs) -> <merge-choice-left> (e1, e2, exp_lhs, exp_rhs)\
-    | i
-  )
+  
+  // merge :: (i, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> (exp_result, stmts, i)
+  binexp-merge(merge|i, e1, e2) : e -> result
+    with
+      (exp_lhs, stmts_lhs, i') := <exp-to-js-stmts(|i)> e1
+    ; (exp_rhs, stmts_rhs, i'') := <exp-to-js-stmts(|i')> e2
+    ; result := <merge> (i'', stmts_lhs, stmts_rhs, exp_lhs, exp_rhs)
+   
+  
+  // merge :: (x_result, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> stmts_merge
+  merge-var(merge): (i, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> result
+    with
+      (x_result, i') := <int-to-varname-inc> i
+    ; stmts_merge := <merge> (x_result, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs)
+    ; stmts := js-stmt* |[
+      var x_result;
+      stmts_merge
+    ]|
+    ; result := (<js-var> x_result, stmts, <inc> i')
   
   
-  merge-choice-left : (e1, e2, exp_lhs, exp_rhs) -> js-exp |[
-    exp_lhs !== exp_empty ? exp_lhs : exp_rhs
+  exp-to-js-stmts(|i) = ?And(e1, e2) ; binexp-merge(merge-var(merge-and)|i, e1, e2)
+  merge-and: (x_result, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> js-stmt* |[
+    stmts_lhs
+    if(exp_lhs === false){
+      x_result = exp_lhs;
+    } else {
+      stmts_rhs
+      x_result = exp_rhs;
+    }
   ]|
-    with exp_empty := <get-multiplicity ; exp-empty> e1 
+  
+  
+  exp-to-js-stmts(|i) = ?Or(e1, e2) ; binexp-merge(merge-var(merge-or)|i, e1, e2)
+  merge-or: (x_result, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> js-stmt* |[
+    stmts_lhs
+    if(exp_lhs === true){
+      x_result = exp_lhs;
+    } else {
+      stmts_rhs
+      x_result = exp_rhs;
+    }
+  ]|
+  
+  exp-to-js-stmts(|i) = ?ChoiceLeft(e1, e2) ; binexp-merge(merge-var(merge-choiceleft(|e1))|i, e1, e2)
+  merge-choiceleft(|e_lhs): (x_result, stmts_lhs, stmts_rhs, exp_lhs, exp_rhs) -> js-stmt* |[
+      stmts_lhs
+      if(exp_lhs !== exp_empty){
+        x_result = exp_lhs;
+      } else{
+        stmts_rhs
+        x_result = exp_rhs;
+      }
+  ]|
+    with
+      exp_empty := <get-multiplicity ; exp-empty> e_lhs
   
   exp-to-js-stmts(|i) = ?Merge(e1, e2) ; binexp-to-js-stmts(
       !(e1, e2)
@@ -196,10 +237,17 @@ rules
     ; (exp_true, stmts_true, i'') := <exp-to-js-stmts(|i')> e_true
     ; (exp_false, stmts_false, i''') := <exp-to-js-stmts(|i'')> e_false
     ; x_var := <int-to-varname> i'''
-    ; stmts_exec := js-stmt* |[
-      var x_var = exp_cond ? exp_true : exp_false;
+    ; stmts := js-stmt* |[
+      var x_var; 
+      stmts_cond
+      if(exp_cond){
+        stmts_true
+        x_var = exp_true;
+      } else{
+        stmts_false
+        x_var = exp_false;
+      }
     ]|
-    ; stmts := <conc> (stmts_cond, stmts_true, stmts_false, stmts_exec)
     ; exp_result := <js-var> x_var
     ; result := (exp_result, stmts, <inc> i''')
     
