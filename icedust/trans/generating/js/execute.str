@@ -40,10 +40,14 @@ rules
       i := 0
     ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e
     ; exp_eAsString := <pp-partial-icedust-string ; js-string> e 
+    ; exp_typeAsString := <get-type2 ; pp-partial-icedust-string ; js-string> e
+    ; exp_multiplicityAsString := <get-multiplicity ; pp-partial-icedust-string ; trim-whitespace ; js-string> e
     ; result := js-stmt |[
       (function(){
         stmts_e
         x_result = x_result.concat([{
+          type: exp_typeAsString,
+          multiplicity: exp_multiplicityAsString,
           expression: exp_eAsString,
           value: exp_e
         }]);
