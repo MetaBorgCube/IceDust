@@ -2,8 +2,10 @@ package icedust.strategies;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -45,33 +47,38 @@ public class eval_javascript_0_0 extends Strategy {
 			logger.warn("failed to load Nashorn javascript engine");
 		} else{
 			logger.info("initializing Nashorn javascript engine");
-			createConsole(engine);
+			loadPolyfill();
 			Writer loggeroutput = new OutputStreamWriter(new LoggingOutputStream(logger, Level.Info));
 			engine.getContext().setWriter(loggeroutput);
 			engine.getContext().setErrorWriter(loggeroutput);
-			Folder folder = FixedResourceFolder.create(getClass().getClassLoader(), "lib-js", "UTF-8");
-			try {
-				Require.enable((NashornScriptEngine) engine, folder);
-			} catch (ScriptException e) {
-				logger.warn(e.getMessage());
-			}
-			loadPolyfill(engine);
+			loadRuntime();
+//			Folder folder = FixedResourceFolder.create(getClass().getClassLoader(), "lib-js", "UTF-8");
+//			try {
+//				Require.enable((NashornScriptEngine) engine, folder);
+//			} catch (ScriptException e) {
+//				logger.warn(e.getMessage());
+//			}
 		}
 	}
 	
-	public static void createConsole(ScriptEngine engine){
-		Bindings console = engine.createBindings();
-		console.put("log", engine.get("print"));
-		engine.put("console", console);
+	private void loadPolyfill(){
+        loadScript("lib/nashorn-polyfill.js");
+    }
+	
+	private void loadRuntime(){
+		loadScript("dist/runtime.js");
 	}
 	
-	public static void loadPolyfill(ScriptEngine engine){
-        try {
-            engine.eval("require('./lib/nashorn-polyfill');");
+	private void loadScript(String path){
+		try {
+        	URL script = getClass().getClassLoader().getResource("lib-js/" + path);
+        	engine.eval(new InputStreamReader(script.openStream()));
         } catch (ScriptException e) {
             logger.warn(e.getMessage());
-        }
-    }
+        } catch (IOException e) {
+        	logger.warn(e.getMessage());
+		}
+	}
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {

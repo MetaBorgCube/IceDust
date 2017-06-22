@@ -18,7 +18,7 @@ rules
       var x_result = [];
       var oldScope = scope;
       (function(){
-        var scope = _.assign({}, oldScope, x_ids);
+        var scope = Runtime._.assign({}, oldScope, x_ids);
         stmts_expressions
       })();
       return {
@@ -39,7 +39,7 @@ rules
     with
       i := 0
     ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e
-    ; exp_eAsString := <pp-partial-icedust-string ; js-string> e 
+    ; exp_eAsString := <pp-partial-icedust-string ; js-escaped-string> e 
     ; exp_typeAsString := <get-type2 ; pp-partial-icedust-string ; js-string> e
     ; exp_multiplicityAsString := <get-multiplicity ; pp-partial-icedust-string ; trim-whitespace ; js-string> e
     ; result := js-stmt |[

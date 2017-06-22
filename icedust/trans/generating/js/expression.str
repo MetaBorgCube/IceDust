@@ -224,7 +224,7 @@ rules
   js-disj = js-exp-call(|"disj")
   js-concat: exp_e -> js-exp |[exp_e.join('')]|
   
-  js-exp-call(|x_fn): exp_e -> js-exp |[expression.x_fn(exp_e)]|
+  js-exp-call(|x_fn): exp_e -> js-exp |[Runtime.Expression.x_fn(exp_e)]|
   
   //operations
   
@@ -288,7 +288,7 @@ rules
             var oldScope = x_scope;
             var x_result = null;
             (function(){
-              var x_scope = _.assign({}, oldScope, {x_var: exp_source});
+              var x_scope = Runtime._.assign({}, oldScope, {x_var: exp_source});
               stmts_body
               if(exp_body){
                 x_result = x_scope.x_var;
@@ -298,11 +298,11 @@ rules
         case upper-many:
           stmts := js-stmt* |[
             stmts_source
-            var x_result = EMPTY_ARRAY;
+            var x_result = Runtime.EMPTY_ARRAY;
             for(var x_loop = 0 ; x_loop < exp_source.length ; x_loop++){
               var oldScope = x_scope;
               (function(){
-                var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
+                var x_scope = Runtime._.assign({}, oldScope, {x_var: exp_source[x_loop]});
                 stmts_body
                 if(exp_body){
                   x_result = x_result.concat([x_scope.x_var]);
@@ -334,7 +334,7 @@ rules
             var x_result = null;
             var oldScope = x_scope;
             (function(){
-              var x_scope = _.assign({}, oldScope, {x_var: exp_source});
+              var x_scope = Runtime._.assign({}, oldScope, {x_var: exp_source});
               stmts_body
               if(exp_body){
                 x_result = x_scope.x_var;
@@ -348,7 +348,7 @@ rules
             for(var x_loop = 0 ; x_loop < exp_source.length && x_result === null ; x_loop++){
               var oldScope = x_scope;
               (function(){
-                var x_scope = _.assign({}, oldScope, {x_var: exp_source[x_loop]});
+                var x_scope = Runtime._.assign({}, oldScope, {x_var: exp_source[x_loop]});
                 stmts_body
                 if(exp_body){
                   x_result = x_scope.x_var;
@@ -381,13 +381,13 @@ rules
       var x_result = exp_source.slice().sort(function(x_element, x_element2){
         var x_res1;
         (function(){
-          var scope = _.assign({}, oldScope, {x_var: x_element});
+          var scope = Runtime._.assign({}, oldScope, {x_var: x_element});
           stmts_body
           x_res1 = exp_body;
         })();
         var x_res2;
         (function(){
-          var scope = _.assign({}, oldScope, {x_var: x_element2});
+          var scope = Runtime._.assign({}, oldScope, {x_var: x_element2});
           stmts_body2
           x_res2 = exp_body2;
         })();
@@ -523,7 +523,7 @@ rules
   literal-to-js-exp: False() -> js-exp |[false]|
   literal-to-js-exp: Int(i) -> <js-int> i
   literal-to-js-exp: Float(f) -> <js-float> f
-  literal-to-js-exp: Datetime(d) -> js-exp |[moment(exp_dateString)]|
+  literal-to-js-exp: Datetime(d) -> js-exp |[Runtime.moment(exp_dateString)]|
     with
       exp_dateString := <js-string> d
   literal-to-js-exp: NoValue() -> js-exp |[null]|

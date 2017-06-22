@@ -9,32 +9,21 @@ imports
   generating/js/names
 
 rules
-  generate-javascript-program: moduleName -> program
+  generate-javascript-program: moduleName -> main
     with
       stmts_model := <generate-model-statements> moduleName
-      ; stmts_imports := <generate-imports>
       ; stmts_init := <generate-init> moduleName
       ; stmts_data := <generate-data> moduleName
       ; stmts_execute := <generate-execute> moduleName
-      ; program := js-program |[
-            stmts_imports
+      ; x_scope := <scope-var>
+      ; main := js-exp |[
+          function(module, Runtime){
+            var x_scope = Runtime.EMPTY_OBJECT;
             stmts_init
             stmts_model
             stmts_data
             stmts_execute
+            return module;
+          }
         ]|
-  
-  generate-imports: _ -> js-stmt* |[
-    var _immutable = require('immutable');
-    var Map = _immutable.Map;
-    var _ = require('lodash');
-    var moment = require('moment');
-    var expression = require('./lib/expression');
-    var _runtime = require('./lib/runtime');
-    var EMPTY_ARRAY = _runtime.EMPTY_ARRAY;
-    var EMPTY_OBJECT = _runtime.EMPTY_OBJECT;
-    var x_scope = EMPTY_OBJECT;
-  ]|
-    with
-      x_scope := <scope-var>
   

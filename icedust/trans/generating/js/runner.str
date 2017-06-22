@@ -3,13 +3,6 @@ module runner
 imports
 
 rules
-  runner-wrap-module: Program(stmts_program)-> js-program |[
-    var runner = require('./lib/runner');
-    var module = {
-      exports: {}
-    };
-    (function(module){
-      stmts_program
-    })(module);
-    runner(module.exports, console.log);
+  runner-wrap-module: exp_program -> js-program |[
+    Runtime.runner(exp_program);
   ]| 

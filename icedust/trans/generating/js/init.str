@@ -17,7 +17,7 @@ rules
       
       
   exp-initial-state : moduleName -> js-exp |[
-    Map({
+    Runtime.immutable.Map({
       prop_entity*,
       prop_initAttribute*
     })
@@ -31,11 +31,11 @@ rules
     )> entity*
     ; prop_initAttribute* := <filter(field-to-prop)> field*
     
-  entityname-to-prop : entityName -> js-prop |[exp_entityName: Map()]|
+  entityname-to-prop : entityName -> js-prop |[exp_entityName: Runtime.immutable.Map()]|
     with 
       exp_entityName := <js-string> entityName
       
-  field-to-prop: attribute -> js-prop |[exp_key : Map()]|
+  field-to-prop: attribute -> js-prop |[exp_key : Runtime.immutable.Map()]|
     where
       attributename-is-derivation <+ is-relationname
     with

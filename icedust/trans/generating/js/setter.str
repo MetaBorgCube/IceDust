@@ -62,7 +62,7 @@ rules
             var prop = {x_attribute: exp_value}; 
             state = state.update(exp_table, function(table) {
               return table.update(exp_this, function(e){ 
-                return _.assign({}, e, prop);
+                return Runtime._.assign({}, e, prop);
               });
             });      
           ]|
@@ -118,8 +118,8 @@ rules
         case ZeroOrMore():
           stmts_inverse := js-stmt* |[
 
-            var added = _.difference(exp_value, previousValue);
-            var removed = _.difference(previousValue, exp_value);
+            var added = Runtime._.difference(exp_value, previousValue);
+            var removed = Runtime._.difference(previousValue, exp_value);
             
             for(var i = 0 ; i < added.length ; i++){
               var addedId = added[i];
@@ -173,7 +173,7 @@ rules
     if(inverseIds === undefined){
       inverseIds = [];
     } else{
-      inverseIds = _.without(inverseIds, id);
+      inverseIds = Runtime._.without(inverseIds, id);
     }
     inverseTable = inverseTable.set(removedId, inverseIds);
   ]|

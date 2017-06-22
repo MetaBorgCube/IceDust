@@ -5,6 +5,7 @@ imports
 
 rules
     js-string: s -> String($["[s]"])
+    js-escaped-string = escape ; js-string
     js-int: s -> IntegerLiteral(s)
     js-float: s -> FloatLiteral(s)
     
