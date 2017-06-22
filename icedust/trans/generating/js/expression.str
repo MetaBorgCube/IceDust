@@ -165,9 +165,9 @@ rules
       end
     
   
-  binexp-to-js-stmts-with-nullcheck(get, merge|i) = get ; ?(e1, e2) ; binexp-to-js-stmts(!(e1, e2), merge-null-check(merge|e1, e2)|i)
+  binexp-to-js-stmts-with-nullcheck(get, merge|i) = get ; ?(e1, e2) ; binexp-to-js-stmts(!(e1, e2), binexp-null-check(merge|e1, e2)|i)
   
-  merge-null-check(merge|e1, e2) : (exp_lhs, exp_rhs) -> exp_result
+  binexp-null-check(merge|e1, e2) : (exp_lhs, exp_rhs) -> exp_result
     with
       exp_merge := <merge> (exp_lhs, exp_rhs)
       ; switch !(e1, e2)
@@ -181,15 +181,26 @@ rules
           exp_result := js-exp |[exp_lhs !== null && exp_rhs !== null ? exp_merge : null]|
       end
   
+  unexp-null-check(merge|e) : exp_e -> exp_result 
+	with
+	  exp_merge := <merge> exp_e
+	; switch !e
+		case is-literal:
+			exp_result := exp_merge
+		otherwise:
+			exp_result := js-exp |[exp_e !== null ? exp_merge : null]|
+	end
+  
   //unary expressions
   
   exp-to-js-stmts(|i) = ?Not(e) ; unexp-to-js-stmts(!e, js-not|i)
   exp-to-js-stmts(|i): e_cast@Cast(e, t2) -> result
     with
       t1 := <get-type2> e
-    ; result := <unexp-to-js-stmts(!e, !(<id>, t1, t2) ; do-cast|i)> e_cast 
+    ; result := <unexp-to-js-stmts(!e, unexp-null-check(!(<id>, t1, t2) ; do-cast|e)|i)> e_cast 
   
   do-cast: (exp_e, Float(), Int()) -> js-exp |[parseInt(exp_e)]|
+  do-cast: (exp_e, Datetime(), String()) -> js-exp |[exp_e.format()]|
   do-cast: (exp_e, _, _) -> exp_e
   
   exp-to-js-stmts(|i) = ?Sum(e) ; unexp-to-js-stmts(!e, js-sum|i)
@@ -214,6 +225,8 @@ rules
   
   //operations
   
+  //get   :: e -> e
+  //merge :: e -> exp_e
   unexp-to-js-stmts(get, merge|i): e -> result
     where
       e_inner := <get> e
