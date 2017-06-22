@@ -6,6 +6,10 @@ imports
   
   generating/js/expression
   generating/js/names
+  
+  prettyprinting/pp
+  
+  js/js-util
 
 rules
 
@@ -31,15 +35,20 @@ rules
     ; expressions := <modulename-get-exprs> x_moduleName
     ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result))> expressions
 
-  generate-execute-expression-stmt(|x_result): e -> js-stmt |[
-    (function(){
-      stmts_e
-      x_result = x_result.concat([exp_e]);
-    })();
-  ]|
+  generate-execute-expression-stmt(|x_result): e -> result 
     with
-       i := 0
-     ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e 
+      i := 0
+    ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e
+    ; exp_eAsString := <pp-partial-icedust-string ; js-string> e 
+    ; result := js-stmt |[
+      (function(){
+        stmts_e
+        x_result = x_result.concat([{
+          expression: exp_eAsString,
+          value: exp_e
+        }]);
+      })();
+  ]|
   
   // hook for custom serialization of execute expressions
   // exp -> (exp_result, stmts_result, i')
