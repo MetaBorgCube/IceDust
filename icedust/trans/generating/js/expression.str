@@ -182,9 +182,10 @@ rules
       end
   
   unexp-null-check(merge|e) : exp_e -> exp_result 
-	with
+	where
 	  exp_merge := <merge> exp_e
-	; switch !e
+	with
+	 switch !e
 		case is-literal:
 			exp_result := exp_merge
 		otherwise:
@@ -197,11 +198,13 @@ rules
   exp-to-js-stmts(|i): e_cast@Cast(e, t2) -> result
     with
       t1 := <get-type2> e
-    ; result := <unexp-to-js-stmts(!e, unexp-null-check(!(<id>, t1, t2) ; do-cast|e)|i)> e_cast 
+    ; result := <
+    	unexp-to-js-stmts(!e, unexp-null-check(!(<id>, t1, t2) ; do-cast|e)|i) <+ //valid do-cast found
+    	!e ; exp-to-js-stmts(|i)
+    > e_cast 
   
   do-cast: (exp_e, Float(), Int()) -> js-exp |[parseInt(exp_e)]|
   do-cast: (exp_e, Datetime(), String()) -> js-exp |[exp_e.format()]|
-  do-cast: (exp_e, _, _) -> exp_e
   
   exp-to-js-stmts(|i) = ?Sum(e) ; unexp-to-js-stmts(!e, js-sum|i)
   exp-to-js-stmts(|i) = ?Min(e) ; unexp-to-js-stmts(!e, js-min|i)
@@ -232,8 +235,10 @@ rules
       e_inner := <get> e
     with
      (exp_inner, stmts_inner, i') := <exp-to-js-stmts(|i)> e_inner
-    ; x_merge := <int-to-varname> i'
-    ; exp_merge := <merge> exp_inner
+    where
+  	  exp_merge := <merge> exp_inner
+    with
+      x_merge := <int-to-varname> i'
     ; stmts_result := js-stmt* |[
       var x_merge = exp_merge;
     ]|
