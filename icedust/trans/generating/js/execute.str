@@ -34,12 +34,23 @@ rules
   generate-execute-expression-stmt(|x_result): e -> js-stmt |[
     (function(){
       stmts_e
-      x_result = x_result.concat([exp_ref]);
+      x_result = x_result.concat([exp_e]);
     })();
   ]|
     with
-      (exp_ref, stmts_e, _) := <exp-to-js-stmts(|0)> e
+       i := 0
+     ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e 
   
+  // hook for custom serialization of execute expressions
+  // exp -> (exp_result, stmts_result, i')
+  execute-expression-serialize(|i) = fail
   
+  execute-expression-serialize(|i): e -> result
+    where 
+      Datetime () := <get-type2> e
+    with
+      (exp_e, stmts_e, i') := <exp-to-js-stmts(|i)> e
+    ; exp_result := js-exp|[exp_e.format()]|
+    ; result := (exp_result, stmts_e, i')
   
   
