@@ -1,0 +1,72 @@
+module generating/js/build
+
+imports
+
+  lib/files
+  lib/call-external
+  
+  libstratego-gpp
+  js/pp/javascript-pp
+  js/pp/javascript-parenthesize
+  
+  api/config-api
+  
+  generating/js/generate
+  generating/_ir/paths
+  
+  generating/js/runner
+  
+  signatures/js/Config-sig
+  
+  js/js-util
+
+rules
+
+  build(error-handler|backend, moduleName, relativePath): _ -> result
+    where
+      JavascriptBackend(phase, target) := backend
+    with
+      result := <build-build(
+        generate-javascript-main-function
+      , generate-javascript-main-html
+      )> (relativePath, moduleName, phase, target)
+
+  build-build(generate-main-function, generate-main-html): (relativePath, moduleName, phase, target) -> result
+    with
+      switch !target
+        case ?JavascriptTarget(): 
+          main := <generate-main-function> moduleName
+        ; filename := <javascript-generated-path(|relativePath)>
+        case ?HtmlTarget():
+          main := <generate-main-html> moduleName
+        ; filename := <html-generated-path(|relativePath)>
+      end
+    with
+     switch !(phase, target)
+      case ?(Generate(), JavascriptTarget()):
+          program-pp := <pp-js-program> main
+        ; result := (filename, program-pp)
+      case ?(Generate(), HtmlTarget()):
+          result := (filename, main)
+      case ?(Execute(), JavascriptTarget()):
+        runner := <runner-wrap-module> main
+      ; output := <eval-javascript> runner
+      ; result := output
+      case ?(Execute(), HtmlTarget()):
+        <write-file> (filename, main) 
+      ; project-path := <project-path ; local-path> 
+      ; <open-browser> $[[project-path]/[filename]]
+      ; result := None()
+      case ?(Eval(options), JavascriptTarget()):
+        inFile := <remove-extension ; !$[[<id>]-eval] ; guarantee-extension(|"js")> filename
+      ; if not(file-exists) <+ <?Options(<id>) ; fetch(?Overwrite())> options then 
+          program-pp := <runner-wrap-module ; pp-js-program> main
+        ; <write-file> (inFile, program-pp)
+        end
+      ; programS := <read-file> inFile
+      ; output := <eval-javascript> programS
+      ; result := output
+    end
+    
+  
+  

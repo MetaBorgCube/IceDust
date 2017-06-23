@@ -6,6 +6,8 @@ imports // functions
   desugaring/omitted
   lib/origin
   
+  desugaring/js/desugar
+  
 rules
 
   desugar-before-analysis =

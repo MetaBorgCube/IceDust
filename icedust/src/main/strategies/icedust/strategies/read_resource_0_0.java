@@ -23,7 +23,7 @@ public class read_resource_0_0 extends Strategy{
 	}
 	
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		if(current.getTermType() == IStrategoTerm.STRING){
 			String resourcePath = ((IStrategoString) current).stringValue();
 			try {
@@ -33,13 +33,13 @@ public class read_resource_0_0 extends Strategy{
 			} catch(IOException e) {
 				logger.warn(e.getMessage());
 				context.popOnFailure();
-				return null;
+				return current;
 			}
 			
 		} else{
 			logger.warn("expected String argument");
 			context.popOnFailure();
-			return null;
+			return current;
 		}
 	}
 	

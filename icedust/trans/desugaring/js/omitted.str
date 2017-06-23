@@ -1,0 +1,16 @@
+module desugaring/js/omitted
+
+imports
+  signatures/js/Config-sig
+  
+  lib/origin
+
+rules
+  
+  backend-generate-defaults = ?b@JavascriptBackend(phase, target) ; JavascriptBackend(
+        try(javascript-backend-default-phase(|b))
+      , try(javascript-backend-default-target(|b))
+    ) 
+
+  javascript-backend-default-phase(|o)  : None() -> <custom-origin(|o)> Execute()
+  javascript-backend-default-target(|o) : None() -> <custom-origin(|o)> JavascriptTarget()

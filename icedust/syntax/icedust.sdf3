@@ -9,6 +9,8 @@ imports
   Model
   Types
   Modules
+  
+  js/js
 
 context-free start-symbols
   

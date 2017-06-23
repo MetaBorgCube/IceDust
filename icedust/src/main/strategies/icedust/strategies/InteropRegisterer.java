@@ -11,6 +11,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
     		  graph_topological_sort_1_0.instance 
     		, eval_javascript_0_0.instance
     		, read_resource_0_0.instance
+    		, open_browser_0_0.instance
         });
     }
 }

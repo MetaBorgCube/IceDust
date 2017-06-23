@@ -1,0 +1,4 @@
+module js/js
+
+imports
+  js/Config

@@ -35,18 +35,3 @@ context-free syntax
   LanguageFeature.Inlines             = <inlines>
   LanguageFeature.Strategies          = <strategies>
   LanguageFeature.SubTyping           = <subtyping>
-
-  JavascriptPhase.Generate = <phase : generate>
-  JavascriptPhase.Execute = <phase : execute>
-  JavascriptPhase.Eval = <phase: eval<EvalOptions>>
-  
-  EvalOptions.Options = <(<EvalOption*>)>
-  EvalOptions.NoOptions = <>
-  
-  EvalOption.Overwrite = <overwrite>
-  
-
-  Config.JavascriptBackend = <
-    backend : Javascript
-    <JavascriptPhase?>
-  >

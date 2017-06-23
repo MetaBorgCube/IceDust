@@ -68,3 +68,5 @@ rules
     with
       args := [mainFile]
       
+  external open-browser(|)
+      

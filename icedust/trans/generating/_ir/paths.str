@@ -19,6 +19,8 @@ rules // paths
   java-library-target-path(|path)        = !$[[<dirname>path]/lib]
   
   javascript-generated-path(|path)       = !path;guarantee-extension(|"js")
+  html-generated-path(|path)             = !path;guarantee-extension(|"html")
+  
   
   webdsl-generated-path(|path)           = !path;guarantee-extension(|"app")
   webdsl-java-generated-path(|path)      = !$[[<dirname>path]/nativejava/derivations/DirtyCollections.java]

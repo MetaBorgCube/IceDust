@@ -1,0 +1,21 @@
+module js/Config
+
+context-free syntax
+
+  Config.JavascriptBackend = <
+    backend : Javascript
+    <BackendPhase?>
+    <BackendTarget?>
+  >
+ 
+  BackendPhase.Generate = <phase : generate>
+  BackendPhase.Execute = <phase : execute>
+  BackendPhase.Eval = <phase: eval<EvalOptions>>
+  
+  
+  EvalOptions.Options = <(<EvalOption*>)>
+  EvalOptions.NoOptions = <>
+  EvalOption.Overwrite = <overwrite>
+  
+  BackendTarget.HtmlTarget = <target: html>
+  BackendTarget.JavascriptTarget = <target: javascript>

@@ -7,6 +7,10 @@ imports
   generating/js/data
   generating/js/execute
   generating/js/names
+  
+  lib/files
+  
+  js/js-util
 
 rules
   generate-javascript-statements: moduleName -> stmts
@@ -25,13 +29,46 @@ rules
           return module;
         ]|
   
-
-  generate-javascript-main-function: moduleName -> main
+  generate-main-function(generate-statements) : moduleName -> main
     with
-      stmts_module := <generate-javascript-statements> moduleName
+      stmts_module := <generate-statements> moduleName
     ; main := js-exp |[
       function(module, Runtime){
         stmts_module
         return module;
       }
     ]| 
+    
+  
+  generate-main-html(generate-main-function) : moduleName -> document
+    with
+      runtime := <read-resource> "lib-js/dist/runtime.js"
+    ; exp_main := <generate-main-function> moduleName
+    ; main := js-program |[
+      (function(){
+        var container = document.createElement('div');
+        document.body.appendChild(container);
+        Runtime.PixieDust.runner(exp_main, container);
+      })();
+    ]|
+    ; main-pp := <pp-js-program> main
+    ; document :=
+$[<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>[moduleName]</title>
+</head>
+<body>
+    <script>[runtime]</script>
+    <script>[main-pp]</script>
+</body>
+</html>
+]
+      
+
+  generate-javascript-main-function = generate-main-function(generate-javascript-statements)
+  generate-javascript-main-html = generate-main-html(generate-javascript-main-function)
