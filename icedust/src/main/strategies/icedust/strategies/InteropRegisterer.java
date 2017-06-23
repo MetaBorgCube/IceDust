@@ -10,6 +10,7 @@ public class InteropRegisterer extends JavaInteropRegisterer {
         super(new Strategy[] { 
     		  graph_topological_sort_1_0.instance 
     		, eval_javascript_0_0.instance
+    		, read_resource_0_0.instance
         });
     }
 }

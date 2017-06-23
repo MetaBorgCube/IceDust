@@ -53,6 +53,8 @@ rules
     ; fContent := <fgets> fileDescriptor
     ; <fclose> fileDescriptor
 
+  external read-resource(|)
+
   fgets = fgetca ; implode-string
 
   fgetca: fileDescriptor -> [c | <fgetca> fileDescriptor]
