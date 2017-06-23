@@ -32,5 +32,6 @@ rules
     ; main := js-exp |[
       function(module, Runtime){
         stmts_module
+        return module;
       }
     ]| 
