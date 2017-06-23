@@ -17,6 +17,8 @@ imports // functions
   lib/traverse
   lib/lists-tuples
   
+  desugaring/js/default-backend
+  
 rules
   
   generate-omitted =
