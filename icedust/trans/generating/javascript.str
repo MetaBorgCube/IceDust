@@ -24,14 +24,14 @@ rules
     where 
      JavascriptBackend(phase) := backend
     with
-      program := <generate-javascript-program> moduleName
+      exp_main := <generate-javascript-main-function> moduleName
     ; filename := <javascript-generated-path(|relativePath)>
     ; switch !phase
       case ?Generate():
-        program-pp := <pp-js-program> program
+        program-pp := <pp-js-program> exp_main
       ; result := (filename, program-pp)
       case ?Execute():
-        runner := <runner-wrap-module> program
+        runner := <runner-wrap-module> exp_main
       ; output := <eval-javascript> runner
       ; result := output
       case ?Eval(options):
@@ -39,7 +39,7 @@ rules
         inFile := <remove-extension ; !$[[<id>]-eval] ; guarantee-extension(|"js")> filename
       ; if not(file-exists) <+ <?Options(<id>) ; fetch(?Overwrite())> options then 
           <debug> "writing file";
-          program-pp := <runner-wrap-module ; pp-js-program> program
+          program-pp := <runner-wrap-module ; pp-js-program> exp_main
         ; <write-file> (inFile, program-pp)
       end
       ; programS := <read-file> inFile
