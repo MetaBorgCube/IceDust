@@ -2,6 +2,7 @@ package icedust.strategies;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.metaborg.util.log.ILogger;
@@ -36,18 +37,22 @@ public class open_browser_0_0 extends Strategy{
         }
       
         try {
-          String cmd;
+          String[] cmd;
           String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
           if ((os.indexOf("mac") >= 0) || (os.indexOf("darwin") >= 0)) {
-            cmd = "open";
+            cmd = new String[]{"open"};
           } else if (os.indexOf("win") >= 0) {
-            cmd = "cmd /c start";
+            cmd = new String[]{"cmd", "/c", "start"};
           } else if (os.indexOf("nux") >= 0) {
-            cmd = "xdg-open";
+            cmd = new String[]{"xdg-open"};
           } else {
-            cmd = "open";
+            cmd = new String[]{"open"};
           }
-          Runtime.getRuntime().exec(new String[]{cmd, f.getAbsolutePath()});
+          
+          String[] args = Arrays.copyOf(cmd, cmd.length + 1);
+          args[args.length - 1] = f.getAbsolutePath();
+          logger.info(Arrays.toString(args));
+          Runtime.getRuntime().exec(args);
         } catch (IOException e) {
           logger.warn(e.getMessage());
         }
