@@ -52,26 +52,20 @@ public class eval_javascript_0_0 extends Strategy {
 			engine.getContext().setWriter(loggeroutput);
 			engine.getContext().setErrorWriter(loggeroutput);
 			loadRuntime();
-//			Folder folder = FixedResourceFolder.create(getClass().getClassLoader(), "lib-js", "UTF-8");
-//			try {
-//				Require.enable((NashornScriptEngine) engine, folder);
-//			} catch (ScriptException e) {
-//				logger.warn(e.getMessage());
-//			}
 		}
 	}
 	
 	private void loadPolyfill(){
-        loadScript("lib/nashorn-polyfill.js");
+        loadScript("icedust.jslib/nashorn-polyfill.js");
     }
 	
 	private void loadRuntime(){
-		loadScript("dist/runtime.js");
+		loadScript("icedust.jslib/runtime.js");
 	}
 	
 	private void loadScript(String path){
 		try {
-        	URL script = getClass().getClassLoader().getResource("lib-js/" + path);
+        	URL script = getClass().getClassLoader().getResource(path);
         	engine.eval(new InputStreamReader(script.openStream()));
         } catch (ScriptException e) {
             logger.warn(e.getMessage());

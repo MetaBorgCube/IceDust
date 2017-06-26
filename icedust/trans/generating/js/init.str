@@ -9,11 +9,13 @@ imports
   
 rules
   generate-init: moduleName -> js-stmt* |[
+    var x_scope = Runtime.EMPTY_OBJECT;
     var emptyState = exp_initialState;  
     module.exports.emptyState = emptyState;
   ]|
     with
-      exp_initialState := <exp-initial-state> moduleName
+      x_scope := <scope-var>
+    ; exp_initialState := <exp-initial-state> moduleName
       
       
   exp-initial-state : moduleName -> js-exp |[

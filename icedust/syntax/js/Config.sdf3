@@ -1,5 +1,8 @@
 module js/Config
 
+imports
+  Common
+
 context-free syntax
 
   Config.JavascriptBackend = <
@@ -17,5 +20,8 @@ context-free syntax
   EvalOptions.NoOptions = <>
   EvalOption.Overwrite = <overwrite>
   
-  BackendTarget.HtmlTarget = <target: html>
   BackendTarget.JavascriptTarget = <target: javascript>
+  BackendTarget.HtmlTarget = <target: html <ResolveRuntime?>>
+  
+  ResolveRuntime.ResolveInline =     <runtime: inline>
+  ResolveRuntime.ResolveFromSource = <runtime: "<STRING>">

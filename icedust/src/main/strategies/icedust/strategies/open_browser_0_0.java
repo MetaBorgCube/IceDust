@@ -51,7 +51,6 @@ public class open_browser_0_0 extends Strategy{
           
           String[] args = Arrays.copyOf(cmd, cmd.length + 1);
           args[args.length - 1] = f.getAbsolutePath();
-          logger.info(Arrays.toString(args));
           Runtime.getRuntime().exec(args);
         } catch (IOException e) {
           logger.warn(e.getMessage());

@@ -14,3 +14,7 @@ rules
 
   javascript-backend-default-phase(|o)  : None() -> <custom-origin(|o)> Execute()
   javascript-backend-default-target(|o) : None() -> <custom-origin(|o)> JavascriptTarget()
+  
+  javascript-backend-default-target(|o) : HtmlTarget(None()) -> HtmlTarget(resolve)
+    with
+      resolve := <custom-origin(|o)> ResolveInline()

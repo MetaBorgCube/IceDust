@@ -21,12 +21,10 @@ rules
       ; stmts_execute := <generate-execute> moduleName
       ; x_scope := <scope-var>
       ; stmts := js-stmt* |[
-          var x_scope = Runtime.EMPTY_OBJECT;
           stmts_init
           stmts_model
           stmts_data
           stmts_execute
-          return module;
         ]|
   
   generate-main-function(generate-statements) : moduleName -> main
@@ -37,12 +35,11 @@ rules
         stmts_module
         return module;
       }
-    ]| 
-    
+    ]|
   
-  generate-main-html(generate-main-function) : moduleName -> document
+  generate-main-html(generate-main-function) : (resolve, moduleName) -> document
     with
-      runtime := <read-resource> "lib-js/dist/runtime.js"
+     runtime := <generate-javascript-runtime-resolve> resolve
     ; exp_main := <generate-main-function> moduleName
     ; main := js-program |[
       (function(){
@@ -61,13 +58,19 @@ $[<!doctype html>
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>[moduleName]</title>
+    [runtime]
 </head>
 <body>
-    <script>[runtime]</script>
     <script>[main-pp]</script>
 </body>
 </html>
 ]
+      
+  generate-javascript-runtime-resolve: ResolveInline() -> $[<script>[runtime]</script>]
+    with
+      runtime := <read-resource> "icedust.jslib/runtime.js"
+      
+  generate-javascript-runtime-resolve: ResolveFromSource(source) -> $[<script src="[source]"></script>]
       
 
   generate-javascript-main-function = generate-main-function(generate-javascript-statements)
