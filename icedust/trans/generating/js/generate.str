@@ -7,6 +7,7 @@ imports
   generating/js/data
   generating/js/execute
   generating/js/names
+  generating/js/reducer
   
   lib/files
   
@@ -19,12 +20,14 @@ rules
       ; stmts_init := <generate-init> moduleName
       ; stmts_data := <generate-data> moduleName
       ; stmts_execute := <generate-execute> moduleName
+      ; stmts_reducer := <generate-reducer> moduleName
       ; x_scope := <scope-var>
       ; stmts := js-stmt* |[
           stmts_init
           stmts_model
           stmts_data
           stmts_execute
+          stmts_reducer
         ]|
   
   generate-main-function(generate-statements) : moduleName -> main

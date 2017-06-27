@@ -6,6 +6,7 @@ imports
   
   generating/js/expression
   generating/js/names
+  generating/js/reducer
   
   prettyprinting/pp
   
@@ -14,18 +15,14 @@ imports
 rules
 
   generate-execute: x_moduleName -> js-stmt* |[
-    function execute(state, x_ids){
-      stmts_hook
+    function execute(store, x_ids){
       var x_result = [];
       var oldScope = scope;
       (function(){
         var scope = Runtime._.assign({}, oldScope, x_ids);
         stmts_expressions
       })();
-      return {
-        state: state,
-        x_result: x_result
-      };
+      return x_result;
     }
     module.exports.execute = execute;
   ]|
@@ -35,7 +32,6 @@ rules
     ; x_scope := <scope-var>
     ; expressions := <modulename-get-exprs> x_moduleName
     ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result))> expressions
-    ; stmts_hook := <hook-execute  <+ ![]> x_moduleName 
 
   generate-execute-expression-stmt(|x_result): e -> result 
     with
@@ -44,8 +40,11 @@ rules
     ; exp_eAsString := <pp-partial-icedust-string ; js-escaped-string> e 
     ; exp_typeAsString := <get-type2 ; pp-partial-icedust-string ; js-string> e
     ; exp_multiplicityAsString := <get-multiplicity ; pp-partial-icedust-string ; trim-whitespace ; js-string> e
+    ; exp_update := <set-state-action-name ; js-string>
     ; result := js-stmt |[
       (function(){
+        var initialState = store.getState();
+        var state = initialState;
         stmts_e
         x_result = x_result.concat([{
           type: exp_typeAsString,
@@ -53,6 +52,9 @@ rules
           expression: exp_eAsString,
           value: exp_e
         }]);
+        if(initialState !== state){
+          store.dispatch(actionCreators[exp_update](state));
+        }
       })();
   ]|
   
@@ -67,10 +69,5 @@ rules
       (exp_e, stmts_e, i') := <exp-to-js-stmts(|i)> e
     ; exp_result := js-exp|[exp_e.format()]|
     ; result := (exp_result, stmts_e, i')
-  
-  
-  //hook into execute section of js backend
-  //hook-execute :: x_moduleName -> stmts
-  hook-execute = fail
 
   

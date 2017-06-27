@@ -1,0 +1,221 @@
+module generating/pixiedust/reducer
+
+imports
+  generating/js/setter
+  generating/js/calculate
+  generating/js/generate
+  
+  generating/js/model
+  generating/js/setter
+  generating/js/calculate
+  
+  js/js-util
+  
+  api/module-names-api
+  
+rules
+
+  generate-reducer: moduleName -> js-stmt* |[
+    stmts_action
+    stmts_actionCreator
+    stmts_reducer
+  ]|
+    with
+      attributes := <modulename-get-attributes> moduleName
+    ; entities := <modulename-get-entitynames> moduleName
+    ; stmts_action := <generate-actions> (attributes, entities)
+    ; stmts_actionCreator := <generate-action-creators> (attributes, entities)
+    ; stmts_reducer := <reducer-statements>
+  
+  reducer-statements: _ -> js-stmt* |[
+    var reducer = Runtime.PixieDust.makeReducer(actions);
+    module.exports.reducer = reducer;
+  ]|
+  
+  generate-actions: (attributes, entities) -> js-stmt* |[
+    var actions = {
+      prop_init,
+      prop_setState,
+      prop_setter*,
+      prop_calculate*,
+      prop_create*
+    };
+    module.exports.actions = actions;
+  ]|
+    with
+      prop_init := <init-action>
+    ; prop_setState := <set-state-action>
+    ; prop_setter* := <mapconcat(attribute-to-setter-action-props(setter-action-expression))> attributes
+    ; prop_calculate* := <mapconcat(attribute-to-calculate-action-props(calculate-action-expression))> attributes
+    ; prop_create* := <map(entityname-to-create-action-prop)> entities
+  
+  generate-action-creators: (attributes, entities) -> js-stmt* |[
+    var actionCreators = {
+      prop_init,
+      prop_setState,
+      prop_setter*,
+      prop_calculate*,
+      prop_create*
+    };
+    module.exports.actionCreators = actionCreators;
+  ]|
+    with
+      prop_init := <init-action-creator>
+    ; prop_setState := <set-state-action-creator>
+    ; prop_setter* := <mapconcat(attribute-to-setter-action-props(setter-action-creator-expression))> attributes
+    ; prop_calculate* := <mapconcat(attribute-to-calculate-action-props(calculate-action-creator-expression))> attributes
+    ; prop_create* := <map(entityname-to-create-action-creator-prop)> entities
+    
+  action-property(to-name, to-exp): x_name -> js-prop |[exp_name : exp_value]|
+    with
+      exp_name := <to-name ; js-string> x_name
+    ; exp_value := <to-exp> x_name 
+  
+  attribute-to-setter-action-props(to-exp): x_attribute -> result
+    with
+      setterNames := <attribute-to-setter-function-names> x_attribute
+    ; result := <map(action-property(id, to-exp))> setterNames
+  
+  attribute-to-calculate-action-props(to-exp) : x_attribute -> result
+    where
+      attribute-has-calculate
+    with
+     result  := <
+        cart(id)
+      ; map(!(<calculate-function-name>, <Snd>))
+      ; map(action-property(Fst, to-exp))
+     > ([x_attribute], [One(), ZeroOrMore()])
+      
+  attribute-to-calculate-action-props(to-exp) = ![]
+  
+  setter-action-expression : x_setterFunctionName -> js-exp |[
+    function(state, action){
+      return x_setterFunctionName(state, action.id, action.value);
+    }
+  ]|
+  
+  calculate-action-expression: (x_calculateFunctionName, m) -> js-exp |[
+    function(state, action){
+      return x_calculateFunctionName(state, action.x_id).state;
+    }
+  ]|
+    with
+      x_id := <id-var> m
+  
+  entityname-to-create-action-prop: x_entityname -> js-prop |[
+    exp_create: function(state, action){
+      var entity = action.entity;
+      var instance = {
+        exp_id: entity.id,
+        prop_attribute*
+      };
+      state = state.update(exp_entityname, function(table) {
+        return table.set(instance.id, instance);
+      });
+      stmts_relation
+      return state;
+    }
+  ]|
+    with
+      exp_id := <js-string> "id"
+    ; exp_entityname := <js-string> x_entityname
+    ; exp_create := <entityname-to-create-action-name ; js-string> x_entityname
+    ; attributes := <entityname-get-attributenames-normal-default> x_entityname
+    ; prop_attribute* := <map(attributename-to-instance-prop)> attributes
+    ; relationnames := <entityname-get-relationnames> x_entityname
+    ; stmts_relation := <mapconcat(relationname-to-create-statements)> relationnames 
+    
+  relationname-to-create-statements: x_relationname -> js-stmt* |[
+    if(entity.x_relationname !== undefined){
+      state = x_setterFunctionName(state, instance.id, entity.x_relationname);
+    }
+  ]|
+    with
+      x_setterFunctionName := <setter-function-name> x_relationname
+      
+      
+    
+  attributename-to-instance-prop: x_attributename -> js-prop |[ exp_attributename: entity.x_attributename === undefined ? null : entity.x_attributename]|
+    with
+      exp_attributename := <js-string> x_attributename
+  
+  setter-action-creator-expression: x_setterFunctionName -> js-exp |[
+    function(id, value) {
+      return {
+        type: exp_setterFunctionName,
+        id: id,
+        value: value
+      };
+    }
+  ]|
+    with
+      exp_setterFunctionName := <js-string> x_setterFunctionName
+  
+  calculate-action-creator-expression: (x_calculateFunctionName, m) -> js-exp |[
+    function(x_id) {
+      return {
+        type: exp_calculateFunctionName,
+        id: x_id
+      };
+    }
+  ]|
+    with
+      exp_calculateFunctionName := <js-string> x_calculateFunctionName
+    ; x_id := <id-var> m
+  
+  
+  init-action-name = ! "init"
+  
+  init-action: _ -> js-prop |[
+    exp_name : function(state){
+      state = state === undefined ? emptyState : state;
+      return init(state).state;
+    }
+  ]|
+    with 
+      x_name := <init-action-name>
+    ; exp_name := <js-string> x_name
+  
+  init-action-creator: _ -> js-prop |[
+    exp_name : function(){
+      return {
+        type: exp_name
+      };
+    }
+  ]|
+    with
+      x_name := <init-action-name>
+    ; exp_name := <js-string> x_name
+    
+  set-state-action-name = !"state_update"
+  
+  set-state-action: _ -> js-prop |[
+    exp_name : function(state, action){
+      return action.newState;
+    }
+  ]|
+    with
+      exp_name := <set-state-action-name ; js-string>
+    
+  set-state-action-creator: _ -> js-prop |[
+    exp_name : function(newState){
+      return {
+        type: exp_name,
+        newState: newState
+      };
+    }
+  ]|
+    with
+      exp_name := <set-state-action-name ; js-string>
+    
+  entityname-to-create-action-creator-prop: x_entityname -> js-prop |[
+    exp_name: function(entity){
+      return {
+        type: exp_name,
+        entity: entity
+      };
+    }
+  ]|
+    with
+      exp_name := <entityname-to-create-action-name ; js-string> x_entityname
+  

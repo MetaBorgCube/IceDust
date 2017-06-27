@@ -51,3 +51,7 @@ rules
         case is-string:
           x_name := attribute
       end
+      
+  entityname-to-create-action-name : x_entityname -> $[create[x_Entityname]]
+    with
+      x_Entityname := <ucfirst> x_entityname
