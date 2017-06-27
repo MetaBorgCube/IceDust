@@ -15,6 +15,7 @@ rules
 
   generate-execute: x_moduleName -> js-stmt* |[
     function execute(state, x_ids){
+      stmts_hook
       var x_result = [];
       var oldScope = scope;
       (function(){
@@ -34,6 +35,7 @@ rules
     ; x_scope := <scope-var>
     ; expressions := <modulename-get-exprs> x_moduleName
     ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result))> expressions
+    ; stmts_hook := <hook-execute  <+ ![]> x_moduleName 
 
   generate-execute-expression-stmt(|x_result): e -> result 
     with
@@ -66,4 +68,9 @@ rules
     ; exp_result := js-exp|[exp_e.format()]|
     ; result := (exp_result, stmts_e, i')
   
+  
+  //hook into execute section of js backend
+  //hook-execute :: x_moduleName -> stmts
+  hook-execute = fail
+
   
