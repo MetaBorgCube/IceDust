@@ -31,9 +31,9 @@ Inductive expr : Type :=
   | EIf     : expr -> expr -> expr -> expr
   | EConcat : expr -> expr -> expr.
 
-Inductive ty : Type :=
-  | intty  : ty
-  | boolty : ty.
+Inductive type : Type :=
+  | intty  : type
+  | boolty : type.
 
 Inductive mult : Type :=
   | one : mult
@@ -46,7 +46,7 @@ Inductive val : Type :=
   | boolv : list bool -> val.
 
 
-(***** eval : expr -> ty *****)
+(***** eval : expr -> val *****)
 Function plustuple (t : (nat*nat)) : nat :=
   match t with
   | (n1, n2) => n1 + n2
@@ -290,25 +290,186 @@ Proof. apply evalR_eq_evalF. reflexivity. Qed.
 
 
 (***** type check : expr -> ty *****)
-(* TODO: needs to be a partial function *)
-Fixpoint tc (e : expr) : ty :=
+Reserved Notation "e ':' t"
+                  (at level 50, left associativity).
+
+Inductive typeR : expr -> type -> Prop :=
+  | T_Int : forall (n:nat),
+      EInt n : intty
+
+  | T_True :
+      ETrue : boolty
+
+  | T_False :
+      EFalse : boolty
+
+  | T_Plus : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EPlus e1 e2 : intty
+
+  | T_Lt : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      ELt e1 e2 : boolty
+
+  | T_If_Int : forall (e1 e2 e3 : expr),
+      e1 : boolty ->
+      e2 : intty ->
+      e3 : intty ->
+      EIf e1 e2 e3 : intty
+
+  | T_If_Bool : forall (e1 e2 e3 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      e3 : boolty ->
+      EIf e1 e2 e3 : boolty
+
+  | T_Concat_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EConcat e1 e2 : intty
+
+  | T_Concat_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EConcat e1 e2 : boolty
+
+where "e ':' t" := (typeR e t) : type_scope.
+
+Fixpoint typeF (e : expr) : option type :=
   match e with
-  | intl _ => intty
-  | plus e1 e2 => 
-      let t1 := tc e1 in
-      let t2 := tc e2 in
+  | EInt n =>
+      Some intty
+
+  | ETrue =>
+      Some boolty
+
+  | EFalse =>
+      Some boolty
+
+  | EPlus e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
       match t1, t2 with
-      | intty, intty => intty
+      | Some intty, Some intty =>
+          Some intty
+      | _,_ => None
       end
-  | concat e1 e2 =>
-      let t1 := tc e1 in
-      let t2 := tc e2 in
-      t1 (* TODO: check equality *)
+
+  | ELt e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | EIf e1 e2 e3 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      let t3 := typeF e3 in
+      match t1, t2, t3 with
+      | Some boolty, Some intty, Some intty =>
+          Some intty
+      | Some boolty, Some boolty, Some boolty =>
+          Some boolty
+      | _,_,_ => None
+      end
+
+  | EConcat e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
+      end
+
   end.
 
-Example test_tc_1 :
-tc (plus (intl 1) (intl 2)) = intty.
-Proof. simpl. reflexivity. Qed.
+Theorem typeR_eq_typeF: forall e t,
+  e : t <-> typeF e = Some t.
+Proof.
+  intros. split.
+  - intros.
+    induction H ;
+    try (simpl ; reflexivity); (* literals *)
+    try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
+         reflexivity ); (* binops *)
+    try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
+         rewrite IHtypeR3 ; reflexivity ). (* if *)  
+  - generalize dependent t.
+    induction e ;
+    try (intros ; inversion H ; constructor). (* literals *)
+    + intros.
+      simpl in H.
+      destruct (typeF e1) ; try congruence.
+      destruct (typeF e2) ; try (destruct t0 ; congruence).
+      destruct t0 ; try congruence.
+      destruct t1 ; try congruence.
+      destruct t  ; try congruence.
+      apply T_Plus.
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+    + intros.
+      simpl in H.
+      destruct (typeF e1) ; try congruence.
+      destruct (typeF e2) ; try (destruct t0 ; congruence).
+      destruct t0 ; try congruence.
+      destruct t1 ; try congruence.
+      destruct t  ; try congruence.
+      apply T_Lt.
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+    + (* if *)
+      intros.
+      simpl in H.
+      destruct (typeF e1) ; try congruence.
+      destruct (typeF e2) ; try (destruct t0 ; congruence).
+      destruct (typeF e3) ; try (destruct t0 ; destruct t1 ; congruence).
+      destruct t0 ; try congruence.
+      destruct t1.
+      * (* int *)
+        destruct t2 ; try congruence.
+        destruct t  ; try congruence.
+        apply T_If_Int.
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+        apply IHe3. reflexivity.
+      * (* bool *)
+        destruct t2 ; try congruence.
+        destruct t  ; try congruence.
+        apply T_If_Bool.
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+        apply IHe3. reflexivity.
+    + (* concat *)
+      intros.
+      simpl in H.
+      destruct (typeF e1) ; try congruence.
+      destruct (typeF e2) ; try (destruct t0 ; congruence).
+      destruct t0.
+      * (* int *)
+        destruct t1 ; try congruence.
+        destruct t  ; try congruence.
+        apply T_Concat_Int.
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+      * (* bool *)
+        destruct t1 ; try congruence.
+        destruct t  ; try congruence.
+        apply T_Concat_Bool.
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+Qed.
+
+Example typeR_1 :
+  (EPlus (EInt 1) (EInt 2)) : intty.
+Proof. apply typeR_eq_typeF. simpl. reflexivity. Qed.
 
 (***** multiplicity check : expr -> mult *****)
 (* TODO: lattice as in NaBL2? or keep as function? *)
@@ -330,54 +491,104 @@ Definition mult_concat (m1 : mult) (m2 : mult) : mult :=
   | _        , _         => zeroOrMore
   end.
 
-Fixpoint mc (e : expr) : mult :=
+Reserved Notation "e '~' m"
+                  (at level 50, left associativity).
+
+Inductive multR : expr -> mult -> Prop :=
+  | M_Int : forall (n:nat),
+      EInt n ~ one
+
+  | M_True :
+      ETrue ~ one
+
+  | M_False :
+      EFalse ~ one
+
+  | M_Plus : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EPlus e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Lt : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      ELt e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_If : forall (e1 e2 e3 : expr) m1 m2 m3,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      e3 ~ m3 ->
+      EIf e1 e2 e3 ~ mult_crossproduct m1 (mult_crossproduct m2 m3)
+
+  | M_Concat_Int : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EConcat e1 e2 ~ mult_concat m1 m2
+
+where "e '~' m" := (multR e m) : type_scope.
+
+Fixpoint multF (e : expr) : mult :=
   match e with
-  | intl _ => one
-  | plus e1 e2 =>
-      let m1 := mc e1 in
-      let m2 := mc e2 in
+  | EInt n =>
+      one
+
+  | ETrue =>
+      one
+
+  | EFalse =>
+      one
+
+  | EPlus e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
       mult_crossproduct m1 m2
-  | concat e1 e2 =>
-      let m1 := mc e1 in
-      let m2 := mc e2 in
+
+  | ELt e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | EIf e1 e2 e3 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      let m3 := multF e3 in
+      mult_crossproduct m1 (mult_crossproduct m2 m3)
+
+  | EConcat e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
       mult_concat m1 m2
+
   end.
 
-Example test_mc_1 :
-mc (plus (intl 1) (intl 2)) = one.
-Proof. simpl. reflexivity. Qed.
+Theorem multR_eq_multF: forall e m,
+  e ~ m <-> multF e = m.
+Proof.
+  split.
+  - intros.
+    induction H ;
+    try (simpl ; subst ; reflexivity).
+  - generalize dependent m.
+    induction e ;
+    intros ; simpl in H ; subst ; constructor ;
+    try reflexivity ; (* literals *)
+    try (apply IHe1 ; reflexivity);
+    try (apply IHe2 ; reflexivity); (* binops *)
+    try (apply IHe3 ; reflexivity). (* if *)
+Qed.
 
-Example test_mc_2 :
-mc (concat (intl 1) (intl 2)) = oneOrMore.
-Proof. simpl. reflexivity. Qed.
+Example multR_1 :
+  (EPlus (EInt 1) (EInt 2)) ~ one.
+Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 
-(***** interpreter : expr -> list val *****)
-Definition eval_plus (v : val * val) : val :=
-  match v with
-  | (intv n1, intv n2) => intv (n1 + n2)
-  end.
+Example multR_2 :
+  (EConcat (EInt 1) (EInt 2)) ~ oneOrMore.
+Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 
-Fixpoint eval (b : expr) : list val :=
-  match b with
-  | intl n => [(intv n)]
-  | plus e1 e2 =>
-      let v1 : list val       := eval e1 in
-      let v2 : list val       := eval e2 in
-      let vs : list (val*val) := list_crossproduct v1 v2 in
-      map eval_plus vs
-  | concat e1 e2 =>
-      let v1 : list val       := eval e1 in
-      let v2 : list val       := eval e2 in
-      v1 ++ v2
-  end.
 
-Example test_eval_1 :
-eval (plus (intl 1) (intl 2)) = [intv 3].
-Proof. simpl. reflexivity. Qed.
 
-Example test_eval_2 :
-eval (plus (intl 1) (concat (intl 2) (intl 3))) = [intv 3; intv 4].
-Proof. simpl. reflexivity. Qed.
+
+
 
 (***** type of value : list val -> ty *****)
 Definition tv1 (v : val) : ty :=
