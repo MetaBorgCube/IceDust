@@ -1,5 +1,6 @@
 Require Import List.
 Import ListNotations.
+Require Import Coq.Init.Nat.
 
 Fixpoint list_pair_with {X Y : Type} (lx : list X) (y : Y) : list (X*Y) :=
   match lx with
@@ -13,7 +14,8 @@ Fixpoint list_pair_with2 {X Y : Type} (x : X) (ly : list Y) : list (X*Y) :=
   | y :: ty => (x, y) :: (list_pair_with2 x ty)
   end.
 
-Fixpoint list_crossproduct {X Y : Type} (lx : list X) (ly : list Y) : list (X*Y) :=
+Fixpoint list_crossproduct {X Y : Type}
+  (lx : list X) (ly : list Y) : list (X*Y) :=
   match lx with
   | [] => []
   | x :: tx => (list_pair_with2 x ly) ++ (list_crossproduct tx ly)
@@ -21,12 +23,17 @@ Fixpoint list_crossproduct {X Y : Type} (lx : list X) (ly : list Y) : list (X*Y)
 
 (***** signatures *****)
 Inductive expr : Type :=
-  | intl   : nat -> expr
-  | plus   : expr -> expr -> expr
-  | concat : expr -> expr -> expr.
+  | EInt    : nat -> expr
+  | ETrue   : expr
+  | EFalse  : expr
+  | EPlus   : expr -> expr -> expr
+  | ELt     : expr -> expr -> expr
+  | EIf     : expr -> expr -> expr -> expr
+  | EConcat : expr -> expr -> expr.
 
 Inductive ty : Type :=
-  | intty : ty.
+  | intty  : ty
+  | boolty : ty.
 
 Inductive mult : Type :=
   | one : mult
@@ -35,7 +42,226 @@ Inductive mult : Type :=
   | zeroOrMore : mult.
 
 Inductive val : Type :=
-  | intv : nat -> val.
+  | intv  : list nat -> val
+  | boolv : list bool -> val.
+
+
+(***** eval : expr -> ty *****)
+Function plustuple (t : (nat*nat)) : nat :=
+  match t with
+  | (n1, n2) => n1 + n2
+  end.
+
+Function lttuple (t : (nat*nat)) : bool :=
+  match t with
+  | (n1, n2) => n1 <? n2
+  end.
+
+Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
+  match t with
+  | (true,  (_ , v3)) => v3
+  | (false, (v2, _ )) => v2
+  end.
+
+Reserved Notation "e '\\' v"
+                  (at level 50, left associativity).
+
+Inductive evalR : expr -> val -> Prop :=
+  | E_Int : forall (n:nat),
+      EInt n \\ intv [n]
+
+  | E_True :
+      ETrue \\ boolv [true]
+
+  | E_False :
+      EFalse \\ boolv [false]
+
+  | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EPlus e1 e2 \\ intv (map plustuple vtuples)
+
+  | E_Lt : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      ELt e1 e2 \\ boolv (map lttuple vtuples)
+
+  | E_If_Int : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ intv v2s ->
+      e3 \\ intv v3s -> (* IceDust does not shortcut evaluation *)
+      vtuples = list_crossproduct v1s (list_crossproduct v2s v3s) ->
+      EIf e1 e2 e3 \\ intv (map iftuple vtuples)
+
+  | E_If_Bool : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      e3 \\ boolv v3s -> (* IceDust does not shortcut evaluation *)
+      vtuples = list_crossproduct v1s (list_crossproduct v2s v3s) ->
+      EIf e1 e2 e3 \\ boolv (map iftuple vtuples)
+
+  | E_Concat_Int : forall (e1 e2 : expr) v1s v2s,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      EConcat e1 e2 \\ intv (v1s ++ v2s)
+
+  | E_Concat_Bool : forall (e1 e2 : expr) v1s v2s,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      EConcat e1 e2 \\ boolv (v1s ++ v2s)
+
+where "e '\\' v" := (evalR e v) : type_scope.
+
+Fixpoint evalF (e : expr) : option val :=
+  match e with
+  | EInt n =>
+      Some (intv [n])
+
+  | ETrue =>
+      Some (boolv [true])
+
+  | EFalse =>
+      Some (boolv [false])
+
+  | EPlus e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map plustuple vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
+
+  | ELt e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map lttuple vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | EIf e1 e2 e3 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      let v3 := evalF e3 in
+      match v1, v2, v3 with
+      | Some (boolv v1s), Some (intv v2s), Some (intv v3s) =>
+          let vtuples := list_crossproduct v1s (list_crossproduct v2s v3s) in
+          let vs := map iftuple vtuples in
+          Some (intv vs)
+      | Some (boolv v1s), Some (boolv v2s), Some (boolv v3s) =>
+          let vtuples := list_crossproduct v1s (list_crossproduct v2s v3s) in
+          let vs := map iftuple vtuples in
+          Some (boolv vs)
+      | _,_,_ => None
+      end
+
+  | EConcat e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          Some (intv (v1s ++ v2s))
+      | Some (boolv v1s), Some (boolv v2s) =>
+          Some (boolv (v1s ++ v2s))
+      | _,_ => None
+      end
+
+  end.
+
+Theorem evalR_eq_evalF: forall e v,
+  e \\ v <-> evalF e = Some v.
+Proof.
+  intros. split.
+  - intros.
+    induction H ;
+    try (simpl ; reflexivity); (* literals *)
+    try (simpl ; subst ; rewrite IHevalR1 ; rewrite IHevalR2 ;
+         reflexivity ); (* binops *)
+    try (simpl ; subst ; rewrite IHevalR1 ; rewrite IHevalR2 ;
+         rewrite IHevalR3 ; reflexivity ). (* if *)
+  - intros.
+    generalize dependent v.
+    induction e ;
+    try (intros ; inversion H ; constructor) (* literals *)
+    .
+    + intros.
+      simpl in H.
+      destruct (evalF e1) ; try congruence.
+      destruct (evalF e2) ; try (destruct v0 ; congruence).
+      destruct v0 ; try congruence.
+      destruct v1 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_Plus with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      reflexivity.
+    + intros.
+      simpl in H.
+      destruct (evalF e1) ; try congruence.
+      destruct (evalF e2) ; try (destruct v0 ; congruence).
+      destruct v0 ; try congruence.
+      destruct v1 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_Lt with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      reflexivity.
+    + intros.
+      simpl in H.
+      destruct (evalF e1) ; try congruence.
+      destruct (evalF e2) ; try (destruct v0 ; congruence).
+      destruct (evalF e3).
+      destruct v0 ; try congruence.
+      destruct v1 ; try congruence.
+      destruct v2 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      apply IHe3. reflexivity.
+      reflexivity.
+      destruct v2 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      apply IHe3. reflexivity.
+      reflexivity.
+      destruct v0.
+      congruence.
+      destruct v1.
+      congruence.
+      congruence.
+    + intros.
+      simpl in H.
+      destruct (evalF e1) ; try congruence.
+      destruct (evalF e2) ; try (destruct v0 ; congruence).
+      destruct v0 ; try congruence.
+      destruct v1 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_Concat_Int with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      destruct v1 ; try congruence.
+      destruct v  ; try congruence.
+      inversion H.
+      apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+Qed.
 
 (***** type check : expr -> ty *****)
 (* TODO: needs to be a partial function *)
