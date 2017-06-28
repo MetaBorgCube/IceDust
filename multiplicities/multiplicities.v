@@ -586,33 +586,34 @@ Example multR_2 :
 Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 
 
-
-
-
-
-(***** type of value : list val -> ty *****)
-Definition tv1 (v : val) : ty :=
+(***** valty : val -> type *****)
+Definition valty (v : val) : type :=
   match v with
-  | intv _ => intty
+  | intv  _ => intty
+  | boolv _ => boolty
   end.
 
-(* TODO: 1. how to represent no value? *)
-(* TODO: 2. make partial function, if contains values from different types *)
-Fixpoint tv (vs : list val) : ty :=
-  match vs with
-  | [] => intty (* FIXME: *)
-  | v :: vs => tv1 v (* FIXME: *)
+(***** valmu : val -> mult *****)
+Definition valmu (v : val) : mult :=
+  match v with
+  | intv  []        => zeroOrOne
+  | intv  (_ :: []) => one
+  | intv  (_ :: _ ) => oneOrMore
+  | boolv []        => zeroOrOne
+  | boolv (_ :: []) => one
+  | boolv (_ :: _ ) => oneOrMore
   end.
 
-(***** multiplicity of value : list val -> mult *****)
-Definition mv (vs : list val) : mult :=
-  match vs with
-  | [] => zeroOrOne
-  | [_] => one
-  | _ => oneOrMore
-  end.
+Inductive mult_containsR: mult -> mult -> Prop :=
+  | M_ZeroOrMore : forall m,
+      mult_containsR zeroOrMore m
+  | M_One : forall m,
+      mult_containsR m one
+  | M_Equal : forall m,
+      mult_containsR m m
+.
 
-Definition mult_contains (m1 : mult) (m2 : mult) : bool :=
+Definition mult_containsF (m1 : mult) (m2 : mult) : bool :=
   match m1, m2 with
   | zeroOrMore, _         => true
   | _         , one       => true
@@ -621,11 +622,98 @@ Definition mult_contains (m1 : mult) (m2 : mult) : bool :=
   | _         , _         => false
   end.
 
-(***** multiplicity preservation *****)
-Theorem mult_perservation : forall (e : expr),
-  mult_contains (mc e) (mv (eval e)) = true.
+Theorem mult_containsR_eq_mult_containsF : forall (m1 m2 : mult),
+  mult_containsR m1 m2 <-> mult_containsF m1 m2 = true.
 Proof.
-  induction e.
-  - simpl. reflexivity.
+  split.
+  - intros. induction H.
+    + simpl. reflexivity.
+    + simpl. destruct m ; simpl ; reflexivity.
+    + destruct m ; simpl ; reflexivity.
+  - intros.
+    destruct m1 ; try inversion H ; destruct m2 ; try constructor ; try congruence.
+Qed.
+
+(***** type preservation *****)
+Theorem type_preservation : forall (e : expr) t v,
+  e : t ->
+  e \\ v ->
+  valty v = t.
+Proof.
+  intros e t v Htype Hval.
+  induction Hval ;
+  try ( simpl ; inversion Htype ; reflexivity ). (* literals, plus, lt *)
+  - simpl. inversion Htype.
+    + reflexivity.
+    + subst. apply IHHval2 in H5. inversion H5.
+  - simpl. inversion Htype.
+    + subst. apply IHHval2 in H5. inversion H5.
+    + reflexivity.
+  - simpl. inversion Htype.
+    + reflexivity.
+    + subst. apply IHHval1 in H1. inversion H1.
+  - simpl. inversion Htype.
+    + subst. apply IHHval1 in H1. inversion H1.
+    + reflexivity.
+Qed.
+
+(***** has type implies evaluates *****)
+Theorem eval_type_totality : forall (e : expr) t,
+  e : t ->
+  exists v,
+  e \\ v.
+Proof.
+  intros e t H.
+  induction H.
+  - exists (intv [n]). constructor.
+  - exists (boolv [true]). constructor.
+  - exists (boolv [false]). constructor.
+  - destruct IHtypeR1. destruct IHtypeR2.
+Abort.
+
+Theorem eval_type_totality' : forall (e : expr) t,
+  e : t ->
+  exists v,
+  evalF e = Some v.
+Proof.
+  intros.
+  induction H.
+  - simpl. exists (intv [n]). reflexivity.
+  - simpl. exists (boolv [true]). reflexivity.
+  - simpl. exists (boolv [false]). reflexivity.
   - simpl.
-Abort. (* here is where the fun starts *)
+    destruct IHtypeR1. destruct IHtypeR2.
+    rewrite H1. rewrite H2.
+    destruct x. destruct x0. (* use type preservation instead of destruct *)
+    exists (intv (map plustuple (list_crossproduct l l0))). reflexivity.
+    (* congruence on value having wrong type *)
+Abort.
+
+(***** multiplicity preservation *****)
+Theorem mult_preservation : forall (e : expr) t m v,
+  e : t ->
+  e ~ m ->
+  e \\ v ->
+  mult_containsR m (valmu v).
+Proof.
+  intros e t m v Htype Hmult Hval.
+  generalize dependent t.
+  generalize dependent m.
+  induction Hval ;
+  intros ;
+  try (simpl ; constructor). (* literals *)
+  - inversion Htype. subst.
+    inversion Hmult. subst.
+    specialize (IHHval1 m1).
+    specialize (IHHval1 H1).
+    specialize (IHHval1 intty).
+    specialize (IHHval1 H2).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 H5).
+    specialize (IHHval2 intty).
+    specialize (IHHval2 H4).
+
+(* TODO: continue here *)
+
+Abort.
+
