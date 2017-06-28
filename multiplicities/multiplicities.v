@@ -59,8 +59,8 @@ Function lttuple (t : (nat*nat)) : bool :=
 
 Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
   match t with
-  | (true,  (_ , v3)) => v3
-  | (false, (v2, _ )) => v2
+  | (true,  (v2, _ )) => v2
+  | (false, (_ , v3)) => v3
   end.
 
 Reserved Notation "e '\\' v"
@@ -216,52 +216,78 @@ Proof.
       apply IHe1. reflexivity.
       apply IHe2. reflexivity.
       reflexivity.
-    + intros.
+    + (* if *)
+      intros.
       simpl in H.
       destruct (evalF e1) ; try congruence.
       destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct (evalF e3).
+      destruct (evalF e3) ; try (destruct v0 ; destruct v1 ; congruence).
       destruct v0 ; try congruence.
       destruct v1 ; try congruence.
-      destruct v2 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      apply IHe3. reflexivity.
-      reflexivity.
-      destruct v2 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      apply IHe3. reflexivity.
-      reflexivity.
+      * (* int *)
+        destruct v2 ; try congruence.
+        destruct v  ; try congruence.
+        inversion H.
+        apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+        apply IHe3. reflexivity.
+        reflexivity.
+      * (* bool *)
+        destruct v2 ; try congruence.
+        destruct v  ; try congruence.
+        inversion H.
+        apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+        apply IHe3. reflexivity.
+        reflexivity.
+    + (* concat *)
+      intros.
+      simpl in H.
+      destruct (evalF e1) ; try congruence.
+      destruct (evalF e2) ; try (destruct v0 ; congruence).
       destruct v0.
-      congruence.
-      destruct v1.
-      congruence.
-      congruence.
-    + intros.
-      simpl in H.
-      destruct (evalF e1) ; try congruence.
-      destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct v0 ; try congruence.
-      destruct v1 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_Concat_Int with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      destruct v1 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
+      * (* int *)
+        destruct v1 ; try congruence.
+        destruct v  ; try congruence.
+        inversion H.
+        apply E_Concat_Int with (v1s:=l) (v2s:=l0).
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
+      * (* bool *)
+        destruct v1 ; try congruence.
+        destruct v  ; try congruence.
+        inversion H.
+        apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
+        apply IHe1. reflexivity.
+        apply IHe2. reflexivity.
 Qed.
+
+Example evalF_1 :
+  evalF (EIf ETrue (EInt 3) (EInt 5)) = Some (intv [3]).
+Proof. reflexivity. Qed.
+
+Example evalF_2 :
+  evalF (EPlus (EInt 3) (EInt 5)) = Some (intv [8]).
+Proof. reflexivity. Qed.
+
+Example evalF_3 :
+  evalF (EConcat (EInt 3) (EInt 5)) = Some (intv [3; 5]).
+Proof. reflexivity. Qed.
+
+Example evalF_4 :
+  evalF (ELt (EInt 3) (EInt 5)) = Some (boolv [true]).
+Proof. reflexivity. Qed.
+
+Example evalF_5 :
+  evalF (ELt (EInt 3) EFalse) = None.
+Proof. reflexivity. Qed.
+
+Example evalR_1 :
+  (EIf ETrue (EInt 3) (EInt 5)) \\ (intv [3]).
+Proof. apply evalR_eq_evalF. reflexivity. Qed.
+
 
 (***** type check : expr -> ty *****)
 (* TODO: needs to be a partial function *)
