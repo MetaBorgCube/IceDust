@@ -570,20 +570,15 @@ Theorem type_preservation : forall (e : expr) t v,
   valty v = t.
 Proof.
   intros e t v Htype Hval.
-  induction Hval ;
-  try ( simpl ; inversion Htype ; reflexivity ). (* literals, plus, lt *)
-  - simpl. inversion Htype.
-    + reflexivity.
-    + subst. apply IHHval2 in H5. inversion H5.
-  - simpl. inversion Htype.
-    + subst. apply IHHval2 in H5. inversion H5.
-    + reflexivity.
-  - simpl. inversion Htype.
-    + reflexivity.
-    + subst. apply IHHval1 in H1. inversion H1.
-  - simpl. inversion Htype.
-    + subst. apply IHHval1 in H1. inversion H1.
-    + reflexivity.
+  induction Hval.
+  (* happy path *)
+  all: simpl ; inversion Htype ; try ( reflexivity ).
+  (* wrong types *)
+  all: subst.
+  all: try(apply IHHval2 in H5).
+  all: try(inversion H5).
+  all: try(apply IHHval1 in H1).
+  all: try(inversion H1).
 Qed.
 
 (***** has type implies evaluates *****)
