@@ -181,12 +181,17 @@ Theorem evalR_eq_evalF: forall e v,
 Proof.
   intros. split.
   - intros.
-    induction H ;
-    try (simpl ; reflexivity); (* literals *)
-    try (simpl ; subst ; rewrite IHevalR1 ; rewrite IHevalR2 ;
-         reflexivity ); (* binops *)
-    try (simpl ; subst ; rewrite IHevalR1 ; rewrite IHevalR2 ;
-         rewrite IHevalR3 ; reflexivity ). (* if *)
+    induction H.
+    all: simpl.
+    (* literals *)
+    all: try reflexivity.
+    (* binops *)
+    all: subst.
+    all: rewrite IHevalR1 ; rewrite IHevalR2.
+    all: try reflexivity.
+    (* if *)
+    all: rewrite IHevalR3.
+    all: reflexivity.
   - intros.
     generalize dependent v.
     induction e.
@@ -204,30 +209,19 @@ Proof.
     all: try(destruct v2 ; try congruence). (* for if *)
     all: destruct v  ; try congruence.
     all: inversion H.
-    + apply E_Plus with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      reflexivity.
-    + apply E_Lt with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      reflexivity.
-    + apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      apply IHe3. reflexivity.
-      reflexivity.
-    + apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-      apply IHe3. reflexivity.
-      reflexivity.
-    + apply E_Concat_Int with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-    + apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
+
+    (* manually apply constructors *)
+    1: apply E_Plus with (v1s:=l) (v2s:=l0).
+    4: apply E_Lt with (v1s:=l) (v2s:=l0).
+    7: apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
+    11: apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
+    15: apply E_Concat_Int with (v1s:=l) (v2s:=l0).
+    17: apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
+
+    all: try reflexivity.
+    all: try(apply IHe1 ; reflexivity).
+    all: try(apply IHe2 ; reflexivity).
+    all: try(apply IHe3 ; reflexivity).
 Qed.
 
 Example evalF_1 :
@@ -394,7 +388,6 @@ Example typeR_1 :
 Proof. apply typeR_eq_typeF. simpl. reflexivity. Qed.
 
 (***** multiplicity check : expr -> mult *****)
-(* TODO: lattice as in NaBL2? or keep as function? *)
 Definition mult_crossproduct (m1 : mult) (m2 : mult) : mult :=
   match m1, m2 with
   | one       , m2         => m2
