@@ -777,13 +777,13 @@ Lemma crossproduct_mult_preservation_nat_nat_nat:
     (mult_crossproduct m1 m2)
     (intv (map f (list_crossproduct v1s v2s))).
 Proof.
-  intros;
-  destruct m1; destruct m2;
-  destruct v1s; try destruct v1s;
-  destruct v2s; try destruct v2s;
-  try inversion H;
-  try inversion H0;
-  try (subst; simpl; constructor).
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
 Qed.
 
 Lemma crossproduct_mult_preservation_nat_nat_bool:
@@ -794,13 +794,13 @@ Lemma crossproduct_mult_preservation_nat_nat_bool:
     (mult_crossproduct m1 m2)
     (boolv (map f (list_crossproduct v1s v2s))).
 Proof.
-  intros;
-  destruct m1; destruct m2;
-  destruct v1s; try destruct v1s;
-  destruct v2s; try destruct v2s;
-  try inversion H;
-  try inversion H0;
-  try (subst; simpl; constructor).
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
 Qed.
 
 Lemma concat_mult_preservation_nat:
@@ -811,13 +811,13 @@ Lemma concat_mult_preservation_nat:
     (mult_concat m1 m2)
     (intv (v1s ++ v2s)).
 Proof.
-  intros;
-  destruct m1; destruct m2;
-  destruct v1s; try destruct v1s;
-  destruct v2s; try destruct v2s;
-  try inversion H;
-  try inversion H0;
-  try (subst; simpl; constructor).
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
 Qed.
 
 Lemma concat_mult_preservation_bool:
@@ -828,13 +828,53 @@ Lemma concat_mult_preservation_bool:
     (mult_concat m1 m2)
     (boolv (v1s ++ v2s)).
 Proof.
-  intros;
-  destruct m1; destruct m2;
-  destruct v1s; try destruct v1s;
-  destruct v2s; try destruct v2s;
-  try inversion H;
-  try inversion H0;
-  try (subst; simpl; constructor).
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+Qed.
+
+Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
+  forall m1 m2 m3 v1s v2s v3s (f : bool * (nat * nat) -> nat),
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR m3 (intv v3s) ->
+  mult_containsR
+    (mult_crossproduct m1 (mult_crossproduct m2 m3))
+    (intv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
+Proof.
+  intros.
+  destruct m1; destruct m2 ; destruct m3.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : destruct v3s; try destruct v3s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : try inversion H1.
+Qed.
+
+Lemma crossproduct_mult_preservation_bool_bool_bool_bool:
+  forall m1 m2 m3 v1s v2s v3s (f : bool * (bool * bool) -> bool),
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (boolv v2s) ->
+  mult_containsR m3 (boolv v3s) ->
+  mult_containsR
+    (mult_crossproduct m1 (mult_crossproduct m2 m3))
+    (boolv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
+Proof.
+  intros.
+  destruct m1; destruct m2 ; destruct m3.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : destruct v3s; try destruct v3s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : try inversion H1.
 Qed.
 
 Theorem mult_preservation : forall (e : expr) t m v,
@@ -888,8 +928,8 @@ Proof.
       specialize (IHHval3 H8).
       specialize (IHHval3 intty).
       specialize (IHHval3 H6).
-      (* TODO: cross product for 3 things *)
-      admit.
+      apply crossproduct_mult_preservation_bool_nat_nat_nat;
+      assumption.
     + subst.
       apply type_preservation with (v:=intv v2s) in H5 ; try assumption.
       inversion H5.
@@ -911,8 +951,8 @@ Proof.
       specialize (IHHval3 H8).
       specialize (IHHval3 boolty).
       specialize (IHHval3 H6).
-      (* TODO: cross product for 3 things *)
-      admit.
+      apply crossproduct_mult_preservation_bool_bool_bool_bool;
+      assumption.
   - inversion Htype.
     + subst.
       inversion Hmult. subst.
@@ -945,30 +985,5 @@ Proof.
       specialize (IHHval2 H3).
       apply concat_mult_preservation_bool;
       assumption.
-Abort.
-
-
-(* TODO: 4^3 * 3^3 = 1728 cases, takes too long *)
-Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
-  forall m1 m2 m3 v1s v2s v3s (f : bool * (nat * nat) -> nat),
-  mult_containsR m1 (boolv v1s) ->
-  mult_containsR m2 (intv v2s) ->
-  mult_containsR m3 (intv v3s) ->
-  mult_containsR
-    (mult_crossproduct m1 (mult_crossproduct m2 m3))
-    (intv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
-Proof.
-  intros;
-  destruct m1; destruct m2; destruct m3;
-  destruct v1s; try destruct v1s;
-  destruct v2s; try destruct v2s;
-  destruct v3s; try destruct v3s;
-  try inversion H;
-  try inversion H0;
-  try inversion H1;
-  try (subst; simpl; constructor).
 Qed.
-
-
-
 
