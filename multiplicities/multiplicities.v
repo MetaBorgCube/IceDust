@@ -659,19 +659,6 @@ Proof.
 Qed.
 
 (***** has type implies evaluates *****)
-Theorem eval_type_totality : forall (e : expr) t,
-  e : t ->
-  exists v,
-  e \\ v.
-Proof.
-  intros e t H.
-  induction H.
-  - exists (intv [n]). constructor.
-  - exists (boolv [true]). constructor.
-  - exists (boolv [false]). constructor.
-  - destruct IHtypeR1. destruct IHtypeR2.
-Abort.
-
 Lemma exists_some: forall {X:Type} (v1:X),
   exists v2 : X,
     Some v1 =
@@ -682,7 +669,7 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem eval_type_totality' : forall (e : expr) t,
+Theorem typed_evalF_totality : forall (e : expr) t,
   e : t ->
   exists v,
   evalF e = Some v.
@@ -693,83 +680,86 @@ Proof.
   - simpl. apply exists_some.
   - simpl. apply exists_some.
   - simpl.
-    destruct IHtypeR1. destruct IHtypeR2.
-    rewrite H1. rewrite H2.
-    destruct x. destruct x0. (* use type preservation instead of destruct *)
-    + apply exists_some.
-    + apply evalR_eq_evalF in H2.
-      apply type_preservation with (v:=boolv l0) in H0 ; try assumption.
-      inversion H0.
-    + apply evalR_eq_evalF in H1.
-      apply type_preservation with (v:=boolv l) in H ; try assumption.
-      inversion H.
-  - simpl.
-    destruct IHtypeR1. destruct IHtypeR2.
-    rewrite H1. rewrite H2.
-    destruct x. destruct x0.
-    + apply exists_some.
-    + apply evalR_eq_evalF in H2.
-      apply type_preservation with (v:=boolv l0) in H0 ; try assumption.
-      inversion H0.
-    + apply evalR_eq_evalF in H1.
-      apply type_preservation with (v:=boolv l) in H ; try assumption.
-      inversion H.
-  - simpl.
-    destruct IHtypeR1. destruct IHtypeR2. destruct IHtypeR3.
-    rewrite H2. rewrite H3. rewrite H4.
-    destruct x. destruct x0. destruct x1.
-    + apply evalR_eq_evalF in H2.
-      apply type_preservation with (v:=intv l) in H ; try assumption.
-      inversion H.
-    + apply evalR_eq_evalF in H4.
-      apply type_preservation with (v:=boolv l1) in H1 ; try assumption.
-      inversion H1.
-    + apply evalR_eq_evalF in H3.
-      apply type_preservation with (v:=boolv l0) in H0 ; try assumption.
-      inversion H0.
-    + apply evalR_eq_evalF in H3.
-      apply type_preservation with (v:=x0) in H0 ; try assumption.
-      destruct x0 ; try inversion H0.
-      apply evalR_eq_evalF in H4.
-      apply type_preservation with (v:=x1) in H1 ; try assumption.
-      destruct x1 ; try inversion H1.
-      apply exists_some.
-  - simpl.
-    destruct IHtypeR1. destruct IHtypeR2. destruct IHtypeR3.
-    rewrite H2. rewrite H3. rewrite H4.
-    destruct x.
-    { apply evalR_eq_evalF in H2.
-      apply type_preservation with (v:=intv l) in H ; try assumption.
-      inversion H. }
-    destruct x0.
-    { apply evalR_eq_evalF in H3.
-      apply type_preservation with (v:=intv l0) in H0 ; try assumption.
-      inversion H0. }
-    destruct x1.
-    { apply evalR_eq_evalF in H4.
-      apply type_preservation with (v:=intv l1) in H1 ; try assumption.
-      inversion H1. }
-    + apply exists_some.
-  - simpl.
-    destruct IHtypeR1. destruct IHtypeR2.
-    rewrite H1. rewrite H2.
+    destruct IHtypeR1. rewrite H1.
     apply evalR_eq_evalF in H1.
     apply type_preservation with (v:=x) in H ; try assumption.
     destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H2.
     apply evalR_eq_evalF in H2.
-    apply type_preservation with (v:=x0) in H0 ; try assumption.
-    destruct x0 ; try inversion H0.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
     apply exists_some.
   - simpl.
-    destruct IHtypeR1. destruct IHtypeR2.
-    rewrite H1. rewrite H2.
+    destruct IHtypeR1. rewrite H1.
     apply evalR_eq_evalF in H1.
     apply type_preservation with (v:=x) in H ; try assumption.
     destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H2.
     apply evalR_eq_evalF in H2.
-    apply type_preservation with (v:=x0) in H0 ; try assumption.
-    destruct x0 ; try inversion H0.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
     apply exists_some.
+  - simpl.
+    destruct IHtypeR1. rewrite H2.
+    apply evalR_eq_evalF in H2.
+    apply type_preservation with (v:=x) in H ; try assumption.
+    destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H3.
+    apply evalR_eq_evalF in H3.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
+    destruct IHtypeR3. rewrite H4.
+    apply evalR_eq_evalF in H4.
+    apply type_preservation with (v:=x) in H1 ; try assumption.
+    destruct x ; try inversion H1.
+    apply exists_some.
+  - simpl.
+    destruct IHtypeR1. rewrite H2.
+    apply evalR_eq_evalF in H2.
+    apply type_preservation with (v:=x) in H ; try assumption.
+    destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H3.
+    apply evalR_eq_evalF in H3.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
+    destruct IHtypeR3. rewrite H4.
+    apply evalR_eq_evalF in H4.
+    apply type_preservation with (v:=x) in H1 ; try assumption.
+    destruct x ; try inversion H1.
+    apply exists_some.
+  - simpl.
+    destruct IHtypeR1. rewrite H1.
+    apply evalR_eq_evalF in H1.
+    apply type_preservation with (v:=x) in H ; try assumption.
+    destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H2.
+    apply evalR_eq_evalF in H2.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
+    apply exists_some.
+  - simpl.
+    destruct IHtypeR1. rewrite H1.
+    apply evalR_eq_evalF in H1.
+    apply type_preservation with (v:=x) in H ; try assumption.
+    destruct x ; try inversion H.
+    destruct IHtypeR2. rewrite H2.
+    apply evalR_eq_evalF in H2.
+    apply type_preservation with (v:=x) in H0 ; try assumption.
+    destruct x ; try inversion H0.
+    apply exists_some.
+Qed.
+
+Theorem typed_evalR_totality : forall (e : expr) t,
+  e : t ->
+  exists v,
+  e \\ v.
+Proof.
+  intros.
+  apply typed_evalF_totality in H.
+  destruct H.
+  exists x.
+  apply evalR_eq_evalF in H.
+  assumption.
 Qed.
 
 (***** multiplicity preservation *****)
