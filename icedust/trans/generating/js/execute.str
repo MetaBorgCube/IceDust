@@ -43,18 +43,22 @@ rules
     ; exp_update := <set-state-action-name ; js-string>
     ; result := js-stmt |[
       (function(){
-        var initialState = store.getState();
-        var state = initialState;
-        stmts_e
+        function calculation(state){
+          stmts_e
+          return {
+            result: exp_e,
+            state: state
+          };
+        }
+        var calc = calculation(store.getState());
+        state = calc.state;
         x_result = x_result.concat([{
           type: exp_typeAsString,
           multiplicity: exp_multiplicityAsString,
           expression: exp_eAsString,
-          value: exp_e
+          value: calc.result,
+          calculation: calculation
         }]);
-        if(initialState !== state){
-          store.dispatch(actionCreators[exp_update](state));
-        }
       })();
   ]|
   
