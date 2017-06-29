@@ -759,104 +759,103 @@ Proof.
   intros e t m v Htype Hmult Hval.
   generalize dependent t.
   generalize dependent m.
-  induction Hval ;
-  intros ;
-  try (simpl ; constructor). (* literals *)
-  - inversion Htype. subst.
-    inversion Hmult. subst.
+  induction Hval.
+  all: intros.
+  (* literals *)
+  all: try(simpl; constructor).
+  (* binops and if *)
+  all: inversion Htype.
+  all: subst.
+  (* get rid of wrong argument type cases *)
+  Focus 4.
+    apply type_preservation with (v:=intv v2s) in H5 ; try assumption.
+    inversion H5.
+  Focus 4.
+    apply type_preservation with (v:=boolv v2s) in H5 ; try assumption.
+    inversion H5.
+  Focus 6.
+    apply type_preservation with (v:=intv v1s) in H1 ; try assumption.
+    inversion H1.
+  Focus 6.
+    apply type_preservation with (v:=boolv v1s) in H1 ; try assumption.
+    inversion H1.
+  all: inversion Hmult.
+  all: subst.
+  - rename H2 into He1ty.
+    rename H4 into He2ty.
+    rename H1 into He1mu.
+    rename H5 into He2mu.
     specialize (IHHval1 m1).
-    specialize (IHHval1 H1).
+    specialize (IHHval1 He1mu).
     specialize (IHHval1 intty).
-    specialize (IHHval1 H2).
+    specialize (IHHval1 He1ty).
     specialize (IHHval2 m2).
-    specialize (IHHval2 H5).
+    specialize (IHHval2 He2mu).
     specialize (IHHval2 intty).
-    specialize (IHHval2 H4).
+    specialize (IHHval2 He2ty).
     apply crossproduct_mult_preservation_nat_nat_nat;
     assumption.
-  - inversion Htype. subst.
-    inversion Hmult. subst.
+  - rename H2 into He1ty.
+    rename H4 into He2ty.
+    rename H1 into He1mu.
+    rename H5 into He2mu.
     specialize (IHHval1 m1).
-    specialize (IHHval1 H1).
+    specialize (IHHval1 He1mu).
     specialize (IHHval1 intty).
+    specialize (IHHval1 He1ty).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 He2mu).
+    specialize (IHHval2 intty).
+    specialize (IHHval2 He2ty).
+    apply crossproduct_mult_preservation_nat_nat_bool;
+    assumption.
+  - specialize (IHHval1 m1).
     specialize (IHHval1 H2).
+    specialize (IHHval1 boolty).
+    specialize (IHHval1 H3).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 H7).
+    specialize (IHHval2 intty).
+    specialize (IHHval2 H5).
+    specialize (IHHval3 m3).
+    specialize (IHHval3 H8).
+    specialize (IHHval3 intty).
+    specialize (IHHval3 H6).
+    apply crossproduct_mult_preservation_bool_nat_nat_nat;
+    assumption.
+  - specialize (IHHval1 m1).
+    specialize (IHHval1 H2).
+    specialize (IHHval1 boolty).
+    specialize (IHHval1 H3).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 H7).
+    specialize (IHHval2 boolty).
+    specialize (IHHval2 H5).
+    specialize (IHHval3 m3).
+    specialize (IHHval3 H8).
+    specialize (IHHval3 boolty).
+    specialize (IHHval3 H6).
+    apply crossproduct_mult_preservation_bool_bool_bool_bool;
+    assumption.
+  - specialize (IHHval1 m1).
+    specialize (IHHval1 H2).
+    specialize (IHHval1 intty).
+    specialize (IHHval1 H1).
     specialize (IHHval2 m2).
     specialize (IHHval2 H5).
     specialize (IHHval2 intty).
-    specialize (IHHval2 H4).
-    apply crossproduct_mult_preservation_nat_nat_bool;
+    specialize (IHHval2 H3).
+    apply concat_mult_preservation_nat;
     assumption.
-  - inversion Htype.
-    + subst.
-      inversion Hmult. subst.
-      specialize (IHHval1 m1).
-      specialize (IHHval1 H2).
-      specialize (IHHval1 boolty).
-      specialize (IHHval1 H3).
-      specialize (IHHval2 m2).
-      specialize (IHHval2 H7).
-      specialize (IHHval2 intty).
-      specialize (IHHval2 H5).
-      specialize (IHHval3 m3).
-      specialize (IHHval3 H8).
-      specialize (IHHval3 intty).
-      specialize (IHHval3 H6).
-      apply crossproduct_mult_preservation_bool_nat_nat_nat;
-      assumption.
-    + subst.
-      apply type_preservation with (v:=intv v2s) in H5 ; try assumption.
-      inversion H5.
-  - inversion Htype.
-    + subst.
-      apply type_preservation with (v:=boolv v2s) in H5 ; try assumption.
-      inversion H5.
-    + subst.
-      inversion Hmult. subst.
-      specialize (IHHval1 m1).
-      specialize (IHHval1 H2).
-      specialize (IHHval1 boolty).
-      specialize (IHHval1 H3).
-      specialize (IHHval2 m2).
-      specialize (IHHval2 H7).
-      specialize (IHHval2 boolty).
-      specialize (IHHval2 H5).
-      specialize (IHHval3 m3).
-      specialize (IHHval3 H8).
-      specialize (IHHval3 boolty).
-      specialize (IHHval3 H6).
-      apply crossproduct_mult_preservation_bool_bool_bool_bool;
-      assumption.
-  - inversion Htype.
-    + subst.
-      inversion Hmult. subst.
-      specialize (IHHval1 m1).
-      specialize (IHHval1 H2).
-      specialize (IHHval1 intty).
-      specialize (IHHval1 H1).
-      specialize (IHHval2 m2).
-      specialize (IHHval2 H5).
-      specialize (IHHval2 intty).
-      specialize (IHHval2 H3).
-      apply concat_mult_preservation_nat;
-      assumption.
-    + subst.
-      apply type_preservation with (v:=intv v1s) in H1 ; try assumption.
-      inversion H1.
-  - inversion Htype.
-    + subst.
-      apply type_preservation with (v:=boolv v1s) in H1 ; try assumption.
-      inversion H1.
-    + subst.
-      inversion Hmult. subst.
-      specialize (IHHval1 m1).
-      specialize (IHHval1 H2).
-      specialize (IHHval1 boolty).
-      specialize (IHHval1 H1).
-      specialize (IHHval2 m2).
-      specialize (IHHval2 H5).
-      specialize (IHHval2 boolty).
-      specialize (IHHval2 H3).
-      apply concat_mult_preservation_bool;
-      assumption.
+  - specialize (IHHval1 m1).
+    specialize (IHHval1 H2).
+    specialize (IHHval1 boolty).
+    specialize (IHHval1 H1).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 H5).
+    specialize (IHHval2 boolty).
+    specialize (IHHval2 H3).
+    apply concat_mult_preservation_bool;
+    assumption.
 Qed.
 
