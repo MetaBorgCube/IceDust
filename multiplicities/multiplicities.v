@@ -189,79 +189,45 @@ Proof.
          rewrite IHevalR3 ; reflexivity ). (* if *)
   - intros.
     generalize dependent v.
-    induction e ;
-    try (intros ; inversion H ; constructor) (* literals *)
-    .
-    + intros.
-      simpl in H.
-      destruct (evalF e1) ; try congruence.
-      destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct v0 ; try congruence.
-      destruct v1 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_Plus with (v1s:=l) (v2s:=l0).
+    induction e.
+    (* literals *)
+    all: try (intros ; inversion H ; constructor).
+    (* binops + if *)
+    all: intros.
+    all: simpl in H.
+    all: destruct (evalF e1); try congruence.
+    all: destruct (evalF e2); try(destruct v0; congruence).
+    all: try( (* for if *)
+         destruct (evalF e3); try(destruct v0; destruct v1; congruence)).
+    all: destruct v0 ; try congruence.
+    all: destruct v1 ; try congruence.
+    all: try(destruct v2 ; try congruence). (* for if *)
+    all: destruct v  ; try congruence.
+    all: inversion H.
+    + apply E_Plus with (v1s:=l) (v2s:=l0).
       apply IHe1. reflexivity.
       apply IHe2. reflexivity.
       reflexivity.
-    + intros.
-      simpl in H.
-      destruct (evalF e1) ; try congruence.
-      destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct v0 ; try congruence.
-      destruct v1 ; try congruence.
-      destruct v  ; try congruence.
-      inversion H.
-      apply E_Lt with (v1s:=l) (v2s:=l0).
+    + apply E_Lt with (v1s:=l) (v2s:=l0).
       apply IHe1. reflexivity.
       apply IHe2. reflexivity.
       reflexivity.
-    + (* if *)
-      intros.
-      simpl in H.
-      destruct (evalF e1) ; try congruence.
-      destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct (evalF e3) ; try (destruct v0 ; destruct v1 ; congruence).
-      destruct v0 ; try congruence.
-      destruct v1 ; try congruence.
-      * (* int *)
-        destruct v2 ; try congruence.
-        destruct v  ; try congruence.
-        inversion H.
-        apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-        apply IHe3. reflexivity.
-        reflexivity.
-      * (* bool *)
-        destruct v2 ; try congruence.
-        destruct v  ; try congruence.
-        inversion H.
-        apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-        apply IHe3. reflexivity.
-        reflexivity.
-    + (* concat *)
-      intros.
-      simpl in H.
-      destruct (evalF e1) ; try congruence.
-      destruct (evalF e2) ; try (destruct v0 ; congruence).
-      destruct v0.
-      * (* int *)
-        destruct v1 ; try congruence.
-        destruct v  ; try congruence.
-        inversion H.
-        apply E_Concat_Int with (v1s:=l) (v2s:=l0).
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-      * (* bool *)
-        destruct v1 ; try congruence.
-        destruct v  ; try congruence.
-        inversion H.
-        apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
+    + apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      apply IHe3. reflexivity.
+      reflexivity.
+    + apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+      apply IHe3. reflexivity.
+      reflexivity.
+    + apply E_Concat_Int with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
+    + apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
+      apply IHe1. reflexivity.
+      apply IHe2. reflexivity.
 Qed.
 
 Example evalF_1 :
@@ -986,4 +952,5 @@ Proof.
       apply concat_mult_preservation_bool;
       assumption.
 Qed.
+
 
