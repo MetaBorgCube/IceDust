@@ -367,70 +367,26 @@ Proof.
     try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
          reflexivity ); (* binops *)
     try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
-         rewrite IHtypeR3 ; reflexivity ). (* if *)  
+         rewrite IHtypeR3 ; reflexivity ). (* if *)
   - generalize dependent t.
-    induction e ;
-    try (intros ; inversion H ; constructor). (* literals *)
-    + intros.
-      simpl in H.
-      destruct (typeF e1) ; try congruence.
-      destruct (typeF e2) ; try (destruct t0 ; congruence).
-      destruct t0 ; try congruence.
-      destruct t1 ; try congruence.
-      destruct t  ; try congruence.
-      apply T_Plus.
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-    + intros.
-      simpl in H.
-      destruct (typeF e1) ; try congruence.
-      destruct (typeF e2) ; try (destruct t0 ; congruence).
-      destruct t0 ; try congruence.
-      destruct t1 ; try congruence.
-      destruct t  ; try congruence.
-      apply T_Lt.
-      apply IHe1. reflexivity.
-      apply IHe2. reflexivity.
-    + (* if *)
-      intros.
-      simpl in H.
-      destruct (typeF e1) ; try congruence.
-      destruct (typeF e2) ; try (destruct t0 ; congruence).
-      destruct (typeF e3) ; try (destruct t0 ; destruct t1 ; congruence).
-      destruct t0 ; try congruence.
-      destruct t1.
-      * (* int *)
-        destruct t2 ; try congruence.
-        destruct t  ; try congruence.
-        apply T_If_Int.
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-        apply IHe3. reflexivity.
-      * (* bool *)
-        destruct t2 ; try congruence.
-        destruct t  ; try congruence.
-        apply T_If_Bool.
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-        apply IHe3. reflexivity.
-    + (* concat *)
-      intros.
-      simpl in H.
-      destruct (typeF e1) ; try congruence.
-      destruct (typeF e2) ; try (destruct t0 ; congruence).
-      destruct t0.
-      * (* int *)
-        destruct t1 ; try congruence.
-        destruct t  ; try congruence.
-        apply T_Concat_Int.
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
-      * (* bool *)
-        destruct t1 ; try congruence.
-        destruct t  ; try congruence.
-        apply T_Concat_Bool.
-        apply IHe1. reflexivity.
-        apply IHe2. reflexivity.
+    induction e.
+    (* literals *)
+    all: try (intros ; inversion H ; constructor).
+    (* binops and if *)
+    all: intros.
+    all: simpl in H.
+    all: destruct (typeF e1); try congruence.
+    all: destruct (typeF e2); try(destruct t0; congruence).
+    all: try( (* for if *)
+         destruct (typeF e3); try(destruct t0; destruct t1; congruence)).
+    all: destruct t0 ; try congruence.
+    all: destruct t1 ; try congruence.
+    all: try(destruct t2 ; try congruence). (* for if *)
+    all: destruct t  ; try congruence.
+    all: constructor.
+    all: try(apply IHe1; reflexivity).
+    all: try(apply IHe2; reflexivity).
+    all: try(apply IHe3; reflexivity).
 Qed.
 
 Example typeR_1 :
@@ -952,5 +908,4 @@ Proof.
       apply concat_mult_preservation_bool;
       assumption.
 Qed.
-
 
