@@ -594,45 +594,51 @@ Definition valty (v : val) : type :=
   end.
 
 (***** valmu : val -> mult *****)
-Definition valmu (v : val) : mult :=
-  match v with
-  | intv  []        => zeroOrOne
-  | intv  (_ :: []) => one
-  | intv  (_ :: _ ) => oneOrMore
-  | boolv []        => zeroOrOne
-  | boolv (_ :: []) => one
-  | boolv (_ :: _ ) => oneOrMore
-  end.
-
-Inductive mult_containsR: mult -> mult -> Prop :=
-  | M_ZeroOrMore : forall m,
-      mult_containsR zeroOrMore m
-  | M_One : forall m,
-      mult_containsR m one
-  | M_Equal : forall m,
-      mult_containsR m m
+Inductive mult_containsR: mult -> val -> Prop :=
+  | M_ZeroOrMore : forall v,
+      mult_containsR zeroOrMore v
+  | M_One_Int : forall m v,
+      mult_containsR m (intv [v])
+  | M_One_Bool : forall m v,
+      mult_containsR m (boolv [v])
+  | M_ZeroOrOne_Int :
+      mult_containsR zeroOrOne (intv [])
+  | M_ZeroOrOne_Bool :
+      mult_containsR zeroOrOne (boolv [])
+  | M_OneOrMore_Int : forall v vs,
+      mult_containsR oneOrMore (intv (v::vs))
+  | M_OneOrMore_Bool : forall v vs,
+      mult_containsR oneOrMore (boolv (v::vs))
 .
 
-Definition mult_containsF (m1 : mult) (m2 : mult) : bool :=
-  match m1, m2 with
-  | zeroOrMore, _         => true
-  | _         , one       => true
-  | zeroOrOne , zeroOrOne => true
-  | oneOrMore , oneOrMore => true
-  | _         , _         => false
+Definition mult_containsF (m : mult) (v : val) : bool :=
+  match m, v with
+  | zeroOrMore, _             => true
+  | _         , intv  [v]     => true
+  | _         , boolv [v]     => true
+  | zeroOrOne , intv  []      => true
+  | zeroOrOne , boolv []      => true
+  | oneOrMore , intv  (v::vs) => true
+  | oneOrMore , boolv (v::vs) => true
+  | _         , _             => false
   end.
 
-Theorem mult_containsR_eq_mult_containsF : forall (m1 m2 : mult),
-  mult_containsR m1 m2 <-> mult_containsF m1 m2 = true.
+Theorem mult_containsR_eq_mult_containsF : forall m v,
+  mult_containsR m v <-> mult_containsF m v = true.
 Proof.
-  split.
-  - intros. induction H.
-    + simpl. reflexivity.
-    + simpl. destruct m ; simpl ; reflexivity.
-    + destruct m ; simpl ; reflexivity.
+  intros. split.
   - intros.
-    destruct m1 ; try inversion H ; destruct m2 ; try constructor ;
-    try congruence.
+    induction H;
+    try( simpl; reflexivity);
+    try( destruct m; simpl; reflexivity);
+    try( simpl ; destruct vs; reflexivity).
+  - generalize dependent v.
+    induction m;
+    intros;
+    (* destruct all possible cases *)
+    destruct v; destruct l; try destruct l;
+    (* all possible cases are either not possible, or a constructor *)
+    try inversion H; try congruence; try constructor.
 Qed.
 
 (***** type preservation *****)
@@ -763,11 +769,79 @@ Proof.
 Qed.
 
 (***** multiplicity preservation *****)
+Lemma crossproduct_mult_preservation_nat_nat_nat:
+  forall m1 m2 v1s v2s (f : nat * nat -> nat),
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_crossproduct m1 m2)
+    (intv (map f (list_crossproduct v1s v2s))).
+Proof.
+  intros;
+  destruct m1; destruct m2;
+  destruct v1s; try destruct v1s;
+  destruct v2s; try destruct v2s;
+  try inversion H;
+  try inversion H0;
+  try (subst; simpl; constructor).
+Qed.
+
+Lemma crossproduct_mult_preservation_nat_nat_bool:
+  forall m1 m2 v1s v2s (f : nat * nat -> bool),
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_crossproduct m1 m2)
+    (boolv (map f (list_crossproduct v1s v2s))).
+Proof.
+  intros;
+  destruct m1; destruct m2;
+  destruct v1s; try destruct v1s;
+  destruct v2s; try destruct v2s;
+  try inversion H;
+  try inversion H0;
+  try (subst; simpl; constructor).
+Qed.
+
+Lemma concat_mult_preservation_nat:
+  forall m1 m2 v1s v2s,
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_concat m1 m2)
+    (intv (v1s ++ v2s)).
+Proof.
+  intros;
+  destruct m1; destruct m2;
+  destruct v1s; try destruct v1s;
+  destruct v2s; try destruct v2s;
+  try inversion H;
+  try inversion H0;
+  try (subst; simpl; constructor).
+Qed.
+
+Lemma concat_mult_preservation_bool:
+  forall m1 m2 v1s v2s,
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (boolv v2s) ->
+  mult_containsR
+    (mult_concat m1 m2)
+    (boolv (v1s ++ v2s)).
+Proof.
+  intros;
+  destruct m1; destruct m2;
+  destruct v1s; try destruct v1s;
+  destruct v2s; try destruct v2s;
+  try inversion H;
+  try inversion H0;
+  try (subst; simpl; constructor).
+Qed.
+
 Theorem mult_preservation : forall (e : expr) t m v,
   e : t ->
   e ~ m ->
   e \\ v ->
-  mult_containsR m (valmu v).
+  mult_containsR m v.
 Proof.
   intros e t m v Htype Hmult Hval.
   generalize dependent t.
@@ -785,8 +859,116 @@ Proof.
     specialize (IHHval2 H5).
     specialize (IHHval2 intty).
     specialize (IHHval2 H4).
-
-(* TODO: continue here *)
-
+    apply crossproduct_mult_preservation_nat_nat_nat;
+    assumption.
+  - inversion Htype. subst.
+    inversion Hmult. subst.
+    specialize (IHHval1 m1).
+    specialize (IHHval1 H1).
+    specialize (IHHval1 intty).
+    specialize (IHHval1 H2).
+    specialize (IHHval2 m2).
+    specialize (IHHval2 H5).
+    specialize (IHHval2 intty).
+    specialize (IHHval2 H4).
+    apply crossproduct_mult_preservation_nat_nat_bool;
+    assumption.
+  - inversion Htype.
+    + subst.
+      inversion Hmult. subst.
+      specialize (IHHval1 m1).
+      specialize (IHHval1 H2).
+      specialize (IHHval1 boolty).
+      specialize (IHHval1 H3).
+      specialize (IHHval2 m2).
+      specialize (IHHval2 H7).
+      specialize (IHHval2 intty).
+      specialize (IHHval2 H5).
+      specialize (IHHval3 m3).
+      specialize (IHHval3 H8).
+      specialize (IHHval3 intty).
+      specialize (IHHval3 H6).
+      (* TODO: cross product for 3 things *)
+      admit.
+    + subst.
+      apply type_preservation with (v:=intv v2s) in H5 ; try assumption.
+      inversion H5.
+  - inversion Htype.
+    + subst.
+      apply type_preservation with (v:=boolv v2s) in H5 ; try assumption.
+      inversion H5.
+    + subst.
+      inversion Hmult. subst.
+      specialize (IHHval1 m1).
+      specialize (IHHval1 H2).
+      specialize (IHHval1 boolty).
+      specialize (IHHval1 H3).
+      specialize (IHHval2 m2).
+      specialize (IHHval2 H7).
+      specialize (IHHval2 boolty).
+      specialize (IHHval2 H5).
+      specialize (IHHval3 m3).
+      specialize (IHHval3 H8).
+      specialize (IHHval3 boolty).
+      specialize (IHHval3 H6).
+      (* TODO: cross product for 3 things *)
+      admit.
+  - inversion Htype.
+    + subst.
+      inversion Hmult. subst.
+      specialize (IHHval1 m1).
+      specialize (IHHval1 H2).
+      specialize (IHHval1 intty).
+      specialize (IHHval1 H1).
+      specialize (IHHval2 m2).
+      specialize (IHHval2 H5).
+      specialize (IHHval2 intty).
+      specialize (IHHval2 H3).
+      apply concat_mult_preservation_nat;
+      assumption.
+    + subst.
+      apply type_preservation with (v:=intv v1s) in H1 ; try assumption.
+      inversion H1.
+  - inversion Htype.
+    + subst.
+      apply type_preservation with (v:=boolv v1s) in H1 ; try assumption.
+      inversion H1.
+    + subst.
+      inversion Hmult. subst.
+      specialize (IHHval1 m1).
+      specialize (IHHval1 H2).
+      specialize (IHHval1 boolty).
+      specialize (IHHval1 H1).
+      specialize (IHHval2 m2).
+      specialize (IHHval2 H5).
+      specialize (IHHval2 boolty).
+      specialize (IHHval2 H3).
+      apply concat_mult_preservation_bool;
+      assumption.
 Abort.
+
+
+(* TODO: 4^3 * 3^3 = 1728 cases, takes too long *)
+Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
+  forall m1 m2 m3 v1s v2s v3s (f : bool * (nat * nat) -> nat),
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR m3 (intv v3s) ->
+  mult_containsR
+    (mult_crossproduct m1 (mult_crossproduct m2 m3))
+    (intv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
+Proof.
+  intros;
+  destruct m1; destruct m2; destruct m3;
+  destruct v1s; try destruct v1s;
+  destruct v2s; try destruct v2s;
+  destruct v3s; try destruct v3s;
+  try inversion H;
+  try inversion H0;
+  try inversion H1;
+  try (subst; simpl; constructor).
+Qed.
+
+
+
 
