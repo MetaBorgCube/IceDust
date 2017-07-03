@@ -210,15 +210,13 @@ Proof.
     all: destruct v  ; try congruence.
     all: inversion H.
 
-    (* manually apply constructors *)
-    1: apply E_Plus with (v1s:=l) (v2s:=l0).
-    4: apply E_Lt with (v1s:=l) (v2s:=l0).
-    7: apply E_If_Int with (v1s:=l) (v2s:=l0) (v3s:=l1).
-    11: apply E_If_Bool with (v1s:=l) (v2s:=l0) (v3s:=l1).
-    15: apply E_Concat_Int with (v1s:=l) (v2s:=l0).
-    17: apply E_Concat_Bool with (v1s:=l) (v2s:=l0).
+    (* apply constructors *)
+    all: econstructor.
 
+    (* equal computed values *)
     all: try reflexivity.
+
+    (* sub expressions *)
     all: try(apply IHe1 ; reflexivity).
     all: try(apply IHe2 ; reflexivity).
     all: try(apply IHe3 ; reflexivity).
@@ -557,6 +555,22 @@ Proof.
 Qed.
 
 (***** type preservation *****)
+Ltac applyinv H1 H2 := apply H1 in H2; inversion H2.
+
+Ltac find_applyinv1 :=
+  match goal with
+    H1: ?E1 : boolty -> valty (intv ?E2) = boolty,
+    H2: ?E1 : boolty
+    |- _ => applyinv H1 H2
+  end.
+
+Ltac find_applyinv2 :=
+  match goal with
+    H1: ?E1 : intty -> valty (boolv ?E2) = intty,
+    H2: ?E1 : intty
+    |- _ => applyinv H1 H2
+  end.
+
 Theorem type_preservation : forall (e : expr) t v,
   e : t ->
   e \\ v ->
@@ -568,10 +582,8 @@ Proof.
   all: simpl ; inversion Htype ; try ( reflexivity ).
   (* wrong types *)
   all: subst.
-  all: try(apply IHHval2 in H5).
-  all: try(inversion H5).
-  all: try(apply IHHval1 in H1).
-  all: try(inversion H1).
+  all: try(find_applyinv1).
+  all: try(find_applyinv2).
 Qed.
 
 (***** has type implies evaluates *****)
@@ -738,6 +750,48 @@ Proof.
   all : try inversion H1.
 Qed.
 
+Ltac rename_He1ty e1 :=
+  match goal with
+    H1 : e1 : ?E
+    |- _ => rename H1 into He1ty
+  end.
+Ltac rename_He2ty e2 :=
+  match goal with
+    H1 : e2 : ?E
+    |- _ => rename H1 into He2ty
+  end.
+Ltac rename_He3ty e3 :=
+  match goal with
+    H1 : e3 : ?E
+    |- _ => rename H1 into He3ty
+  end.
+Ltac rename_He1mu e1 :=
+  match goal with
+    H1 : e1 ~ ?E
+    |- _ => rename H1 into He1mu
+  end.
+Ltac rename_He2mu e2 :=
+  match goal with
+    H1 : e2 ~ ?E
+    |- _ => rename H1 into He2mu
+  end.
+Ltac rename_He3mu e3 :=
+  match goal with
+    H1 : e3 ~ ?E
+    |- _ => rename H1 into He3mu
+  end.
+
+Ltac specialize_int :=
+  match goal with
+    H : forall t : type, ?E : t -> mult_containsR ?M (intv ?V)
+    |- _ => specialize (H intty)
+  end.
+Ltac specialize_bool :=
+  match goal with
+    H : forall t : type, ?E : t -> mult_containsR ?M (boolv ?V)
+    |- _ => specialize (H boolty)
+  end.
+
 Theorem mult_preservation : forall (e : expr) t m v,
   e : t ->
   e ~ m ->
@@ -769,81 +823,34 @@ Proof.
     inversion H1.
   all: inversion Hmult.
   all: subst.
-  - rename H2 into He1ty.
-    rename H4 into He2ty.
-    rename H1 into He1mu.
-    rename H5 into He2mu.
-    specialize (IHHval1 m1).
-    specialize (IHHval1 He1mu).
-    specialize (IHHval1 intty).
-    specialize (IHHval1 He1ty).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 He2mu).
-    specialize (IHHval2 intty).
-    specialize (IHHval2 He2ty).
-    apply crossproduct_mult_preservation_nat_nat_nat;
+  all: rename_He1ty e1.
+  all: rename_He2ty e2.
+  all: try(rename_He3ty e3).
+  all: rename_He1mu e1.
+  all: rename_He2mu e2.
+  all: try(rename_He3mu e3).
+  all: specialize (IHHval1 m1).
+  all: specialize (IHHval1 He1mu).
+  all: specialize (IHHval2 m2).
+  all: specialize (IHHval2 He2mu).
+  all: try(specialize (IHHval3 m3)).
+  all: try(specialize (IHHval3 He3mu)).
+  all: repeat(specialize_int).
+  all: repeat(specialize_bool).
+  all: specialize (IHHval1 He1ty).
+  all: specialize (IHHval2 He2ty).
+  all: try(specialize (IHHval3 He3ty)).
+  - apply crossproduct_mult_preservation_nat_nat_nat;
     assumption.
-  - rename H2 into He1ty.
-    rename H4 into He2ty.
-    rename H1 into He1mu.
-    rename H5 into He2mu.
-    specialize (IHHval1 m1).
-    specialize (IHHval1 He1mu).
-    specialize (IHHval1 intty).
-    specialize (IHHval1 He1ty).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 He2mu).
-    specialize (IHHval2 intty).
-    specialize (IHHval2 He2ty).
-    apply crossproduct_mult_preservation_nat_nat_bool;
+  - apply crossproduct_mult_preservation_nat_nat_bool;
     assumption.
-  - specialize (IHHval1 m1).
-    specialize (IHHval1 H2).
-    specialize (IHHval1 boolty).
-    specialize (IHHval1 H3).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 H7).
-    specialize (IHHval2 intty).
-    specialize (IHHval2 H5).
-    specialize (IHHval3 m3).
-    specialize (IHHval3 H8).
-    specialize (IHHval3 intty).
-    specialize (IHHval3 H6).
-    apply crossproduct_mult_preservation_bool_nat_nat_nat;
+  - apply crossproduct_mult_preservation_bool_nat_nat_nat;
     assumption.
-  - specialize (IHHval1 m1).
-    specialize (IHHval1 H2).
-    specialize (IHHval1 boolty).
-    specialize (IHHval1 H3).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 H7).
-    specialize (IHHval2 boolty).
-    specialize (IHHval2 H5).
-    specialize (IHHval3 m3).
-    specialize (IHHval3 H8).
-    specialize (IHHval3 boolty).
-    specialize (IHHval3 H6).
-    apply crossproduct_mult_preservation_bool_bool_bool_bool;
+  - apply crossproduct_mult_preservation_bool_bool_bool_bool;
     assumption.
-  - specialize (IHHval1 m1).
-    specialize (IHHval1 H2).
-    specialize (IHHval1 intty).
-    specialize (IHHval1 H1).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 H5).
-    specialize (IHHval2 intty).
-    specialize (IHHval2 H3).
-    apply concat_mult_preservation_nat;
+  - apply concat_mult_preservation_nat;
     assumption.
-  - specialize (IHHval1 m1).
-    specialize (IHHval1 H2).
-    specialize (IHHval1 boolty).
-    specialize (IHHval1 H1).
-    specialize (IHHval2 m2).
-    specialize (IHHval2 H5).
-    specialize (IHHval2 boolty).
-    specialize (IHHval2 H3).
-    apply concat_mult_preservation_bool;
+  - apply concat_mult_preservation_bool;
     assumption.
 Qed.
 
