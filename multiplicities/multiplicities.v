@@ -50,24 +50,9 @@ Inductive val : Type :=
 
 
 (***** eval : expr -> val *****)
-Function andtuple (t : (bool*bool)) : bool :=
+Function funtuple {X Y : Type} (f: X -> X -> Y) (t:X*X) : Y :=
   match t with
-  | (b1, b2) => andb b1 b2
-  end.
-
-Function ortuple (t : (bool*bool)) : bool :=
-  match t with
-  | (b1, b2) => orb b1 b2
-  end.
-
-Function plustuple (t : (nat*nat)) : nat :=
-  match t with
-  | (n1, n2) => n1 + n2
-  end.
-
-Function lttuple (t : (nat*nat)) : bool :=
-  match t with
-  | (n1, n2) => n1 <? n2
+  | (v1, v2) => f v1 v2
   end.
 
 Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
@@ -97,25 +82,25 @@ Inductive evalR : expr -> val -> Prop :=
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       vtuples = list_crossproduct v1s v2s ->
-      EAnd e1 e2 \\ boolv (map andtuple vtuples)
+      EAnd e1 e2 \\ boolv (map (funtuple andb) vtuples)
 
   | E_Or : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       vtuples = list_crossproduct v1s v2s ->
-      EOr e1 e2 \\ boolv (map ortuple vtuples)
+      EOr e1 e2 \\ boolv (map (funtuple orb) vtuples)
 
   | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
       vtuples = list_crossproduct v1s v2s ->
-      EPlus e1 e2 \\ intv (map plustuple vtuples)
+      EPlus e1 e2 \\ intv (map (funtuple plus) vtuples)
 
   | E_Lt : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
       vtuples = list_crossproduct v1s v2s ->
-      ELt e1 e2 \\ boolv (map lttuple vtuples)
+      ELt e1 e2 \\ boolv (map (funtuple ltb) vtuples)
 
   | E_If_Int : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
       e1 \\ boolv v1s ->
@@ -169,7 +154,7 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (boolv v1s), Some (boolv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
-          let vs := map andtuple vtuples in
+          let vs := map (funtuple andb) vtuples in
           Some (boolv vs)
       | _,_ => None
       end
@@ -180,7 +165,7 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (boolv v1s), Some (boolv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
-          let vs := map ortuple vtuples in
+          let vs := map (funtuple orb) vtuples in
           Some (boolv vs)
       | _,_ => None
       end
@@ -191,7 +176,7 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
-          let vs := map plustuple vtuples in
+          let vs := map (funtuple plus) vtuples in
           Some (intv vs)
       | _,_ => None
       end
@@ -202,7 +187,7 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
-          let vs := map lttuple vtuples in
+          let vs := map (funtuple ltb) vtuples in
           Some (boolv vs)
       | _,_ => None
       end
