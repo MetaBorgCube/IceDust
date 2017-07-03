@@ -1040,23 +1040,26 @@ Proof.
   all: specialize (IHHval1 He1ty).
   all: try(specialize (IHHval2 He2ty)).
   all: try(specialize (IHHval3 He3ty)).
-  - apply map_mult_preservation_bool_bool;
-    assumption.
-  - apply crossproduct_mult_preservation_bool_bool_bool;
-    assumption.
-  - apply crossproduct_mult_preservation_bool_bool_bool;
-    assumption.
-  - apply crossproduct_mult_preservation_nat_nat_nat;
-    assumption.
-  - apply crossproduct_mult_preservation_nat_nat_bool;
-    assumption.
-  - apply crossproduct_mult_preservation_bool_nat_nat_nat;
-    assumption.
-  - apply crossproduct_mult_preservation_bool_bool_bool_bool;
-    assumption.
-  - apply concat_mult_preservation_nat;
-    assumption.
-  - apply concat_mult_preservation_bool;
-    assumption.
+  (* not *)
+  all: try(apply map_mult_preservation_bool_bool;
+           assumption).
+  (* and, or *)
+  all: try(apply crossproduct_mult_preservation_bool_bool_bool;
+           assumption).
+  (* plus, .. *)
+  all: try(apply crossproduct_mult_preservation_nat_nat_nat;
+           assumption).
+  (* lt, .. *)
+  all: try(apply crossproduct_mult_preservation_nat_nat_bool;
+           assumption).
+  (* if *)
+  all: try(apply crossproduct_mult_preservation_bool_nat_nat_nat;
+           assumption).
+  all: try(apply crossproduct_mult_preservation_bool_bool_bool_bool;
+           assumption).
+  (* concat *)
+  all: try(apply concat_mult_preservation_nat;
+           assumption).
+  all: try(apply concat_mult_preservation_bool;
+           assumption).
 Qed.
-
