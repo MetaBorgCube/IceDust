@@ -1224,7 +1224,9 @@ Proof.
   intros e t v Htype Hval.
   induction Hval.
   (* happy path *)
-  all: simpl ; inversion Htype ; try ( reflexivity ).
+  all: simpl.
+  all: inversion Htype.
+  all: try ( reflexivity ).
   (* wrong types *)
   all: subst.
   all: try(find_applyinv1).
