@@ -792,6 +792,25 @@ Ltac specialize_bool :=
     |- _ => specialize (H boolty)
   end.
 
+Ltac wrong_argument_types_1 :=
+  match goal with
+    H1 : ?E2 \\ intv ?V,
+    H2 : ?E2 : boolty
+    |- _ => 
+    apply type_preservation with (v:=intv V) in H2;
+    try assumption;
+    inversion H2
+  end.
+Ltac wrong_argument_types_2 :=
+  match goal with
+    H1 : ?E2 \\ boolv ?V,
+    H2 : ?E2 : intty
+    |- _ => 
+    apply type_preservation with (v:=boolv V) in H2;
+    try assumption;
+    inversion H2
+  end.
+
 Theorem mult_preservation : forall (e : expr) t m v,
   e : t ->
   e ~ m ->
@@ -809,18 +828,9 @@ Proof.
   all: inversion Htype.
   all: subst.
   (* get rid of wrong argument type cases *)
-  Focus 4.
-    apply type_preservation with (v:=intv v2s) in H5 ; try assumption.
-    inversion H5.
-  Focus 4.
-    apply type_preservation with (v:=boolv v2s) in H5 ; try assumption.
-    inversion H5.
-  Focus 6.
-    apply type_preservation with (v:=intv v1s) in H1 ; try assumption.
-    inversion H1.
-  Focus 6.
-    apply type_preservation with (v:=boolv v1s) in H1 ; try assumption.
-    inversion H1.
+  all: try wrong_argument_types_1.
+  all: try wrong_argument_types_2.
+  (* happy path *)
   all: inversion Hmult.
   all: subst.
   all: rename_He1ty e1.
