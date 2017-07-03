@@ -27,6 +27,8 @@ Inductive expr : Type :=
   | ETrue   : expr
   | EFalse  : expr
   | ENot    : expr -> expr
+  | EAnd    : expr -> expr -> expr
+  | EOr     : expr -> expr -> expr
   | EPlus   : expr -> expr -> expr
   | ELt     : expr -> expr -> expr
   | EIf     : expr -> expr -> expr -> expr
@@ -48,6 +50,16 @@ Inductive val : Type :=
 
 
 (***** eval : expr -> val *****)
+Function andtuple (t : (bool*bool)) : bool :=
+  match t with
+  | (b1, b2) => andb b1 b2
+  end.
+
+Function ortuple (t : (bool*bool)) : bool :=
+  match t with
+  | (b1, b2) => orb b1 b2
+  end.
+
 Function plustuple (t : (nat*nat)) : nat :=
   match t with
   | (n1, n2) => n1 + n2
@@ -80,6 +92,18 @@ Inductive evalR : expr -> val -> Prop :=
   | E_Not : forall (e1 : expr) v1s,
       e1 \\ boolv v1s ->
       ENot e1 \\ boolv (map negb v1s)
+
+  | E_And : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EAnd e1 e2 \\ boolv (map andtuple vtuples)
+
+  | E_Or : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EOr e1 e2 \\ boolv (map ortuple vtuples)
 
   | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
@@ -137,6 +161,28 @@ Fixpoint evalF (e : expr) : option val :=
           let vs := map negb v1s in
           Some (boolv vs)
       | _ => None
+      end
+
+  | EAnd e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (boolv v1s), Some (boolv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map andtuple vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | EOr e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (boolv v1s), Some (boolv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map ortuple vtuples in
+          Some (boolv vs)
+      | _,_ => None
       end
 
   | EPlus e1 e2 =>
@@ -288,6 +334,16 @@ Inductive typeR : expr -> type -> Prop :=
       e1 : boolty ->
       ENot e1 : boolty
 
+  | T_And : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EAnd e1 e2 : boolty
+
+  | T_Or : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EOr e1 e2 : boolty
+
   | T_Plus : forall (e1 e2 : expr),
       e1 : intty ->
       e2 : intty ->
@@ -339,6 +395,24 @@ Fixpoint typeF (e : expr) : option type :=
       | Some boolty =>
           Some boolty
       | _ => None
+      end
+
+  | EAnd e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | EOr e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
       end
 
   | EPlus e1 e2 =>
@@ -469,6 +543,16 @@ Inductive multR : expr -> mult -> Prop :=
       e1 ~ m1 ->
       ENot e1 ~ m1
 
+  | M_And : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EAnd e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Or : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EOr e1 e2 ~ mult_crossproduct m1 m2
+
   | M_Plus : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
@@ -506,6 +590,16 @@ Fixpoint multF (e : expr) : mult :=
   | ENot e1 =>
       let m1 := multF e1 in
       m1
+
+  | EAnd e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | EOr e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
 
   | EPlus e1 e2 =>
       let m1 := multF e1 in
@@ -739,6 +833,23 @@ Proof.
   all : try inversion H0.
 Qed.
 
+Lemma crossproduct_mult_preservation_bool_bool_bool:
+  forall m1 m2 v1s v2s (f : bool * bool -> bool),
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (boolv v2s) ->
+  mult_containsR
+    (mult_crossproduct m1 m2)
+    (boolv (map f (list_crossproduct v1s v2s))).
+Proof.
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+Qed.
+
 Lemma concat_mult_preservation_nat:
   forall m1 m2 v1s v2s,
   mult_containsR m1 (intv v1s) ->
@@ -930,6 +1041,10 @@ Proof.
   all: try(specialize (IHHval2 He2ty)).
   all: try(specialize (IHHval3 He3ty)).
   - apply map_mult_preservation_bool_bool;
+    assumption.
+  - apply crossproduct_mult_preservation_bool_bool_bool;
+    assumption.
+  - apply crossproduct_mult_preservation_bool_bool_bool;
     assumption.
   - apply crossproduct_mult_preservation_nat_nat_nat;
     assumption.
