@@ -26,6 +26,7 @@ Inductive expr : Type :=
   | EInt    : nat -> expr
   | ETrue   : expr
   | EFalse  : expr
+  | ENot    : expr -> expr
   | EPlus   : expr -> expr -> expr
   | ELt     : expr -> expr -> expr
   | EIf     : expr -> expr -> expr -> expr
@@ -76,6 +77,10 @@ Inductive evalR : expr -> val -> Prop :=
   | E_False :
       EFalse \\ boolv [false]
 
+  | E_Not : forall (e1 : expr) v1s,
+      e1 \\ boolv v1s ->
+      ENot e1 \\ boolv (map negb v1s)
+
   | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
@@ -124,6 +129,15 @@ Fixpoint evalF (e : expr) : option val :=
 
   | EFalse =>
       Some (boolv [false])
+
+  | ENot e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (boolv v1s) =>
+          let vs := map negb v1s in
+          Some (boolv vs)
+      | _ => None
+      end
 
   | EPlus e1 e2 =>
       let v1 := evalF e1 in
@@ -185,9 +199,13 @@ Proof.
     all: simpl.
     (* literals *)
     all: try reflexivity.
-    (* binops *)
+    (* unops *)
     all: subst.
-    all: rewrite IHevalR1 ; rewrite IHevalR2.
+    all: try (rewrite IHevalR).
+    all: try reflexivity.
+    (* binops *)
+    all: rewrite IHevalR1.
+    all: rewrite IHevalR2.
     all: try reflexivity.
     (* if *)
     all: rewrite IHevalR3.
@@ -197,15 +215,19 @@ Proof.
     induction e.
     (* literals *)
     all: try (intros ; inversion H ; constructor).
-    (* binops + if *)
+    (* ops *)
     all: intros.
     all: simpl in H.
+    (* unops *)
+    all: try rename e into e1.
     all: destruct (evalF e1); try congruence.
-    all: destruct (evalF e2); try(destruct v0; congruence).
-    all: try( (* for if *)
+    (* binops *)
+    all: try( destruct (evalF e2); try(destruct v0; congruence)).
+    (* if *)
+    all: try(
          destruct (evalF e3); try(destruct v0; destruct v1; congruence)).
     all: destruct v0 ; try congruence.
-    all: destruct v1 ; try congruence.
+    all: try(destruct v1 ; try congruence).
     all: try(destruct v2 ; try congruence). (* for if *)
     all: destruct v  ; try congruence.
     all: inversion H.
@@ -217,6 +239,7 @@ Proof.
     all: try reflexivity.
 
     (* sub expressions *)
+    all: try rename IHe into IHe1.
     all: try(apply IHe1 ; reflexivity).
     all: try(apply IHe2 ; reflexivity).
     all: try(apply IHe3 ; reflexivity).
@@ -260,6 +283,10 @@ Inductive typeR : expr -> type -> Prop :=
 
   | T_False :
       EFalse : boolty
+
+  | T_Not : forall (e1 : expr),
+      e1 : boolty ->
+      ENot e1 : boolty
 
   | T_Plus : forall (e1 e2 : expr),
       e1 : intty ->
@@ -305,6 +332,14 @@ Fixpoint typeF (e : expr) : option type :=
 
   | EFalse =>
       Some boolty
+
+  | ENot e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some boolty =>
+          Some boolty
+      | _ => None
+      end
 
   | EPlus e1 e2 =>
       let t1 := typeF e1 in
@@ -354,26 +389,39 @@ Theorem typeR_eq_typeF: forall e t,
 Proof.
   intros. split.
   - intros.
-    induction H ;
-    try (simpl ; reflexivity); (* literals *)
-    try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
-         reflexivity ); (* binops *)
-    try (simpl ; subst ; rewrite IHtypeR1 ; rewrite IHtypeR2 ;
-         rewrite IHtypeR3 ; reflexivity ). (* if *)
+    induction H.
+    (* literals *)
+    all: try(reflexivity).
+    (* unops *)
+    all: try rename IHtypeR into IHtypeR1.
+    all: simpl.
+    all: subst.
+    all: rewrite IHtypeR1.
+    all: try reflexivity.
+    (* binops *)
+    all: rewrite IHtypeR2.
+    all: try reflexivity.
+    (* if *)
+    all: rewrite IHtypeR3.
+    all: try reflexivity.
   - generalize dependent t.
     induction e.
     (* literals *)
     all: try (intros ; inversion H ; constructor).
-    (* binops and if *)
+    (* unops *)
     all: intros.
     all: simpl in H.
+    all: try rename IHe into IHe1.
+    all: try rename e into e1.
     all: destruct (typeF e1); try congruence.
-    all: destruct (typeF e2); try(destruct t0; congruence).
-    all: try( (* for if *)
+    (* binops *)
+    all: try(destruct (typeF e2); try(destruct t0; congruence)).
+    (* if *)
+    all: try(
          destruct (typeF e3); try(destruct t0; destruct t1; congruence)).
     all: destruct t0 ; try congruence.
-    all: destruct t1 ; try congruence.
-    all: try(destruct t2 ; try congruence). (* for if *)
+    all: try(destruct t1 ; try congruence).
+    all: try(destruct t2 ; try congruence).
     all: destruct t  ; try congruence.
     all: constructor.
     all: try(apply IHe1; reflexivity).
@@ -417,6 +465,10 @@ Inductive multR : expr -> mult -> Prop :=
   | M_False :
       EFalse ~ one
 
+  | M_Not : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      ENot e1 ~ m1
+
   | M_Plus : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
@@ -451,6 +503,10 @@ Fixpoint multF (e : expr) : mult :=
   | EFalse =>
       one
 
+  | ENot e1 =>
+      let m1 := multF e1 in
+      m1
+
   | EPlus e1 e2 =>
       let m1 := multF e1 in
       let m2 := multF e2 in
@@ -482,12 +538,16 @@ Proof.
     induction H ;
     try (simpl ; subst ; reflexivity).
   - generalize dependent m.
-    induction e ;
-    intros ; simpl in H ; subst ; constructor ;
-    try reflexivity ; (* literals *)
-    try (apply IHe1 ; reflexivity);
-    try (apply IHe2 ; reflexivity); (* binops *)
-    try (apply IHe3 ; reflexivity). (* if *)
+    induction e.
+    all: intros.
+    all: simpl in H.
+    all: subst.
+    all: constructor.
+    all: try rename IHe into IHe1.
+    all: try(apply IHe1).
+    all: try(apply IHe2).
+    all: try(apply IHe3).
+    all: reflexivity.
 Qed.
 
 Example multR_1 :
@@ -606,13 +666,16 @@ Proof.
   induction H.
   (* literals *)
   all: try(apply exists_some).
-  (* binops *)
+  (* unops *)
   all: simpl.
+  all: try rename IHtypeR into IHtypeR1.
   all: destruct IHtypeR1 as [v1 Hv1].
   all: rewrite Hv1.
   all: apply evalR_eq_evalF in Hv1.
   all: apply type_preservation with (v:=v1) in H ; try assumption.
   all: destruct v1 ; try inversion H.
+  all: try(apply exists_some).
+  (* binops *)
   all: destruct IHtypeR2 as [v2 Hv2].
   all: rewrite Hv2.
   all: apply evalR_eq_evalF in Hv2.
@@ -750,6 +813,20 @@ Proof.
   all : try inversion H1.
 Qed.
 
+Lemma map_mult_preservation_bool_bool:
+  forall m1 v1s (f : bool -> bool),
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR
+    m1
+    (boolv (map f v1s)).
+Proof.
+  intros.
+  destruct m1.
+  all : destruct v1s; try destruct v1s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+Qed.
+
 Ltac rename_He1ty e1 :=
   match goal with
     H1 : e1 : ?E
@@ -834,22 +911,26 @@ Proof.
   all: inversion Hmult.
   all: subst.
   all: rename_He1ty e1.
-  all: rename_He2ty e2.
+  all: try(rename_He2ty e2).
   all: try(rename_He3ty e3).
   all: rename_He1mu e1.
-  all: rename_He2mu e2.
+  all: try(rename_He2mu e2).
   all: try(rename_He3mu e3).
+  all: try rename m into m1.
+  all: try rename IHHval into IHHval1.
   all: specialize (IHHval1 m1).
   all: specialize (IHHval1 He1mu).
-  all: specialize (IHHval2 m2).
-  all: specialize (IHHval2 He2mu).
+  all: try(specialize (IHHval2 m2)).
+  all: try(specialize (IHHval2 He2mu)).
   all: try(specialize (IHHval3 m3)).
   all: try(specialize (IHHval3 He3mu)).
   all: repeat(specialize_int).
   all: repeat(specialize_bool).
   all: specialize (IHHval1 He1ty).
-  all: specialize (IHHval2 He2ty).
+  all: try(specialize (IHHval2 He2ty)).
   all: try(specialize (IHHval3 He3ty)).
+  - apply map_mult_preservation_bool_bool;
+    assumption.
   - apply crossproduct_mult_preservation_nat_nat_nat;
     assumption.
   - apply crossproduct_mult_preservation_nat_nat_bool;
