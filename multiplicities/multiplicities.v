@@ -86,13 +86,13 @@ Inductive evalR : expr -> val -> Prop :=
 
   | E_Or : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
-      e2 \\ boolv v2s ->
+      e2 \\ boolv v2s -> (* IceDust does not shortcut evaluation *)
       vtuples = list_crossproduct v1s v2s ->
       EOr e1 e2 \\ boolv (map (funtuple orb) vtuples)
 
   | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
-      e2 \\ intv v2s ->
+      e2 \\ intv v2s -> (* IceDust does not shortcut evaluation *)
       vtuples = list_crossproduct v1s v2s ->
       EPlus e1 e2 \\ intv (map (funtuple plus) vtuples)
 
