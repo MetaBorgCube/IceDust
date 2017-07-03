@@ -21,6 +21,16 @@ Fixpoint list_crossproduct {X Y : Type}
   | x :: tx => (list_pair_with2 x ly) ++ (list_crossproduct tx ly)
   end.
 
+Fixpoint fmap {A B:Type} (f:A -> option B) (l:list A) : list B :=
+  match l with
+    | nil => nil
+    | cons x t => 
+        match f x with
+        | None   =>      (fmap f t)
+        | Some y => y :: (fmap f t)
+        end
+  end.
+
 Function gtb  (n1 n2 : nat) : bool := negb (leb n1 n2).
 Function geb  (n1 n2 : nat) : bool := negb (ltb n1 n2).
 Function divo (n1 n2 : nat) : option nat :=
@@ -28,24 +38,12 @@ Function divo (n1 n2 : nat) : option nat :=
   | 0 => None
   | _ => Some (div n1 n2)
   end.
-Function modo (n1 n2 : nat) : option nat :=
+Function moduloo (n1 n2 : nat) : option nat :=
   match n2 with
   | 0 => None
   | _ => Some (modulo n1 n2)
   end.
 
-Check mul.
-Check sub.
-Check eqb.
-Check leb.
-Check div.
-Compute div 6 2.
-Compute div 1 3.
-Compute div 1 0.
-Check modulo.
-Compute modulo 6 2.
-Compute modulo 1 3.
-Compute modulo 1 0.
 Check min.
 Check max.
 
@@ -60,6 +58,8 @@ Inductive expr : Type :=
   | EPlus   : expr -> expr -> expr
   | EMinus  : expr -> expr -> expr
   | EMult   : expr -> expr -> expr
+  | EDiv    : expr -> expr -> expr
+  | EModulo : expr -> expr -> expr
   | ELt     : expr -> expr -> expr
   | ELte    : expr -> expr -> expr
   | EGt     : expr -> expr -> expr
@@ -140,6 +140,18 @@ Inductive evalR : expr -> val -> Prop :=
       e2 \\ intv v2s -> 
       vtuples = list_crossproduct v1s v2s ->
       EMult e1 e2 \\ intv (map (funtuple mul) vtuples)
+
+  | E_Div : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s -> 
+      vtuples = list_crossproduct v1s v2s ->
+      EDiv e1 e2 \\ intv (fmap (funtuple divo) vtuples)
+
+  | E_Modulo : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s -> 
+      vtuples = list_crossproduct v1s v2s ->
+      EModulo e1 e2 \\ intv (fmap (funtuple moduloo) vtuples)
 
   | E_Lt : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
@@ -262,6 +274,28 @@ Fixpoint evalF (e : expr) : option val :=
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
           let vs := map (funtuple mul) vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
+
+  | EDiv e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := fmap (funtuple divo) vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
+
+  | EModulo e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := fmap (funtuple moduloo) vtuples in
           Some (intv vs)
       | _,_ => None
       end
@@ -462,6 +496,16 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EMult e1 e2 : intty
 
+  | T_Div : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EDiv e1 e2 : intty
+
+  | T_Modulo : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EModulo e1 e2 : intty
+
   | T_Lt : forall (e1 e2 : expr),
       e1 : intty ->
       e2 : intty ->
@@ -562,6 +606,24 @@ Fixpoint typeF (e : expr) : option type :=
       end
 
   | EMult e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | _,_ => None
+      end
+
+  | EDiv e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | _,_ => None
+      end
+
+  | EModulo e1 e2 =>
       let t1 := typeF e1 in
       let t2 := typeF e2 in
       match t1, t2 with
@@ -699,6 +761,13 @@ Definition mult_concat (m1 : mult) (m2 : mult) : mult :=
   | _        , _         => zeroOrMore
   end.
 
+Definition mult_lower_zero (m1 : mult): mult :=
+  match m1 with
+  | one       => zeroOrOne
+  | oneOrMore => zeroOrMore
+  | m1        => m1
+  end.
+
 Reserved Notation "e '~' m"
                   (at level 50, left associativity).
 
@@ -740,6 +809,16 @@ Inductive multR : expr -> mult -> Prop :=
       e1 ~ m1 ->
       e2 ~ m2 ->
       EMult e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Div : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EDiv e1 e2 ~ mult_lower_zero (mult_crossproduct m1 m2)
+
+  | M_Modulo : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EModulo e1 e2 ~ mult_lower_zero (mult_crossproduct m1 m2)
 
   | M_Lt : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
@@ -813,6 +892,16 @@ Fixpoint multF (e : expr) : mult :=
       let m1 := multF e1 in
       let m2 := multF e2 in
       mult_crossproduct m1 m2
+
+  | EDiv e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_lower_zero (mult_crossproduct m1 m2)
+
+  | EModulo e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_lower_zero (mult_crossproduct m1 m2)
 
   | ELt e1 e2 =>
       let m1 := multF e1 in
@@ -1161,6 +1250,25 @@ Proof.
   all : try inversion H.
 Qed.
 
+Lemma crossproduct_mult_preservation_nat_nat_option_nat:
+  forall m1 m2 v1s v2s (f : nat * nat -> option nat),
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_lower_zero (mult_crossproduct m1 m2))
+    (intv (fmap f (list_crossproduct v1s v2s))).
+Proof.
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : destruct (f (n, n0)).
+  all : constructor.
+Qed.
+
 Ltac rename_He1ty e1 :=
   match goal with
     H1 : e1 : ?E
@@ -1271,6 +1379,9 @@ Proof.
            assumption).
   (* plus, .. *)
   all: try(apply crossproduct_mult_preservation_nat_nat_nat;
+           assumption).
+  (* div, modulo *)
+  all: try(apply crossproduct_mult_preservation_nat_nat_option_nat;
            assumption).
   (* lt, .. *)
   all: try(apply crossproduct_mult_preservation_nat_nat_bool;
