@@ -31,9 +31,12 @@ Fixpoint fmap {A B:Type} (f:A -> option B) (l:list A) : list B :=
         end
   end.
 
-Function gtb  (n1 n2 : nat) : bool := negb (leb n1 n2).
-Function geb  (n1 n2 : nat) : bool := negb (ltb n1 n2).
-Function divo (n1 n2 : nat) : option nat :=
+Function gtb  (n1 n2 : nat)  : bool := negb (leb n1 n2).
+Function geb  (n1 n2 : nat)  : bool := negb (ltb n1 n2).
+Function neqb (n1 n2 : nat)  : bool := negb (eqb n1 n2).
+Function beq  (b1 b2 : bool) : bool := (Coq.Bool.Bool.eqb b1 b2).
+Function bneq (b1 b2 : bool) : bool := negb (beq b1 b2).
+Function divo (n1 n2 : nat)  : option nat :=
   match n2 with
   | 0 => None
   | _ => Some (div n1 n2)
@@ -45,8 +48,6 @@ Function moduloo (n1 n2 : nat) : option nat :=
   end.
 
 (* TODO:
-- eq neq nat
-- eq neq bool
 - choice
 - min max avg sum
 - conj disj
@@ -73,6 +74,8 @@ Inductive expr : Type :=
   | EMult     : expr -> expr -> expr
   | EDiv      : expr -> expr -> expr
   | EModulo   : expr -> expr -> expr
+  | EEq       : expr -> expr -> expr
+  | ENeq      : expr -> expr -> expr
   | ELt       : expr -> expr -> expr
   | ELte      : expr -> expr -> expr
   | EGt       : expr -> expr -> expr
@@ -171,6 +174,30 @@ Inductive evalR : expr -> val -> Prop :=
       e2 \\ intv v2s -> 
       vtuples = list_crossproduct v1s v2s ->
       EModulo e1 e2 \\ intv (fmap (funtuple moduloo) vtuples)
+
+  | E_Eq_Int : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EEq e1 e2 \\ boolv (map (funtuple eqb) vtuples)
+
+  | E_Eq_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EEq e1 e2 \\ boolv (map (funtuple beq) vtuples)
+
+  | E_Neq_Int : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      ENeq e1 e2 \\ boolv (map (funtuple neqb) vtuples)
+
+  | E_Neq_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      ENeq e1 e2 \\ boolv (map (funtuple bneq) vtuples)
 
   | E_Lt : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
@@ -322,6 +349,36 @@ Fixpoint evalF (e : expr) : option val :=
           let vtuples := list_crossproduct v1s v2s in
           let vs := fmap (funtuple moduloo) vtuples in
           Some (intv vs)
+      | _,_ => None
+      end
+
+  | EEq e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple eqb) vtuples in
+          Some (boolv vs)
+      | Some (boolv v1s), Some (boolv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple beq) vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | ENeq e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple neqb) vtuples in
+          Some (boolv vs)
+      | Some (boolv v1s), Some (boolv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple bneq) vtuples in
+          Some (boolv vs)
       | _,_ => None
       end
 
@@ -537,6 +594,26 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EModulo e1 e2 : intty
 
+  | T_Eq_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EEq e1 e2 : boolty
+
+  | T_Eq_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EEq e1 e2 : boolty
+
+  | T_Neq_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      ENeq e1 e2 : boolty
+
+  | T_Neq_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      ENeq e1 e2 : boolty
+
   | T_Lt : forall (e1 e2 : expr),
       e1 : intty ->
       e2 : intty ->
@@ -669,6 +746,28 @@ Fixpoint typeF (e : expr) : option type :=
       | _,_ => None
       end
 
+  | EEq e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | ENeq e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
+      end
+
   | ELt e1 e2 =>
       let t1 := typeF e1 in
       let t2 := typeF e2 in
@@ -769,7 +868,9 @@ Proof.
     all: try(destruct t1 ; try congruence).
     all: try(destruct t2 ; try congruence).
     all: destruct t  ; try congruence.
-    all: constructor.
+    10: apply T_Eq_Bool. (* otherwise it applies the _Int variant *)
+    13: apply T_Neq_Bool.
+    all: try(constructor).
     all: try(apply IHe1; reflexivity).
     all: try(apply IHe2; reflexivity).
     all: try(apply IHe3; reflexivity).
@@ -863,6 +964,16 @@ Inductive multR : expr -> mult -> Prop :=
       e2 ~ m2 ->
       EModulo e1 e2 ~ mult_lower_zero (mult_crossproduct m1 m2)
 
+  | M_Eq : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EEq e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Neq : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      ENeq e1 e2 ~ mult_crossproduct m1 m2
+
   | M_Lt : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
@@ -951,6 +1062,16 @@ Fixpoint multF (e : expr) : mult :=
       let m1 := multF e1 in
       let m2 := multF e2 in
       mult_lower_zero (mult_crossproduct m1 m2)
+
+  | EEq e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | ENeq e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
 
   | ELt e1 e2 =>
       let m1 := multF e1 in
