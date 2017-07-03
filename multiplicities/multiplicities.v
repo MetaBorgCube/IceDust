@@ -47,8 +47,6 @@ Function moduloo (n1 n2 : nat) : option nat :=
 (* TODO:
 - eq neq nat
 - eq neq bool
-- null nat
-- null bool
 - choice
 - min max avg sum
 - conj disj
@@ -62,23 +60,25 @@ Check max.
 
 (***** signatures *****)
 Inductive expr : Type :=
-  | EInt    : nat -> expr
-  | ETrue   : expr
-  | EFalse  : expr
-  | ENot    : expr -> expr
-  | EAnd    : expr -> expr -> expr
-  | EOr     : expr -> expr -> expr
-  | EPlus   : expr -> expr -> expr
-  | EMinus  : expr -> expr -> expr
-  | EMult   : expr -> expr -> expr
-  | EDiv    : expr -> expr -> expr
-  | EModulo : expr -> expr -> expr
-  | ELt     : expr -> expr -> expr
-  | ELte    : expr -> expr -> expr
-  | EGt     : expr -> expr -> expr
-  | EGte    : expr -> expr -> expr
-  | EIf     : expr -> expr -> expr -> expr
-  | EConcat : expr -> expr -> expr.
+  | EInt      : nat -> expr
+  | ETrue     : expr
+  | EFalse    : expr
+  | ENullInt  : expr
+  | ENullBool : expr
+  | ENot      : expr -> expr
+  | EAnd      : expr -> expr -> expr
+  | EOr       : expr -> expr -> expr
+  | EPlus     : expr -> expr -> expr
+  | EMinus    : expr -> expr -> expr
+  | EMult     : expr -> expr -> expr
+  | EDiv      : expr -> expr -> expr
+  | EModulo   : expr -> expr -> expr
+  | ELt       : expr -> expr -> expr
+  | ELte      : expr -> expr -> expr
+  | EGt       : expr -> expr -> expr
+  | EGte      : expr -> expr -> expr
+  | EIf       : expr -> expr -> expr -> expr
+  | EConcat   : expr -> expr -> expr.
 
 Inductive type : Type :=
   | intty  : type
@@ -119,6 +119,12 @@ Inductive evalR : expr -> val -> Prop :=
 
   | E_False :
       EFalse \\ boolv [false]
+
+  | E_NullInt :
+      ENullInt \\ intv []
+
+  | E_NullBool :
+      ENullBool \\ boolv []
 
   | E_Not : forall (e1 : expr) v1s,
       e1 \\ boolv v1s ->
@@ -226,6 +232,12 @@ Fixpoint evalF (e : expr) : option val :=
 
   | EFalse =>
       Some (boolv [false])
+
+  | ENullInt =>
+      Some (intv [])
+
+  | ENullBool =>
+      Some (boolv [])
 
   | ENot e1 =>
       let v1 := evalF e1 in
@@ -480,6 +492,12 @@ Inductive typeR : expr -> type -> Prop :=
   | T_False :
       EFalse : boolty
 
+  | T_NullInt :
+      ENullInt : intty
+
+  | T_NullBool :
+      ENullBool : boolty
+
   | T_Not : forall (e1 : expr),
       e1 : boolty ->
       ENot e1 : boolty
@@ -572,6 +590,12 @@ Fixpoint typeF (e : expr) : option type :=
       Some boolty
 
   | EFalse =>
+      Some boolty
+
+  | ENullInt =>
+      Some intty
+
+  | ENullBool =>
       Some boolty
 
   | ENot e1 =>
@@ -794,6 +818,12 @@ Inductive multR : expr -> mult -> Prop :=
   | M_False :
       EFalse ~ one
 
+  | M_NullInt :
+      ENullInt ~ zeroOrOne
+
+  | M_NullBool :
+      ENullBool ~ zeroOrOne
+
   | M_Not : forall (e1 : expr) m1,
       e1 ~ m1 ->
       ENot e1 ~ m1
@@ -876,6 +906,12 @@ Fixpoint multF (e : expr) : mult :=
 
   | EFalse =>
       one
+
+  | ENullInt =>
+      zeroOrOne
+
+  | ENullBool =>
+      zeroOrOne
 
   | ENot e1 =>
       let m1 := multF e1 in
@@ -1354,7 +1390,7 @@ Proof.
   generalize dependent m.
   induction Hval.
   all: intros.
-  (* literals *)
+  (* literals of mult one *)
   all: try(simpl; constructor).
   (* binops and if *)
   all: inversion Htype.
@@ -1365,6 +1401,7 @@ Proof.
   (* happy path *)
   all: inversion Hmult.
   all: subst.
+  all: try constructor.
   all: rename_He1ty e1.
   all: try(rename_He2ty e2).
   all: try(rename_He3ty e3).
