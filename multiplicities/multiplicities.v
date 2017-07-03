@@ -21,6 +21,34 @@ Fixpoint list_crossproduct {X Y : Type}
   | x :: tx => (list_pair_with2 x ly) ++ (list_crossproduct tx ly)
   end.
 
+Function gtb  (n1 n2 : nat) : bool := negb (leb n1 n2).
+Function geb  (n1 n2 : nat) : bool := negb (ltb n1 n2).
+Function divo (n1 n2 : nat) : option nat :=
+  match n2 with
+  | 0 => None
+  | _ => Some (div n1 n2)
+  end.
+Function modo (n1 n2 : nat) : option nat :=
+  match n2 with
+  | 0 => None
+  | _ => Some (modulo n1 n2)
+  end.
+
+Check mul.
+Check sub.
+Check eqb.
+Check leb.
+Check div.
+Compute div 6 2.
+Compute div 1 3.
+Compute div 1 0.
+Check modulo.
+Compute modulo 6 2.
+Compute modulo 1 3.
+Compute modulo 1 0.
+Check min.
+Check max.
+
 (***** signatures *****)
 Inductive expr : Type :=
   | EInt    : nat -> expr
@@ -30,7 +58,12 @@ Inductive expr : Type :=
   | EAnd    : expr -> expr -> expr
   | EOr     : expr -> expr -> expr
   | EPlus   : expr -> expr -> expr
+  | EMinus  : expr -> expr -> expr
+  | EMult   : expr -> expr -> expr
   | ELt     : expr -> expr -> expr
+  | ELte    : expr -> expr -> expr
+  | EGt     : expr -> expr -> expr
+  | EGte    : expr -> expr -> expr
   | EIf     : expr -> expr -> expr -> expr
   | EConcat : expr -> expr -> expr.
 
@@ -80,7 +113,7 @@ Inductive evalR : expr -> val -> Prop :=
 
   | E_And : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
-      e2 \\ boolv v2s ->
+      e2 \\ boolv v2s -> (* IceDust does not shortcut evaluation *)
       vtuples = list_crossproduct v1s v2s ->
       EAnd e1 e2 \\ boolv (map (funtuple andb) vtuples)
 
@@ -92,15 +125,45 @@ Inductive evalR : expr -> val -> Prop :=
 
   | E_Plus : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
-      e2 \\ intv v2s -> (* IceDust does not shortcut evaluation *)
+      e2 \\ intv v2s -> 
       vtuples = list_crossproduct v1s v2s ->
       EPlus e1 e2 \\ intv (map (funtuple plus) vtuples)
+
+  | E_Minus : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s -> 
+      vtuples = list_crossproduct v1s v2s ->
+      EMinus e1 e2 \\ intv (map (funtuple sub) vtuples)
+
+  | E_Mult : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s -> 
+      vtuples = list_crossproduct v1s v2s ->
+      EMult e1 e2 \\ intv (map (funtuple mul) vtuples)
 
   | E_Lt : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
       vtuples = list_crossproduct v1s v2s ->
       ELt e1 e2 \\ boolv (map (funtuple ltb) vtuples)
+
+  | E_Lte : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      ELte e1 e2 \\ boolv (map (funtuple leb) vtuples)
+
+  | E_Gt : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EGt e1 e2 \\ boolv (map (funtuple gtb) vtuples)
+
+  | E_Gte : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_crossproduct v1s v2s ->
+      EGte e1 e2 \\ boolv (map (funtuple geb) vtuples)
 
   | E_If_Int : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
       e1 \\ boolv v1s ->
@@ -181,6 +244,28 @@ Fixpoint evalF (e : expr) : option val :=
       | _,_ => None
       end
 
+  | EMinus e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple sub) vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
+
+  | EMult e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple mul) vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
+
   | ELt e1 e2 =>
       let v1 := evalF e1 in
       let v2 := evalF e2 in
@@ -188,6 +273,39 @@ Fixpoint evalF (e : expr) : option val :=
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_crossproduct v1s v2s in
           let vs := map (funtuple ltb) vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | ELte e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple leb) vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | EGt e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple gtb) vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | EGte e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_crossproduct v1s v2s in
+          let vs := map (funtuple geb) vtuples in
           Some (boolv vs)
       | _,_ => None
       end
@@ -334,10 +452,35 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EPlus e1 e2 : intty
 
+  | T_Minus : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EMinus e1 e2 : intty
+
+  | T_Mult : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EMult e1 e2 : intty
+
   | T_Lt : forall (e1 e2 : expr),
       e1 : intty ->
       e2 : intty ->
       ELt e1 e2 : boolty
+
+  | T_Lte : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      ELte e1 e2 : boolty
+
+  | T_Gt : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EGt e1 e2 : boolty
+
+  | T_Gte : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EGte e1 e2 : boolty
 
   | T_If_Int : forall (e1 e2 e3 : expr),
       e1 : boolty ->
@@ -409,7 +552,52 @@ Fixpoint typeF (e : expr) : option type :=
       | _,_ => None
       end
 
+  | EMinus e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | _,_ => None
+      end
+
+  | EMult e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | _,_ => None
+      end
+
   | ELt e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | ELte e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | EGt e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | EGte e1 e2 =>
       let t1 := typeF e1 in
       let t2 := typeF e2 in
       match t1, t2 with
@@ -543,10 +731,35 @@ Inductive multR : expr -> mult -> Prop :=
       e2 ~ m2 ->
       EPlus e1 e2 ~ mult_crossproduct m1 m2
 
+  | M_Minus : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EMinus e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Mult : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EMult e1 e2 ~ mult_crossproduct m1 m2
+
   | M_Lt : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
       ELt e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Lte : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      ELte e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Gt : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EGt e1 e2 ~ mult_crossproduct m1 m2
+
+  | M_Gte : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EGte e1 e2 ~ mult_crossproduct m1 m2
 
   | M_If : forall (e1 e2 e3 : expr) m1 m2 m3,
       e1 ~ m1 ->
@@ -591,7 +804,32 @@ Fixpoint multF (e : expr) : mult :=
       let m2 := multF e2 in
       mult_crossproduct m1 m2
 
+  | EMinus e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | EMult e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
   | ELt e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | ELte e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | EGt e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_crossproduct m1 m2
+
+  | EGte e1 e2 =>
       let m1 := multF e1 in
       let m2 := multF e2 in
       mult_crossproduct m1 m2
