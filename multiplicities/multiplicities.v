@@ -44,6 +44,19 @@ Function moduloo (n1 n2 : nat) : option nat :=
   | _ => Some (modulo n1 n2)
   end.
 
+(* TODO:
+- eq neq nat
+- eq neq bool
+- null nat
+- null bool
+- choice
+- min max avg sum
+- conj disj
+- count
+(- first
+- order by, filter, find
+- indexOf, elemAt)
+*)
 Check min.
 Check max.
 
