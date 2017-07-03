@@ -829,6 +829,16 @@ Fixpoint typeF (e : expr) : option type :=
 
   end.
 
+(* constructor applies the _Int variant,
+   as it cannot see which one to pick *)
+Ltac force_try_bool_constr :=
+  match goal with
+  IHe1 : forall t : type, Some boolty = Some t -> ?E : t
+  |- _ =>
+  try(apply T_Eq_Bool);
+  try(apply T_Neq_Bool)
+  end.
+
 Theorem typeR_eq_typeF: forall e t,
   e : t <-> typeF e = Some t.
 Proof.
@@ -868,8 +878,7 @@ Proof.
     all: try(destruct t1 ; try congruence).
     all: try(destruct t2 ; try congruence).
     all: destruct t  ; try congruence.
-    10: apply T_Eq_Bool. (* otherwise it applies the _Int variant *)
-    13: apply T_Neq_Bool.
+    all: try force_try_bool_constr. (* constructor applies the _Int *)
     all: try(constructor).
     all: try(apply IHe1; reflexivity).
     all: try(apply IHe2; reflexivity).
