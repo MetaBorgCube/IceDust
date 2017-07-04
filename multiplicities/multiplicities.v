@@ -31,6 +31,18 @@ Fixpoint fmap {A B:Type} (f:A -> option B) (l:list A) : list B :=
         end
   end.
 
+Fixpoint foldo {A:Type} (f:A->A->A) (l:list A) : option A :=
+  match l with
+  | []     => None
+  | h :: t => Some(fold_left f t h)
+  end.
+
+Function to_list {X:Type} (v : option X) : list X :=
+  match v with
+  | None => []
+  | Some x => [x]
+  end.
+
 Function gtb  (n1 n2 : nat)  : bool := negb (leb n1 n2).
 Function geb  (n1 n2 : nat)  : bool := negb (ltb n1 n2).
 Function neqb (n1 n2 : nat)  : bool := negb (eqb n1 n2).
@@ -51,10 +63,18 @@ Function choice {X:Type} (l1 l2 : list X) : list X :=
   | h :: t => l1
   | []     => l2
   end.
+Function maxo(l : list nat) : option nat := foldo max l.
+Function mino(l : list nat) : option nat := foldo min l.
+Function sum (l : list nat) : nat        := fold_left plus l 0.
+Function avgo(l : list nat) : option nat :=
+  match (length l) with
+  | 0 => None
+  | n => Some((sum l) / n)
+  end.
+Function conj(l : list bool) : bool := fold_left andb l true.
+Function disj(l : list bool) : bool := fold_left orb  l false.
 
 (* TODO:
-- min max avg sum
-- conj disj
 (- first
 - order by, filter, find
 - indexOf, elemAt)
@@ -70,6 +90,12 @@ Inductive expr : Type :=
   | ENullInt  : expr
   | ENullBool : expr
   | ENot      : expr -> expr
+  | EMax      : expr -> expr
+  | EMin      : expr -> expr
+  | ESum      : expr -> expr
+  | EAvg      : expr -> expr
+  | EConj     : expr -> expr
+  | EDisj     : expr -> expr
   | ECount    : expr -> expr
   | EAnd      : expr -> expr -> expr
   | EOr       : expr -> expr -> expr
@@ -115,6 +141,8 @@ Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
   | (false, (_ , v3)) => v3
   end.
 
+Search option.
+
 Reserved Notation "e '\\' v"
                   (at level 50, left associativity).
 
@@ -137,6 +165,30 @@ Inductive evalR : expr -> val -> Prop :=
   | E_Not : forall (e1 : expr) v1s,
       e1 \\ boolv v1s ->
       ENot e1 \\ boolv (map negb v1s)
+
+  | E_Max : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      EMax e1 \\ intv (to_list (maxo v1s))
+
+  | E_Min : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      EMin e1 \\ intv (to_list (mino v1s))
+
+  | E_Sum : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      ESum e1 \\ intv [sum v1s]
+
+  | E_Avg : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      EAvg e1 \\ intv (to_list (avgo v1s))
+
+  | E_Conj : forall (e1 : expr) v1s,
+      e1 \\ boolv v1s ->
+      EConj e1 \\ boolv [conj v1s]
+
+  | E_Disj : forall (e1 : expr) v1s,
+      e1 \\ boolv v1s ->
+      EDisj e1 \\ boolv [disj v1s]
 
   | E_Count_Int : forall (e1 : expr) v1s,
       e1 \\ intv v1s ->
@@ -295,6 +347,54 @@ Fixpoint evalF (e : expr) : option val :=
       | Some (boolv v1s) =>
           let vs := map negb v1s in
           Some (boolv vs)
+      | _ => None
+      end
+
+  | EMax e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (intv v1s) =>
+          Some (intv (to_list (maxo v1s)))
+      | _ => None
+      end
+
+  | EMin e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (intv v1s) =>
+          Some (intv (to_list (mino v1s)))
+      | _ => None
+      end
+
+  | ESum e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (intv v1s) =>
+          Some (intv [sum v1s])
+      | _ => None
+      end
+
+  | EAvg e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (intv v1s) =>
+          Some (intv (to_list (avgo v1s)))
+      | _ => None
+      end
+
+  | EConj e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (boolv v1s) =>
+          Some (boolv [conj v1s])
+      | _ => None
+      end
+
+  | EDisj e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (boolv v1s) =>
+          Some (boolv [disj v1s])
       | _ => None
       end
 
@@ -603,6 +703,30 @@ Inductive typeR : expr -> type -> Prop :=
       e1 : boolty ->
       ENot e1 : boolty
 
+  | T_Max : forall (e1 : expr),
+      e1 : intty ->
+      EMax e1 : intty
+
+  | T_Min : forall (e1 : expr),
+      e1 : intty ->
+      EMin e1 : intty
+
+  | T_Sum : forall (e1 : expr),
+      e1 : intty ->
+      ESum e1 : intty
+
+  | T_Avg : forall (e1 : expr),
+      e1 : intty ->
+      EAvg e1 : intty
+
+  | T_Conj : forall (e1 : expr),
+      e1 : boolty ->
+      EConj e1 : boolty
+
+  | T_Disj : forall (e1 : expr),
+      e1 : boolty ->
+      EDisj e1 : boolty
+
   | T_Count_Int : forall (e1 : expr),
       e1 : intty ->
       ECount e1 : intty
@@ -738,6 +862,54 @@ Fixpoint typeF (e : expr) : option type :=
       Some boolty
 
   | ENot e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some boolty =>
+          Some boolty
+      | _ => None
+      end
+
+  | EMax e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some intty =>
+          Some intty
+      | _ => None
+      end
+
+  | EMin e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some intty =>
+          Some intty
+      | _ => None
+      end
+
+  | ESum e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some intty =>
+          Some intty
+      | _ => None
+      end
+
+  | EAvg e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some intty =>
+          Some intty
+      | _ => None
+      end
+
+  | EConj e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some boolty =>
+          Some boolty
+      | _ => None
+      end
+
+  | EDisj e1 =>
       let t1 := typeF e1 in
       match t1 with
       | Some boolty =>
@@ -1009,6 +1181,13 @@ Definition mult_lower_zero (m1 : mult): mult :=
   | m1        => m1
   end.
 
+Definition mult_upper_one (m1 : mult): mult :=
+  match m1 with
+  | zeroOrMore => zeroOrOne
+  | oneOrMore  => one
+  | m1         => m1
+  end.
+
 Reserved Notation "e '~' m"
                   (at level 50, left associativity).
 
@@ -1031,6 +1210,30 @@ Inductive multR : expr -> mult -> Prop :=
   | M_Not : forall (e1 : expr) m1,
       e1 ~ m1 ->
       ENot e1 ~ m1
+
+  | M_Max : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EMax e1 ~ mult_upper_one m1
+
+  | M_Min : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EMin e1 ~ mult_upper_one m1
+
+  | M_Sum : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      ESum e1 ~ one
+
+  | M_Avg : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EAvg e1 ~ mult_upper_one m1
+
+  | M_Conj : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EConj e1 ~ one
+
+  | M_Disj : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EDisj e1 ~ one
 
   | M_Count : forall (e1 : expr) m1,
       e1 ~ m1 ->
@@ -1139,6 +1342,30 @@ Fixpoint multF (e : expr) : mult :=
   | ENot e1 =>
       let m1 := multF e1 in
       m1
+
+  | EMax e1 =>
+      let m1 := multF e1 in
+      mult_upper_one m1
+
+  | EMin e1 =>
+      let m1 := multF e1 in
+      mult_upper_one m1
+
+  | ESum e1 =>
+      let m1 := multF e1 in
+      one
+
+  | EAvg e1 =>
+      let m1 := multF e1 in
+      mult_upper_one m1
+
+  | EConj e1 =>
+      let m1 := multF e1 in
+      one
+
+  | EDisj e1 =>
+      let m1 := multF e1 in
+      one
 
   | ECount e1 =>
       let m1 := multF e1 in
@@ -1596,6 +1823,34 @@ Proof.
   all : constructor.
 Qed.
 
+Lemma foldo_mult_preservation_nat_nat_nat:
+  forall m1 v1s (f : nat -> nat -> nat),
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR
+    (mult_upper_one m1)
+    (intv (to_list (foldo f v1s))).
+Proof.
+  intros.
+  destruct m1.
+  all : destruct v1s; try destruct v1s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+Qed.
+
+Lemma avgo_mult_preservation:
+  forall m1 v1s,
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR
+    (mult_upper_one m1)
+    (intv (to_list (avgo v1s))).
+Proof.
+  intros.
+  destruct m1.
+  all : destruct v1s; try destruct v1s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+Qed.
+
 Ltac rename_He1ty e1 :=
   match goal with
     H1 : e1 : ?E
@@ -1728,5 +1983,11 @@ Proof.
   all: try(apply choice_mult_preservation_nat;
            assumption).
   all: try(apply choice_mult_preservation_bool;
+           assumption).
+  (* max, min *)
+  all: try(apply foldo_mult_preservation_nat_nat_nat;
+           assumption).
+  (* avg *)
+  all: try(apply avgo_mult_preservation;
            assumption).
 Qed.
