@@ -12,13 +12,13 @@ Portion of the IceDust language:
   - objects (no store)
 
 TODO:
-- first
-- indexOf, elemAt
+- indexOf
 *)
 
 Require Import List.
 Import ListNotations.
 Require Import Coq.Init.Nat.
+Require Import Coq.Structures.Equalities.
 
 Fixpoint list_pair_with {X Y : Type} (lx : list X) (y : Y) : list (X*Y) :=
   match lx with
@@ -92,6 +92,22 @@ Function avgo(l : list nat) : option nat :=
 Function conj(l : list bool) : bool := fold_left andb l true.
 Function disj(l : list bool) : bool := fold_left orb  l false.
 
+(*
+Fixpoint indexOf {X:HasEqb} (l : list X) (x : X) : option nat :=
+  match l with
+  | []     => None
+  | h :: _ =>
+      match X.eqb x h with
+      | true  => Some 0
+      | false =>
+          match indexOf t x with
+          | None   => None
+          | Some i => Some (i+1)
+          end
+      end
+  end.
+*)
+
 (***** signatures *****)
 Inductive expr : Type :=
   | EInt      : nat -> expr
@@ -122,7 +138,10 @@ Inductive expr : Type :=
   | EGte      : expr -> expr -> expr
   | EIf       : expr -> expr -> expr -> expr
   | EConcat   : expr -> expr -> expr
-  | EChoice   : expr -> expr -> expr.
+  | EChoice   : expr -> expr -> expr
+  | EFirst    : expr -> expr
+  | EElemAt   : expr -> expr -> expr
+  | EIndexOf  : expr -> expr -> expr.
 
 Inductive type : Type :=
   | intty  : type
@@ -140,7 +159,7 @@ Inductive val : Type :=
 
 
 (***** eval : expr -> val *****)
-Function funtuple {X Y : Type} (f: X -> X -> Y) (t:X*X) : Y :=
+Function funtuple {X Y Z : Type} (f: X -> Y -> Z) (t:X*Y) : Z :=
   match t with
   | (v1, v2) => f v1 v2
   end.
@@ -151,7 +170,7 @@ Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
   | (false, (_ , v3)) => v3
   end.
 
-Search option.
+Check fmap (funtuple (@nth_error nat)).
 
 Reserved Notation "e '\\' v"
                   (at level 50, left associativity).
@@ -331,6 +350,26 @@ Inductive evalR : expr -> val -> Prop :=
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       EChoice e1 e2 \\ boolv (choice v1s v2s)
+
+  | E_First_Int : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      EFirst e1 \\ intv (to_list (hd_error v1s))
+
+  | E_First_Bool : forall (e1 : expr) v1s,
+      e1 \\ boolv v1s ->
+      EFirst e1 \\ boolv (to_list (hd_error v1s))
+
+  | E_ElemAt_Int : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_pair_with2 v1s v2s ->
+      EElemAt e1 e2 \\ intv (fmap (funtuple (@nth_error nat)) vtuples)
+
+  | E_ElemAt_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_pair_with2 v1s v2s ->
+      EElemAt e1 e2 \\ boolv (fmap (funtuple (@nth_error bool)) vtuples)
 
 where "e '\\' v" := (evalR e v) : type_scope.
 
@@ -607,6 +646,33 @@ Fixpoint evalF (e : expr) : option val :=
       | _,_ => None
       end
 
+  | EFirst e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (intv v1s) =>
+          Some (intv (to_list (hd_error v1s)))
+      | Some (boolv v1s) =>
+          Some (boolv (to_list (hd_error v1s)))
+      | _ => None
+      end
+
+  | EElemAt e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_pair_with2 v1s v2s in
+          let vs := fmap (funtuple (@nth_error nat)) vtuples in
+          Some (intv vs)
+      | Some (boolv v1s), Some (intv v2s) =>
+          let vtuples := list_pair_with2 v1s v2s in
+          let vs := fmap (funtuple (@nth_error bool)) vtuples in
+          Some (boolv vs)
+      | _,_ => None
+      end
+
+  | EIndexOf e1 e2 => None
+
   end.
 
 Theorem evalR_eq_evalF: forall e v,
@@ -852,6 +918,24 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : boolty ->
       EChoice e1 e2 : boolty
 
+  | T_First_Int : forall (e1 : expr),
+      e1 : intty ->
+      EFirst e1 : intty
+
+  | T_First_Bool : forall (e1 : expr),
+      e1 : boolty ->
+      EFirst e1 : boolty
+
+  | T_ElemAt_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EElemAt e1 e2 : intty
+
+  | T_ElemAt_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : intty ->
+      EElemAt e1 e2 : boolty
+
 where "e ':' t" := (typeR e t) : type_scope.
 
 Fixpoint typeF (e : expr) : option type :=
@@ -1092,6 +1176,24 @@ Fixpoint typeF (e : expr) : option type :=
       | _,_ => None
       end
 
+  | EFirst e1 =>
+      let t1 := typeF e1 in
+      t1
+
+  | EElemAt e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | Some boolty, Some intty =>
+          Some boolty
+      | _,_ => None
+      end
+
+  | EIndexOf e1 e2 =>
+      None
+
   end.
 
 (* constructor applies the _Int variant,
@@ -1330,6 +1432,20 @@ Inductive multR : expr -> mult -> Prop :=
       e2 ~ m2 ->
       EChoice e1 e2 ~ mult_choice m1 m2
 
+  | M_First : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      EFirst e1 ~ mult_upper_one m1
+
+  | M_ElemAt : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EElemAt e1 e2 ~ mult_lower_zero m2
+
+  | M_IndexOf : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EIndexOf e1 e2 ~ mult_lower_zero m2
+
 where "e '~' m" := (multR e m) : type_scope.
 
 Fixpoint multF (e : expr) : mult :=
@@ -1461,6 +1577,20 @@ Fixpoint multF (e : expr) : mult :=
       let m1 := multF e1 in
       let m2 := multF e2 in
       mult_choice m1 m2
+
+  | EFirst e1 =>
+      let m1 := multF e1 in
+      mult_upper_one m1
+
+  | EElemAt e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_lower_zero m2
+
+  | EIndexOf e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_lower_zero m2
 
   end.
 
@@ -1861,6 +1991,70 @@ Proof.
   all : try inversion H.
 Qed.
 
+Lemma hd_error_mult_preservation_nat:
+  forall m1 v1s,
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR
+    (mult_upper_one m1)
+    (intv (to_list (hd_error v1s))).
+Proof.
+  intros.
+  destruct m1.
+  all : destruct v1s; try destruct v1s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+Qed.
+
+Lemma hd_error_mult_preservation_bool:
+  forall m1 v1s,
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR
+    (mult_upper_one m1)
+    (boolv (to_list (hd_error v1s))).
+Proof.
+  intros.
+  destruct m1.
+  all : destruct v1s; try destruct v1s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+Qed.
+
+Lemma nth_error_mult_preservation_nat:
+  forall m2 v1s v2s,
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_lower_zero m2)
+    (intv (fmap (funtuple (@nth_error nat)) (list_pair_with2 v1s v2s))).
+Proof.
+  intros.
+  destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : destruct nth_error.
+  all : constructor.
+Qed.
+
+Lemma nth_error_mult_preservation_bool:
+  forall m2 v1s v2s,
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_lower_zero m2)
+    (boolv (fmap (funtuple (@nth_error bool)) (list_pair_with2 v1s v2s))).
+Proof.
+  intros.
+  destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : destruct nth_error.
+  all : constructor.
+Qed.
+
 Ltac rename_He1ty e1 :=
   match goal with
     H1 : e1 : ?E
@@ -1999,5 +2193,15 @@ Proof.
            assumption).
   (* avg *)
   all: try(apply avgo_mult_preservation;
+           assumption).
+  (* first *)
+  all: try(apply hd_error_mult_preservation_nat;
+           assumption).
+  all: try(apply hd_error_mult_preservation_bool;
+           assumption).
+  (* elemAt *)
+  all: try(apply nth_error_mult_preservation_nat;
+           assumption).
+  all: try(apply nth_error_mult_preservation_bool;
            assumption).
 Qed.
