@@ -55,7 +55,6 @@ Function choice {X:Type} (l1 l2 : list X) : list X :=
 (* TODO:
 - min max avg sum
 - conj disj
-- count
 (- first
 - order by, filter, find
 - indexOf, elemAt)
@@ -71,6 +70,7 @@ Inductive expr : Type :=
   | ENullInt  : expr
   | ENullBool : expr
   | ENot      : expr -> expr
+  | ECount    : expr -> expr
   | EAnd      : expr -> expr -> expr
   | EOr       : expr -> expr -> expr
   | EPlus     : expr -> expr -> expr
@@ -137,6 +137,14 @@ Inductive evalR : expr -> val -> Prop :=
   | E_Not : forall (e1 : expr) v1s,
       e1 \\ boolv v1s ->
       ENot e1 \\ boolv (map negb v1s)
+
+  | E_Count_Int : forall (e1 : expr) v1s,
+      e1 \\ intv v1s ->
+      ECount e1 \\ intv [length v1s]
+
+  | E_Count_Bool : forall (e1 : expr) v1s,
+      e1 \\ boolv v1s ->
+      ECount e1 \\ intv [length v1s]
 
   | E_And : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
@@ -287,6 +295,16 @@ Fixpoint evalF (e : expr) : option val :=
       | Some (boolv v1s) =>
           let vs := map negb v1s in
           Some (boolv vs)
+      | _ => None
+      end
+
+  | ECount e1 =>
+      let v1 := evalF e1 in
+      match v1 with
+      | Some (boolv v1s) =>
+          Some (intv [length v1s])
+      | Some (intv v1s) =>
+          Some (intv [length v1s])
       | _ => None
       end
 
@@ -585,6 +603,14 @@ Inductive typeR : expr -> type -> Prop :=
       e1 : boolty ->
       ENot e1 : boolty
 
+  | T_Count_Int : forall (e1 : expr),
+      e1 : intty ->
+      ECount e1 : intty
+
+  | T_Count_Bool : forall (e1 : expr),
+      e1 : boolty ->
+      ECount e1 : intty
+
   | T_And : forall (e1 e2 : expr),
       e1 : boolty ->
       e2 : boolty ->
@@ -716,6 +742,16 @@ Fixpoint typeF (e : expr) : option type :=
       match t1 with
       | Some boolty =>
           Some boolty
+      | _ => None
+      end
+
+  | ECount e1 =>
+      let t1 := typeF e1 in
+      match t1 with
+      | Some intty =>
+          Some intty
+      | Some boolty =>
+          Some intty
       | _ => None
       end
 
@@ -883,7 +919,8 @@ Ltac force_try_bool_constr :=
   IHe1 : forall t : type, Some boolty = Some t -> ?E : t
   |- _ =>
   try(apply T_Eq_Bool);
-  try(apply T_Neq_Bool)
+  try(apply T_Neq_Bool);
+  try(apply T_Count_Bool)
   end.
 
 Theorem typeR_eq_typeF: forall e t,
@@ -995,6 +1032,10 @@ Inductive multR : expr -> mult -> Prop :=
       e1 ~ m1 ->
       ENot e1 ~ m1
 
+  | M_Count : forall (e1 : expr) m1,
+      e1 ~ m1 ->
+      ECount e1 ~ one
+
   | M_And : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
@@ -1099,6 +1140,10 @@ Fixpoint multF (e : expr) : mult :=
       let m1 := multF e1 in
       m1
 
+  | ECount e1 =>
+      let m1 := multF e1 in
+      one
+
   | EAnd e1 e2 =>
       let m1 := multF e1 in
       let m2 := multF e2 in
@@ -1194,7 +1239,7 @@ Proof.
     all: intros.
     all: simpl in H.
     all: subst.
-    all: constructor.
+    all: econstructor.
     all: try rename IHe into IHe1.
     all: try(apply IHe1).
     all: try(apply IHe2).
