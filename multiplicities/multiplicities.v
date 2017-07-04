@@ -891,24 +891,14 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EModulo e1 e2 : intty
 
-  | T_Eq_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
+  | T_Eq : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
+      e2 : t1 ->
       EEq e1 e2 : boolty
 
-  | T_Eq_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
-      EEq e1 e2 : boolty
-
-  | T_Neq_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
-      ENeq e1 e2 : boolty
-
-  | T_Neq_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
+  | T_Neq : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
+      e2 : t1 ->
       ENeq e1 e2 : boolty
 
   | T_Lt : forall (e1 e2 : expr),
@@ -931,64 +921,34 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EGte e1 e2 : boolty
 
-  | T_If_Int : forall (e1 e2 e3 : expr),
+  | T_If : forall (e1 e2 e3 : expr) t1,
       e1 : boolty ->
+      e2 : t1 ->
+      e3 : t1 ->
+      EIf e1 e2 e3 : t1
+
+  | T_Concat : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
+      e2 : t1 ->
+      EConcat e1 e2 : t1
+
+  | T_Choice : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
+      e2 : t1 ->
+      EChoice e1 e2 : t1
+
+  | T_First : forall (e1 : expr) t1,
+      e1 : t1 ->
+      EFirst e1 : t1
+
+  | T_ElemAt : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
       e2 : intty ->
-      e3 : intty ->
-      EIf e1 e2 e3 : intty
+      EElemAt e1 e2 : t1
 
-  | T_If_Bool : forall (e1 e2 e3 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
-      e3 : boolty ->
-      EIf e1 e2 e3 : boolty
-
-  | T_Concat_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
-      EConcat e1 e2 : intty
-
-  | T_Concat_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
-      EConcat e1 e2 : boolty
-
-  | T_Choice_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
-      EChoice e1 e2 : intty
-
-  | T_Choice_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
-      EChoice e1 e2 : boolty
-
-  | T_First_Int : forall (e1 : expr),
-      e1 : intty ->
-      EFirst e1 : intty
-
-  | T_First_Bool : forall (e1 : expr),
-      e1 : boolty ->
-      EFirst e1 : boolty
-
-  | T_ElemAt_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
-      EElemAt e1 e2 : intty
-
-  | T_ElemAt_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : intty ->
-      EElemAt e1 e2 : boolty
-
-  | T_IndexOf_Int : forall (e1 e2 : expr),
-      e1 : intty ->
-      e2 : intty ->
-      EIndexOf e1 e2 : intty
-
-  | T_IndexOf_Bool : forall (e1 e2 : expr),
-      e1 : boolty ->
-      e2 : boolty ->
+  | T_IndexOf : forall (e1 e2 : expr) t1,
+      e1 : t1 ->
+      e2 : t1 ->
       EIndexOf e1 e2 : intty
 
 where "e ':' t" := (typeR e t) : type_scope.
@@ -1069,9 +1029,7 @@ Fixpoint typeF (e : expr) : option type :=
   | ECount e1 =>
       let t1 := typeF e1 in
       match t1 with
-      | Some intty =>
-          Some intty
-      | Some boolty =>
+      | Some _ =>
           Some intty
       | _ => None
       end
@@ -1239,10 +1197,8 @@ Fixpoint typeF (e : expr) : option type :=
       let t1 := typeF e1 in
       let t2 := typeF e2 in
       match t1, t2 with
-      | Some intty, Some intty =>
-          Some intty
-      | Some boolty, Some intty =>
-          Some boolty
+      | Some ty, Some intty =>
+          Some ty
       | _,_ => None
       end
 
@@ -1257,17 +1213,6 @@ Fixpoint typeF (e : expr) : option type :=
       | _,_ => None
       end
 
-  end.
-
-(* constructor applies the _Int variant,
-   as it cannot see which one to pick *)
-Ltac force_try_bool_constr :=
-  match goal with
-  IHe1 : forall t : type, Some boolty = Some t -> ?E : t
-  |- _ =>
-  try(apply T_Eq_Bool);
-  try(apply T_Neq_Bool);
-  try(apply T_IndexOf_Bool)
   end.
 
 Theorem typeR_eq_typeF: forall e t,
@@ -1310,7 +1255,6 @@ Proof.
     all: try(destruct t1 ; try congruence).
     all: try(destruct t2 ; try congruence).
     all: destruct t  ; try congruence.
-    all: try force_try_bool_constr. (* constructor applies the _Int *)
     all: try(econstructor).
     all: try(apply IHe1; reflexivity).
     all: try(apply IHe2; reflexivity).
@@ -1772,6 +1716,8 @@ Proof.
   all: try ( reflexivity ).
   (* wrong types *)
   all: subst.
+  all: destruct t.
+  all: try reflexivity.
   all: try(find_applyinv1).
   all: try(find_applyinv2).
 Qed.
@@ -1812,6 +1758,10 @@ Proof.
   all: apply type_preservation with (v:=v2) in H0 ; try assumption.
   all: destruct v2 ; try inversion H0.
   all: try(apply exists_some).
+  (* get rid of wrong types *)
+  all: destruct t1.
+  all: try inversion H.
+  all: try inversion H2.
   (* if *)
   all: destruct IHtypeR3 as [v3 Hv3].
   all: rewrite Hv3.
@@ -2241,6 +2191,8 @@ Proof.
   all: inversion Htype.
   all: subst.
   (* get rid of wrong argument type cases *)
+  all: try rename t into t1.
+  all: try destruct t1.
   all: try wrong_argument_types_1.
   all: try wrong_argument_types_2.
   (* happy path *)
