@@ -46,9 +46,13 @@ Function moduloo (n1 n2 : nat) : option nat :=
   | 0 => None
   | _ => Some (modulo n1 n2)
   end.
+Function choice {X:Type} (l1 l2 : list X) : list X :=
+  match l1 with
+  | h :: t => l1
+  | []     => l2
+  end.
 
 (* TODO:
-- choice
 - min max avg sum
 - conj disj
 - count
@@ -81,7 +85,8 @@ Inductive expr : Type :=
   | EGt       : expr -> expr -> expr
   | EGte      : expr -> expr -> expr
   | EIf       : expr -> expr -> expr -> expr
-  | EConcat   : expr -> expr -> expr.
+  | EConcat   : expr -> expr -> expr
+  | EChoice   : expr -> expr -> expr.
 
 Inductive type : Type :=
   | intty  : type
@@ -246,6 +251,16 @@ Inductive evalR : expr -> val -> Prop :=
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       EConcat e1 e2 \\ boolv (v1s ++ v2s)
+
+  | E_Choice_Int : forall (e1 e2 : expr) v1s v2s,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      EChoice e1 e2 \\ intv (choice v1s v2s)
+
+  | E_Choice_Bool : forall (e1 e2 : expr) v1s v2s,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      EChoice e1 e2 \\ boolv (choice v1s v2s)
 
 where "e '\\' v" := (evalR e v) : type_scope.
 
@@ -453,6 +468,17 @@ Fixpoint evalF (e : expr) : option val :=
       | _,_ => None
       end
 
+  | EChoice e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          Some (intv (choice v1s v2s))
+      | Some (boolv v1s), Some (boolv v2s) =>
+          Some (boolv (choice v1s v2s))
+      | _,_ => None
+      end
+
   end.
 
 Theorem evalR_eq_evalF: forall e v,
@@ -656,6 +682,16 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : boolty ->
       EConcat e1 e2 : boolty
 
+  | T_Choice_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EChoice e1 e2 : intty
+
+  | T_Choice_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EChoice e1 e2 : boolty
+
 where "e ':' t" := (typeR e t) : type_scope.
 
 Fixpoint typeF (e : expr) : option type :=
@@ -827,6 +863,17 @@ Fixpoint typeF (e : expr) : option type :=
       | _,_ => None
       end
 
+  | EChoice e1 e2 =>
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | Some boolty, Some boolty =>
+          Some boolty
+      | _,_ => None
+      end
+
   end.
 
 (* constructor applies the _Int variant,
@@ -905,6 +952,16 @@ Definition mult_concat (m1 : mult) (m2 : mult) : mult :=
   | _        , oneOrMore => oneOrMore
   | one      , _         => oneOrMore
   | _        , one       => oneOrMore
+  | _        , _         => zeroOrMore
+  end.
+
+Definition mult_choice (m1 : mult) (m2 : mult) : mult :=
+  match m1, m2 with
+  | one      , _         => one
+  | oneOrMore, _         => oneOrMore
+  | zeroOrOne, _         => m2
+  | _        , one       => oneOrMore
+  | _        , oneOrMore => oneOrMore
   | _        , _         => zeroOrMore
   end.
 
@@ -1009,10 +1066,15 @@ Inductive multR : expr -> mult -> Prop :=
       e3 ~ m3 ->
       EIf e1 e2 e3 ~ mult_crossproduct m1 (mult_crossproduct m2 m3)
 
-  | M_Concat_Int : forall (e1 e2 : expr) m1 m2,
+  | M_Concat : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
       EConcat e1 e2 ~ mult_concat m1 m2
+
+  | M_Choice : forall (e1 e2 : expr) m1 m2,
+      e1 ~ m1 ->
+      e2 ~ m2 ->
+      EChoice e1 e2 ~ mult_choice m1 m2
 
 where "e '~' m" := (multR e m) : type_scope.
 
@@ -1112,6 +1174,11 @@ Fixpoint multF (e : expr) : mult :=
       let m1 := multF e1 in
       let m2 := multF e2 in
       mult_concat m1 m2
+
+  | EChoice e1 e2 =>
+      let m1 := multF e1 in
+      let m2 := multF e2 in
+      mult_choice m1 m2
 
   end.
 
@@ -1377,6 +1444,40 @@ Proof.
   all : try inversion H0.
 Qed.
 
+Lemma choice_mult_preservation_nat:
+  forall m1 m2 v1s v2s,
+  mult_containsR m1 (intv v1s) ->
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_choice m1 m2)
+    (intv (choice v1s v2s)).
+Proof.
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+Qed.
+
+Lemma choice_mult_preservation_bool:
+  forall m1 m2 v1s v2s,
+  mult_containsR m1 (boolv v1s) ->
+  mult_containsR m2 (boolv v2s) ->
+  mult_containsR
+    (mult_choice m1 m2)
+    (boolv (choice v1s v2s)).
+Proof.
+  intros.
+  destruct m1; destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+Qed.
+
 Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
   forall m1 m2 m3 v1s v2s v3s (f : bool * (nat * nat) -> nat),
   mult_containsR m1 (boolv v1s) ->
@@ -1577,5 +1678,10 @@ Proof.
   all: try(apply concat_mult_preservation_nat;
            assumption).
   all: try(apply concat_mult_preservation_bool;
+           assumption).
+  (* choice *)
+  all: try(apply choice_mult_preservation_nat;
+           assumption).
+  all: try(apply choice_mult_preservation_bool;
            assumption).
 Qed.
