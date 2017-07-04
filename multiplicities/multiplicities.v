@@ -852,12 +852,8 @@ Inductive typeR : expr -> type -> Prop :=
       e1 : boolty ->
       EDisj e1 : boolty
 
-  | T_Count_Int : forall (e1 : expr),
-      e1 : intty ->
-      ECount e1 : intty
-
-  | T_Count_Bool : forall (e1 : expr),
-      e1 : boolty ->
+  | T_Count : forall (e1 : expr) t1,
+      e1 : t1 ->
       ECount e1 : intty
 
   | T_And : forall (e1 e2 : expr),
@@ -1271,7 +1267,6 @@ Ltac force_try_bool_constr :=
   |- _ =>
   try(apply T_Eq_Bool);
   try(apply T_Neq_Bool);
-  try(apply T_Count_Bool);
   try(apply T_IndexOf_Bool)
   end.
 
@@ -1288,6 +1283,7 @@ Proof.
     all: simpl.
     all: subst.
     all: rewrite IHtypeR1.
+    all: try destruct t1.
     all: try reflexivity.
     (* binops *)
     all: rewrite IHtypeR2.
@@ -1315,7 +1311,7 @@ Proof.
     all: try(destruct t2 ; try congruence).
     all: destruct t  ; try congruence.
     all: try force_try_bool_constr. (* constructor applies the _Int *)
-    all: try(constructor).
+    all: try(econstructor).
     all: try(apply IHe1; reflexivity).
     all: try(apply IHe2; reflexivity).
     all: try(apply IHe3; reflexivity).
