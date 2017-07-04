@@ -10,9 +10,6 @@ Portion of the IceDust language:
 - all expressions without:
   - filter, find, and orderBy (no environments)
   - objects (no store)
-
-TODO:
-- indexOf
 *)
 
 Require Import List.
@@ -96,7 +93,7 @@ Function disj(l : list bool) : bool := fold_left orb  l false.
 Fixpoint indexOf {X:HasEqb} (l : list X) (x : X) : option nat :=
   match l with
   | []     => None
-  | h :: _ =>
+  | h :: t =>
       match X.eqb x h with
       | true  => Some 0
       | false =>
@@ -107,6 +104,33 @@ Fixpoint indexOf {X:HasEqb} (l : list X) (x : X) : option nat :=
       end
   end.
 *)
+
+Fixpoint indexOf_nat (l : list nat) (x : nat) : option nat :=
+  match l with
+  | []     => None
+  | h :: t =>
+      match eqb x h with
+      | true  => Some 0
+      | false =>
+          match indexOf_nat t x with
+          | None   => None
+          | Some i => Some (i+1)
+          end
+      end
+  end.
+Fixpoint indexOf_bool (l : list bool) (x : bool) : option nat :=
+  match l with
+  | []     => None
+  | h :: t =>
+      match beq x h with
+      | true  => Some 0
+      | false =>
+          match indexOf_bool t x with
+          | None   => None
+          | Some i => Some (i+1)
+          end
+      end
+  end.
 
 (***** signatures *****)
 Inductive expr : Type :=
@@ -370,6 +394,18 @@ Inductive evalR : expr -> val -> Prop :=
       e2 \\ intv v2s ->
       vtuples = list_pair_with2 v1s v2s ->
       EElemAt e1 e2 \\ boolv (fmap (funtuple (@nth_error bool)) vtuples)
+
+  | E_IndexOf_Int : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ intv v1s ->
+      e2 \\ intv v2s ->
+      vtuples = list_pair_with2 v1s v2s ->
+      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_nat) vtuples)
+
+  | E_IndexOf_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
+      e1 \\ boolv v1s ->
+      e2 \\ boolv v2s ->
+      vtuples = list_pair_with2 v1s v2s ->
+      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_bool) vtuples)
 
 where "e '\\' v" := (evalR e v) : type_scope.
 
@@ -671,7 +707,20 @@ Fixpoint evalF (e : expr) : option val :=
       | _,_ => None
       end
 
-  | EIndexOf e1 e2 => None
+  | EIndexOf e1 e2 =>
+      let v1 := evalF e1 in
+      let v2 := evalF e2 in
+      match v1, v2 with
+      | Some (intv v1s), Some (intv v2s) =>
+          let vtuples := list_pair_with2 v1s v2s in
+          let vs := fmap (funtuple indexOf_nat) vtuples in
+          Some (intv vs)
+      | Some (boolv v1s), Some (boolv v2s) =>
+          let vtuples := list_pair_with2 v1s v2s in
+          let vs := fmap (funtuple indexOf_bool) vtuples in
+          Some (intv vs)
+      | _,_ => None
+      end
 
   end.
 
@@ -936,6 +985,16 @@ Inductive typeR : expr -> type -> Prop :=
       e2 : intty ->
       EElemAt e1 e2 : boolty
 
+  | T_IndexOf_Int : forall (e1 e2 : expr),
+      e1 : intty ->
+      e2 : intty ->
+      EIndexOf e1 e2 : intty
+
+  | T_IndexOf_Bool : forall (e1 e2 : expr),
+      e1 : boolty ->
+      e2 : boolty ->
+      EIndexOf e1 e2 : intty
+
 where "e ':' t" := (typeR e t) : type_scope.
 
 Fixpoint typeF (e : expr) : option type :=
@@ -1192,7 +1251,15 @@ Fixpoint typeF (e : expr) : option type :=
       end
 
   | EIndexOf e1 e2 =>
-      None
+      let t1 := typeF e1 in
+      let t2 := typeF e2 in
+      match t1, t2 with
+      | Some intty, Some intty =>
+          Some intty
+      | Some boolty, Some boolty =>
+          Some intty
+      | _,_ => None
+      end
 
   end.
 
@@ -1204,7 +1271,8 @@ Ltac force_try_bool_constr :=
   |- _ =>
   try(apply T_Eq_Bool);
   try(apply T_Neq_Bool);
-  try(apply T_Count_Bool)
+  try(apply T_Count_Bool);
+  try(apply T_IndexOf_Bool)
   end.
 
 Theorem typeR_eq_typeF: forall e t,
@@ -2055,6 +2123,50 @@ Proof.
   all : constructor.
 Qed.
 
+Lemma indexOf_mult_preservation_nat:
+  forall m2 v1s v2s,
+  mult_containsR m2 (intv v2s) ->
+  mult_containsR
+    (mult_lower_zero m2)
+    (intv (fmap (funtuple indexOf_nat) (list_pair_with2 v1s v2s))).
+Proof.
+  intros.
+  destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : try( destruct (if n0 =? n then Some 0 else None);
+             constructor).
+  all : destruct (n1 =? n);
+        destruct (n1 =? n0);
+        destruct (indexOf_nat v1s n1);
+        constructor.
+Qed.
+
+Lemma indexOf_mult_preservation_bool:
+  forall m2 v1s v2s,
+  mult_containsR m2 (boolv v2s) ->
+  mult_containsR
+    (mult_lower_zero m2)
+    (intv (fmap (funtuple indexOf_bool) (list_pair_with2 v1s v2s))).
+Proof.
+  intros.
+  destruct m2.
+  all : destruct v1s; try destruct v1s.
+  all : destruct v2s; try destruct v2s.
+  all : subst; simpl; try (constructor).
+  all : try inversion H.
+  all : try inversion H0.
+  all : try( destruct (if beq b0 b then Some 0 else None);
+             constructor).
+  all : destruct (beq b1 b);
+        destruct (beq b1 b0);
+        destruct (indexOf_bool v1s b1);
+        constructor.
+Qed.
+
 Ltac rename_He1ty e1 :=
   match goal with
     H1 : e1 : ?E
@@ -2203,5 +2315,10 @@ Proof.
   all: try(apply nth_error_mult_preservation_nat;
            assumption).
   all: try(apply nth_error_mult_preservation_bool;
+           assumption).
+  (* indexOf *)
+  all: try(apply indexOf_mult_preservation_nat;
+           assumption).
+  all: try(apply indexOf_mult_preservation_bool;
            assumption).
 Qed.
