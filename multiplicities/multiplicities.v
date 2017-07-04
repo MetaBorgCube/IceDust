@@ -10,6 +10,11 @@ Portion of the IceDust language:
 - all expressions without:
   - filter, find, and orderBy (no environments)
   - objects (no store)
+
+TODO:
+- change values to X -> list X -> val (instead of list nat \/ list bool)
+  - implement expressions polymorphicly
+  - proof mult_preservation lemmas polymorphicly
 *)
 
 Require Import List.
@@ -1638,7 +1643,6 @@ Definition valty (v : val) : type :=
   | boolv _ => boolty
   end.
 
-(***** valmu : val -> mult *****)
 Inductive mult_containsR: mult -> val -> Prop :=
   | M_ZeroOrMore : forall v,
       mult_containsR zeroOrMore v
