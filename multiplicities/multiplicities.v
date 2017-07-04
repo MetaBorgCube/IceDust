@@ -1,3 +1,21 @@
+(*
+Proof of type- and multiplicity soundness for IceDust expressions.
+
+Proofs:
+- type preservation: values are of the correct type.
+- termination/totality: if an expression has a type, it evaluates.
+- multiplicity preservation: evaluation yields the right amount of values.
+
+Portion of the IceDust language:
+- all expressions without:
+  - filter, find, and orderBy (no environments)
+  - objects (no store)
+
+TODO:
+- first
+- indexOf, elemAt
+*)
+
 Require Import List.
 Import ListNotations.
 Require Import Coq.Init.Nat.
@@ -73,14 +91,6 @@ Function avgo(l : list nat) : option nat :=
   end.
 Function conj(l : list bool) : bool := fold_left andb l true.
 Function disj(l : list bool) : bool := fold_left orb  l false.
-
-(* TODO:
-(- first
-- order by, filter, find
-- indexOf, elemAt)
-*)
-Check min.
-Check max.
 
 (***** signatures *****)
 Inductive expr : Type :=
