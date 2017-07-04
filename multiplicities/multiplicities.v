@@ -186,6 +186,44 @@ Inductive val : Type :=
   | intv  : list nat -> val
   | boolv : list bool -> val.
 
+(***** new def of val *****)
+Definition type_interp (t : type) : Type :=
+  match t with
+  | intty => nat
+  | boolty => bool
+  end.
+
+Lemma type_interp_eq_dec (t : type) (x y : type_interp t) :
+  { x = y } + { x <> y }.
+Proof.
+  destruct t.
+  all: simpl in *.
+  - apply PeanoNat.Nat.eq_dec.
+  - apply Bool.bool_dec.
+Defined.
+
+Record val' : Type := {
+  val_type : type;
+  val_val : list (type_interp val_type)
+}.
+
+(*
+Definition type_eqb (t : type) (x y : type_interp t) : bool :=
+  match type_interp t with
+  | nat  => eqb x y
+  | bool => Coq.Bool.Bool.eqb x y
+  end.
+
+Definition type_interp_eqb (t : type) :
+  type_interp t -> type_interp t -> bool :=
+  match type_interp t with
+  | nat  => eqb
+  | bool => Coq.Bool.Bool.eqb
+  end.
+
+Lemma type_interp_eqb (t : type) : type_interp t -> type_interp t -> bool :=
+*)
+
 
 (***** eval : expr -> val *****)
 Function funtuple {X Y Z : Type} (f: X -> Y -> Z) (t:X*Y) : Z :=
@@ -1732,9 +1770,7 @@ Lemma exists_some: forall {X:Type} (v1:X),
     Some v1 =
     Some v2.
 Proof.
-  intros.
-  exists v1.
-  reflexivity.
+  eauto.
 Qed.
 
 Theorem typed_evalF_totality : forall (e : expr) t,
