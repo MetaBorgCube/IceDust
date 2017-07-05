@@ -1830,12 +1830,16 @@ Lemma crossproduct_mult_preservation_nat_nat_nat:
     (intv (map f (list_crossproduct v1s v2s))).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma crossproduct_mult_preservation_nat_nat_bool:
@@ -1847,12 +1851,16 @@ Lemma crossproduct_mult_preservation_nat_nat_bool:
     (boolv (map f (list_crossproduct v1s v2s))).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma crossproduct_mult_preservation_bool_bool_bool:
@@ -1864,12 +1872,16 @@ Lemma crossproduct_mult_preservation_bool_bool_bool:
     (boolv (map f (list_crossproduct v1s v2s))).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma concat_mult_preservation_nat:
@@ -1881,12 +1893,16 @@ Lemma concat_mult_preservation_nat:
     (intv (v1s ++ v2s)).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma concat_mult_preservation_bool:
@@ -1898,12 +1914,16 @@ Lemma concat_mult_preservation_bool:
     (boolv (v1s ++ v2s)).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma choice_mult_preservation_nat:
@@ -1915,12 +1935,16 @@ Lemma choice_mult_preservation_nat:
     (intv (choice v1s v2s)).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma choice_mult_preservation_bool:
@@ -1932,12 +1956,16 @@ Lemma choice_mult_preservation_bool:
     (boolv (choice v1s v2s)).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
@@ -1950,14 +1978,20 @@ Lemma crossproduct_mult_preservation_bool_nat_nat_nat:
     (intv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
 Proof.
   intros.
-  destruct m1; destruct m2 ; destruct m3.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : destruct v3s; try destruct v3s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
-  all : try inversion H1.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : destruct m3.
+  all : inversion H1.
+  all : destruct v3s ; try congruence.
+  all : try destruct v3s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma crossproduct_mult_preservation_bool_bool_bool_bool:
@@ -1970,14 +2004,20 @@ Lemma crossproduct_mult_preservation_bool_bool_bool_bool:
     (boolv (map f (list_crossproduct v1s (list_crossproduct v2s v3s)))).
 Proof.
   intros.
-  destruct m1; destruct m2 ; destruct m3.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : destruct v3s; try destruct v3s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
-  all : try inversion H1.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : destruct m3.
+  all : inversion H1.
+  all : destruct v3s ; try congruence.
+  all : try destruct v3s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma map_mult_preservation_bool_bool:
@@ -1988,10 +2028,12 @@ Lemma map_mult_preservation_bool_bool:
     (boolv (map f v1s)).
 Proof.
   intros.
-  destruct m1.
-  all : destruct v1s; try destruct v1s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma crossproduct_mult_preservation_nat_nat_option_nat:
@@ -2003,14 +2045,18 @@ Lemma crossproduct_mult_preservation_nat_nat_option_nat:
     (intv (fmap f (list_crossproduct v1s v2s))).
 Proof.
   intros.
-  destruct m1; destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
-  all : destruct (f (n, n0)).
-  all : constructor.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : destruct m2.
+  all : inversion H0.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : simpl ; try reflexivity.
+  all : destruct f.
+  all : reflexivity.
 Qed.
 
 Lemma foldo_mult_preservation_nat_nat_nat:
@@ -2021,10 +2067,12 @@ Lemma foldo_mult_preservation_nat_nat_nat:
     (intv (to_list (foldo f v1s))).
 Proof.
   intros.
-  destruct m1.
-  all : destruct v1s; try destruct v1s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma avgo_mult_preservation:
@@ -2035,10 +2083,12 @@ Lemma avgo_mult_preservation:
     (intv (to_list (avgo v1s))).
 Proof.
   intros.
-  destruct m1.
-  all : destruct v1s; try destruct v1s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma hd_error_mult_preservation_nat:
@@ -2049,10 +2099,12 @@ Lemma hd_error_mult_preservation_nat:
     (intv (to_list (hd_error v1s))).
 Proof.
   intros.
-  destruct m1.
-  all : destruct v1s; try destruct v1s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma hd_error_mult_preservation_bool:
@@ -2063,10 +2115,12 @@ Lemma hd_error_mult_preservation_bool:
     (boolv (to_list (hd_error v1s))).
 Proof.
   intros.
-  destruct m1.
-  all : destruct v1s; try destruct v1s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m1.
+  all : inversion H.
+  all : destruct v1s ; try congruence.
+  all : try destruct v1s ; try congruence.
+  all : reflexivity.
 Qed.
 
 Lemma nth_error_mult_preservation_nat:
@@ -2077,14 +2131,14 @@ Lemma nth_error_mult_preservation_nat:
     (intv (fmap (funtuple (@nth_error nat)) (list_pair_with2 v1s v2s))).
 Proof.
   intros.
-  destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m2.
+  all : inversion H.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : simpl ; try reflexivity.
   all : destruct nth_error.
-  all : constructor.
+  all : reflexivity.
 Qed.
 
 Lemma nth_error_mult_preservation_bool:
@@ -2095,14 +2149,14 @@ Lemma nth_error_mult_preservation_bool:
     (boolv (fmap (funtuple (@nth_error bool)) (list_pair_with2 v1s v2s))).
 Proof.
   intros.
-  destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m2.
+  all : inversion H.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : simpl ; try reflexivity.
   all : destruct nth_error.
-  all : constructor.
+  all : reflexivity.
 Qed.
 
 Lemma indexOf_mult_preservation_nat:
@@ -2113,18 +2167,14 @@ Lemma indexOf_mult_preservation_nat:
     (intv (fmap (funtuple indexOf_nat) (list_pair_with2 v1s v2s))).
 Proof.
   intros.
-  destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
-  all : try( destruct (if n0 =? n then Some 0 else None);
-             constructor).
-  all : destruct (n1 =? n);
-        destruct (n1 =? n0);
-        destruct (indexOf_nat v1s n1);
-        constructor.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m2.
+  all : inversion H.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : simpl ; try reflexivity.
+  all : destruct indexOf_nat.
+  all : reflexivity.
 Qed.
 
 Lemma indexOf_mult_preservation_bool:
@@ -2135,18 +2185,14 @@ Lemma indexOf_mult_preservation_bool:
     (intv (fmap (funtuple indexOf_bool) (list_pair_with2 v1s v2s))).
 Proof.
   intros.
-  destruct m2.
-  all : destruct v1s; try destruct v1s.
-  all : destruct v2s; try destruct v2s.
-  all : subst; simpl; try (constructor).
-  all : try inversion H.
-  all : try inversion H0.
-  all : try( destruct (if beq b0 b then Some 0 else None);
-             constructor).
-  all : destruct (beq b1 b);
-        destruct (beq b1 b0);
-        destruct (indexOf_bool v1s b1);
-        constructor.
+  rewrite mult_containsR_eq_mult_containsF in *.
+  all : destruct m2.
+  all : inversion H.
+  all : destruct v2s ; try congruence.
+  all : try destruct v2s ; try congruence.
+  all : simpl ; try reflexivity.
+  all : destruct indexOf_bool.
+  all : reflexivity.
 Qed.
 
 Ltac rename_He1ty e1 :=
