@@ -11,17 +11,46 @@ Portion of the IceDust language:
   - filter, find, and orderBy (no environments)
   - objects (no store)
 
-TODO:
-- change values to X -> list X -> val (instead of list nat \/ list bool)
-  - implement expressions polymorphicly
-  - proof mult_preservation lemmas polymorphicly
+This a self-contained file containing:
+- some higher order helper functions
+- interpreter native functions
+- signatures of ast, values, types, and multiplicities
+- interpreter
+  - as relation
+  - as function
+  - proof of equality
+  - examples
+- type checker
+  - relation
+  - function
+  - proof of equality
+  - example
+- multiplicity checker
+  - relation
+  - function
+  - proof of equality
+  - examples
+- auxiliary functions for type- and multiplicity soundness
+  - type of value
+  - value contained in multiplicity
+    - relation
+    - function
+    - proof of equality
+- type preservation proof
+  - by induction over evaluation relation
+- type completeness proof: all expressions that have a type, evaluate to a value
+  - by induction over typing function
+- multiplicity preservation proof
+  - a list of helper lemmas for a groups of operations that behave
+    differently with respect to multiplicities
+  - main proof by induction over evaluation relation
 *)
 
 Require Import List.
 Import ListNotations.
 Require Import Coq.Init.Nat.
-Require Import Coq.Structures.Equalities.
 
+(***** higher order helper functions *****)
 Fixpoint list_pair_with {X Y : Type} (lx : list X) (y : Y) : list (X*Y) :=
   match lx with
   | [] => []
@@ -63,6 +92,18 @@ Function to_list {X:Type} (v : option X) : list X :=
   | Some x => [x]
   end.
 
+Function funtuple {X Y Z : Type} (f: X -> Y -> Z) (t:X*Y) : Z :=
+  match t with
+  | (v1, v2) => f v1 v2
+  end.
+
+Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
+  match t with
+  | (true,  (v2, _ )) => v2
+  | (false, (_ , v3)) => v3
+  end.
+
+(***** interpreter native functions *****)
 Function gtb  (n1 n2 : nat)  : bool := negb (leb n1 n2).
 Function geb  (n1 n2 : nat)  : bool := negb (ltb n1 n2).
 Function neqb (n1 n2 : nat)  : bool := negb (eqb n1 n2).
@@ -93,22 +134,6 @@ Function avgo(l : list nat) : option nat :=
   end.
 Function conj(l : list bool) : bool := fold_left andb l true.
 Function disj(l : list bool) : bool := fold_left orb  l false.
-
-(*
-Fixpoint indexOf {X:HasEqb} (l : list X) (x : X) : option nat :=
-  match l with
-  | []     => None
-  | h :: t =>
-      match X.eqb x h with
-      | true  => Some 0
-      | false =>
-          match indexOf t x with
-          | None   => None
-          | Some i => Some (i+1)
-          end
-      end
-  end.
-*)
 
 Fixpoint indexOf_nat (l : list nat) (x : nat) : option nat :=
   match l with
@@ -186,58 +211,11 @@ Inductive val : Type :=
   | intv  : list nat -> val
   | boolv : list bool -> val.
 
-(***** new def of val *****)
-Definition type_interp (t : type) : Type :=
-  match t with
-  | intty => nat
-  | boolty => bool
-  end.
+(***** interpreter *****
 
-Lemma type_interp_eq_dec (t : type) (x y : type_interp t) :
-  { x = y } + { x <> y }.
-Proof.
-  destruct t.
-  all: simpl in *.
-  - apply PeanoNat.Nat.eq_dec.
-  - apply Bool.bool_dec.
-Defined.
-
-Record val' : Type := {
-  val_type : type;
-  val_val : list (type_interp val_type)
-}.
-
-(*
-Definition type_eqb (t : type) (x y : type_interp t) : bool :=
-  match type_interp t with
-  | nat  => eqb x y
-  | bool => Coq.Bool.Bool.eqb x y
-  end.
-
-Definition type_interp_eqb (t : type) :
-  type_interp t -> type_interp t -> bool :=
-  match type_interp t with
-  | nat  => eqb
-  | bool => Coq.Bool.Bool.eqb
-  end.
-
-Lemma type_interp_eqb (t : type) : type_interp t -> type_interp t -> bool :=
-*)
-
-
-(***** eval : expr -> val *****)
-Function funtuple {X Y Z : Type} (f: X -> Y -> Z) (t:X*Y) : Z :=
-  match t with
-  | (v1, v2) => f v1 v2
-  end.
-
-Function iftuple {X : Type} (t : (bool*(X*X))) : X :=
-  match t with
-  | (true,  (v2, _ )) => v2
-  | (false, (_ , v3)) => v3
-  end.
-
-Check fmap (funtuple (@nth_error nat)).
+Note that the IceDust language does not feature shortcut evaluation
+as the incremental runtime of IceDust (which is not modeled in this file)
+does bottom up evaluation. *)
 
 Reserved Notation "e '\\' v"
                   (at level 50, left associativity).
@@ -296,13 +274,13 @@ Inductive evalR : expr -> val -> Prop :=
 
   | E_And : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
-      e2 \\ boolv v2s -> (* IceDust does not shortcut evaluation *)
+      e2 \\ boolv v2s ->
       vtuples = list_crossproduct v1s v2s ->
       EAnd e1 e2 \\ boolv (map (funtuple andb) vtuples)
 
   | E_Or : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
-      e2 \\ boolv v2s -> (* IceDust does not shortcut evaluation *)
+      e2 \\ boolv v2s ->
       vtuples = list_crossproduct v1s v2s ->
       EOr e1 e2 \\ boolv (map (funtuple orb) vtuples)
 
@@ -387,14 +365,14 @@ Inductive evalR : expr -> val -> Prop :=
   | E_If_Int : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
       e1 \\ boolv v1s ->
       e2 \\ intv v2s ->
-      e3 \\ intv v3s -> (* IceDust does not shortcut evaluation *)
+      e3 \\ intv v3s ->
       vtuples = list_crossproduct v1s (list_crossproduct v2s v3s) ->
       EIf e1 e2 e3 \\ intv (map iftuple vtuples)
 
   | E_If_Bool : forall (e1 e2 e3 : expr) v1s v2s v3s vtuples,
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
-      e3 \\ boolv v3s -> (* IceDust does not shortcut evaluation *)
+      e3 \\ boolv v3s ->
       vtuples = list_crossproduct v1s (list_crossproduct v2s v3s) ->
       EIf e1 e2 e3 \\ boolv (map iftuple vtuples)
 
@@ -847,7 +825,22 @@ Example evalR_1 :
 Proof. apply evalR_eq_evalF. reflexivity. Qed.
 
 
-(***** type check : expr -> ty *****)
+(***** type checker *****
+
+Literal translation of the typing rules in the (old) NaBL/TS specification
+of the IceDust type system. Specification is in
+https://github.com/MetaBorgCube/IceDust/releases/tag/v0.6.2
+in /icedust/trans/typing/*.ts
+
+Note that in the new NaBL2 type system specification types, multiplicities,
+and calculation strategies are inside a single tuple, so it is harder to see
+the correspondence. Specification is in
+https://github.com/MetaBorgCube/IceDust/tree/master/icedust/trans/analysis
+in expressions-*.nabl2
+
+The NaBL/TS and NaBL2 specification are exercised by the same 500 tests,
+so we are reasonably confident that they are equal. *)
+
 Reserved Notation "e ':' t"
                   (at level 50, left associativity).
 
@@ -1308,7 +1301,10 @@ Example typeR_1 :
   (EPlus (EInt 1) (EInt 2)) : intty.
 Proof. apply typeR_eq_typeF. simpl. reflexivity. Qed.
 
-(***** multiplicity check : expr -> mult *****)
+(***** multiplicity checker *****
+
+Specification in same place as type checker. *)
+
 Definition mult_crossproduct (m1 : mult) (m2 : mult) : mult :=
   match m1, m2 with
   | one       , m2         => m2
@@ -1674,7 +1670,7 @@ Example multR_2 :
 Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 
 
-(***** valty : val -> type *****)
+(***** aux functions for proving type- and multiplicity soundness *****)
 Definition valty (v : val) : type :=
   match v with
   | intv  _ => intty
@@ -1764,7 +1760,7 @@ Proof.
   all: try(find_applyinv2).
 Qed.
 
-(***** has type implies evaluates *****)
+(***** completeness *****)
 Lemma exists_some: forall {X:Type} (v1:X),
   exists v2 : X,
     Some v1 =
@@ -2310,3 +2306,48 @@ Proof.
   all: try(apply indexOf_mult_preservation_bool;
            assumption).
 Qed.
+
+(***** new def of val *****)
+(*
+TODO:
+- change values to X -> list X -> val (instead of list nat \/ list bool)
+  - implement expressions polymorphicly
+  - proof mult_preservation lemmas polymorphicly
+*)
+
+Definition type_interp (t : type) : Type :=
+  match t with
+  | intty => nat
+  | boolty => bool
+  end.
+
+Lemma type_interp_eq_dec (t : type) (x y : type_interp t) :
+  { x = y } + { x <> y }.
+Proof.
+  destruct t.
+  all: simpl in *.
+  - apply PeanoNat.Nat.eq_dec.
+  - apply Bool.bool_dec.
+Defined.
+
+Record val' : Type := {
+  val_type : type;
+  val_val : list (type_interp val_type)
+}.
+
+(*
+Definition type_eqb (t : type) (x y : type_interp t) : bool :=
+  match type_interp t with
+  | nat  => eqb x y
+  | bool => Coq.Bool.Bool.eqb x y
+  end.
+
+Definition type_interp_eqb (t : type) :
+  type_interp t -> type_interp t -> bool :=
+  match type_interp t with
+  | nat  => eqb
+  | bool => Coq.Bool.Bool.eqb
+  end.
+
+Lemma type_interp_eqb (t : type) : type_interp t -> type_interp t -> bool :=
+*)
