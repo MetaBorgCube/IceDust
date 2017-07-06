@@ -1725,20 +1725,11 @@ Proof.
 Qed.
 
 (***** type preservation *****)
-Ltac applyinv H1 H2 := apply H1 in H2; inversion H2.
-
-Ltac find_applyinv1 :=
+Ltac specialize_auto :=
   match goal with
-    H1: ?E1 : boolty -> valty (intv ?E2) = boolty,
-    H2: ?E1 : boolty
-    |- _ => applyinv H1 H2
-  end.
-
-Ltac find_applyinv2 :=
-  match goal with
-    H1: ?E1 : intty -> valty (boolv ?E2) = intty,
-    H2: ?E1 : intty
-    |- _ => applyinv H1 H2
+    H1 : ?A -> ?B,
+    H2 : ?A
+    |- _ => specialize (H1 H2)
   end.
 
 Theorem type_preservation : forall (e : expr) t v,
@@ -1748,16 +1739,18 @@ Theorem type_preservation : forall (e : expr) t v,
 Proof.
   intros e t v Htype Hval.
   induction Hval.
-  (* happy path *)
   all: simpl.
+  (* get types of sub expressions *)
   all: inversion Htype.
-  all: try ( reflexivity ).
-  (* wrong types *)
-  all: subst.
-  all: destruct t.
   all: try reflexivity.
-  all: try(find_applyinv1).
-  all: try(find_applyinv2).
+  all: subst.
+  (* extract types from values *)
+  all: repeat specialize_auto.
+  all: try simpl in IHHval1.
+  all: try simpl in IHHval2.
+  all: try simpl in IHHval3.
+  all: subst.
+  all: reflexivity.
 Qed.
 
 (***** completeness *****)
@@ -1821,37 +1814,6 @@ Proof.
 Qed.
 
 (***** multiplicity preservation *****)
-Ltac rename_He1ty e1 :=
-  match goal with
-    H1 : e1 : ?E
-    |- _ => rename H1 into He1ty
-  end.
-Ltac rename_He2ty e2 :=
-  match goal with
-    H1 : e2 : ?E
-    |- _ => rename H1 into He2ty
-  end.
-Ltac rename_He3ty e3 :=
-  match goal with
-    H1 : e3 : ?E
-    |- _ => rename H1 into He3ty
-  end.
-Ltac rename_He1mu e1 :=
-  match goal with
-    H1 : e1 ~ ?E
-    |- _ => rename H1 into He1mu
-  end.
-Ltac rename_He2mu e2 :=
-  match goal with
-    H1 : e2 ~ ?E
-    |- _ => rename H1 into He2mu
-  end.
-Ltac rename_He3mu e3 :=
-  match goal with
-    H1 : e3 ~ ?E
-    |- _ => rename H1 into He3mu
-  end.
-
 Ltac specialize_int :=
   match goal with
     H : forall t : type, ?E : t -> mult_containsR ?M (intv ?V)
@@ -1901,40 +1863,29 @@ Proof.
   all: intros.
   (* proof literals of mult one *)
   all: try(simpl; constructor).
-  (* inline types *)
-  all: inversion Htype.
-  all: subst.
-  (* get rid of wrong argument type cases *)
-  all: try rename t into t1.
-  all: try destruct t1.
-  all: try wrong_argument_types_1.
-  all: try wrong_argument_types_2.
-  (* inline multiplicities *)
+  (* get multiplicities of sub expressions *)
   all: inversion Hmult.
   all: subst.
   (* proof null literals *)
   all: try constructor.
-  (* rename type and multiplicity equasions obtained from inversion *)
-  all: rename_He1ty e1.
-  all: try(rename_He2ty e2).
-  all: try(rename_He3ty e3).
-  all: rename_He1mu e1.
-  all: try(rename_He2mu e2).
-  all: try(rename_He3mu e3).
+  (* get types of sub expressions *)
+  all: inversion Htype.
+  all: subst.
+  (* find sub expression types with type preservation *)
+  all: try rename t into t1.
+  all: try destruct t1.
+  all: try wrong_argument_types_1.
+  all: try wrong_argument_types_2.
+  (* specialize induction hypotheses to type and mult from sub exprs *)
   all: try rename m into m1.
   all: try rename IHHval into IHHval1.
-  (* specialize induction hypotheses to type and mult from sub exprs *)
   all: specialize (IHHval1 m1).
-  all: specialize (IHHval1 He1mu).
   all: try(specialize (IHHval2 m2)).
-  all: try(specialize (IHHval2 He2mu)).
   all: try(specialize (IHHval3 m3)).
-  all: try(specialize (IHHval3 He3mu)).
-  all: repeat(specialize_int).
-  all: repeat(specialize_bool).
-  all: specialize (IHHval1 He1ty).
-  all: try(specialize (IHHval2 He2ty)).
-  all: try(specialize (IHHval3 He3ty)).
+  all: repeat specialize_auto.
+  all: repeat specialize_int.
+  all: repeat specialize_bool.
+  all: repeat specialize_auto.
   (* destruct multiplicities and values *)
   all : rewrite mult_containsR_eq_mult_containsF in *.
   all : destruct m1.
