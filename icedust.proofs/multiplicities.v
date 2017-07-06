@@ -1831,23 +1831,27 @@ Ltac specialize_bool :=
     |- _ => specialize (H boolty)
   end.
 
-Ltac wrong_argument_types_1 :=
+Ltac expression_type_int :=
   match goal with
     H1 : ?E2 \\ intv ?V,
-    H2 : ?E2 : boolty
-    |- _ => 
-    apply type_preservation with (v:=intv V) in H2;
+    H2 : ?E2 : ?T
+    |- _ =>
+    assert (HexpressionType : E2 : T); try assumption;
+    destruct T;
+    apply type_preservation with (v:=intv V) in HexpressionType;
     try assumption;
-    inversion H2
+    inversion HexpressionType
   end.
-Ltac wrong_argument_types_2 :=
+Ltac expression_type_bool :=
   match goal with
     H1 : ?E2 \\ boolv ?V,
-    H2 : ?E2 : intty
-    |- _ => 
-    apply type_preservation with (v:=boolv V) in H2;
+    H2 : ?E2 : ?T
+    |- _ =>
+    assert (HexpressionType : E2 : T); try assumption;
+    destruct T;
+    apply type_preservation with (v:=boolv V) in HexpressionType;
     try assumption;
-    inversion H2
+    inversion HexpressionType
   end.
 
 Theorem mult_preservation : forall (e : expr) t m v,
@@ -1873,9 +1877,8 @@ Proof.
   all: subst.
   (* find sub expression types with type preservation *)
   all: try rename t into t1.
-  all: try destruct t1.
-  all: try wrong_argument_types_1.
-  all: try wrong_argument_types_2.
+  all: try expression_type_int.
+  all: try expression_type_bool.
   (* specialize induction hypotheses to type and mult from sub exprs *)
   all: try rename m into m1.
   all: try rename IHHval into IHHval1.
