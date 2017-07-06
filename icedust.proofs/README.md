@@ -10,7 +10,7 @@ Several properties of IceDust are worth proving:
 (*) Argued informally in the [IceDust 2 paper](http://doi.org/10.4230/LIPIcs.ECOOP.2017.14)
 
 ## Type- and Multiplicity Soundness
-We prove type- and multiplicity soundess for the majority of the IceDust expression language in [multiplicities.v](icedust.proofs/multiplicities.v).
+We prove type- and multiplicity soundess for the majority of the IceDust expression language in [multiplicities.v](multiplicities.v).
 It includes all language constructs without environments (no `filter`, `find` and `orderBy`) and objects.
 
 These proofs can be extended to cover expressions with need for environments by adding environments to the interpreter.
@@ -42,4 +42,6 @@ This means that the graph which is used for dirty flagging is dynamic as well.
 
 Another extension for the proof is to cover both eager-incremental (update all caches on write) and lazy-incremental (dirty caches on write, update un read).
 
-And finally the proof could be extended with the `(inline)` behavior.
+The proof also could be extended with the `(inline)` behavior.
+
+Finally, the proof could be extended to deal with calculation strategy composition.
