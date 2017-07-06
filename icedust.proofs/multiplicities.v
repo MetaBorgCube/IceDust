@@ -1762,6 +1762,12 @@ Proof.
   eauto.
 Qed.
 
+Ltac case_match :=
+  match goal with
+  | H : context [ match ?x with _ => _ end ] |- _ => destruct x eqn:?
+  | |- context [ match ?x with _ => _ end ] => destruct x eqn:?
+  end.
+
 Theorem typed_evalF_totality : forall (e : expr) t,
   e : t ->
   exists v,
@@ -1778,26 +1784,26 @@ Proof.
   all: rewrite Hv1.
   all: apply evalR_eq_evalF in Hv1.
   all: apply type_preservation with (v:=v1) in H ; try assumption.
-  all: destruct v1 ; try inversion H.
-  all: try(apply exists_some).
+  all: unfold valty in H.
+  all: case_match; try congruence.
+  all: try apply exists_some.
   (* binops *)
   all: destruct IHtypeR2 as [v2 Hv2].
   all: rewrite Hv2.
   all: apply evalR_eq_evalF in Hv2.
   all: apply type_preservation with (v:=v2) in H0 ; try assumption.
-  all: destruct v2 ; try inversion H0.
-  all: try(apply exists_some).
-  (* get rid of wrong types *)
-  all: destruct t1.
-  all: try inversion H.
-  all: try inversion H2.
+  all: unfold valty in H0.
+  all: case_match; try congruence.
+  all: try apply exists_some.
   (* if *)
   all: destruct IHtypeR3 as [v3 Hv3].
   all: rewrite Hv3.
   all: apply evalR_eq_evalF in Hv3.
   all: apply type_preservation with (v:=v3) in H1 ; try assumption.
-  all: destruct v3 ; try inversion H1.
-  all: try(apply exists_some).
+  all: subst.
+  all: unfold valty in H1.
+  all: case_match; try congruence.
+  all: apply exists_some.
 Qed.
 
 Theorem typed_evalR_totality : forall (e : expr) t,
@@ -1842,12 +1848,6 @@ Ltac wrong_argument_types_2 :=
     apply type_preservation with (v:=boolv V) in H2;
     try assumption;
     inversion H2
-  end.
-
-Ltac case_match :=
-  match goal with
-  | H : context [ match ?x with _ => _ end ] |- _ => destruct x eqn:?
-  | |- context [ match ?x with _ => _ end ] => destruct x eqn:?
   end.
 
 Theorem mult_preservation : forall (e : expr) t m v,
