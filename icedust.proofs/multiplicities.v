@@ -1882,6 +1882,12 @@ Ltac wrong_argument_types_2 :=
     inversion H2
   end.
 
+Ltac case_match :=
+  match goal with
+  | H : context [ match ?x with _ => _ end ] |- _ => destruct x eqn:?
+  | |- context [ match ?x with _ => _ end ] => destruct x eqn:?
+  end.
+
 Theorem mult_preservation : forall (e : expr) t m v,
   e : t ->
   e ~ m ->
@@ -1893,9 +1899,9 @@ Proof.
   generalize dependent m.
   induction Hval.
   all: intros.
-  (* literals of mult one *)
+  (* proof literals of mult one *)
   all: try(simpl; constructor).
-  (* binops and if *)
+  (* inline types *)
   all: inversion Htype.
   all: subst.
   (* get rid of wrong argument type cases *)
@@ -1903,10 +1909,12 @@ Proof.
   all: try destruct t1.
   all: try wrong_argument_types_1.
   all: try wrong_argument_types_2.
-  (* happy path *)
+  (* inline multiplicities *)
   all: inversion Hmult.
   all: subst.
+  (* proof null literals *)
   all: try constructor.
+  (* rename type and multiplicity equasions obtained from inversion *)
   all: rename_He1ty e1.
   all: try(rename_He2ty e2).
   all: try(rename_He3ty e3).
@@ -1915,6 +1923,7 @@ Proof.
   all: try(rename_He3mu e3).
   all: try rename m into m1.
   all: try rename IHHval into IHHval1.
+  (* specialize induction hypotheses to type and mult from sub exprs *)
   all: specialize (IHHval1 m1).
   all: specialize (IHHval1 He1mu).
   all: try(specialize (IHHval2 m2)).
@@ -1945,15 +1954,8 @@ Proof.
   all : try reflexivity.
   (* cases with optionals *)
   all : simpl.
-  all : try(destruct divo; reflexivity).
-  all : try(destruct moduloo; reflexivity).
-  all : try(destruct nth_error; reflexivity).
-  all : try(destruct eqb; reflexivity).
-  all : try(destruct beq; reflexivity).
-  all : try(destruct eqb; try reflexivity;
-            destruct eqb; try reflexivity;
-            destruct indexOf_nat; reflexivity).
-  all : try(destruct beq; try reflexivity;
-            destruct beq; try reflexivity;
-            destruct indexOf_bool; reflexivity).
+  all : case_match; try reflexivity.
+  all : case_match.
+  all : inversion Heql.
+  all : reflexivity.
 Qed.
