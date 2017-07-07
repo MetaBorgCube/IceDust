@@ -14,4 +14,3 @@ language
   provider : target/metaborg/stratego.ctree
   provider : target/metaborg/stratego-javastrat.jar
   provider : lib-js/nashorn.jar
-  provider : lib-js/icedust.jslib-0.1.0-SNAPSHOT.jar
