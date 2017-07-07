@@ -1,6 +1,7 @@
 var React = require('react');
 var Class = require('jsface').Class;
 var _ = require('lodash');
+var Functions = require('lib/functions');
 
 var Lifted = require('./Lifted');
 
@@ -19,7 +20,7 @@ var ResultEntry = Class(React.Component, {
       if(result.type !== 'View'){
         value = React.createElement('pre', {
           style: {
-            whitespace: 'pre-wrap',
+            whiteSpace: 'pre-wrap',
             wordWrap: 'break-word'
           }
         },
@@ -29,7 +30,8 @@ var ResultEntry = Class(React.Component, {
       return value;
     }
 
-    this.LiftedValue = Lifted(function(props, state){
+    
+    function lift(props, state){
       var calc = result.calculation(state);
       var value = calc.result;
       if(_.isArray(value)){
@@ -40,7 +42,11 @@ var ResultEntry = Class(React.Component, {
         value = wrap(value);
       }
       return _.assign({}, calc, {result: value});
-    })
+    }
+    
+    Functions.tryRenameFunctionName(lift, result.expression);
+    
+    this.LiftedValue = Lifted(lift)
   },
 
   render: function(){
@@ -60,52 +66,5 @@ var ResultEntry = Class(React.Component, {
     )
   }
 });
-
-// class ResultEntry extends Component{
-//   componentWillMount(props){
-//     this.bla();
-//   }
-//   componentWillReceiveProps(props){
-//     if(this.props.result !== props.result){
-//       this.bla()
-//     }
-//   }
-//
-//   bla(){
-//     let result = this.props.result;
-//     function wrap(value){
-//       if(result.type !== 'View'){
-//         value = <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}> { value } </pre>
-//       }
-//       return value;
-//     }
-//
-//     this.LiftedValue = Lifted(function(props, state){
-//       let calc = result.calculation(state);
-//       let value = calc.result;
-//       if(_.isArray(value)){
-//         value = <div>
-//           { value.map((e, i) => <div key={i}>{wrap(e)}</div>) }
-//         </div>;
-//       } else{
-//         value = wrap(value);
-//       }
-//       return _.assign({}, calc, {
-//         result: value
-//       });
-//     });
-//   }
-//
-//   render(){
-//     let result = this.props.result;
-//     let title = result.expression + " :: " + result.type + result.multiplicity;
-//
-//     let LiftedValue = this.LiftedValue;
-//     return <div>
-//       <h3><pre> { title } </pre></h3>
-//       <LiftedValue/>
-//     </div>;
-//   }
-// }
 
 module.exports = ResultEntry;

@@ -1,5 +1,9 @@
 var _ = require('lodash');
 var redux = require('redux');
+var React = require('react');
+var ReactDOMServer = require('react-dom-server');
+
+var PixieDustProvider = require('./components/PixieDustProvider');
 
 var defaultDebug = false;
 var defaultOptionalActions = ['@@redux/init', '@@INIT', '@@redux/INIT'];
@@ -79,8 +83,19 @@ function makeStore(reducer, initialState){
   }
 }
 
+function castViewToString(store, view){
+	var wrapped = React.createElement(PixieDustProvider, 
+		{
+			store: store
+		}, 
+		view
+	);
+	return ReactDOMServer.renderToStaticMarkup(wrapped);
+}
+
 module.exports = {
   generateUniqueId: generateUniqueId,
   makeReducer: makeReducer,
-  makeStore: makeStore
+  makeStore: makeStore,
+  castViewToString: castViewToString
 };

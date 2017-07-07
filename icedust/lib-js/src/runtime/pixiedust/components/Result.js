@@ -20,14 +20,4 @@ var Result = Class(React.Component, {
   }
 });
 
-// class Result extends Component{
-//   render(){
-//     let result = this.props.result;
-//     let entries = result.map((r, i) => <ResultEntry key={i} result={r}/>);
-//     return <div>
-//       { entries }
-//     </div>;
-//   }
-// }
-
 module.exports = Result;
