@@ -60,8 +60,10 @@ rules
   ]|
   
   invalidation-statements : (ZeroOrMore(), x_functionName, exp_ref) -> js-stmt* |[
-    for(var i = 0 ; i < exp_ref.length ; i++){
-      state = x_functionName(state, exp_ref[i]);
+    if(exp_ref != null){
+      for(var i = 0 ; i < exp_ref.length ; i++){
+        state = x_functionName(state, exp_ref[i]);
+      }
     }
   ]|  
     

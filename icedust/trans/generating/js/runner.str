@@ -4,5 +4,6 @@ imports
 
 rules
   runner-wrap-module: exp_program -> js-program |[
-    Runtime.runner(exp_program);
+    var runner = require('runner');
+    runner(exp_program);
   ]| 

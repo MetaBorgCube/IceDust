@@ -7,7 +7,8 @@ imports
   signatures/Types-sig
   
   lib/js/js-util
-
+  lib/string
+  
 rules
 
   attribute-name: attribute -> $[[entity]_[attribute]]
@@ -35,6 +36,8 @@ rules
   multiplicity-function-postfix = upper-one ; !""
   multiplicity-function-postfix = upper-many ; !"_Many"
   
+  empty-array = !js-exp |[constants.EMPTY_ARRAY]|
+  empty-object = !js-exp |[constants.EMPTY_OBJECT]|
   
   id-var = upper-one ; !"id"
   id-var = upper-many ; !"ids"
@@ -55,3 +58,8 @@ rules
   entityname-to-create-action-name : x_entityname -> $[create[x_Entityname]]
     with
       x_Entityname := <ucfirst> x_entityname
+      
+      
+      
+      
+      

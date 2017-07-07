@@ -19,7 +19,7 @@ rules
       var x_result = [];
       var oldScope = scope;
       (function(){
-        var scope = Runtime._.assign({}, oldScope, x_ids);
+        var scope = _.assign({}, oldScope, x_ids);
         stmts_expressions
       })();
       return x_result;

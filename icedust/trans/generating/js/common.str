@@ -5,6 +5,7 @@ imports
   signatures/Types-sig
   api/model-names-api  
   api/types-api
+  generating/js/names
 
 rules
 
@@ -13,7 +14,7 @@ rules
   exp-empty = upper-one ; exp-empty-one
   exp-empty = upper-many ; exp-empty-many
   exp-empty-one = !js-exp |[null]|
-  exp-empty-many = !js-exp |[Runtime.EMPTY_ARRAY]|
+  exp-empty-many = empty-array
   
   exp-attribute-empty: attribute -> js-exp |[undefined]|
     where

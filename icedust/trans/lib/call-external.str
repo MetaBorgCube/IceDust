@@ -35,8 +35,6 @@ rules
       cmd := <mapconcat(![<id>, " "]) ; init ; concat-strings> ["npm" | args]
     ; log(|Info(), cmd)
     
-  external eval-javascript(|)
-    
 rules
 
   /**
@@ -67,6 +65,9 @@ rules
   call-node(|mainFile): _ -> <call-external-printcmd-read-output(|"node", args)>
     with
       args := [mainFile]
-      
+  
+rules
+  external eval-javascript(|)
   external open-browser(|)
-      
+  external make-module-tree(|)
+  

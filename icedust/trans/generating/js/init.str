@@ -9,17 +9,18 @@ imports
   
 rules
   generate-init: moduleName -> js-stmt* |[
-    var x_scope = Runtime.EMPTY_OBJECT;
+    var x_scope = exp_emptyObject;
     var emptyState = exp_initialState;  
     module.exports.emptyState = emptyState;
   ]|
     with
       x_scope := <scope-var>
+    ; exp_emptyObject := <empty-object>
     ; exp_initialState := <exp-initial-state> moduleName
       
       
   exp-initial-state : moduleName -> js-exp |[
-    Runtime.immutable.Map({
+    immutable.Map({
       prop_entity*,
       prop_initAttribute*
     })
@@ -33,11 +34,11 @@ rules
     )> entity*
     ; prop_initAttribute* := <filter(field-to-prop)> field*
     
-  entityname-to-prop : entityName -> js-prop |[exp_entityName: Runtime.immutable.Map()]|
+  entityname-to-prop : entityName -> js-prop |[exp_entityName: immutable.Map()]|
     with 
       exp_entityName := <js-string> entityName
       
-  field-to-prop: attribute -> js-prop |[exp_key : Runtime.immutable.Map()]|
+  field-to-prop: attribute -> js-prop |[exp_key : immutable.Map()]|
     where
       attributename-is-derivation <+ is-relationname
     with
