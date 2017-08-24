@@ -62,5 +62,5 @@ def notifyBuild(String buildStatus) {
     color = '#4183C4' // Slack blue
   }
 
-  //slackSend (color: color, message: message, channel: '#webdsl2-dev')
+  slackSend (color: color, message: message, channel: '#webdsl2-dev')
 }
