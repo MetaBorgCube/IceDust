@@ -1,15 +1,14 @@
 module weblab
 
-/*
- A simplified model of a grade calculation and course statistics tool in the university.
+// A simplified model of a grade calculation and course statistics tool in the university.
+//
+// It features:
+//  - weighted average grades, for example the course grade is 70% exam and 30% practical
+//  - optional minimum grades, for example the exam and practical both need to be at least a 5.0 before a course grade is given
+//  - optional deadlines and deadline extensions, if an assignment is turned in after a deadline but before the deadline extension a grade penalty is applied. If the assignment is turned in after the deadline extension, no grade.
+//  - personal deadlines and deadline extensions, teachers can assign students a personal deadline
+//  - assignment and course statistics
 
- It features:
-  - weighted average grades, for example the course grade is 70% exam and 30% practical
-  - optional minimum grades, for example the exam and practical both need to be at least a 5.0 before a course grade is given
-  - optional deadlines and deadline extensions, if an assignment is turned in after a deadline but before the deadline extension a grade penalty is applied. If the assignment is turned in after the deadline extension, no grade.
-  - personal deadlines and deadline extensions, teachers can assign students a personal deadline
-  - assignment and course statistics
-*/
 model
 
   entity Student {
@@ -46,9 +45,9 @@ model
     question   : String?
     minimum    : Float?
     weight     : Float   = 1.0 (default)
-    deadline   : Datetime?  deadline is optional
-    extension  : Datetime?  deadline extension is optional
-    latePenalty: Float?     penalty for using the full deadline extension
+    deadline   : Datetime? // deadline is optional
+    extension  : Datetime? // deadline extension is optional
+    latePenalty: Float?    // penalty for using the full deadline extension
     
     avgGrade   : Float?  = avg(submissions.grade)
     passPerc   : Float?  = sum(submissions.passInt) / count(submissions) * 100.0
@@ -59,16 +58,16 @@ model
     answer     : String?
     date       : Datetime?
     
-    deadline   : Datetime? = assignment.deadline (default)  teacher can overrride the deadline for a specific student
-    extension  : Datetime? = assignment.extension (default)  teacher can override the deadline extension for a specific student
+    deadline   : Datetime? = assignment.deadline (default) // teacher can overrride the deadline for a specific student
+    extension  : Datetime? = assignment.extension (default) // teacher can override the deadline extension for a specific student
     
     onTime     : Boolean = date <= deadline
                            <+
-                           count(deadline)==0 || count(date)==1  no deadline is always on time
+                           count(deadline)==0 || count(date)==1 // no deadline is always on time
 
     onExtension: Boolean = !onTime && date <= extension
                            <+
-                           false  no extension means late, no submission date also means late
+                           false // no extension means late, no submission date also means late
 
     latePenalty: Float   = if(onExtension)
                              (date - deadline) / (extension - deadline) * assignment.latePenalty
@@ -80,8 +79,8 @@ model
     childGrade : Float?  = sum(children.gradeWeighted) / sum(assignment.children.weight)
     baseGrade  : Float?  = switch {
                              case childPass => childGrade
-                             default        => no value  if one of child assignments not passed, no grade in the parent assignment
-                           } (default)                   if this a leaf assginment, then the grade is entered here
+                             default        => no value // if one of child assignments not passed, no grade in the parent assignment
+                           } (default)                  // if this a leaf assginment, then the grade is entered here
     grade      : Float?  = switch {
                              case onTime      => baseGrade
                              case onExtension => baseGrade - latePenalty
@@ -145,7 +144,7 @@ data
           }
       }
     enrollments = 
-      enA {  alice succeeds math
+      enA { // alice succeeds math
         student = alice
         submission =
           mathAlice {
@@ -167,7 +166,7 @@ data
               }
           }
       },
-      enB {  bob fails, because his exam is too low
+      enB { // bob fails, because his exam is too low
         student = bob
         submission =
           mathBob {
@@ -189,7 +188,7 @@ data
               }
           }
       },
-      enC {  charlie fails, because with the penalty for his practical his practical is too low
+      enC { // charlie fails, because with the penalty for his practical his practical is too low
         student = charlie
         submission =
           mathCharlie {
@@ -211,7 +210,7 @@ data
               }
           }
       },
-      enD {  dave fails, because his practical is submitted after the deadline extension
+      enD { // dave fails, because his practical is submitted after the deadline extension
         student = dave
         submission =
           mathDave {
@@ -233,7 +232,7 @@ data
               }
           }
       },
-      enE {  eve succeeds, as she got a deadline extension
+      enE { // eve succeeds, as she got a deadline extension
         student = eve
         submission =
           mathEve {

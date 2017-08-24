@@ -1,27 +1,27 @@
 module model
 
 rules
-/*
-   modeling partial classes through importing Entity2{e}
-   modeling inheritance through importing Entity{parent}
-  
-   module_scope ---> Entity2{e}
-     |         ^
-     |          \
-     |           P
-     v            \
-   Entity{e} =I=> entity_scope     Implicit{"this"}
-                 /       \       __^  
-                I         J  __/      
-               /      __/  \          
-              v     /       v         
-   entity_scope_local      entity_scope_inherit
-     |          ||              ||
-     |          I               I
-     |          ||              ||
-     v          v               v
-   Member{m}  Entity2{e}   Entity{parent}
-*/
+
+  // modeling partial classes through importing Entity2{e}
+  // modeling inheritance through importing Entity{parent}
+  //
+  // module_scope ---> Entity2{e}
+  //   |         ^
+  //   |          \
+  //   |           P
+  //   v            \
+  // Entity{e} =I=> entity_scope     Implicit{"this"}
+  //               /       \       __^  
+  //              I         J  __/      
+  //             /      __/  \          
+  //            v     /       v         
+  // entity_scope_local      entity_scope_inherit
+  //   |          ||              ||
+  //   |          I               I
+  //   |          ||              ||
+  //   v          v               v
+  // Member{m}  Entity2{e}   Entity{parent}
+
   [[ Entity(e, parents, st, as) ^ (module_scope) ]] :=
     distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES, //currently sees all names, also through -N->, will be fixed
     distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
@@ -82,57 +82,56 @@ rules
     entity_scope -J-> entity_scope_inherit,
     Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
 
-/*
-  [[ Trait(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
-    distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
-    distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
-    Entity{e} <- module_scope,
-    entity_scope -P-> module_scope,
-    Entity{e} =I=> entity_scope,
-    e_type == TEntity(Entity{e}),
-    Entity{e} : e_type,
-
-    e_type <test! IsType(),
-    e_type <test! CanCompare(),
-    TString() <cast! e_type,
-    TNoValue() <sub! e_type,
-
-    Entity{e}.ns := Entity(),
-    Implicit{"this"} <- entity_scope,
-    Implicit{"this"} <- entity_scope_local,
-    Implicit{"this"} <- entity_scope_inherit,
-    Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
-    [[ st ^ (module_scope) : e_strat ]],
-    Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
-    Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
-    Entity2{e} <=I= entity_scope_local, // import all from that reference
-    new entity_scope,
+//  [[ Trait(e, parents, st, as) ^ (module_scope) ]] := // identical to Entity
+//    distinct/name W(entity_scope_local)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut names." @NAMES,
+//    distinct/name V(entity_scope_inherit)/Member | error "Duplicate attribute, relation, role, inverse, or shortcut import"@parents,
+//    Entity{e} <- module_scope,
+//    entity_scope -P-> module_scope,
+//    Entity{e} =I=> entity_scope,
+//    e_type == TEntity(Entity{e}),
+//    Entity{e} : e_type,
+//
+//    e_type <test! IsType(),
+//    e_type <test! CanCompare(),
+//    TString() <cast! e_type,
+//    TNoValue() <sub! e_type,
+//
+//    Entity{e}.ns := Entity(),
+//    Implicit{"this"} <- entity_scope,
+//    Implicit{"this"} <- entity_scope_local,
+//    Implicit{"this"} <- entity_scope_inherit,
+//    Implicit{"this"} : TTuple(TEntity(Entity{e}), TOne(), e_strat),
+//    [[ st ^ (module_scope) : e_strat ]],
+//    Map3 [[ as ^ (entity_scope_local, entity_scope, module_scope) ]],
+//    Entity2{e} -> module_scope,   // matches 0 or more times, one for each relation (like partial class definition)
+//    Entity2{e} <=I= entity_scope_local, // import all from that reference
+//    new entity_scope,
+//    
+//    Entity{e}.constructor := Trait(),
+//    new entity_scope_local,
+//    entity_scope -I-> entity_scope_local,
+//    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
+//    new entity_scope_inherit,
+//    entity_scope -J-> entity_scope_inherit,
+//    Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
     
-    Entity{e}.constructor := Trait(),
-    new entity_scope_local,
-    entity_scope -I-> entity_scope_local,
-    entity_scope_local -N-> entity_scope, // be able to query the entity_scope from entity_scope_local, edge does nothing
-    new entity_scope_inherit,
-    entity_scope -J-> entity_scope_inherit,
-    Extends [[parents ^ (entity_scope, entity_scope_inherit)]].
-*/
   Extends [[ None() ^ (entity_scope, entity_scope_inherit) ]] :=
     true.
-/*
-  Extends [[ OptionalExtends(parents_list) ^ (entity_scope, entity_scope_inherit) ]] :=
-    Map2 [[ parents_list ^ (entity_scope, entity_scope_inherit) ]].
-  
-  [[ Extends(parent) ^ (entity_scope, entity_scope_inherit) ]] :=
-    Entity{parent} -> entity_scope,
-    Entity{parent} <=I= entity_scope_inherit,
-    Entity{parent} |-> parent_def,
-    parent_def : TEntity(parent_entity),
-    parent_def.constructor := Trait() | error "Only traits can be extended",
-    Implicit{"this"} -> entity_scope,
-    Implicit{"this"} |-> this_def,
-    this_def : TTuple(TEntity(entity), this_mu, this_st),
-    TEntity(entity) <sub! TEntity(parent_entity).
-*/    
+    
+//  Extends [[ OptionalExtends(parents_list) ^ (entity_scope, entity_scope_inherit) ]] :=
+//    Map2 [[ parents_list ^ (entity_scope, entity_scope_inherit) ]].
+//  
+//  [[ Extends(parent) ^ (entity_scope, entity_scope_inherit) ]] :=
+//    Entity{parent} -> entity_scope,
+//    Entity{parent} <=I= entity_scope_inherit,
+//    Entity{parent} |-> parent_def,
+//    parent_def : TEntity(parent_entity),
+//    parent_def.constructor := Trait() | error "Only traits can be extended",
+//    Implicit{"this"} -> entity_scope,
+//    Implicit{"this"} |-> this_def,
+//    this_def : TTuple(TEntity(entity), this_mu, this_st),
+//    TEntity(entity) <sub! TEntity(parent_entity).
+    
   Extends [[ OptionalExtends(Extends(parent)) ^ (entity_scope, entity_scope_inherit) ]] :=
     Entity{parent} -> entity_scope,
     Entity{parent} <=I= entity_scope_inherit,
