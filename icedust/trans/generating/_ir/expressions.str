@@ -51,6 +51,7 @@ rules // aggregations
 rules // multiplicities
   
   lib-call-postfix-mults:    Merge(_, _)            ->"merge"
+  lib-call-postfix-mults:    Difference(_, _)       ->"difference"
   lib-call-postfix-mults:    ChoiceLeft(_, _)       ->"choice"
 
 rules // collections

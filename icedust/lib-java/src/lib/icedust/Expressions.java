@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -71,6 +72,37 @@ public class Expressions {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     c.addAll(e2);
+    return c;
+  }
+  
+  public static <E> E difference_One_One(E e1, E e2) {
+    if (e1 == null)
+      return null;
+    if (e1.equals(e2))
+      return null;
+    return e1;
+  }
+
+  public static <E> E difference_One_Many(E e1, Collection<E> e2) {
+    if (e1 == null)
+      return null;
+    if(e2.contains(e1))
+      return null;
+    return e1;
+  }
+
+  public static <E> Collection<E> difference_Many_One(Collection<E> e1, E e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    if (e2 != null)
+      c.removeAll(Collections.singleton(e2));
+    return c;
+  }
+
+  public static <E> Collection<E> difference_Many_Many(Collection<E> e1, Collection<E> e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    c.removeAll(e2);
     return c;
   }
 

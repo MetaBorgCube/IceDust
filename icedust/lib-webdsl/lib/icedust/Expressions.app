@@ -11,6 +11,10 @@ section java implementations
     static merge_One_Many(Object, List<Object>) : List<Object>
     static merge_Many_One(List<Object>, Object) : List<Object>
     static merge_Many_Many(List<Object>, List<Object>) : List<Object>
+    static difference_One_One(Object, Object) : Object
+    static difference_One_Many(Object, List<Object>) : Object
+    static difference_Many_One(List<Object>, Object) : List<Object>
+    static difference_Many_Many(List<Object>, List<Object>) : List<Object>
     static first(List<Object>) : Object
     static first(List<Object>, Int) : List<Object>
     static indexOf(List<Object>, Object) : Int

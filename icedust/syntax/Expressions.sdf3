@@ -38,6 +38,7 @@ context-free syntax // operators
   Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
+  Exp.Difference         = <<Exp> \\ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
    Exp.If3 = <
@@ -157,6 +158,7 @@ context-free priorities
   } >
   { left:
     Exp.Merge
+    Exp.Difference
   } >
   { left:
     Exp.ChoiceLeft

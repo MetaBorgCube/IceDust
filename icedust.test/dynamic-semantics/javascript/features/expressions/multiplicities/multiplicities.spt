@@ -20,9 +20,40 @@ fixture [[
   
   execute
   f.input1 ++ f.input2
+  
+  42 \ 42
+  42 \ 43
+  no value \ 42
+  42 \ no value
+  42 \ (42 ++ 43)
+  42 \ (43 ++ 44)
+ 
+  (42 ++ 43) \ 42
+  (42 ++ 43) \ 44
+  (42 ++ 43) \ no value
+  (42 ++ 43) \ (41 ++ 42)
+  (42 ++ 43) \ (43 ++ 44)
+  (42 ++ 43 ++ 44) \ (42 ++ 43)
+  (42 ++ 43 ++ 44) \ (42 ++ 43 ++ 44)
+  (42 ++ 42) \ 42
+  
   [[...]] 
 ]]
 
-test multiplicities [[ ]] transform "SPT -> Build" to
+test javascript multiplicities [[ ]] transform "SPT -> Build" to
 "[5]
+null
+42
+null
+42
+null
+42
+[43]
+[42,43]
+[42,43]
+[43]
+[42]
+[44]
+[]
+[]
 "
