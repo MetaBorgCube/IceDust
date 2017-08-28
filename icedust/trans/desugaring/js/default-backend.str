@@ -1,9 +1,0 @@
-module desugaring/js/default-backend
-
-imports
-  signatures/js/Config-sig
-  
-  lib/origin
-
-rules
-  generate-default-backend: c -> <custom-origin(|c)> JavascriptBackend(<custom-origin(|c)> None(), <custom-origin(|c)> None())

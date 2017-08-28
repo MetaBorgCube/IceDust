@@ -17,8 +17,6 @@ imports // functions
   lib/traverse
   lib/lists-tuples
   
-//  desugaring/js/default-backend
-  
 rules
   
   generate-omitted =
@@ -235,14 +233,13 @@ rules // config
     try(config-section-generate-backend);
     try(config-section-generate-features);
     try(config-section-add-eventual);
-    bottomup(try(javabackend-generate-phase));
     bottomup(try(backend-generate-defaults))
   
   config-section-generate-backend: c -> c'
     where
       configsection-has-no-backend
     with
-      backend := <generate-default-backend<+generate-default-java-backend>c
+      backend := <generate-default-backend<+generate-default-backend-java>c
     ; c'      := <configsection-add(!backend)>c
   
   config-section-generate-features: c -> c'
@@ -257,8 +254,6 @@ rules // config
                   ]);
       c'       := <configsection-add(!features)>c
       
-  javabackend-generate-phase: j@JavaBackend(None()) -> JavaBackend(<custom-origin(|j)>Execute())
-      
   config-section-add-eventual: c@ConfigSection(c*) -> ConfigSection(c'*)
     where
       configsection-is-webdslbackend
@@ -266,9 +261,21 @@ rules // config
       eventual := <custom-origin(|c)>EventualCalculation();
       c'*      := <map(try(languagefeatures-add(!eventual)))>c*
       
+  generate-default-backend = fail // implemented by language extensions, for js use: generate-default-backend = generate-default-backend-js
+  generate-default-backend-java: c -> <custom-origin(|c)>JavaBackend(None())
+  generate-default-backend-js  : c -> <custom-origin(|c)>JavascriptBackend(<custom-origin(|c)> None(), <custom-origin(|c)> None())
   
-  generate-default-java-backend: c -> <custom-origin(|c)>JavaBackend(None())
-  generate-default-backend = fail // implemented by language extensions
+  backend-generate-defaults : j@JavaBackend(None()) -> JavaBackend(<custom-origin(|j)>Execute())
   
-  backend-generate-defaults = fail
+  backend-generate-defaults = ?b@JavascriptBackend(phase, target) ; JavascriptBackend(
+        try(javascript-backend-default-phase(|b))
+      , try(javascript-backend-default-target(|b))
+    ) 
+
+  javascript-backend-default-phase(|o)  : None() -> <custom-origin(|o)> Execute()
+  javascript-backend-default-target(|o) : None() -> <custom-origin(|o)> JavascriptTarget()
+  
+  javascript-backend-default-target(|o) : HtmlTarget(None()) -> HtmlTarget(resolve)
+    with
+      resolve := <custom-origin(|o)> ResolveInline()
   

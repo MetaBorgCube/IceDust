@@ -16,7 +16,7 @@ imports
   
   generating/js/runner
   
-  signatures/js/Config-sig
+  signatures/Config-sig
   
   js/js-util
 
