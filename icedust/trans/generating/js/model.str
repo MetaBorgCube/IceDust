@@ -1,0 +1,47 @@
+module generating/js/model
+
+imports
+  api/model-names-api
+  api/module-names-api
+  
+  lib/js/js-util
+  
+  signatures/Types-sig
+  
+  generating/js/invalidation
+  generating/js/access
+  generating/js/names
+  generating/js/common
+  generating/js/getter
+  generating/js/setter
+  generating/js/calculate
+
+rules
+    
+  generate-model-statements : moduleName -> js-stmt* |[
+      stmt_getters*
+      stmt_setters*
+      stmt_add*
+      stmt_invalidations*
+      stmt_calculate*
+  ]|
+  with
+    attributes := <modulename-get-attributes> moduleName
+    ; stmt_getters* := <mapconcat(getter-functions)> attributes
+    ; stmt_setters* := <filter(generate-setter) ; concat> attributes
+    ; stmt_add* := <filter(generate-add) ; concat> attributes
+    ; stmt_invalidations* := <mapconcat(generate-invalidation-function)> attributes
+    ; stmt_calculate* := <filter(generate-calculate-functions) ; concat> attributes
+  
+  modulename-get-attributes = 
+    modulename-get-entitynames 
+    ; mapconcat(\e -> <conc> (<entityname-get-attributenames> e, <entityname-get-relationnames> e)\)
+  
+  generate-memoize: attribute -> js-stmt |[null;]|
+    where
+      attributename-is-derivation
+    with
+      exp := <attributename-get-expr> attribute
+    ; collect-om(collect-access)
+  
+    

@@ -1,0 +1,56 @@
+module calculateMany
+
+language icedust
+
+fixture [[
+
+  module calculateMany
+  
+  config
+    backend: Javascript
+    
+  model
+  
+  entity Node {
+    name : String
+  }
+  
+  relation Node.from <-> Node.to
+  relation Node.reachable * = to ++ to.reachable <-> Node
+  
+data
+
+  a : Node {
+    name = "a"
+    to = b {
+      name = "b"
+      to = c {
+        name = "c"
+      }
+    }
+  }
+
+execute
+  a.name
+  b.name
+  c.name
+  a.to.name
+  a.from.name
+  a.to.to.name
+  a.to.to.to.name
+  a.reachable.name
+  [[...]]
+]]
+
+test correctly flatten derived relation [[]] transform "SPT -> Build" to
+"a
+b
+c
+[b]
+[]
+[c]
+[]
+[b,c]
+"
+
+

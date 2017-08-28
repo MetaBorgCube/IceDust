@@ -1,5 +1,9 @@
 module Config
 
+imports
+
+  Common
+
 context-free syntax
 
   Config.JavaBackend = <
@@ -10,6 +14,8 @@ context-free syntax
   Phase.Generate = <phase : generate>
   Phase.Compile  = <phase : compile>
   Phase.Execute  = <phase : execute>
+  
+context-free syntax
   
   Config.WebDSLBackend = <
     backend : WebDSL
@@ -24,6 +30,30 @@ context-free syntax
   
   TierSplit.None        = <tiersplit : None>
   TierSplit.IntraObject = <tiersplit : Object>
+  
+context-free syntax
+
+  Config.JavascriptBackend = <
+    backend : Javascript
+    <BackendPhase?>
+    <BackendTarget?>
+  >
+ 
+  BackendPhase.Generate = <phase : generate>
+  BackendPhase.Execute = <phase : execute>
+  BackendPhase.Eval = <phase: eval<EvalOptions>>
+  
+  EvalOptions.Options = <(<EvalOption*>)>
+  EvalOptions.NoOptions = <>
+  EvalOption.Overwrite = <overwrite>
+  
+  BackendTarget.JavascriptTarget = <target: javascript>
+  BackendTarget.HtmlTarget = <target: html <ResolveRuntime?>>
+  
+  ResolveRuntime.ResolveInline =     <runtime: inline>
+  ResolveRuntime.ResolveFromSource = <runtime: "<STRING>">
+  
+context-free syntax
   
   Config.LanguageFeatures = <
     language features : <{LanguageFeature ", "}*>

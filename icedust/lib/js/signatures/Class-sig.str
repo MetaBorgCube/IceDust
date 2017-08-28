@@ -1,0 +1,36 @@
+module js/signatures/Class-sig
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+  js/signatures/Statement-sig
+  js/signatures/Assignment-sig
+
+
+signature
+  constructors
+    ClassDeclaration                 : ID * ClassHeritage * ClassBody -> ClassDeclaration
+    Extends                          : Expression -> ClassHeritage
+    ExtendsObject                    : ClassHeritage
+    ClassBody                        : List(ClassElement) -> ClassBody
+    MethodDefinition                 : ID * List(LeftHandSideExpression) * List(Statement) -> ClassElement
+    ClassDeclaration-Plhdr           : ClassDeclaration
+    Expression-Plhdr                 : Expression
+    ClassHeritage-Plhdr              : ClassHeritage
+    ClassBody-Plhdr                  : ClassBody
+    ClassElement-Plhdr               : ClassElement
+    ID-Plhdr                         : ID
+    LeftHandSideExpression-Plhdr     : LeftHandSideExpression
+    Statement-Plhdr                  : Statement
+    ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
+    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
+    ClassHeritage-Plhdr              : COMPLETION-INSERTION -> ClassHeritage
+    ClassBody-Plhdr                  : COMPLETION-INSERTION -> ClassBody
+    ClassElement-Plhdr               : COMPLETION-INSERTION -> ClassElement
+    ID-Plhdr                         : COMPLETION-INSERTION -> ID
+    LeftHandSideExpression-Plhdr     : COMPLETION-INSERTION -> LeftHandSideExpression
+    Statement-Plhdr                  : COMPLETION-INSERTION -> Statement
+    ClassHeritage-Opt-Plhdr          : ClassHeritage
+    ClassElement-Opt-Plhdr           : ClassElement
+    LeftHandSideExpression-Opt-Plhdr : LeftHandSideExpression
+    Statement-Opt-Plhdr              : Statement

@@ -9,6 +9,7 @@ signature sorts
 signature constructors
   
   Java               : TargetLanguage
+  JavaScript         : TargetLanguage 
   WebDSL             : TargetLanguage
   WebDSLEager        : TargetLanguage
   WebDSLEventual     : TargetLanguage

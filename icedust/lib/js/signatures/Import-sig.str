@@ -1,0 +1,42 @@
+module js/signatures/Import-sig
+
+imports
+  js/signatures/Common-sig
+
+
+signature
+  constructors
+    Import                      : ImportClause * FromClause -> Import
+    ImportedDefaultBinding      : ID -> ImportClause
+    DefaultWithNonDefaultImport : ImportedBinding * NonDefaultImport -> ImportClause
+    NameSpaceImport             : ImportedBinding -> ImportClause
+    NamedImports                : List(ImportSpecifier) -> ImportClause
+                                : ID -> ImportedBinding
+    NameSpaceImport             : ID -> NameSpaceImport
+    NamedImports                : ImportSpecifier -> NamedImports
+                                : ImportedBinding -> ImportSpecifier
+    NamedImportSpecifier        : ID * ImportedBinding -> ImportSpecifier
+                                : NameSpaceImport -> NonDefaultImport
+                                : NamedImports -> NonDefaultImport
+    FromClause                  : STRING -> FromClause
+    Import-Plhdr                : Import
+    ImportClause-Plhdr          : ImportClause
+    ImportSpecifier-Plhdr       : ImportSpecifier
+    ID-Plhdr                    : ID
+    ImportedBinding-Plhdr       : ImportedBinding
+    NameSpaceImport-Plhdr       : NameSpaceImport
+    NonDefaultImport-Plhdr      : NonDefaultImport
+    NamedImports-Plhdr          : NamedImports
+    FromClause-Plhdr            : FromClause
+    STRING-Plhdr                : STRING
+    Import-Plhdr                : COMPLETION-INSERTION -> Import
+    ImportClause-Plhdr          : COMPLETION-INSERTION -> ImportClause
+    ImportSpecifier-Plhdr       : COMPLETION-INSERTION -> ImportSpecifier
+    ID-Plhdr                    : COMPLETION-INSERTION -> ID
+    ImportedBinding-Plhdr       : COMPLETION-INSERTION -> ImportedBinding
+    NameSpaceImport-Plhdr       : COMPLETION-INSERTION -> NameSpaceImport
+    NonDefaultImport-Plhdr      : COMPLETION-INSERTION -> NonDefaultImport
+    NamedImports-Plhdr          : COMPLETION-INSERTION -> NamedImports
+    FromClause-Plhdr            : COMPLETION-INSERTION -> FromClause
+    STRING-Plhdr                : COMPLETION-INSERTION -> STRING
+    ImportSpecifier-Opt-Plhdr   : ImportSpecifier

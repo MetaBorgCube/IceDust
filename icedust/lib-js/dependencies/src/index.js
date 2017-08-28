@@ -1,0 +1,9 @@
+module.exports['immutable'] = require('immutable');
+module.exports['jsface'] = require('jsface');
+module.exports['lodash'] = require('lodash');
+module.exports['moment'] = require('moment');
+module.exports['prop-types'] = require('prop-types');
+module.exports['react'] = require('react');
+module.exports['react-dom'] = require('react-dom');
+module.exports['react-dom-server'] = require('react-dom/server');
+module.exports['redux'] = require('redux');

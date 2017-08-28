@@ -1,0 +1,7 @@
+module lib/option
+
+rules
+
+  try-option(s) = s < !Some(<id>) + !None()
+
+  flatten-option-list = filter(\Some(x) -> x\)

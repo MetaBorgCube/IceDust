@@ -1,0 +1,83 @@
+module generating/js/invalidation
+
+imports
+  api/module-names-api
+  api/model-names-api
+  
+  signatures/Types-sig
+  lib/js/js-util
+  analysis2/path
+  
+  generating/js/model
+  generating/js/names
+  generating/js/common
+  generating/js/access
+  generating/js/expression
+  
+rules
+  
+  generate-invalidation-function : attribute ->
+    js-stmt* |[ 
+        function x_name (state, id) {
+            stmts_derivedValueInvalidation
+            stmts_invalidations
+            return state;
+        }
+        module.exports.x_name = x_name;
+    ]|
+    with
+      x_name := <invalidation-function-name> attribute
+      ; stmts_derivedValueInvalidation := <generate-derived-value-invalidation> attribute
+      ; flows := <name-get-flowsto-paths> attribute
+      ; stmts_invalidations := <mapconcat(flowsto-to-invalidation-statements)> flows
+  
+  
+  flowsto-to-invalidation-statements: DataflowPath(_, MemberAccess(exp, field)) -> js-stmt*|[
+    (function(){
+      var x_first = x_id;
+      stmts_ref
+      stmts_invalidation
+    })();
+  ]|
+    with
+      x_first := <int-to-varname> 0
+    ; x_id := "id"
+    ; (exp_ref, stmts_ref, _) := <exp-to-js-stmts(|1)> exp
+    ; m := <get-multiplicity ; simplify-multiplicity> exp
+    ; x_functionName := <invalidation-function-name> field
+    ; stmts_invalidation := <invalidation-statements> (m, x_functionName, exp_ref)
+  
+  flowsto-to-invalidation-statements: DataflowPath(_, Ref(field)) -> <invalidation-statements> (m, x_functionName, exp_ref)
+    with
+      m := One()
+    ; x_functionName := <invalidation-function-name> field
+    ; exp_ref := <id-var ; js-var> m
+  
+  invalidation-statements : (One(), x_functionName, exp_ref) -> js-stmt* |[
+    if(exp_ref != null) {
+      state = x_functionName(state, exp_ref);
+    }
+  ]|
+  
+  invalidation-statements : (ZeroOrMore(), x_functionName, exp_ref) -> js-stmt* |[
+    if(exp_ref != null){
+      for(var i = 0 ; i < exp_ref.length ; i++){
+        state = x_functionName(state, exp_ref[i]);
+      }
+    }
+  ]|  
+    
+  generate-derived-value-invalidation: attribute ->
+    js-stmt* |[
+      state = state.update(exp_invalidationattribute, function(set) { 
+        return set.remove(id);
+      });
+    ]|
+    where
+      <name-is-derived> attribute
+    with
+      exp_invalidationattribute := <attribute-name ; js-string> attribute
+    
+  generate-derived-value-invalidation = ![]
+     
+  

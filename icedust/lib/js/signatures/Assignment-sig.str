@@ -1,0 +1,43 @@
+module js/signatures/Assignment-sig
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+
+
+signature
+  constructors
+    ObjectAssignmentPattern      : List(AssignmentProperty) -> LeftHandSideExpression
+    ArrayAssignmentPattern       : AssignElements -> LeftHandSideExpression
+                                 : ID -> LeftHandSideExpression
+                                 : ID -> AssignmentProperty
+    Reference                    : ID * LeftHandSideExpression -> AssignmentProperty
+    AssignElement                : LeftHandSideExpression -> AssignElement
+    Elision                      : AssignElement
+    AssignElements               : Elem * List(ElemTail) -> AssignElements
+    NoElement                    : Elem
+                                 : LeftHandSideExpression -> Elem
+    CommaRule                    : LeftHandSideExpression -> ElemTail
+    Empty                        : ElemTail
+                                 : LeftHandSideExpression -> AssignmentElement
+    RestElement                  : LeftHandSideExpression -> AssignmentElement
+    AssignmentProperty-Plhdr     : AssignmentProperty
+    ID-Plhdr                     : ID
+    AssignElement-Plhdr          : AssignElement
+    AssignElements-Plhdr         : AssignElements
+    Elem-Plhdr                   : Elem
+    ElemTail-Plhdr               : ElemTail
+    AssignmentElement-Plhdr      : AssignmentElement
+    LeftHandSideExpression-Plhdr : LeftHandSideExpression
+    AssignmentProperty-Plhdr     : COMPLETION-INSERTION -> AssignmentProperty
+    ID-Plhdr                     : COMPLETION-INSERTION -> ID
+    AssignElement-Plhdr          : COMPLETION-INSERTION -> AssignElement
+    AssignElements-Plhdr         : COMPLETION-INSERTION -> AssignElements
+    Elem-Plhdr                   : COMPLETION-INSERTION -> Elem
+    ElemTail-Plhdr               : COMPLETION-INSERTION -> ElemTail
+    AssignmentElement-Plhdr      : COMPLETION-INSERTION -> AssignmentElement
+    LeftHandSideExpression-Plhdr : COMPLETION-INSERTION -> LeftHandSideExpression
+    AssignmentProperty-Opt-Plhdr : AssignmentProperty
+    AssignElement-Opt-Plhdr      : AssignElement
+    ElemTail-Opt-Plhdr           : ElemTail
+    Elem-Opt-Plhdr               : Elem

@@ -1,0 +1,9 @@
+module runner
+
+imports
+
+rules
+  runner-wrap-module: exp_program -> js-program |[
+    var runner = require('runner');
+    runner(exp_program);
+  ]| 

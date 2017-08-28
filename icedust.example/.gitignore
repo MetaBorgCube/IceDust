@@ -4,3 +4,9 @@
 *.analysis.txt
 *.java
 *.class
+*.flowsto.txt
+*.dependson.txt
+*.class
+*.js
+*.java
+scratchpad.ice2

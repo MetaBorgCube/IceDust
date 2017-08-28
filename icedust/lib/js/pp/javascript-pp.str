@@ -1,0 +1,155 @@
+module js/pp/javascript-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/javascript-sig
+
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Lexical-sig
+  js/signatures/Expression-sig
+  js/signatures/Statement-sig
+
+
+imports
+  js/pp/Common-pp
+  js/pp/Lexical-pp
+  js/pp/Expression-pp
+  js/pp/Statement-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-javascript
+
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-javascript-start-symbols
+
+  prettyprint-javascript-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-javascript-start-symbols =
+    prettyprint-javascript-Start
+
+
+strategies
+  prettyprint-javascript =
+    prettyprint-javascript-Start
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Start>
+    where <?"Start"> sort
+
+  prettyprint-javascript-Start :
+    Program(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [t1__']
+                       )
+                     ]
+    with t1__' := <pp-V-list(prettyprint-javascript-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Start =
+    ?Program(_)
+
+  javascript-get-indent :
+    (t@Program(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Program(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             separator := "\n"
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Program(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Start"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-javascript-Start =
+    fail
+
+  prettyprint-javascript-Start :
+    amb([h|hs]) -> <prettyprint-javascript-Start> h
+
+  prettyprint-javascript-Start :
+    Start-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Start")]
+                       )
+                     ]
+
+  is-javascript-Start =
+    ?Start-Plhdr()
+
+  prettyprint-javascript-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$Statement")]
+                           )
+                         ]
+
+  is-javascript-Statement =
+    ?Statement-Plhdr()
+
+  prettyprint-javascript-Start :
+    Start-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$Start")]
+                        )
+                      ]
+
+  is-javascript-Start =
+    ?Start-Plhdr(_)
+
+  prettyprint-javascript-Statement :
+    Statement-Plhdr(_) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Statement")]
+                            )
+                          ]
+
+  is-javascript-Statement =
+    ?Statement-Plhdr(_)
+
+  prettyprint-javascript-Statement :
+    Statement-Opt-Plhdr() -> [ H(
+                                 []
+                               , [S("")]
+                               )
+                             ]
+
+  is-javascript-Statement =
+    ?Statement-Opt-Plhdr()

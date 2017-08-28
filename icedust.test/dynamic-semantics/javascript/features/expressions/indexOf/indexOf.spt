@@ -1,0 +1,23 @@
+module javascript-features-expressions-indexOf
+
+language icedust
+
+fixture [[
+  module IndexOf
+  
+  config
+    backend: Javascript
+    
+  execute
+    1.indexOf(0)
+    (1 ++ 2).indexOf(0)
+    (1 ++ 2 ++ 3).indexOf(1 + 1)
+    [[...]]
+]]
+
+
+test indexOf [[ ]] transform "SPT -> Build" to 
+"null
+-1
+1
+"

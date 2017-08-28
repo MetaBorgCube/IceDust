@@ -16,6 +16,14 @@
     <version>2.2.1</version>
   </parent>
   
+  <dependencies>
+    <dependency>
+      <groupId>com.coveo</groupId>
+      <artifactId>nashorn-commonjs-modules</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+  </dependencies>
+  
   <repositories>
     <repository>
       <id>metaborg-release-repo</id>

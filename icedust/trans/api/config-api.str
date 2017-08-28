@@ -27,6 +27,12 @@ rules
 
   is-backend = ?JavaBackend(_)
   is-backend = ?WebDSLBackend(_)
+  is-backend = ?JavascriptBackend(_, _)
+  
+  is-javascript-backend = ?JavascriptBackend(_, _)
+  
+  backend-get-phase = ?JavaBackend(<id>)
+  backend-get-phase = ?JavascriptBackend(<id>, _)
   
   is-languagefeatures = ?LanguageFeatures(_)
   

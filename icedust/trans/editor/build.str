@@ -4,6 +4,7 @@ imports // backends
 
   generating/java
   generating/webdsl
+  generating/js/build
 
 imports // functions
 
