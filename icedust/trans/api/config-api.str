@@ -5,8 +5,6 @@ imports // constructors
   signatures/Config-sig
   signatures/Modules-sig
   
-  signatures/js/Config-sig
-  
 imports // functions
 
   lib/origin
