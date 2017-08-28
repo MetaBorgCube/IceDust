@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
   <artifactId>icedust.example</artifactId>
-  <version>0.7.1-SNAPSHOT</version>
+  <version>0.7.2-SNAPSHOT</version>
   <packaging>spoofax-project</packaging>
 
   <parent>
@@ -20,7 +20,7 @@
     <dependency>
       <groupId>org.metaborg.lang</groupId>
       <artifactId>icedust</artifactId>
-      <version>0.7.1-SNAPSHOT</version>
+      <version>0.7.2-SNAPSHOT</version>
       <type>spoofax-language</type>
     </dependency>
   </dependencies>
