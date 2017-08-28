@@ -1,0 +1,684 @@
+module js/pp/javascript-parenthesize
+
+imports
+  libstratego-lib
+  js/signatures/-
+
+
+strategies
+  io-javascript-parenthesize =
+    io-wrap(parenthesize-javascript)
+
+  parenthesize-javascript =
+    innermost(javascriptParenthesize)
+
+
+rules
+
+  javascriptParenthesize :
+    Substraction(t_0, t_1) -> Substraction(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Substraction(t_0, t_1) -> Substraction(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Addition(t_0, t_1) -> Addition(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Addition(t_0, t_1) -> Addition(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Addition(_, _)
+            + ?Substraction(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Division(t_0, t_1) -> Division(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Division(t_0, t_1) -> Division(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Multiplication(t_0, t_1) -> Multiplication(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Multiplication(_, _)
+            + ?Division(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Index(t_0, t_1) -> Index(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Index(t_0, t_1) -> Index(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Property(t_0, t_1) -> Property(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Property(t_0, t_1) -> Property(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + ?Property(_, _)
+            + ?Index(_, _)
+            + ?Call(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Call(t_0, t_1) -> Call(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Call(t_0, t_1) -> Call(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + ?Substraction(_, _)
+            + ?Addition(_, _)
+            + ?Division(_, _)
+            + ?Multiplication(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Or(t_0, t_1) -> Or(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Or(t_0, t_1) -> Or(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    And(t_0, t_1) -> And(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    And(t_0, t_1) -> And(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    NotEqualsStrict(t_0, t_1) -> NotEqualsStrict(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    NotEquals(t_0, t_1) -> NotEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    NotEquals(t_0, t_1) -> NotEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEquals(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    EqualsStrict(t_0, t_1) -> EqualsStrict(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    EqualsStrict(t_0, t_1) -> EqualsStrict(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?EqualsStrict(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?Equals(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Equals(t_0, t_1) -> Equals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Equals(t_0, t_1) -> Equals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?Equals(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    LowerEquals(t_0, t_1) -> LowerEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    LowerEquals(t_0, t_1) -> LowerEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    GreaterEquals(t_0, t_1) -> GreaterEquals(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    GreaterEquals(t_0, t_1) -> GreaterEquals(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?LowerEquals(_, _)
+            + ?Lower(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Lower(t_0, t_1) -> Lower(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Lower(t_0, t_1) -> Lower(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?Lower(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Greater(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Greater(t_0, t_1) -> Greater(Parenthetical(t_0), t_1)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Greater(t_0, t_1) -> Greater(t_0, Parenthetical(t_1))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + ?Or(_, _)
+            + ?And(_, _)
+            + ?NotEqualsStrict(_, _)
+            + ?NotEquals(_, _)
+            + ?EqualsStrict(_, _)
+            + ?Equals(_, _)
+            + ?Greater(_, _)
+            + ?LowerEquals(_, _)
+            + ?GreaterEquals(_, _)
+            + ?Lower(_, _)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(Parenthetical(t_0), t_1, t_2)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(t_0, Parenthetical(t_1), t_2)
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + fail)> t_1
+
+  javascriptParenthesize :
+    Cond(t_0, t_1, t_2) -> Cond(t_0, t_1, Parenthetical(t_2))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + fail)> t_2
+
+  javascriptParenthesize :
+    Negate(t_0) -> Negate(Parenthetical(t_0))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + ?DeclarationStatement(_)
+            + ?Cond(_, _, _)
+            + ?Negate(_)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    DeclarationStatement(t_0) -> DeclarationStatement(Parenthetical(t_0))
+    where <(?Lambda(_, _)
+            + ?FunctionExpression(_, _, _)
+            + fail)> t_0
+
+  javascriptParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(Parenthetical(t_0), t_1, t_2)
+    where <(?Lambda(_, _) + fail)> t_0
+
+  javascriptParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, Parenthetical(t_1), t_2)
+    where <(?Lambda(_, _) + fail)> t_1
+
+  javascriptParenthesize :
+    FunctionExpression(t_0, t_1, t_2) -> FunctionExpression(t_0, t_1, Parenthetical(t_2))
+    where <(?Lambda(_, _) + fail)> t_2
+
+  javascriptParenthesize :
+    Not(t_0) -> Not(Parenthetical(t_0))
+    where <(?Not(_) + fail)> t_0
+
+  javascriptParenthesize :
+    String(t_0) -> String(Parenthetical(t_0))
+    where <(?String(_) + fail)> t_0
+
+  javascriptParenthesize :
+    Identifier(t_0) -> Identifier(Parenthetical(t_0))
+    where <(?Identifier(_) + fail)> t_0
+
+  javascriptParenthesize :
+    FloatLiteral(t_0) -> FloatLiteral(Parenthetical(t_0))
+    where <(?FloatLiteral(_) + fail)> t_0
+
+  javascriptParenthesize :
+    IntegerLiteral(t_0) -> IntegerLiteral(Parenthetical(t_0))
+    where <(?IntegerLiteral(_) + fail)> t_0
+
+  javascriptParenthesize :
+    IfElse(t_0, t_1, t_2) -> IfElse(t_0, Parenthetical(t_1), t_2)
+    where <(?If(_, _) + fail)> t_1
+
+
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown
+

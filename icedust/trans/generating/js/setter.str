@@ -1,0 +1,198 @@
+module generating/js/setter
+
+imports
+  
+  signatures/Types-sig
+  
+  js/js-util
+  
+  lib/option
+  
+  api/model-names-api
+  api/types-api
+  
+  generating/js/names
+  generating/js/common
+
+rules
+
+  generate-setter: x_attribute -> js-stmt* |[
+    function x_methodname (state, id, value){
+      stmt_setter*
+      return state;
+    }
+    module.exports.x_methodname = x_methodname;
+  ]|
+    where
+      attribute-has-setter
+    with 
+      entity := <attributename-get-entityname> x_attribute
+    ; x_methodname := <setter-function-name> x_attribute
+    ; stmt_setter* := <setter-statements(setter-invalidation-statements|<js-var> "id", <js-var> "value")> x_attribute
+  
+  attribute-has-setter = 
+    not(attributename-is-derivation) ; not(attributename-is-rhs-derived-relation)
+    
+  attributename-is-rhs-derived-relation = is-relationname ; relationname-get-inversename ; attributename-is-derivation
+    
+  attribute-has-add = ?attribute ; is-relationname ; name-get-multiplicity ; upper-many ; !attribute 
+  
+  attribute-to-setter-function-names: attribute ->
+      <![ 
+        <try-option(attribute-has-setter ; setter-function-name)> attribute, 
+        <try-option(attribute-has-add ; add-function-name)> attribute
+      ] ; flatten-option-list>
+       
+  
+  
+      
+  setter-statements(invalidation|exp_this, exp_value) : x_attribute -> js-stmt* |[      
+    stmts_invalidation
+    stmts_set
+  ]|
+    where
+      is-attributename
+    with
+      stmts_invalidation := <invalidation> (x_attribute, exp_this)
+      ; exp_table := <attribute-table-expression> x_attribute
+    with
+      switch !x_attribute
+        case attributename-is-normal-default:
+          stmts_set := js-stmt*|[
+            var prop = {x_attribute: exp_value}; 
+            state = state.update(exp_table, function(table) {
+              return table.update(exp_this, function(e){ 
+                return _.assign({}, e, prop);
+              });
+            });      
+          ]|
+        case name-is-derived:
+          stmts_set := js-stmt*|[
+            state = state.update(exp_table, function(table) {
+              return table.set(exp_this, exp_value);
+            });
+          ]|
+      end
+  
+  setter-statements(invalidation|exp_this, exp_value) : x_attribute -> js-stmt* |[
+    stmts_invalidation
+    var previousValue = x_getterFunction(state, exp_this);
+    var table = state.get(exp_tableName).set(exp_this, exp_value);
+    state = state.set(exp_tableName, table);
+    stmts_updateInverse
+  ]|
+    where
+      is-relationname
+    with
+        stmts_invalidation := <invalidation> (x_attribute, exp_this)
+      ; x_getterFunction := <getter-function-name> x_attribute
+      ; exp_tableName := <attribute-table-expression> x_attribute
+      ; stmts_updateInverse := <setter-relation-inverse-statements(invalidation|exp_value)> x_attribute
+      
+      
+  setter-invalidation-statements : (x_attributename, exp_id) -> js-stmt* |[
+    state = x_invalidationFunctionName(state, exp_id);
+  ]|
+    with
+      x_invalidationFunctionName := <invalidation-function-name> x_attributename
+      
+  setter-relation-inverse-statements(invalidation|exp_value): x_attribute -> js-stmt* |[
+    var inverseTable = state.get(exp_inverseTableName);
+    stmts_inverse
+    state = state.set(exp_inverseTableName, inverseTable);
+  ]|
+    with
+      x_inverse := <relationname-get-inversename> x_attribute
+      ; exp_inverseTableName := <attribute-table-expression> x_inverse
+      ; m_attribute := <name-get-multiplicity ; simplify-multiplicity> x_attribute
+      ; m_inverse := <name-get-multiplicity ; simplify-multiplicity> x_inverse
+      ; stmts_set := <setter-relation-inverse-set> m_inverse
+      ; stmts_unset := <setter-relation-inverse-unset> m_inverse
+      
+      ; exp_addedId := <js-var> "addedId"
+      ; exp_removedId := <js-var> "removedId"
+      ; stmts_invalidateAdd := <invalidation> (x_inverse, exp_addedId)
+      ; stmts_invalidateRemove := <invalidation> (x_inverse, exp_removedId)
+    with
+      switch !m_attribute
+        case ZeroOrMore():
+          stmts_inverse := js-stmt* |[
+
+            var added = _.difference(exp_value, previousValue);
+            var removed = _.difference(previousValue, exp_value);
+            
+            for(var i = 0 ; i < added.length ; i++){
+              var addedId = added[i];
+              stmts_invalidateAdd
+              stmts_set
+            }
+            
+            for(var i = 0 ; i < removed.length ; i++){
+              var removedId = removed[i];
+              stmts_invalidateRemove
+              stmts_unset
+            }
+          ]|
+          
+        case One():
+          stmts_inverse := js-stmt* |[
+            if(exp_value != null) {
+              var addedId = exp_value;
+              stmts_invalidateAdd
+              stmts_set
+            }
+            
+            if(previousValue != null){
+              var removedId = previousValue;
+              stmts_invalidateRemove
+              stmts_unset
+            }
+          ]|
+      end
+  
+  
+  setter-relation-inverse-set: One() -> js-stmt* |[
+    inverseTable = inverseTable.set(addedId, id);
+  ]|
+  
+  setter-relation-inverse-set: ZeroOrMore() ->  js-stmt* |[
+    var inverseIds = inverseTable.get(addedId);
+    if(inverseIds === undefined){
+      inverseIds = [id];
+    } else {
+      inverseIds = inverseIds.concat(id);
+    }
+    inverseTable = inverseTable.set(addedId, inverseIds);
+  ]|
+  
+  setter-relation-inverse-unset: One() -> js-stmt* |[
+    inverseTable = inverseTable.remove(removedId);
+  ]|
+  setter-relation-inverse-unset: ZeroOrMore() -> js-stmt* |[
+    var inverseIds = inverseTable.get(removedId);
+    if(inverseIds === undefined){
+      inverseIds = [];
+    } else{
+      inverseIds = _.without(inverseIds, id);
+    }
+    inverseTable = inverseTable.set(removedId, inverseIds);
+  ]|
+  
+  
+  //add functions
+  
+  generate-add: x_attribute -> js-stmt* |[
+    function x_addFunction(state, id, value) {
+      var previousValue = x_getter(state, id);
+      var nextValue = previousValue.concat(value);
+      return x_setter(state, id, nextValue);
+    }
+    module.exports.x_addFunction = x_addFunction;
+  ]|
+    where
+      <attribute-has-setter ; name-get-multiplicity ; upper-many> x_attribute
+    with
+      x_addFunction := <add-function-name> x_attribute
+    ; x_getter := <getter-function-name> x_attribute
+    ; x_setter := <setter-function-name> x_attribute
+      

@@ -6,7 +6,6 @@ target
 **/nativejava
 **/stylesheets
 **/.saved-but-not-built
-**/javascript
 **/*.class
 **/*.java
 **/lib
@@ -15,3 +14,4 @@ target
 /*/*/lib
 **/.saved-but-not-built
 **/common_.css
+/*/*/*/*/javascript

@@ -1,0 +1,809 @@
+module js/pp/Assignment-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/Assignment-sig
+
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+
+
+imports
+  js/pp/Common-pp
+  js/pp/Expression-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-javascript
+
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-javascript-start-symbols
+
+  prettyprint-javascript-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-javascript =
+    prettyprint-javascript-LeftHandSideExpression
+
+  prettyprint-javascript =
+    prettyprint-javascript-AssignmentProperty
+
+  prettyprint-javascript =
+    prettyprint-javascript-AssignElement
+
+  prettyprint-javascript =
+    prettyprint-javascript-AssignElements
+
+  prettyprint-javascript =
+    prettyprint-javascript-Elem
+
+  prettyprint-javascript =
+    prettyprint-javascript-ElemTail
+
+  prettyprint-javascript =
+    prettyprint-javascript-AssignmentElement
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-LeftHandSideExpression>
+    where <?"LeftHandSideExpression"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignmentProperty>
+    where <?"AssignmentProperty"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignElement>
+    where <?"AssignElement"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignElements>
+    where <?"AssignElements"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Elem>
+    where <?"Elem"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ElemTail>
+    where <?"ElemTail"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-AssignmentElement>
+    where <?"AssignmentElement"> sort
+
+  prettyprint-javascript-LeftHandSideExpression :
+    ObjectAssignmentPattern(t1__) -> [ H(
+                                         [SOpt(HS(), "0")]
+                                       , [S("{")]
+                                       )
+                                     , t1__'
+                                     , H(
+                                         [SOpt(HS(), "0")]
+                                       , [S("}")]
+                                       )
+                                     ]
+    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-javascript-AssignmentProperty|"0", ",")
+                                       <+ pp-one-Z(prettyprint-completion-aux)> t1__
+                                    ]
+
+  is-javascript-LeftHandSideExpression =
+    ?ObjectAssignmentPattern(_)
+
+  javascript-get-indent :
+    (t@ObjectAssignmentPattern(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             indent := "  "
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ObjectAssignmentPattern(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             separator := ",\n"
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ObjectAssignmentPattern(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             ws := "\n  "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-LeftHandSideExpression :
+    ArrayAssignmentPattern(t1__) -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [ S("[")
+                                        , t1__'
+                                        , S("]")
+                                        ]
+                                      )
+                                    ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-AssignElements) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-LeftHandSideExpression =
+    ?ArrayAssignmentPattern(_)
+
+  javascript-get-indent :
+    (t@ArrayAssignmentPattern(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ArrayAssignmentPattern(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ArrayAssignmentPattern(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LeftHandSideExpression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-LeftHandSideExpression :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-javascript-LeftHandSideExpression)
+    where t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-javascript-AssignmentProperty :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-javascript-AssignmentProperty)
+    where t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-javascript-AssignmentProperty :
+    Reference(t1__, t2__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__', S(" : "), t2__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-AssignmentProperty =
+    ?Reference(_, _)
+
+  javascript-get-indent :
+    (t@Reference(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentProperty"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Reference(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentProperty"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Reference(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentProperty"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-AssignElement :
+    AssignElement(t1__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [t1__']
+                             )
+                           ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-AssignElement =
+    ?AssignElement(_)
+
+  javascript-get-indent :
+    (t@AssignElement(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@AssignElement(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@AssignElement(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-AssignElement :
+    Elision() -> [ H(
+                     []
+                   , [S("")]
+                   )
+                 ]
+
+  is-javascript-AssignElement =
+    ?Elision()
+
+  javascript-get-indent :
+    (t@Elision(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Elision(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Elision(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AssignElement"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-AssignElements :
+    AssignElements(t1__, t2__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [t1__', S(" "), t2__']
+                                    )
+                                  ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Elem) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-ElemTail) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-AssignElements =
+    ?AssignElements(_, _)
+
+  javascript-get-indent :
+    (t@AssignElements(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AssignElements"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@AssignElements(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AssignElements"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@AssignElements(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AssignElements"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Elem :
+    NoElement() -> [ H(
+                       []
+                     , [S("")]
+                     )
+                   ]
+
+  is-javascript-Elem =
+    ?NoElement()
+
+  javascript-get-indent :
+    (t@NoElement(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Elem"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@NoElement(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Elem"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@NoElement(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Elem"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Elem :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-javascript-Elem)
+    where t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-javascript-ElemTail :
+    CommaRule(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S(", "), t1__']
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-ElemTail =
+    ?CommaRule(_)
+
+  javascript-get-indent :
+    (t@CommaRule(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@CommaRule(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@CommaRule(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ElemTail :
+    Empty() -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S(",")]
+                 )
+               ]
+
+  is-javascript-ElemTail =
+    ?Empty()
+
+  javascript-get-indent :
+    (t@Empty(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Empty(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Empty(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ElemTail"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-AssignmentElement :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-javascript-AssignmentElement)
+    where t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-javascript-AssignmentElement :
+    RestElement(t1__) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("... "), t1__']
+                           )
+                         ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-LeftHandSideExpression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-AssignmentElement =
+    ?RestElement(_)
+
+  javascript-get-indent :
+    (t@RestElement(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentElement"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@RestElement(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentElement"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@RestElement(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AssignmentElement"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-javascript-LeftHandSideExpression =
+    fail
+
+  is-javascript-AssignmentProperty =
+    fail
+
+  is-javascript-AssignElement =
+    fail
+
+  is-javascript-AssignElements =
+    fail
+
+  is-javascript-Elem =
+    fail
+
+  is-javascript-ElemTail =
+    fail
+
+  is-javascript-AssignmentElement =
+    fail
+
+  prettyprint-javascript-LeftHandSideExpression :
+    amb([h|hs]) -> <prettyprint-javascript-LeftHandSideExpression> h
+
+  prettyprint-javascript-AssignmentProperty :
+    amb([h|hs]) -> <prettyprint-javascript-AssignmentProperty> h
+
+  prettyprint-javascript-AssignElement :
+    amb([h|hs]) -> <prettyprint-javascript-AssignElement> h
+
+  prettyprint-javascript-AssignElements :
+    amb([h|hs]) -> <prettyprint-javascript-AssignElements> h
+
+  prettyprint-javascript-Elem :
+    amb([h|hs]) -> <prettyprint-javascript-Elem> h
+
+  prettyprint-javascript-ElemTail :
+    amb([h|hs]) -> <prettyprint-javascript-ElemTail> h
+
+  prettyprint-javascript-AssignmentElement :
+    amb([h|hs]) -> <prettyprint-javascript-AssignmentElement> h
+
+  prettyprint-javascript-AssignmentProperty :
+    AssignmentProperty-Plhdr() -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [S("$AssignmentProperty")]
+                                    )
+                                  ]
+
+  is-javascript-AssignmentProperty =
+    ?AssignmentProperty-Plhdr()
+
+  prettyprint-javascript-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("$ID")]
+                    )
+                  ]
+
+  is-javascript-ID =
+    ?ID-Plhdr()
+
+  prettyprint-javascript-AssignElement :
+    AssignElement-Plhdr() -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$AssignElement")]
+                               )
+                             ]
+
+  is-javascript-AssignElement =
+    ?AssignElement-Plhdr()
+
+  prettyprint-javascript-AssignElements :
+    AssignElements-Plhdr() -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$AssignElements")]
+                                )
+                              ]
+
+  is-javascript-AssignElements =
+    ?AssignElements-Plhdr()
+
+  prettyprint-javascript-Elem :
+    Elem-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Elem")]
+                      )
+                    ]
+
+  is-javascript-Elem =
+    ?Elem-Plhdr()
+
+  prettyprint-javascript-ElemTail :
+    ElemTail-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$ElemTail")]
+                          )
+                        ]
+
+  is-javascript-ElemTail =
+    ?ElemTail-Plhdr()
+
+  prettyprint-javascript-AssignmentElement :
+    AssignmentElement-Plhdr() -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [S("$AssignmentElement")]
+                                   )
+                                 ]
+
+  is-javascript-AssignmentElement =
+    ?AssignmentElement-Plhdr()
+
+  prettyprint-javascript-LeftHandSideExpression :
+    LeftHandSideExpression-Plhdr() -> [ H(
+                                          [SOpt(HS(), "0")]
+                                        , [S("$LeftHandSideExpression")]
+                                        )
+                                      ]
+
+  is-javascript-LeftHandSideExpression =
+    ?LeftHandSideExpression-Plhdr()
+
+  prettyprint-javascript-AssignmentProperty :
+    AssignmentProperty-Plhdr(_) -> [ H(
+                                       [SOpt(HS(), "0")]
+                                     , [S("$AssignmentProperty")]
+                                     )
+                                   ]
+
+  is-javascript-AssignmentProperty =
+    ?AssignmentProperty-Plhdr(_)
+
+  prettyprint-javascript-ID :
+    ID-Plhdr(_) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("$ID")]
+                     )
+                   ]
+
+  is-javascript-ID =
+    ?ID-Plhdr(_)
+
+  prettyprint-javascript-AssignElement :
+    AssignElement-Plhdr(_) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$AssignElement")]
+                                )
+                              ]
+
+  is-javascript-AssignElement =
+    ?AssignElement-Plhdr(_)
+
+  prettyprint-javascript-AssignElements :
+    AssignElements-Plhdr(_) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$AssignElements")]
+                                 )
+                               ]
+
+  is-javascript-AssignElements =
+    ?AssignElements-Plhdr(_)
+
+  prettyprint-javascript-Elem :
+    Elem-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Elem")]
+                       )
+                     ]
+
+  is-javascript-Elem =
+    ?Elem-Plhdr(_)
+
+  prettyprint-javascript-ElemTail :
+    ElemTail-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$ElemTail")]
+                           )
+                         ]
+
+  is-javascript-ElemTail =
+    ?ElemTail-Plhdr(_)
+
+  prettyprint-javascript-AssignmentElement :
+    AssignmentElement-Plhdr(_) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [S("$AssignmentElement")]
+                                    )
+                                  ]
+
+  is-javascript-AssignmentElement =
+    ?AssignmentElement-Plhdr(_)
+
+  prettyprint-javascript-LeftHandSideExpression :
+    LeftHandSideExpression-Plhdr(_) -> [ H(
+                                           [SOpt(HS(), "0")]
+                                         , [S("$LeftHandSideExpression")]
+                                         )
+                                       ]
+
+  is-javascript-LeftHandSideExpression =
+    ?LeftHandSideExpression-Plhdr(_)
+
+  prettyprint-javascript-AssignmentProperty :
+    AssignmentProperty-Opt-Plhdr() -> [ H(
+                                          []
+                                        , [S("")]
+                                        )
+                                      ]
+
+  is-javascript-AssignmentProperty =
+    ?AssignmentProperty-Opt-Plhdr()
+
+  prettyprint-javascript-AssignElement :
+    AssignElement-Opt-Plhdr() -> [ H(
+                                     []
+                                   , [S("")]
+                                   )
+                                 ]
+
+  is-javascript-AssignElement =
+    ?AssignElement-Opt-Plhdr()
+
+  prettyprint-javascript-ElemTail :
+    ElemTail-Opt-Plhdr() -> [ H(
+                                []
+                              , [S("")]
+                              )
+                            ]
+
+  is-javascript-ElemTail =
+    ?ElemTail-Opt-Plhdr()
+
+  prettyprint-javascript-Elem :
+    Elem-Opt-Plhdr() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-javascript-Elem =
+    ?Elem-Opt-Plhdr()

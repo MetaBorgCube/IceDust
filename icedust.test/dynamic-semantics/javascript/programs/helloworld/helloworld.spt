@@ -1,0 +1,35 @@
+module javascript-programs-helloworld
+
+language icedust
+
+fixture [[
+  module helloworld
+  
+  config
+    backend: Javascript
+    phase: [[...]]
+    
+  
+  model
+  entity Message {
+    text     : String
+  }
+  
+  data
+  hello : Message {
+    text="Hello World!"
+  }
+  
+  execute
+  hello.text
+]]
+
+
+
+
+test Hello World generate-javascript [[ generate ]] transform "SPT -> Build"
+
+test Hello World execute-javascript [[ execute ]] transform "SPT -> Build" to
+"Hello World!
+"
+

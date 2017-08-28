@@ -1,0 +1,18 @@
+module html-target
+
+language icedust
+
+fixture [[
+  module htmltarget
+  
+  config
+    backend: Javascript
+    phase: generate
+    target: html
+  
+  execute
+    42
+  [[...]]
+]]
+
+test generate html target [[ ]] transform "SPT -> Build"

@@ -1,8 +1,8 @@
-id: org.metaborg:icedust.test:0.7.1-SNAPSHOT
+id: org.metaborg:icedust.test:0.7.2-SNAPSHOT
 name: IceDust
 dependencies:
   compile:
-  - org.metaborg.lang:icedust:0.7.1-SNAPSHOT
+  - org.metaborg.lang:icedust:0.7.2-SNAPSHOT
   - org.metaborg:org.metaborg.meta.lang.spt:${metaborgVersion}
 runtime:
   nabl2:

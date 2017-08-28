@@ -4,7 +4,10 @@ language icedust
 
 fixture [[
 module inlinefield
-  
+
+config
+  backend: Java
+
 model
 
   entity Foo{

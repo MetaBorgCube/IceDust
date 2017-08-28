@@ -1,21 +1,66 @@
-module lib/js/signatures/Statement-sig
+module js/signatures/Statement-sig
 
 imports
-  lib/js/signatures/Common-sig
-  lib/js/signatures/Expression-sig
-  lib/js/signatures/MethodDecl-sig
+  js/signatures/Common-sig
+  js/signatures/Expression-sig
+  js/signatures/Import-sig
+  js/signatures/Export-sig
+  js/signatures/Class-sig
+  js/signatures/Assignment-sig
 
 
 signature
   constructors
-    expStmt          : Expression -> Statement
-    varDecl          : ID * Expression -> Statement
-    assignment       : ID * Expression -> Statement
-    for              : Statement * Expression * Expression * List(Statement) -> Statement
-    while            : Expression * List(Statement) -> Statement
-    return           : Expression -> Statement
-                     : MethodDecl -> Statement
-    ID-Plhdr         : ID
-    Expression-Plhdr : Expression
-    Statement-Plhdr  : Statement
-    MethodDecl-Plhdr : MethodDecl
+    BlockStatement                   : List(Statement) -> BlockStatement
+                                     : BlockStatement -> Statement
+    ExpStmt                          : Expression -> Statement
+    For                              : Declaration * Expression * Expression * List(Statement) -> Statement
+    ForOf                            : Declaration * Expression * List(Statement) -> Statement
+    ForIn                            : Declaration * Expression * List(Statement) -> Statement
+    While                            : Expression * List(Statement) -> Statement
+    If                               : Expression * Statement -> Statement
+    IfElse                           : Expression * Statement * Statement -> Statement
+    Return                           : Expression -> Statement
+                                     : Import -> Statement
+                                     : Export -> Statement
+    DeclarationStatement             : Declaration -> Statement
+                                     : FunctionDeclaration -> Statement
+                                     : ClassDeclaration -> Statement
+    InitializeAssignment             : Expression -> InitializeAssignment
+    VarDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+    ConstDeclaration                 : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+    LetDeclaration                   : LeftHandSideExpression * Option(InitializeAssignment) -> Declaration
+                                     : TopLevelDeclaration -> Declaration
+    GlobalDeclaration                : LeftHandSideExpression * Option(InitializeAssignment) -> TopLevelDeclaration
+    ExpressionAssignment             : Expression * InitializeAssignment -> TopLevelDeclaration
+                                     : FunctionDeclaration -> HoistableDeclaration
+    FunctionDeclaration              : ID * List(LeftHandSideExpression) * List(Statement) -> FunctionDeclaration
+    BlockStatement-Plhdr             : BlockStatement
+    Import-Plhdr                     : Import
+    Export-Plhdr                     : Export
+    ClassDeclaration-Plhdr           : ClassDeclaration
+    Declaration-Plhdr                : Declaration
+    TopLevelDeclaration-Plhdr        : TopLevelDeclaration
+    Expression-Plhdr                 : Expression
+    InitializeAssignment-Plhdr       : InitializeAssignment
+    HoistableDeclaration-Plhdr       : HoistableDeclaration
+    FunctionDeclaration-Plhdr        : FunctionDeclaration
+    ID-Plhdr                         : ID
+    LeftHandSideExpression-Plhdr     : LeftHandSideExpression
+    Statement-Plhdr                  : Statement
+    BlockStatement-Plhdr             : COMPLETION-INSERTION -> BlockStatement
+    Import-Plhdr                     : COMPLETION-INSERTION -> Import
+    Export-Plhdr                     : COMPLETION-INSERTION -> Export
+    ClassDeclaration-Plhdr           : COMPLETION-INSERTION -> ClassDeclaration
+    Declaration-Plhdr                : COMPLETION-INSERTION -> Declaration
+    TopLevelDeclaration-Plhdr        : COMPLETION-INSERTION -> TopLevelDeclaration
+    Expression-Plhdr                 : COMPLETION-INSERTION -> Expression
+    InitializeAssignment-Plhdr       : COMPLETION-INSERTION -> InitializeAssignment
+    HoistableDeclaration-Plhdr       : COMPLETION-INSERTION -> HoistableDeclaration
+    FunctionDeclaration-Plhdr        : COMPLETION-INSERTION -> FunctionDeclaration
+    ID-Plhdr                         : COMPLETION-INSERTION -> ID
+    LeftHandSideExpression-Plhdr     : COMPLETION-INSERTION -> LeftHandSideExpression
+    Statement-Plhdr                  : COMPLETION-INSERTION -> Statement
+    InitializeAssignment-Opt-Plhdr   : InitializeAssignment
+    LeftHandSideExpression-Opt-Plhdr : LeftHandSideExpression
+    Statement-Opt-Plhdr              : Statement

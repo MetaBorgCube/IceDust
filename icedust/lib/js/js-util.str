@@ -1,0 +1,45 @@
+module js/js-util
+
+imports
+    js/signatures/Expression-sig
+    
+    js/pp/javascript-parenthesize
+    js/pp/javascript-pp
+
+rules
+
+    pp-js-program = 
+    parenthesize-javascript
+    ; prettyprint-javascript
+    ; !V([], <id>)
+    ; box2text-string(|120)
+
+
+    js-string: s -> String($["[s]"])
+    js-escaped-string = escape ; js-string
+    js-int: s -> IntegerLiteral(s)
+    js-float: s -> FloatLiteral(s)
+    
+    
+    js-add = !Addition(<Fst>, <Snd>)
+    js-subtract = !Substraction(<Fst>, <Snd>)
+    js-mul = !Multiplication(<Fst>, <Snd>)
+    js-div = !Division(<Fst>, <Snd>)
+    js-gt = !Greater(<Fst>, <Snd>)
+    js-gte = !GreaterEquals(<Fst>, <Snd>)
+    js-lt = !Lower(<Fst>, <Snd>)
+    js-lte = !LowerEquals(<Fst>, <Snd>)
+    js-eq = !Equals(<Fst>, <Snd>)
+    js-eqq = !EqualsStrict(<Fst>, <Snd>)
+    js-neq = !NotEquals(<Fst>, <Snd>)
+    js-neqq = !NotEqualsStrict(<Fst>, <Snd>)
+    js-and = !And(<Fst>, <Snd>)
+    js-or = !Or(<Fst>, <Snd>)
+    js-modulo = !Modulo(<Fst>, <Snd>)
+    
+    js-not = !Not(<id>)
+    
+    js-null = !Null()
+    js-undefined = !Undefined()
+    
+    js-var: x_var -> js-exp |[x_var]|

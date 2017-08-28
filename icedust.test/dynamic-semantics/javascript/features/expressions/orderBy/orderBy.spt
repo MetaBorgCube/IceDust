@@ -1,0 +1,35 @@
+module javascript-features-expressions-orderBy
+
+language icedust
+
+fixture [[
+  module OrderBy
+  
+  config
+    backend: Javascript
+    
+  model
+
+    entity A {
+      name: String
+    }
+  
+  data
+    a1: A{name="a1"}
+    a2: A{name="a2"}
+    a3: A{name="a3"}
+    a4: A{name="a4"}
+    a5: A{name="a5"}
+    a6: A{name="a6"}
+    a7: A{name="a7"}
+    a8: A{name="a8"}
+  
+  execute
+    (a3 ++ a1 ++a7 ++ a4 ++ a8 ++ a6 ++ a2 ++ a5).orderBy(x => x.name).name
+    [[...]]
+]]
+
+
+test orderBy [[ ]] transform "SPT -> Build" to 
+"[a1,a2,a3,a4,a5,a6,a7,a8]
+"

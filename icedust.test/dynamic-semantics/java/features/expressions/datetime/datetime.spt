@@ -5,6 +5,9 @@ language icedust
 fixture [[
   module datetime
 
+  config
+    backend: Java
+
   execute
     
     (2015-1-1 0:00:00 - 2014-12-31 0:00:00) /. 3600

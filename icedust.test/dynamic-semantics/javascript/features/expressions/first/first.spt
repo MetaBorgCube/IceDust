@@ -1,0 +1,29 @@
+module javascript-features-expressions-first
+
+language icedust
+
+fixture [[
+  module First
+  
+  config
+    backend: Javascript
+    
+  execute
+    (1 ++ 2 ++ 3 ++ 4).first()
+    (1 ++ 2 ++ 3 ++ 4).first(0)
+    (1 ++ 2 ++ 3 ++ 4).first(1)
+    (1 ++ 2 ++ 3 ++ 4).first(2)
+    (1 ++ 2 ++ 3 ++ 4).first(3)
+    (1 ++ 2 ++ 3 ++ 4).first(4)
+    [[...]]
+]]
+ 
+
+test first [[ ]] transform "SPT -> Build" to 
+"1
+[]
+[1]
+[1,2]
+[1,2,3]
+[1,2,3,4]
+"

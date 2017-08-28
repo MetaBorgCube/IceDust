@@ -1,0 +1,31 @@
+module javascript-features-expressions-nestedIf
+
+language icedust
+
+fixture [[
+  module nestedIf
+  
+  config
+    backend: Javascript
+  
+  model
+  
+    entity Z{
+      b : Boolean
+      c : Boolean = (if(b) this else this).b
+    }
+  
+  data
+  
+    z:Z{b=true}
+  
+  execute
+  
+    z.c
+    [[...]]
+]]
+
+
+test nestedIf [[ ]] transform "SPT -> Build" to 
+"true
+"

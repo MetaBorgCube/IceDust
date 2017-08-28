@@ -9,7 +9,7 @@ imports // constructors
 
 imports // functions
 
-  lib/js/signatures/spoofaxJS-sig
+  lib/js/signatures/javascript-sig
   generating/_ir/model 
   generating/webdsl/model
   generating/webdsl/data

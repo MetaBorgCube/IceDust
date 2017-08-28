@@ -1,0 +1,710 @@
+module js/pp/Export-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  js/signatures/Export-sig
+
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Statement-sig
+  js/signatures/Import-sig
+  js/signatures/Class-sig
+  js/signatures/Expression-sig
+
+
+imports
+  js/pp/Common-pp
+  js/pp/Statement-pp
+  js/pp/Import-pp
+  js/pp/Class-pp
+  js/pp/Expression-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-javascript
+
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-javascript-start-symbols
+
+  prettyprint-javascript-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-javascript =
+    prettyprint-javascript-Export
+
+  prettyprint-javascript =
+    prettyprint-javascript-ExportSpecifier
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Export>
+    where <?"Export"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ExportSpecifier>
+    where <?"ExportSpecifier"> sort
+
+  prettyprint-javascript-Export :
+    FromImport(t1__) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("export * "), t1__']
+                          )
+                        ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?FromImport(_)
+
+  javascript-get-indent :
+    (t@FromImport(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@FromImport(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@FromImport(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    FromImportBlock(t1__, t2__) -> [ H(
+                                       [SOpt(HS(), "0")]
+                                     , [ S("export {")
+                                       , t1__'
+                                       , S("} ")
+                                       , t2__'
+                                       ]
+                                     )
+                                   ]
+    with t1__' := <pp-H-list(prettyprint-javascript-ExportSpecifier|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-FromClause) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Export =
+    ?FromImportBlock(_, _)
+
+  javascript-get-indent :
+    (t@FromImportBlock(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@FromImportBlock(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ","
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@FromImportBlock(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportBlock(t1__) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [ S("export {")
+                             , t1__'
+                             , S("}")
+                             ]
+                           )
+                         ]
+    with t1__' := <pp-H-list(prettyprint-javascript-ExportSpecifier|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportBlock(_)
+
+  javascript-get-indent :
+    (t@ExportBlock(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportBlock(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportBlock(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportDeclaration(t1__) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [ S("export ")
+                                   , t1__'
+                                   , S(";")
+                                   ]
+                                 )
+                               ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Declaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportDeclaration(_)
+
+  javascript-get-indent :
+    (t@ExportDeclaration(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportDeclaration(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportDeclaration(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportHoistableDeclaration(t1__) -> [ H(
+                                            [SOpt(HS(), "0")]
+                                          , [S("export "), t1__']
+                                          )
+                                        ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportHoistableDeclaration(_)
+
+  javascript-get-indent :
+    (t@ExportHoistableDeclaration(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportHoistableDeclaration(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportHoistableDeclaration(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportDefaultDeclaration(t1__) -> [ H(
+                                          [SOpt(HS(), "0")]
+                                        , [S("export default "), t1__']
+                                        )
+                                      ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-HoistableDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportDefaultDeclaration(_)
+
+  javascript-get-indent :
+    (t@ExportDefaultDeclaration(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportDefaultDeclaration(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportDefaultDeclaration(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportDefaultClassDeclaration(t1__) -> [ H(
+                                               [SOpt(HS(), "0")]
+                                             , [S("export default "), t1__']
+                                             )
+                                           ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ClassDeclaration) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportDefaultClassDeclaration(_)
+
+  javascript-get-indent :
+    (t@ExportDefaultClassDeclaration(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportDefaultClassDeclaration(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportDefaultClassDeclaration(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Export :
+    ExportDefaultExpression(t1__) -> [ H(
+                                         [SOpt(HS(), "0")]
+                                       , [ S("export default ")
+                                         , t1__'
+                                         , S(";")
+                                         ]
+                                       )
+                                     ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Export =
+    ?ExportDefaultExpression(_)
+
+  javascript-get-indent :
+    (t@ExportDefaultExpression(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportDefaultExpression(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportDefaultExpression(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Export"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ExportSpecifier :
+    ExportSpecifier(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-ExportSpecifier =
+    ?ExportSpecifier(_)
+
+  javascript-get-indent :
+    (t@ExportSpecifier(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ExportSpecifier(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ExportSpecifier(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ExportSpecifier :
+    NamedExportSpecifier(t1__, t2__) -> [ H(
+                                            [SOpt(HS(), "0")]
+                                          , [t1__', S(" as "), t2__']
+                                          )
+                                        ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-ExportSpecifier =
+    ?NamedExportSpecifier(_, _)
+
+  javascript-get-indent :
+    (t@NamedExportSpecifier(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@NamedExportSpecifier(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@NamedExportSpecifier(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ExportSpecifier"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-javascript-Export =
+    fail
+
+  is-javascript-ExportSpecifier =
+    fail
+
+  prettyprint-javascript-Export :
+    amb([h|hs]) -> <prettyprint-javascript-Export> h
+
+  prettyprint-javascript-ExportSpecifier :
+    amb([h|hs]) -> <prettyprint-javascript-ExportSpecifier> h
+
+  prettyprint-javascript-FromClause :
+    FromClause-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$FromClause")]
+                            )
+                          ]
+
+  is-javascript-FromClause =
+    ?FromClause-Plhdr()
+
+  prettyprint-javascript-Declaration :
+    Declaration-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Declaration")]
+                             )
+                           ]
+
+  is-javascript-Declaration =
+    ?Declaration-Plhdr()
+
+  prettyprint-javascript-HoistableDeclaration :
+    HoistableDeclaration-Plhdr() -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [S("$HoistableDeclaration")]
+                                      )
+                                    ]
+
+  is-javascript-HoistableDeclaration =
+    ?HoistableDeclaration-Plhdr()
+
+  prettyprint-javascript-ClassDeclaration :
+    ClassDeclaration-Plhdr() -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$ClassDeclaration")]
+                                  )
+                                ]
+
+  is-javascript-ClassDeclaration =
+    ?ClassDeclaration-Plhdr()
+
+  prettyprint-javascript-Export :
+    Export-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$Export")]
+                        )
+                      ]
+
+  is-javascript-Export =
+    ?Export-Plhdr()
+
+  prettyprint-javascript-Expression :
+    Expression-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Expression")]
+                            )
+                          ]
+
+  is-javascript-Expression =
+    ?Expression-Plhdr()
+
+  prettyprint-javascript-ExportSpecifier :
+    ExportSpecifier-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$ExportSpecifier")]
+                                 )
+                               ]
+
+  is-javascript-ExportSpecifier =
+    ?ExportSpecifier-Plhdr()
+
+  prettyprint-javascript-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("$ID")]
+                    )
+                  ]
+
+  is-javascript-ID =
+    ?ID-Plhdr()
+
+  prettyprint-javascript-FromClause :
+    FromClause-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$FromClause")]
+                             )
+                           ]
+
+  is-javascript-FromClause =
+    ?FromClause-Plhdr(_)
+
+  prettyprint-javascript-Declaration :
+    Declaration-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$Declaration")]
+                              )
+                            ]
+
+  is-javascript-Declaration =
+    ?Declaration-Plhdr(_)
+
+  prettyprint-javascript-HoistableDeclaration :
+    HoistableDeclaration-Plhdr(_) -> [ H(
+                                         [SOpt(HS(), "0")]
+                                       , [S("$HoistableDeclaration")]
+                                       )
+                                     ]
+
+  is-javascript-HoistableDeclaration =
+    ?HoistableDeclaration-Plhdr(_)
+
+  prettyprint-javascript-ClassDeclaration :
+    ClassDeclaration-Plhdr(_) -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [S("$ClassDeclaration")]
+                                   )
+                                 ]
+
+  is-javascript-ClassDeclaration =
+    ?ClassDeclaration-Plhdr(_)
+
+  prettyprint-javascript-Export :
+    Export-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$Export")]
+                         )
+                       ]
+
+  is-javascript-Export =
+    ?Export-Plhdr(_)
+
+  prettyprint-javascript-Expression :
+    Expression-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Expression")]
+                             )
+                           ]
+
+  is-javascript-Expression =
+    ?Expression-Plhdr(_)
+
+  prettyprint-javascript-ExportSpecifier :
+    ExportSpecifier-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$ExportSpecifier")]
+                                  )
+                                ]
+
+  is-javascript-ExportSpecifier =
+    ?ExportSpecifier-Plhdr(_)
+
+  prettyprint-javascript-ID :
+    ID-Plhdr(_) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("$ID")]
+                     )
+                   ]
+
+  is-javascript-ID =
+    ?ID-Plhdr(_)
+
+  prettyprint-javascript-ExportSpecifier :
+    ExportSpecifier-Opt-Plhdr() -> [ H(
+                                       []
+                                     , [S("")]
+                                     )
+                                   ]
+
+  is-javascript-ExportSpecifier =
+    ?ExportSpecifier-Opt-Plhdr()
