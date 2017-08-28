@@ -1,0 +1,77 @@
+module generating/js/execute
+
+imports
+
+  api/module-names-api
+  
+  generating/js/expression
+  generating/js/names
+  generating/js/reducer
+  
+  prettyprinting/pp
+  
+  js/js-util
+
+rules
+
+  generate-execute: x_moduleName -> js-stmt* |[
+    function execute(store, x_ids){
+      var x_result = [];
+      var oldScope = scope;
+      (function(){
+        var scope = _.assign({}, oldScope, x_ids);
+        stmts_expressions
+      })();
+      return x_result;
+    }
+    module.exports.execute = execute;
+  ]|
+    with
+      x_result := "result"
+    ; x_ids := "ids"
+    ; x_scope := <scope-var>
+    ; expressions := <modulename-get-exprs> x_moduleName
+    ; stmts_expressions := <map(generate-execute-expression-stmt(|x_result))> expressions
+
+  generate-execute-expression-stmt(|x_result): e -> result 
+    with
+      i := 0
+    ; (exp_e, stmts_e, _) := <execute-expression-serialize(|i) <+ exp-to-js-stmts(|i)> e
+    ; exp_eAsString := <pp-partial-icedust-string ; js-escaped-string> e 
+    ; exp_typeAsString := <get-type2 ; pp-partial-icedust-string ; js-string> e
+    ; exp_multiplicityAsString := <get-multiplicity ; pp-partial-icedust-string ; trim-whitespace ; js-string> e
+    ; exp_update := <set-state-action-name ; js-string>
+    ; result := js-stmt |[
+      (function(){
+        function calculation(state){
+          stmts_e
+          return {
+            result: exp_e,
+            state: state
+          };
+        }
+        var calc = calculation(store.getState());
+        state = calc.state;
+        x_result = x_result.concat([{
+          type: exp_typeAsString,
+          multiplicity: exp_multiplicityAsString,
+          expression: exp_eAsString,
+          value: calc.result,
+          calculation: calculation
+        }]);
+      })();
+  ]|
+  
+  // hook for custom serialization of execute expressions
+  // exp -> (exp_result, stmts_result, i')
+  execute-expression-serialize(|i) = fail
+  
+  execute-expression-serialize(|i): e -> result
+    where 
+      Datetime () := <get-type2> e
+    with
+      (exp_e, stmts_e, i') := <exp-to-js-stmts(|i)> e
+    ; exp_result := js-exp|[exp_e.format()]|
+    ; result := (exp_result, stmts_e, i')
+
+  

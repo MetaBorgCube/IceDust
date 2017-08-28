@@ -1,0 +1,25 @@
+module javascript-features-expressions-filter
+
+language icedust
+
+fixture [[
+  module Filter
+  
+  config
+    backend: Javascript
+    
+  execute
+    (1 ++ 2 ++ 3 ++ 4).filter(x => x > 2)
+    (1 ++ 2 ++ 3 ++ 4).filter(x => x > 4)
+    1.filter(x => x >= 0)
+    1.filter(x => x > 1)
+    [[...]]
+]]
+
+
+test first [[ ]] transform "SPT -> Build" to 
+"[3,4]
+[]
+1
+null
+"

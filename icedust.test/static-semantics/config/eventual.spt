@@ -1,0 +1,31 @@
+module config-eventual
+
+language icedust
+
+test no error on eventual enabled [[
+module test
+
+config
+
+  backend : WebDSL
+
+model
+
+  entity Foo {
+    a : Int
+    b : Int = a (eventual)
+  }
+]] 0 errors
+
+test error on eventual disabled [[
+module test
+
+config
+
+model
+
+  entity Foo {
+    a : Int
+    b : Int = a [[(eventual)]]
+  }
+]] 1 error at #1

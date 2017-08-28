@@ -3,6 +3,7 @@ module desugaring/alternatives
 imports // constructors
   
   signatures/Expressions-sig
+  signatures/Types-sig
   
 imports // functions
 

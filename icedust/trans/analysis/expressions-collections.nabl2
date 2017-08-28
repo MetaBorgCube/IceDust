@@ -48,11 +48,15 @@ rules
 
   [[ First(e1) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
+    e1_mult_u is multUpper of e1_mult,
+    TUMany() is multUpper of e1_mult | warning $[Multiplicity mismatch: Expected TUMany() got [e1_mult_u]]@e1,
     out_mult is upperboundOne of e1_mult.
 
   [[ First(e1, e2) ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     [[ e2 ^ (s) : TTuple(e2_type, e2_mult, e2_strat) ]],
+    e1_mult_u is multUpper of e1_mult,
+    TUMany() is multUpper of e1_mult | warning $[Multiplicity mismatch: Expected TUMany() got [e1_mult_u]]@e1,
     e2_type == TInt() | error $[Type mismatch: expected Integer got [e2_type]]@e2,
     e2_mult == TOne() | error $[Multiplicity mismatch: expected One got [e2_type]]@e2,
     out_mult is upperboundOne of e1_mult.

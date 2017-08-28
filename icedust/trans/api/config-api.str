@@ -1,0 +1,40 @@
+module api/config-api
+
+imports // constructors
+  
+  signatures/Config-sig
+  signatures/Modules-sig
+  
+imports // functions
+
+  lib/origin
+
+rules
+
+  configsection-get-backend     = ?ConfigSection(<id>);filter(is-backend);Hd
+  configsection-get-backends    = ?ConfigSection(<id>);filter(is-backend)
+  configsection-get-features    = ?ConfigSection(<id>);filter(is-languagefeatures);Hd;?LanguageFeatures(<id>)
+  configsection-get-featuress   = ?ConfigSection(<id>);filter(is-languagefeatures)
+  
+  configsection-is-webdslbackend = ?ConfigSection(_);where(configsection-get-backend;?WebDSLBackend(_))
+  
+  configsection-has-no-backend  = ?ConfigSection(_);where(not(configsection-get-backend))
+  configsection-has-no-features = ?ConfigSection(_);where(not(configsection-get-features))
+
+  configsection-add(s)          = ?t;?ConfigSection(c*);!ConfigSection([c*,<s>]);custom-origin(|t)
+
+rules
+
+  is-backend = ?JavaBackend(_)
+  is-backend = ?WebDSLBackend(_)
+  is-backend = ?JavascriptBackend(_, _)
+  
+  is-javascript-backend = ?JavascriptBackend(_, _)
+  
+  backend-get-phase = ?JavaBackend(<id>)
+  backend-get-phase = ?JavascriptBackend(<id>, _)
+  
+  is-languagefeatures = ?LanguageFeatures(_)
+  
+  languagefeatures-add(s) = ?LanguageFeatures(f*);!LanguageFeatures([f*,<s>])
+  

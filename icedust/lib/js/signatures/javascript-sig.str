@@ -1,0 +1,17 @@
+module js/signatures/javascript-sig
+
+imports
+  js/signatures/Common-sig
+  js/signatures/Lexical-sig
+  js/signatures/Expression-sig
+  js/signatures/Statement-sig
+
+
+signature
+  constructors
+    Program             : List(Statement) -> Start
+    Start-Plhdr         : Start
+    Statement-Plhdr     : Statement
+    Start-Plhdr         : COMPLETION-INSERTION -> Start
+    Statement-Plhdr     : COMPLETION-INSERTION -> Statement
+    Statement-Opt-Plhdr : Statement

@@ -1,0 +1,26 @@
+module java-features-expressions-logic
+
+language icedust
+
+fixture [[
+  module logic (on-demand)
+  
+  config
+    backend: Java
+  
+  model
+  entity X {
+    val : Int = (42 >= 4 && !false ? "a" : "b") == "a" ? 5 : 88 + 4
+  }
+  
+  data
+  x : X {}
+  
+  execute
+  x.val
+  [[...]]
+]]
+
+test logic [[ ]] transform "SPT -> Build" to
+"5
+"

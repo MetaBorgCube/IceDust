@@ -3,9 +3,16 @@ module icedust
 imports
   
   editor/analysis
+  editor/build
   editor/builders
   editor/completion
-  editor/generate
   editor/pp
   editor/outline
   editor/services
+
+rules
+//  debug-show-aterm:
+//      (node, _, _, path, project-path) -> (filename, result)
+//      with
+//        filename := <guarantee-extension(|"aterm")> path
+//      ; result   := node

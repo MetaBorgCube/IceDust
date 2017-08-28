@@ -1,0 +1,67 @@
+module Config
+
+imports
+
+  Common
+
+context-free syntax
+
+  Config.JavaBackend = <
+    backend : Java
+      <Phase?>
+  >
+  
+  Phase.Generate = <phase : generate>
+  Phase.Compile  = <phase : compile>
+  Phase.Execute  = <phase : execute>
+  
+context-free syntax
+  
+  Config.WebDSLBackend = <
+    backend : WebDSL
+      <UI?>
+  >
+  
+  UI.None = <ui : None>
+  UI.ModelExplorer = <
+    ui : Model Explorer
+      <TierSplit?>
+  >
+  
+  TierSplit.None        = <tiersplit : None>
+  TierSplit.IntraObject = <tiersplit : Object>
+  
+context-free syntax
+
+  Config.JavascriptBackend = <
+    backend : Javascript
+    <BackendPhase?>
+    <BackendTarget?>
+  >
+ 
+  BackendPhase.Generate = <phase : generate>
+  BackendPhase.Execute = <phase : execute>
+  BackendPhase.Eval = <phase: eval<EvalOptions>>
+  
+  EvalOptions.Options = <(<EvalOption*>)>
+  EvalOptions.NoOptions = <>
+  EvalOption.Overwrite = <overwrite>
+  
+  BackendTarget.JavascriptTarget = <target: javascript>
+  BackendTarget.HtmlTarget = <target: html <ResolveRuntime?>>
+  
+  ResolveRuntime.ResolveInline =     <runtime: inline>
+  ResolveRuntime.ResolveFromSource = <runtime: "<STRING>">
+  
+context-free syntax
+  
+  Config.LanguageFeatures = <
+    language features : <{LanguageFeature ", "}*>
+  >
+  
+  LanguageFeature.DerivedRelations    = <derived relations>
+  LanguageFeature.EventualCalculation = <eventual calculation>
+  LanguageFeature.FirstClassRelations = <first-class relations>
+  LanguageFeature.Inlines             = <inlines>
+  LanguageFeature.Strategies          = <strategies>
+  LanguageFeature.SubTyping           = <subtyping>

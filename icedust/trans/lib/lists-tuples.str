@@ -19,6 +19,10 @@ rules // tuple -> tuple
 rules // (a * List(b)) -> List((a * b))
   
   zip-repeat-1: (a, bs) -> <map(tuple-with-rev(|a))>bs
+  
+  flatten = ?(a, (b,c)) ; !(a,b,c)
+  
+  zip3 : (xs, ys, zs) -> <zip(flatten)> (xs, <zip> (ys, zs))
 
 rules // (List(a) * b) -> List((a * b))
 

@@ -7,6 +7,7 @@ imports // constructors
 
 imports // functions
 
+  api/config-api
   api/model-api
   api/module-api
   api/data-api
@@ -19,8 +20,11 @@ imports // functions
 rules
   
   generate-omitted =
+    try(omitted0);
     bottomup(try(omitted1));
     bottomup(try(omitted2))
+  
+  omitted0 = module-generate-config-section // do before rest, don't traverse
   
   omitted1 = keep-origin(module-generate-strategy)
   omitted1 = attr-generate-mult
@@ -30,6 +34,7 @@ rules
   omitted1 = shortcutrel-generate-omitted
   omitted1 = entity-generate-inverse-names
   omitted1 = datadef-generate-entity-names
+  omitted1 = config-section-generate-omitted
   
   omitted2 = entity-generate-shortcuts        // requires role-generate-name
   omitted2 = shortcutrel-to-rel               // requires shortcutrel-generate-mult
@@ -187,3 +192,90 @@ rules // shortcutrels -> shortcut relations
         | attrs
         ]
       )  
+
+rules // module config section
+
+  icedust-language-extension-fixed-config = fail // implemented by language extensions
+//  icedust-language-extension-fixed-config = ! // example configuration
+//    ConfigSection([
+//      JavaBackend(Execute()),
+//      LanguageFeatures([
+//        DerivedRelations(),
+//        Inlines(),
+//        Strategies(),
+//        SubTyping()
+//      ])
+//    ])
+
+  module-generate-config-section: m -> m'
+    where
+      is-module
+    where
+      config    := <icedust-language-extension-fixed-config;custom-origin-all(|<module-get-modulename>m)>m
+    with
+      sections  := <module-get-sections>m;
+      sections' := [config | sections];
+      m'        := <module-set-sections(!sections')>m
+
+  module-generate-config-section: m -> m'
+    where
+      module-has-no-config-section
+    with
+      config    := <custom-origin(|<module-get-modulename>m)>ConfigSection([]);
+      sections  := <module-get-sections>m;
+      sections' := [config | sections];
+      m'        := <module-set-sections(!sections')>m
+
+rules // config
+
+  config-section-generate-omitted =
+    where(?ConfigSection(_));
+    try(config-section-generate-backend);
+    try(config-section-generate-features);
+    try(config-section-add-eventual);
+    bottomup(try(backend-generate-defaults))
+  
+  config-section-generate-backend: c -> c'
+    where
+      configsection-has-no-backend
+    with
+      backend := <generate-default-backend<+generate-default-backend-java>c
+    ; c'      := <configsection-add(!backend)>c
+  
+  config-section-generate-features: c -> c'
+    where
+      configsection-has-no-features
+    with
+      features := <custom-origin-all(|c)>LanguageFeatures([
+                    DerivedRelations(),
+                    Inlines(),
+                    Strategies(),
+                    SubTyping()
+                  ]);
+      c'       := <configsection-add(!features)>c
+      
+  config-section-add-eventual: c@ConfigSection(c*) -> ConfigSection(c'*)
+    where
+      configsection-is-webdslbackend
+    with
+      eventual := <custom-origin(|c)>EventualCalculation();
+      c'*      := <map(try(languagefeatures-add(!eventual)))>c*
+      
+  generate-default-backend = fail // implemented by language extensions, for js use: generate-default-backend = generate-default-backend-js
+  generate-default-backend-java: c -> <custom-origin(|c)>JavaBackend(None())
+  generate-default-backend-js  : c -> <custom-origin(|c)>JavascriptBackend(<custom-origin(|c)> None(), <custom-origin(|c)> None())
+  
+  backend-generate-defaults : j@JavaBackend(None()) -> JavaBackend(<custom-origin(|j)>Execute())
+  
+  backend-generate-defaults = ?b@JavascriptBackend(phase, target) ; JavascriptBackend(
+        try(javascript-backend-default-phase(|b))
+      , try(javascript-backend-default-target(|b))
+    ) 
+
+  javascript-backend-default-phase(|o)  : None() -> <custom-origin(|o)> Execute()
+  javascript-backend-default-target(|o) : None() -> <custom-origin(|o)> JavascriptTarget()
+  
+  javascript-backend-default-target(|o) : HtmlTarget(None()) -> HtmlTarget(resolve)
+    with
+      resolve := <custom-origin(|o)> ResolveInline()
+  

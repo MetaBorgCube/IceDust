@@ -1,0 +1,99 @@
+module generating/js/generate
+
+imports
+  
+  generating/js/model
+  generating/js/init
+  generating/js/data
+  generating/js/execute
+  generating/js/names
+  generating/js/reducer
+  
+  lib/files
+  lib/call-external
+
+  js/js-util
+
+rules
+  generate-javascript-statements: moduleName -> stmts
+    with
+      stmts_model := <generate-model-statements> moduleName
+      ; stmts_import := <generate-javascript-imports>
+      ; stmts_init := <generate-init> moduleName
+      ; stmts_data := <generate-data> moduleName
+      ; stmts_execute := <generate-execute> moduleName
+      ; stmts_reducer := <generate-reducer> moduleName
+      ; x_scope := <scope-var>
+      ; stmts := js-stmt* |[
+          stmts_import
+          stmts_init
+          stmts_model
+          stmts_data
+          stmts_execute
+          stmts_reducer
+        ]|
+  
+  generate-javascript-imports = !js-stmt* |[
+    var expression = require('expression');
+    var constants = require('constants');
+    var _ = require('lodash');
+    var moment = require('moment');
+    var immutable = require('immutable');
+    var pixiedustRuntime = require('pixiedust/runtime');
+  ]|
+  
+  generate-main-function(generate-statements) : moduleName -> main
+    with
+      stmts_module := <generate-statements> moduleName
+    ; main := js-exp |[
+      function(require, module){
+        stmts_module
+        return module;
+      }
+    ]|
+  
+  generate-main-html(generate-main-function) : (resolve, moduleName) -> document
+    with
+     runtime := <generate-javascript-runtime-resolve> resolve
+    ; exp_main := <generate-main-function> moduleName
+    ; main := js-program |[
+      (function(){
+        var container = document.createElement('div');
+        document.body.appendChild(container);
+        require('pixiedust/runner')(exp_main, container);
+      })();
+    ]|
+    ; main-pp := <pp-js-program> main
+    ; document :=
+$[<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>[moduleName]</title>
+    [runtime]
+</head>
+<body>
+    <script>[main-pp]</script>
+</body>
+</html>
+]
+      
+  generate-javascript-runtime-resolve: ResolveInline() -> 
+    $[<script>
+      var _moduleTree = [module-tree];
+      Object.keys(_moduleTree).forEach(function(k){
+        window["["]k["]"] = _moduleTree["["]k["]"];
+      })
+    </script>
+    ]
+    with
+      module-tree := <make-module-tree>
+      
+  generate-javascript-runtime-resolve: ResolveFromSource(source) -> $[<script src="[source]"></script>]
+      
+
+  generate-javascript-main-function = generate-main-function(generate-javascript-statements)
+  generate-javascript-main-html = generate-main-html(generate-javascript-main-function)

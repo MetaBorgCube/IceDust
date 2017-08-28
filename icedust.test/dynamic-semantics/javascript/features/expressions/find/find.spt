@@ -1,0 +1,25 @@
+module javascript-features-expressions-find
+
+language icedust
+
+fixture [[
+  module Find
+  
+  config
+    backend: Javascript
+    
+  execute
+    (1 ++ 2 ++ 3 ++ 4).find(x => x > 2)
+    (1 ++ 2 ++ 3 ++ 4).find(x => x > 4)
+    1.find(x => x >= 0)
+    1.find(x => x > 1)
+    [[...]]
+]]
+
+
+test find [[ ]] transform "SPT -> Build" to 
+"3
+null
+1
+null
+"

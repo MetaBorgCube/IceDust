@@ -1,48 +1,72 @@
-module lib/js/pp/Expression-pp
+module js/pp/Expression-pp
 
 imports
   libstratego-gpp
-  runtime/tmpl/pp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
   libstratego-sglr
-  lib/js/signatures/Expression-sig
+  js/signatures/Expression-sig
 
 
 imports
-  lib/js/signatures/Common-sig
-  lib/js/signatures/Parameter-sig
-  lib/js/signatures/Statement-sig
+  js/signatures/Common-sig
+  js/signatures/Statement-sig
 
 
 imports
-  lib/js/pp/Common-pp
-  lib/js/pp/Parameter-pp
-  lib/js/pp/Statement-pp
+  js/pp/Common-pp
+  js/pp/Statement-pp
 
 
 strategies
   prettyprint-example =
-    prettyprint-spoofaxJS
+    prettyprint-javascript
 
-  prettyprint-spoofaxJS =
+  prettyprint-javascript =
+    fail
+
+  prettyprint-javascript(|sort) =
     fail
 
 
 strategies
   prettyprint-SDF-start-symbols =
-    prettyprint-spoofaxJS-start-symbols
+    prettyprint-javascript-start-symbols
 
-  prettyprint-spoofaxJS-start-symbols =
+  prettyprint-javascript-start-symbols =
     fail
 
 
 strategies
-  prettyprint-spoofaxJS =
-    prettyprint-Expression
+  prettyprint-javascript =
+    prettyprint-javascript-CondMid
 
-  prettyprint-Expression :
-    Relation(e1) -> <prettyprint-Expression> e1
+  prettyprint-javascript =
+    prettyprint-javascript-ObjectProperty
 
-  prettyprint-Expression :
+  prettyprint-javascript =
+    prettyprint-javascript-Expression
+
+  prettyprint-javascript =
+    prettyprint-javascript-LambdaParameters
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-CondMid>
+    where <?"CondMid"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-ObjectProperty>
+    where <?"ObjectProperty"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-Expression>
+    where <?"Expression"> sort
+
+  prettyprint-javascript(|sort):
+    t -> <prettyprint-javascript-LambdaParameters>
+    where <?"LambdaParameters"> sort
+
+  prettyprint-javascript-Expression :
     Parenthetical(t1__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [ S(" ( ")
@@ -51,25 +75,24 @@ strategies
                                ]
                              )
                            ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Property(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S("."), t2__']
                               )
                             ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-ID)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Property(_, _)
 
-  get-indent :
-    (Property(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Property(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -79,8 +102,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Property(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Property(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -90,8 +115,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Property(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Property(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -101,7 +128,7 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Call(t1__, t2__) -> [ H(
                             [SOpt(HS(), "0")]
                           , [ t1__'
@@ -111,16 +138,17 @@ strategies
                             ]
                           )
                         ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-H-list(prettyprint-Expression|",")> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-Expression|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Call(_, _)
 
-  get-indent :
-    (Call(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Call(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -130,8 +158,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Call(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Call(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -141,8 +171,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Call(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Call(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -152,20 +184,21 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     IntegerLiteral(t1__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__']
                               )
                             ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-INT)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-INT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-Expression =
+  is-javascript-Expression =
     ?IntegerLiteral(_)
 
-  get-indent :
-    (IntegerLiteral(t1__), index) -> indent
+  javascript-get-indent :
+    (t@IntegerLiteral(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -173,8 +206,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (IntegerLiteral(t1__), index) -> separator
+  javascript-get-separator :
+    (t@IntegerLiteral(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -182,8 +217,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (IntegerLiteral(t1__), index) -> ws
+  javascript-get-leading-ws :
+    (t@IntegerLiteral(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -191,20 +228,21 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     FloatLiteral(t1__) -> [ H(
                               [SOpt(HS(), "0")]
                             , [t1__']
                             )
                           ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-FLOAT)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-FLOAT) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-Expression =
+  is-javascript-Expression =
     ?FloatLiteral(_)
 
-  get-indent :
-    (FloatLiteral(t1__), index) -> indent
+  javascript-get-indent :
+    (t@FloatLiteral(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -212,8 +250,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (FloatLiteral(t1__), index) -> separator
+  javascript-get-separator :
+    (t@FloatLiteral(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -221,8 +261,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (FloatLiteral(t1__), index) -> ws
+  javascript-get-leading-ws :
+    (t@FloatLiteral(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -230,113 +272,169 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     True() -> [ H(
                   [SOpt(HS(), "0")]
                 , [S("true")]
                 )
               ]
 
-  is-Expression =
+  is-javascript-Expression =
     ?True()
 
-  get-indent :
-    (True(), index) -> indent
+  javascript-get-indent :
+    (t@True(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              indent := ""
          end
 
-  get-separator :
-    (True(), index) -> separator
+  javascript-get-separator :
+    (t@True(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              separator := ""
          end
 
-  get-leading-ws :
-    (True(), index) -> ws
+  javascript-get-leading-ws :
+    (t@True(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     False() -> [ H(
                    [SOpt(HS(), "0")]
                  , [S("false")]
                  )
                ]
 
-  is-Expression =
+  is-javascript-Expression =
     ?False()
 
-  get-indent :
-    (False(), index) -> indent
+  javascript-get-indent :
+    (t@False(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              indent := ""
          end
 
-  get-separator :
-    (False(), index) -> separator
+  javascript-get-separator :
+    (t@False(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              separator := ""
          end
 
-  get-leading-ws :
-    (False(), index) -> ws
+  javascript-get-leading-ws :
+    (t@False(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Null() -> [ H(
                   [SOpt(HS(), "0")]
                 , [S("null")]
                 )
               ]
 
-  is-Expression =
+  is-javascript-Expression =
     ?Null()
 
-  get-indent :
-    (Null(), index) -> indent
+  javascript-get-indent :
+    (t@Null(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              indent := ""
          end
 
-  get-separator :
-    (Null(), index) -> separator
+  javascript-get-separator :
+    (t@Null(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              separator := ""
          end
 
-  get-leading-ws :
-    (Null(), index) -> ws
+  javascript-get-leading-ws :
+    (t@Null(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            otherwise :
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
+    Undefined() -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("undefined")]
+                     )
+                   ]
+
+  is-javascript-Expression =
+    ?Undefined()
+
+  javascript-get-indent :
+    (t@Undefined(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Undefined(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Undefined(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Identifier(t1__) -> [ H(
                             [SOpt(HS(), "0")]
                           , [t1__']
                           )
                         ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-ID)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Identifier(_)
 
-  get-indent :
-    (Identifier(t1__), index) -> indent
+  javascript-get-indent :
+    (t@Identifier(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -344,8 +442,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Identifier(t1__), index) -> separator
+  javascript-get-separator :
+    (t@Identifier(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -353,8 +453,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Identifier(t1__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Identifier(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -362,20 +464,21 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     String(t1__) -> [ H(
                         [SOpt(HS(), "0")]
                       , [t1__']
                       )
                     ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-STRING)> t1__
+    with t1__' := <pp-one-Z(prettyprint-javascript-STRING) <+ pp-one-Z(prettyprint-completion-aux)> t1__
 
-  is-Expression =
+  is-javascript-Expression =
     ?String(_)
 
-  get-indent :
-    (String(t1__), index) -> indent
+  javascript-get-indent :
+    (t@String(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -383,8 +486,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (String(t1__), index) -> separator
+  javascript-get-separator :
+    (t@String(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -392,8 +497,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (String(t1__), index) -> ws
+  javascript-get-leading-ws :
+    (t@String(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -401,22 +508,59 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
+    This() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("this")]
+                )
+              ]
+
+  is-javascript-Expression =
+    ?This()
+
+  javascript-get-indent :
+    (t@This(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@This(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@This(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Addition(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S(" + "), t2__']
                               )
                             ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Addition(_, _)
 
-  get-indent :
-    (Addition(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Addition(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -426,8 +570,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Addition(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Addition(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -437,8 +583,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Addition(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Addition(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -447,23 +595,23 @@ strategies
            otherwise :
              ws := ""
          end
-  
-  prettyprint-Expression :
+
+  prettyprint-javascript-Expression :
     Substraction(t1__, t2__) -> [ H(
                                     [SOpt(HS(), "0")]
                                   , [t1__', S(" - "), t2__']
                                   )
                                 ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Substraction(_, _)
 
-  get-indent :
-    (Substraction(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Substraction(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -473,8 +621,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Substraction(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Substraction(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -484,8 +634,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Substraction(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Substraction(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -495,22 +647,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Multiplication(t1__, t2__) -> [ H(
                                       [SOpt(HS(), "0")]
                                     , [t1__', S(" * "), t2__']
                                     )
                                   ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Multiplication(_, _)
 
-  get-indent :
-    (Multiplication(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Multiplication(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -520,8 +672,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Multiplication(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Multiplication(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -531,8 +685,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Multiplication(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Multiplication(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -542,22 +698,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Division(t1__, t2__) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [t1__', S(" / "), t2__']
                               )
                             ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Division(_, _)
 
-  get-indent :
-    (Division(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Division(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -567,8 +723,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Division(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Division(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -578,8 +736,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Division(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Division(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -589,22 +749,73 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
+    Modulo(t1__, t2__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [t1__', S(" % "), t2__']
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Modulo(_, _)
+
+  javascript-get-indent :
+    (t@Modulo(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Modulo(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Modulo(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Greater(t1__, t2__) -> [ H(
                                [SOpt(HS(), "0")]
                              , [t1__', S(" > "), t2__']
                              )
                            ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Greater(_, _)
 
-  get-indent :
-    (Greater(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Greater(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -614,8 +825,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Greater(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Greater(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -625,8 +838,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Greater(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Greater(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -636,22 +851,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Lower(t1__, t2__) -> [ H(
                              [SOpt(HS(), "0")]
                            , [t1__', S(" < "), t2__']
                            )
                          ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Lower(_, _)
 
-  get-indent :
-    (Lower(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Lower(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -661,8 +876,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Lower(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Lower(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -672,8 +889,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Lower(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Lower(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -683,22 +902,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     GreaterEquals(t1__, t2__) -> [ H(
                                      [SOpt(HS(), "0")]
                                    , [t1__', S(" >= "), t2__']
                                    )
                                  ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?GreaterEquals(_, _)
 
-  get-indent :
-    (GreaterEquals(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@GreaterEquals(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -708,8 +927,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (GreaterEquals(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@GreaterEquals(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -719,8 +940,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (GreaterEquals(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@GreaterEquals(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -730,22 +953,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     LowerEquals(t1__, t2__) -> [ H(
                                    [SOpt(HS(), "0")]
                                  , [t1__', S(" <= "), t2__']
                                  )
                                ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?LowerEquals(_, _)
 
-  get-indent :
-    (LowerEquals(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@LowerEquals(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -755,8 +978,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (LowerEquals(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@LowerEquals(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -766,8 +991,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (LowerEquals(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@LowerEquals(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -777,22 +1004,226 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
+    Equals(t1__, t2__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [t1__', S(" == "), t2__']
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Equals(_, _)
+
+  javascript-get-indent :
+    (t@Equals(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Equals(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Equals(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    EqualsStrict(t1__, t2__) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [t1__', S(" === "), t2__']
+                                  )
+                                ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?EqualsStrict(_, _)
+
+  javascript-get-indent :
+    (t@EqualsStrict(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@EqualsStrict(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@EqualsStrict(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    NotEquals(t1__, t2__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__', S(" != "), t2__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?NotEquals(_, _)
+
+  javascript-get-indent :
+    (t@NotEquals(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@NotEquals(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@NotEquals(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    NotEqualsStrict(t1__, t2__) -> [ H(
+                                       [SOpt(HS(), "0")]
+                                     , [t1__', S(" !== "), t2__']
+                                     )
+                                   ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?NotEqualsStrict(_, _)
+
+  javascript-get-indent :
+    (t@NotEqualsStrict(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@NotEqualsStrict(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@NotEqualsStrict(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     And(t1__, t2__) -> [ H(
                            [SOpt(HS(), "0")]
                          , [t1__', S(" && "), t2__']
                          )
                        ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?And(_, _)
 
-  get-indent :
-    (And(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@And(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -802,8 +1233,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (And(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@And(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -813,8 +1246,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (And(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@And(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -824,22 +1259,22 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
+  prettyprint-javascript-Expression :
     Or(t1__, t2__) -> [ H(
                           [SOpt(HS(), "0")]
                         , [t1__', S(" || "), t2__']
                         )
                       ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t1__
-    with t2__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-one-Z(prettyprint-Expression)> t2__
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
 
-  is-Expression =
+  is-javascript-Expression =
     ?Or(_, _)
 
-  get-indent :
-    (Or(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    (t@Or(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
@@ -849,8 +1284,10 @@ strategies
              indent := ""
          end
 
-  get-separator :
-    (Or(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    (t@Or(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              separator := ""
@@ -860,8 +1297,10 @@ strategies
              separator := ""
          end
 
-  get-leading-ws :
-    (Or(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    (t@Or(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              ws := ""
@@ -871,153 +1310,1077 @@ strategies
              ws := ""
          end
 
-  prettyprint-Expression :
-    AnonFunction(t1__, t2__) -> [ H(
-                                    [SOpt(HS(), "0")]
-                                  , [ S("function(")
-                                    , t1__'
-                                    , S(") {")
+  prettyprint-javascript-Expression :
+    FunctionExpression(t1__, t2__, t3__) -> [ H(
+                                                [SOpt(HS(), "0")]
+                                              , [ S("function ")
+                                                , t1__'
+                                                , S("(")
+                                                , t2__'
+                                                , S(") {")
+                                                ]
+                                              )
+                                            , t3__'
+                                            , t4__'
+                                            ]
+    with t1__' := <pp-option(
+                     pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)
+                   )> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-ID|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-indent(|"8")> [ <pp-V-list(prettyprint-javascript-Statement) <+ pp-one-Z(prettyprint-completion-aux)> t3__
                                     ]
-                                  )
-                                , t2__'
-                                , t3__'
-                                ]
-    with t1__' := <is-string ; pp-one-Z(prettyprint-origin-term)
-                   <+ pp-H-list(prettyprint-Parameter|",")> t1__
-    with t2__' := <pp-indent(|"6")> [ <is-string ; pp-one-Z(prettyprint-origin-term)
-                                       <+ pp-V-list(prettyprint-Statement)> t2__
-                                    ]
-    with t3__' := <pp-indent(|"2")> [S("}")]
+    with t4__' := <pp-indent(|"4")> [S("}")]
 
-  is-Expression =
-    ?AnonFunction(_, _)
+  is-javascript-Expression =
+    ?FunctionExpression(_, _, _)
 
-  get-indent :
-    (AnonFunction(t1__, t2__), index) -> indent
+  javascript-get-indent :
+    ( t@FunctionExpression(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
              indent := ""
            case ?2 :
-             indent := "      "
+             indent := ""
+           case ?3 :
+             indent := "        "
            otherwise :
              indent := ""
          end
 
-  get-separator :
-    (AnonFunction(t1__, t2__), index) -> separator
+  javascript-get-separator :
+    ( t@FunctionExpression(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
-             separator := ","
+             separator := ""
            case ?2 :
+             separator := ","
+           case ?3 :
              separator := "\n"
            otherwise :
              separator := ""
          end
 
-  get-leading-ws :
-    (AnonFunction(t1__, t2__), index) -> ws
+  javascript-get-leading-ws :
+    ( t@FunctionExpression(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
     with switch !index
            case ?1 :
-             ws := ""
+             ws := " "
            case ?2 :
-             ws := "\n      "
+             ws := ""
+           case ?3 :
+             ws := "\n        "
            otherwise :
              ws := ""
          end
 
-  is-Expression =
+  prettyprint-javascript-Expression :
+    Index(t1__, t2__) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [ t1__'
+                             , S("[")
+                             , t2__'
+                             , S("]")
+                             ]
+                           )
+                         ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Index(_, _)
+
+  javascript-get-indent :
+    (t@Index(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Index(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Index(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Not(t1__) -> [ H(
+                     [SOpt(HS(), "0")]
+                   , [S("!"), t1__']
+                   )
+                 ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Expression =
+    ?Not(_)
+
+  javascript-get-indent :
+    (t@Not(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Not(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Not(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Negate(t1__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("- "), t1__']
+                      )
+                    ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Expression =
+    ?Negate(_)
+
+  javascript-get-indent :
+    (t@Negate(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Negate(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Negate(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Increment(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("++")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Expression =
+    ?Increment(_)
+
+  javascript-get-indent :
+    (t@Increment(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Increment(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Increment(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Decrement(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("--")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Expression =
+    ?Decrement(_)
+
+  javascript-get-indent :
+    (t@Decrement(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Decrement(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Decrement(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Cond(t1__, t2__, t3__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ t1__'
+                                  , S(" ")
+                                  , t2__'
+                                  , S(" ")
+                                  , t3__'
+                                  ]
+                                )
+                              ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-CondMid) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-javascript-Expression =
+    ?Cond(_, _, _)
+
+  javascript-get-indent :
+    ( t@Cond(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    ( t@Cond(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    ( t@Cond(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-CondMid :
+    CondMid(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S("? ")
+                         , t1__'
+                         , S(" :")
+                         ]
+                       )
+                     ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-CondMid =
+    ?CondMid(_)
+
+  javascript-get-indent :
+    (t@CondMid(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@CondMid(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@CondMid(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"CondMid"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    ObjectLiteral(t1__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("{")]
+                             )
+                           , t1__'
+                           , H(
+                               [SOpt(HS(), "0")]
+                             , [S("}")]
+                             )
+                           ]
+    with t1__' := <pp-indent(|"2")> [ <pp-V-list(prettyprint-javascript-ObjectProperty|"0", ",")
+                                       <+ pp-one-Z(prettyprint-completion-aux)> t1__
+                                    ]
+
+  is-javascript-Expression =
+    ?ObjectLiteral(_)
+
+  javascript-get-indent :
+    (t@ObjectLiteral(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := "  "
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ObjectLiteral(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ",\n"
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ObjectLiteral(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := "\n  "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ObjectProperty :
+    PropertyFromVariable(t1__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [t1__']
+                                    )
+                                  ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-ObjectProperty =
+    ?PropertyFromVariable(_)
+
+  javascript-get-indent :
+    (t@PropertyFromVariable(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@PropertyFromVariable(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@PropertyFromVariable(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-ObjectProperty :
+    ObjectProperty(t1__, t2__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [t1__', S(" : "), t2__']
+                                    )
+                                  ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-ObjectProperty =
+    ?ObjectProperty(_, _)
+
+  javascript-get-indent :
+    (t@ObjectProperty(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ObjectProperty(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ObjectProperty(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"ObjectProperty"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    ArrayLiteral(t1__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("[")
+                              , t1__'
+                              , S("]")
+                              ]
+                            )
+                          ]
+    with t1__' := <pp-H-list(prettyprint-javascript-Expression|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-Expression =
+    ?ArrayLiteral(_)
+
+  javascript-get-indent :
+    (t@ArrayLiteral(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ArrayLiteral(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ArrayLiteral(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    Lambda(t1__, t2__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [t1__', S(" => "), t2__']
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?Lambda(_, _)
+
+  javascript-get-indent :
+    (t@Lambda(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@Lambda(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@Lambda(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
+    LambdaBlock(t1__, t2__) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [t1__', S(" => "), t2__']
+                                 )
+                               ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-LambdaParameters) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-javascript-BlockStatement) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?LambdaBlock(_, _)
+
+  javascript-get-indent :
+    (t@LambdaBlock(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@LambdaBlock(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@LambdaBlock(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-LambdaParameters :
+    LambdaParameters(t1__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ S("(")
+                                  , t1__'
+                                  , S(")")
+                                  ]
+                                )
+                              ]
+    with t1__' := <pp-H-list(prettyprint-javascript-ID|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-LambdaParameters =
+    ?LambdaParameters(_)
+
+  javascript-get-indent :
+    (t@LambdaParameters(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@LambdaParameters(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@LambdaParameters(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-LambdaParameters :
+    SingleParameter(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-ID) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-javascript-LambdaParameters =
+    ?SingleParameter(_)
+
+  javascript-get-indent :
+    (t@SingleParameter(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@SingleParameter(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@SingleParameter(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LambdaParameters"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-javascript-CondMid =
     fail
 
-  prettyprint-Expression :
-    amb([h|hs]) -> <prettyprint-Expression> h
+  is-javascript-ObjectProperty =
+    fail
 
-  prettyprint-INT :
+  is-javascript-Expression =
+    fail
+
+  is-javascript-LambdaParameters =
+    fail
+
+  prettyprint-javascript-CondMid :
+    amb([h|hs]) -> <prettyprint-javascript-CondMid> h
+
+  prettyprint-javascript-ObjectProperty :
+    amb([h|hs]) -> <prettyprint-javascript-ObjectProperty> h
+
+  prettyprint-javascript-Expression :
+    amb([h|hs]) -> <prettyprint-javascript-Expression> h
+
+  prettyprint-javascript-LambdaParameters :
+    amb([h|hs]) -> <prettyprint-javascript-LambdaParameters> h
+
+  prettyprint-javascript-INT :
     INT-Plhdr() -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("[[INT]]")]
+                     , [S("$INT")]
                      )
                    ]
 
-  is-INT =
+  is-javascript-INT =
     ?INT-Plhdr()
 
-  is-SDF-placeholder =
-    ?INT-Plhdr()
-
-  prettyprint-FLOAT :
+  prettyprint-javascript-FLOAT :
     FLOAT-Plhdr() -> [ H(
                          [SOpt(HS(), "0")]
-                       , [S("[[FLOAT]]")]
+                       , [S("$FLOAT")]
                        )
                      ]
 
-  is-FLOAT =
+  is-javascript-FLOAT =
     ?FLOAT-Plhdr()
 
-  is-SDF-placeholder =
-    ?FLOAT-Plhdr()
-
-  prettyprint-ID :
-    ID-Plhdr() -> [ H(
-                      [SOpt(HS(), "0")]
-                    , [S("[[ID]]")]
-                    )
-                  ]
-
-  is-ID =
-    ?ID-Plhdr()
-
-  is-SDF-placeholder =
-    ?ID-Plhdr()
-
-  prettyprint-STRING :
+  prettyprint-javascript-STRING :
     STRING-Plhdr() -> [ H(
                           [SOpt(HS(), "0")]
-                        , [S("[[STRING]]")]
+                        , [S("$STRING")]
                         )
                       ]
 
-  is-STRING =
+  is-javascript-STRING =
     ?STRING-Plhdr()
 
-  is-SDF-placeholder =
-    ?STRING-Plhdr()
+  prettyprint-javascript-Statement :
+    Statement-Plhdr() -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$Statement")]
+                           )
+                         ]
 
-  prettyprint-Expression :
+  is-javascript-Statement =
+    ?Statement-Plhdr()
+
+  prettyprint-javascript-CondMid :
+    CondMid-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$CondMid")]
+                         )
+                       ]
+
+  is-javascript-CondMid =
+    ?CondMid-Plhdr()
+
+  prettyprint-javascript-ObjectProperty :
+    ObjectProperty-Plhdr() -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$ObjectProperty")]
+                                )
+                              ]
+
+  is-javascript-ObjectProperty =
+    ?ObjectProperty-Plhdr()
+
+  prettyprint-javascript-Expression :
     Expression-Plhdr() -> [ H(
                               [SOpt(HS(), "0")]
-                            , [S("[[Expression]]")]
+                            , [S("$Expression")]
                             )
                           ]
 
-  is-Expression =
+  is-javascript-Expression =
     ?Expression-Plhdr()
 
-  is-SDF-placeholder =
-    ?Expression-Plhdr()
+  prettyprint-javascript-BlockStatement :
+    BlockStatement-Plhdr() -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$BlockStatement")]
+                                )
+                              ]
 
-  prettyprint-Parameter :
-    Parameter-Plhdr() -> [ H(
-                             [SOpt(HS(), "0")]
-                           , [S("[[Parameter]]")]
-                           )
-                         ]
+  is-javascript-BlockStatement =
+    ?BlockStatement-Plhdr()
 
-  is-Parameter =
-    ?Parameter-Plhdr()
+  prettyprint-javascript-LambdaParameters :
+    LambdaParameters-Plhdr() -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$LambdaParameters")]
+                                  )
+                                ]
 
-  is-SDF-placeholder =
-    ?Parameter-Plhdr()
+  is-javascript-LambdaParameters =
+    ?LambdaParameters-Plhdr()
 
-  prettyprint-Statement :
-    Statement-Plhdr() -> [ H(
-                             [SOpt(HS(), "0")]
-                           , [S("[[Statement]]")]
-                           )
-                         ]
+  prettyprint-javascript-ID :
+    ID-Plhdr() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("$ID")]
+                    )
+                  ]
 
-  is-Statement =
-    ?Statement-Plhdr()
+  is-javascript-ID =
+    ?ID-Plhdr()
 
-  is-SDF-placeholder =
-    ?Statement-Plhdr()
+  prettyprint-javascript-INT :
+    INT-Plhdr(_) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$INT")]
+                      )
+                    ]
+
+  is-javascript-INT =
+    ?INT-Plhdr(_)
+
+  prettyprint-javascript-FLOAT :
+    FLOAT-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$FLOAT")]
+                        )
+                      ]
+
+  is-javascript-FLOAT =
+    ?FLOAT-Plhdr(_)
+
+  prettyprint-javascript-STRING :
+    STRING-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$STRING")]
+                         )
+                       ]
+
+  is-javascript-STRING =
+    ?STRING-Plhdr(_)
+
+  prettyprint-javascript-Statement :
+    Statement-Plhdr(_) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Statement")]
+                            )
+                          ]
+
+  is-javascript-Statement =
+    ?Statement-Plhdr(_)
+
+  prettyprint-javascript-CondMid :
+    CondMid-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$CondMid")]
+                          )
+                        ]
+
+  is-javascript-CondMid =
+    ?CondMid-Plhdr(_)
+
+  prettyprint-javascript-ObjectProperty :
+    ObjectProperty-Plhdr(_) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$ObjectProperty")]
+                                 )
+                               ]
+
+  is-javascript-ObjectProperty =
+    ?ObjectProperty-Plhdr(_)
+
+  prettyprint-javascript-Expression :
+    Expression-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Expression")]
+                             )
+                           ]
+
+  is-javascript-Expression =
+    ?Expression-Plhdr(_)
+
+  prettyprint-javascript-BlockStatement :
+    BlockStatement-Plhdr(_) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$BlockStatement")]
+                                 )
+                               ]
+
+  is-javascript-BlockStatement =
+    ?BlockStatement-Plhdr(_)
+
+  prettyprint-javascript-LambdaParameters :
+    LambdaParameters-Plhdr(_) -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [S("$LambdaParameters")]
+                                   )
+                                 ]
+
+  is-javascript-LambdaParameters =
+    ?LambdaParameters-Plhdr(_)
+
+  prettyprint-javascript-ID :
+    ID-Plhdr(_) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("$ID")]
+                     )
+                   ]
+
+  is-javascript-ID =
+    ?ID-Plhdr(_)
+
+  prettyprint-javascript-Statement :
+    Statement-Opt-Plhdr() -> [ H(
+                                 []
+                               , [S("")]
+                               )
+                             ]
+
+  is-javascript-Statement =
+    ?Statement-Opt-Plhdr()
+
+  prettyprint-javascript-ObjectProperty :
+    ObjectProperty-Opt-Plhdr() -> [ H(
+                                      []
+                                    , [S("")]
+                                    )
+                                  ]
+
+  is-javascript-ObjectProperty =
+    ?ObjectProperty-Opt-Plhdr()
+
+  prettyprint-javascript-Expression :
+    Expression-Opt-Plhdr() -> [ H(
+                                  []
+                                , [S("")]
+                                )
+                              ]
+
+  is-javascript-Expression =
+    ?Expression-Opt-Plhdr()
+
+  prettyprint-javascript-ID :
+    ID-Opt-Plhdr() -> [ H(
+                          []
+                        , [S("")]
+                        )
+                      ]
+
+  is-javascript-ID =
+    ?ID-Opt-Plhdr()
