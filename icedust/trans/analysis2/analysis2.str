@@ -150,7 +150,7 @@ rules
       arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
     with
       dependencies := <fmap(arriname-dependencies)>arrinames;
-      dataflow     := <map(path-inverse)>dependencies
+      dataflow     := <map(path-inverse);make-set-no-annos>dependencies
     with
       <nabl2-custom-analysis-info-msg(|"dependencies ")>dependencies;
       <nabl2-custom-analysis-info-msg(|"dataflow     ")>dataflow

@@ -81,6 +81,7 @@ rules
       x_updateAllCache   := <name-updateallcache>x_name;
       x_hasDirty         := <name-hasdirty>x_name;
       x_flagDirty        := <name-flagdirty>x_name;
+      x_flagTransDirty   := <name-flagtransdirty>x_name;
       x_dirtyFlagFlows   := <name-dirtyflagflowsto>x_name;
       x_setIncr          := <name-set-incremental>x_name;
       x_addIncr          := <name-add-incremental>x_name;
@@ -119,7 +120,8 @@ rules
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_name
       end
     with
-      stat_flowsTo* := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
+      stat_flowsTo*   := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm (err))>x_name
+//      stat_dependsOn* := <name-get-dependson-pathexprs                               ;map(model-pathexpr-to-webdsl-stm2(err))>x_name
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
         case name-has-expr; attributename-is-explorerui:
@@ -462,6 +464,10 @@ rules
       switch id
         case name-is-incremental-eventual; name-is-default-derived:
           ebd_flagDirty* := ebd* |[
+//            function x_flagDirty() {
+//              x_qualifiedDirty.add(this);
+//            }
+          
             static function x_flagDirty(en : x_entityName) {
               if(en != null){
                 x_qualifiedDirty.add(en);
@@ -499,8 +505,48 @@ rules
             
             // not flag dirty in constructor, dirty field is initialized with true
           ]|
+//        case not(name-is-inline):
+//          ebd_flagDirty* := ebd* |[
+//            function x_flagDirty() { } // stub, for if subtypes have a cache
+//            
+//            static function x_flagDirty(en : x_entityName) {
+//              if(en != null){
+//                en.x_flagDirty();
+//              }
+//            }
+//            
+//            static function x_flagDirty(ens : [x_entityName]) {
+//              for(en:x_entityName in ens){
+//                en.x_flagDirty();
+//              }
+//            }
+//          ]|
         otherwise:
           ebd_flagDirty* := []
+      end
+    with // TODO: limit to not inline
+      switch id
+//        case not(name-is-inline):
+//          ebd_flagTransDirty* := ebd* |[
+//            function x_flagTransDirty(){
+//              x_flagDirty();
+////              stat_dependsOn*
+//            }
+//          
+//            static function x_flagTransDirty(en : x_entityName) {
+//              if(en != null){
+//                en.x_flagTransDirty();
+//              }
+//            }
+//            
+//            static function x_flagTransDirty(ens : [x_entityName]) {
+//              for(en:x_entityName in ens){
+//                en.x_flagTransDirty();
+//              }
+//            }
+//          ]|
+        otherwise:
+          ebd_flagTransDirty* := []
       end
     with // Data Structure Layer
       switch id
@@ -592,6 +638,7 @@ rules
         ebd_calculate*
         ebd_dirtyFlagFlows*
         ebd_flagDirty*
+        ebd_flagTransDirty*
         ebd_field*
         ebd_cacheField*
         ebd_dirty*
@@ -623,6 +670,25 @@ rules
       result := stat |[
         x_entityName.x_flagDirty(e_path);
       ]|
+
+  model-pathexpr-to-webdsl-stm2(err): pathexpr -> result
+    with
+      x_attributeName := <pathexpr-last>pathexpr;
+      x_entityName    := <attributename-get-entityname>x_attributeName;
+      x_flagTransDirty:= <name-flagtransdirty>x_attributeName;
+      pathexpr'       := <pathexpr-shorten-safe>pathexpr;
+//      srt1            := <get-type2;type-to-webdsl-srt(err)>pathexpr';
+      e_path          := <expr-to-webdsl-expr(err)>pathexpr'
+    with
+      if <get-multiplicity;upper-many>pathexpr' then
+        result := stat |[
+          x_entityName.x_flagTransDirty([(v as x_entityName) | v : x_entityName in e_path]);
+        ]|
+      else
+        result := stat |[
+          x_entityName.x_flagTransDirty(e_path as x_entityName);
+        ]|
+      end
 
 rules
 
