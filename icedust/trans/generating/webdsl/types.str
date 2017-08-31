@@ -27,6 +27,8 @@ rules // primitives
   type-to-webdsl-srt(err): NoValue() -> webdsl |[ Void ]|
   type-to-webdsl-srt(err): name      -> name
     where is-string
+  type-to-webdsl-srt(err): EntityType(name) -> name
+    where <is-string>name
 
 rules // types of expressions and names (uses type and multiplicity)
   

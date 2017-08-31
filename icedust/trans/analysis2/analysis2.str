@@ -150,7 +150,7 @@ rules
       arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
     with
       dependencies := <fmap(arriname-dependencies)>arrinames;
-      dataflow     := <map(path-inverse)>dependencies
+      dataflow     := <map(path-inverse);make-set-no-annos>dependencies
     with
       <nabl2-custom-analysis-info-msg(|"dependencies ")>dependencies;
       <nabl2-custom-analysis-info-msg(|"dataflow     ")>dataflow
@@ -164,7 +164,7 @@ rules
       (p*, q*)          := <expr-pathexprs>expr;
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set-no-annos>pathexprs-no-this;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);filter(not(?This()));make-set-no-annos>pathexprs-no-this;
       dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules

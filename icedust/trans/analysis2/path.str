@@ -49,6 +49,11 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       (p2*, q2*):= <expr-pathexprs>expr2;
       p2'*      := <fmap(pathexpr-add-this;pathexpr-replace-this(|p*))>p2*;
       q2'*      := <fmap(pathexpr-add-this;pathexpr-replace-this(|p*))>q2*
+      
+  expr-pathexprs: e@FilterType(e1, ty) -> (p'*, q*)
+    with
+      (p*, q*)  := <expr-pathexprs>e1;
+      p'*       := <map(pathexpr-extendfiltertype(|ty))>p*
 
   expr-pathexprs: e@If(e1, e2, e3) -> ([p2*,p3*], [p1*,q1*,q2*,q3*])
     with
@@ -93,6 +98,7 @@ rules
   pathexpr-replace-this(|expr): This()                -> expr
   pathexpr-replace-this(|expr): e@Ref(_)              -> e
   pathexpr-replace-this(|expr): MemberAccess(e, name) -> MemberAccess(<pathexpr-replace-this(|expr)>e, name)
+  pathexpr-replace-this(|expr): FilterType(e, ty)     -> FilterType(<pathexpr-replace-this(|expr)>e, ty)
   
   pathexpr-replace(|name, expr*) = ?expr2;!expr*;where(is-list);map(pathexpr-replace-internal(|name, expr2))
   
@@ -102,36 +108,54 @@ rules
   pathexpr-replace(|name, expr): e@Ref(_)             -> e
   pathexpr-replace(|name, expr):   MemberAccess(e, n) -> MemberAccess(<pathexpr-replace(|name, expr)>e, n)
   pathexpr-replace(|name, expr):   This()             -> This()
+  pathexpr-replace(|name, expr):   FilterType(e, t)   -> FilterType(<pathexpr-replace(|name, expr)>e, t)
   
   pathexpr-extend(|name): expr -> MemberAccess(expr, name)
   
-  pathexpr-shorten: MemberAccess(expr, name) -> expr // Expr -> Expr or fail
+  pathexpr-extendfiltertype(|type): expr -> FilterType(expr, type)
+  
+  pathexpr-shorten                  : MemberAccess(expr, _) -> expr
+  
+  pathexpr-shorten-remove-filtertype: MemberAccess(FilterType(expr,_), _) -> expr
+  pathexpr-shorten-remove-filtertype: MemberAccess(expr, _)               -> expr
   
   pathexpr-shorten-safe =  pathexpr-shorten
   pathexpr-shorten-safe: Ref(_) -> This()
   
-  pathexpr-shorten-refl-trans = reflexive-transitive-closure(pathexpr-shorten)
+  pathexpr-shorten-refl-trans = reflexive-transitive-closure(pathexpr-shorten-remove-filtertype)
   
   pathexpr-add-this: e@MemberAccess(This(), _)     -> e
   pathexpr-add-this: MemberAccess(expr, name)      -> MemberAccess(<pathexpr-add-this>expr, name)
   pathexpr-add-this: Ref(name)                     -> MemberAccess(This(), name)
   pathexpr-add-this: This()                        -> This()
+  pathexpr-add-this: FilterType(expr, ty)          -> FilterType(<pathexpr-add-this>expr, ty)
   
   pathexpr-remove-this: MemberAccess(This(), name) -> Ref(name)
   pathexpr-remove-this: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-this>expr, name)
   pathexpr-remove-this: e@Ref(name)                -> e
   pathexpr-remove-this: This()                     -> <fail> // partial function
+  pathexpr-remove-this: e@FilterType(This(), ty)   -> e // allow this directly in filter type
+  pathexpr-remove-this: FilterType(expr, ty)       -> FilterType(<pathexpr-remove-this>expr, ty)
   
   pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(MemberAccess(<pathexpr-remove-shortcuts>expr, inverseName), roleName) where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
   pathexpr-remove-shortcuts: MemberAccess(expr, name)   -> MemberAccess(<pathexpr-remove-shortcuts>expr, name)
   pathexpr-remove-shortcuts: e@Ref(name)                -> MemberAccess(Ref(inverseName), roleName)                                           where <shortcutname-get-inverseandrolename>name => (inverseName, roleName)
   pathexpr-remove-shortcuts: e@Ref(name)                -> e
+  pathexpr-remove-shortcuts: FilterType(expr, ty)       -> FilterType(<pathexpr-remove-shortcuts>expr, ty)
+  pathexpr-remove-shortcuts: This()                     -> This()
+  
+  pathexpr-remove-filtertype:   MemberAccess(FilterType(This(),_), name) -> Ref(name)
+  pathexpr-remove-filtertype: e@Ref(name)                -> e
+  pathexpr-remove-filtertype:   MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-filtertype>expr, name)
+  pathexpr-remove-filtertype:   FilterType(expr, ty)     -> <pathexpr-remove-filtertype>expr
 
   pathexpr-last: MemberAccess(expr, name) -> <get-decl(|"Member")>name
   pathexpr-last: Ref(name)                -> <get-decl(|"Member")>name
+  pathexpr-last: FilterType(expr, ty)     -> <pathexpr-last>expr
   
   pathexpr-first: MemberAccess(expr, name) -> <pathexpr-first>expr
   pathexpr-first: Ref(name)                -> <get-decl(|"Member")>name
+  pathexpr-first: FilterType(expr, ty)     -> <pathexpr-first>expr
   
   pathexpr-remove-first: MemberAccess(Ref(name), name2) -> Ref(name2)
   pathexpr-remove-first: MemberAccess(expr, name)       -> MemberAccess(<pathexpr-remove-first>expr, name)
@@ -159,15 +183,16 @@ rules
       <not(entityname-has-ancestor(|first-ty))>secnd-ty
 //      ;<debug>"b"
   pathexpr-inverse(|this-ty): e@MemberAccess(expr, name) -> MemberAccess(<pathexpr-remove-first;pathexpr-inverse(|this-ty)>e, <pathexpr-first;try(name-get-inversename)>e)
-
+  pathexpr-inverse(|this-ty): e@FilterType(expr, ty)     -> <pathexpr-inverse(|this-ty)>expr
 rules
 
   path(|origin): pathexpr -> DependencyPath(origin, pathexpr-analyzed)
     with
       pathexpr-analyzed := <analyse-post-analysis(|<attributename-get-entityname>origin)>pathexpr
   
-  path-inverse: DependencyPath(origin, pathexpr) -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
+  path-inverse: DependencyPath(origin, pathexpr') -> DataflowPath(inv-origin-def, inv-pathexpr-analyzed)
     with
+      pathexpr       := <pathexpr-remove-filtertype>pathexpr';
       inv-origin     := <pathexpr-last>pathexpr;
       inv-origin-def := <get-decl(|"Member")>inv-origin;
       origin-entity  := <attributename-get-entityname>origin;
