@@ -98,7 +98,7 @@ rules
       x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
-//      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
+      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
       x_updateOneCacheAsync  := <name-updateonecacheasync>x_name;
       x_isUpToDate       := <name-isuptodate>x_name;
       x_topoSort         := <(name-get-toposort<+!0);int-to-string>x_name
@@ -120,8 +120,8 @@ rules
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_name
       end
     with
-      stat_flowsTo*   := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm (err))>x_name
-//      stat_dependsOn* := <name-get-dependson-pathexprs                               ;map(model-pathexpr-to-webdsl-stm2(err))>x_name
+      stat_flowsTo*   := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm (err))>x_name;
+      stat_dependsOn* := <name-get-dependson-pathexprs                               ;map(model-pathexpr-to-webdsl-stm2(err))>x_name
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
         case name-has-expr; attributename-is-explorerui:
@@ -464,9 +464,9 @@ rules
       switch id
         case name-is-incremental-eventual; name-is-default-derived:
           ebd_flagDirty* := ebd* |[
-//            function x_flagDirty() {
-//              x_qualifiedDirty.add(this);
-//            }
+            function x_flagDirty() {
+              x_qualifiedDirty.add(this);
+            }
           
             static function x_flagDirty(en : x_entityName) {
               if(en != null){
@@ -505,46 +505,46 @@ rules
             
             // not flag dirty in constructor, dirty field is initialized with true
           ]|
-//        case not(name-is-inline):
-//          ebd_flagDirty* := ebd* |[
-//            function x_flagDirty() { } // stub, for if subtypes have a cache
-//            
-//            static function x_flagDirty(en : x_entityName) {
-//              if(en != null){
-//                en.x_flagDirty();
-//              }
-//            }
-//            
-//            static function x_flagDirty(ens : [x_entityName]) {
-//              for(en:x_entityName in ens){
-//                en.x_flagDirty();
-//              }
-//            }
-//          ]|
+        case not(name-is-inline):
+          ebd_flagDirty* := ebd* |[
+            function x_flagDirty() { } // stub, for if subtypes have a cache
+            
+            static function x_flagDirty(en : x_entityName) {
+              if(en != null){
+                en.x_flagDirty();
+              }
+            }
+            
+            static function x_flagDirty(ens : [x_entityName]) {
+              for(en:x_entityName in ens){
+                en.x_flagDirty();
+              }
+            }
+          ]|
         otherwise:
           ebd_flagDirty* := []
       end
-    with // TODO: limit to not inline
+    with
       switch id
-//        case not(name-is-inline):
-//          ebd_flagTransDirty* := ebd* |[
-//            function x_flagTransDirty(){
-//              x_flagDirty();
-////              stat_dependsOn*
-//            }
-//          
-//            static function x_flagTransDirty(en : x_entityName) {
-//              if(en != null){
-//                en.x_flagTransDirty();
-//              }
-//            }
-//            
-//            static function x_flagTransDirty(ens : [x_entityName]) {
-//              for(en:x_entityName in ens){
-//                en.x_flagTransDirty();
-//              }
-//            }
-//          ]|
+        case not(name-is-inline):
+          ebd_flagTransDirty* := ebd* |[
+            function x_flagTransDirty(){
+              x_flagDirty();
+              stat_dependsOn*
+            }
+          
+            static function x_flagTransDirty(en : x_entityName) {
+              if(en != null){
+                en.x_flagTransDirty();
+              }
+            }
+            
+            static function x_flagTransDirty(ens : [x_entityName]) {
+              for(en:x_entityName in ens){
+                en.x_flagTransDirty();
+              }
+            }
+          ]|
         otherwise:
           ebd_flagTransDirty* := []
       end
@@ -676,13 +676,14 @@ rules
       x_attributeName := <pathexpr-last>pathexpr;
       x_entityName    := <attributename-get-entityname>x_attributeName;
       x_flagTransDirty:= <name-flagtransdirty>x_attributeName;
-      pathexpr'       := <pathexpr-shorten-safe>pathexpr;
-//      srt1            := <get-type2;type-to-webdsl-srt(err)>pathexpr';
+      pathexpr'       := <pathexpr-shorten-safe;analyse-post-analysis(|x_entityName)>pathexpr;
+      <debug(|"a")>pathexpr;
+      srt1            := <debug;get-type2;debug;type-to-webdsl-srt(err);debug>pathexpr';
       e_path          := <expr-to-webdsl-expr(err)>pathexpr'
     with
       if <get-multiplicity;upper-many>pathexpr' then
         result := stat |[
-          x_entityName.x_flagTransDirty([(v as x_entityName) | v : x_entityName in e_path]);
+          x_entityName.x_flagTransDirty([(v as x_entityName) | v : srt1 in e_path]);
         ]|
       else
         result := stat |[
