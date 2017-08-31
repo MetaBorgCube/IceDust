@@ -677,8 +677,7 @@ rules
       x_entityName    := <attributename-get-entityname>x_attributeName;
       x_flagTransDirty:= <name-flagtransdirty>x_attributeName;
       pathexpr'       := <pathexpr-shorten-safe;analyse-post-analysis(|x_entityName)>pathexpr;
-      <debug(|"a")>pathexpr;
-      srt1            := <debug;get-type2;debug;type-to-webdsl-srt(err);debug>pathexpr';
+      srt1            := <get-type2;type-to-webdsl-srt(err)>pathexpr';
       e_path          := <expr-to-webdsl-expr(err)>pathexpr'
     with
       if <get-multiplicity;upper-many>pathexpr' then
