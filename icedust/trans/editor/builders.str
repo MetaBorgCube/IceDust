@@ -98,6 +98,16 @@ rules
     with
       filename := <guarantee-extension(|"flowsto.txt")> path;
       result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths;map(path-pp));string-sort-anno;concat-strings(|"\n")>ast
+
+  debug-flowsto-incr: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"flowsto-incr.txt")> path;
+      result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths-incr;map(path-pp));string-sort-anno;concat-strings(|"\n")>ast
       
   debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
     with

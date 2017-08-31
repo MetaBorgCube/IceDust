@@ -239,6 +239,9 @@ rules // combined
   name-get-dependson-paths-all = concat(name-get-dependson-paths, name-get-parent;name-get-dependson-paths-all<+![])
   name-get-flowsto-paths-all   = concat(name-get-flowsto-paths,   name-get-parent;name-get-flowsto-paths-all  <+![])
   
+  name-get-flowsto-paths-incr      = name-get-flowsto-paths    ;filter(where(path-pathexpr;pathexpr-last;name-is-ondemandinc-incremental))
+  name-get-flowsto-paths-all-incr  = name-get-flowsto-paths-all;filter(where(path-pathexpr;pathexpr-last;name-is-ondemandinc-incremental))
+  
   name-get-dependson-pathexprs = name-get-dependson-paths;map(path-pathexpr)
   name-get-flowsto-pathexprs   = name-get-flowsto-paths  ;map(path-pathexpr)
   
