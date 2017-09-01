@@ -30,3 +30,17 @@ rules
 
 rules
   
+  desugar-alternative: InterpolateString(e1, e2, e3) ->
+    Addition(
+      e1,
+      <custom-origin(|e2)>Concat(
+        <custom-origin(|e2)>Merge(
+          <custom-origin(|e2)>Cast(
+            e2,
+            <custom-origin(|e2)>String()
+          ),
+          e3
+        )
+      )
+    )
+  

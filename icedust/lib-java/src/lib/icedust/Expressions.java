@@ -531,11 +531,11 @@ public class Expressions {
 
   // cast expressions
 
-  public static Float asFloat(Integer i) {
+  public static Float asFloat_One(Integer i) {
     return i == null ? null : (float) i;
   }
 
-  public static Collection<Float> asFloat(Collection<Integer> is) {
+  public static Collection<Float> asFloat_Many(Collection<Integer> is) {
     Collection<Float> c = emptyCollection();
     for (int i : is) {
       c.add((float) i);
@@ -543,11 +543,11 @@ public class Expressions {
     return c;
   }
 
-  public static Integer asInteger(Float i) {
+  public static Integer asInteger_One(Float i) {
     return i == null ? null : (int) (float) i;
   }
 
-  public static Collection<Integer> asInteger(Collection<Float> is) {
+  public static Collection<Integer> asInteger_Many(Collection<Float> is) {
     Collection<Integer> c = emptyCollection();
     for (float i : is) {
       c.add((int) i);
@@ -555,11 +555,11 @@ public class Expressions {
     return c;
   }
 
-  public static String asString(Object i) {
+  public static String asString_One(Object i) {
     return i == null ? null : i.toString();
   }
 
-  public static Collection<String> asString(Collection<Object> is) {
+  public static Collection<String> asString_Many(Collection<? extends Object> is) {
     Collection<String> c = emptyCollection();
     for (Object i : is) {
       c.add(i.toString());

@@ -1,0 +1,17 @@
+module types-stringinterpolation
+
+language icedust
+
+fixture [[
+  module test
+
+  execute
+  3
+  [[...]]
+]]
+
+test type of string interpolation 1 [["${1 + 2}"]]              run get-type2 to String()
+test type of string interpolation 2 [["${1 ++ 2}"]]             run get-type2 to String()
+test type of string interpolation 3 [["${"hello" ++ "world"}"]] run get-type2 to String()
+
+test type of nested string interpolation [["${"hello" ++ "world ${4 + 6}"} asdf ${true} and some ${"${"${"super nested thing"}"}"}"]] run get-type2 to String()

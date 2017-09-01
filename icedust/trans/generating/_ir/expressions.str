@@ -108,7 +108,9 @@ rules // type -> String
 
 rules // multiplicity -> String
   
-  postfix-id: ZeroOrOne()  -> "One"
-  postfix-id: One()        -> "One"
-  postfix-id: ZeroOrMore() -> "Many"
-  postfix-id: OneOrMore()  -> "Many"
+  postfix-id: ZeroOrOne()         -> "One"
+  postfix-id: One()               -> "One"
+  postfix-id: ZeroOrMore()        -> "Many"
+  postfix-id: ZeroOrMoreOrdered() -> "Many"
+  postfix-id: OneOrMore()         -> "Many"
+  postfix-id: OneOrMoreOrdered()  -> "Many"

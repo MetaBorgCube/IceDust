@@ -66,10 +66,11 @@ rules // casts
   
   expr-to-webdsl-expr(err): Cast(NoValue() , ex1-ty) -> exp |[ null as x ]| where x := <type-to-string-webdsl>ex1-ty
   
-  expr-to-webdsl-expr(err): Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
+  expr-to-webdsl-expr(err): e@Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
     with
       e1 := <expr-to-webdsl-expr(err)>ex1;
-      x_method := $[as[<postfix-id>ex1-ty]]
+      arg-mult := <get-multiplicity;postfix-id>e;
+      x_method := $[as[<postfix-id>ex1-ty]_[arg-mult]]
 
 rules // filter
 
