@@ -59,6 +59,22 @@ function disj(collection){
   return collection.isEmpty();
 }
 
+
+function dateToString(d) {
+	var year = d.getFullYear();
+	var month = d.getMonth() + 1;
+	var dayOfMonth = d.getDate();
+	var hours = d.getHours();
+	var minutes = d.getMinutes();
+	var seconds = d.getSeconds();
+	var result = year + '-' + padZero(month) + '-' + padZero(dayOfMonth) + ' ' + padZero(hours) + ':' + padZero(minutes) + ':' + padZero(seconds);
+	return result
+}
+
+function padZero(n) {
+	return (n < 10 ? '0' : '') + n
+}
+
 module.exports = {
   sum: sum,
   min: min,
@@ -67,5 +83,6 @@ module.exports = {
   concat: concat,
   count: count,
   conj: conj,
-  disj: disj
+  disj: disj,
+  dateToString: dateToString
 };
