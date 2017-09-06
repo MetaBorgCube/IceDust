@@ -58,7 +58,8 @@ rules // entity
   entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
   
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
-  entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)  
+  entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)
+  entityname-is-embedded             = where(entityname-get-modulename;modulename-is-embedded)  
   
   entityname-get-attributenames-normal-default     = entityname-get-attributenames;filter(attributename-is-normal-default)
   entityname-get-attributenames-default-derivation = entityname-get-attributenames;filter(attributename-is-default-derivation)
@@ -96,6 +97,7 @@ rules // attributes
   attributename-get-expr = get-property(|"Member","expr")
   
   attributename-is-explorerui = where(attributename-get-entityname;entityname-is-explorerui)
+  attributename-is-embedded   = where(attributename-get-entityname;entityname-is-embedded)
   
   attributename-pp2-type-multiplicity: attrName -> x
     with
@@ -214,6 +216,9 @@ rules
   name-has-parent = where(name-get-parent)
   name-get-root   = (name-get-parent;name-get-root) <+ id
   name-is-root    = where(not(name-has-parent))
+  
+  name-is-embedded     = attributename-is-embedded
+  name-is-not-embedded = where(not(name-is-embedded))
 
 rules // shortcuts
 

@@ -20,6 +20,7 @@ context-free syntax
   Config.WebDSLBackend = <
     backend : WebDSL
       <UI?>
+      <Embedded?>
   >
   
   UI.None = <ui : None>
@@ -27,6 +28,9 @@ context-free syntax
     ui : Model Explorer
       <TierSplit?>
   >
+  
+  Embedded.None     = <embedded : no>
+  Embedded.Embedded = <embedded : yes>
   
   TierSplit.None        = <tiersplit : None>
   TierSplit.IntraObject = <tiersplit : Object>

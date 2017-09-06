@@ -91,6 +91,10 @@ rules // module
   modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
   modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
   
+  modulename-get-embedded = index-get(|Embedded())
+  
+  modulename-is-embedded = where(modulename-get-embedded;?Embedded())
+  
   modulename-decl-entityinstancename(|einame, type): modulename -> einame-decl
     with
       einame-decl := einame{modulename};

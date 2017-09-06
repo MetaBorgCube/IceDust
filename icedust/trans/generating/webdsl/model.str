@@ -548,7 +548,7 @@ rules
         otherwise:
           ebd_flagTransDirty* := []
       end
-    with // Data Structure Layer
+    with // Data Structure Layer //TODO: move default and validate to separate code
       switch id
         case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
@@ -566,13 +566,17 @@ rules
           ebd_field* := ebd* |[
             x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-one; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-one;       name-is-normal-default-parent-not; name-is-not-embedded:
           ebd_field* := ebd* |[
             x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
+          ]|
+        case (name-is-right + is-attributename); name-is-to-one;    name-is-normal-default-parent-not; name-is-embedded: // for embedded dont generate default/validate
+          ebd_field* := ebd* |[
+            x_name : srt_type
           ]|
         case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
