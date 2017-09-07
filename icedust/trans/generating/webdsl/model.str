@@ -554,9 +554,13 @@ rules
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-one; name-is-normal-default-parent-not:
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-not-embedded:
           ebd_field* := ebd* |[
-            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required."))
+            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required.")) // for embedded dont generate default/validate
+          ]|
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-embedded:
+          ebd_field* := ebd* |[
+            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
         case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not:
           ebd_field* := ebd* |[
