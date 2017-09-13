@@ -486,7 +486,7 @@ rules
               return en == null ? null : en.x_get();
             }
           
-            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            public static Collection<x_type> x_get(Collection<? extends x_entityName> ens)
             { 
               Collection<x_type> result = Expressions.emptyCollection();
               for(x_entityName en : ens)
@@ -506,7 +506,7 @@ rules
               return en == null ? empty : en.x_get();
             }
           
-            public static Collection<x_type> x_get(Collection<x_entityName> ens)
+            public static Collection<x_type> x_get(Collection<? extends x_entityName> ens)
             { 
               Collection<x_type> result = Expressions.emptyCollection();
               for(x_entityName en : ens)
@@ -637,7 +637,7 @@ rules
                 x_dirty.add(en);
             }
             
-            protected static void x_flagDirty(Collection<x_entityName> ens)
+            protected static void x_flagDirty(Collection<? extends x_entityName> ens)
             {
               x_dirty.addAll(ens);
             }
@@ -657,7 +657,7 @@ rules
                 en.x_flagDirty();
             }
           
-            protected static void x_flagDirty(Collection<x_entityName> ens)
+            protected static void x_flagDirty(Collection<? extends x_entityName> ens)
             { 
               for(x_entityName en : ens){
                 en.x_flagDirty();

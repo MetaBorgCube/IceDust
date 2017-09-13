@@ -31,15 +31,15 @@ public class Expressions {
     return e1 != null ? e1 : e2;
   }
 
-  public static <E> Collection<E> choice_One_Many(E e1, Collection<E> e2) {
+  public static <E> Collection<? extends E> choice_One_Many(E e1, Collection<? extends E> e2) {
     return e1 != null ? toCollection(e1) : e2;
   }
 
-  public static <E> Collection<E> choice_Many_One(Collection<E> e1, E e2) {
+  public static <E> Collection<? extends E> choice_Many_One(Collection<? extends E> e1, E e2) {
     return e1.size() > 0 ? e1 : e2 != null ? toCollection(e2) : e1;
   }
 
-  public static <E> Collection<E> choice_Many_Many(Collection<E> e1, Collection<E> e2) {
+  public static <E> Collection<? extends E> choice_Many_Many(Collection<? extends E> e1, Collection<? extends E> e2) {
     return e1.size() > 0 ? e1 : e2;
   }
 
@@ -52,7 +52,7 @@ public class Expressions {
     return c;
   }
 
-  public static <E> Collection<E> merge_One_Many(E e1, Collection<E> e2) {
+  public static <E> Collection<E> merge_One_Many(E e1, Collection<? extends E> e2) {
     Collection<E> c = emptyCollection();
     if (e1 != null)
       c.add(e1);
@@ -60,7 +60,7 @@ public class Expressions {
     return c;
   }
 
-  public static <E> Collection<E> merge_Many_One(Collection<E> e1, E e2) {
+  public static <E> Collection<E> merge_Many_One(Collection<? extends E> e1, E e2) {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     if (e2 != null)
@@ -68,7 +68,7 @@ public class Expressions {
     return c;
   }
 
-  public static <E> Collection<E> merge_Many_Many(Collection<E> e1, Collection<E> e2) {
+  public static <E> Collection<E> merge_Many_Many(Collection<? extends E> e1, Collection<? extends E> e2) {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     c.addAll(e2);
@@ -83,7 +83,7 @@ public class Expressions {
     return e1;
   }
 
-  public static <E> E difference_One_Many(E e1, Collection<E> e2) {
+  public static <E> E difference_One_Many(E e1, Collection<? extends E> e2) {
     if (e1 == null)
       return null;
     if(e2.contains(e1))
@@ -91,7 +91,7 @@ public class Expressions {
     return e1;
   }
 
-  public static <E> Collection<E> difference_Many_One(Collection<E> e1, E e2) {
+  public static <E> Collection<E> difference_Many_One(Collection<? extends E> e1, E e2) {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     if (e2 != null)
@@ -99,7 +99,7 @@ public class Expressions {
     return c;
   }
 
-  public static <E> Collection<E> difference_Many_Many(Collection<E> e1, Collection<E> e2) {
+  public static <E> Collection<E> difference_Many_Many(Collection<? extends E> e1, Collection<? extends E> e2) {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     c.removeAll(e2);
@@ -512,15 +512,15 @@ public class Expressions {
     return i == null || j == null ? null : i.equals(j);
   }
 
-  public static <E> Boolean eq_One_Many(E i, Collection<E> j) {
+  public static <E> Boolean eq_One_Many(E i, Collection<? extends E> j) {
     return i == null || j.size() == 0 ? null : toCollection(i).equals(j);
   }
 
-  public static <E> Boolean eq_Many_One(Collection<E> i, E j) {
+  public static <E> Boolean eq_Many_One(Collection<? extends E> i, E j) {
     return i.size() == 0 || j == null ? null : toCollection(j).equals(i);
   }
 
-  public static <E> Boolean eq_Many_Many(Collection<E> i, Collection<E> j) {
+  public static <E> Boolean eq_Many_Many(Collection<? extends E> i, Collection<? extends E> j) {
     return i.size() == 0 || j.size() == 0 ? null : i.equals(j);
   }
 
@@ -528,15 +528,15 @@ public class Expressions {
     return i == null || j == null ? null : !i.equals(j);
   }
 
-  public static <E> Boolean neq_One_Many(E i, Collection<E> j) {
+  public static <E> Boolean neq_One_Many(E i, Collection<? extends E> j) {
     return i == null || j.size() == 0 ? null : !toCollection(i).equals(j);
   }
 
-  public static <E> Boolean neq_Many_One(Collection<E> i, E j) {
+  public static <E> Boolean neq_Many_One(Collection<? extends E> i, E j) {
     return i.size() == 0 || j == null ? null : !toCollection(j).equals(i);
   }
 
-  public static <E> Boolean neq_Many_Many(Collection<E> i, Collection<E> j) {
+  public static <E> Boolean neq_Many_Many(Collection<? extends E> i, Collection<? extends E> j) {
     return i.size() == 0 || j.size() == 0 ? null : !i.equals(j);
   }
 
@@ -546,17 +546,17 @@ public class Expressions {
     return b == null ? null : b ? i : j;
   }
 
-  public static <E> Collection<E> conditional_One_One_Many(Boolean b, E i, Collection<E> j) {
+  public static <E> Collection<? extends E> conditional_One_One_Many(Boolean b, E i, Collection<? extends E> j) {
     Collection<E> c = emptyCollection();
     return b == null ? c : b ? toCollection(i) : j;
   }
 
-  public static <E> Collection<E> conditional_One_Many_One(Boolean b, Collection<E> i, E j) {
+  public static <E> Collection<? extends E> conditional_One_Many_One(Boolean b, Collection<? extends E> i, E j) {
     Collection<E> c = emptyCollection();
     return b == null ? c : b ? i : toCollection(j);
   }
 
-  public static <E> Collection<E> conditional_One_Many_Many(Boolean b, Collection<E> i, Collection<E> j) {
+  public static <E> Collection<? extends E> conditional_One_Many_Many(Boolean b, Collection<? extends E> i, Collection<? extends E> j) {
     Collection<E> c = emptyCollection();
     return b == null ? c : b ? i : j;
   }
