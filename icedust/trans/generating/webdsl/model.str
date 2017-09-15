@@ -82,6 +82,7 @@ rules
       x_hasDirty         := <name-hasdirty>x_name;
       x_flagDirty        := <name-flagdirty>x_name;
       x_flagTransDirty   := <name-flagtransdirty>x_name;
+      x_flaggedTransDirty:= <name-flaggedtransdirty>x_name;
       x_dirtyFlagFlows   := <name-dirtyflagflowsto>x_name;
       x_setIncr          := <name-set-incremental>x_name;
       x_addIncr          := <name-add-incremental>x_name;
@@ -526,11 +527,23 @@ rules
       end
     with
       switch id
-        case not(name-is-inline):
+        case not(name-is-inline); not(name-has-parent):
           ebd_flagTransDirty* := ebd* |[
+            x_flaggedTransDirty : Bool (transient, default=false)
+          ]|
+        otherwise:
+          ebd_flagTransDirty* := []
+      end
+    with
+      switch id
+        case not(name-is-inline):
+          ebd_flagTransDirty2* := ebd* |[          
             function x_flagTransDirty(){
-              x_flagDirty();
-              stat_dependsOn*
+              if(!x_flaggedTransDirty){
+                x_flaggedTransDirty := true;
+                x_flagDirty();
+                stat_dependsOn*
+              }
             }
           
             static function x_flagTransDirty(en : x_entityName) {
@@ -546,7 +559,7 @@ rules
             }
           ]|
         otherwise:
-          ebd_flagTransDirty* := []
+          ebd_flagTransDirty2* := []
       end
     with // Data Structure Layer //TODO: move default and validate to separate code
       switch id
@@ -647,6 +660,7 @@ rules
         ebd_dirtyFlagFlows*
         ebd_flagDirty*
         ebd_flagTransDirty*
+        ebd_flagTransDirty2*
         ebd_field*
         ebd_cacheField*
         ebd_dirty*

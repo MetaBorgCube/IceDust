@@ -36,6 +36,7 @@ rules // generic names
   name-hasdirtyasync:      name -> $[hasDirty[<ucfirst>name]Async]
   name-flagdirty:          name -> $[flagDirty[<ucfirst>name]]
   name-flagtransdirty:     name -> $[flagTransDirty[<ucfirst>name]]
+  name-flaggedtransdirty:  name -> $[flaggedTransDirty[<ucfirst>name]]
   name-flagdirtyall:       name -> $[flagDirtyAll[<ucfirst>name]]
   name-dirtyflagflowsto:   name -> $[dirtyFlagFlowsto[<ucfirst>name]]
   name-default:            name -> $[default[<ucfirst>name]]
