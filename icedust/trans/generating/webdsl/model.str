@@ -102,6 +102,7 @@ rules
       x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
       x_updateOneCacheAsync  := <name-updateonecacheasync>x_name;
       x_isUpToDate       := <name-isuptodate>x_name;
+      x_getOrder         := <name-getorder>x_name;
       x_topoSort         := <(name-get-toposort<+!0);int-to-string>x_name
     with
       if name-is-bidirectional then
@@ -538,23 +539,23 @@ rules
       switch id
         case not(name-is-inline):
           ebd_flagTransDirty2* := ebd* |[          
-            function x_flagTransDirty(){
-              if(!x_flaggedTransDirty){
+            function x_flagTransDirty(stopAt : [Int]){
+              if((!x_flaggedTransDirty) && stopAt.indexOf(x_entityName.x_getOrder())==-1){
                 x_flaggedTransDirty := true;
                 x_flagDirty();
                 stat_dependsOn*
               }
             }
           
-            static function x_flagTransDirty(en : x_entityName) {
+            static function x_flagTransDirty(en : x_entityName, stopAt : [Int]) {
               if(en != null){
-                en.x_flagTransDirty();
+                en.x_flagTransDirty(stopAt);
               }
             }
             
-            static function x_flagTransDirty(ens : [x_entityName]) {
+            static function x_flagTransDirty(ens : [x_entityName], stopAt : [Int]) {
               for(en:x_entityName in ens){
-                en.x_flagTransDirty();
+                en.x_flagTransDirty(stopAt);
               }
             }
           ]|
@@ -645,6 +646,17 @@ rules
           ebd_dirty* := []
       end
     with
+      switch id
+        case not(name-is-inline):
+          ebd_order* := ebd* |[
+            static function x_getOrder() : Int {
+              return x_topoSort;  
+            }
+          ]|
+        otherwise:
+          ebd_order* := []
+      end
+    with
       result := ebd* |[
         ebd_isUpToDate*
         ebd_updateCache*
@@ -664,6 +676,7 @@ rules
         ebd_field*
         ebd_cacheField*
         ebd_dirty*
+        ebd_order*
       ]|
 
 rules
@@ -704,11 +717,11 @@ rules
     with
       if <get-multiplicity;upper-many>pathexpr' then
         result := stat |[
-          x_entityName.x_flagTransDirty([(v as x_entityName) | v : srt1 in e_path]);
+          x_entityName.x_flagTransDirty([(v as x_entityName) | v : srt1 in e_path], stopAt);
         ]|
       else
         result := stat |[
-          x_entityName.x_flagTransDirty(e_path as x_entityName);
+          x_entityName.x_flagTransDirty(e_path as x_entityName, stopAt);
         ]|
       end
 

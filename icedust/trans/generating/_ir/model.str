@@ -54,6 +54,7 @@ rules // generic names
   name-receivedirtyasync:  name -> $[receiveDirtyAsync[<ucfirst>name]]
   name-receiveonedirtyasync:name-> $[receiveOneDirtyAsync[<ucfirst>name]]
   name-isuptodate:         name -> $[isUpToDate[<ucfirst>name]]
+  name-getorder:           name -> $[getOrder[<ucfirst>name]]
   name-view:               name -> $[[<lcfirst>name]]
 
 rules // prefixed names
