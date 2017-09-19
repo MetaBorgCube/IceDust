@@ -25,3 +25,5 @@ signature constructors
   Relation : Term
   Trait    : Term
   
+  Ignore : Term
+  

@@ -21,6 +21,7 @@ context-free syntax
     backend : WebDSL
       <UI?>
       <Embedded?>
+      <{Ignore "\n"}*>
   >
   
   UI.None = <ui : None>
@@ -31,6 +32,8 @@ context-free syntax
   
   Embedded.None     = <embedded : no>
   Embedded.Embedded = <embedded : yes>
+  
+  Ignore.Ignore = <ignore <ID>.<ID>>
   
   TierSplit.None        = <tiersplit : None>
   TierSplit.IntraObject = <tiersplit : Object>

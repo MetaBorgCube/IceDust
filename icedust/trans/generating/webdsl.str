@@ -19,7 +19,7 @@ rules
 
   build(error-handler|backend, moduleName, relativePath): _ -> result
     where
-      WebDSLBackend(uistyle, embedded) := backend
+      WebDSLBackend(uistyle, embedded, _) := backend
     with
       fullPath    := <full-path(|relativePath)>;
       eclipsePath := <eclipse-path>relativePath

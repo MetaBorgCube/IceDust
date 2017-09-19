@@ -16,7 +16,7 @@ rules
   configsection-get-features    = ?ConfigSection(<id>);filter(is-languagefeatures);Hd;?LanguageFeatures(<id>)
   configsection-get-featuress   = ?ConfigSection(<id>);filter(is-languagefeatures)
   
-  configsection-is-webdslbackend = ?ConfigSection(_);where(configsection-get-backend;?WebDSLBackend(_,_))
+  configsection-is-webdslbackend = ?ConfigSection(_);where(configsection-get-backend;?WebDSLBackend(_,_,_))
   
   configsection-has-no-backend  = ?ConfigSection(_);where(not(configsection-get-backend))
   configsection-has-no-features = ?ConfigSection(_);where(not(configsection-get-features))
@@ -26,7 +26,7 @@ rules
 rules
 
   is-backend = ?JavaBackend(_)
-  is-backend = ?WebDSLBackend(_,_)
+  is-backend = ?WebDSLBackend(_,_,_)
   is-backend = ?JavascriptBackend(_, _)
   
   is-javascript-backend = ?JavascriptBackend(_, _)

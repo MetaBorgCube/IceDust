@@ -219,6 +219,8 @@ rules
   
   name-is-embedded     = attributename-is-embedded
   name-is-not-embedded = where(not(name-is-embedded))
+  
+  name-is-ignore = where(get-property(|"Member","ignore");?Ignore())
 
 rules // shortcuts
 

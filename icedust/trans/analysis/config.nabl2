@@ -1,0 +1,26 @@
+module config
+
+rules
+
+  [[ JavaBackend(phase) ^ (module_scope) ]] :=
+    true.
+
+  [[ WebDSLBackend(ui, embedded, ignores) ^ (module_scope) ]] :=
+    Map1 [[ ignores ^ (module_scope) ]].
+
+  [[ JavascriptBackend(phase, target) ^ (module_scope) ]] :=
+    true.
+
+  [[ LanguageFeatures(features) ^ (module_scope) ]] :=
+    true.
+
+  [[ Ignore(e, m) ^ (module_scope) ]] :=
+    Entity{e} -> module_scope,
+    Entity{e} |-> e_def,
+    e_def : TEntity(e_type),
+    e_type ?=I=> entity_scope,
+    new_scope -I-> entity_scope,
+    new new_scope,
+    Member{m} -> new_scope,
+    Member{m} |-> m_def,
+    m_def.ignore := Ignore().
