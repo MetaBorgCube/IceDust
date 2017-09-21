@@ -30,7 +30,7 @@ rules
       x_action           := <attributename-entityname-flagallaction>x_name
     with
       result := elem |[
-        x_action
+        x_action(showCount)
       ]|
 
   membername-to-webdsl-defs-manage: x_name -> result
@@ -59,16 +59,25 @@ rules
       switch id
         case name-is-eventual: 
           elem_status* := elem* |[
-            output(DirtyCollections.x_getQueue().length) " / " output(select count(*) from x_entityName)
+            output(DirtyCollections.x_getQueue().length) " / "
+            if(showCount){
+              output(select count(*) from x_entityName)
+            }else{
+              "?"
+            }
           ]|
         otherwise:
           elem_status* := elem* |[
-            output(select count(*) from x_entityName)
+            if(showCount){
+              output(select count(*) from x_entityName)
+            }else{
+              "?"
+            }
           ]|
       end
     with
       def_template* := def* |[
-        template x_action(){
+        template x_action(showCount:Bool){
           row{
             column{
               output(e_toposort)
@@ -138,6 +147,10 @@ rules
               log("flagDirtyAsync");
               flagDirtyAsync();
               log("flagDirtyAsync done");
+            }
+        
+            extend function flagAllEventualDirty(){
+              x_flagDirtyAll();
             }
           ]|
         otherwise:

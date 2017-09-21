@@ -90,8 +90,10 @@ rules // module
           }
           
           function updateDerivationsAsync(){
-            stat_cachAsync*
-            DirtyCollections.cleanI(2147483647);
+            if(Settings.getUpdatesEnabled()){
+              stat_cachAsync*
+              DirtyCollections.cleanI(2147483647);
+            }
           }
           
           invoke updateDerivationsAsync() every 10 milliseconds
@@ -121,15 +123,31 @@ rules // module
       sec_manage* :=  section* |[
         section manage
         
-          page derivedvalues() {
+          page derivedvalues(showCount:Bool) {
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
+            submit action{
+              Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
+            }{
+              if(Settings.getUpdatesEnabled()){
+                "Disable all derived value calculation"
+              }else{
+                "Enable all derived value calculation"
+              }
+            }
             table{
               row{
                 column{ "Order" }
                 column{ "Name" }
                 column{ "Type" }
-                column{ "Status" }
+                column{
+                  "Status "
+                  if(showCount){
+                    navigate derivedvalues(false){"hide"}
+                  }else{
+                    navigate derivedvalues(true){"show"}
+                  }
+                }
                 column{ "Actions" }
               }
               row{
@@ -148,6 +166,10 @@ rules // module
                   submit action{
                     flagAllOnDemandIncDirty();
                   } { "flag all on-demand incremental fields dirty" }
+                  br
+                  submit action{
+                    flagAllEventualDirty();
+                  } { "flag all eventual fields dirty" }
                 }
               }
               elem_manageRows*
@@ -159,6 +181,13 @@ rules // module
           function flagAllIncrementalDirty(){}
           
           function flagAllOnDemandIncDirty(){}
+          
+          function flagAllEventualDirty(){}
+          
+          native class derivations.Settings as Settings{
+            static getUpdatesEnabled( ): Bool
+            static setUpdatesEnabled( Bool ): Void
+          }
       ]|
     with
       if modulename-is-explorerui then
@@ -199,6 +228,6 @@ rules // module
           
             access control rules
             
-              rule page derivedvalues() { true }
+              rule page derivedvalues(showCount:Bool) { true }
         ]|
       end
