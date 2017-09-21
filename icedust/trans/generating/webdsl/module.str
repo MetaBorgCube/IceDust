@@ -94,7 +94,7 @@ rules // module
             DirtyCollections.cleanI(2147483647);
           }
           
-          invoke updateDerivationsAsync() every 100 milliseconds
+          invoke updateDerivationsAsync() every 10 milliseconds
           
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int
