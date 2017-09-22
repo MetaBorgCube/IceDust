@@ -6,7 +6,7 @@ imports
 
 language
 
-  table         : target/metaborg/sdf-new.tbl
+  table         : target/metaborg/sdf.tbl
   start symbols : Start
 
   line comment  : "//"
