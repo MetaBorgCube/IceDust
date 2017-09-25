@@ -53,10 +53,6 @@ rules // entity
   entityname-get-shortcutnames-defined   = ?e;entityname-get-shortcutnames  ;filter(where(attributename-get-entityname;?e))
   entityname-get-relroleinvnames-defined = ?e;entityname-get-relroleinvnames;filter(where(attributename-get-entityname;?e))
   
-  entityname-is-calconread           = where(entityname-get-modulename;modulename-is-calconread)
-  entityname-is-calconwrite          = where(entityname-get-modulename;modulename-is-calconwrite)
-  entityname-is-eventuallyconsistent = where(entityname-get-modulename;modulename-is-eventuallyconsistent)
-  
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
   entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)
   entityname-is-embedded             = where(entityname-get-modulename;modulename-is-embedded)  

@@ -19,24 +19,26 @@ context-free syntax
   
   Config.WebDSLBackend = <
     backend : WebDSL
-      <UI?>
-      <Embedded?>
-      <{Ignore "\n"}*>
+    <{WebdslOption "\n"}*>
   >
   
-  UI.None = <ui : None>
+  WebdslOption.UI = <ui : <UI>> 
+  UI.None = <None>
   UI.ModelExplorer = <
-    ui : Model Explorer
+    Model Explorer
       <TierSplit?>
   >
-  
-  Embedded.None     = <embedded : no>
-  Embedded.Embedded = <embedded : yes>
-  
-  Ignore.Ignore = <ignore <ID>.<ID>>
-  
   TierSplit.None        = <tiersplit : None>
   TierSplit.IntraObject = <tiersplit : Object>
+
+  WebdslOption.Embedded = <embedded : <Embedded>>
+  Embedded.None     = <no>
+  Embedded.Embedded = <yes>
+  
+  WebdslOption.Ignore = <ignore <ID>.<ID>>
+  
+//  WebdslOption.EventualThreads  = <eventual threads: <INT>>
+//  WebdslOption.EventualInterval = <eventual interval: <INT> ms>
   
 context-free syntax
 

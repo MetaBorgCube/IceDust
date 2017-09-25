@@ -2,19 +2,19 @@ module config
 
 rules
 
-  [[ JavaBackend(phase) ^ (module_scope) ]] :=
+  [[ JavaBackend(phase) ^ (module_scope, module_name) ]] :=
     true.
 
-  [[ WebDSLBackend(ui, embedded, ignores) ^ (module_scope) ]] :=
-    Map1 [[ ignores ^ (module_scope) ]].
+  [[ WebDSLBackend(options) ^ (module_scope, module_name) ]] :=
+    Map2 [[ options ^ (module_scope, module_name) ]].
 
-  [[ JavascriptBackend(phase, target) ^ (module_scope) ]] :=
+  [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=
     true.
 
-  [[ LanguageFeatures(features) ^ (module_scope) ]] :=
+  [[ LanguageFeatures(features) ^ (module_scope, module_name) ]] :=
     true.
 
-  [[ Ignore(e, m) ^ (module_scope) ]] :=
+  [[ Ignore(e, m) ^ (module_scope, module_name) ]] :=
     Entity{e} -> module_scope,
     Entity{e} |-> e_def,
     e_def : TEntity(e_type),
@@ -24,3 +24,16 @@ rules
     Member{m} -> new_scope,
     Member{m} |-> m_def,
     m_def.ignore := Ignore().
+
+  [[ UI(ui) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.ui := ui.
+
+  [[ Embedded(embedded) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.embedded := embedded.
+
+//  [[ EventualThreads(t) ^ (module_scope, module_name) ]] :=
+//    Module{module_name}.eventualthreads := t.
+//
+//  [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
+//    Module{module_name}.eventualinterval := t.
+    
