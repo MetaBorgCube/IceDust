@@ -96,7 +96,7 @@ rules // module
             }
           }
           
-          invoke updateDerivationsAsync() every 10 milliseconds
+          invoke Settings.ensureTimers(4, 10) every 1000 milliseconds // only does something the first time
           
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int
@@ -187,6 +187,8 @@ rules // module
           native class derivations.Settings as Settings{
             static getUpdatesEnabled( ): Bool
             static setUpdatesEnabled( Bool ): Void
+            static initTimers(Int, Int) : Void
+            static ensureTimers ( Int , Int ) : Void
           }
       ]|
     with
