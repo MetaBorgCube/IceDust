@@ -48,6 +48,9 @@ rules // module
       elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row   )>x_moduleName;
       def_manage*         := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-defs-manage)>x_moduleName
     with
+      x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
+      x_eventualinterval := <modulename-get-eventualinterval>x_moduleName
+    with
       sec_modelData* := section* |[
         section data
           
@@ -96,7 +99,7 @@ rules // module
             }
           }
           
-          invoke Settings.ensureTimers(4, 10) every 1000 milliseconds // only does something the first time
+          invoke Settings.ensureTimers(x_eventualthreads, x_eventualinterval) every 1000 milliseconds // only does something the first time
           
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int

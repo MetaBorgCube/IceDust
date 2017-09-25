@@ -37,8 +37,8 @@ context-free syntax
   
   WebdslOption.Ignore = <ignore <ID>.<ID>>
   
-//  WebdslOption.EventualThreads  = <eventual threads: <INT>>
-//  WebdslOption.EventualInterval = <eventual interval: <INT> ms>
+  WebdslOption.EventualThreads  = <eventual threads: <INT>>
+  WebdslOption.EventualInterval = <eventual interval: <INT> ms>
   
 context-free syntax
 

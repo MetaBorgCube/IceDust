@@ -31,9 +31,9 @@ rules
   [[ Embedded(embedded) ^ (module_scope, module_name) ]] :=
     Module{module_name}.embedded := embedded.
 
-//  [[ EventualThreads(t) ^ (module_scope, module_name) ]] :=
-//    Module{module_name}.eventualthreads := t.
-//
-//  [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
-//    Module{module_name}.eventualinterval := t.
+  [[ EventualThreads(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualthreads := t.
+
+  [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualinterval := t.
     

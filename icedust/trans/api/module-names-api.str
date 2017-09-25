@@ -89,6 +89,9 @@ rules // module
   
   modulename-is-embedded = where(modulename-get-embedded;?Embedded())
   
+  modulename-get-eventualthreads  = get-property(|"Module","eventualthreads") <+!"1"
+  modulename-get-eventualinterval = get-property(|"Module","eventualinterval")<+!"100"
+  
   modulename-decl-entityinstancename(|einame, type): modulename -> einame-decl
     with
       einame-decl := einame{modulename};
