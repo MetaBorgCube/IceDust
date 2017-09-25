@@ -119,3 +119,16 @@ rules
         }
         DirtyCollections.cleanI(x_topoSort+1);
       ]|
+      
+rules
+  
+  countdirty-attributename-to-webdsl-stm: x_attributeName -> result
+    with
+      x_getQueue := <attributename-entityname-getqueue>x_attributeName;
+      x_topoSort := <(name-get-toposort<+!0);int-to-string>x_attributeName
+    with
+      result := stat* |[
+        if(o >= x_topoSort){
+          n := n + DirtyCollections.x_getQueue().length;
+        }
+      ]|
