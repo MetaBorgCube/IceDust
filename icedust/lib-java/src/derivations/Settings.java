@@ -71,5 +71,15 @@ public class Settings {
 			initTimers(n, millis);
 		}
 	}
+
+    static volatile boolean logincremental = true;
+    
+    public static boolean getLogincremental(){
+        return logincremental;
+    }
+    
+    public static void setLogincremental(boolean setting){
+    	logincremental = setting;
+    }
     
 }

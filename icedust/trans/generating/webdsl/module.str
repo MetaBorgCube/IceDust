@@ -99,7 +99,7 @@ rules // module
             }
           }
           
-          invoke Settings.ensureTimers(x_eventualthreads, x_eventualinterval) every 1000 milliseconds // only does something the first time
+          invoke Settings.ensureTimers(x_eventualthreads, x_eventualinterval) every 1000 milliseconds //TODO: only call once
           
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int
@@ -109,6 +109,20 @@ rules // module
             native1*
           }
       ]|
+    with
+      if modulename-is-logincremental then
+        sec_logSettings* :=  section* |[
+          section log settings
+        
+            invoke Settings.setLogIncremental(true) every 1000 milliseconds //TODO: only call once
+        ]|
+      else
+        sec_logSettings* :=  section* |[
+          section log settings
+        
+            invoke Settings.setLogIncremental(false) every 1000 milliseconds //TODO: only call once
+        ]|
+      end
     with
       sec_hibernateTriggers* :=  section* |[
         section triggers
@@ -192,6 +206,8 @@ rules // module
             static setUpdatesEnabled( Bool ): Void
             static initTimers(Int, Int) : Void
             static ensureTimers ( Int , Int ) : Void
+            static getLogincremental( ): Bool
+            static setLogincremental( Bool ): Void
           }
       ]|
     with
@@ -210,6 +226,8 @@ rules // module
           sec_cachesDirtyflag*
         
           sec_asyncDirtyflag*
+          
+          sec_logSettings*
         
           sec_hibernateTriggers*
         
@@ -226,6 +244,8 @@ rules // module
           sec_cachesDirtyflag*
         
           sec_asyncDirtyflag*
+          
+          sec_logSettings*
         
           sec_hibernateTriggers*
         

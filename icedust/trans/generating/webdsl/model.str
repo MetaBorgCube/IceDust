@@ -182,7 +182,7 @@ rules
             static function x_updateAllCache () {
               var entities := x_qualifiedDirty;
               x_qualifiedDirty := Set<x_entityName>();
-              if(entities.length != 0){
+              if(entities.length != 0 && Settings.getLogincremental()){
                 log("Updating " + e_qualifiedName + ": " + entities.length);
               }
               for(en in entities){
