@@ -74,3 +74,10 @@ context-free syntax
   LanguageFeature.Inlines             = <inlines>
   LanguageFeature.Strategies          = <strategies>
   LanguageFeature.SubTyping           = <subtyping>
+  
+context-free syntax
+
+  Config.LogIncremental = <log incremental : <LogIncremental>>
+  LogIncremental.None           = <no>
+  LogIncremental.LogIncremental = <yes>
+  

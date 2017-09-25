@@ -124,7 +124,7 @@ rules
             public static void x_updateAllCache(){
               Collection<x_entityName> ens = x_dirty;
               x_dirty = new HashSet<x_entityName>();
-              if (ens.size() > 0) {
+              if (ens.size() > 0 && _IceDustSettings.logincremental) {
                 System.out.println("Updating " + ~qualifiedName-exp + ": " + ens.size());
               }
               for(x_entityName en : ens){

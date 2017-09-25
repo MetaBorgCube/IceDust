@@ -4,16 +4,12 @@ rules
 
   [[ JavaBackend(phase) ^ (module_scope, module_name) ]] :=
     true.
+    
+rules
 
   [[ WebDSLBackend(options) ^ (module_scope, module_name) ]] :=
     Map2 [[ options ^ (module_scope, module_name) ]].
-
-  [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=
-    true.
-
-  [[ LanguageFeatures(features) ^ (module_scope, module_name) ]] :=
-    true.
-
+    
   [[ Ignore(e, m) ^ (module_scope, module_name) ]] :=
     Entity{e} -> module_scope,
     Entity{e} |-> e_def,
@@ -36,4 +32,19 @@ rules
 
   [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.eventualinterval := t.
+
+rules
+
+  [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=
+    true.
+
+rules
+
+  [[ LanguageFeatures(features) ^ (module_scope, module_name) ]] :=
+    true.
+
+rules
+
+  [[ LogIncremental(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logincremental := t.
     

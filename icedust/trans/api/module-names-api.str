@@ -92,6 +92,9 @@ rules // module
   modulename-get-eventualthreads  = get-property(|"Module","eventualthreads") <+!"1"
   modulename-get-eventualinterval = get-property(|"Module","eventualinterval")<+!"100"
   
+  modulename-get-logincremental = get-property(|"Module","logincremental") <+ !LogIncremental()
+  modulename-is-logincremental  = where(modulename-get-logincremental;?LogIncremental())
+  
   modulename-decl-entityinstancename(|einame, type): modulename -> einame-decl
     with
       einame-decl := einame{modulename};
