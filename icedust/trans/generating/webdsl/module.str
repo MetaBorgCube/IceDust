@@ -114,13 +114,27 @@ rules // module
         sec_logSettings* :=  section* |[
           section log settings
         
-            invoke Settings.setLogIncremental(true) every 1000 milliseconds //TODO: only call once
+            invoke Settings.setLogincremental(true) every 1000 milliseconds //TODO: only call once
         ]|
       else
         sec_logSettings* :=  section* |[
           section log settings
         
-            invoke Settings.setLogIncremental(false) every 1000 milliseconds //TODO: only call once
+            invoke Settings.setLogincremental(false) every 1000 milliseconds //TODO: only call once
+        ]|
+      end
+    with
+      if modulename-is-logeventualupdate then
+        sec_logSettings2* :=  section* |[
+          section log settings2
+        
+            invoke Settings.setLogeventualupdate(true) every 1000 milliseconds //TODO: only call once
+        ]|
+      else
+        sec_logSettings2* :=  section* |[
+          section log settings2
+        
+            invoke Settings.setLogeventualupdate(false) every 1000 milliseconds //TODO: only call once
         ]|
       end
     with
@@ -208,6 +222,8 @@ rules // module
             static ensureTimers ( Int , Int ) : Void
             static getLogincremental( ): Bool
             static setLogincremental( Bool ): Void
+            static getLogeventualupdate( ): Bool
+            static setLogeventualupdate( Bool ): Void
           }
       ]|
     with
@@ -228,6 +244,7 @@ rules // module
           sec_asyncDirtyflag*
           
           sec_logSettings*
+          sec_logSettings2*
         
           sec_hibernateTriggers*
         
@@ -246,6 +263,7 @@ rules // module
           sec_asyncDirtyflag*
           
           sec_logSettings*
+          sec_logSettings2*
         
           sec_hibernateTriggers*
         

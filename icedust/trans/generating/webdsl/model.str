@@ -241,7 +241,9 @@ rules
             static function x_updateOneCacheAsync () {
               if( x_entityName.x_hasDirtyAsync() ){
                 var en := x_entityName.x_receiveOneDirtyAsync();
-                log("Updating " + e_qualifiedName + ": " + en.id);
+                if(Settings.getLogeventualupdate()){
+                  log("Updating " + e_qualifiedName + ": " + en.id);
+                }
                 en.x_updateCache();
                 commitAndStartNewTransaction();
               }

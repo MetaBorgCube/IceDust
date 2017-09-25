@@ -81,5 +81,15 @@ public class Settings {
     public static void setLogincremental(boolean setting){
     	logincremental = setting;
     }
+
+    static volatile boolean logeventualupdate = true;
+    
+    public static boolean getLogeventualupdate(){
+        return logeventualupdate;
+    }
+    
+    public static void setLogeventualupdate(boolean setting){
+    	logeventualupdate = setting;
+    }
     
 }

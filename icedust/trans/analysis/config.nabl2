@@ -33,6 +33,9 @@ rules
   [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.eventualinterval := t.
 
+  [[ LogEventualUpdate(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logeventualupdate := t.
+
 rules
 
   [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=
