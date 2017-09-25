@@ -119,8 +119,8 @@ rules // module
           
           function logCountDirty(){
             var c := countDirty(999999);
-            if(c>0){
-              log("Eventual Calculation total queue: " + c);
+            if(c>0 && Settings.getLogeventualstatus()){
+              log("Eventual Calculation at ordering: " + DirtyCollections.getI() + ", queue size: " + c);
             }
           }
           
@@ -152,6 +152,20 @@ rules // module
           section log settings2
         
             invoke Settings.setLogeventualupdate(false) every 1000 milliseconds //TODO: only call once
+        ]|
+      end
+    with
+      if modulename-is-logeventualstatus then
+        sec_logSettings3* :=  section* |[
+          section log settings3
+        
+            invoke Settings.setLogeventualstatus(true) every 1000 milliseconds //TODO: only call once
+        ]|
+      else
+        sec_logSettings3* :=  section* |[
+          section log settings3
+        
+            invoke Settings.setLogeventualstatus(false) every 1000 milliseconds //TODO: only call once
         ]|
       end
     with
@@ -248,6 +262,8 @@ rules // module
             static setLogincremental( Bool ): Void
             static getLogeventualupdate( ): Bool
             static setLogeventualupdate( Bool ): Void
+            static getLogeventualstatus( ): Bool
+            static setLogeventualstatus( Bool ): Void
           }
       ]|
     with
@@ -269,6 +285,7 @@ rules // module
           
           sec_logSettings*
           sec_logSettings2*
+          sec_logSettings3*
         
           sec_hibernateTriggers*
         
@@ -288,6 +305,7 @@ rules // module
           
           sec_logSettings*
           sec_logSettings2*
+          sec_logSettings3*
         
           sec_hibernateTriggers*
         

@@ -44,6 +44,10 @@ context-free syntax
   LogEventualUpdate.None              = <no>
   LogEventualUpdate.LogEventualUpdate = <yes>
   
+  WebdslOption.LogEventualStatus = <log eventual status : <LogEventualStatus>>
+  LogEventualStatus.None              = <no>
+  LogEventualStatus.LogEventualStatus = <yes>
+  
 context-free syntax
 
   Config.JavascriptBackend = <

@@ -36,6 +36,9 @@ rules
   [[ LogEventualUpdate(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.logeventualupdate := t.
 
+  [[ LogEventualStatus(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logeventualstatus := t.
+
 rules
 
   [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=

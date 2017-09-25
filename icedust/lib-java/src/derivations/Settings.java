@@ -91,5 +91,15 @@ public class Settings {
     public static void setLogeventualupdate(boolean setting){
     	logeventualupdate = setting;
     }
+
+    static volatile boolean logeventualstatus = true;
+    
+    public static boolean getLogeventualstatus(){
+        return logeventualstatus;
+    }
+    
+    public static void setLogeventualstatus(boolean setting){
+    	logeventualstatus = setting;
+    }
     
 }
