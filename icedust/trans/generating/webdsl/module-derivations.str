@@ -42,12 +42,14 @@ rules // derivations
         x_entityName.x_flagAttributeDirtyAsync();
       ]|
       
-  attributename-to-webdsl-native: x_attributeName -> result
+  attributename-to-webdsl-natives: x_attributeName -> result
     with
-      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName;
+      x_attributePoll     := <attributename-entityname-poll>x_attributeName
     with
-      result := native |[
+      result := native* |[
         static x_attributeGetQueue() : Set<String>
+        static x_attributePoll() : String
       ]|
 
 rules

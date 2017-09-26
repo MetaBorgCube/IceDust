@@ -94,4 +94,8 @@ rules // prefixed names
   attributename-entityname-flagdirtyall: attributename -> $[[entityname][<ucfirst>attributename]FlagDirtyAll]
     with
       entityname := <attributename-get-entityname>attributename
+
+  attributename-entityname-poll: attributename -> $[poll[entityname][<ucfirst>attributename]]
+    with
+      entityname := <attributename-get-entityname>attributename
   

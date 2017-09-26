@@ -96,6 +96,7 @@ rules
       x_addToCache       := <name-add-cache-trigger>x_name;
       x_removeFromCache  := <name-remove-cache-trigger>x_name;
       x_getQueue         := <attributename-entityname-getqueue>x_name;
+      x_poll             := <attributename-entityname-poll>x_name;
       x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
@@ -217,10 +218,9 @@ rules
             }
   
             static function x_receiveOneDirtyAsync() : x_entityName {
-              var queue := DirtyCollections.x_getQueue();
-              if(queue.length != 0){
-                var key := queue.first as String;
-                queue.remove(key);
+              var key := DirtyCollections.x_poll() ;
+              if ( key != null )
+              {
                 var v : x_entityName := loadEntity(e_entityName, UUIDFromString(key)) as x_entityName;
                 return v;
               }
@@ -239,8 +239,8 @@ rules
 //            }
             
             static function x_updateOneCacheAsync () {
-              if( x_entityName.x_hasDirtyAsync() ){
-                var en := x_entityName.x_receiveOneDirtyAsync();
+              var en := x_entityName.x_receiveOneDirtyAsync();
+              if( en != null ){
                 if(Settings.getLogeventualupdate()){
                   log("Updating " + e_qualifiedName + ": " + en.id);
                 }
