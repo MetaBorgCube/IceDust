@@ -89,6 +89,19 @@ rules
       filename := <guarantee-extension(|"dependson.txt")> path;
       result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-dependson-paths;map(path-pp));string-sort-anno;concat-strings(|"\n")>ast
 
+  debug-dependson-dot: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"dependson.dot")> path
+    ; x_paths := <module-get-modulename;modulename-get-arrinames;fmap(name-get-dependson-paths;map(path-pp-dot));string-sort-anno;concat-strings(|"\n  ")>ast
+    ; result := $[digraph {
+        [x_paths]
+      }]
+
   debug-flowsto: (target, position, ast, path, project-path) -> (filename, result)
     with
       <store-analysis-resource>$[[project-path]/[path]];
@@ -108,6 +121,20 @@ rules
     with
       filename := <guarantee-extension(|"flowsto-incr.txt")> path;
       result := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths-incr;map(path-pp));string-sort-anno;concat-strings(|"\n")>ast
+  
+  debug-flowsto-dot: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"flowsto.dot")> path
+    ; x_paths := <module-get-modulename;modulename-get-arrinames;fmap(name-get-flowsto-paths;map(path-pp-dot));string-sort-anno;concat-strings(|"\n  ")>ast
+    ; result := $[digraph {
+        [x_paths]
+      }]
+  
       
   debug-toposort: (target, position, ast, path, project-path) -> (filename, result)
     with

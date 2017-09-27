@@ -231,6 +231,25 @@ rules
   path-pp: DependencyPath(origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] <- [<pp-partial-icedust-string>pathexpr]]
   path-pp: DataflowPath  (origin, pathexpr) -> $[[<attributename-get-entityname>origin].[origin] -> [<pp-partial-icedust-string>pathexpr]]
   
+  
+  
+  path-pp-dot: DependencyPath(origin, pathexpr) -> $["[<attributename-get-entityname>origin].[origin]" -> [<pathexpr-pp-dot> pathexpr]]
+  path-pp-dot: DataflowPath(origin, pathexpr)   -> $["[<attributename-get-entityname>origin].[origin]" -> [<pathexpr-pp-dot> pathexpr]]
+  
+  pathexpr-pp-dot: Ref(x_attribute) -> $["[x_entity].[x_attribute]"]
+    with
+      x_entity := <attributename-get-entityname> x_attribute
+      
+  pathexpr-pp-dot: MemberAccess(e, x_attribute) -> $["[x_entity].[x_attribute]"["["]label="([x_path])"["]"]]
+    with
+      x_entity := <attributename-get-entityname> x_attribute
+    ; x_path := <collect-path ; concat-strings(|",")> e
+
+  collect-path = (collect-path2 ; debug ; reverse) <+ ![]
+  collect-path2: Ref(x_attribute) -> [x_attribute]
+  collect-path2: MemberAccess(e, x_attribute) -> [x_attribute | <collect-path2> e]
+  
+  
   path-store-on-origin: path@DependencyPath(origin, _) -> <index-add(|origin, DependsOn())>path
   path-store-on-origin: path@DataflowPath(  origin, _) -> <index-add(|origin, FlowsTo()  )>path
 

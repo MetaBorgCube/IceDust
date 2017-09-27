@@ -31,8 +31,10 @@ menus
 
   menu: "Analysis2" (openeditor)
     action: "5) Depends On"                = debug-dependson (openeditor)
+    action: "6) Depends On Dot"            = debug-dependson-dot (openeditor)
     action: "6) Flows To"                  = debug-flowsto (openeditor)
     action: "6) Flows To (incremental only)"=debug-flowsto-incr (openeditor)
+    action: "6) Flows To Dot"              = debug-flowsto-dot (openeditor)
     action: "7) Topological Sorting"       = debug-toposort (openeditor)
 //    action: "Properties (Selection)"       = debug-properties (openeditor)
     action: "Analysis2"                    = analysis2-builder
