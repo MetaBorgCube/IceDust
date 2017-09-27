@@ -238,14 +238,16 @@ rules
 //              }
 //            }
             
-            static function x_updateOneCacheAsync () {
+            static function x_updateOneCacheAsync (thisThread : Thread) {
               var en := x_entityName.x_receiveOneDirtyAsync();
               if( en != null ){
+                var uuid := en.id.toString();
+                var queue := DirtyCollections.x_getQueue() ;
+                Settings.threadMapsSet(thisThread, queue, uuid);
                 if(Settings.getLogeventualupdate()){
                   log("Updating " + e_qualifiedName + ": " + en.id);
                 }
                 en.x_updateCache();
-                commitAndStartNewTransaction();
               }
             }
       

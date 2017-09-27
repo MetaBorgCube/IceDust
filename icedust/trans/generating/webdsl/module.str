@@ -94,7 +94,7 @@ rules // module
             stat_flagasync*
           }
           
-          function updateDerivationsAsync(){
+          function updateDerivationsAsync(thisThread : Thread){
             if(Settings.getUpdatesEnabled()){
               stat_cachAsync*
               DirtyCollections.cleanI(2147483647);
@@ -264,7 +264,10 @@ rules // module
             static setLogeventualupdate( Bool ): Void
             static getLogeventualstatus( ): Bool
             static setLogeventualstatus( Bool ): Void
+            static threadMapsSet(Thread, Set<String>, String)
           }
+          
+          native class java.lang.Thread as Thread{}
       ]|
     with
       if modulename-is-explorerui then

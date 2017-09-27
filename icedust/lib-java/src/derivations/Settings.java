@@ -1,5 +1,8 @@
 package derivations;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +32,8 @@ public class Settings {
 		
 		java.util.TimerTask timer69 = new java.util.TimerTask() {
 			public void run() {
+				Thread thisThread = Thread.currentThread();
+				
 				if (utils.GlobalVariables.globalvarsChecked && utils.GlobalInit.initChecked) {
 					org.hibernate.Session hibSession = null;
 					try {
@@ -43,12 +48,19 @@ public class Settings {
 								utils.HibernateUtil.getCurrentSession())) {
 							java.io.PrintWriter out = new java.io.PrintWriter(System.out);
 							ThreadLocalOut.push(out);
-							webdsl.generated.functions.updateDerivationsAsync_.updateDerivationsAsync_();
+							webdsl.generated.functions.updateDerivationsAsyncThread_.updateDerivationsAsyncThread_(thisThread);
 							utils.HibernateUtil.getCurrentSession().getTransaction().commit();
 							ThreadLocalOut.popChecked(out);
 							ps.invalidatePageCacheIfNeeded();
 						}
+					} catch(org.hibernate.StaleStateException | org.hibernate.exception.LockAcquisitionException ex){
+						org.webdsl.logging.Logger.error("updateDerivationsAsync() database collision, rescheduling");
+						
+						reschedule(thisThread);
+						
+						utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
 					} catch (Exception ex) {
+						org.webdsl.logging.Logger.error( ex.getClass().getCanonicalName()); 
 						org.webdsl.logging.Logger.error("exception occured while executing timed function: "
 								+ "invoke updateDerivationsAsync() every x milliseconds");
 						org.webdsl.logging.Logger.error("exception message: " + ex.getMessage(), ex);
@@ -100,6 +112,20 @@ public class Settings {
     
     public static void setLogeventualstatus(boolean setting){
     	logeventualstatus = setting;
+    }
+    
+    private static Map<Thread, Set<String>> threadFieldMap = new ConcurrentHashMap<Thread, Set<String>>();
+    private static Map<Thread, String     > threadUuidMap  = new ConcurrentHashMap<Thread, String     >();
+    
+    public static void threadMapsSet(Thread t, Set<String> hashmap, String uuid){
+    	threadFieldMap.put(t, hashmap);
+    	threadUuidMap.put(t, uuid);
+    }
+    
+    public static void reschedule(Thread t){
+    	Set<String> hashmap = threadFieldMap.get(t);
+    	String uuid = threadUuidMap.get(t);
+    	hashmap.add(uuid);
     }
     
 }

@@ -116,7 +116,7 @@ rules
     with
       result := stat* |[
         if(x_entityName.x_hasDirtyAsync()){
-          x_entityName.x_updateOneAttributeCacheAsync();
+          x_entityName.x_updateOneAttributeCacheAsync(thisThread);
           return;
         }
         DirtyCollections.cleanI(x_topoSort+1);
