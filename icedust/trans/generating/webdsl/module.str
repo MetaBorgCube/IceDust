@@ -188,13 +188,22 @@ rules // module
           page derivedvalues(showCount:Bool) {
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
-            submit action{
-              Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
-            }{
-              if(Settings.getUpdatesEnabled()){
-                "Disable all derived value calculation"
-              }else{
-                "Enable all derived value calculation"
+            if(Settings.getUpdatesEnabled()){
+              toggleVisibility("disable all derived value calculation"){
+                submit action{
+                  Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
+                }{
+                  "yes, disable all derived value calculation"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable all derived value calculation"){
+                submit action{
+                  Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
+                }{
+                  "yes, enable all derived value calculation"
+                }
               }
             }
             table{
