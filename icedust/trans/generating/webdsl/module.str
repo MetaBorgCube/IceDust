@@ -218,23 +218,35 @@ rules // module
                 column{  }
                 column{  }
                 column{
-                  submit action{
-                    flagAllIncrementalDirty();
-                    log("Updating derivations");
-                    updateDerivations();
-                    log("Updating derivations done");
-                  } { "flag all incremental fields dirty" }
+                  toggleVisibility("flag all incremental fields dirty"){
+                    submit action{
+                      flagAllIncrementalDirty();
+                      log("Updating derivations");
+                      updateDerivations();
+                      log("Updating derivations done");
+                    }{
+                      "yes, flag all incremental fields dirty"
+                    }
+                  }
                   br
-                  submit action{
-                    flagAllOnDemandIncDirty();
-                  } { "flag all on-demand incremental fields dirty" }
+                  toggleVisibility("flag all on-demand incremental fields dirty"){
+                    submit action{
+                      flagAllOnDemandIncDirty();
+                    }{
+                      "yes, flag all on-demand incremental fields dirty"
+                    }
+                  }
                   br
-                  submit action{
-                    flagAllEventualDirty();
-                    log("flagDirtyAsync");
-                    flagDirtyAsync();
-                    log("flagDirtyAsync done");
-                  } { "flag all eventual fields dirty" }
+                  toggleVisibility("flag all eventual fields dirty"){
+                    submit action{
+                      flagAllEventualDirty();
+                      log("flagDirtyAsync");
+                      flagDirtyAsync();
+                      log("flagDirtyAsync done");
+                    }{
+                      "yes, flag all eventual fields dirty"
+                    }
+                  }
                 }
               }
               elem_manageRows*

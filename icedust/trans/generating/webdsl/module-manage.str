@@ -48,7 +48,9 @@ rules
       switch id
         case name-is-incremental-eventual: 
           elem_action* := elem* |[
-            submit action{ x_action(); } { "flag all dirty" }
+            toggleVisibility("flag all dirty"){
+              submit action{ x_action(); } { "yes, flag all dirty" }
+            }
           ]|
         otherwise:
           elem_action* := elem* |[

@@ -82,3 +82,15 @@ section java implementations
     static parseDatetime(String):DateTime
     static nullSafeBoolean(Bool) : Bool
   }
+  
+section managehelper
+          
+  template toggleVisibility( initialText: String ){
+    <a onclick="$( '#" + id + "' ).show(); $(this).hide();" style="cursor:pointer; text-decoration:underline;">
+      output( initialText )
+    </a>
+    <div id=id style="display:none; background-color:red;">
+      "are you sure? "
+      elements
+    </div>
+  }
