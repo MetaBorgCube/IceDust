@@ -129,6 +129,7 @@ public class Settings {
     	Set<String> hashmap = threadFieldMap.get(t);
     	String uuid = threadUuidMap.get(t);
     	hashmap.add(uuid);
+    	DirtyCollections.dirtyI(0);
     }
     
 }

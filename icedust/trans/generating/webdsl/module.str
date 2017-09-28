@@ -118,7 +118,7 @@ rules // module
           }
           
           function logCountDirty(){
-            var c := countDirty(999999);
+            var c := countDirty(2147483647);
             if(c>0 && Settings.getLogeventualstatus()){
               log("Eventual Calculation at ordering: " + DirtyCollections.getI() + ", queue size: " + c);
             }
@@ -236,10 +236,10 @@ rules // module
               }
               elem_manageRows*
               row{
+                column{ output(DirtyCollections.getI()) }
                 column{  }
                 column{  }
-                column{  }
-                column{ output(countDirty(999999))  }
+                column{ output(countDirty(2147483647))  }
                 column{  }
               }
             }
