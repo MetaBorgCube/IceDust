@@ -33,7 +33,7 @@ rules // module (or modulename) -> java compilation-unit
 
           private static final Object syncObject = new Object();
           
-          private static int ii = Integer.MAX_VALUE;
+          private static int ii = 0;
           
           public static void dirtyI(int newI){
             synchronized(syncObject){

@@ -115,11 +115,11 @@ rules
       x_topoSort                     := <(name-get-toposort<+!0);int-to-string>x_attributeName
     with
       result := stat* |[
+        DirtyCollections.cleanI(x_topoSort);
         if(x_entityName.x_hasDirtyAsync()){
           x_entityName.x_updateOneAttributeCacheAsync(thisThread);
           return;
         }
-        DirtyCollections.cleanI(x_topoSort+1);
       ]|
       
 rules

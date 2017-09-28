@@ -32,6 +32,9 @@ public class Settings {
 		
 		java.util.TimerTask timer69 = new java.util.TimerTask() {
 			public void run() {
+				if(DirtyCollections.getI()==2147483647)
+					return;
+				
 				Thread thisThread = Thread.currentThread();
 				
 				if (utils.GlobalVariables.globalvarsChecked && utils.GlobalInit.initChecked) {
