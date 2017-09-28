@@ -231,6 +231,9 @@ rules // module
                   br
                   submit action{
                     flagAllEventualDirty();
+                    log("flagDirtyAsync");
+                    flagDirtyAsync();
+                    log("flagDirtyAsync done");
                   } { "flag all eventual fields dirty" }
                 }
               }
