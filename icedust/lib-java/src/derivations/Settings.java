@@ -32,52 +32,51 @@ public class Settings {
 		
 		java.util.TimerTask timer69 = new java.util.TimerTask() {
 			public void run() {
-				if(DirtyCollections.getI()==2147483647 || !updatesEnabled)
-					return;
-				
 				Thread thisThread = Thread.currentThread();
 				
-				if (utils.GlobalVariables.globalvarsChecked && utils.GlobalInit.initChecked) {
-					org.hibernate.Session hibSession = null;
-					try {
-						org.webdsl.servlet.ServletState
-								.scheduledTaskStarted("invoke updateDerivationsAsync() every x milliseconds with y threads");
-						AbstractPageServlet ps = new GlobalsPageServlet();
-						ThreadLocalPage.set(ps);
-						ps.initRequestVars();
-						hibSession = utils.HibernateUtil.getCurrentSession();
-						hibSession.beginTransaction();
-						if (GlobalVariables.initGlobalVars(ps.envGlobalAndSession,
-								utils.HibernateUtil.getCurrentSession())) {
-							java.io.PrintWriter out = new java.io.PrintWriter(System.out);
-							ThreadLocalOut.push(out);
-							webdsl.generated.functions.updateDerivationsAsyncThread_.updateDerivationsAsyncThread_(thisThread);
-							utils.HibernateUtil.getCurrentSession().getTransaction().commit();
-							ThreadLocalOut.popChecked(out);
-							ps.invalidatePageCacheIfNeeded();
+				while(DirtyCollections.getI()<2147483647 && updatesEnabled){
+					if (utils.GlobalVariables.globalvarsChecked && utils.GlobalInit.initChecked) {
+						org.hibernate.Session hibSession = null;
+						try {
+							org.webdsl.servlet.ServletState
+									.scheduledTaskStarted("invoke updateDerivationsAsync() every x milliseconds with y threads");
+							AbstractPageServlet ps = new GlobalsPageServlet();
+							ThreadLocalPage.set(ps);
+							ps.initRequestVars();
+							hibSession = utils.HibernateUtil.getCurrentSession();
+							hibSession.beginTransaction();
+							if (GlobalVariables.initGlobalVars(ps.envGlobalAndSession,
+									utils.HibernateUtil.getCurrentSession())) {
+								java.io.PrintWriter out = new java.io.PrintWriter(System.out);
+								ThreadLocalOut.push(out);
+								webdsl.generated.functions.updateDerivationsAsyncThread_.updateDerivationsAsyncThread_(thisThread);
+								utils.HibernateUtil.getCurrentSession().getTransaction().commit();
+								ThreadLocalOut.popChecked(out);
+								ps.invalidatePageCacheIfNeeded();
+							}
+						} catch(org.hibernate.StaleStateException | org.hibernate.exception.LockAcquisitionException ex){
+							org.webdsl.logging.Logger.error("updateDerivationsAsync() database collision, rescheduling");
+							
+							reschedule(thisThread);
+							
+							utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
+						} catch (Exception ex) {
+							org.webdsl.logging.Logger.error( ex.getClass().getCanonicalName()); 
+							org.webdsl.logging.Logger.error("exception occured while executing timed function: "
+									+ "invoke updateDerivationsAsync() every x milliseconds");
+							org.webdsl.logging.Logger.error("exception message: " + ex.getMessage(), ex);
+							utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
+						} finally {
+							org.webdsl.servlet.ServletState.scheduledTaskEnded();
+							ThreadLocalPage.set(null);
 						}
-					} catch(org.hibernate.StaleStateException | org.hibernate.exception.LockAcquisitionException ex){
-						org.webdsl.logging.Logger.error("updateDerivationsAsync() database collision, rescheduling");
-						
-						reschedule(thisThread);
-						
-						utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
-					} catch (Exception ex) {
-						org.webdsl.logging.Logger.error( ex.getClass().getCanonicalName()); 
-						org.webdsl.logging.Logger.error("exception occured while executing timed function: "
-								+ "invoke updateDerivationsAsync() every x milliseconds");
-						org.webdsl.logging.Logger.error("exception message: " + ex.getMessage(), ex);
-						utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
-					} finally {
-						org.webdsl.servlet.ServletState.scheduledTaskEnded();
-						ThreadLocalPage.set(null);
 					}
 				}
 			}
 		};
 		
 		for(int i = 0; i<n; i++){
-			ex.scheduleAtFixedRate(timer69, 0 + n, millis + 0, TimeUnit.MILLISECONDS);
+			ex.scheduleWithFixedDelay(timer69, 0 + n, millis + 0, TimeUnit.MILLISECONDS);
 		}
 	}
 	
