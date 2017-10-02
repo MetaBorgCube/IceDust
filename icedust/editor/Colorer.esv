@@ -17,7 +17,11 @@ colorer Primitive types
 
 colorer built-in functions
 
-  BuiltInFunction        : 127 0 85 bold 
+  BuiltInFunction        : 127 0 85 bold
+  
+colorer strategies
+
+  Strategy   : 127 127 127
 
 colorer Default, token-based highlighting
                                   

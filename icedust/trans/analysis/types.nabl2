@@ -24,8 +24,10 @@ rules
   [[ Some(OnDemandIncremental()) ^ (s) : st ]] := st == TOnDemandIncremental().
   [[ Some(Eventual())            ^ (s) : st ]] := st == TEventual().
   [[ Some(OnDemandEventual())    ^ (s) : st ]] := st == TOnDemandEventual().
+  [[ Some(Inline())              ^ (s) : st ]] := true.
   [[ None()                      ^ (s) : st ]] :=
     Implicit{"this"} -> s,
     Implicit{"this"} |-> this_def,
     this_def : this_ty,
     this_ty == TTuple(this_type, this_mult, st).
+  
