@@ -66,7 +66,7 @@
     </repository>
     <repository>
       <id>spoofax-eclipse-repo</id>
-      <url>http://buildfarm.metaborg.org/job/metaborg/job/spoofax-releng/job/master/lastSuccessfulBuild/artifact/dist/spoofax/eclipse/site/</url>
+      <url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.3.0/org.metaborg.spoofax.eclipse.updatesite-2.3.0-assembly.zip-unzip/</url>
       <layout>p2</layout>
       <releases>
         <enabled>false</enabled>
