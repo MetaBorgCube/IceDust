@@ -27,12 +27,13 @@ rules // module (or modulename) -> java compilation-unit
         import java.util.Set;
         import java.util.concurrent.ConcurrentHashMap;
         import java.util.Collections;
+        import java.util.Iterator;
         
         public class DirtyCollections {
 
           private static final Object syncObject = new Object();
           
-          private static int ii = Integer.MAX_VALUE;
+          private static int ii = 0;
           
           public static void dirtyI(int newI){
             synchronized(syncObject){
@@ -66,19 +67,26 @@ rules // attrname -> java declarations
   attributename-to-java-classbodydecs(err): x_attributeName -> result
     with
       x_attributeQueue    := <attributename-entityname-queue>x_attributeName;
-      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName;
+      x_attributePoll     := <attributename-entityname-poll>x_attributeName
     with
       result := class-body-dec* |[
-//        private static Queue<String> x_attributeQueue = new ConcurrentLinkedQueue<String>();
-//        
-//        public static Queue<String> x_attributeGetQueue(){
-//          return x_attributeQueue;
-//        }
-        
         private static Set<String> x_attributeQueue = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
       
         public static Set<String> x_attributeGetQueue()
         { 
           return x_attributeQueue;
+        }
+        
+        public static String x_attributePoll(){
+          synchronized(x_attributeGetQueue()){
+            Iterator<String> it = x_attributeGetQueue().iterator();
+            if(it.hasNext()){
+              String elem = it.next();
+              x_attributeGetQueue().remove(elem);
+              return elem;
+            }
+          }
+          return null;
         }
       ]|

@@ -1,0 +1,38 @@
+module java-features-stringinterpolation
+
+language icedust
+
+fixture [[
+module stringinterpolation (on-demand)
+
+model
+
+  entity Assignment{
+    name : String?
+    displayName : String = name<+"Assignment"
+    displayLine : String = "\n* ${displayName}"
+    description : String = "${displayName} consists of the following sub assignments:${children.displayLine}"
+  }
+  
+  relation Assignment.children * <-> ? Assignment.parent
+  
+data
+
+  math:Assignment{
+    name = "Math"
+    children = 
+      {name="Exam"},
+      {name="Lab"}
+  }
+
+execute
+
+  math.description
+  [[...]]
+]]
+
+test String interpolation execute-java [[ ]] transform "SPT -> Build" to 
+"Math consists of the following sub assignments:
+* Exam
+* Lab
+"

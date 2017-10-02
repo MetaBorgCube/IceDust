@@ -19,16 +19,10 @@ rules
 
   build(error-handler|backend, moduleName, relativePath): _ -> result
     where
-      WebDSLBackend(uistyle) := backend
+      WebDSLBackend(_) := backend
     with
       fullPath    := <full-path(|relativePath)>;
       eclipsePath := <eclipse-path>relativePath
-    with
-      if ModelExplorer(_) := uistyle then
-        <index-set(|moduleName, UIStyle())>ExplorerUI()
-      else
-        <index-set(|moduleName, UIStyle())>NoUI()
-      end
     with
       error* := []; //TODO: fetch list of errors from NaBL2
       if not([] := error*) then

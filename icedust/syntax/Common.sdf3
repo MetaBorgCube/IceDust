@@ -59,8 +59,9 @@ lexical syntax // literals
   INT           = "-"? [0-9]+
   FLOAT         = "-"? [0-9]+ "." [0-9]+
   STRING        = StringChar* 
-  StringChar    = ~[\"\n] 
-  StringChar    = "\\\"" 
+  StringChar    = ~[\"\n\$] 
+  StringChar    = "\\\""
+  StringChar    = "\\$" //dollar escapes: \$ (dart, javascript, php, bash)
   StringChar    = BackSlashChar 
   BackSlashChar = "\\"
   DATETIME      = [0-9][0-9][0-9][0-9] "-" [0-9][0-9]? "-" [0-9][0-9]? LAYOUT [0-9][0-9]? ":" [0-9][0-9] ":" [0-9][0-9] 

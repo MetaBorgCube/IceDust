@@ -19,12 +19,19 @@ imports // functions
 
 rules // member access
       
-  expr-to-webdsl-expr(err): MemberAccess(ex1, x_name) -> webdsl:e |[ x_srt.x_getter(e1) ]|
+  expr-to-webdsl-expr(err): MemberAccess(ex1, x_name) -> result
     with
       e1       := <expr-to-webdsl-expr(err)>ex1;
       x_getter := <name-get>x_name;
-      x_srt    := <attributename-get-root-get-entityname>x_name
-
+      srt1     := <get-type2;type-to-webdsl-srt(err)>ex1;
+      x_srt2   := <attributename-get-root-get-entityname>x_name
+    with
+      if <get-multiplicity;upper-many>ex1 then // always type convert lists to correct type before calling (http://yellowgrass.org/issue/WebDSL/841)
+        result := webdsl:e |[ x_srt2.x_getter([v as x_srt2 | v : srt1 in e1]) ]|
+      else
+        result := webdsl:e |[ x_srt2.x_getter(e1) ]|
+      end
+      
 rules // direct references
 
   expr-to-webdsl-expr(err): Ref(x_entityName) ->  webdsl:e |[ x_entityName ]|

@@ -11,6 +11,10 @@ section java implementations
     static merge_One_Many(Object, List<Object>) : List<Object>
     static merge_Many_One(List<Object>, Object) : List<Object>
     static merge_Many_Many(List<Object>, List<Object>) : List<Object>
+    static difference_One_One(Object, Object) : Object
+    static difference_One_Many(Object, List<Object>) : Object
+    static difference_Many_One(List<Object>, Object) : List<Object>
+    static difference_Many_Many(List<Object>, List<Object>) : List<Object>
     static first(List<Object>) : Object
     static first(List<Object>, Int) : List<Object>
     static indexOf(List<Object>, Object) : Int
@@ -69,12 +73,24 @@ section java implementations
     static conditional_One_One_Many(Bool, Object, List<Object>) : Object
     static conditional_One_Many_One(Bool, List<Object>, Object) : Object
     static conditional_One_Many_Many(Bool, List<Object>, List<Object>) : Object
-    static asFloat(Int) : Float
-    static asFloat(List<Int> ) : List<Float>
-    static asInteger(Float) : Int
-    static asInteger(List<Float>) : List<Int> 
-    static asString(Object) : String
-    static asString(List<Object>) : List<String>
+    static asFloat_One(Int) : Float
+    static asFloat_Many(List<Int> ) : List<Float>
+    static asInteger_One(Float) : Int
+    static asInteger_Many(List<Float>) : List<Int> 
+    static asString_One(Object) : String
+    static asString_Many(List<Object>) : List<String>
     static parseDatetime(String):DateTime
     static nullSafeBoolean(Bool) : Bool
+  }
+  
+section managehelper
+          
+  template toggleVisibility( initialText: String ){
+    <a onclick="$( '#" + id + "' ).show(); $(this).hide();" style="cursor:pointer; text-decoration:underline;">
+      output( initialText )
+    </a>
+    <div id=id style="display:none; background-color:red;">
+      "are you sure? "
+      elements
+    </div>
   }

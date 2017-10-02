@@ -14,8 +14,3 @@ signature constructors
   WebDSLEager        : TargetLanguage
   WebDSLEventual     : TargetLanguage
   
-  ImplStrategy : CompilerOptions
-  UIStyle      : CompilerOptions
-  
-  NoUI       : UIStyle
-  ExplorerUI : UIStyle

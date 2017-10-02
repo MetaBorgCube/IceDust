@@ -42,12 +42,14 @@ rules // derivations
         x_entityName.x_flagAttributeDirtyAsync();
       ]|
       
-  attributename-to-webdsl-native: x_attributeName -> result
+  attributename-to-webdsl-natives: x_attributeName -> result
     with
-      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName
+      x_attributeGetQueue := <attributename-entityname-getqueue>x_attributeName;
+      x_attributePoll     := <attributename-entityname-poll>x_attributeName
     with
-      result := native |[
+      result := native* |[
         static x_attributeGetQueue() : Set<String>
+        static x_attributePoll() : String
       ]|
 
 rules
@@ -113,9 +115,22 @@ rules
       x_topoSort                     := <(name-get-toposort<+!0);int-to-string>x_attributeName
     with
       result := stat* |[
+        DirtyCollections.cleanI(x_topoSort);
         if(x_entityName.x_hasDirtyAsync()){
-          x_entityName.x_updateOneAttributeCacheAsync();
+          x_entityName.x_updateOneAttributeCacheAsync(thisThread);
           return;
         }
-        DirtyCollections.cleanI(x_topoSort+1);
+      ]|
+      
+rules
+  
+  countdirty-attributename-to-webdsl-stm: x_attributeName -> result
+    with
+      x_getQueue := <attributename-entityname-getqueue>x_attributeName;
+      x_topoSort := <(name-get-toposort<+!0);int-to-string>x_attributeName
+    with
+      result := stat* |[
+        if(o >= x_topoSort){
+          n := n + DirtyCollections.x_getQueue().length;
+        }
       ]|

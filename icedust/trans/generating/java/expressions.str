@@ -66,7 +66,8 @@ rules // casts
       j := <add>(i, <length>exp1s*);
       refty := <expr-to-java-type(err)>e;
       x_var := $[var[<inc>j]];
-      x_method := $[as[<type-to-string-java>e1-ty]]
+      arg-mult := <get-multiplicity;postfix-id>e;
+      x_method := $[as[<type-to-string-java>e1-ty]_[arg-mult]]
     with
       stms := bstm*|[
         ~exp1s*
