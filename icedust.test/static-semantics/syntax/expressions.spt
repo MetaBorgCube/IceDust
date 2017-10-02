@@ -69,3 +69,5 @@ test inverse.role.inverse.attribute[[u.userPost.post.user.name]] parse succeeds
 
 test Cast  [[5.0 as Int]] parse succeeds
 test Cast2 [[5 as Float]] parse succeeds
+
+test new parser priorities [[3 + if(false) 3 + 3 else 4]] parse succeeds
