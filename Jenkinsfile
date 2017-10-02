@@ -1,10 +1,10 @@
 properties([
-  pipelineTriggers([
-    upstream(
-      threshold: hudson.model.Result.SUCCESS,
-      upstreamProjects: '/metaborg/spoofax-releng/master'
-    )
-  ]),
+//  pipelineTriggers([
+//    upstream(
+//      threshold: hudson.model.Result.SUCCESS,
+//      upstreamProjects: '/metaborg/spoofax-releng/master'
+//    )
+//  ]),
   buildDiscarder(logRotator(artifactNumToKeepStr: '3')),
   disableConcurrentBuilds()
 ])
