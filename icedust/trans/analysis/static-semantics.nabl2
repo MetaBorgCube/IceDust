@@ -4,9 +4,9 @@ imports
 
   config
   data
-  expressions-aggregation
   expressions-casts
   expressions-collections
+  expressions-functions
   expressions-literals
   expressions-logic
   expressions-math
