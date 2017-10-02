@@ -22,7 +22,7 @@ rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
     where
       lib-call
     with
-      arg*                    := <get-arguments>e;
+      arg*                    := <expr-get-arguments>e;
       (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
       (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
       refty                   := <expr-to-java-type(err)>e;

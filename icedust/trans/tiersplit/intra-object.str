@@ -30,7 +30,7 @@ rules
 
   on-client = ?This()
   on-client = ?Ref(name);!name;where(is-attributename)
-  on-client = get-arguments;where(one(on-client))
+  on-client = expr-get-arguments;where(one(on-client))
   on-client = ?None() // no parent means this code is executed from client
   
   on-server = not(on-client)

@@ -62,26 +62,31 @@ context-free syntax // operators
     default =\> <Exp>
   >
 
-context-free syntax // built-in functions
+context-free syntax // built-in functions: generic
 
-  Exp.Min                = <min(<Exp>)>
-  Exp.Max                = <max(<Exp>)>
-  Exp.Avg                = <avg(<Exp>)>
-  Exp.Sum                = <sum(<Exp>)>
-  Exp.Concat             = <concat(<Exp>)>
-  Exp.Count              = <count(<Exp>)>
-  Exp.Conj               = <conj(<Exp>)>
-  Exp.Disj               = <disj(<Exp>)>
-  
-  Exp.First              = <<Exp>.first()>
-  Exp.First              = <<Exp>.first(<Exp>)>
+  Exp.Function           = <<BuiltInFunction>(<{Exp ", "}*>)>       {left}
+  Exp.Function2          = <<Exp>.<BuiltInFunction>(<{Exp ", "}*>)> {left}
+
+lexical syntax
+
+  BuiltInFunction = "avg"     // 1 exp
+  BuiltInFunction = "concat"  // 1 exp
+  BuiltInFunction = "conj"    // 1 exp
+  BuiltInFunction = "count"   // 1 exp
+  BuiltInFunction = "disj"    // 1 exp
+  BuiltInFunction = "elemAt"  // 2 exp
+  BuiltInFunction = "first"   // 1-2 exp
+  BuiltInFunction = "indexOf" // 2 exp
+  BuiltInFunction = "max"     // 1 exp
+  BuiltInFunction = "min"     // 1 exp
+  BuiltInFunction = "sum"     // 1 exp
+
+context-free syntax // built-in functions: specialized
+
   Exp.OrderBy            = [[Exp].orderBy([ID] => [Exp])]
   Exp.Filter             = [[Exp].filter([ID] => [Exp])]
   Exp.FilterType         = [[Exp].filter(:[EntityType])]
   Exp.Find               = [[Exp].find([ID] => [Exp])]
-  Exp.Count2             = <<Exp>.count()>
-  Exp.IndexOf            = <<Exp>.indexOf(<Exp>)>
-  Exp.ElemAt             = <<Exp>.elemAt(<Exp>)>
 
 context-free syntax // references
 
@@ -111,8 +116,12 @@ context-free priorities
 
   { left:
     Exp.MemberAccess
-    Exp.First
-    Exp.Count
+    Exp.Function
+    Exp.Function2
+    Exp.OrderBy
+    Exp.Filter
+    Exp.FilterType
+    Exp.Find
   } >  
   { right:
     Exp.Not

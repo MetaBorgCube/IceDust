@@ -61,7 +61,7 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       (p2*, q2*) := <expr-pathexprs>e2;
       (p3*, q3*) := <expr-pathexprs>e3
 
-  expr-pathexprs: e@First(e1, e2) -> ([p1*], [q1*,q2*,p2*])
+  expr-pathexprs: e@Function("first", [e1, e2]) -> ([p1*], [q1*,q2*,p2*])
     with
       (p1*, q1*) := <expr-pathexprs>e1;
       (p2*, q2*) := <expr-pathexprs>e2
@@ -86,6 +86,8 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       (p2*, q2*) := <expr-pathexprs>e2;
       p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
       q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
+
+  expr-pathexprs = ?Function("first", e*); !e*; map(expr-pathexprs);unzip;all(concat) // rest of the built-in functions
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 
