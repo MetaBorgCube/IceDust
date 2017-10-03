@@ -104,7 +104,8 @@ rules
     x_ty <sub? y_ty | error $[expected type: [y_ty], got: [x_ty]]@x,
     PairwiseEqual [[ xs ^ (s, ys) : TTuple(xs_type, xs_mult, xs_strat) ]],
     out_strat is strat.lub of (x_strat, xs_strat),
-    out_mult == xs_mult. //TODO: figure out how much lifting is needed
+    lift_mult is multLift of (y_mult, x_mult),
+    out_mult is mulOrd.lub of (lift_mult, xs_mult).
     
   PairwiseEqual [[ l@[] ^ (s, expected) : TTuple(TNoValue(), TOne(), TIncremental()) ]] := 
     expected == [] | error $[invalid number of arguments] @ l.
