@@ -1,0 +1,26 @@
+module functions2 //functions is a nabl2 keyword
+
+rules
+
+  [[ Function(f, ps, t, m, e) ^ (module_scope) ]] :=
+    Function{f} <- module_scope,
+    Function{f} : TTuple(f_type, f_mult, e_strat),
+    new f_scope,
+    f_scope -P-> module_scope,
+    [[ t ^ (module_scope) : f_type ]],
+    [[ m ^ (module_scope) : f_mult ]],
+    Map1T [[ps ^ (f_scope) : ps_tuples]],
+    [[ e ^ (f_scope) : TTuple(e_type, e_mult, e_strat) ]],
+    e_type  <sub?    f_type  | error $[Type error: expected [f_type] got [e_type].]@e,
+    e_mult  <mulOrd? f_mult  | error $[Multiplicity error: expected [f_mult] got [e_mult].]@e,
+    true.
+    
+  [[ Parameter(p, t, m) ^ (f_scope) : p_tuple ]] :=
+    [[ t ^ (entity_scope) : p_type ]],
+    [[ m ^ (entity_scope) : p_mult ]],
+    p_tuple == TTuple(p_type, p_mult, TIncremental()),
+    Member{p} <- f_scope,
+    Member{p} : p_tuple,
+    Member{p}.ns := Variable(),
+    Member{p}.reltype := None(),
+    Member{p}.side := None().

@@ -12,6 +12,7 @@ imports
   expressions-math
   expressions-multiplicity-operators
   expressions-references
+  functions2
   map3
   model
   module

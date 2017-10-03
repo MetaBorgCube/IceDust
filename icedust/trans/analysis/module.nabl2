@@ -25,6 +25,9 @@ rules
   [[ ModelSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
     Map1 [[ es ^ (module_scope) ]].
 
+  [[ FunctionSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
+    Map1 [[ es ^ (module_scope) ]].
+
   [[ DataSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
     Map2T [[ es ^ (empty_scope, module_data_scope) : es_types ]],
     new empty_scope.
