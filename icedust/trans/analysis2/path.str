@@ -27,7 +27,7 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
 
   expr-pathexprs: e@This()    -> ([e], [])
   
-  expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname+is-varname)
+  expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(is-attributename+is-relationname+is-rolename+is-inversename+is-shortcutname+is-varname+is-paramname)
   expr-pathexprs: e@Ref(name) -> ([e], [])  where !name;not(name-is-inline)
   expr-pathexprs: e@Ref(name) -> ([] , [])  where !name;not(name-has-calculation-strategy) // do not recurse if no calculation strategy (avoid recursive inlining)
   expr-pathexprs: e@Ref(name) -> (p* , q*)
@@ -89,16 +89,17 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
 
   expr-pathexprs: Function(f, e*) -> (fp'*, fq'*)
     where
-      fail // f has a definition
+      f_def := <get-resolved-name(|"Function")>f
     with
-      ets*       := <map(expr-pathexprs)>e*; // (path* ,path*)*  [(e1p*,e2q*), (e2p*,e2q*), ...]
-      eps*       := <map(Fst)>ets*;          // (path*)*         [e1p*, e2p*, ...] // required for replacing
-      eq*        := <fmap(Snd)>ets*;         // (path*)*         [e1q1, e1q2, ...] // don't need extending
-      (fp*, fq*) := <id>;                    // (path* ,path*)   function paths
-      pnames     := <id>;                    // name*
-      toReplace  := <zip>(pnames, eps*);     // (name, path*)*   [(pname1, e1p*), ...]
-      fp'*       := <pathexpr-replace-all(|toReplace)>fp*;
-      fq'*       := <pathexpr-replace-all(|toReplace)>fq*
+      ets*       := <map(expr-pathexprs)>e*;                     // (path* ,path*)*  [(e1p*,e2q*), (e2p*,e2q*), ...]
+      eps*       := <map(Fst)>ets*;                              // (path*)*         [e1p*, e2p*, ...] // required for replacing
+      eq*        := <fmap(Snd)>ets*;                             // (path*)*         [e1q1, e1q2, ...] // don't need extending
+      f_expr     := <functionname-get-expr>f_def;                // expr
+      (fp*, fq*) := <expr-pathexprs>f_expr;                      // (path* ,path*)   function paths
+      pnames     := <functionname-get-paramnames>f_def;          // name*
+      toReplace  := <zip>(pnames, eps*);                         // (name, path*)*   [(pname1, e1p*), ...]
+      fp'*       := <fmap(pathexpr-replace-all(|toReplace))>fp*; // path*
+      fq'*       := <fmap(pathexpr-replace-all(|toReplace))>fq*  // path*
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 

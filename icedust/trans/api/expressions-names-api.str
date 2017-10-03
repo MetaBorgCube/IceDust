@@ -2,11 +2,13 @@ module api/expressions-names-api
 
 imports // constructors
 
+  analysis/_constructors
 
 imports // functions
 
-  api/_runtime
+  lib/nabl2
 
 rules
 
-  is-varname = where(is-string;get-property(|"Member","ns");?Variable())
+  is-varname   = where(is-string;get-property(|"Member","ns");?Variable())
+  is-paramname = where(is-string;get-property(|"Member","ns");?Parameter())
