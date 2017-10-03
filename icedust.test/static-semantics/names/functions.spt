@@ -1,0 +1,43 @@
+module names-functions
+
+language icedust
+
+fixture [[
+module test
+  [[...]]
+]]
+
+test Resolve function name [[
+functions
+  [[test]]() : Int 1 = 5
+execute
+  [[test]]()
+]] resolve #2 to #1
+
+test Error on call to non existing function [[
+functions
+  test() : Int 1 = 5
+execute
+  [[foo()]]
+]] >= 1 error at #1
+
+test Error on call with wrong number of arguments [[
+functions
+  test() : Int 1 = 5
+execute
+  test([[123]])
+]] >= 1 error at #1
+
+test Error on call with wrong number of arguments 2 [[
+functions
+  test(a: Int 1) : Int 1 = 5
+execute
+  [[test()]]
+]] >= 1 error at #1
+
+test Error on call with wrong type [[
+functions
+  test(a: Int 1) : Int 1 = 5
+execute
+  [[test(5.5)]]
+]] >= 1 error at #1
