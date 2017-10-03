@@ -7,6 +7,13 @@ module test
   [[...]]
 ]]
 
+test Error on duplicate function name [[
+functions
+  [[test]]() : Int 1 = 5
+  [[test]]() : Int 1 = 5
+]] >= 1 errors at #1
+ >= 1 errors at #2
+
 test Resolve function name [[
 functions
   [[test]]() : Int 1 = 5

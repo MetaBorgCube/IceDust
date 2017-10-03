@@ -4,6 +4,7 @@ rules
     
   [[ Module(m, st, es) ^ (init_scope) ]] :=
     distinct/name D(module_scope)/Entity | error "Duplicate entity" @NAMES,
+    distinct/name D(module_scope)/Function | error "Duplicate function" @NAMES,
     distinct/name D(module_data_scope)/Member | error "Duplicate attribute" @NAMES,
     Module{m} <- init_scope,
     module_scope -P-> init_scope,
