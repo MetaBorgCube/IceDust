@@ -9,6 +9,7 @@ imports // constructors
 imports // functions
 
   api/functions-api
+  api/types-names-api
   lib/nabl2
 
 rules // function
@@ -18,3 +19,12 @@ rules // function
   functionname-get-paramnames = get-property(|"Function","params");map(param-get-name)
   functionname-get-expr       = get-property(|"Function","expr")
   
+  functionname-get-type         = get-type-property(|"Function");normalize-type
+  functionname-get-multiplicity = get-type-property(|"Function");normalize-multiplicity
+
+rules // param
+
+  is-paramname = where(is-string;get-property(|"Member","ns");?Parameter())
+  
+  paramname-get-type         = get-type-property(|"Member");normalize-type
+  paramname-get-multiplicity = get-type-property(|"Member");normalize-multiplicity

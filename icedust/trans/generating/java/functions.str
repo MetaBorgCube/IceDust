@@ -1,0 +1,41 @@
+module generating/java/functions
+
+imports // constructors
+
+  java/Java
+
+imports // functions
+
+  api/functions-names-api
+  generating/java/expressions
+
+rules 
+  
+  functionname-to-java-classbodydecs(err): x_name -> result
+    with
+      x_type  := <functionname-get-type;type-to-string-java>x_name;
+      params* := <functionname-get-paramnames;map(paramname-to-java-formalparam(err))>x_name;
+      (calculate-stms*, calculate-exp) := <functionname-get-expr;exp-to-java-stm(err|0)>x_name
+    with
+      result := class-body-dec* |[
+        private static x_type x_name(~params*)
+        { 
+          ~calculate-stms*
+          return ~calculate-exp;
+        }
+        
+        //TODO: wrapper functions for multiplicity lifting
+      ]|
+
+rules
+
+  paramname-to-java-formalparam(err): x_name -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity>x_name;
+      j_type := <type-to-java-type(|mult)>type
+    with
+      result := formal-param |[
+        ~j_type x_name
+      ]|
+
