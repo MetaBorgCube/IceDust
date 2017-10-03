@@ -6,6 +6,8 @@ rules
     Function{f} <- module_scope,
     Function{f} : TTuple(f_type, f_mult, e_strat),
     Function{f}.paramtuples := ps_tuples,
+    Function{f}.params := ps,
+    Function{f}.ns := Function(),
     new f_scope,
     f_scope -P-> module_scope,
     [[ t ^ (module_scope) : f_type ]],
@@ -22,6 +24,6 @@ rules
     p_tuple == TTuple(p_type, p_mult, TIncremental()),
     Member{p} <- f_scope,
     Member{p} : p_tuple,
-    Member{p}.ns := Variable(),
+    Member{p}.ns := Parameter(),
     Member{p}.reltype := None(),
     Member{p}.side := None().

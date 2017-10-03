@@ -87,7 +87,18 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
       q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
 
-//  expr-pathexprs = ?Function(f, e*); !e*; map(expr-pathexprs);unzip;all(concat) // rest of the built-in functions
+  expr-pathexprs: Function(f, e*) -> (fp'*, fq'*)
+    where
+      fail // f has a definition
+    with
+      ets*       := <map(expr-pathexprs)>e*; // (path* ,path*)*  [(e1p*,e2q*), (e2p*,e2q*), ...]
+      eps*       := <map(Fst)>ets*;          // (path*)*         [e1p*, e2p*, ...] // required for replacing
+      eq*        := <fmap(Snd)>ets*;         // (path*)*         [e1q1, e1q2, ...] // don't need extending
+      (fp*, fq*) := <id>;                    // (path* ,path*)   function paths
+      pnames     := <id>;                    // name*
+      toReplace  := <zip>(pnames, eps*);     // (name, path*)*   [(pname1, e1p*), ...]
+      fp'*       := <pathexpr-replace-all(|toReplace)>fp*;
+      fq'*       := <pathexpr-replace-all(|toReplace)>fq*
 
   expr-pathexprs = get-arguments;map(expr-pathexprs);unzip;all(concat) // literals, unops and binops
 
@@ -105,6 +116,14 @@ rules
   pathexpr-replace(|name, expr*) = ?expr2;!expr*;where(is-list);map(pathexpr-replace-internal(|name, expr2))
   
   pathexpr-replace-internal(|name, expr2) = ?expr;!expr2;pathexpr-replace(|name, expr)
+
+  pathexpr-replace-all(|l): e -> e
+    where l := []
+  pathexpr-replace-all(|l): e -> e''
+    with
+      [(name, expr)|tail] := l;
+      e'                  := <pathexpr-replace(|name, expr)>e;
+      e''                 := <pathexpr-replace-all(|tail)>e'
 
   pathexpr-replace(|name, expr):   Ref(name2)         -> expr where <eq-no-anno(|name)>name2
   pathexpr-replace(|name, expr): e@Ref(_)             -> e

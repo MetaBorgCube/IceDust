@@ -1,0 +1,19 @@
+module api/functions-names-api
+
+imports // constructors
+
+  analysis2/constructors
+  analysis/_constructors
+  static-semantics
+
+imports // functions
+
+  api/functions-api
+  lib/nabl2
+
+rules // function
+
+  is-functionname = where(is-string;get-property(|"Function","ns");?Function())
+
+  functionname-get-paramnames = get-property(|"Function","params");map(param-get-name)
+  
