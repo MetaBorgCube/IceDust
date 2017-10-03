@@ -7,6 +7,7 @@ rules
     Function{f} : TTuple(f_type, f_mult, e_strat),
     Function{f}.paramtuples := ps_tuples,
     Function{f}.params := ps,
+    Function{f}.expr := e,
     Function{f}.ns := Function(),
     new f_scope,
     f_scope -P-> module_scope,

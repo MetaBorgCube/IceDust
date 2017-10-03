@@ -12,3 +12,4 @@ functions
 ]]
 
 test Query function param names [[foo]] run functionname-get-paramnames-test to !ATerm["i","j"]
+test Query function expr        [[foo]] run functionname-get-expr-test       to Int("5")

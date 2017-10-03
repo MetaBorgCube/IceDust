@@ -90,3 +90,4 @@ rules
 rules
   
   functionname-get-paramnames-test = try(function-get-name); store-analysis-ast; functionname-get-paramnames
+  functionname-get-expr-test       = try(function-get-name); store-analysis-ast; functionname-get-expr

@@ -16,4 +16,5 @@ rules // function
   is-functionname = where(is-string;get-property(|"Function","ns");?Function())
 
   functionname-get-paramnames = get-property(|"Function","params");map(param-get-name)
+  functionname-get-expr       = get-property(|"Function","expr")
   
