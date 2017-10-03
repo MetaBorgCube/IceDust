@@ -86,6 +86,26 @@ rules
     out_strat is strat.lub of (e1_strat, e2_strat).
   
   // Catch all: depends on ordering within file!
-  [[ Function(f, es) ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]] :=
-    false | error $[No built-in function [f] with this number of operands.]@f.
+  [[ Function(f, es) ^ (s) : TTuple(f_def_type, out_mult, out_strat) ]] :=
+    Function{f} -> s,
+    Function{f} |-> f_def,
+    f_def : f_def_tup,
+    f_def_tup == TTuple(f_def_type, f_def_mult, f_def_strat),
+    f_def.paramtuples := ps_tuples,
+    PairwiseEqual [[ es ^ (s, ps_tuples) : es_tup ]],
+    es_tup == TTuple(es_type, es_mult, es_strat),
+    out_mult is mulOrd.lub of (f_def_mult, es_mult), //TODO: does this correctly lift?
+    out_strat is strat.lub of (f_def_strat, es_strat).
+    
+  PairwiseEqual [[ l@[x | xs] ^ (s, expected) : TTuple(out_type, out_mult, out_strat) ]] :=
+    expected == [y | ys]  | error $[invalid number of arguments] @ l,
+    [[ x ^ (s) : TTuple(x_ty, x_mult, x_strat) ]],
+    y == TTuple(y_ty, y_mult, y_strat),
+    x_ty <sub? y_ty | error $[expected type: [y_ty], got: [x_ty]]@x,
+    PairwiseEqual [[ xs ^ (s, ys) : TTuple(xs_type, xs_mult, xs_strat) ]],
+    out_strat is strat.lub of (x_strat, xs_strat),
+    out_mult == xs_mult. //TODO: figure out how much lifting is needed
+    
+  PairwiseEqual [[ l@[] ^ (s, expected) : TTuple(TNoValue(), TOne(), TIncremental()) ]] := 
+    expected == [] | error $[invalid number of arguments] @ l.
  
