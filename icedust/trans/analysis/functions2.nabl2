@@ -17,8 +17,8 @@ rules
     true.
     
   [[ Parameter(p, t, m) ^ (f_scope) : p_tuple ]] :=
-    [[ t ^ (entity_scope) : p_type ]],
-    [[ m ^ (entity_scope) : p_mult ]],
+    [[ t ^ (f_scope) : p_type ]],
+    [[ m ^ (f_scope) : p_mult ]],
     p_tuple == TTuple(p_type, p_mult, TIncremental()),
     Member{p} <- f_scope,
     Member{p} : p_tuple,

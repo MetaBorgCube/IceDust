@@ -10,6 +10,10 @@ functions
   round1(f : Float 1 ) : Float 1 = (f * 10.0 + 0.5) as Int as Float / 10.0
 
   foo(i1 : Int ?, i2s : Int +) : Int 1 = 4
+  
+  barGetI4(bar : Bar 1) : Int 1 = bar.i4
+  
+  barGetI4plus(bar : Bar 1, p : Int 1) : Int 1 = bar.i4 + p
 
 model
   
@@ -48,3 +52,7 @@ test function call strategy from args   [[foo(bar.i1, bar.i1)]] run get-strategy
 test function call strategy from args 2 [[foo(bar.i1, bar.i2)]] run get-strategy to OnDemandIncremental()
 test function call strategy from args 3 [[foo(bar.i2, bar.i1)]] run get-strategy to OnDemandIncremental()
 test function call strategy from args 4 [[foo(bar.i3, bar.i4)]] run get-strategy to OnDemandEventual()
+
+test function call strategy from def [[barGetI4(bar)]] run get-strategy to Eventual()
+
+test function call strategy from def and arg [[barGetI4plus(bar, bar.i3)]] run get-strategy to OnDemandEventual()
