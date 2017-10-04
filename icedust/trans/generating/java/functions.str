@@ -21,14 +21,10 @@ rules
       multpostfix := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id);concat-strings(|"_")>x_name;
       x_func      := $[[x_name]_[multpostfix]]
     with
-      (calculate-stms*, calculate-exp) := <functionname-get-expr;exp-to-java-stm(err|0)>x_name;
-      <debug>calculate-stms*
+      (calculate-stms*, calculate-exp) := <functionname-get-expr;exp-to-java-stm(err|0)>x_name
     with
-      <debug>x_name;
-      paramNum := <functionname-get-paramnum>x_name;
-      <debug>paramNum;
-      swapLists := <binary-permutations-nonzeros>paramNum;
-      <debug>swapLists;
+      paramNum    := <functionname-get-paramnum>x_name;
+      swapLists   := <binary-permutations-nonzeros>paramNum;
       wrapperDec* := <map(functionname-to-java-classbodydec(err|x_name))>swapLists
     with
       result := class-body-dec* |[
