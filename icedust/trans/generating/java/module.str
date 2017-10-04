@@ -26,7 +26,7 @@ rules
       executeJava* := <modulename-get-exprs;map(execute-expr-to-java-stm(err))>x_moduleName;
       cacheJava*   := <cache-modulename-to-java-stms>x_moduleName;
       logJava      := <logincremental-modulename-to-java-stm>x_moduleName;
-      functionJava*:= <modulename-get-functionnames;map(functionname-to-java-classbodydecs(err))>x_moduleName
+      functionJava*:= <modulename-get-functionnames;fmap(functionname-to-java-classbodydecs(err))>x_moduleName
     with
       result := compilation-unit |[
         import lib.icedust.*;

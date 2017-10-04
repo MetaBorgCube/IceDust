@@ -21,6 +21,8 @@ rules // function
   
   functionname-get-type         = get-type-property(|"Function");normalize-type
   functionname-get-multiplicity = get-type-property(|"Function");normalize-multiplicity
+  
+  functionname-get-paramnum = functionname-get-paramnames;length
 
 rules // param
 

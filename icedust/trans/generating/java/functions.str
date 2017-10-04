@@ -8,24 +8,70 @@ imports // functions
 
   api/functions-names-api
   generating/java/expressions
+  lib/intlist
 
 rules 
   
   functionname-to-java-classbodydecs(err): x_name -> result
     with
-      x_type  := <functionname-get-type;type-to-string-java>x_name;
-      params* := <functionname-get-paramnames;map(paramname-to-java-formalparam(err))>x_name;
+      x_type      := <functionname-get-type;type-to-string-java>x_name;
+      params*     := <functionname-get-paramnames;map(paramname-to-java-formalparam(err))>x_name;
+      multpostfix := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id);concat-strings(|"_")>x_name;
+      x_func      := $[[x_name]_[multpostfix]]
+    with
       (calculate-stms*, calculate-exp) := <functionname-get-expr;exp-to-java-stm(err|0)>x_name
     with
+      <debug>x_name;
+      paramNum := <functionname-get-paramnum>x_name;
+      <debug>paramNum;
+      swapLists := <binary-permutations-nonzeros>paramNum;
+      <debug>swapLists;
+      wrapperDec* := <map(functionname-to-java-classbodydec(err|x_name))>swapLists
+    with
       result := class-body-dec* |[
-        private static x_type x_name(~params*)
+        public static x_type x_func(~params*)
         { 
           ~calculate-stms*
           return ~calculate-exp;
         }
         
-        //TODO: wrapper functions for multiplicity lifting
+        ~wrapperDec*
       ]|
+
+rules
+
+  functionname-to-java-classbodydec(err|x_name): swapList -> result
+    with
+      swapIndex   := <get-index;dec>(1, swapList);
+      swapList2   := <set-index>(swapIndex, 0, swapList)
+    with
+      origPostfix := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id)>x_name;
+      postFix     := <zip;map(multpostfixeSwap)>(swapList ,origPostfix);
+      postFix2    := <zip;map(multpostfixeSwap)>(swapList2,origPostfix)
+    with
+      x_type      := <functionname-get-type;type-to-string-java>x_name;
+      params*     := <functionname-get-paramnames;map(paramname-to-java-formalparam(err))>x_name;
+      x_func      := $[[x_name]_[<concat-strings(|"_")>postFix]];
+      x_func2     := $[[x_name]_[<concat-strings(|"_")>postFix2]]
+    with
+      result := class-body-dec |[
+        public static x_type x_func(~params*)
+        {
+          return x_func2();
+//          Collection<x_type> result = Expressions.emptyCollection();
+//          for(x_entityName en : x_param)
+//          { 
+//            x_type var1 = en.x_get();
+//            if(var1 != null)
+//              result.add(var1);
+//          }
+//          return result;
+        }
+      ]|
+
+  multpostfixeSwap: (0, m     ) -> m
+  multpostfixeSwap: (1, "One" ) -> "Many"
+  multpostfixeSwap: (1, "Many") -> "One"
 
 rules
 
