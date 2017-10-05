@@ -7,13 +7,13 @@ module test
 
 functions
 
-  round1(f : Float 1 ) : Float 1 = (f * 10.0 + 0.5) as Int as Float / 10.0
+  round1(f : Float) : Float = (f * 10.0 + 0.5) as Int as Float / 10.0
 
-  foo(i1 : Int ?, i2s : Int +) : Int 1 = 4
+  foo(i1 : Int?, i2s : Int+) : Int 1 = 4
   
-  barGetI4(bar : Bar 1) : Int 1 = bar.i4
+  barGetI4(bar : Bar) : Int = bar.i4
   
-  barGetI4plus(bar : Bar 1, p : Int 1) : Int 1 = bar.i4 + p
+  barGetI4plus(bar : Bar, p : Int) : Int = bar.i4 + p
 
 model
   

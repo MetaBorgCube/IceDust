@@ -7,12 +7,12 @@ module functions
 
 functions
   
-  round1(f : Float 1 ) : Float 1 = (f * 10.0 + 0.5) as Int as Float / 10.0
+  round1(f : Float) : Float = (f * 10.0 + 0.5) as Int as Float / 10.0
   
-  countTrue(bs : Boolean *) : Int 1 = bs.filter(b=>b).count()
+  countTrue(bs : Boolean *) : Int = bs.filter(b=>b).count()
 
-  accessField      (bar : Bar 1) : Int 1 = bar.i1
-  accessParentField(bar : Bar 1) : Int 1 = bar.parent.accessField() <+ 4
+  accessField      (bar : Bar) : Int = bar.i1
+  accessParentField(bar : Bar) : Int = bar.parent.accessField() <+ 4
 
 model
   
