@@ -13,6 +13,8 @@ functions
 
   accessField      (bar : Bar) : Int = bar.i1
   accessParentField(bar : Bar) : Int = bar.parent.accessField() <+ 4
+  
+  hasI(i : Int*) : Boolean = count(i)>0
 
 model
   
@@ -40,6 +42,9 @@ execute
   countTrue(true ++ false ++ true ++ false ++ true)
   
   bar.i2
+
+  hasI(no value)
+  
   [[...]]
 ]]
 
@@ -48,4 +53,5 @@ test Functions execute-java [[ ]] transform "SPT -> Build" to
 4.4
 3
 88
+false
 "

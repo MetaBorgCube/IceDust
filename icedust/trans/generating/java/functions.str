@@ -71,7 +71,8 @@ rules
           public static ~j_func_type x_func(~params*)
           {
             Collection<x_paramType> lift = Expressions.emptyCollection();
-            lift.add(x_param);
+            if(x_param != null)
+              lift.add(x_param);
             return x_func2(e_arg*);
           }
         ]|
