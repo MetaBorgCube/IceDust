@@ -110,7 +110,7 @@ rules // filter expression
       x_var := $[var[i'']];
       (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
       refty := <expr-to-java-type(err)>e;
-      x_type := <get-type2;type-to-java-type(err)>e
+      x_type := <get-type2;type-to-string-java>e
     with
       result := (
         bstm*|[

@@ -9,7 +9,7 @@ functions
   
   round1(f : Float 1 ) : Float 1 = (f * 10.0 + 0.5) as Int as Float / 10.0
   
-//  countTrue(bs : Boolean *) : Int 1 = bs.filter(b=>b).count()
+  countTrue(bs : Boolean *) : Int 1 = bs.filter(b=>b).count()
 
   accessField      (bar : Bar 1) : Int 1 = bar.i1
   accessParentField(bar : Bar 1) : Int 1 = bar.parent.accessField() <+ 4
@@ -37,7 +37,7 @@ execute
 
   round1(4.44)
   
-//  countTrue(true ++ false ++ true ++ false ++ true)
+  countTrue(true ++ false ++ true ++ false ++ true)
   
   bar.i2
   [[...]]
@@ -46,5 +46,6 @@ execute
 test Functions execute-java [[ ]] transform "SPT -> Build" to 
 "Updating Bar.i2: 2
 4.4
+3
 88
 "
