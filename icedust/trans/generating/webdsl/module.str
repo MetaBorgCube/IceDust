@@ -17,6 +17,7 @@ imports // functions
   generating/webdsl/module-ui
   generating/webdsl/model
   generating/webdsl/data
+  generating/webdsl/functions
   generating/webdsl/types
   api/model-names-api
   api/module-api
@@ -52,6 +53,8 @@ rules // module
       x_eventualinterval := <modulename-get-eventualinterval>x_moduleName
     with
       stat_countDirty* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm)>x_moduleName
+    with
+      native2*           := <modulename-get-functionnames;fmap(functionname-to-webdsl-natives)>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -109,6 +112,8 @@ rules // module
             static cleanI(Int)
           
             native1*
+            
+            native2* //TODO: move to another native class
           }
           
           function countDirty(o : Int) : Int{

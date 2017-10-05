@@ -63,3 +63,36 @@ rules // pritives as strings (not literal string in target language)
   type-to-string-webdsl: Datetime() -> "DateTime"
   type-to-string-webdsl: name       -> name
     where is-string
+
+rules
+
+  type-to-webdsl-srt(err|mult): type -> result
+    with
+      srt1 := <type-to-webdsl-srt(err)>type
+    with
+      if <upper-one>mult then
+        result := webdsl |[ //webdsl srt
+          srt1
+        ]|
+      else
+        result := webdsl |[ //webdsl srt
+          [srt1]
+        ]|
+      end
+      
+rules
+
+  type-to-webdsl-nativetype: type -> result //TODO: mix-syntax for native types in webdsl
+    with
+      typeString := <type-to-string-webdsl>type;
+      result     := NativeSimpleType(typeString)
+  
+  type-to-webdsl-nativetype(|mult): type -> result //TODO: mix-syntax for native types in webdsl
+    with
+      singleType := <type-to-webdsl-nativetype>type
+    with
+      if <upper-one>mult  then
+        result := singleType
+      else
+        result := NativeGenericType("List", singleType)
+      end

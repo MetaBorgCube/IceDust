@@ -1,0 +1,56 @@
+module generating/webdsl/functions
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  
+imports // functions
+  
+  api/functions-names-api
+  api/types-api
+  generating/java/expressions
+  generating/java/functions
+  generating/webdsl/types
+  lib/intlist
+  
+rules
+
+  functionname-to-webdsl-natives: x_name -> result
+    with
+      paramNum    := <functionname-get-paramnum>x_name;
+      swapLists   := <binary-permutations>paramNum
+    with
+      result      := <map(functionname-to-webdsl-native(|x_name))>swapLists
+      
+  functionname-to-webdsl-native(|x_name): swapList -> result
+    with
+      origPostfix   := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id)>x_name;
+      postFix       := <zip;map(multpostfixeSwap)>(swapList ,origPostfix);
+      x_func        := $[[x_name]_[<concat-strings(|"_")>postFix]]
+    with
+      func_mult     := <func-mult(|swapList)>x_name;
+      srt1          := <functionname-get-type;type-to-webdsl-srt(err|func_mult)>x_name
+    with
+      paramnames*   := <functionname-get-paramnames>x_name;
+      srt2*         := <zip;map(paramname-to-webdsl-srt(err))>(paramnames*,swapList)
+    with
+//      result := native |[
+//        static x_func(srt2s) : srt1
+//      ]|
+      result :=  //TODO: mix-syntax for native types in webdsl
+        NativeClassFunction(
+          NativeClassFunctionStatic()
+        , x_func
+        , srt2*
+        , NativeClassFunctionReturn(srt1)
+        )
+
+rules
+
+  paramname-to-webdsl-srt(err): (x_name, swapMult) -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity;swapMult(|swapMult)>x_name
+    with
+      result := <type-to-webdsl-srt(err|mult)>type

@@ -51,6 +51,21 @@ rules // lib expression calls
           Expressions.x_methodpostfix(e1*)
         ]|
       end
+      
+rules // user function calls
+  
+  expr-to-webdsl-expr(err): e@Function(x_method,_) -> result
+    where
+      <is-functionname>x_method
+    with
+      arg*            := <expr-get-arguments>e;
+      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
+      arg-mult*       := <method-mult-postfix2>e;
+      x_methodpostfix := <concat-strings(|"_")>[x_method, arg-mult*]
+    with
+      result := exp |[
+        DirtyCollections.x_methodpostfix(e1*) //TODO: move functions to their own class
+      ]|
   
 rules // literals
   
