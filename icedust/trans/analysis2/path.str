@@ -87,13 +87,13 @@ rules // Expr -> ([Expr], [Expr]) // path-based-abstract-interpretation of expre
       p2'* := <fmap(pathexpr-replace(|x, p1*))>p2*;
       q2'* := <fmap(pathexpr-replace(|x, p1*))>q2*
 
-  expr-pathexprs: Function(f, e*) -> (fp'*, fq'*)
+  expr-pathexprs: Function(f, e*) -> (fp'*, [fq'*, eqs*])
     where
       f_def := <get-resolved-name(|"Function")>f
     with
       ets*       := <map(expr-pathexprs)>e*;                     // (path* ,path*)*  [(e1p*,e2q*), (e2p*,e2q*), ...]
       eps*       := <map(Fst)>ets*;                              // (path*)*         [e1p*, e2p*, ...] // required for replacing
-      eq*        := <fmap(Snd)>ets*;                             // (path*)*         [e1q1, e1q2, ...] // don't need extending
+      eqs*       := <fmap(Snd)>ets*;                             // (path*)*         [e1q1, e1q2, ...] // don't need extending
       f_expr     := <functionname-get-expr>f_def;                // expr
       (fp*, fq*) := <expr-pathexprs>f_expr;                      // (path* ,path*)   function paths
       pnames     := <functionname-get-paramnames>f_def;          // name*
