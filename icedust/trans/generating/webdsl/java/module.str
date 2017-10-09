@@ -11,6 +11,7 @@ imports // functions
   api/module-api
   api/module-names-api
   generating/_ir/model
+  generating/java/functions
   lib/traverse
 
 rules // module (or modulename) -> java compilation-unit
@@ -21,13 +22,18 @@ rules // module (or modulename) -> java compilation-unit
     with
       decs* := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
+      functionJava*:= <modulename-get-functionnames;fmap(functionname-to-java-classbodydecs(err))>x_moduleName
+    with
       result := compilation-unit |[
         package derivations;
         
         import java.util.Set;
         import java.util.concurrent.ConcurrentHashMap;
+        import java.util.Collection;
         import java.util.Collections;
+        import java.util.Date;
         import java.util.Iterator;
+        import lib.icedust.*;
         
         public class DirtyCollections {
 
@@ -58,6 +64,8 @@ rules // module (or modulename) -> java compilation-unit
           }
           
           ~decs*
+          
+          ~functionJava* //TODO: move to its own class
           
         }
       ]|

@@ -29,6 +29,8 @@ imports // functions
   
 rules // module
 
+  modulename-get-functionnames = get-decl-assoc(|"Module");get-scope-decl-names(|"Function");string-sort-anno
+  
   modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names(|"Entity");filter(is-entityname);string-sort-anno
   
   modulename-get-entityinstancenames    = concat(modulename-get-entityinstancenames-sg, modulename-get-entityinstancenames-i);string-sort-anno

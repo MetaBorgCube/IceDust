@@ -13,6 +13,10 @@ config
   backend : WebDSL
     [[...]]
 
+functions
+  
+  countTrue(bs : Boolean *) : Int 1 = bs.filter(b=>b).count()
+
 model
 
   entity Assignment (eventual) {
@@ -21,7 +25,7 @@ model
     minimum  : Float?
     deadline : Datetime?
     avgGrade : Float?    = avg(submissions.grade)
-    passPerc : Float?    = count(submissions.filter(x=>x.pass))/count(submissions)
+    passPerc : Float?    = countTrue(submissions.pass)/count(submissions)
   }
   
   entity Student {

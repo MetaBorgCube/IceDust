@@ -8,8 +8,8 @@ imports // constructors
 imports // functions
 
   api/_runtime
-//  names/naming/names
-//  naming/_notNaBL
+  api/model-names-api
+  api/types-api
 
 rules // primitives
   
@@ -50,3 +50,20 @@ rules // primitives as strings
   type-to-string-java: NoValue()  -> "NullType"
   type-to-string-java: name       -> name
     where is-string
+
+rules // type and mult to java-type
+  
+  type-to-java-type(|mult): type -> result
+    with
+      x_type := <type-to-string-java>type
+    with
+      if <upper-one>mult then
+      result := type |[
+        x_type
+      ]|
+    else
+      result := type |[
+        Collection<x_type>
+      ]|
+    end
+    

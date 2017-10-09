@@ -64,10 +64,13 @@ context-free syntax // operators
 
 context-free syntax // built-in functions: generic
 
-  Exp.Function           = <<BuiltInFunction>(<{Exp ", "}*>)>       {left}
-  Exp.Function2          = <<Exp>.<BuiltInFunction>(<{Exp ", "}*>)> {left}
+  Exp.Function           = <<BuiltInFunctionOrID>(<{Exp ", "}*>)>       {left}
+  Exp.Function2          = <<Exp>.<BuiltInFunctionOrID>(<{Exp ", "}*>)> {left}
 
 lexical syntax
+
+  BuiltInFunctionOrID = BuiltInFunction
+  BuiltInFunctionOrID = ID
 
   BuiltInFunction = "avg"     // 1 exp
   BuiltInFunction = "concat"  // 1 exp

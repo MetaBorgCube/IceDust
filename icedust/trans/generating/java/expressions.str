@@ -8,6 +8,7 @@ imports // constructors
 imports // functions
 
   api/_runtime
+  api/functions-names-api
   generating/_ir/expressions
   generating/java/expressions-references
   generating/java/types
@@ -33,6 +34,30 @@ rules // lib expression calls  // (rel-expr, int) -> (java-stm*, java-expr)
         bstm*|[
           ~args-stms*
           refty x_var = Expressions.x_methodpostfix(~arg-exps*);
+        ]|,
+        expr |[
+          x_var
+        ]|
+      )
+
+rules // user function calls  // (rel-expr, int) -> (java-stm*, java-expr)
+  
+  exp-to-java-stm(err|i): e@Function(x_method,_) -> result
+    where
+      <is-functionname>x_method
+    with
+      arg*                    := <expr-get-arguments>e;
+      (arg-java, l)           := <map-fold(arg-to-java-stm(err))>(arg*, i);
+      (args-stms*, arg-exps*) := <unzip;(flatten-list,id)>arg-java;
+      refty                   := <expr-to-java-type(err)>e;
+      x_var                   := $[var[<inc>l]];
+      arg-mult*               := <method-mult-postfix2>e;
+      x_methodpostfix         := <concat-strings(|"_")>[x_method, arg-mult*]
+    with
+      result := (
+        bstm*|[
+          ~args-stms*
+          refty x_var = _Functions.x_methodpostfix(~arg-exps*);
         ]|,
         expr |[
           x_var
@@ -85,7 +110,7 @@ rules // filter expression
       x_var := $[var[i'']];
       (e2stms*, e2exp) := <exp-to-java-stm(err|i'')>e2;
       refty := <expr-to-java-type(err)>e;
-      x_type := <get-type2;type-to-java-type(err)>e
+      x_type := <get-type2;type-to-string-java>e
     with
       result := (
         bstm*|[

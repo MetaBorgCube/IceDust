@@ -1,0 +1,168 @@
+module generating/java/functions
+
+imports // constructors
+
+  java/Java
+
+imports // functions
+
+  api/functions-names-api
+  api/types-api
+  generating/java/expressions
+  lib/intlist
+
+rules 
+  
+  functionname-to-java-classbodydecs(err): x_name -> result
+    with
+      fmult       := <functionname-get-multiplicity>x_name;
+      j_type      := <functionname-get-type;type-to-java-type(|fmult)>x_name;
+      params*     := <functionname-get-paramnames;map(paramname-to-java-formalparam(err))>x_name;
+      multpostfix := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id);concat-strings(|"_")>x_name;
+      x_func      := $[[x_name]_[multpostfix]]
+    with
+      (calculate-stms*, calculate-exp) := <functionname-get-expr;exp-to-java-stm(err|0)>x_name
+    with
+      paramNum    := <functionname-get-paramnum>x_name;
+      swapLists   := <binary-permutations-nonzeros>paramNum;
+      wrapperDec* := <map(functionname-to-java-classbodydec(err|x_name))>swapLists
+    with
+      result := class-body-dec* |[
+        public static ~j_type x_func(~params*)
+        { 
+          ~calculate-stms*
+          return ~calculate-exp;
+        }
+
+        ~wrapperDec*
+      ]|
+
+rules
+
+  functionname-to-java-classbodydec(err|x_name): swapList -> result
+    with
+      swapIndex     := <get-index;dec>(1, swapList); // 0-based index
+      swapList2     := <set-index>(swapIndex, 0, swapList)
+    with
+      origPostfix   := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id)>x_name;
+      postFix       := <zip;map(multpostfixeSwap)>(swapList ,origPostfix);
+      postFix2      := <zip;map(multpostfixeSwap)>(swapList2,origPostfix);
+      x_func        := $[[x_name]_[<concat-strings(|"_")>postFix]];
+      x_func2       := $[[x_name]_[<concat-strings(|"_")>postFix2]]
+    with
+      func_mult     := <func-mult(|swapList)>x_name;
+      func2_mult    := <func-mult(|swapList2)>x_name;
+      j_func_type   := <functionname-get-type;type-to-java-type(|func_mult)>x_name;
+      x_type        := <functionname-get-type;type-to-string-java>x_name
+    with
+      paramnames*   := <functionname-get-paramnames>x_name;
+      params*       := <zip;map(paramname-to-java-formalparam-mult(err))>(paramnames*,swapList)
+    with
+      paramnames2   := <set-index>(swapIndex, "lift", paramnames*);
+      e_arg*        := <map(paramname-to-java-expr(err))>paramnames2
+    with
+      x_param       := <index>(<inc>swapIndex, paramnames*);
+      paramType     := <paramname-get-type>x_param;
+      paramMultOrig := <paramname-get-multiplicity>x_param;
+      x_paramType   := <type-to-string-java>paramType
+    with
+      if <upper-many>paramMultOrig then
+        result := class-body-dec |[
+          public static ~j_func_type x_func(~params*)
+          {
+            Collection<x_paramType> lift = Expressions.emptyCollection();
+            if(x_param != null)
+              lift.add(x_param);
+            return x_func2(e_arg*);
+          }
+        ]|
+      else
+        if <upper-one>func2_mult then
+          result := class-body-dec |[
+            public static Collection<x_type> x_func(~params*)
+            {
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_paramType lift : x_param)
+              { 
+                x_type var1 = x_func2(e_arg*);
+                if(var1 != null)
+                  result.add(var1);
+              }
+              return result;
+            }
+          ]|
+        else
+          result := class-body-dec |[
+            public static Collection<x_type> x_func(~params*)
+            {
+              Collection<x_type> result = Expressions.emptyCollection();
+              for(x_paramType lift : x_param)
+              { 
+                result.addAll(x_func2(e_arg*));
+              }
+              return result;
+            }
+          ]|
+        end
+      end
+
+rules
+
+  multpostfixeSwap: (0, m     ) -> m
+  multpostfixeSwap: (1, "One" ) -> "Many"
+  multpostfixeSwap: (1, "Many") -> "One"
+  
+rules
+
+  paramname-to-java-formalparam(err): x_name -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity>x_name;
+      j_type := <type-to-java-type(|mult)>type
+    with
+      result := formal-param |[
+        ~j_type x_name
+      ]|
+
+  paramname-to-java-formalparam-mult(err): (x_name, swapMult) -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity;swapMult(|swapMult)>x_name;
+      j_type := <type-to-java-type(|mult)>type
+    with
+      result := formal-param |[
+        ~j_type x_name
+      ]|
+
+  paramname-to-java-expr(err): x_name -> expr |[ x_name ]|
+
+rules
+
+  swapMult(|swapMult) = where(!swapMult;?0); id
+  swapMult(|swapMult) = where(!swapMult;?1); swapMult
+
+  swapMult: ZeroOrOne()         -> ZeroOrMore()
+  swapMult: One()               -> ZeroOrMore()
+  swapMult: ZeroOrMore()        -> One()
+  swapMult: ZeroOrMoreOrdered() -> One()
+  swapMult: OneOrMore()         -> One()
+  swapMult: OneOrMoreOrdered()  -> One()
+  
+rules
+  
+  // if return type is many, then many
+  func-mult(|swapList): x_name -> ZeroOrMore()
+    where
+      <functionname-get-multiplicity;upper-many>x_name
+  
+  // if return type is one, and all swapped param were many, then one
+  func-mult(|swapList): x_name -> One()
+    with
+      paramMults := <functionname-get-paramnames;map(paramname-get-multiplicity)>x_name
+    where
+      [] := <zip;filter(mult-is-lower-and-swap)>(paramMults,swapList)
+      
+  // otherwise (return type is one, and one swapped param is one) many
+  func-mult(|swapList): x_name -> ZeroOrMore()
+  
+  mult-is-lower-and-swap = ?(<upper-one>, 1)
