@@ -63,6 +63,26 @@ rules // module (or modulename) -> java compilation-unit
             }
           }
           
+          private static final Object syncObject2 = new Object();
+        
+          private static int jj = 0;
+        
+          public static void setJ(int newJ)
+          { 
+            synchronized(syncObject2)
+            { 
+              jj = newJ;
+            }
+          }
+        
+          public static int getJ()
+          { 
+            synchronized(syncObject2)
+            { 
+              return jj;
+            }
+          }
+          
           ~decs*
           
           ~functionJava* //TODO: move to its own class

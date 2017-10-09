@@ -59,7 +59,7 @@ rules // Editor services
           ("Calculation Strategy", <get-strategy     <+ name-get-calculation-strategy <+ !None()>t),
           ("Depends On",           <name-get-dependson-paths                          <+ !None()>t),
           ("Flows To",             <name-get-flowsto-paths-all                        <+ !None()>t),
-          ("Topological Sort",     <name-get-toposort                                 <+ !None()>t)
+          ("Topological Sort",     <name-get-toposort-both                            <+ !None()>t)
         ]
   
   pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]] where not(is-string)

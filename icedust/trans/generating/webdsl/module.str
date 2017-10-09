@@ -52,7 +52,8 @@ rules // module
       x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
       x_eventualinterval := <modulename-get-eventualinterval>x_moduleName
     with
-      stat_countDirty* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm)>x_moduleName
+      stat_countDirtyUT* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirtyuptill-attributename-to-webdsl-stm)>x_moduleName;
+      stat_countDirty*   := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm      )>x_moduleName
     with
       native2*           := <modulename-get-functionnames;fmap(functionname-to-webdsl-natives)>x_moduleName
     with
@@ -110,22 +111,33 @@ rules // module
             static getI() : Int
             static dirtyI(Int)
             static cleanI(Int)
+            static getJ() : Int
+            static setJ(Int)
           
             native1*
             
             native2* //TODO: move to another native class
           }
           
-          function countDirty(o : Int) : Int{
+          function countDirtyUpTill(ii : Int) : Int{
+            var n := 0;
+            stat_countDirtyUT*
+            return n;
+          }
+          
+          function countDirty(ii : Int) : Int{
             var n := 0;
             stat_countDirty*
             return n;
           }
           
           function logCountDirty(){
-            var c := countDirty(2147483647);
-            if(c>0 && Settings.getLogeventualstatus()){
-              log("Eventual Calculation at ordering: " + DirtyCollections.getI() + ", queue size: " + c);
+            var ii       := DirtyCollections.getI();
+            var jj       := DirtyCollections.getJ();
+            var countAll := countDirtyUpTill(2147483647);
+            var countI   := countDirty(ii);
+            if(countAll>0 && Settings.getLogeventualstatus()){
+              log("Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll);
             }
           }
           
@@ -265,10 +277,10 @@ rules // module
               }
               elem_manageRows*
               row{
-                column{ output(DirtyCollections.getI()) }
+                column{ output(DirtyCollections.getI()) " : " output(DirtyCollections.getJ()) }
                 column{  }
                 column{  }
-                column{ output(countDirty(2147483647))  }
+                column{ output(countDirtyUpTill(2147483647))  }
                 column{  }
               }
             }
