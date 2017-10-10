@@ -36,7 +36,7 @@ rules // direct references
 
   expr-to-webdsl-expr(err): Ref(x_entityName) ->  webdsl:e |[ x_entityName ]|
     where
-      <is-entityinstancename <+ is-varname>x_entityName
+      <is-entityinstancename <+ is-varname <+ is-paramname>x_entityName
 
   expr-to-webdsl-expr(err): ex1@Ref(x_name) -> webdsl:e |[  x_srt1.x_getter(this)  ]|
     with

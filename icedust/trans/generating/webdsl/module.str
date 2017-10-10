@@ -55,7 +55,7 @@ rules // module
       stat_countDirtyUT* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirtyuptill-attributename-to-webdsl-stm)>x_moduleName;
       stat_countDirty*   := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm      )>x_moduleName
     with
-      native2*           := <modulename-get-functionnames;fmap(functionname-to-webdsl-natives)>x_moduleName
+      def_func*          := <modulename-get-functionnames;fmap(functionname-to-webdsl-defs(err))>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -67,6 +67,10 @@ rules // module
         section model
         
           def_model*
+          
+        section functions
+        
+          def_func*
       ]|
     with
       if modulename-is-explorerui then
@@ -115,8 +119,6 @@ rules // module
             static setJ(Int)
           
             native1*
-            
-            native2* //TODO: move to another native class
           }
           
           function countDirtyUpTill(ii : Int) : Int{

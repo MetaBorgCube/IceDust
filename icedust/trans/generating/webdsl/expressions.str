@@ -64,7 +64,7 @@ rules // user function calls
       x_methodpostfix := <concat-strings(|"_")>[x_method, arg-mult*]
     with
       result := exp |[
-        DirtyCollections.x_methodpostfix(e1*) //TODO: move functions to their own class
+        x_methodpostfix(e1*)
       ]|
   
 rules // literals

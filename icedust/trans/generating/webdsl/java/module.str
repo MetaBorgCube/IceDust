@@ -22,8 +22,6 @@ rules // module (or modulename) -> java compilation-unit
     with
       decs* := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
-      functionJava*:= <modulename-get-functionnames;fmap(functionname-to-java-classbodydecs(err))>x_moduleName
-    with
       result := compilation-unit |[
         package derivations;
         
@@ -84,8 +82,6 @@ rules // module (or modulename) -> java compilation-unit
           }
           
           ~decs*
-          
-          ~functionJava* //TODO: move to its own class
           
         }
       ]|
