@@ -146,48 +146,6 @@ rules // module
           invoke logCountDirty() every 1000 milliseconds
       ]|
     with
-      if modulename-is-logincremental then
-        sec_logSettings* :=  section* |[
-          section log settings
-        
-            invoke Settings.setLogincremental(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings* :=  section* |[
-          section log settings
-        
-            invoke Settings.setLogincremental(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
-    with
-      if modulename-is-logeventualupdate then
-        sec_logSettings2* :=  section* |[
-          section log settings2
-        
-            invoke Settings.setLogeventualupdate(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings2* :=  section* |[
-          section log settings2
-        
-            invoke Settings.setLogeventualupdate(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
-    with
-      if modulename-is-logeventualstatus then
-        sec_logSettings3* :=  section* |[
-          section log settings3
-        
-            invoke Settings.setLogeventualstatus(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings3* :=  section* |[
-          section log settings3
-        
-            invoke Settings.setLogeventualstatus(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
-    with
       sec_hibernateTriggers* :=  section* |[
         section triggers
       
@@ -329,10 +287,6 @@ rules // module
         
           sec_asyncDirtyflag*
           
-          sec_logSettings*
-          sec_logSettings2*
-          sec_logSettings3*
-        
           sec_hibernateTriggers*
         
           sec_manage*
@@ -349,10 +303,6 @@ rules // module
         
           sec_asyncDirtyflag*
           
-          sec_logSettings*
-          sec_logSettings2*
-          sec_logSettings3*
-        
           sec_hibernateTriggers*
         
           sec_manage*

@@ -22,6 +22,36 @@ rules // module (or modulename) -> java compilation-unit
     with
       decs* := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
+      if modulename-is-logincremental then
+        logincrementalJava := class-body-dec |[
+          static volatile boolean logincremental = true;
+        ]|
+      else
+        logincrementalJava := class-body-dec |[
+          static volatile boolean logincremental = false;
+        ]|
+      end
+    with
+      if modulename-is-logeventualupdate then
+        logeventualupdateJava := class-body-dec |[
+          static volatile boolean logeventualupdate = true;
+        ]|
+      else
+        logeventualupdateJava := class-body-dec |[
+          static volatile boolean logeventualupdate = false;
+        ]|
+      end
+    with
+      if modulename-is-logeventualstatus then
+        logeventualstatusJava := class-body-dec |[
+          static volatile boolean logeventualstatus = true;
+        ]|
+      else
+        logeventualstatusJava := class-body-dec |[
+          static volatile boolean logeventualstatus = false;
+        ]|
+      end
+    with
       result := compilation-unit |[
         package derivations;
         
@@ -80,6 +110,10 @@ rules // module (or modulename) -> java compilation-unit
               return jj;
             }
           }
+          
+          ~logincrementalJava
+          ~logeventualupdateJava
+          ~logeventualstatusJava
           
           ~decs*
           
