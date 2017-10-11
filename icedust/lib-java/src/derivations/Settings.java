@@ -25,6 +25,10 @@ public class Settings {
         updatesEnabled = setting;
     }
 
+    public Settings(int n, int millis) {
+        initTimers(n, millis);
+    }
+
     private static ScheduledExecutorService ex;
 
     public static void initTimers(int n, int millis) {

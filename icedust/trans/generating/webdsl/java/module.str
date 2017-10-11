@@ -52,6 +52,12 @@ rules // module (or modulename) -> java compilation-unit
         ]|
       end
     with
+      x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
+      x_eventualinterval := <modulename-get-eventualinterval>x_moduleName;
+      initTimersJava := class-body-dec |[
+        static Settings triggerByClassLoader = new Settings(x_eventualthreads, x_eventualinterval);
+      ]|
+    with
       result := compilation-unit |[
         package derivations;
         
@@ -114,6 +120,7 @@ rules // module (or modulename) -> java compilation-unit
           ~logincrementalJava
           ~logeventualupdateJava
           ~logeventualstatusJava
+          ~initTimersJava
           
           ~decs*
           
