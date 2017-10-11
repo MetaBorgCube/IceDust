@@ -157,6 +157,20 @@ rules // module
       sec_manage* :=  section* |[
         section manage
         
+          template changeEnventualThreads(){
+            var xx : Int := Settings.getNumWorkers()
+            form{
+              input(xx)
+              toggleVisibility("Update number of eventual calculation threads"){
+                submit action{
+                  Settings.setNumWorkers(xx);
+                }{
+                  "yes, Update number of eventual calculation threads"
+                }
+              }
+            }
+          }
+        
           page derivedvalues(showCount:Bool) {
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
@@ -235,6 +249,8 @@ rules // module
                 }
               }
             }
+            br
+            changeEnventualThreads{}
             table{
               row{
                 column{ "Order" }
@@ -310,6 +326,7 @@ rules // module
             static getUpdatesEnabled( ): Bool
             static setUpdatesEnabled( Bool ): Void
             static setNumWorkers( Int ): Void
+            static getNumWorkers(): Int
             static getLogincremental( ): Bool
             static setLogincremental( Bool ): Void
             static getLogeventualupdate( ): Bool

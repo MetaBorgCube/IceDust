@@ -35,8 +35,12 @@ public class Settings {
         workers.setNumWorkers(n);
     }
 
-    public void setNumWorkers(int n) {
+    public static void setNumWorkers(int n) {
         workers.setNumWorkers(n);
+    }
+
+    public static int getNumWorkers() {
+        return workers.getNumWorkers();
     }
 
     public static boolean getLogincremental() {
@@ -104,6 +108,10 @@ class WorkerSet {
                 removeWorker(i);
             }
         }
+    }
+
+    public int getNumWorkers() {
+        return numWorkers;
     }
 
     private void addWorker(int index) {
