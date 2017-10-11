@@ -178,6 +178,63 @@ rules // module
                 }
               }
             }
+            br
+            if(Settings.getLogincremental()){
+              toggleVisibility("disable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, disable log incremental"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, enable log incremental"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualupdate()){
+              toggleVisibility("disable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, disable log every eventual update"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, enable log every eventual update"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualstatus()){
+              toggleVisibility("disable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, disable log eventual status every second"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, enable log eventual status every second"
+                }
+              }
+            }
             table{
               row{
                 column{ "Order" }
