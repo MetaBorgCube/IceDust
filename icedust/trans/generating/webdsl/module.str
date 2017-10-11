@@ -309,8 +309,7 @@ rules // module
           native class derivations.Settings as Settings{
             static getUpdatesEnabled( ): Bool
             static setUpdatesEnabled( Bool ): Void
-            static initTimers(Int, Int) : Void
-            static ensureTimers ( Int , Int ) : Void
+            static setNumWorkers( Int ): Void
             static getLogincremental( ): Bool
             static setLogincremental( Bool ): Void
             static getLogeventualupdate( ): Bool
