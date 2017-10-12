@@ -162,11 +162,13 @@ context-free priorities
     Exp.Or2
   } >
   { right:
-    Exp.IfElseNoValue
     Exp.If
     Exp.If2
     Exp.If3
     Exp.If4
+  } >
+  { right:
+    Exp.IfElseNoValue
   } >
   { left:
     Exp.Merge
