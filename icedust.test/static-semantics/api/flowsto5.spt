@@ -20,7 +20,7 @@ functions
   
 ]]
 
-test Query attribute depends on 4 [[numPass]] run name-get-dependson-pathexprs-test to !ATerm[
+test Query attribute depends on 5 [[numPass]] run name-get-dependson-pathexprs-test to !ATerm[
   Ref("y"),
   Ref("x"),
   Ref("z")
