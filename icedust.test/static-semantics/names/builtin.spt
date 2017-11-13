@@ -1,0 +1,17 @@
+module names-builtin
+
+language icedust
+
+fixture [[
+  module test
+  execute
+  [[...]]
+]]
+
+test Error on wrong number of arguments for built-in function [[
+  [[first(1++2,3,4)]]
+]] >= 1 error at #1
+
+test No error on correct number of arguments for built-in function [[
+  first(1++2,3)
+]] 0 errors

@@ -150,7 +150,7 @@ rules
       arrinames    := <modulename-get-arrinames-default-derived-has-expr-notinline>modulename
     with
       dependencies := <fmap(arriname-dependencies)>arrinames;
-      dataflow     := <map(path-inverse)>dependencies
+      dataflow     := <map(path-inverse);make-set>dependencies
     with
       <nabl2-custom-analysis-info-msg(|"dependencies ")>dependencies;
       <nabl2-custom-analysis-info-msg(|"dataflow     ")>dataflow
@@ -164,20 +164,22 @@ rules
       (p*, q*)          := <expr-pathexprs>expr;
       pathexprs         := [p*, q*];
       pathexprs-no-this := <filter(not(?This()));map(pathexpr-remove-this;pathexpr-remove-shortcuts)>pathexprs;
-      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);make-set-no-annos>pathexprs-no-this;
+      all-pathexprs     := <fmap(pathexpr-shorten-refl-trans);filter(not(?This()));filter(not(?FilterType(_,_)));make-set-no-annos>pathexprs-no-this;
       dependencies      := <map(path(|attrName))>all-pathexprs
       
 rules
 
   flows-toposort-2: moduleName -> moduleName
     with
-      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName;
-      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
-      toposort        := <graph-topological-sort(toposort-edge)>graphNames';
-      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
+      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName; // name*
+      graphNames'     := <map(annotate-with-parent-entity)>graphNames;       // name{}*
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames'; // name{}**
+      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort; // name**
       <index-set(|moduleName, TopoSort())>toposort';
-      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort';
-      <map(index-set-prop(|TopoSort()))>numbers
+      numbersI        := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort'; // name** -> (int, name*)* -> (int, name)** -> (int, name)* -> (name, int)*
+      <map(index-set-prop(|TopoSort()))>numbersI;
+      numbersJ        := <map(filter(not(name-is-abstract)));map(add-indices);concat;map(tuple-reverse)>toposort'; // name** -> name** -> (int, name)** -> (int, name)* -> (name, int)* 
+      <map(index-set-prop(|TopoSort2()))>numbersJ
       
     annotate-with-parent-entity    = id
     de-annotate-with-parent-entity = id

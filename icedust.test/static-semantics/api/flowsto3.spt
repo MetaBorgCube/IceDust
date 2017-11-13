@@ -1,0 +1,27 @@
+module api-flowsto3
+
+language icedust
+
+fixture [[
+module test
+
+functions
+  
+  accessField      (bar : Bar 1) : Int 1 = bar.i1
+  accessParentField(bar : Bar 1) : Int 1 = bar.parent.accessField() <+ 4
+
+model
+  
+  entity Bar {
+    i1 : Int = 4
+    
+    [[...]] : Int = accessParentField(this)
+  }
+  
+  relation Bar.parent ? <-> Bar.children
+]]
+
+test Query attribute depends on 3 [[i2]] run name-get-dependson-pathexprs-test to !ATerm[
+  MemberAccess(Ref("parent"),"i1"),
+  Ref("parent")
+]

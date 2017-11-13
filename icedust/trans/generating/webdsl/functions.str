@@ -1,0 +1,130 @@
+module generating/webdsl/functions
+
+imports // constructors
+
+  webdsl/constructors
+  webdsl/WebDSL
+  
+imports // functions
+  
+  api/functions-names-api
+  api/types-api
+  generating/java/expressions
+  generating/java/functions
+  generating/webdsl/expressions
+  generating/webdsl/types
+  lib/intlist
+
+rules
+
+  functionname-to-webdsl-defs(err): x_name -> result
+    with
+      fmult       := <functionname-get-multiplicity>x_name;
+      srt_f       := <functionname-get-type;type-to-webdsl-srt(err|fmult)>x_name;
+      params*     := <functionname-get-paramnames;map(paramname-to-webdsl-arg(err))>x_name;
+      multpostfix := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id);concat-strings(|"_")>x_name;
+      x_func      := $[[x_name]_[multpostfix]]
+    with
+      e_calculate := <functionname-get-expr;expr-to-webdsl-expr(err)>x_name
+    with
+      paramNum    := <functionname-get-paramnum>x_name;
+      swapLists   := <binary-permutations-nonzeros>paramNum;
+      def_wrapper*:= <map(functionname-to-webdsl-def(err|x_name))>swapLists
+    with
+//      result := def* |[
+//        function x_func(s:Student, s2:Student2) : srt_f {
+//          return e_calculate;
+//        }
+//        
+//        def_wrapper*
+//      ]|
+      result := //TODO: mix syntax for function arguments
+        [
+          Function(
+            x_func
+          , params*
+          , srt_f
+          , Block([Return(e_calculate)])
+          )
+        , def_wrapper*
+        ]
+
+rules
+
+  functionname-to-webdsl-def(err|x_name): swapList -> result
+    with
+      swapIndex     := <get-index;dec>(1, swapList); // 0-based index
+      swapList2     := <set-index>(swapIndex, 0, swapList)
+    with
+      origPostfix   := <functionname-get-paramnames;map(paramname-get-multiplicity;postfix-id)>x_name;
+      postFix       := <zip;map(multpostfixeSwap)>(swapList ,origPostfix);
+      postFix2      := <zip;map(multpostfixeSwap)>(swapList2,origPostfix);
+      x_func        := $[[x_name]_[<concat-strings(|"_")>postFix]];
+      x_func2       := $[[x_name]_[<concat-strings(|"_")>postFix2]]
+    with
+      func_mult     := <func-mult(|swapList)>x_name;
+      func2_mult    := <func-mult(|swapList2)>x_name;
+      srt_func      := <functionname-get-type;type-to-webdsl-srt(err|func_mult)>x_name
+    with
+      paramnames*   := <functionname-get-paramnames>x_name;
+      params*       := <zip;map(paramname-to-webdsl-arg-mult(err))>(paramnames*,swapList)
+    with
+      paramnames2   := <set-index>(swapIndex, "lift", paramnames*);
+      e_args*       := <map(paramname-to-webdsl-exp(err))>paramnames2
+    with
+      x_param       := <index>(<inc>swapIndex, paramnames*);
+      paramType     := <paramname-get-type>x_param;
+      paramMultOrig := <paramname-get-multiplicity>x_param;
+      srt_lift      := <type-to-webdsl-srt(err)>paramType
+    with
+      if <upper-many>paramMultOrig then
+        stat_Body := stat* |[
+          var lift : [srt_lift];
+          if(x_param != null){
+            lift.add(x_param);
+          }
+          return x_func2(e_args*);
+        ]|
+      else
+        if <upper-one>func2_mult then
+          stat_Body := stat* |[
+            return [x_func2(e_args*) | lift : srt_lift in x_param];
+          ]|
+        else
+          stat_Body := stat* |[
+            var r : srt_func;
+            for(lift in x_param){
+              r.addAll(x_func2(e_args*));
+            }
+            return r;
+          ]|
+        end
+      end;
+      result := //TODO: mix syntax for function arguments
+        Function(
+          x_func
+        , params*
+        , srt_func
+        , Block(stat_Body)
+        )
+
+
+rules
+
+  paramname-to-webdsl-arg(err): x_name -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity>x_name;
+      srt_p  := <type-to-webdsl-srt(err|mult)>type
+    with
+      result := Arg(x_name, srt_p) //TODO: mix syntax for function arguments
+      
+  paramname-to-webdsl-arg-mult(err): (x_name, swapMult) -> result
+    with
+      type   := <paramname-get-type>x_name;
+      mult   := <paramname-get-multiplicity;swapMult(|swapMult)>x_name;
+      srt_p  := <type-to-webdsl-srt(err|mult)>type
+    with
+      result := Arg(x_name, srt_p) //TODO: mix syntax for function arguments
+
+  paramname-to-webdsl-exp(err): x_name -> exp |[ x_name ]|

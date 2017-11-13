@@ -38,6 +38,7 @@ context-free syntax // operators
   Exp.If2                = <<Exp> ? <Exp> : <Exp>> {right}
 
   Exp.Merge              = <<Exp> ++ <Exp>>        {left}
+  Exp.Difference         = <<Exp> \\ <Exp>>        {left}
   Exp.ChoiceLeft         = <<Exp> \<+ <Exp>>       {left}
 
    Exp.If3 = <
@@ -61,26 +62,34 @@ context-free syntax // operators
     default =\> <Exp>
   >
 
-context-free syntax // built-in functions
+context-free syntax // built-in functions: generic
 
-  Exp.Min                = <min(<Exp>)>
-  Exp.Max                = <max(<Exp>)>
-  Exp.Avg                = <avg(<Exp>)>
-  Exp.Sum                = <sum(<Exp>)>
-  Exp.Concat             = <concat(<Exp>)>
-  Exp.Count              = <count(<Exp>)>
-  Exp.Conj               = <conj(<Exp>)>
-  Exp.Disj               = <disj(<Exp>)>
-  
-  Exp.First              = <<Exp>.first()>
-  Exp.First              = <<Exp>.first(<Exp>)>
+  Exp.Function           = <<BuiltInFunctionOrID>(<{Exp ", "}*>)>       {left}
+  Exp.Function2          = <<Exp>.<BuiltInFunctionOrID>(<{Exp ", "}*>)> {left}
+
+lexical syntax
+
+  BuiltInFunctionOrID = BuiltInFunction
+  BuiltInFunctionOrID = ID
+
+  BuiltInFunction = "avg"     // 1 exp
+  BuiltInFunction = "concat"  // 1 exp
+  BuiltInFunction = "conj"    // 1 exp
+  BuiltInFunction = "count"   // 1 exp
+  BuiltInFunction = "disj"    // 1 exp
+  BuiltInFunction = "elemAt"  // 2 exp
+  BuiltInFunction = "first"   // 1-2 exp
+  BuiltInFunction = "indexOf" // 2 exp
+  BuiltInFunction = "max"     // 1 exp
+  BuiltInFunction = "min"     // 1 exp
+  BuiltInFunction = "sum"     // 1 exp
+
+context-free syntax // built-in functions: specialized
+
   Exp.OrderBy            = [[Exp].orderBy([ID] => [Exp])]
   Exp.Filter             = [[Exp].filter([ID] => [Exp])]
   Exp.FilterType         = [[Exp].filter(:[EntityType])]
   Exp.Find               = [[Exp].find([ID] => [Exp])]
-  Exp.Count2             = <<Exp>.count()>
-  Exp.IndexOf            = <<Exp>.indexOf(<Exp>)>
-  Exp.ElemAt             = <<Exp>.elemAt(<Exp>)>
 
 context-free syntax // references
 
@@ -99,14 +108,23 @@ context-free syntax // literal values
 
 syntax // literal values: use kernel syntax to make sure " abc " is parsed as String(" abc ") instead of String("abc")
 
-  LitVal-CF.LitString = "\"" STRING-LEX "\""
+  LitVal-CF = "\"" InterpolateString-CF "\""
+  
+  InterpolateString-CF.InterpolateString = InterpolateString-CF "${" LAYOUT?-CF Exp-CF LAYOUT?-CF "}" LitString-CF
+  InterpolateString-CF                   = LitString-CF
+  
+  LitString-CF.LitString                 = STRING-LEX
 
 context-free priorities
 
   { left:
     Exp.MemberAccess
-    Exp.First
-    Exp.Count
+    Exp.Function
+    Exp.Function2
+    Exp.OrderBy
+    Exp.Filter
+    Exp.FilterType
+    Exp.Find
   } >  
   { right:
     Exp.Not
@@ -144,14 +162,17 @@ context-free priorities
     Exp.Or2
   } >
   { right:
-    Exp.IfElseNoValue
     Exp.If
     Exp.If2
     Exp.If3
     Exp.If4
   } >
+  { right:
+    Exp.IfElseNoValue
+  } >
   { left:
     Exp.Merge
+    Exp.Difference
   } >
   { left:
     Exp.ChoiceLeft

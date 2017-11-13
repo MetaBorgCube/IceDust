@@ -86,4 +86,8 @@ rules
 rules
 
   make-set-no-annos = foldr(![], union(eq-no-anno-r), ![<id>])
+
+rules
+
+  singletonlist: a -> [a]
   

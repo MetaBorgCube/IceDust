@@ -1,0 +1,56 @@
+module config
+
+rules
+
+  [[ JavaBackend(phase) ^ (module_scope, module_name) ]] :=
+    true.
+    
+rules
+
+  [[ WebDSLBackend(options) ^ (module_scope, module_name) ]] :=
+    Map2 [[ options ^ (module_scope, module_name) ]].
+    
+  [[ Ignore(e, m) ^ (module_scope, module_name) ]] :=
+    Entity{e} -> module_scope,
+    Entity{e} |-> e_def,
+    e_def : TEntity(e_type),
+    e_type ?=I=> entity_scope,
+    new_scope -I-> entity_scope,
+    new new_scope,
+    Member{m} -> new_scope,
+    Member{m} |-> m_def,
+    m_def.ignore := Ignore().
+
+  [[ UI(ui) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.ui := ui.
+
+  [[ Embedded(embedded) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.embedded := embedded.
+
+  [[ EventualThreads(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualthreads := t.
+
+  [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualinterval := t.
+
+  [[ LogEventualUpdate(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logeventualupdate := t.
+
+  [[ LogEventualStatus(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logeventualstatus := t.
+
+rules
+
+  [[ JavascriptBackend(phase, target) ^ (module_scope, module_name) ]] :=
+    true.
+
+rules
+
+  [[ LanguageFeatures(features) ^ (module_scope, module_name) ]] :=
+    true.
+
+rules
+
+  [[ LogIncremental(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.logincremental := t.
+    

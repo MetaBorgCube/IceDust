@@ -6,8 +6,10 @@ signature constructors
   Entity         : NameSpace
   EntityInstance : NameSpace
   Inverse        : NameSpace
+  Function       : NameSpace
   MemberValue    : NameSpace
   Module         : NameSpace
+  Parameter      : NameSpace
   Relation       : NameSpace
   Role           : NameSpace
   Shortcut       : NameSpace
@@ -24,4 +26,6 @@ signature constructors
   Entity   : Term
   Relation : Term
   Trait    : Term
+  
+  Ignore : Term
   

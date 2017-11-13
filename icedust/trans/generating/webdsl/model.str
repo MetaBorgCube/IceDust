@@ -81,6 +81,8 @@ rules
       x_updateAllCache   := <name-updateallcache>x_name;
       x_hasDirty         := <name-hasdirty>x_name;
       x_flagDirty        := <name-flagdirty>x_name;
+      x_flagTransDirty   := <name-flagtransdirty>x_name;
+      x_flaggedTransDirty:= <name-flaggedtransdirty>x_name;
       x_dirtyFlagFlows   := <name-dirtyflagflowsto>x_name;
       x_setIncr          := <name-set-incremental>x_name;
       x_addIncr          := <name-add-incremental>x_name;
@@ -94,12 +96,14 @@ rules
       x_addToCache       := <name-add-cache-trigger>x_name;
       x_removeFromCache  := <name-remove-cache-trigger>x_name;
       x_getQueue         := <attributename-entityname-getqueue>x_name;
+      x_poll             := <attributename-entityname-poll>x_name;
       x_hasDirtyAsync    := <name-hasdirtyasync>x_name;
       x_flagDirtyAsync   := <name-flagdirtyasync>x_name;
       x_receiveOneDirtyAsync := <name-receiveonedirtyasync>x_name;
-//      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
+      x_updateAllCacheAsync  := <name-updateallcacheasync>x_name;
       x_updateOneCacheAsync  := <name-updateonecacheasync>x_name;
       x_isUpToDate       := <name-isuptodate>x_name;
+      x_getOrder         := <name-getorder>x_name;
       x_topoSort         := <(name-get-toposort<+!0);int-to-string>x_name
     with
       if name-is-bidirectional then
@@ -119,7 +123,8 @@ rules
         e_calculate := <attributename-get-expr;expr-to-webdsl-expr(err)>x_name
       end
     with
-      stat_flowsTo* := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm(err))>x_name
+      stat_flowsTo*   := <name-get-flowsto-pathexprs-ondemandinc-incremental-eventual;map(model-pathexpr-to-webdsl-stm (err))>x_name;
+      stat_dependsOn* := <name-get-dependson-pathexprs                               ;map(model-pathexpr-to-webdsl-stm2(err))>x_name
     with // Partial evaluation variables (Expressions + Data Layer?)
       switch id
         case name-has-expr; attributename-is-explorerui:
@@ -178,7 +183,7 @@ rules
             static function x_updateAllCache () {
               var entities := x_qualifiedDirty;
               x_qualifiedDirty := Set<x_entityName>();
-              if(entities.length != 0){
+              if(entities.length != 0 && Settings.getLogincremental()){
                 log("Updating " + e_qualifiedName + ": " + entities.length);
               }
               for(en in entities){
@@ -213,10 +218,9 @@ rules
             }
   
             static function x_receiveOneDirtyAsync() : x_entityName {
-              var queue := DirtyCollections.x_getQueue();
-              if(queue.length != 0){
-                var key := queue.first as String;
-                queue.remove(key);
+              var key := DirtyCollections.x_poll() ;
+              if ( key != null )
+              {
                 var v : x_entityName := loadEntity(e_entityName, UUIDFromString(key)) as x_entityName;
                 return v;
               }
@@ -234,12 +238,16 @@ rules
 //              }
 //            }
             
-            static function x_updateOneCacheAsync () {
-              if( x_entityName.x_hasDirtyAsync() ){
-                var en := x_entityName.x_receiveOneDirtyAsync();
-                log("Updating " + e_qualifiedName + ": " + en.id);
+            static function x_updateOneCacheAsync (thisThread : Thread) {
+              var en := x_entityName.x_receiveOneDirtyAsync();
+              if( en != null ){
+                var uuid := en.id.toString();
+                var queue := DirtyCollections.x_getQueue() ;
+                Settings.threadMapsSet(thisThread, queue, uuid);
+                if(Settings.getLogeventualupdate()){
+                  log("Updating " + e_qualifiedName + ": " + en.id);
+                }
                 en.x_updateCache();
-                commitAndStartNewTransaction();
               }
             }
       
@@ -462,6 +470,10 @@ rules
       switch id
         case name-is-incremental-eventual; name-is-default-derived:
           ebd_flagDirty* := ebd* |[
+            function x_flagDirty() {
+              x_qualifiedDirty.add(this);
+            }
+          
             static function x_flagDirty(en : x_entityName) {
               if(en != null){
                 x_qualifiedDirty.add(en);
@@ -499,40 +511,100 @@ rules
             
             // not flag dirty in constructor, dirty field is initialized with true
           ]|
+        case not(name-is-inline):
+          ebd_flagDirty* := ebd* |[
+            function x_flagDirty() { } // stub, for if subtypes have a cache
+            
+            static function x_flagDirty(en : x_entityName) {
+              if(en != null){
+                en.x_flagDirty();
+              }
+            }
+            
+            static function x_flagDirty(ens : [x_entityName]) {
+              for(en:x_entityName in ens){
+                en.x_flagDirty();
+              }
+            }
+          ]|
         otherwise:
           ebd_flagDirty* := []
       end
-    with // Data Structure Layer
+    with
       switch id
-        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not:
+        case not(name-is-inline); not(name-has-parent):
+          ebd_flagTransDirty* := ebd* |[
+            x_flaggedTransDirty : Bool (transient, default=false)
+          ]|
+        otherwise:
+          ebd_flagTransDirty* := []
+      end
+    with
+      switch id
+        case not(name-is-inline):
+          ebd_flagTransDirty2* := ebd* |[          
+            function x_flagTransDirty(stopAt : [Int]){
+              if((!x_flaggedTransDirty) && stopAt.indexOf(x_entityName.x_getOrder())==-1){
+                x_flaggedTransDirty := true;
+                x_flagDirty();
+                stat_dependsOn*
+              }
+            }
+          
+            static function x_flagTransDirty(en : x_entityName, stopAt : [Int]) {
+              if(en != null){
+                en.x_flagTransDirty(stopAt);
+              }
+            }
+            
+            static function x_flagTransDirty(ens : [x_entityName], stopAt : [Int]) {
+              for(en:x_entityName in ens){
+                en.x_flagTransDirty(stopAt);
+              }
+            }
+          ]|
+        otherwise:
+          ebd_flagTransDirty2* := []
+      end
+    with // Data Structure Layer //TODO: move default and validate to separate code
+      switch id
+        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-one; name-is-normal-default-parent-not:
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
           ebd_field* := ebd* |[
-            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required."))
+            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required.")) // for embedded dont generate default/validate
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not:
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-embedded; not(name-is-ignore):
+          ebd_field* := ebd* |[
+            x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
+          ]|
+        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : [srt_type] (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not:
+        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-one; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-one;       name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-to-one;    name-is-normal-default-parent-not; name-is-embedded; not(name-is-ignore): // for embedded dont generate default/validate
+          ebd_field* := ebd* |[
+            x_name : srt_type
+          ]|
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not:
+        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-ignore):
           ebd_field* := ebd* |[
             x_name : {srt_type}
           ]|
@@ -578,6 +650,17 @@ rules
           ebd_dirty* := []
       end
     with
+      switch id
+        case not(name-is-inline):
+          ebd_order* := ebd* |[
+            static function x_getOrder() : Int {
+              return x_topoSort;  
+            }
+          ]|
+        otherwise:
+          ebd_order* := []
+      end
+    with
       result := ebd* |[
         ebd_isUpToDate*
         ebd_updateCache*
@@ -592,9 +675,12 @@ rules
         ebd_calculate*
         ebd_dirtyFlagFlows*
         ebd_flagDirty*
+        ebd_flagTransDirty*
+        ebd_flagTransDirty2*
         ebd_field*
         ebd_cacheField*
         ebd_dirty*
+        ebd_order*
       ]|
 
 rules
@@ -623,6 +709,25 @@ rules
       result := stat |[
         x_entityName.x_flagDirty(e_path);
       ]|
+
+  model-pathexpr-to-webdsl-stm2(err): pathexpr -> result
+    with
+      x_attributeName := <pathexpr-last>pathexpr;
+      x_entityName    := <attributename-get-entityname>x_attributeName;
+      x_flagTransDirty:= <name-flagtransdirty>x_attributeName;
+      pathexpr'       := <pathexpr-shorten-safe;analyse-post-analysis(|x_entityName)>pathexpr;
+      srt1            := <get-type2;type-to-webdsl-srt(err)>pathexpr';
+      e_path          := <expr-to-webdsl-expr(err)>pathexpr'
+    with
+      if <get-multiplicity;upper-many>pathexpr' then
+        result := stat |[
+          x_entityName.x_flagTransDirty([(v as x_entityName) | v : srt1 in e_path], stopAt);
+        ]|
+      else
+        result := stat |[
+          x_entityName.x_flagTransDirty(e_path as x_entityName, stopAt);
+        ]|
+      end
 
 rules
 

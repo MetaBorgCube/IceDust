@@ -19,8 +19,54 @@ fixture [[
   f : Foo {}
   
   execute
-  f.input1 ++ f.input2[[...]] ]]
+  f.input1 ++ f.input2
+  
+  42 \ 42
+  42 \ 43
+  no value \ 42
+  42 \ no value
+  42 \ (42 ++ 43)
+  42 \ (43 ++ 44)
+ 
+  (42 ++ 43) \ 42
+  (42 ++ 43) \ 44
+  (42 ++ 43) \ no value
+  (42 ++ 43) \ (41 ++ 42)
+  (42 ++ 43) \ (43 ++ 44)
+  (42 ++ 43 ++ 44) \ (42 ++ 43)
+  (42 ++ 43 ++ 44) \ (42 ++ 43 ++ 44)
+  (42 ++ 42) \ 42
 
-test multiplicities [[ ]] transform "SPT -> Build" to
+  if(true) (1 ++ 1) else (2 ++ 2)
+  if(true) 1 else (1 ++ 1)
+  if(true) (1 ++ 1) else 1
+// TODO fix choice_One_Mult 
+//  1 <+ 1 ++ 1 
+  (1 ++ 1) <+ 1
+  (1 ++ 1) <+ (2 ++ 2)
+  
+  [[...]]
+]]
+
+test java multiplicities [[ ]] transform "SPT -> Build" to
 "[5]
+null
+42
+null
+42
+null
+42
+[43]
+[42, 43]
+[42, 43]
+[43]
+[42]
+[44]
+[]
+[]
+[1, 1]
+[1]
+[1, 1]
+[1, 1]
+[1, 1]
 "

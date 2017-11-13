@@ -12,6 +12,7 @@ imports // functions
   generating/_ir/model
   generating/java/data
   generating/java/execute
+  generating/java/functions
   generating/java/model
 
 rules
@@ -23,7 +24,9 @@ rules
       modelJava*   := <modulename-get-entitynames;map(model-entityname-to-java-typedec(err))>x_moduleName;
       dataJava*    := <data-modulename-to-java-stms(err)>x_moduleName;
       executeJava* := <modulename-get-exprs;map(execute-expr-to-java-stm(err))>x_moduleName;
-      cacheJava*   := <cache-modulename-to-java-stms>x_moduleName
+      cacheJava*   := <cache-modulename-to-java-stms>x_moduleName;
+      logJava      := <logincremental-modulename-to-java-stm>x_moduleName;
+      functionJava*:= <modulename-get-functionnames;fmap(functionname-to-java-classbodydecs(err))>x_moduleName
     with
       result := compilation-unit |[
         import lib.icedust.*;
@@ -48,6 +51,16 @@ rules
           }
         }
         
+        class _IceDustSettings
+        {
+          ~logJava;
+        }
+
+        class _Functions
+        {
+          ~functionJava*;
+        }
+        
         ~modelJava*
       ]|
 
@@ -62,6 +75,18 @@ rules
         boolean notEmpty;
         ~update-stms*
       ]|
+  
+  logincremental-modulename-to-java-stm: x_moduleName -> result
+    with
+      if modulename-is-logincremental then
+        result := class-body-dec |[
+          public static boolean logincremental = true;
+        ]|
+      else
+        result := class-body-dec |[
+          public static boolean logincremental = false;
+        ]|
+      end
       
   cache-attributenames-to-java-stms: attributeNames -> result
     with

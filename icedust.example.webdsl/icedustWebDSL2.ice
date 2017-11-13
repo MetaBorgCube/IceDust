@@ -14,12 +14,16 @@ config
   backend : WebDSL
     ui : Model Explorer
 
+functions
+  
+  countTrue(bs : Boolean *) : Int 1 = bs.filter(b=>b).count()
+
 model
 
   entity Student {
     name       : String
     
-    passedCourses : Int = sum(enrollments.pass2)
+    passedCourses : Int = countTrue(enrollments.pass)
   }
   
   entity Course (eventual) {
@@ -39,7 +43,6 @@ model
     
     grade      : Float?  = submission.grade
     pass       : Boolean = submission.pass <+ false
-    pass2      : Int     = pass ? 1 : 0
   }
   
   relation Course.enrollments *  <-> 1 Enrollment.course

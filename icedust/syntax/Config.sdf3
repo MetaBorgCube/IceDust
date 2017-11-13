@@ -19,17 +19,34 @@ context-free syntax
   
   Config.WebDSLBackend = <
     backend : WebDSL
-      <UI?>
+    <{WebdslOption "\n"}*>
   >
   
-  UI.None = <ui : None>
+  WebdslOption.UI = <ui : <UI>> 
+  UI.None = <None>
   UI.ModelExplorer = <
-    ui : Model Explorer
+    Model Explorer
       <TierSplit?>
   >
-  
   TierSplit.None        = <tiersplit : None>
   TierSplit.IntraObject = <tiersplit : Object>
+
+  WebdslOption.Embedded = <embedded : <Embedded>>
+  Embedded.None     = <no>
+  Embedded.Embedded = <yes>
+  
+  WebdslOption.Ignore = <ignore <ID>.<ID>>
+  
+  WebdslOption.EventualThreads  = <eventual threads: <INT>>
+  WebdslOption.EventualInterval = <eventual interval: <INT> ms>
+  
+  WebdslOption.LogEventualUpdate = <log eventual update : <LogEventualUpdate>>
+  LogEventualUpdate.None              = <no>
+  LogEventualUpdate.LogEventualUpdate = <yes>
+  
+  WebdslOption.LogEventualStatus = <log eventual status : <LogEventualStatus>>
+  LogEventualStatus.None              = <no>
+  LogEventualStatus.LogEventualStatus = <yes>
   
 context-free syntax
 
@@ -65,3 +82,10 @@ context-free syntax
   LanguageFeature.Inlines             = <inlines>
   LanguageFeature.Strategies          = <strategies>
   LanguageFeature.SubTyping           = <subtyping>
+  
+context-free syntax
+
+  Config.LogIncremental = <log incremental : <LogIncremental>>
+  LogIncremental.None           = <no>
+  LogIncremental.LogIncremental = <yes>
+  

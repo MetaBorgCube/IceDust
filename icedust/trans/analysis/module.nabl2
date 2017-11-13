@@ -4,6 +4,7 @@ rules
     
   [[ Module(m, st, es) ^ (init_scope) ]] :=
     distinct/name D(module_scope)/Entity | error "Duplicate entity" @NAMES,
+    distinct/name D(module_scope)/Function | error "Duplicate function" @NAMES,
     distinct/name D(module_data_scope)/Member | error "Duplicate attribute" @NAMES,
     Module{m} <- init_scope,
     module_scope -P-> init_scope,
@@ -11,7 +12,7 @@ rules
     Module{m} =I=> module_scope,
     Module{m}.ns := Module(),
     Module{m}.datascope := module_data_scope,
-    Map2 [[ es ^ (module_scope, module_data_scope) ]],
+    Map3 [[ es ^ (module_scope, module_data_scope, m) ]],
     new module_scope,
     new module_data_scope,
     
@@ -19,15 +20,19 @@ rules
     Implicit{"this"} : TTuple(None(), None(), m_strat),
     [[ st ^ (module_scope) : m_strat ]].
 
-  [[ ConfigSection(es) ^ (module_scope, module_data_scope) ]] := true.
+  [[ ConfigSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
+    Map1 [[ es ^ (module_scope, module_name) ]].
 
-  [[ ModelSection(es) ^ (module_scope, module_data_scope) ]] :=
+  [[ ModelSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
     Map1 [[ es ^ (module_scope) ]].
 
-  [[ DataSection(es) ^ (module_scope, module_data_scope) ]] :=
+  [[ FunctionSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
+    Map1 [[ es ^ (module_scope) ]].
+
+  [[ DataSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
     Map2T [[ es ^ (empty_scope, module_data_scope) : es_types ]],
     new empty_scope.
 
-  [[ ExecuteSection(es) ^ (module_scope, module_data_scope) ]] :=
+  [[ ExecuteSection(es) ^ (module_scope, module_data_scope, module_name) ]] :=
     Map1T [[ es ^ (module_data_scope) : es_types ]].
     

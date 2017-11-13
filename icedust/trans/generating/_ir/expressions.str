@@ -39,26 +39,26 @@ rules // logic
 
 rules // aggregations
   
-  lib-call-postfix-type:     Max(_)                 ->"max"
-  lib-call-postfix-type:     Min(_)                 ->"min"
-  lib-call-postfix-type:     Avg(_)                 ->"avg"
-  lib-call-postfix-type:     Sum(_)                 ->"sum"
-  lib-call:                  Conj(_)                ->"conj"
-  lib-call:                  Disj(_)                ->"disj"
-  lib-call:                  Concat(_)              ->"concat"
-  lib-call:                  Count(_)               ->"count"
+  lib-call-postfix-type:     Function("max",_)      ->"max"
+  lib-call-postfix-type:     Function("min",_)      ->"min"
+  lib-call-postfix-type:     Function("avg",_)      ->"avg"
+  lib-call-postfix-type:     Function("sum",_)      ->"sum"
+  lib-call:                  Function("conj",_)     ->"conj"
+  lib-call:                  Function("disj",_)     ->"disj"
+  lib-call:                  Function("concat",_)   ->"concat"
+  lib-call:                  Function("count",_)    ->"count"
 
 rules // multiplicities
   
   lib-call-postfix-mults:    Merge(_, _)            ->"merge"
+  lib-call-postfix-mults:    Difference(_, _)       ->"difference"
   lib-call-postfix-mults:    ChoiceLeft(_, _)       ->"choice"
 
 rules // collections
 
-  lib-call:                  First(_)               ->"first"
-  lib-call:                  First(_,_)             ->"first"
-  lib-call:                  IndexOf(_, _)          ->"indexOf"
-  lib-call:                  ElemAt(_, _)           ->"elemAt"
+  lib-call:                  Function("first",_)    ->"first"
+  lib-call:                  Function("indexOf", _) ->"indexOf"
+  lib-call:                  Function("elemAt", _)  ->"elemAt"
 
 rules // lib-call catch all
   
@@ -82,7 +82,7 @@ rules // rel-expr -> List(String)
 
   method-type-postfix: e -> [arg-type]
     with
-      arg* := <get-arguments>e;
+      arg* := <expr-get-arguments>e;
       if <not(eq)>(<lFst;get-type2>arg*, NoValue()) <+ not(lSnd) then //if first is not NoValue or there is no second, TODO: move to type system
         arg-type := <lFst;get-type2;postfix-id>arg*
       else
@@ -91,10 +91,12 @@ rules // rel-expr -> List(String)
   
   method-mult-postfix: e -> []
     where <not(lib-call-postfix-mults)>e
+  
+  method-mult-postfix = method-mult-postfix2
     
-  method-mult-postfix: e -> arg-mult*
+  method-mult-postfix2: e -> arg-mult*
     with
-      arg* := <get-arguments>e;
+      arg* := <expr-get-arguments>e;
       arg-mult* := <map(get-multiplicity;postfix-id)>arg*
 
 rules // type -> String
@@ -108,7 +110,14 @@ rules // type -> String
 
 rules // multiplicity -> String
   
-  postfix-id: ZeroOrOne()  -> "One"
-  postfix-id: One()        -> "One"
-  postfix-id: ZeroOrMore() -> "Many"
-  postfix-id: OneOrMore()  -> "Many"
+  postfix-id: ZeroOrOne()         -> "One"
+  postfix-id: One()               -> "One"
+  postfix-id: ZeroOrMore()        -> "Many"
+  postfix-id: ZeroOrMoreOrdered() -> "Many"
+  postfix-id: OneOrMore()         -> "Many"
+  postfix-id: OneOrMoreOrdered()  -> "Many"
+  
+rules // expr get arguments
+
+  expr-get-arguments: Function(_, arg*) -> arg* // first try if this is a function constructor
+  expr-get-arguments = get-arguments            // otherwise all children are arguments

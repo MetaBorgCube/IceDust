@@ -59,7 +59,7 @@ rules // Editor services
           ("Calculation Strategy", <get-strategy     <+ name-get-calculation-strategy <+ !None()>t),
           ("Depends On",           <name-get-dependson-paths                          <+ !None()>t),
           ("Flows To",             <name-get-flowsto-paths-all                        <+ !None()>t),
-          ("Topological Sort",     <name-get-toposort                                 <+ !None()>t)
+          ("Topological Sort",     <name-get-toposort-both                            <+ !None()>t)
         ]
   
   pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]] where not(is-string)
@@ -143,10 +143,22 @@ rules // target of editor services
   hover-parent-for: a -> a // for constructors with no children hover parent, except for literals
     where
       [] := <get-arguments>a;
-      <not(is-string)>a; //TODO: what about strings of declarations, should they be hovering whole declaration constructor? And for references?
+      <not(is-string)<+built-in-string>a; //TODO: what about strings of declarations, should they be hovering whole declaration constructor? And for references?
       <not(?False())>a;
       <not(?True())>a;
       <not(?NoValue())>a
+      
+  built-in-string = ?"avg"
+  built-in-string = ?"concat"
+  built-in-string = ?"conj"
+  built-in-string = ?"count"
+  built-in-string = ?"disj"
+  built-in-string = ?"elemAt"
+  built-in-string = ?"first"
+  built-in-string = ?"indexOf"
+  built-in-string = ?"max"
+  built-in-string = ?"min"
+  built-in-string = ?"sum"
 
 rules // properties for editor services
 //  

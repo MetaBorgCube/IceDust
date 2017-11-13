@@ -17,6 +17,7 @@ imports // functions
   generating/webdsl/module-ui
   generating/webdsl/model
   generating/webdsl/data
+  generating/webdsl/functions
   generating/webdsl/types
   api/model-names-api
   api/module-api
@@ -41,12 +42,17 @@ rules // module
       def_dirtyReqVar* := <modulename-get-arrinames-default-derived-incremental-eventual;map(attributename-to-webdsl-def)>x_moduleName;
       stat_cach*       := <cache-modulename-to-webdsl-stms>x_moduleName
     with
-      stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-stat)>x_moduleName;
-      native1*           := <modulename-get-arrinames-default-derived-eventual;map(attributename-to-webdsl-native)>x_moduleName;
+      stat_flagasync*    := <modulename-get-arrinames-default-derived-eventual; map(attributename-to-webdsl-stat)>x_moduleName;
+      native1*           := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-webdsl-natives)>x_moduleName;
       stat_cachAsync*    := <cache-async-modulename-to-webdsl-stms>x_moduleName
     with
       elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row   )>x_moduleName;
       def_manage*         := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-defs-manage)>x_moduleName
+    with
+      stat_countDirtyUT* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirtyuptill-attributename-to-webdsl-stm)>x_moduleName;
+      stat_countDirty*   := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm      )>x_moduleName
+    with
+      def_func*          := <modulename-get-functionnames;fmap(functionname-to-webdsl-defs(err))>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -58,6 +64,10 @@ rules // module
         section model
         
           def_model*
+          
+        section functions
+        
+          def_func*
       ]|
     with
       if modulename-is-explorerui then
@@ -89,20 +99,46 @@ rules // module
             stat_flagasync*
           }
           
-          function updateDerivationsAsync(){
-            stat_cachAsync*
-            DirtyCollections.cleanI(2147483647);
+          function updateDerivationsAsync(thisThread : Thread){
+            if(Settings.getUpdatesEnabled()){
+              stat_cachAsync*
+              DirtyCollections.cleanI(2147483647);
+            }
           }
-          
-          invoke updateDerivationsAsync() every 1 milliseconds
           
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int
             static dirtyI(Int)
             static cleanI(Int)
+            static getJ() : Int
+            static setJ(Int)
           
             native1*
           }
+          
+          function countDirtyUpTill(ii : Int) : Int{
+            var n := 0;
+            stat_countDirtyUT*
+            return n;
+          }
+          
+          function countDirty(ii : Int) : Int{
+            var n := 0;
+            stat_countDirty*
+            return n;
+          }
+          
+          function logCountDirty(){
+            var ii       := DirtyCollections.getI();
+            var jj       := DirtyCollections.getJ();
+            var countAll := countDirtyUpTill(2147483647);
+            var countI   := countDirty(ii);
+            if(countAll>0 && Settings.getLogeventualstatus()){
+              log("Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll);
+            }
+          }
+          
+          invoke logCountDirty() every 1000 milliseconds
       ]|
     with
       sec_hibernateTriggers* :=  section* |[
@@ -121,15 +157,113 @@ rules // module
       sec_manage* :=  section* |[
         section manage
         
-          page derivedvalues() {
+          template changeEnventualThreads(){
+            var xx : Int := Settings.getNumWorkers()
+            form{
+              input(xx)
+              toggleVisibility("Update number of eventual calculation threads"){
+                submit action{
+                  Settings.setNumWorkers(xx);
+                }{
+                  "yes, Update number of eventual calculation threads"
+                }
+              }
+            }
+          }
+        
+          page derivedvalues(showCount:Bool) {
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
+            if(Settings.getUpdatesEnabled()){
+              toggleVisibility("disable all derived value calculation"){
+                submit action{
+                  Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
+                }{
+                  "yes, disable all derived value calculation"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable all derived value calculation"){
+                submit action{
+                  Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
+                }{
+                  "yes, enable all derived value calculation"
+                }
+              }
+            }
+            br
+            if(Settings.getLogincremental()){
+              toggleVisibility("disable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, disable log incremental"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, enable log incremental"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualupdate()){
+              toggleVisibility("disable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, disable log every eventual update"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, enable log every eventual update"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualstatus()){
+              toggleVisibility("disable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, disable log eventual status every second"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, enable log eventual status every second"
+                }
+              }
+            }
+            br
+            changeEnventualThreads{}
             table{
               row{
                 column{ "Order" }
                 column{ "Name" }
                 column{ "Type" }
-                column{ "Status" }
+                column{
+                  "Status "
+                  if(showCount){
+                    navigate derivedvalues(false){"hide"}
+                  }else{
+                    navigate derivedvalues(true){"show"}
+                  }
+                }
                 column{ "Actions" }
               }
               row{
@@ -138,19 +272,45 @@ rules // module
                 column{  }
                 column{  }
                 column{
-                  submit action{
-                    flagAllIncrementalDirty();
-                    log("Updating derivations");
-                    updateDerivations();
-                    log("Updating derivations done");
-                  } { "flag all incremental fields dirty" }
+                  toggleVisibility("flag all incremental fields dirty"){
+                    submit action{
+                      flagAllIncrementalDirty();
+                      log("Updating derivations");
+                      updateDerivations();
+                      log("Updating derivations done");
+                    }{
+                      "yes, flag all incremental fields dirty"
+                    }
+                  }
                   br
-                  submit action{
-                    flagAllOnDemandIncDirty();
-                  } { "flag all on-demand incremental fields dirty" }
+                  toggleVisibility("flag all on-demand incremental fields dirty"){
+                    submit action{
+                      flagAllOnDemandIncDirty();
+                    }{
+                      "yes, flag all on-demand incremental fields dirty"
+                    }
+                  }
+                  br
+                  toggleVisibility("flag all eventual fields dirty"){
+                    submit action{
+                      flagAllEventualDirty();
+                      log("flagDirtyAsync");
+                      flagDirtyAsync();
+                      log("flagDirtyAsync done");
+                    }{
+                      "yes, flag all eventual fields dirty"
+                    }
+                  }
                 }
               }
               elem_manageRows*
+              row{
+                column{ output(DirtyCollections.getI()) " : " output(DirtyCollections.getJ()) }
+                column{  }
+                column{  }
+                column{ output(countDirtyUpTill(2147483647))  }
+                column{  }
+              }
             }
           }
           
@@ -159,6 +319,24 @@ rules // module
           function flagAllIncrementalDirty(){}
           
           function flagAllOnDemandIncDirty(){}
+          
+          function flagAllEventualDirty(){}
+          
+          native class derivations.Settings as Settings{
+            static getUpdatesEnabled( ): Bool
+            static setUpdatesEnabled( Bool ): Void
+            static setNumWorkers( Int ): Void
+            static getNumWorkers(): Int
+            static getLogincremental( ): Bool
+            static setLogincremental( Bool ): Void
+            static getLogeventualupdate( ): Bool
+            static setLogeventualupdate( Bool ): Void
+            static getLogeventualstatus( ): Bool
+            static setLogeventualstatus( Bool ): Void
+            static threadMapsSet(Thread, Set<String>, String)
+          }
+          
+          native class java.lang.Thread as Thread{}
       ]|
     with
       if modulename-is-explorerui then
@@ -176,7 +354,7 @@ rules // module
           sec_cachesDirtyflag*
         
           sec_asyncDirtyflag*
-        
+          
           sec_hibernateTriggers*
         
           sec_manage*
@@ -192,13 +370,13 @@ rules // module
           sec_cachesDirtyflag*
         
           sec_asyncDirtyflag*
-        
+          
           sec_hibernateTriggers*
         
           sec_manage*
           
             access control rules
             
-              rule page derivedvalues() { true }
+              rule page derivedvalues(showCount:Bool) { true }
         ]|
       end

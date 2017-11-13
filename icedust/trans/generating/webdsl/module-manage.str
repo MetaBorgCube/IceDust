@@ -30,7 +30,7 @@ rules
       x_action           := <attributename-entityname-flagallaction>x_name
     with
       result := elem |[
-        x_action
+        x_action(showCount)
       ]|
 
   membername-to-webdsl-defs-manage: x_name -> result
@@ -43,12 +43,15 @@ rules
       x_getQueue         := <attributename-entityname-getqueue>x_name;
       e_name             := String(x_name);
       e_toposort         := String(<name-get-toposort;write-to-string>x_name);
+      e_toposort2        := String(<name-get-toposort2;write-to-string>x_name);
       e_strategy         := String(<name-get-calculation-strategy;write-to-string>x_name)
     with
       switch id
         case name-is-incremental-eventual: 
           elem_action* := elem* |[
-            submit action{ x_action(); } { "flag all dirty" }
+            toggleVisibility("flag all dirty"){
+              submit action{ x_action(); } { "yes, flag all dirty" }
+            }
           ]|
         otherwise:
           elem_action* := elem* |[
@@ -59,19 +62,29 @@ rules
       switch id
         case name-is-eventual: 
           elem_status* := elem* |[
-            output(DirtyCollections.x_getQueue().length) " / " output(select count(*) from x_entityName)
+            output(DirtyCollections.x_getQueue().length) " / "
+            if(showCount){
+              output(select count(*) from x_entityName)
+            }else{
+              "?"
+            }
           ]|
         otherwise:
           elem_status* := elem* |[
-            output(select count(*) from x_entityName)
+            if(showCount){
+              output(select count(*) from x_entityName)
+            }else{
+              "?"
+            }
           ]|
       end
     with
       def_template* := def* |[
-        template x_action(){
+        template x_action(showCount:Bool){
           row{
             column{
-              output(e_toposort)
+              output(e_toposort) " : "
+              output(e_toposort2)
             }
             column{
               output(e_qualifiedName)
@@ -138,6 +151,10 @@ rules
               log("flagDirtyAsync");
               flagDirtyAsync();
               log("flagDirtyAsync done");
+            }
+        
+            extend function flagAllEventualDirty(){
+              x_flagDirtyAll();
             }
           ]|
         otherwise:

@@ -2,15 +2,17 @@ module static-semantics
 
 imports
 
+  config
   data
-  expressions-aggregation
   expressions-casts
   expressions-collections
+  expressions-functions
   expressions-literals
   expressions-logic
   expressions-math
   expressions-multiplicity-operators
   expressions-references
+  functions2
   map3
   model
   module
@@ -78,7 +80,7 @@ signature
     
     anti-symmetric, anti-transitive test : Type * TypeTest
     
-    irreflexive cast : Type * Type
+    cast : Type * Type
  
   functions
     
@@ -164,6 +166,28 @@ signature
       (TZeroOrMoreOrdered(), TZeroOrOne()        ) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
       (TZeroOrMoreOrdered(), TZeroOrMoreOrdered()) -> TZeroOrMoreOrdered(), // [0,_] ordered ++ [0,_] ordered -> [0,n) ordered
       (mult1               , mult2               ) -> TOneOrMoreOrdered()   // rest -> [1,n) ordered
+    }
+    
+    multLift : (Mult * Mult) -> Mult { //def * in -> outFactor
+      (mult,                 TOne()              ) -> TOne(),              // in~[1,1] fits in all multiplicities
+      (TOne()              , mult                ) -> mult  ,              // def~[1,1] lifts all multiplicities to in multiplicity
+      (TZeroOrMore()       , mult                ) -> TOne(),              // def~[0,n) fits all multiplicities
+      (TZeroOrMoreOrdered(), mult                ) -> TOne(),              // def~[0,n) fits all multiplicities
+      (TZeroOrOne()        , TZeroOrOne()        ) -> TOne(),              // fits
+      (TZeroOrOne()        , TZeroOrMoreOrdered()) -> TOneOrMoreOrdered(), // lift upper
+      (TZeroOrOne()        , TOneOrMoreOrdered() ) -> TOneOrMoreOrdered(), // lift upper
+      (TZeroOrOne()        , TZeroOrMore()       ) -> TOneOrMore(),        // lift upper, lose ordering
+      (TZeroOrOne()        , TOneOrMore()        ) -> TOneOrMore(),        // lift upper, lose ordering
+      (TOneOrMore()        , TOneOrMore()        ) -> TOne(),              // fits
+      (TOneOrMore()        , TOneOrMoreOrdered() ) -> TOne(),              // fits
+      (TOneOrMore()        , TZeroOrOne()        ) -> TZeroOrOne(),        // lift lower
+      (TOneOrMore()        , TZeroOrMore()       ) -> TZeroOrOne(),        // lift lower
+      (TOneOrMore()        , TZeroOrMoreOrdered()) -> TZeroOrOne(),        // lift lower
+      (TOneOrMoreOrdered() , TOneOrMoreOrdered() ) -> TOne(),              // fits
+      (TOneOrMoreOrdered() , TOneOrMore()        ) -> TOneOrMore(),        // fits, lose ordering (means lift upper as well)
+      (TOneOrMoreOrdered() , TZeroOrOne()        ) -> TZeroOrOne(),        // lift lower
+      (TOneOrMoreOrdered() , TZeroOrMoreOrdered()) -> TZeroOrOne(),        // lift lower
+      (TOneOrMoreOrdered() , TZeroOrMore()       ) -> TZeroOrMore()        // lift lower, lose ordering (means lift upper as well)
     }
     
     multUpper : Mult -> MultU {
@@ -293,6 +317,7 @@ rules
     TString() <cast! TBoolean(),
     TString() <cast! TDatetime(),
     TString() <cast! TNoValue(),
+    TString() <cast! TString(),   // allow string to string casting for string interpolation
 
     new init_scope.
  

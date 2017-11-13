@@ -1618,6 +1618,63 @@ strategies
          end
 
   prettyprint-javascript-Expression :
+    ConstructorCall(t1__, t2__) -> [ H(
+                                       [SOpt(HS(), "0")]
+                                     , [ S("new ")
+                                       , t1__'
+                                       , S("(")
+                                       , t2__'
+                                       , S(")")
+                                       ]
+                                     )
+                                   ]
+    with t1__' := <pp-one-Z(prettyprint-javascript-Expression) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-javascript-Expression|",")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-javascript-Expression =
+    ?ConstructorCall(_, _)
+
+  javascript-get-indent :
+    (t@ConstructorCall(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  javascript-get-separator :
+    (t@ConstructorCall(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ","
+           otherwise :
+             separator := ""
+         end
+
+  javascript-get-leading-ws :
+    (t@ConstructorCall(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Expression"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           case ?2 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-javascript-Expression :
     Cond(t1__, t2__, t3__) -> [ H(
                                   [SOpt(HS(), "0")]
                                 , [ t1__'

@@ -1,0 +1,34 @@
+module api/functions-api
+
+imports // constructors
+
+  signatures/Functions-sig
+
+
+rules // functions
+  
+  is-function = ?Function(_,_,_,_,_)
+  
+  function-get-name   = ?Function(<id>, _, _, _, _)
+  function-get-params = ?Function(_, <id>, _, _, _)
+  function-get-type   = ?Function(_, _, <id>, _, _)
+  function-get-mult   = ?Function(_, _, _, <id>, _)
+  function-get-expr   = ?Function(_, _, _, _, <id>)
+  
+  function-set-mult(s) = Function(id, id, id, s, id)
+  
+  function-has-no-mult = where(function-get-mult;?None())
+  
+rules // params
+
+  is-param = ?Parameter(_, _, _)
+
+  param-get-name = ?Parameter(<id>, _, _)
+  param-get-type = ?Parameter(_, <id>, _)
+  param-get-mult = ?Parameter(_, _, <id>)
+  
+  param-set-mult(s) = Parameter(id, id, s)
+  
+  param-has-no-mult = where(param-get-mult;?None())
+  
+  

@@ -42,6 +42,7 @@ signature
     Negate                   : Expression -> Expression
     Increment                : Expression -> Expression
     Decrement                : Expression -> Expression
+    ConstructorCall          : Expression * List(Expression) -> Expression
     Cond                     : Expression * CondMid * Expression -> Expression
     CondMid                  : Expression -> CondMid
     ObjectLiteral            : List(ObjectProperty) -> Expression

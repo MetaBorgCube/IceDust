@@ -26,11 +26,11 @@ rules // WebDSL specific: no generics, explicit casts
   webdsl-lib-call-cast = ?If(_,_,_)
 
   webdsl-lib-call-cast = ?Merge(_, _)
+  webdsl-lib-call-cast = ?Difference(_, _)
   webdsl-lib-call-cast = ?ChoiceLeft(_, _)
   
-  webdsl-lib-call-cast = ?First(_)
-  webdsl-lib-call-cast = ?First(_,_)
-  webdsl-lib-call-cast = ?ElemAt(_,_)
+  webdsl-lib-call-cast = ?Function("first", _)
+  webdsl-lib-call-cast = ?Function("elemAt",_)
 
 rules // lib expression calls
   
@@ -38,7 +38,7 @@ rules // lib expression calls
     where
       lib-call
     with
-      arg*            := <get-arguments>e;
+      arg*            := <expr-get-arguments>e;
       e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
       if <webdsl-lib-call-cast> e then
@@ -51,6 +51,21 @@ rules // lib expression calls
           Expressions.x_methodpostfix(e1*)
         ]|
       end
+      
+rules // user function calls
+  
+  expr-to-webdsl-expr(err): e@Function(x_method,_) -> result
+    where
+      <is-functionname>x_method
+    with
+      arg*            := <expr-get-arguments>e;
+      e1*             := <map(expr-to-webdsl-expr(err))>arg*;
+      arg-mult*       := <method-mult-postfix2>e;
+      x_methodpostfix := <concat-strings(|"_")>[x_method, arg-mult*]
+    with
+      result := exp |[
+        x_methodpostfix(e1*)
+      ]|
   
 rules // literals
   
@@ -66,10 +81,11 @@ rules // casts
   
   expr-to-webdsl-expr(err): Cast(NoValue() , ex1-ty) -> exp |[ null as x ]| where x := <type-to-string-webdsl>ex1-ty
   
-  expr-to-webdsl-expr(err): Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
+  expr-to-webdsl-expr(err): e@Cast(ex1, ex1-ty) -> exp |[ Expressions.x_method(e1) ]|
     with
       e1 := <expr-to-webdsl-expr(err)>ex1;
-      x_method := $[as[<postfix-id>ex1-ty]]
+      arg-mult := <get-multiplicity;postfix-id>e;
+      x_method := $[as[<postfix-id>ex1-ty]_[arg-mult]]
 
 rules // filter
 

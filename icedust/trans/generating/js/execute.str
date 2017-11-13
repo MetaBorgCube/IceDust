@@ -66,12 +66,3 @@ rules
   // exp -> (exp_result, stmts_result, i')
   execute-expression-serialize(|i) = fail
   
-  execute-expression-serialize(|i): e -> result
-    where 
-      Datetime () := <get-type2> e
-    with
-      (exp_e, stmts_e, i') := <exp-to-js-stmts(|i)> e
-    ; exp_result := js-exp|[exp_e.format()]|
-    ; result := (exp_result, stmts_e, i')
-
-  

@@ -2,6 +2,7 @@ module api/module-names-api
 
 imports // constructors
 
+  signatures/Config-sig
 //  signatures/Model-sig
 //  api/_runtime-constructors
 //  desugaring/constructors
@@ -28,6 +29,8 @@ imports // functions
   
 rules // module
 
+  modulename-get-functionnames = get-decl-assoc(|"Module");get-scope-decl-names(|"Function");string-sort-anno
+  
   modulename-get-entitynames = get-decl-assoc(|"Module");get-scope-decl-names(|"Entity");filter(is-entityname);string-sort-anno
   
   modulename-get-entityinstancenames    = concat(modulename-get-entityinstancenames-sg, modulename-get-entityinstancenames-i);string-sort-anno
@@ -79,17 +82,26 @@ rules // module
 
   modulename-get-exprs = index-get(|AST())
 
-  modulename-get-implstr = index-get(|ImplStrategy())
+  modulename-get-uistyle = get-property(|"Module","ui")
   
-  modulename-is-calconread           = where(modulename-get-implstr;?OnDemand())
-  modulename-is-calconread           = where(modulename-get-implstr;?OnDemandEventual())
-  modulename-is-calconwrite          = where(modulename-get-implstr;?Incremental())
-  modulename-is-eventuallyconsistent = where(modulename-get-implstr;?Eventual())
-
-  modulename-get-uistyle = index-get(|UIStyle())
+  modulename-is-noui   = where(modulename-get-uistyle;?None())
+  modulename-is-explorerui = where(modulename-get-uistyle;?ModelExplorer(_))
   
-  modulename-is-noui   = where(modulename-get-uistyle;?NoUI())
-  modulename-is-explorerui = where(modulename-get-uistyle;?ExplorerUI())
+  modulename-get-embedded = get-property(|"Module","embedded")
+  
+  modulename-is-embedded = where(modulename-get-embedded;?Embedded())
+  
+  modulename-get-eventualthreads  = get-property(|"Module","eventualthreads") <+!"1"
+  modulename-get-eventualinterval = get-property(|"Module","eventualinterval")<+!"100"
+  
+  modulename-get-logincremental = get-property(|"Module","logincremental") <+ !LogIncremental()
+  modulename-is-logincremental  = where(modulename-get-logincremental;?LogIncremental())
+  
+  modulename-get-logeventualupdate = get-property(|"Module","logeventualupdate") <+ !LogEventualUpdate()
+  modulename-is-logeventualupdate  = where(modulename-get-logeventualupdate;?LogEventualUpdate())
+  
+  modulename-get-logeventualstatus = get-property(|"Module","logeventualstatus") <+ !LogEventualUpdate()
+  modulename-is-logeventualstatus  = where(modulename-get-logeventualstatus;?LogEventualStatus())
   
   modulename-decl-entityinstancename(|einame, type): modulename -> einame-decl
     with
