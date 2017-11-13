@@ -15,6 +15,14 @@ colorer Primitive types
 
   _.LitString: 0 0 255 
 
+colorer built-in functions
+
+  BuiltInFunction        : 127 0 85 bold
+  
+colorer strategies
+
+  Strategy   : 127 127 127
+
 colorer Default, token-based highlighting
                                   
   keyword    : 127 0 85 bold      

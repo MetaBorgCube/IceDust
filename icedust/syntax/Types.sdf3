@@ -31,4 +31,5 @@ context-free syntax
   Strategy.Incremental         = <(incremental)>
   Strategy.Eventual            = <(eventual)>
   Strategy.OnDemandEventual    = <(on-demand eventual)>
+  Strategy.Inline              = <(inline)>
   

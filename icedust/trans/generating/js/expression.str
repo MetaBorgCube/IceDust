@@ -212,14 +212,14 @@ rules
   do-cast: (exp_e, Float(), Int()) -> js-exp |[parseInt(exp_e)]|
   do-cast: (exp_e, Datetime(), String()) -> js-exp |[expression.dateToString(exp_e)]|
   
-  exp-to-js-stmts(|i) = ?Sum(e) ; unexp-to-js-stmts(!e, js-sum|i)
-  exp-to-js-stmts(|i) = ?Min(e) ; unexp-to-js-stmts(!e, js-min|i)
-  exp-to-js-stmts(|i) = ?Max(e) ; unexp-to-js-stmts(!e, js-max|i)
-  exp-to-js-stmts(|i) = ?Avg(e) ; unexp-to-js-stmts(!e, js-avg|i)
-  exp-to-js-stmts(|i) = ?Conj(e) ; unexp-to-js-stmts(!e, js-conj|i)
-  exp-to-js-stmts(|i) = ?Disj(e) ; unexp-to-js-stmts(!e, js-disj|i)
-  exp-to-js-stmts(|i) = ?Count(e) ; unexp-to-js-stmts(!e, !(e, <id>); exp-to-list ; js-count|i)
-  exp-to-js-stmts(|i) = ?Concat(e) ; unexp-to-js-stmts(!e, js-concat|i)
+  exp-to-js-stmts(|i) = ?Function("sum",[e]) ; unexp-to-js-stmts(!e, js-sum|i)
+  exp-to-js-stmts(|i) = ?Function("min",[e])  ; unexp-to-js-stmts(!e, js-min|i)
+  exp-to-js-stmts(|i) = ?Function("max",[e])  ; unexp-to-js-stmts(!e, js-max|i)
+  exp-to-js-stmts(|i) = ?Function("avg",[e])  ; unexp-to-js-stmts(!e, js-avg|i)
+  exp-to-js-stmts(|i) = ?Function("conj",[e])  ; unexp-to-js-stmts(!e, js-conj|i)
+  exp-to-js-stmts(|i) = ?Function("disj",[e])  ; unexp-to-js-stmts(!e, js-disj|i)
+  exp-to-js-stmts(|i) = ?Function("count",[e])  ; unexp-to-js-stmts(!e, !(e, <id>); exp-to-list ; js-count|i)
+  exp-to-js-stmts(|i) = ?Function("concat",[e])  ; unexp-to-js-stmts(!e, js-concat|i)
   
   js-sum = js-exp-call(|"sum")
   js-min = js-exp-call(|"min")
@@ -405,7 +405,7 @@ rules
   
   //first
   
-  exp-to-js-stmts(|i): First(e) -> result
+  exp-to-js-stmts(|i): Function("first",[e])  -> result
     with
       (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e
     ; (x_result, i'') := <int-to-varname-inc> i'
@@ -423,7 +423,7 @@ rules
     with
       result := (<js-var> x_result, <conc> (stmts_source, stmts), i'')
       
-  exp-to-js-stmts(|i): First(e, n) -> result
+  exp-to-js-stmts(|i): Function("first",[e, n])  -> result
     with
       (exp_source, stmts_source, i') := <exp-to-js-stmts(|i)> e
     ; (x_result, i'') := <int-to-varname-inc> i'
@@ -447,7 +447,7 @@ rules
       result := (<js-var> x_result, <conc> (stmts_source, stmts), i''')
     
     //indexOf  
-    exp-to-js-stmts(|i) = ?IndexOf(e_source, e) ; binexp-to-js-stmts-with-nullcheck(!(e_source, e), merge-indexOf(|e_source, e)|i)
+    exp-to-js-stmts(|i) = ?Function("indexOf",[e_source, e]); binexp-to-js-stmts-with-nullcheck(!(e_source, e), merge-indexOf(|e_source, e)|i)
     
     merge-indexOf(|e_source, e): (exp_source, exp_e) -> <js-null> 
       where <get-multiplicity ; upper-one> e_source
@@ -457,7 +457,7 @@ rules
     ]|
     
     //elementAt
-    exp-to-js-stmts(|i) = ?ElemAt(e_source, e_index) ; binexp-to-js-stmts-with-nullcheck(!(e_source, e_index), merge-elementAt|i)
+    exp-to-js-stmts(|i) = ?Function("elemAt",[e_source, e_index]) ; binexp-to-js-stmts-with-nullcheck(!(e_source, e_index), merge-elementAt|i)
     
     merge-elementAt: (exp_source, exp_e) -> js-exp |[exp_source[exp_e] !== undefined ? exp_source[exp_e] : null]|
     

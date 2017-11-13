@@ -1,0 +1,57 @@
+module lib/intlist
+
+imports
+
+  lib/eq
+  lib/lists-tuples
+
+rules // int*
+
+  zeroOne = ![0,1]
+  
+  zeros: length -> zeros
+    with
+      zeros := <repeat(append(|0)|length)>[]
+  
+rules // int **
+
+  binary-permutations: i -> perm
+    with
+      l    := <zeroOne>;   // int*
+      perm := <power(|i)>l // int**
+
+  binary-permutations-nonzeros: i -> result
+    with
+      perm   := <binary-permutations>i;
+      zeros  := <zeros>i;
+      result := <remove-all(eq(|zeros))>perm
+
+rules // a* -> b* -> (a,b)*
+  
+  product(|l1): l2 -> []
+    where
+      l1 := []
+      
+  product(|l1): l2 -> [rest*, i1l2*]
+    where
+      [i1 | t1] := l1
+    with
+      rest* := <product(|t1)>l2;
+      i1l2* := <map(tuple-with-rev(|i1))>l2
+      
+rules // int -> a* -> a**
+
+  power(|i): l -> [[]]
+    where
+      i := 0
+  
+  power(|i): l -> result
+    with
+      iRec      := <dec>i;                 // int
+      resultRec := <power(|iRec)>l;        // a**
+      x         := <product(|l)>resultRec; // (a,a*)*
+      result    := <map(tuple-head-list)>x // a**
+
+rules // (a,a*) -> a*
+
+  tuple-head-list: (a, a*) -> [a | a*]

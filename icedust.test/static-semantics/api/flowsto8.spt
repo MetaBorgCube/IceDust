@@ -1,0 +1,33 @@
+module api-flowsto8
+
+
+language icedust
+
+fixture [[
+module test
+
+model
+  
+  entity Bar {
+    i1     : Int  = 4
+    i2     : Int  = 5
+    i5     : Int  = this.children.children.orderBy(x => x.children.children.i1.sum()).children.children.first().i2 <+ 0
+    [[...]]: Int  = this.grandChildren()  .orderBy(x => x.grandChildren()  .i1.sum()).grandChildren()  .first().i2 <+ 0
+  }
+  
+  relation Bar.parent ? <-> Bar.children
+
+functions
+
+  grandChildren(bar : Bar) : Bar* = bar.children.children
+  
+]]
+
+test Query attribute depends on 8 [[i5v2]] run name-get-dependson-pathexprs-test to !ATerm[
+  MemberAccess(MemberAccess(MemberAccess(MemberAccess(Ref("children"),"children"),"children"),"children"),"i2"),
+  MemberAccess(MemberAccess(MemberAccess(MemberAccess(Ref("children"),"children"),"children"),"children"),"i1"),
+  MemberAccess(MemberAccess(MemberAccess(Ref("children"),"children"),"children"),"children"),
+  MemberAccess(MemberAccess(Ref("children"),"children"),"children"),
+  MemberAccess(Ref("children"),"children"),
+  Ref("children")
+]

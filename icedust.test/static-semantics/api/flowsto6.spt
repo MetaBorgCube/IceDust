@@ -1,0 +1,49 @@
+module api-flowsto6
+
+
+language icedust
+
+fixture [[
+module test
+
+model
+  
+  entity Bar {
+    i1     : Int  = 4
+    i1Cool : Int? = 5
+    i2     : Int  = 4
+    [[...]]: Int  = greatGrandValues(parent)
+  }
+  
+  relation Bar.parent ? <-> Bar.children
+
+functions
+  
+  coolValueI1(bar : Bar) : Int = bar.i1Cool + 5 <+ bar.i1
+
+  grandParent  (bar : Bar) : Bar? = bar.parent.parent
+  grandChildren(bar : Bar) : Bar* = bar.children.children
+  
+  grandValues(getGParent : Bar?, getGChildren : Bar*) : Int =
+    (getGParent.grandParent() ++ getGParent).coolValueI1().sum() +
+    getGChildren.grandChildren().i2.sum()
+    <+ 0
+  
+  greatGrandValues(bar : Bar?) : Int = grandValues(bar.parent, bar.children)
+  
+]]
+
+test Query attribute depends on 6 [[i3]] run name-get-dependson-pathexprs-test to !ATerm[
+  MemberAccess(MemberAccess(MemberAccess(MemberAccess(Ref("parent"),"parent"),"parent"),"parent"),"i1Cool"),
+  MemberAccess(MemberAccess(Ref("parent"),"parent"),"i1Cool"),
+  MemberAccess(MemberAccess(MemberAccess(MemberAccess(Ref("parent"),"parent"),"parent"),"parent"),"i1"),
+  MemberAccess(MemberAccess(MemberAccess(Ref("parent"),"parent"),"parent"),"parent"),
+  MemberAccess(MemberAccess(Ref("parent"),"parent"),"parent"),
+  MemberAccess(MemberAccess(Ref("parent"),"parent"),"i1"),
+  MemberAccess(Ref("parent"),"parent"),
+  MemberAccess(MemberAccess(MemberAccess(MemberAccess(Ref("parent"),"children"),"children"),"children"),"i2"),
+  MemberAccess(MemberAccess(MemberAccess(Ref("parent"),"children"),"children"),"children"),
+  MemberAccess(MemberAccess(Ref("parent"),"children"),"children"),
+  MemberAccess(Ref("parent"),"children"),
+  Ref("parent")
+]

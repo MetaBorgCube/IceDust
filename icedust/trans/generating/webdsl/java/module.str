@@ -11,6 +11,7 @@ imports // functions
   api/module-api
   api/module-names-api
   generating/_ir/model
+  generating/java/functions
   lib/traverse
 
 rules // module (or modulename) -> java compilation-unit
@@ -21,13 +22,52 @@ rules // module (or modulename) -> java compilation-unit
     with
       decs* := <modulename-get-arrinames-default-derived-eventual;fmap(attributename-to-java-classbodydecs(err))>x_moduleName
     with
+      if modulename-is-logincremental then
+        logincrementalJava := class-body-dec |[
+          static volatile boolean logincremental = true;
+        ]|
+      else
+        logincrementalJava := class-body-dec |[
+          static volatile boolean logincremental = false;
+        ]|
+      end
+    with
+      if modulename-is-logeventualupdate then
+        logeventualupdateJava := class-body-dec |[
+          static volatile boolean logeventualupdate = true;
+        ]|
+      else
+        logeventualupdateJava := class-body-dec |[
+          static volatile boolean logeventualupdate = false;
+        ]|
+      end
+    with
+      if modulename-is-logeventualstatus then
+        logeventualstatusJava := class-body-dec |[
+          static volatile boolean logeventualstatus = true;
+        ]|
+      else
+        logeventualstatusJava := class-body-dec |[
+          static volatile boolean logeventualstatus = false;
+        ]|
+      end
+    with
+      x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
+      x_eventualinterval := <modulename-get-eventualinterval>x_moduleName;
+      initTimersJava := class-body-dec |[
+        static Settings triggerByClassLoader = new Settings(x_eventualthreads, x_eventualinterval);
+      ]|
+    with
       result := compilation-unit |[
         package derivations;
         
         import java.util.Set;
         import java.util.concurrent.ConcurrentHashMap;
+        import java.util.Collection;
         import java.util.Collections;
+        import java.util.Date;
         import java.util.Iterator;
+        import lib.icedust.*;
         
         public class DirtyCollections {
 
@@ -56,6 +96,31 @@ rules // module (or modulename) -> java compilation-unit
               return ii;
             }
           }
+          
+          private static final Object syncObject2 = new Object();
+        
+          private static int jj = 0;
+        
+          public static void setJ(int newJ)
+          { 
+            synchronized(syncObject2)
+            { 
+              jj = newJ;
+            }
+          }
+        
+          public static int getJ()
+          { 
+            synchronized(syncObject2)
+            { 
+              return jj;
+            }
+          }
+          
+          ~logincrementalJava
+          ~logeventualupdateJava
+          ~logeventualstatusJava
+          ~initTimersJava
           
           ~decs*
           

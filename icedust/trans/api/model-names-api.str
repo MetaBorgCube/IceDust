@@ -236,6 +236,8 @@ rules // combined
   name-get-dependson-paths = index-get2(|DependsOn())
   name-get-flowsto-paths   = index-get2(|FlowsTo())
   name-get-toposort        = index-get(|TopoSort())
+  name-get-toposort2       = index-get(|TopoSort2())
+  name-get-toposort-both   = ?name;!(<name-get-toposort>name,<name-get-toposort2>name)<+name-get-toposort
   
   name-get-root-get-toposort = name-get-root;name-get-toposort
   

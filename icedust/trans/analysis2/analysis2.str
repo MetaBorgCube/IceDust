@@ -171,13 +171,15 @@ rules
 
   flows-toposort-2: moduleName -> moduleName
     with
-      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName;
-      graphNames'     := <map(annotate-with-parent-entity)>graphNames;
-      toposort        := <graph-topological-sort(toposort-edge)>graphNames';
-      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort;
+      graphNames      := <modulename-get-arrleftnames-not-inline>moduleName; // name*
+      graphNames'     := <map(annotate-with-parent-entity)>graphNames;       // name{}*
+      toposort        := <graph-topological-sort(toposort-edge)>graphNames'; // name{}**
+      toposort'       := <map(map(de-annotate-with-parent-entity))>toposort; // name**
       <index-set(|moduleName, TopoSort())>toposort';
-      numbers     := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort';
-      <map(index-set-prop(|TopoSort()))>numbers
+      numbersI        := <add-indices;map(zip-repeat-1);concat;map(tuple-reverse)>toposort'; // name** -> (int, name*)* -> (int, name)** -> (int, name)* -> (name, int)*
+      <map(index-set-prop(|TopoSort()))>numbersI;
+      numbersJ        := <map(filter(not(name-is-abstract)));map(add-indices);concat;map(tuple-reverse)>toposort'; // name** -> name** -> (int, name)** -> (int, name)* -> (name, int)* 
+      <map(index-set-prop(|TopoSort2()))>numbersJ
       
     annotate-with-parent-entity    = id
     de-annotate-with-parent-entity = id

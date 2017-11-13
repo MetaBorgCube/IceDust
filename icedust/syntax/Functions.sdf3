@@ -1,0 +1,16 @@
+module Functions
+
+imports
+
+  Common
+  Expressions
+  Types
+  
+context-free syntax
+
+  Function.Function = <
+    <ID>(<{Parameter ", "}*>) : <AnyType><Multiplicity?> = <Exp>
+  >
+  
+  Parameter.Parameter = <<ID> : <AnyType><Multiplicity?>>
+  

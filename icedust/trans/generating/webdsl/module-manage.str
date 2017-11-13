@@ -43,6 +43,7 @@ rules
       x_getQueue         := <attributename-entityname-getqueue>x_name;
       e_name             := String(x_name);
       e_toposort         := String(<name-get-toposort;write-to-string>x_name);
+      e_toposort2        := String(<name-get-toposort2;write-to-string>x_name);
       e_strategy         := String(<name-get-calculation-strategy;write-to-string>x_name)
     with
       switch id
@@ -82,7 +83,8 @@ rules
         template x_action(showCount:Bool){
           row{
             column{
-              output(e_toposort)
+              output(e_toposort) " : "
+              output(e_toposort2)
             }
             column{
               output(e_qualifiedName)

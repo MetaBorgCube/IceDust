@@ -17,6 +17,7 @@ imports // functions
   generating/webdsl/module-ui
   generating/webdsl/model
   generating/webdsl/data
+  generating/webdsl/functions
   generating/webdsl/types
   api/model-names-api
   api/module-api
@@ -48,10 +49,10 @@ rules // module
       elem_manageRows*    := <modulename-get-arrinames-topo-default-derivation;flatten-list; map(membername-to-webdsl-elem-row   )>x_moduleName;
       def_manage*         := <modulename-get-arrinames-topo-default-derivation;flatten-list;fmap(membername-to-webdsl-defs-manage)>x_moduleName
     with
-      x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
-      x_eventualinterval := <modulename-get-eventualinterval>x_moduleName
+      stat_countDirtyUT* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirtyuptill-attributename-to-webdsl-stm)>x_moduleName;
+      stat_countDirty*   := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm      )>x_moduleName
     with
-      stat_countDirty* := <modulename-get-arrinames-topo-default-derivation-eventual;flatten-list;map(countdirty-attributename-to-webdsl-stm)>x_moduleName
+      def_func*          := <modulename-get-functionnames;fmap(functionname-to-webdsl-defs(err))>x_moduleName
     with
       sec_modelData* := section* |[
         section data
@@ -63,6 +64,10 @@ rules // module
         section model
         
           def_model*
+          
+        section functions
+        
+          def_func*
       ]|
     with
       if modulename-is-explorerui then
@@ -101,73 +106,40 @@ rules // module
             }
           }
           
-          invoke Settings.ensureTimers(x_eventualthreads, x_eventualinterval) every 1000 milliseconds //TODO: only call once
-          
           native class derivations.DirtyCollections as DirtyCollections {
             static getI() : Int
             static dirtyI(Int)
             static cleanI(Int)
+            static getJ() : Int
+            static setJ(Int)
           
             native1*
           }
           
-          function countDirty(o : Int) : Int{
+          function countDirtyUpTill(ii : Int) : Int{
+            var n := 0;
+            stat_countDirtyUT*
+            return n;
+          }
+          
+          function countDirty(ii : Int) : Int{
             var n := 0;
             stat_countDirty*
             return n;
           }
           
           function logCountDirty(){
-            var c := countDirty(2147483647);
-            if(c>0 && Settings.getLogeventualstatus()){
-              log("Eventual Calculation at ordering: " + DirtyCollections.getI() + ", queue size: " + c);
+            var ii       := DirtyCollections.getI();
+            var jj       := DirtyCollections.getJ();
+            var countAll := countDirtyUpTill(2147483647);
+            var countI   := countDirty(ii);
+            if(countAll>0 && Settings.getLogeventualstatus()){
+              log("Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll);
             }
           }
           
           invoke logCountDirty() every 1000 milliseconds
       ]|
-    with
-      if modulename-is-logincremental then
-        sec_logSettings* :=  section* |[
-          section log settings
-        
-            invoke Settings.setLogincremental(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings* :=  section* |[
-          section log settings
-        
-            invoke Settings.setLogincremental(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
-    with
-      if modulename-is-logeventualupdate then
-        sec_logSettings2* :=  section* |[
-          section log settings2
-        
-            invoke Settings.setLogeventualupdate(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings2* :=  section* |[
-          section log settings2
-        
-            invoke Settings.setLogeventualupdate(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
-    with
-      if modulename-is-logeventualstatus then
-        sec_logSettings3* :=  section* |[
-          section log settings3
-        
-            invoke Settings.setLogeventualstatus(true) every 1000 milliseconds //TODO: only call once
-        ]|
-      else
-        sec_logSettings3* :=  section* |[
-          section log settings3
-        
-            invoke Settings.setLogeventualstatus(false) every 1000 milliseconds //TODO: only call once
-        ]|
-      end
     with
       sec_hibernateTriggers* :=  section* |[
         section triggers
@@ -184,6 +156,20 @@ rules // module
     with
       sec_manage* :=  section* |[
         section manage
+        
+          template changeEnventualThreads(){
+            var xx : Int := Settings.getNumWorkers()
+            form{
+              input(xx)
+              toggleVisibility("Update number of eventual calculation threads"){
+                submit action{
+                  Settings.setNumWorkers(xx);
+                }{
+                  "yes, Update number of eventual calculation threads"
+                }
+              }
+            }
+          }
         
           page derivedvalues(showCount:Bool) {
             title{ "Manage Derived Values" }
@@ -206,6 +192,65 @@ rules // module
                 }
               }
             }
+            br
+            if(Settings.getLogincremental()){
+              toggleVisibility("disable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, disable log incremental"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log incremental"){
+                submit action{
+                  Settings.setLogincremental(!Settings.getLogincremental());
+                }{
+                  "yes, enable log incremental"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualupdate()){
+              toggleVisibility("disable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, disable log every eventual update"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log every eventual update"){
+                submit action{
+                  Settings.setLogeventualupdate(!Settings.getLogeventualupdate());
+                }{
+                  "yes, enable log every eventual update"
+                }
+              }
+            }
+            br
+            if(Settings.getLogeventualstatus()){
+              toggleVisibility("disable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, disable log eventual status every second"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable log eventual status every second"){
+                submit action{
+                  Settings.setLogeventualstatus(!Settings.getLogeventualstatus());
+                }{
+                  "yes, enable log eventual status every second"
+                }
+              }
+            }
+            br
+            changeEnventualThreads{}
             table{
               row{
                 column{ "Order" }
@@ -260,10 +305,10 @@ rules // module
               }
               elem_manageRows*
               row{
-                column{ output(DirtyCollections.getI()) }
+                column{ output(DirtyCollections.getI()) " : " output(DirtyCollections.getJ()) }
                 column{  }
                 column{  }
-                column{ output(countDirty(2147483647))  }
+                column{ output(countDirtyUpTill(2147483647))  }
                 column{  }
               }
             }
@@ -280,8 +325,8 @@ rules // module
           native class derivations.Settings as Settings{
             static getUpdatesEnabled( ): Bool
             static setUpdatesEnabled( Bool ): Void
-            static initTimers(Int, Int) : Void
-            static ensureTimers ( Int , Int ) : Void
+            static setNumWorkers( Int ): Void
+            static getNumWorkers(): Int
             static getLogincremental( ): Bool
             static setLogincremental( Bool ): Void
             static getLogeventualupdate( ): Bool
@@ -310,10 +355,6 @@ rules // module
         
           sec_asyncDirtyflag*
           
-          sec_logSettings*
-          sec_logSettings2*
-          sec_logSettings3*
-        
           sec_hibernateTriggers*
         
           sec_manage*
@@ -330,10 +371,6 @@ rules // module
         
           sec_asyncDirtyflag*
           
-          sec_logSettings*
-          sec_logSettings2*
-          sec_logSettings3*
-        
           sec_hibernateTriggers*
         
           sec_manage*

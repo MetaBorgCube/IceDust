@@ -47,7 +47,7 @@ rules
   first-class-relation-constr = ?FirstClassRelation(_,_,_,_)
   first-class-relation-constr = ?RelationInstance(_,_,_)
   first-class-relation-constr = ?RelationInstanceNoType(_,_)
-  inline-constr               = ?InlineAttribute(_,_,_,_)
+  inline-constr               = ?Inline()
   strategy-constr             = is-strategy
   eventual-calculation-constr = ?Eventual()
   eventual-calculation-constr = ?OnDemandEventual()
@@ -59,7 +59,7 @@ rules
   config-error-constr(|features) = ?FirstClassRelation(_,_,_,_)     ;where(!FirstClassRelations();not(fetch(?features)))
   config-error-constr(|features) = ?RelationInstance(_,_,_)         ;where(!FirstClassRelations();not(fetch(?features)))
   config-error-constr(|features) = ?RelationInstanceNoType(_,_)     ;where(!FirstClassRelations();not(fetch(?features)))
-  config-error-constr(|features) = ?InlineAttribute(_,_,_,_)        ;where(!Inlines            ();not(fetch(?features)))
+  config-error-constr(|features) = ?Inline()                        ;where(!Inlines            ();not(fetch(?features)))
   config-error-constr(|features) = is-strategy                      ;where(<not(elem(eq-no-anno))>(Strategies         (),features))
   config-error-constr(|features) = ?Eventual()                      ;where(!EventualCalculation();not(fetch(?features)))
   config-error-constr(|features) = ?OnDemandEventual()              ;where(!EventualCalculation();not(fetch(?features)))
@@ -69,7 +69,7 @@ rules
   config-error-constr = ?FirstClassRelation(_,_,_,_)     ;!FirstClassRelations()
   config-error-constr = ?RelationInstance(_,_,_)         ;!FirstClassRelations()
   config-error-constr = ?RelationInstanceNoType(_,_)     ;!FirstClassRelations()
-  config-error-constr = ?InlineAttribute(_,_,_,_)        ;!Inlines            ()
+  config-error-constr = ?Inline()                        ;!Inlines            ()
   config-error-constr = ?Eventual()                      ;!EventualCalculation()
   config-error-constr = ?OnDemandEventual()              ;!EventualCalculation()
   config-error-constr = is-strategy                      ;!Strategies         () //order matters, EventualCalculation() first

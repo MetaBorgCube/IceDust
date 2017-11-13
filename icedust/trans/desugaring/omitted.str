@@ -8,6 +8,7 @@ imports // constructors
 imports // functions
 
   api/config-api
+  api/functions-api
   api/model-api
   api/module-api
   api/data-api
@@ -27,6 +28,8 @@ rules
   omitted0 = module-generate-config-section // do before rest, don't traverse
   
   omitted1 = keep-origin(module-generate-strategy)
+  omitted1 = function-generate-mult
+  omitted1 = param-generate-mult
   omitted1 = attr-generate-mult
   omitted1 = role-generate-omitted
   omitted1 = shortcut-generate-omitted
@@ -42,6 +45,14 @@ rules
 rules // module strategy
 
   module-generate-strategy = is-module; try( module-has-no-strategy; ?m; module-set-strategy(!<custom-origin(|<module-get-modulename>m)>Some(<custom-origin(|<module-get-modulename>m)>Incremental())))
+
+rules // functions
+
+  function-generate-mult = function-has-no-mult; function-set-mult(!One())
+
+rules // params
+
+  param-generate-mult = param-has-no-mult; param-set-mult(!One())
 
 rules // attr fields
 
