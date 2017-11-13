@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/master/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/master/)
+[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/develop/)
 
 # IceDust ![](icedust/icons/icedust-32x32.png "IceDust logo")
 
