@@ -1,4 +1,4 @@
 ---
 dependencies:
   compile:
-  - org.metaborg.lang:icedust:0.8.1
+  - org.metaborg.lang:icedust:0.8.1-SNAPSHOT
