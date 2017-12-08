@@ -7,13 +7,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
   <artifactId>icedust</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1</version>
   <packaging>spoofax-language</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>parent.language</artifactId>
-    <version>2.2.1</version>
+    <version>2.3.0</version>
   </parent>
   
   <dependencies>

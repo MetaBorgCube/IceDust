@@ -33,12 +33,12 @@ public class Expressions {
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> choice_One_Many(T e1, Collection<U> e2) {
-    return e1 != null ? toCollection(e1) : (Collection<E>) e2;
+    return e1 != null ? (Collection<E>) toCollection(e1) : (Collection<E>) e2;
   }
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> choice_Many_One(Collection<T> e1, U e2) {
-    return e1.size() > 0 ? (Collection<E>) e1 : e2 != null ? toCollection(e2) : (Collection<E>) e1;
+    return e1.size() > 0 ? (Collection<E>) e1 : e2 != null ? (Collection<E>) toCollection(e2) : (Collection<E>) e1;
   }
 
   @SuppressWarnings("unchecked")
@@ -104,6 +104,87 @@ public class Expressions {
   }
 
   public static <E> Collection<E> difference_Many_Many(Collection<? extends E> e1, Collection<? extends E> e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    c.removeAll(e2);
+    return c;
+  }
+  
+  // multiplicity expressions WebDSL types
+  
+  public static <E> E choice_One_One_Object(E e1, E e2) {
+    return e1 != null ? e1 : e2;
+  }
+
+  public static <E> Collection<? extends E> choice_One_Many_Object(E e1, Collection<? extends E> e2) {
+    return e1 != null ? toCollection(e1) : e2;
+  }
+
+  public static <E> Collection<? extends E> choice_Many_One_Object(Collection<? extends E> e1, E e2) {
+    return e1.size() > 0 ? e1 : e2 != null ? toCollection(e2) : e1;
+  }
+
+  public static <E> Collection<? extends E> choice_Many_Many_Object(Collection<? extends E> e1, Collection<? extends E> e2) {
+    return e1.size() > 0 ? e1 : e2;
+  }
+
+  public static <E> Collection<E> merge_One_One_Object(E e1, E e2) {
+    Collection<E> c = emptyCollection();
+    if (e1 != null)
+      c.add(e1);
+    if (e2 != null)
+      c.add(e2);
+    return c;
+  }
+
+  public static <E> Collection<E> merge_One_Many_Object(E e1, Collection<? extends E> e2) {
+    Collection<E> c = emptyCollection();
+    if (e1 != null)
+      c.add(e1);
+    c.addAll(e2);
+    return c;
+  }
+
+  public static <E> Collection<E> merge_Many_One_Object(Collection<? extends E> e1, E e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    if (e2 != null)
+      c.add(e2);
+    return c;
+  }
+
+  public static <E> Collection<E> merge_Many_Many_Object(Collection<? extends E> e1, Collection<? extends E> e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    c.addAll(e2);
+    return c;
+  }
+  
+  public static <E> E difference_One_One_Object(E e1, E e2) {
+    if (e1 == null)
+      return null;
+    if (e1.equals(e2))
+      return null;
+    return e1;
+  }
+
+  public static <E> E difference_One_Many_Object(E e1, Collection<? extends E> e2) {
+    if (e1 == null)
+      return null;
+    if(e2.contains(e1))
+      return null;
+    return e1;
+  }
+
+  public static <E> Collection<E> difference_Many_One_Object(Collection<? extends E> e1, E e2) {
+    Collection<E> c = emptyCollection();
+    c.addAll(e1);
+    if (e2 != null)
+      c.removeAll(Collections.singleton(e2));
+    return c;
+  }
+
+  public static <E> Collection<E> difference_Many_Many_Object(Collection<? extends E> e1, Collection<? extends E> e2) {
     Collection<E> c = emptyCollection();
     c.addAll(e1);
     c.removeAll(e2);
@@ -553,13 +634,13 @@ public class Expressions {
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> conditional_One_One_Many(Boolean b, T i, Collection<U> j) {
     Collection<E> c = emptyCollection();
-    return b == null ? c : b ? toCollection(i) : (Collection<E>) j;
+    return b == null ? c : b ? (Collection<E>) toCollection(i) : (Collection<E>) j;
   }
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> conditional_One_Many_One(Boolean b, Collection<T> i, U j) {
     Collection<E> c = emptyCollection();
-    return b == null ? c : b ? (Collection<E>) i : toCollection(j);
+    return b == null ? c : b ? (Collection<E>) i : (Collection<E>) toCollection(j);
   }
 
   @SuppressWarnings("unchecked")
@@ -568,6 +649,27 @@ public class Expressions {
     return (Collection<E>) (b == null ? c : b ? i : j);
   }
 
+  // logic  expressions : conditional : WebDSL
+  
+  public static <E> E conditional_One_One_One_Object(Boolean b, E i, E j) {
+    return b == null ? null : b ? i : j;
+  }
+
+  public static <E> Collection<? extends E> conditional_One_One_Many_Object(Boolean b, E i, Collection<? extends E> j) {
+    Collection<E> c = emptyCollection();
+    return b == null ? c : b ? toCollection(i) : j;
+  }
+
+  public static <E> Collection<? extends E> conditional_One_Many_One_Object(Boolean b, Collection<? extends E> i, E j) {
+    Collection<E> c = emptyCollection();
+    return b == null ? c : b ? i : toCollection(j);
+  }
+
+  public static <E> Collection<? extends E> conditional_One_Many_Many_Object(Boolean b, Collection<? extends E> i, Collection<? extends E> j) {
+    Collection<E> c = emptyCollection();
+    return b == null ? c : b ? i : j;
+  }
+  
   // cast expressions
 
   public static Float asFloat_One(Integer i) {

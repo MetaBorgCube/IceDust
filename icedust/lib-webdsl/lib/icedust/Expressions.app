@@ -3,18 +3,18 @@ module lib/icedust/Expressions
 section java implementations
 
   native class lib.icedust.Expressions as Expressions{
-    static choice_One_One(Object, Object) : Object
-    static choice_One_Many(Object, List<Object>) : List<Object>
-    static choice_Many_One(List<Object>, Object) : List<Object>
-    static choice_Many_Many(List<Object>, List<Object>) : List<Object>
-    static merge_One_One(Object, Object) : List<Object>
-    static merge_One_Many(Object, List<Object>) : List<Object>
-    static merge_Many_One(List<Object>, Object) : List<Object>
-    static merge_Many_Many(List<Object>, List<Object>) : List<Object>
-    static difference_One_One(Object, Object) : Object
-    static difference_One_Many(Object, List<Object>) : Object
-    static difference_Many_One(List<Object>, Object) : List<Object>
-    static difference_Many_Many(List<Object>, List<Object>) : List<Object>
+    static choice_One_One_Object(Object, Object) : Object
+    static choice_One_Many_Object(Object, List<Object>) : List<Object>
+    static choice_Many_One_Object(List<Object>, Object) : List<Object>
+    static choice_Many_Many_Object(List<Object>, List<Object>) : List<Object>
+    static merge_One_One_Object(Object, Object) : List<Object>
+    static merge_One_Many_Object(Object, List<Object>) : List<Object>
+    static merge_Many_One_Object(List<Object>, Object) : List<Object>
+    static merge_Many_Many_Object(List<Object>, List<Object>) : List<Object>
+    static difference_One_One_Object(Object, Object) : Object
+    static difference_One_Many_Object(Object, List<Object>) : Object
+    static difference_Many_One_Object(List<Object>, Object) : List<Object>
+    static difference_Many_Many_Object(List<Object>, List<Object>) : List<Object>
     static first(List<Object>) : Object
     static first(List<Object>, Int) : List<Object>
     static indexOf(List<Object>, Object) : Int
@@ -69,10 +69,10 @@ section java implementations
     static neq_One_Many(Object, List<Object>) : Bool
     static neq_Many_One(List<Object>, Object) : Bool
     static neq_Many_Many(List<Object>, List<Object>) : Bool
-    static conditional_One_One_One(Bool, Object, Object) : Object
-    static conditional_One_One_Many(Bool, Object, List<Object>) : Object
-    static conditional_One_Many_One(Bool, List<Object>, Object) : Object
-    static conditional_One_Many_Many(Bool, List<Object>, List<Object>) : Object
+    static conditional_One_One_One_Object(Bool, Object, Object) : Object
+    static conditional_One_One_Many_Object(Bool, Object, List<Object>) : Object
+    static conditional_One_Many_One_Object(Bool, List<Object>, Object) : Object
+    static conditional_One_Many_Many_Object(Bool, List<Object>, List<Object>) : Object
     static asFloat_One(Int) : Float
     static asFloat_Many(List<Int> ) : List<Float>
     static asInteger_One(Float) : Int

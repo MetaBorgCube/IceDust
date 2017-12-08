@@ -23,11 +23,13 @@ imports // functions
 
 rules // WebDSL specific: no generics, explicit casts
   
-  webdsl-lib-call-cast = ?If(_,_,_)
+  webdsl-lib-call-cast-object = ?If(_,_,_)
 
-  webdsl-lib-call-cast = ?Merge(_, _)
-  webdsl-lib-call-cast = ?Difference(_, _)
-  webdsl-lib-call-cast = ?ChoiceLeft(_, _)
+  webdsl-lib-call-cast-object = ?Merge(_, _)
+  webdsl-lib-call-cast-object = ?Difference(_, _)
+  webdsl-lib-call-cast-object = ?ChoiceLeft(_, _)
+  
+  webdsl-lib-call-cast = webdsl-lib-call-cast-object
   
   webdsl-lib-call-cast = ?Function("first", _)
   webdsl-lib-call-cast = ?Function("elemAt",_)
@@ -41,14 +43,19 @@ rules // lib expression calls
       arg*            := <expr-get-arguments>e;
       e1*             := <map(expr-to-webdsl-expr(err))>arg*;
       x_methodpostfix := <lib-method-name>e;
+      if <webdsl-lib-call-cast-object> e then
+        x_methodpostfix2 := $[[x_methodpostfix]_Object]
+      else
+        x_methodpostfix2 := x_methodpostfix
+      end;
       if <webdsl-lib-call-cast> e then
         srt1          := <name-to-webdsl-srt(err)>e;
         result := exp |[
-          Expressions.x_methodpostfix(e1*) as srt1
+          Expressions.x_methodpostfix2(e1*) as srt1
         ]|
       else
         result := exp |[
-          Expressions.x_methodpostfix(e1*)
+          Expressions.x_methodpostfix2(e1*)
         ]|
       end
       

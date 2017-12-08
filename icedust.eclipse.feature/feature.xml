@@ -2,8 +2,8 @@
 <feature
   id="icedust.eclipse.feature"
   label="icedust language Eclipse plugin"
-  version="0.8.0"
+  version="0.8.1"
 >
-  <plugin id="icedust.eclipse" version="0.8.0" unpack="true" />
+  <plugin id="icedust.eclipse" version="0.8.1" unpack="true" />
   <includes id="org.metaborg.spoofax.eclipse.feature" version="0" />
 </feature>
