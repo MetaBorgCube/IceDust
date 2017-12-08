@@ -33,12 +33,12 @@ public class Expressions {
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> choice_One_Many(T e1, Collection<U> e2) {
-    return e1 != null ? toCollection(e1) : (Collection<E>) e2;
+    return e1 != null ? (Collection<E>) toCollection(e1) : (Collection<E>) e2;
   }
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> choice_Many_One(Collection<T> e1, U e2) {
-    return e1.size() > 0 ? (Collection<E>) e1 : e2 != null ? toCollection(e2) : (Collection<E>) e1;
+    return e1.size() > 0 ? (Collection<E>) e1 : e2 != null ? (Collection<E>) toCollection(e2) : (Collection<E>) e1;
   }
 
   @SuppressWarnings("unchecked")
@@ -553,13 +553,13 @@ public class Expressions {
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> conditional_One_One_Many(Boolean b, T i, Collection<U> j) {
     Collection<E> c = emptyCollection();
-    return b == null ? c : b ? toCollection(i) : (Collection<E>) j;
+    return b == null ? c : b ? (Collection<E>) toCollection(i) : (Collection<E>) j;
   }
 
   @SuppressWarnings("unchecked")
   public static <E, T extends E, U extends E> Collection<E> conditional_One_Many_One(Boolean b, Collection<T> i, U j) {
     Collection<E> c = emptyCollection();
-    return b == null ? c : b ? (Collection<E>) i : toCollection(j);
+    return b == null ? c : b ? (Collection<E>) i : (Collection<E>) toCollection(j);
   }
 
   @SuppressWarnings("unchecked")
