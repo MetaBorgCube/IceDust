@@ -29,7 +29,7 @@ language:
   sdf:
     sdf2table: java
   stratego:
-    format: jar
+    format: ctree
     args:
     - -la
     - stratego-lib
