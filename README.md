@@ -90,7 +90,7 @@ Or build the Editor (in Spoofax)
 
 ## Try the Examples
 
-See the [icedust.examples](icedust.examples).
+See the [icedust examples](icedust.example).
 
 There are three backends:
 
