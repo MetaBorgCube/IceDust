@@ -17,14 +17,14 @@ imports // generated runtime
   runtime/index/core
   runtime/index/legacy
   runtime/index/query
-  runtime/nabl/check
-  runtime/nabl/collect
-  runtime/nabl/constraints
-  runtime/nabl/entries
-  runtime/nabl/resolve
-  runtime/nabl/tasks
-  runtime/nabl/query
-  runtime/nabl/uri
+//  runtime/nabl/check
+//  runtime/nabl/collect
+//  runtime/nabl/constraints
+//  runtime/nabl/entries
+//  runtime/nabl/resolve
+//  runtime/nabl/tasks
+//  runtime/nabl/query
+//  runtime/nabl/uri
   runtime/relations/tasks
   runtime/task/core
   runtime/task/create
@@ -40,7 +40,7 @@ rules
   _insert-results-or-delay = insert-results-or-delay
   
   _pp-uri = pp-uri
-  _pp-ns = pp-ns
+//  _pp-ns = pp-ns
   
   _origin-track-forced(x) = origin-track-forced(x)
   _origin-text = origin-text
@@ -53,22 +53,22 @@ rules
   _add-annotation(|a) = add-annotation(|a)
   _remove-annotations(s) = remove-annotations(s)
   
-  _nabl-has-reference = nabl-has-reference
-  _nabl-uri-namespace = nabl-uri-namespace
-  _nabl-uri-parent = nabl-uri-parent
-  _nabl-uri-name = nabl-uri-name
-  _nabl-sub-uri(|namespace) = nabl-sub-uri(|namespace)
-  _nabl-collect-def = nabl-collect-def
-  
-  _nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
-  _nabl-lookup-lexical(|ctx, ns) = nabl-lookup-lexical(|ctx, ns)
-  _nabl-resolve-all-tasks(|ctx, ns, a) = nabl-resolve-all-tasks(|ctx, ns, a)
-  _nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
-  _nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+//  _nabl-has-reference = nabl-has-reference
+//  _nabl-uri-namespace = nabl-uri-namespace
+//  _nabl-uri-parent = nabl-uri-parent
+//  _nabl-uri-name = nabl-uri-name
+//  _nabl-sub-uri(|namespace) = nabl-sub-uri(|namespace)
+//  _nabl-collect-def = nabl-collect-def
+//  
+//  _nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
+//  _nabl-lookup-lexical(|ctx, ns) = nabl-lookup-lexical(|ctx, ns)
+//  _nabl-resolve-all-tasks(|ctx, ns, a) = nabl-resolve-all-tasks(|ctx, ns, a)
+//  _nabl-create-propconstraint(|ctx, prop, a) = nabl-create-propconstraint(|ctx, prop, a)
+//  _nabl-create-collectdefs(|ctx) = nabl-create-collectdefs(|ctx)
   
   _get-or-create-property-task(|ctx, prop) = get-or-create-property-task(|ctx, prop)
   
-  _nabl-uri = nabl-uri
+//  _nabl-uri = nabl-uri
   
 //  _get-type = get-type
 
@@ -122,7 +122,7 @@ rules
   
   _analysis-propose-completions(|language, project-path) = analysis-propose-completions(|language, project-path)
   
-  _nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
+//  _nabl-get-child-definitions(|namespace) = nabl-get-child-definitions(|namespace)
   
   _index-add(|value, source) = index-add(|value, source)
   _index-add(|source) = index-add(|source)
@@ -140,11 +140,11 @@ rules
   
   _get-property(|kind) = get-property(|kind)
   
-  _nabl-uri-qualifier = nabl-uri-qualifier
-  
-  _nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier)
-  
-  _nabl-nonunique-uri = nabl-nonunique-uri
+//  _nabl-uri-qualifier = nabl-uri-qualifier
+//  
+//  _nabl-extend-uri(|namespace, name, qualifier) = nabl-extend-uri(|namespace, name, qualifier)
+//  
+//  _nabl-nonunique-uri = nabl-nonunique-uri
   
   _nabl-prop-match(|kind, partition, relation, expected) = nabl-prop-match(|kind, partition, relation, expected)
   
