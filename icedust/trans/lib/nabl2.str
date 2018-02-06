@@ -8,11 +8,6 @@ imports // functions
   lib/lists-tuples
   nabl2/api
 
-signature constructors
-
-  Namespace : String -> Namespace
-
-  
 rules // store analysis to be able to query without passing the analysis
   
   store-analysis-resource: path -> None()
@@ -83,9 +78,9 @@ rules // compose nabl2 calls (hide occurrence behind namespaces)
   get-scope-assoc-name-with-label   = get-scope-assoc-names-with-labels;Hd           //@type Scope -> (Term, Label)
   get-scope-assoc-names             = get-scope-assoc-names-with-labels;map(Fst)     //@type Scope -> List(Term)
   get-scope-assoc-name              = get-scope-assoc-names;Hd                       //@type Scope -> Term
-  get-scope-reachable-names(|ns)    = get-reachable-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-reachable-names(|ns)    = get-reachable-decls;filter(where(nabl2-get-occurrence-ns;?ns));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-reachable-names2(|ns)   = get-scope-reachable-names(|ns) <+ ![]          //@type Scope -> List(Term)
-  get-scope-visible-names(|ns)      = get-visible-decls;filter(where(nabl2-get-occurrence-ns;?Namespace(ns)));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
+  get-scope-visible-names(|ns)      = get-visible-decls;filter(where(nabl2-get-occurrence-ns;?ns));map(nabl2-get-occurrence-name) //@type Scope -> List(Term)
   get-scope-visible-names2(|ns)     = get-scope-visible-names(|ns) <+ ![]          //@type Scope -> List(Term)
   get-scope-direct-edge-scopes      = get-scope-direct-edges;map(Snd)                //@type Scope -> List(Scope)
   get-scope-direct-edge-scope       = get-scope-direct-edge-scopes;Hd                //@type Scope -> Scope
