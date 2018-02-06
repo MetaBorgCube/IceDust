@@ -4,35 +4,35 @@ imports
   
   api/_runtime
 
-rules // find a definition ast node for a certain name (with URI annotated)
-  
-  name-to-ast(|ast) = (_nabl-uri <+ nabl-get-name;_nabl-uri); uri-to-ast(|ast)
-
-rules // find a definition ast node for a certain URI
-  
-  uri-to-ast(|ast) = ?target-uri;!ast;optimized-search-single(uri-to-ast-continue(|target-uri),uri-to-ast-succeed(|target-uri))
-      
-  uri-to-ast-succeed(|target-uri): ast-node -> ast-node
-    where
-      ast-node-uri := <nabl-get-name;_nabl-uri>ast-node;
-      <eq>(ast-node-uri, target-uri)
-      
-  uri-to-ast-continue(|target-uri): a->b
-    where
-      b := <ast-node-has-uri-which-is-prefix-to(|target-uri)>a
-      
-  uri-to-ast-continue(|target-uri): a->a
-    where
-      <not(_nabl-collect-def)>a
-
-  ast-node-has-uri-which-is-prefix-to(|target-uri): ast-node -> <id>
-    where
-      node-uri := <nabl-get-name;_nabl-uri>ast-node;
-      node-uri-ns := <_nabl-uri-namespace>node-uri;
-      target-uri-chopped := <_nabl-sub-uri(|node-uri-ns)>target-uri;
-      <eq>(target-uri-chopped, node-uri)
-  
-  nabl-get-name = fail
+//rules // find a definition ast node for a certain name (with URI annotated)
+//  
+//  name-to-ast(|ast) = (_nabl-uri <+ nabl-get-name;_nabl-uri); uri-to-ast(|ast)
+//
+//rules // find a definition ast node for a certain URI
+//  
+//  uri-to-ast(|ast) = ?target-uri;!ast;optimized-search-single(uri-to-ast-continue(|target-uri),uri-to-ast-succeed(|target-uri))
+//      
+//  uri-to-ast-succeed(|target-uri): ast-node -> ast-node
+//    where
+//      ast-node-uri := <nabl-get-name;_nabl-uri>ast-node;
+//      <eq>(ast-node-uri, target-uri)
+//      
+//  uri-to-ast-continue(|target-uri): a->b
+//    where
+//      b := <ast-node-has-uri-which-is-prefix-to(|target-uri)>a
+//      
+//  uri-to-ast-continue(|target-uri): a->a
+//    where
+//      <not(_nabl-collect-def)>a
+//
+//  ast-node-has-uri-which-is-prefix-to(|target-uri): ast-node -> <id>
+//    where
+//      node-uri := <nabl-get-name;_nabl-uri>ast-node;
+//      node-uri-ns := <_nabl-uri-namespace>node-uri;
+//      target-uri-chopped := <_nabl-sub-uri(|node-uri-ns)>target-uri;
+//      <eq>(target-uri-chopped, node-uri)
+//  
+//  nabl-get-name = fail
 
 rules // optimized search
   
