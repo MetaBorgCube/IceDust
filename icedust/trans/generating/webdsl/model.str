@@ -455,14 +455,18 @@ rules
         case name-is-root:
           ebd_dirtyFlagFlows* := ebd* |[          
             function x_dirtyFlagFlows() {
-              stat_flowsTo*
+              if(Settings.getDirtyFlaggingEnabled()){
+                stat_flowsTo*
+              }
             }
           ]|
         otherwise:
           ebd_dirtyFlagFlows* := ebd* |[          
             function x_dirtyFlagFlows() {
-              super.x_dirtyFlagFlows();
-              stat_flowsTo*
+              if(Settings.getDirtyFlaggingEnabled()){
+                super.x_dirtyFlagFlows();
+                stat_flowsTo*
+              }
             }
           ]|
       end

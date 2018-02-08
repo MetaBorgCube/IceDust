@@ -47,7 +47,7 @@
         </repository>
 		<repository>
 			<id>spoofax-eclipse-repo</id>
-			<url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.3.0/org.metaborg.spoofax.eclipse.updatesite-2.3.0-assembly.zip-unzip/</url>
+			<url>http://artifacts.metaborg.org/content/unzip/releases-unzipped/org/metaborg/org.metaborg.spoofax.eclipse.updatesite/2.4.0/org.metaborg.spoofax.eclipse.updatesite-2.4.0-assembly.zip-unzip/</url>
 			<layout>p2</layout>
 			<releases>
 				<enabled>false</enabled>
