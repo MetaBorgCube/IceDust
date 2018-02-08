@@ -1,5 +1,5 @@
 ---
-id: org.metaborg.lang:icedust:0.8.2
+id: org.metaborg.lang:icedust:0.8.2-SNAPSHOT
 name: icedust
 dependencies:
   compile:
