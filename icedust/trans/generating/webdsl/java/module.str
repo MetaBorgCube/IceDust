@@ -116,6 +116,42 @@ rules // module (or modulename) -> java compilation-unit
               return jj;
             }
           }
+  
+          private static final Object syncCountCollisions = new Object();
+          
+          private static int countCollisions = 0;
+          
+          public static void incrementCollision() {
+            synchronized(syncCountCollisions){
+                countCollisions += 1;
+            }
+          }
+          
+          public static int getCountCollisions() {
+            synchronized(syncCountCollisions){
+              int r = countCollisions;
+                countCollisions = 0;
+                return r;
+            }
+          }
+          
+          private static final Object syncCountCalculations = new Object();
+          
+          private static int countCalculations = 0;
+          
+          public static void incrementCalculation() {
+            synchronized(syncCountCalculations){
+                countCalculations += 1;
+            }
+          }
+          
+          public static int getCountCalculations() {
+            synchronized(syncCountCalculations){
+              int r = countCalculations;
+                countCalculations = 0;
+                return r;
+            }
+          }
           
           ~logincrementalJava
           ~logeventualupdateJava
