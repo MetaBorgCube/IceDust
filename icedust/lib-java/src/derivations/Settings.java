@@ -148,6 +148,7 @@ class WorkerSet {
                                     utils.HibernateUtil.getCurrentSession())) {
                                 java.io.PrintWriter out = new java.io.PrintWriter(System.out);
                                 ThreadLocalOut.push(out);
+                                DirtyCollections.incrementCalculation();
                                 webdsl.generated.functions.updateDerivationsAsyncThread_
                                         .updateDerivationsAsyncThread_(thisThread);
                                 utils.HibernateUtil.getCurrentSession().getTransaction().commit();
@@ -156,9 +157,11 @@ class WorkerSet {
                             }
                         } catch (org.hibernate.StaleStateException
                                 | org.hibernate.exception.LockAcquisitionException ex) {
-                            org.webdsl.logging.Logger
-                                    .error("updateDerivationsAsync() database collision, rescheduling");
+//                            org.webdsl.logging.Logger
+//                                    .error("updateDerivationsAsync() database collision, rescheduling");
 
+                            DirtyCollections.incrementCollision();
+                          
                             Settings.reschedule(thisThread);
 
                             utils.HibernateUtil.getCurrentSession().getTransaction().rollback();

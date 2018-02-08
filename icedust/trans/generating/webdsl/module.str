@@ -112,6 +112,10 @@ rules // module
             static cleanI(Int)
             static getJ() : Int
             static setJ(Int)
+            static incrementCollision()
+            static getCountCollisions() : Int
+            static incrementCalculation()
+            static getCountCalculations() : Int
           
             native1*
           }
@@ -133,8 +137,13 @@ rules // module
             var jj       := DirtyCollections.getJ();
             var countAll := countDirtyUpTill(2147483647);
             var countI   := countDirty(ii);
+            var collissions  := DirtyCollections.getCountCollisions();
+            var calculations := DirtyCollections.getCountCalculations();
             if(countAll>0 && Settings.getLogeventualstatus()){
-              log("Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll);
+              log(
+                "Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll +
+                ", calculations: " + calculations + ", collissions: " + collissions
+              );
             }
           }
           
