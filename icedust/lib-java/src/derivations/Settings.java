@@ -28,6 +28,16 @@ public class Settings {
         updatesEnabled = setting;
     }
 
+    static volatile boolean dirtyFlaggingEnabled = true;
+
+    public static boolean getDirtyFlaggingEnabled() {
+        return dirtyFlaggingEnabled;
+    }
+
+    public static void setDirtyFlaggingEnabled(boolean setting) {
+        dirtyFlaggingEnabled = setting;
+    }
+
     static WorkerSet workers;
 
     public Settings(int n, int millis) {

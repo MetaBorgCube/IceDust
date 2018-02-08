@@ -184,11 +184,11 @@ rules // module
             title{ "Manage Derived Values" }
             h1{ "Manage Derived Values" }
             if(Settings.getUpdatesEnabled()){
-              toggleVisibility("disable all derived value calculation"){
+              toggleVisibility("pause all derived value calculation"){
                 submit action{
                   Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
                 }{
-                  "yes, disable all derived value calculation"
+                  "yes, pause all derived value calculation"
                 }
               }
             }
@@ -198,6 +198,25 @@ rules // module
                   Settings.setUpdatesEnabled(!Settings.getUpdatesEnabled());
                 }{
                   "yes, enable all derived value calculation"
+                }
+              }
+            }
+            br
+            if(Settings.getDirtyFlaggingEnabled()){
+              toggleVisibility("disable dirty flagging"){
+                submit action{
+                  Settings.setDirtyFlaggingEnabled(!Settings.getDirtyFlaggingEnabled());
+                }{
+                  "yes, disable dirty flagging (note: this will make derived values inconsistent until manual recalculation!)"
+                }
+              }
+            }
+            else{
+              toggleVisibility("enable dirty flagging"){
+                submit action{
+                  Settings.setDirtyFlaggingEnabled(!Settings.getDirtyFlaggingEnabled());
+                }{
+                  "yes, enable dirty flagging"
                 }
               }
             }
@@ -334,6 +353,8 @@ rules // module
           native class derivations.Settings as Settings{
             static getUpdatesEnabled( ): Bool
             static setUpdatesEnabled( Bool ): Void
+            static getDirtyFlaggingEnabled( ): Bool
+            static setDirtyFlaggingEnabled( Bool ): Void
             static setNumWorkers( Int ): Void
             static getNumWorkers(): Int
             static getLogincremental( ): Bool
