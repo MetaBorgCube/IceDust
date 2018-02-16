@@ -10,45 +10,45 @@ rules
     e1_type <test? IsNumeric(),
     out_mult is upperboundOne of e1_mult,
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
     
   [[ Function("max", [e1]) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] := // identical to Min
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsNumeric(),
     out_mult is upperboundOne of e1_mult,
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
     
   [[ Function("avg", [e1]) ^ (s) : TTuple(e1_type, out_mult, e1_strat) ]] := // identical to Min
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsNumeric(),
     out_mult is upperboundOne of e1_mult,
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
     
   [[ Function("sum", [e1]) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsNumeric(),
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
     
   [[ Function("conj", [e1]) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsBoolean(),
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
 
   [[ Function("disj", [e1]) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] := // identical to Conj
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsBoolean(),
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
 
   [[ Function("concat", [e1]) ^ (s) : TTuple(e1_type, TOne(), e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
     e1_type <test? IsString(),
     e1_mult_u is multUpper of e1_mult,
-    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @ e1.
+    e1_mult_u == TUMany() | error $[Expected multiplicity of higher than One] @e1.
 
   [[ Function("count", [e1]) ^ (s) : TTuple(TInt(), TOne(), e1_strat) ]] :=
     [[ e1 ^ (s) : TTuple(e1_type, e1_mult, e1_strat) ]],
@@ -98,7 +98,7 @@ rules
     out_strat is strat.lub of (f_def_strat, es_strat).
     
   PairwiseEqual [[ l@[x | xs] ^ (s, expected) : TTuple(out_type, out_mult, out_strat) ]] :=
-    expected == [y | ys]  | error $[invalid number of arguments] @ l,
+    expected == [y | ys]  | error $[invalid number of arguments] @l,
     [[ x ^ (s) : TTuple(x_ty, x_mult, x_strat) ]],
     y == TTuple(y_ty, y_mult, y_strat),
     x_ty <sub? y_ty | error $[expected type: [y_ty], got: [x_ty]]@x,
@@ -108,5 +108,5 @@ rules
     out_mult is mulOrd.lub of (lift_mult, xs_mult).
     
   PairwiseEqual [[ l@[] ^ (s, expected) : TTuple(TNoValue(), TOne(), TIncremental()) ]] := 
-    expected == [] | error $[invalid number of arguments] @ l.
+    expected == [] | error $[invalid number of arguments] @l.
  

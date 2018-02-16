@@ -373,7 +373,7 @@ rules
     Entity{e1} <=I= expr_scope,
     expr_scope -P-> module_scope,
     [[ expr ^ (expr_scope) : TTuple(expr_type, expr_mult, expr_strat) ]],
-    m2 == ZeroOrMore() | warning $[Warning: multiplicity [m2] cannot be statically guaranteed.] @ m2,
+    m2 == ZeroOrMore() | warning $[Warning: multiplicity [m2] cannot be statically guaranteed.] @m2,
     expr_type  <sub?    e2_type  | error $[Type error: expected [e2_type] got [expr_type].]@expr,
     expr_mult  <mulOrd? m1_mult  | error $[Multiplicity error: expected [m1_mult] got [expr_mult].]@expr,
     expr_strat <strat?  st_strat | error $[Calculation strategy error: expected [st_strat] got [expr_strat].]@expr,
