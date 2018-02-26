@@ -6,7 +6,7 @@ imports
   nabl2shared
   nabl2runtime
   
-  static-semantics
+  analysis/static-semantics
 
   editor/pp
 

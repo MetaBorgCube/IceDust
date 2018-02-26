@@ -10,7 +10,7 @@ imports // constructors
 //  naming/_notNaBL
   analysis2/constructors
   analysis/_constructors
-  static-semantics
+  analysis/static-semantics
 
 imports // functions
 

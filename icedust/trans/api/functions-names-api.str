@@ -4,7 +4,7 @@ imports // constructors
 
   analysis2/constructors
   analysis/_constructors
-  static-semantics
+  analysis/static-semantics
 
 imports // functions
 
