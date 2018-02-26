@@ -1,22 +1,21 @@
-module static-semantics
+module analysis/static-semantics
 
 imports
 
-  config
-  data
-  expressions-casts
-  expressions-collections
-  expressions-functions
-  expressions-literals
-  expressions-logic
-  expressions-math
-  expressions-multiplicity-operators
-  expressions-references
-  functions2
-  map3
-  model
-  module
-  types
+  analysis/data
+  analysis/expressions-casts
+  analysis/expressions-collections
+  analysis/expressions-functions
+  analysis/expressions-literals
+  analysis/expressions-logic
+  analysis/expressions-math
+  analysis/expressions-multiplicity-operators
+  analysis/expressions-references
+  analysis/functions2
+  analysis/map3
+  analysis/model
+  analysis/module
+  analysis/types
 
 signature
 

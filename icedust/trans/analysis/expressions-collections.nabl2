@@ -1,4 +1,4 @@
-module expressions-collections
+module analysis/expressions-collections
 
 rules
 

@@ -1,4 +1,4 @@
-module functions2 //functions is a nabl2 keyword
+module analysis/functions2 //functions is a nabl2 keyword
 
 rules
 

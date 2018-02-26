@@ -1,4 +1,4 @@
-module expressions-references
+module analysis/expressions-references
 
 rules
 

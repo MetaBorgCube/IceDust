@@ -1,4 +1,4 @@
-module expressions-functions
+module analysis/expressions-functions
 
 rules
   

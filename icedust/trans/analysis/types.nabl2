@@ -1,4 +1,4 @@
-module types
+module analysis/types
 
 rules
   

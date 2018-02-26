@@ -1,4 +1,4 @@
-module map3
+module analysis/map3
 
 signature
 

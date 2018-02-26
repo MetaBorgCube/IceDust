@@ -1,4 +1,4 @@
-module expressions-literals
+module analysis/expressions-literals
 
 rules
   [[ Int(_)       ^ (s) : TTuple(TInt()     , TOne()      ,TIncremental()) ]] := true.

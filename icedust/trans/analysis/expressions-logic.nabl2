@@ -1,4 +1,4 @@
-module expressions-logic
+module analysis/expressions-logic
 
 rules
   

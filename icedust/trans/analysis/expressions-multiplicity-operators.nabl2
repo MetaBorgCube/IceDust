@@ -1,4 +1,4 @@
-module expressions-multiplicity-operators
+module analysis/expressions-multiplicity-operators
 
 rules
 
