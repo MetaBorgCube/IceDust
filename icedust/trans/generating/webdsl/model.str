@@ -435,13 +435,13 @@ rules
       end
     with // Expressions + Data Flows Layer
       switch id
-        case name-is-default-derived; name-has-expr:
+        case name-is-default-derived; name-has-expr     ; not(name-is-dontgenerateexpression):
           ebd_calculate* := ebd* |[
             function x_calculate() : srt_multType {
               return e_calculate;
             }
           ]|
-        case name-is-default-derived; not(name-has-expr):
+        case name-is-default-derived; not(name-has-expr); not(name-is-dontgenerateexpression):
           ebd_calculate* := ebd* |[
             function x_calculate() : srt_multType {
               return null; //TODO: throw exception
