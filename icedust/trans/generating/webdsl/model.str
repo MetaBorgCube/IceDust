@@ -710,9 +710,17 @@ rules
       x_flagDirty     := <name-flagdirty>x_attributeName;
       e_path          := <pathexpr-shorten-safe;expr-to-webdsl-expr(err)>pathexpr
     with
-      result := stat |[
-        x_entityName.x_flagDirty(e_path);
-      ]|
+      if <not(name-is-dontgenerateincomingpaths)>x_attributeName then
+        result := stat |[
+          x_entityName.x_flagDirty(e_path);
+        ]|
+      else // still generate the paths in dead code, so they can be seen in deltas
+        result := stat |[
+          if(false){
+            x_entityName.x_flagDirty(e_path);
+          }
+        ]|
+      end
 
   model-pathexpr-to-webdsl-stm2(err): pathexpr -> result
     with
