@@ -216,7 +216,9 @@ rules
   name-is-embedded     = attributename-is-embedded
   name-is-not-embedded = where(not(name-is-embedded))
   
-  name-is-ignore = where(get-property(|"Member","ignore");?Ignore())
+  name-is-dontgeneratefield         = where(<not(elem)>(Field()        , <get-property(|"Member","dontgenerate")>))
+  name-is-dontgenerateexpression    = where(<not(elem)>(Expression()   , <get-property(|"Member","dontgenerate")>))
+  name-is-dontgenerateincomingpaths = where(<not(elem)>(IncomingPaths(), <get-property(|"Member","dontgenerate")>))
 
 rules // shortcuts
 
