@@ -25,11 +25,12 @@ test type of aggr max   [[max(4 ++ 3 ++ 8)]]    run get-type2 to Int()
 test type of aggr avg   [[avg(1 ++ 3)]]         run get-type2 to Int()
 test type of aggr sum   [[sum(1 ++ 3)]]         run get-type2 to Int()
 test type of aggr concat[[concat("a" ++ "b")]]  run get-type2 to String()
-//test type of aggr count [[count("a" ++ "b")]]   run get-type2 to Int()
+test type of aggr count [[count("a" ++ "b")]]   run get-type2 to Int()
 test type of aggr disj  [[disj(true ++ false)]] run get-type2 to Boolean()
 test type of aggr conj  [[conj(true ++ false)]] run get-type2 to Boolean()
 
 test type of aggr min  Float  [[min(4.4 ++ 3.4)]] run get-type2 to Float()
+test type of aggr min  Float  [[min(2018-03-16 16:00:00 ++ 2018-03-15 16:00:00 )]] run get-type2 to Datetime()
 
 test error on aggr min String  [[ min("b" ++ "c")]] 1 error
 test error on aggr concat Int  [[ concat(2 ++ 3) ]] 1 error
