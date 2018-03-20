@@ -42,6 +42,7 @@ context-free syntax
   
   WebdslOption.EventualThreads  = <eventual threads: <INT>>
   WebdslOption.EventualInterval = <eventual interval: <INT> ms>
+  WebdslOption.EventualBatchSize = <eventual batch size: <INT>>
   
   WebdslOption.LogEventualUpdate = <log eventual update : <LogEventualUpdate>>
   LogEventualUpdate.None              = <no>

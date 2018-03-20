@@ -91,8 +91,9 @@ rules // module
   
   modulename-is-embedded = where(modulename-get-embedded;?Embedded())
   
-  modulename-get-eventualthreads  = get-property(|"Module","eventualthreads") <+!"1"
-  modulename-get-eventualinterval = get-property(|"Module","eventualinterval")<+!"100"
+  modulename-get-eventualthreads   = get-property(|"Module","eventualthreads") <+!"1"
+  modulename-get-eventualinterval  = get-property(|"Module","eventualinterval")<+!"100"
+  modulename-get-eventualbatchsize = get-property(|"Module","eventualbatchsize") <+!"1"
   
   modulename-get-logincremental = get-property(|"Module","logincremental") <+ !LogIncremental()
   modulename-is-logincremental  = where(modulename-get-logincremental;?LogIncremental())

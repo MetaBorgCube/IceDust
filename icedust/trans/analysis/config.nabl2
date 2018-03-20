@@ -32,6 +32,9 @@ rules
 
   [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.eventualinterval := t.
+    
+  [[ EventualBatchSize(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualbatchsize := t.
 
   [[ LogEventualUpdate(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.logeventualupdate := t.

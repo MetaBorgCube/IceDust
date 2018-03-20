@@ -166,7 +166,7 @@ rules // module
       sec_manage* :=  section* |[
         section manage
         
-          template changeEnventualThreads(){
+          template changeEventualThreads(){
             var xx : Int := Settings.getNumWorkers()
             form{
               input(xx)
@@ -175,6 +175,20 @@ rules // module
                   Settings.setNumWorkers(xx);
                 }{
                   "yes, Update number of eventual calculation threads"
+                }
+              }
+            }
+          }
+          
+          template changeCalcBatchSize(){
+            var xx : Int := Settings.getCalcBatchSize()
+            form{
+              input(xx)
+              toggleVisibility("Update batch size (calculations per transaction)"){
+                submit action{
+                  Settings.setCalcBatchSize(xx);
+                }{
+                  "yes, Update batch size (calculations per transaction)"
                 }
               }
             }
@@ -278,7 +292,8 @@ rules // module
               }
             }
             br
-            changeEnventualThreads{}
+            changeEventualThreads{}
+            changeCalcBatchSize{}
             table{
               row{
                 column{ "Order" }
@@ -357,6 +372,8 @@ rules // module
             static setDirtyFlaggingEnabled( Bool ): Void
             static setNumWorkers( Int ): Void
             static getNumWorkers(): Int
+            static setCalcBatchSize( Int ): Void
+            static getCalcBatchSize(): Int
             static getLogincremental( ): Bool
             static setLogincremental( Bool ): Void
             static getLogeventualupdate( ): Bool
