@@ -43,21 +43,22 @@ rules // module
   modulename-get-entityinstancename(|einame) = modulename-get-entityinstancenames;filter(eq-no-anno(|einame));Hd
   
   // string -> [string]
-  modulename-get-attributenames = modulename-get-entitynames;fmap(entityname-get-attributenames)
+  modulename-get-attributenames         = modulename-get-entitynames;fmap(entityname-get-attributenames)
+  modulename-get-attributenames-defined = modulename-get-entitynames;fmap(entityname-get-attributenames-defined)
   
-  modulename-get-attributenames-abstract = modulename-get-attributenames;filter(name-is-abstract)
-  modulename-get-attributenames-normal   = modulename-get-attributenames;filter(name-is-normal)
-  modulename-get-attributenames-derived  = modulename-get-attributenames;filter(name-is-derived)
-  modulename-get-attributenames-default  = modulename-get-attributenames;filter(name-is-default)
-  modulename-get-attributenames-inline   = modulename-get-attributenames;filter(name-is-inline)
+  modulename-get-attributenames-defined-abstract = modulename-get-attributenames-defined;filter(name-is-abstract)
+  modulename-get-attributenames-defined-normal   = modulename-get-attributenames-defined;filter(name-is-normal)
+  modulename-get-attributenames-defined-derived  = modulename-get-attributenames-defined;filter(name-is-derived)
+  modulename-get-attributenames-defined-default  = modulename-get-attributenames-defined;filter(name-is-default)
+  modulename-get-attributenames-defined-inline   = modulename-get-attributenames-defined;filter(name-is-inline)
   
-  modulename-get-attributenames-derived-inline           = modulename-get-attributenames-derived;filter(name-is-inline)
-  modulename-get-attributenames-derived-incremental      = modulename-get-attributenames-derived;filter(name-is-incremental     ;not(name-is-inline))
-  modulename-get-attributenames-derived-eventual         = modulename-get-attributenames-derived;filter(name-is-eventual        ;not(name-is-inline))
-  modulename-get-attributenames-derived-ondemandeventual = modulename-get-attributenames-derived;filter(name-is-ondemandeventual;not(name-is-inline))
+  modulename-get-attributenames-defined-derived-inline           = modulename-get-attributenames-defined-derived;filter(name-is-inline)
+  modulename-get-attributenames-defined-derived-incremental      = modulename-get-attributenames-defined-derived;filter(name-is-incremental     ;not(name-is-inline))
+  modulename-get-attributenames-defined-derived-eventual         = modulename-get-attributenames-defined-derived;filter(name-is-eventual        ;not(name-is-inline))
+  modulename-get-attributenames-defined-derived-ondemandeventual = modulename-get-attributenames-defined-derived;filter(name-is-ondemandeventual;not(name-is-inline))
   
-  modulename-get-attributenames-derived-eventual-base     = modulename-get-attributenames-derived-eventual ;filter(not(name-has-parent))
-  modulename-get-attributenames-derived-eventual-override = modulename-get-attributenames-derived-eventual;filter(    name-has-parent )
+  modulename-get-attributenames-defined-derived-eventual-base     = modulename-get-attributenames-defined-derived-eventual;filter(not(name-has-parent))
+  modulename-get-attributenames-defined-derived-eventual-override = modulename-get-attributenames-defined-derived-eventual;filter(    name-has-parent )
   
   modulename-get-attributenames-default-derivation = modulename-get-attributenames;filter(attributename-is-default-derivation)  
   
@@ -88,11 +89,13 @@ rules // module
   modulename-get-arrinames-topo-default-derivation-incremental = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-incremental));filter(list-not-empty)
   modulename-get-arrinames-topo-default-derivation-eventual    = modulename-get-arrinames-topo-default-derivation;map(filter(name-is-eventual));filter(list-not-empty)
   
-  modulename-get-relationnames = modulename-get-entitynames;fmap(entityname-get-relationnames)
+  modulename-get-relationnames         = modulename-get-entitynames;fmap(entityname-get-relationnames)
+  modulename-get-relationnames-defined = modulename-get-entitynames;fmap(entityname-get-relationnames-defined)
+  
   modulename-get-relationnames-left = modulename-get-relationnames;filter(relationname-is-left)
   
-  modulename-get-relationnames-normal  = modulename-get-relationnames;filter(name-is-normal)
-  modulename-get-relationnames-derived = modulename-get-relationnames;filter(name-is-derived)
+  modulename-get-relationnames-defined-normal  = modulename-get-relationnames-defined;filter(name-is-normal)
+  modulename-get-relationnames-defined-derived = modulename-get-relationnames-defined;filter(name-is-derived)
   
   modulename-get-rolenames = modulename-get-entitynames;fmap(entityname-get-rolenames)
   

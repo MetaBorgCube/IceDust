@@ -52,6 +52,8 @@ rules // entity
   entityname-get-arrinames-defined       = ?e;entityname-get-arrinames      ;filter(where(attributename-get-entityname;?e))
   entityname-get-shortcutnames-defined   = ?e;entityname-get-shortcutnames  ;filter(where(attributename-get-entityname;?e))
   entityname-get-relroleinvnames-defined = ?e;entityname-get-relroleinvnames;filter(where(attributename-get-entityname;?e))
+  entityname-get-attributenames-defined  = ?e;entityname-get-attributenames ;filter(where(attributename-get-entityname;?e))
+  entityname-get-relationnames-defined   = ?e;entityname-get-relationnames  ;filter(where(attributename-get-entityname;?e))
   
   entityname-is-noui                 = where(entityname-get-modulename;modulename-is-noui)
   entityname-is-explorerui           = where(entityname-get-modulename;modulename-is-explorerui)
