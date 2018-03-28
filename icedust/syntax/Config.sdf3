@@ -35,10 +35,14 @@ context-free syntax
   Embedded.None     = <no>
   Embedded.Embedded = <yes>
   
-  WebdslOption.Ignore = <ignore <ID>.<ID>>
+  WebdslOption.DontGenerate  = <dont generate <ID>.<ID> <{DontGenerate ", "}*>>
+  DontGenerate.Field         = <field>
+  DontGenerate.Expression    = <expression>
+  DontGenerate.IncomingPaths = <incoming paths>
   
   WebdslOption.EventualThreads  = <eventual threads: <INT>>
   WebdslOption.EventualInterval = <eventual interval: <INT> ms>
+  WebdslOption.EventualBatchSize = <eventual batch size: <INT>>
   
   WebdslOption.LogEventualUpdate = <log eventual update : <LogEventualUpdate>>
   LogEventualUpdate.None              = <no>

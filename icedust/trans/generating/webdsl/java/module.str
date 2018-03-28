@@ -52,10 +52,11 @@ rules // module (or modulename) -> java compilation-unit
         ]|
       end
     with
-      x_eventualthreads  := <modulename-get-eventualthreads> x_moduleName;
-      x_eventualinterval := <modulename-get-eventualinterval>x_moduleName;
+      x_eventualthreads   := <modulename-get-eventualthreads>  x_moduleName;
+      x_eventualinterval  := <modulename-get-eventualinterval> x_moduleName;
+      x_eventualbatchsize := <modulename-get-eventualbatchsize>x_moduleName;
       initTimersJava := class-body-dec |[
-        static Settings triggerByClassLoader = new Settings(x_eventualthreads, x_eventualinterval);
+        static Settings triggerByClassLoader = new Settings(x_eventualthreads, x_eventualinterval, x_eventualbatchsize);
       ]|
     with
       result := compilation-unit |[

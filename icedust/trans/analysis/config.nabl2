@@ -10,7 +10,7 @@ rules
   [[ WebDSLBackend(options) ^ (module_scope, module_name) ]] :=
     Map2 [[ options ^ (module_scope, module_name) ]].
     
-  [[ Ignore(e, m) ^ (module_scope, module_name) ]] :=
+  [[ DontGenerate(e, m, x) ^ (module_scope, module_name) ]] :=
     Entity{e} -> module_scope,
     Entity{e} |-> e_def,
     e_def : TEntity(e_type),
@@ -19,7 +19,7 @@ rules
     new new_scope,
     Member{m} -> new_scope,
     Member{m} |-> m_def,
-    m_def.ignore := Ignore().
+    m_def.dontgenerate := x.
 
   [[ UI(ui) ^ (module_scope, module_name) ]] :=
     Module{module_name}.ui := ui.
@@ -32,6 +32,9 @@ rules
 
   [[ EventualInterval(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.eventualinterval := t.
+    
+  [[ EventualBatchSize(t) ^ (module_scope, module_name) ]] :=
+    Module{module_name}.eventualbatchsize := t.
 
   [[ LogEventualUpdate(t) ^ (module_scope, module_name) ]] :=
     Module{module_name}.logeventualupdate := t.

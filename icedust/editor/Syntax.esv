@@ -26,6 +26,7 @@ menus
   menu: "Debug"
 
     action: "debug-get-ast-value" = debug-get-ast-value
+    action: "Count entities, attributes, relations, and functions" = debug-count-constructs (openeditor)
 
 views
   
