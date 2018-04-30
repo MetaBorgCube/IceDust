@@ -197,6 +197,11 @@ class WorkerSet {
                             Settings.reschedule(thisThread);
 
                             utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
+                        } catch (org.hibernate.ObjectNotFoundException ex) {
+                          // happens in two cases: objects get deleted but are still in queue, or objects are created and are in queue but creation-transaction fails
+                          DirtyCollections.incrementNotFound();
+                        
+                          utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
                         } catch (Exception ex) {
                             org.webdsl.logging.Logger.error(ex.getClass().getCanonicalName());
                             org.webdsl.logging.Logger.error("exception occured while executing timed function: "

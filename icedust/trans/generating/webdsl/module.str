@@ -114,6 +114,8 @@ rules // module
             static setJ(Int)
             static incrementCollision()
             static getCountCollisions() : Int
+            static incrementNotFound ( )
+            static getCountNotFound ( ) : Int
             static incrementCalculation()
             static getCountCalculations() : Int
           
@@ -138,11 +140,12 @@ rules // module
             var countAll := countDirtyUpTill(2147483647);
             var countI   := countDirty(ii);
             var collissions  := DirtyCollections.getCountCollisions();
+            var notfound     := DirtyCollections.getCountNotFound();
             var calculations := DirtyCollections.getCountCalculations();
             if(countAll>0 && Settings.getLogeventualstatus()){
               log(
                 "Eventual Calculation at ordering: " + ii + " : " + jj + ", queue size: " + countI + ", total queue size: " + countAll +
-                ", calculations: " + calculations + ", collissions: " + collissions
+                ", calculations: " + calculations + ", collissions: " + collissions + ", not found: " + notfound
               );
             }
           }
@@ -293,6 +296,7 @@ rules // module
             }
             br
             changeEventualThreads{}
+            br
             changeCalcBatchSize{}
             table{
               row{
