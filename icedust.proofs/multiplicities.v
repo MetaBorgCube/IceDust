@@ -135,30 +135,28 @@ Function avgo(l : list nat) : option nat :=
 Function conj(l : list bool) : bool := fold_left andb l true.
 Function disj(l : list bool) : bool := fold_left orb  l false.
 
-Fixpoint indexOf_nat (l : list nat) (x : nat) : option nat :=
+Fixpoint list_incr_all (l : list nat) : list nat :=
   match l with
-  | []     => None
+  | []     => []
+  | h :: t => (h + 1) :: (list_incr_all t)
+  end.
+
+Fixpoint indexOf_nat (l : list nat) (x : nat) : list nat :=
+  match l with
+  | []     => []
   | h :: t =>
       match eqb x h with
-      | true  => Some 0
-      | false =>
-          match indexOf_nat t x with
-          | None   => None
-          | Some i => Some (i+1)
-          end
+      | true  => 0 :: (list_incr_all (indexOf_nat t x))
+      | false => list_incr_all (indexOf_nat t x)
       end
   end.
-Fixpoint indexOf_bool (l : list bool) (x : bool) : option nat :=
+Fixpoint indexOf_bool (l : list bool) (x : bool) : list nat :=
   match l with
-  | []     => None
+  | []     => []
   | h :: t =>
       match beq x h with
-      | true  => Some 0
-      | false =>
-          match indexOf_bool t x with
-          | None   => None
-          | Some i => Some (i+1)
-          end
+      | true  => 0 :: (list_incr_all (indexOf_bool t x))
+      | false => list_incr_all (indexOf_bool t x)
       end
   end.
 
@@ -420,13 +418,13 @@ Inductive evalR : expr -> val -> Prop :=
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
       vtuples = list_pair_with2 v1s v2s ->
-      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_nat) vtuples)
+      EIndexOf e1 e2 \\ intv (flat_map (funtuple indexOf_nat) vtuples)
 
   | E_IndexOf_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       vtuples = list_pair_with2 v1s v2s ->
-      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_bool) vtuples)
+      EIndexOf e1 e2 \\ intv (flat_map (funtuple indexOf_bool) vtuples)
 
 where "e '\\' v" := (evalR e v) : type_scope.
 
@@ -734,11 +732,11 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_pair_with2 v1s v2s in
-          let vs := fmap (funtuple indexOf_nat) vtuples in
+          let vs := flat_map (funtuple indexOf_nat) vtuples in
           Some (intv vs)
       | Some (boolv v1s), Some (boolv v2s) =>
           let vtuples := list_pair_with2 v1s v2s in
-          let vs := fmap (funtuple indexOf_bool) vtuples in
+          let vs := flat_map (funtuple indexOf_bool) vtuples in
           Some (intv vs)
       | _,_ => None
       end
@@ -1491,7 +1489,7 @@ Inductive multR : expr -> mult -> Prop :=
   | M_IndexOf : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
-      EIndexOf e1 e2 ~ mult_lower_zero m2
+      EIndexOf e1 e2 ~ mult_lower_zero (mult_crossproduct m1 m2)
 
 where "e '~' m" := (multR e m) : type_scope.
 
@@ -1637,7 +1635,7 @@ Fixpoint multF (e : expr) : mult :=
   | EIndexOf e1 e2 =>
       let m1 := multF e1 in
       let m2 := multF e2 in
-      mult_lower_zero m2
+      mult_lower_zero (mult_crossproduct m1 m2)
 
   end.
 
