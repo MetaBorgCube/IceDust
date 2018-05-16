@@ -987,6 +987,8 @@ Inductive typeR : expr -> type -> Prop :=
 
 where "e ':' t" := (typeR e t) : type_scope.
 
+(* Note: not needed for proofs
+
 Fixpoint typeF (e : expr) : option type :=
   match e with
   | EInt n =>
@@ -1299,6 +1301,8 @@ Example typeR_1 :
   (EPlus (EInt 1) (EInt 2)) : intty.
 Proof. apply typeR_eq_typeF. simpl. reflexivity. Qed.
 
+*)
+
 (***** multiplicity checker *****
 
 Specification in same place as type checker. *)
@@ -1493,6 +1497,8 @@ Inductive multR : expr -> mult -> Prop :=
 
 where "e '~' m" := (multR e m) : type_scope.
 
+(* Note: not needed for proofs
+
 Fixpoint multF (e : expr) : mult :=
   match e with
   | EInt n =>
@@ -1667,6 +1673,8 @@ Example multR_2 :
   (EConcat (EInt 1) (EInt 2)) ~ oneOrMore.
 Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 
+*)
+
 
 (***** aux functions for proving type- and multiplicity soundness *****)
 Definition valty (v : val) : type :=
@@ -1775,33 +1783,26 @@ Proof.
   induction H.
   (* literals *)
   all: try(apply exists_some).
-  (* unops *)
-  all: simpl.
+  (* rest *)
   all: try rename IHtypeR into IHtypeR1.
-  all: destruct IHtypeR1 as [v1 Hv1].
-  all: rewrite Hv1.
-  all: apply evalR_eq_evalF in Hv1.
-  all: apply type_preservation with (v:=v1) in H ; try assumption.
-  all: unfold valty in H.
-  all: case_match; try congruence.
+  all:     destruct IHtypeR1 as [v1 Hv1].
+  all: try(destruct IHtypeR2 as [v2 Hv2]).
+  all: try(destruct IHtypeR3 as [v3 Hv3]).
+  all:     apply evalR_eq_evalF in Hv1 as Hv1R.
+  all: try(apply evalR_eq_evalF in Hv2 as Hv2R).
+  all: try(apply evalR_eq_evalF in Hv3 as Hv3R).
+  all:     apply type_preservation with (v:=v1) in H ; try assumption.
+  all: try(apply type_preservation with (v:=v2) in H0 ; try assumption).
+  all: try(apply type_preservation with (v:=v3) in H1 ; try assumption).
+  all:     unfold valty in H.
+  all: try(unfold valty in H0).
+  all: try(unfold valty in H1).
+  all: repeat(case_match; try congruence). (* splits up polymorphic cases *)
+  all: simpl.
+  all:     rewrite Hv1.
+  all: try(rewrite Hv2).
+  all: try(rewrite Hv3).
   all: try apply exists_some.
-  (* binops *)
-  all: destruct IHtypeR2 as [v2 Hv2].
-  all: rewrite Hv2.
-  all: apply evalR_eq_evalF in Hv2.
-  all: apply type_preservation with (v:=v2) in H0 ; try assumption.
-  all: unfold valty in H0.
-  all: case_match; try congruence.
-  all: try apply exists_some.
-  (* if *)
-  all: destruct IHtypeR3 as [v3 Hv3].
-  all: rewrite Hv3.
-  all: apply evalR_eq_evalF in Hv3.
-  all: apply type_preservation with (v:=v3) in H1 ; try assumption.
-  all: subst.
-  all: unfold valty in H1.
-  all: case_match; try congruence.
-  all: apply exists_some.
 Qed.
 
 Theorem typed_evalR_totality : forall (e : expr) t,
@@ -1863,7 +1864,7 @@ Proof.
   generalize dependent m.
   induction Hval.
   all: intros.
-  (* proof literals of mult one *)
+  (* proof literals and total aggregations *)
   all: try(simpl; constructor).
   (* get multiplicities of sub expressions *)
   all: inversion Hmult.
