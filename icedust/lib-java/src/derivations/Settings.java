@@ -175,8 +175,6 @@ class WorkerSet {
                             hibSession.beginTransaction();
                             if (GlobalVariables.initGlobalVars(ps.envGlobalAndSession,
                                     utils.HibernateUtil.getCurrentSession())) {
-                                java.io.PrintWriter out = new java.io.PrintWriter(System.out);
-                                ThreadLocalOut.push(out);
                                 int numCalcs = batchSize;
                                 while( 0 < numCalcs-- ) {
                                 	   DirtyCollections.incrementCalculation();
@@ -184,7 +182,6 @@ class WorkerSet {
                                         .updateDerivationsAsyncThread_(thisThread);
                                 }
                                 utils.HibernateUtil.getCurrentSession().getTransaction().commit();
-                                ThreadLocalOut.popChecked(out);
                                 ps.invalidatePageCacheIfNeeded();
                             }
                         } catch (org.hibernate.StaleStateException
