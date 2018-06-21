@@ -37,6 +37,7 @@ signature constructors //Function
   Function : Term * Term * Term * Term -> Term
   ExtendFunction : Term -> Term
   CachedFunction : Term -> Term
+  CachedGlobalFunction : Term -> Term
 
 signature constructors //Function Exp
   FunctionExp : Term * Term * Term -> Exp
@@ -84,3 +85,10 @@ signature constructors // template var args
   ExpVarArgForDesugared : Term * Term -> Term
   TemplateCallExpression : Term * Term * Term * Term -> Term
   TemplateVarArgSortInner : List(FormalVarArg) -> Sort
+
+signature constructors
+  NoOrder : Term
+
+signature constructors
+  IfWithElseIf : Term * Term * Term * Term -> Term
+  ElseIf : Term * Term -> Term
