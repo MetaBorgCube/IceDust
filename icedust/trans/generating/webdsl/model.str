@@ -590,7 +590,7 @@ rules
           ]|
         case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
-            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
+            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName, inverse-reference-only)
           ]|
         case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
@@ -608,9 +608,13 @@ rules
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
+        case (                is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : {srt_type}
+          ]|
+        case (name-is-right                   ); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
+          ebd_field* := ebd* |[
+            x_name : {srt_type} (inverse-reference-only)
           ]|
         otherwise:
           ebd_field* := []
