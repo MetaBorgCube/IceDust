@@ -4,24 +4,25 @@ imports
   libstratego-gpp
   webdsl/WebDSL
   webdsl/pp-hql
+  webdsl/constructors
 
 strategies
-// 
-//   webdsl-to-textfile(|file) =
-//     !TextFile(file, <pp-webdsl-to-string>)
-// 
-//   output-webdsl =
-//     if-pretty-printing(
-//       output-webdsl-to-file,
-//       output(id)
-//     )
-//     ; <exit> 0
-// 
-//   output-webdsl-to-file =
-//     let open-file   = <open-stream> (<id>, "w") <+ perror; <exit> 1
-//      in where( fout := <get-config; open-file <+ stdout-stream> "-o" )
-//         ; finally( pp-webdsl-to-stream(|fout), <fclose> fout )
-//     end
+//
+//  webdsl-to-textfile(|file) =  //commented out to make IceDust build
+//    !TextFile(file, <pp-webdsl-to-string>)
+//
+//  output-webdsl =
+//    if-pretty-printing(
+//      output-webdsl-to-file,
+//      output(id)
+//    )
+//    ; <exit> 0
+//
+//  output-webdsl-to-file =
+//    let open-file   = <open-stream> (<id>, "w") <+ perror; <exit> 1
+//     in where( fout := <get-config; open-file <+ stdout-stream> "-o" )
+//        ; finally( pp-webdsl-to-stream(|fout), <fclose> fout )
+//    end
 
   /**
    * Pretty-prints the WebDSL AST to a string.
@@ -62,7 +63,7 @@ strategies
 
   webdsl-pp-table =
     WebDslPpTable
-    <+ tbl := <import-term(lib/webdsl/WebDSL-pretty.pp.af)>
+    <+ tbl := <import-term(lib/webdsl/WebDSL-pretty.pp.af)>  //changed path make IceDust build
        ; rules( WebDslPpTable := tbl )
        ; !tbl
 
@@ -78,16 +79,19 @@ rules // stratego rules for selective pretty-printing without pretty-print table
   pp-type : a -> b with b := <pp-type-aux> a //assert that pp-type succeeds, otherwise a rule must be missing
   pp-type-aux : SimpleSort(x) -> x where not(<?"Void"> x)
   pp-type-aux : SimpleSort("Void") -> ""
-  // pp-type-aux : InternalSort(x) -> x
-  // pp-type-aux : ClassSort(c) -> c
-  // pp-type-aux : EntitySort(c) -> c
+//  pp-type-aux : InternalSort(x) -> x //commented out to make IceDust build
+  pp-type-aux : ClassSort(c) -> c
+//  pp-type-aux : EntitySort(c) -> c //commented out to make IceDust build
   pp-type-aux : GenericSort(x,[y]) -> <concat-strings> [x,"<",<pp-type> y,">"]
   pp-type-aux : RefSort(t) -> <concat-strings> ["Ref<",<pp-type> t,">"]
-  // pp-type-aux : FunctionSort(farg*,t_return) -> <concat-strings> ["function(",<pp-args> farg*,"):",<pp-type>t_return]
+  pp-type-aux : FunctionSort(farg*,t_return) -> <concat-strings> ["function(",<pp-args> farg*,"):",<pp-type>t_return]
   pp-type-aux : ArgEntityDerive(e,p) -> <concat-strings> [e," with ",p]
+  pp-type-aux : TemplateVarArgSort(typelist) -> <concat-strings> ["[", <pp-types> typelist, "]"]
+  pp-type-aux : TemplateVarArgSortInner(typelist) -> <concat-strings> ["(", <pp-types> typelist, ")"]
+  pp-type-aux : FormalVarArg(x,t) -> <concat-strings> [x," : ",<pp-type> t]
   pp-type-aux : "unknown" -> "error: unknown type"
 
   pp-args = map(pp-arg);separate-by(|", ");concat-strings
   pp-arg : a -> b with b := <pp-arg-aux> a //assert that pp-arg succeeds, otherwise a rule must be missing
   pp-arg-aux  : Arg(x,t) -> <concat-strings> [x," : ",<pp-type> t]
-  // pp-arg-aux  : UnnamedArg(t) -> <pp-type> t //used in FunctionSort
+  pp-arg-aux  : UnnamedArg(t) -> <pp-type> t //used in FunctionSort

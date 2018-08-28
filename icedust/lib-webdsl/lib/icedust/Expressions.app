@@ -39,8 +39,10 @@ section java implementations
     static sum_Float(List<Float>) : Float
     static max_Integer(List<Int>) : Int
     static max_Float(List<Float>) : Float
+    static max_Date(List<Date>)   : Date
     static min_Integer(List<Int>) : Int
     static min_Float(List<Float>) : Float
+    static min_Date(List<Date>)   : Date
     static conj(List<Bool>) : Bool
     static disj(List<Bool>) : Bool
     static concat(List<String>) : String

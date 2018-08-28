@@ -4,15 +4,15 @@ imports
   libstratego-gpp // ??
 
 strategies
-
-  // hql-to-textfile(|file) =
-  //   !TextFile(file, <pp-hql-to-string>)
-  //   
-  // output-hql-to-file = 
-  //   let open-file   = <open-stream> (<id>, "w") <+ perror; <exit> 1
-  //    in where( fout := <get-config; open-file <+ stdout-stream> "-o" )
-  //       ; finally( pp-hql-to-stream(|fout), <fclose> fout )
-  //   end
+//
+//  hql-to-textfile(|file) =  //commented out to make IceDust build
+//    !TextFile(file, <pp-hql-to-string>)
+//    
+//  output-hql-to-file = 
+//    let open-file   = <open-stream> (<id>, "w") <+ perror; <exit> 1
+//     in where( fout := <get-config; open-file <+ stdout-stream> "-o" )
+//        ; finally( pp-hql-to-stream(|fout), <fclose> fout )
+//    end
 
   /**
    * Pretty-prints the hql AST to a string.

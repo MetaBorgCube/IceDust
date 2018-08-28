@@ -40,9 +40,10 @@ public class Settings {
 
     static WorkerSet workers;
 
-    public Settings(int n, int millis) {
+    public Settings(int n, int millis, int calcBatchSize) {
         workers = new WorkerSet(millis);
         workers.setNumWorkers(n);
+        workers.setCalcBatchSize(calcBatchSize);
     }
 
     public static void setNumWorkers(int n) {
@@ -52,6 +53,15 @@ public class Settings {
     public static int getNumWorkers() {
         return workers.getNumWorkers();
     }
+    
+    public static void setCalcBatchSize(int n) {
+        workers.setCalcBatchSize(n);
+    }
+
+    public static int getCalcBatchSize() {
+        return workers.getCalcBatchSize();
+    }
+    
 
     public static boolean getLogincremental() {
         return DirtyCollections.logincremental;
@@ -97,6 +107,7 @@ public class Settings {
 class WorkerSet {
 
     private int numWorkers = 0;
+    private int batchSize = 1;
     private int checkInterval;
     private ScheduledExecutorService ex = Executors.newScheduledThreadPool(16); // is maxThreads
     private ArrayList<ScheduledFuture<?>> schedules = new ArrayList<ScheduledFuture<?>>();
@@ -122,6 +133,14 @@ class WorkerSet {
 
     public int getNumWorkers() {
         return numWorkers;
+    }
+    
+    public void setCalcBatchSize(int batchSize) {
+        this.batchSize = Math.min(batchSize, 100);
+    }
+
+    public int getCalcBatchSize() {
+    	    return this.batchSize;
     }
 
     private void addWorker(int index) {
@@ -156,13 +175,13 @@ class WorkerSet {
                             hibSession.beginTransaction();
                             if (GlobalVariables.initGlobalVars(ps.envGlobalAndSession,
                                     utils.HibernateUtil.getCurrentSession())) {
-                                java.io.PrintWriter out = new java.io.PrintWriter(System.out);
-                                ThreadLocalOut.push(out);
-                                DirtyCollections.incrementCalculation();
-                                webdsl.generated.functions.updateDerivationsAsyncThread_
+                                int numCalcs = batchSize;
+                                while( 0 < numCalcs-- ) {
+                                	   DirtyCollections.incrementCalculation();
+                                    webdsl.generated.functions.updateDerivationsAsyncThread_
                                         .updateDerivationsAsyncThread_(thisThread);
+                                }
                                 utils.HibernateUtil.getCurrentSession().getTransaction().commit();
-                                ThreadLocalOut.popChecked(out);
                                 ps.invalidatePageCacheIfNeeded();
                             }
                         } catch (org.hibernate.StaleStateException
@@ -175,6 +194,11 @@ class WorkerSet {
                             Settings.reschedule(thisThread);
 
                             utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
+                        } catch (org.hibernate.ObjectNotFoundException ex) {
+                          // happens in two cases: objects get deleted but are still in queue, or objects are created and are in queue but creation-transaction fails
+                          DirtyCollections.incrementNotFound();
+                        
+                          utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
                         } catch (Exception ex) {
                             org.webdsl.logging.Logger.error(ex.getClass().getCanonicalName());
                             org.webdsl.logging.Logger.error("exception occured while executing timed function: "

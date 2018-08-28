@@ -444,6 +444,20 @@ public class Expressions {
     }
     return max;
   }
+  
+  public static Date max_Date(Collection<Date> c) {
+    if (c.size() == 0)
+      return null;
+    long max = 0;
+    Date maxDate = null;
+    for (Date d : c) {
+    	  if(d.getTime() > max){
+    		  max = d.getTime();
+    		  maxDate = d;
+    	  }
+    }
+    return maxDate;
+  }
 
   public static Float max_Float(Collection<Float> c) {
     if (c.size() == 0)
@@ -468,6 +482,21 @@ public class Expressions {
     }
     return min;
   }
+  
+  public static Date min_Date(Collection<Date> c) {
+    if (c.size() == 0)
+      return null;
+    long min = Long.MAX_VALUE;
+    Date minDate = null;
+    for (Date d : c) {
+    	  if(min > d.getTime()) {
+    		min = d.getTime();
+    		minDate = d;
+    	  }
+    }
+    return minDate;
+  }
+	  
 
   public static Float min_Float(Collection<Float> c) {
     if (c.size() == 0)

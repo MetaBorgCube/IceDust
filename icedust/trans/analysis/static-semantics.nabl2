@@ -58,6 +58,7 @@ signature
     IsString    : TypeTest
     IsBoolean   : TypeTest
     CanCompare  : TypeTest
+    CanCompare2 : TypeTest
     CanAdd      : TypeTest
     CanSubtract : TypeTest
     CanDivide   : TypeTest
@@ -262,6 +263,11 @@ rules
     TInt()      <test! CanCompare(),
     TString()   <test! CanCompare(),
     TNoValue()  <test! CanCompare(),
+    
+    TDatetime() <test! CanCompare2(),
+    TFloat()    <test! CanCompare2(),
+    TInt()      <test! CanCompare2(),
+    TNoValue()  <test! CanCompare2(),
     
     TFloat()    <test! CanAdd(),
     TInt()      <test! CanAdd(),

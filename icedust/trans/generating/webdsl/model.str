@@ -42,6 +42,26 @@ rules // entities
             entity x_entityName : x_parentName {
               ebd_members*
               ebd_shortcuts*
+            
+              static function icedustFlagDirtyAllFields(ens : [x_entityName]) { // flag all fields dirty hook
+                for(en:x_entityName in ens){
+                  en.icedustFlagDirtyAllFields();
+                }
+              }
+              
+              function icedustFlagDirtyAllFields(){
+                super.icedustFlagDirtyAllFields();
+              }
+            
+              static function icedustDropCacheAllFields(ens : [x_entityName]) { // drop cache all fields hook
+                for(en:x_entityName in ens){
+                  en.icedustDropCacheAllFields();
+                }
+              }
+              
+              function icedustDropCacheAllFields(){
+                super.icedustDropCacheAllFields();
+              }
             }
           ]|
         otherwise:
@@ -49,6 +69,22 @@ rules // entities
             entity x_entityName {
               ebd_members*
               ebd_shortcuts*
+            
+              static function icedustFlagDirtyAllFields(ens : [x_entityName]) { // flag all fields dirty hook
+                for(en:x_entityName in ens){
+                  en.icedustFlagDirtyAllFields();
+                }
+              }
+              
+              function icedustFlagDirtyAllFields(){ }
+            
+              static function icedustDropCacheAllFields(ens : [x_entityName]) { // drop cache all fields hook
+                for(en:x_entityName in ens){
+                  en.icedustDropCacheAllFields();
+                }
+              }
+              
+              function icedustDropCacheAllFields(){ }
             }
           ]|
       end
@@ -435,13 +471,13 @@ rules
       end
     with // Expressions + Data Flows Layer
       switch id
-        case name-is-default-derived; name-has-expr:
+        case name-is-default-derived; name-has-expr     ; not(name-is-dontgenerateexpression):
           ebd_calculate* := ebd* |[
             function x_calculate() : srt_multType {
               return e_calculate;
             }
           ]|
-        case name-is-default-derived; not(name-has-expr):
+        case name-is-default-derived; not(name-has-expr); not(name-is-dontgenerateexpression):
           ebd_calculate* := ebd* |[
             function x_calculate() : srt_multType {
               return null; //TODO: throw exception
@@ -536,6 +572,29 @@ rules
       end
     with
       switch id
+        case(name-is-default-derived-ondemandinc-incremental-eventual-parent-not); name-is-to-one:
+          ebd_flagDirty2* := ebd* |[
+            extend function icedustFlagDirtyAllFields(){ // flag all fields dirty hook
+              x_entityName.x_flagDirty(this);
+            }
+            
+            extend function icedustDropCacheAllFields(){ // drop cache all fields hook
+              this.x_cache := null;
+            }
+          ]|
+        case(name-is-default-derived-ondemandinc-incremental-eventual-parent-not); name-is-to-many:
+          ebd_flagDirty2* := ebd* |[
+            extend function icedustFlagDirtyAllFields(){ // flag all fields dirty hook
+              x_entityName.x_flagDirty(this);
+            }
+            
+            //TODO: add drop cache all fields hook (note bidirectional relations 1-n are dropped on the 1-side, *-fields and n-n relations are not dropped now)
+          ]|
+        otherwise:
+          ebd_flagDirty2* := []
+      end
+    with
+      switch id
         case not(name-is-inline); not(name-has-parent):
           ebd_flagTransDirty* := ebd* |[
             x_flaggedTransDirty : Bool (transient, default=false)
@@ -572,45 +631,49 @@ rules
       end
     with // Data Structure Layer //TODO: move default and validate to separate code
       switch id
-        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not; not(name-is-ignore):
+        case name-is-left; name-is-zeroorone; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName, validate(x_get() != null, "" + e_name + " is required.")) // for embedded dont generate default/validate
           ]|
-        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-embedded; not(name-is-ignore):
+        case name-is-left; name-is-one; name-is-normal-default-parent-not; name-is-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : srt_type (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-ignore):
+        case name-is-left; name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : [srt_type] (inverse=x_inverseEntityName.x_inverseName)
           ]|
-        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-ignore):
+        case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
-            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
+            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName, inverse-reference-only)
           ]|
-        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
+        case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : srt_type (default=null)
           ]|
-        case (name-is-right + is-attributename); name-is-one;       name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-ignore):
+        case (name-is-right + is-attributename); name-is-one;       name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : srt_type (default=null, validate(x_get() != null, "" + e_name + " is required."))
           ]|
-        case (name-is-right + is-attributename); name-is-to-one;    name-is-normal-default-parent-not; name-is-embedded; not(name-is-ignore): // for embedded dont generate default/validate
+        case (name-is-right + is-attributename); name-is-to-one;    name-is-normal-default-parent-not; name-is-embedded; not(name-is-dontgeneratefield): // for embedded dont generate default/validate (fields are often defaulted to other values, and data which it not supposed to be nullable might still contain nulls)
           ebd_field* := ebd* |[
             x_name : srt_type
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-ignore):
+        case (name-is-right + is-attributename); name-is-to-many-ordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-ignore):
+        case (                is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : {srt_type}
+          ]|
+        case (name-is-right                   ); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
+          ebd_field* := ebd* |[
+            x_name : {srt_type} (inverse-reference-only)
           ]|
         otherwise:
           ebd_field* := []
@@ -679,6 +742,7 @@ rules
         ebd_calculate*
         ebd_dirtyFlagFlows*
         ebd_flagDirty*
+        ebd_flagDirty2*
         ebd_flagTransDirty*
         ebd_flagTransDirty2*
         ebd_field*
@@ -710,9 +774,17 @@ rules
       x_flagDirty     := <name-flagdirty>x_attributeName;
       e_path          := <pathexpr-shorten-safe;expr-to-webdsl-expr(err)>pathexpr
     with
-      result := stat |[
-        x_entityName.x_flagDirty(e_path);
-      ]|
+      if <not(name-is-dontgenerateincomingpaths)>x_attributeName then
+        result := stat |[
+          x_entityName.x_flagDirty(e_path);
+        ]|
+      else // still generate the paths in dead code, so they can be seen in deltas
+        result := stat |[
+          if(false){
+            x_entityName.x_flagDirty(e_path);
+          }
+        ]|
+      end
 
   model-pathexpr-to-webdsl-stm2(err): pathexpr -> result
     with

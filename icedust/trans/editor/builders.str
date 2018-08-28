@@ -147,3 +147,37 @@ rules
       result := <module-get-modulename;name-get-toposort;map(map(pp-toposort))>ast
 
   pp-toposort: name -> (<name-get-toposort>name, $[[<attributename-get-entityname>name].[name]])
+  
+  //TODO: make sub categories complete (this is specialized for 1 counting use case)
+  debug-count-constructs: (target, position, ast, path, project-path) -> (filename, result)
+    with
+      <store-analysis-resource>$[[project-path]/[path]];
+      analysis := <get-stored-analysis>;
+      analysis2 := <nabl2-get-custom-analysis>analysis;
+      <_index-set>analysis2
+    with
+      filename := <guarantee-extension(|"count-constructs.txt")> path
+    with
+      moduleName := <module-get-modulename>ast
+    with
+      result :=
+        $[
+        entities   : [        <modulename-get-entitynames                                     ;length>moduleName]
+          base       : [      <modulename-get-entitynames-base                                ;length>moduleName]
+          subtype    : [      <modulename-get-entitynames-subtype                             ;length>moduleName]
+        attributes : [        <modulename-get-attributenames-defined                          ;length>moduleName]
+          abstract   : [      <modulename-get-attributenames-defined-abstract                 ;length>moduleName]
+          user       : [      <modulename-get-attributenames-defined-normal                   ;length>moduleName]
+          derived    : [      <modulename-get-attributenames-defined-derived                  ;length>moduleName]
+            incremental: [    <modulename-get-attributenames-defined-derived-incremental      ;length>moduleName]
+            eventual   : [    <modulename-get-attributenames-defined-derived-eventual         ;length>moduleName]
+              base       : [  <modulename-get-attributenames-defined-derived-eventual-base    ;length>moduleName]
+              overridden : [  <modulename-get-attributenames-defined-derived-eventual-override;length>moduleName]
+            on-demand e: [    <modulename-get-attributenames-defined-derived-ondemandeventual ;length>moduleName]
+            inline     : [    <modulename-get-attributenames-defined-derived-inline           ;length>moduleName]
+          default    : [      <modulename-get-attributenames-defined-default                  ;length>moduleName]
+        relations  : [        <modulename-get-relationnames-defined                           ;length>moduleName] (counted on both sides of relation)
+          user       : [      <modulename-get-relationnames-defined-normal                    ;length>moduleName]
+          derived    : [      <modulename-get-relationnames-defined-derived                   ;length>moduleName]
+        functions  : [        <modulename-get-functionnames                                   ;length>moduleName]
+        ]

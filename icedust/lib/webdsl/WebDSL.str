@@ -422,6 +422,7 @@ signature
     NotNullAnno                           : Annotation
     SelectAnno                            : Id -> Annotation
     InlineAnno                            : List(Id) -> Annotation
+    InverseReferenceOnlyAnno              : Annotation
     InverseSlaveAnno                      : Id * Id -> Annotation
     IncompleteInverseAnno                 : Id -> Annotation
     InverseAnno                           : Id * Id -> Annotation
@@ -496,7 +497,7 @@ signature
     ActionCall                            : Id * List(Exp) -> ActionCall
                                           : InlineAction -> ActionCallOrInline
                                           : ActionCall -> ActionCallOrInline
-    PageCall                              : Id * List(Exp) -> PageCall
+    PageCall                              : PageId * List(Exp) -> PageCall
     ArgDefine                             : TemplateCallId * List(FormalArg) * List(TemplateElement) -> ArgDefine
     TemplateWith                          : List(ArgDefine) -> TemplateBody
     TemplateBody                          : List(TemplateElement) -> TemplateBody
@@ -522,12 +523,15 @@ signature
                                           : TemplateCallNoBody -> TemplateCall
                                           : TemplateCallNoArgs -> TemplateCall
     TemplateCall                          : TemplateCallId * List(Exp) * List(PropertyAssignment) * TemplateBody -> TemplateCall
+    TemplateTypeCaseDefault               : List(TemplateElement) -> TemplateTypeCaseAlt
+    TemplateTypeCaseAlt                   : Sort * List(TemplateElement) -> TemplateTypeCaseAlt
     TemplateCaseAltDefault                : List(TemplateElement) -> TemplateCaseAlt
-    TemplateCaseAlt                       : List(ConstValue) * List(TemplateElement) -> TemplateCaseAlt
+    TemplateCaseAlt                       : List(Exp) * List(TemplateElement) -> TemplateCaseAlt
     ElseTempl                             : List(TemplateElement) -> ElseTempl
     ElseIfTempl                           : Exp * List(TemplateElement) -> ElseIfTempl
     None                                  : ForSeparator
     ForSeparator                          : List(TemplateElement) -> ForSeparator
+    None                                  : OptSort
     None                                  : OptFilter
                                           : Filter -> OptFilter
     LimitNoLimit                          : Exp -> Limit
@@ -536,12 +540,12 @@ signature
     OrderDescending                       : Exp -> OrderExp
     OrderAscending                        : Exp -> OrderExp
     OrderNonSpecific                      : Exp -> OrderExp
-    Filter                                : Exp * OrderExp * Limit -> Filter
+    Filter                                : Exp * List(OrderExp) * Limit -> Filter
     FilterNoWhereNoOrderBy                : Limit -> Filter
-    FilterNoWhere                         : OrderExp * Limit -> Filter
+    FilterNoWhere                         : List(OrderExp) * Limit -> Filter
     FilterNoOrderBy                       : Exp * Limit -> Filter
-    FilterNoLimit                         : Exp * OrderExp -> Filter
-    FilterNoWhereNoLimit                  : OrderExp -> Filter
+    FilterNoLimit                         : Exp * List(OrderExp) -> Filter
+    FilterNoWhereNoLimit                  : List(OrderExp) -> Filter
     FilterNoOrderByNoLimit                : Exp -> Filter
     TemplateVarDeclInitInferred           : Id * Exp -> VarDecl
     TemplateVarDeclInit                   : Id * Sort * Exp -> VarDecl
@@ -564,6 +568,7 @@ signature
     XMLEmptyElement                       : QualName * List(Attribute) -> TemplateElement
     AccessControlImportRules              : Id * List(AccessControlImportRulesArg) -> TemplateElement
     ValidateAction                        : Block -> TemplateElement
+    AllPhasesAction                       : Block -> TemplateElement
     RenderAction                          : Block -> TemplateElement
     DataBindAction                        : Block -> TemplateElement
     OutputImage                           : ActionCallOrInline * List(PropertyAssignment) * List(TemplateElement) -> TemplateElement
@@ -580,6 +585,7 @@ signature
     Submit                                : Exp * ActionCallOrInline * ListStarOfUNDEFINED0 -> TemplateElement
     NavigateCall                          : PageCall * List(PropertyAssignment) * List(TemplateElement) -> TemplateElement
     NavigateCall                          : PageCall * ListStarOfUNDEFINED0 * List(TemplateElement) -> TemplateElement
+    TemplateTypeCase                      : Exp * Id * List(TemplateTypeCaseAlt) -> TemplateElement
     TemplateCase                          : List(Exp) * List(TemplateCaseAlt) -> TemplateElement
     IfElseIfTempl                         : Exp * List(TemplateElement) * List(ElseIfTempl) * Option(ElseTempl) -> TemplateElement
     SelectFromListNoProps                 : Exp * Exp * List(TemplateElement) -> TemplateElement
@@ -598,6 +604,7 @@ signature
                                           : Action -> TemplateElement
                                           : InitAction -> TemplateElement
     IgnoreAccessControl                   : Modifier
+    WebService                            : Modifier
     ReadOnlyPage                          : Modifier
     ExpireCache                           : Modifier
     TemplateDeprecated                    : Modifier
@@ -622,7 +629,7 @@ signature
     HTMLWrapperMultiple                   : List(HTMLWrapperBody) -> TemplateDefinition
                                           : HTMLWrapper -> TemplateDefinition
     DefineTemplate                        : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
-    DefinePage                            : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
+    DefinePage                            : List(Modifier) * PageId * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
     LocalRedefine                         : List(Modifier) * Id * List(FormalArg) * Id * OptLocalRedefineArgs -> TemplateDefinition
     Define                                : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
     DeriveWebServices                     : Id * Id -> Definition
@@ -662,8 +669,9 @@ signature
     HqlQueryLimitOffset                   : QueryRule_HQL * LimitValueExp * LimitValueExp -> HqlExp
     HqlQueryLimit                         : QueryRule_HQL * LimitValueExp -> HqlExp
     HqlQuery                              : QueryRule_HQL -> HqlExp
-    ForExpNoFilter                        : Exp * Id * Sort * Exp -> ForExp
-    ForExp                                : Exp * Id * Sort * Exp * Filter -> ForExp
+    None                                  : OptGroupBy
+    GroupBy                               : Exp -> OptGroupBy
+    ForExp                                : Exp * Id * OptSort * Exp * OptFilter * OptGroupBy -> ForExp
     Mapping                               : Exp * Exp -> Mapping
     Assignment                            : Exp * Exp -> Assignment
     IncompleteObjectPropertyAssignment    : Id -> ObjectPropertyAssignment
@@ -725,9 +733,10 @@ signature
     Var                                   : VarId -> Exp
                                           : ConstValue -> Exp
     IfExp                                 : Exp * Exp * Exp -> Exp
-    CaseDefault                           : Block -> Case
-    CaseAlt                               : ConstValue * Block -> Case
-    ElseIf                                : Exp * Block -> ElseIfStatement
+    TypeCaseStmtDefault                   : Block -> TypeCaseAlt
+    TypeCaseStmtAlt                       : Sort * Block -> TypeCaseAlt
+    CaseStmtDefault                       : Block -> Case
+    CaseStmtAlt                           : List(Exp) * Block -> Case
     VarDeclInitInferred                   : Id * Exp -> VarDeclStat
     VarDeclInit                           : Id * Sort * Exp -> VarDeclStat
     VarDecl                               : Id * Sort -> VarDeclStat
@@ -744,8 +753,8 @@ signature
     ForAllStmt                            : Id * Sort * OptFilter * Block -> Statement
     ForStmtInferred                       : Id * Exp * OptFilter * Block -> Statement
     ForStmt                               : Id * Sort * Exp * OptFilter * Block -> Statement
-    Case                                  : Exp * List(Case) -> Statement
-    IfWithElseIf                          : Exp * Block * List(ElseIfStatement) * Block -> Statement
+    TypeCaseStmt                          : Exp * Id * List(TypeCaseAlt) -> Statement
+    CaseStmt                              : List(Exp) * List(Case) -> Statement
     IfNoElse                              : Exp * Block -> Statement
     If                                    : Exp * Block * Block -> Statement
                                           : VarDeclStat -> Statement
@@ -806,6 +815,7 @@ signature
                                           : Path_HQL -> Expression_HQL
     Indices                               : Path_HQL -> Expression_HQL
     Elements                              : Path_HQL -> Expression_HQL
+    SubString                             : Expression_HQL * Expression_HQL * Expression_HQL -> Expression_HQL
     Size                                  : Expression_HQL -> Expression_HQL
     Count                                 : Expression_HQL -> Expression_HQL
     CountStar                             : Expression_HQL
@@ -869,19 +879,20 @@ signature
                                           : String -> SectionName
                                           : String -> ModuleName
                                           : String -> ExtendedId
+                                          : String -> PageId
                                           : String -> Id
     QualifiedElementsCall                 : Id -> TemplateCallId
                                           : String -> TemplateCallId
 
 
-//signature
-//  constructors
-//    Some : a -> Option(a)
-//    None : Option(a)
-//
-//
-//signature
-//  constructors
-//    Cons : a * List(a) -> List(a)
-//    Nil  : List(a)
-//    Conc : List(a) * List(a) -> List(a)
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+
+
+signature
+  constructors
+    Cons : a * List(a) -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)
