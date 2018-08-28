@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/icedust.eclipse.feature_0.8.3.qualifier.jar" id="icedust.eclipse.feature" version="0.8.3.qualifier">
+   <feature url="features/icedust.eclipse.feature_1.0.0.jar" id="icedust.eclipse.feature" version="1.0.0">
       <category name="icedust"/>
    </feature>
    <category-def name="icedust" label="icedust language Eclipse plugin">

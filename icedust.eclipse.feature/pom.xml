@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
   <artifactId>icedust.eclipse.feature</artifactId>
-  <version>0.8.3-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>eclipse-feature</packaging>
 
   <parent>
