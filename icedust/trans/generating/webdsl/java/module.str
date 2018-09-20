@@ -135,6 +135,28 @@ rules // module (or modulename) -> java compilation-unit
                 return r;
             }
           }
+
+          private static final Object syncNotFound = new Object();
+          
+          private static int countNotFound = 0;
+        
+          public static void incrementNotFound()
+          { 
+            synchronized(syncNotFound)
+            { 
+              countNotFound += 1;
+            }
+          }
+        
+          public static int getCountNotFound()
+          { 
+            synchronized(syncNotFound)
+            { 
+              int r = countNotFound;
+              countNotFound = 0;
+              return r;
+            }
+          }
           
           private static final Object syncCountCalculations = new Object();
           

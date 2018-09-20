@@ -175,8 +175,6 @@ class WorkerSet {
                             hibSession.beginTransaction();
                             if (GlobalVariables.initGlobalVars(ps.envGlobalAndSession,
                                     utils.HibernateUtil.getCurrentSession())) {
-                                java.io.PrintWriter out = new java.io.PrintWriter(System.out);
-                                ThreadLocalOut.push(out);
                                 int numCalcs = batchSize;
                                 while( 0 < numCalcs-- ) {
                                 	   DirtyCollections.incrementCalculation();
@@ -184,7 +182,6 @@ class WorkerSet {
                                         .updateDerivationsAsyncThread_(thisThread);
                                 }
                                 utils.HibernateUtil.getCurrentSession().getTransaction().commit();
-                                ThreadLocalOut.popChecked(out);
                                 ps.invalidatePageCacheIfNeeded();
                             }
                         } catch (org.hibernate.StaleStateException
@@ -197,6 +194,11 @@ class WorkerSet {
                             Settings.reschedule(thisThread);
 
                             utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
+                        } catch (org.hibernate.ObjectNotFoundException ex) {
+                          // happens in two cases: objects get deleted but are still in queue, or objects are created and are in queue but creation-transaction fails
+                          DirtyCollections.incrementNotFound();
+                        
+                          utils.HibernateUtil.getCurrentSession().getTransaction().rollback();
                         } catch (Exception ex) {
                             org.webdsl.logging.Logger.error(ex.getClass().getCanonicalName());
                             org.webdsl.logging.Logger.error("exception occured while executing timed function: "

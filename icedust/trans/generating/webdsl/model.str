@@ -42,6 +42,26 @@ rules // entities
             entity x_entityName : x_parentName {
               ebd_members*
               ebd_shortcuts*
+            
+              static function icedustFlagDirtyAllFields(ens : [x_entityName]) { // flag all fields dirty hook
+                for(en:x_entityName in ens){
+                  en.icedustFlagDirtyAllFields();
+                }
+              }
+              
+              function icedustFlagDirtyAllFields(){
+                super.icedustFlagDirtyAllFields();
+              }
+            
+              static function icedustDropCacheAllFields(ens : [x_entityName]) { // drop cache all fields hook
+                for(en:x_entityName in ens){
+                  en.icedustDropCacheAllFields();
+                }
+              }
+              
+              function icedustDropCacheAllFields(){
+                super.icedustDropCacheAllFields();
+              }
             }
           ]|
         otherwise:
@@ -49,6 +69,22 @@ rules // entities
             entity x_entityName {
               ebd_members*
               ebd_shortcuts*
+            
+              static function icedustFlagDirtyAllFields(ens : [x_entityName]) { // flag all fields dirty hook
+                for(en:x_entityName in ens){
+                  en.icedustFlagDirtyAllFields();
+                }
+              }
+              
+              function icedustFlagDirtyAllFields(){ }
+            
+              static function icedustDropCacheAllFields(ens : [x_entityName]) { // drop cache all fields hook
+                for(en:x_entityName in ens){
+                  en.icedustDropCacheAllFields();
+                }
+              }
+              
+              function icedustDropCacheAllFields(){ }
             }
           ]|
       end
@@ -536,6 +572,29 @@ rules
       end
     with
       switch id
+        case(name-is-default-derived-ondemandinc-incremental-eventual-parent-not); name-is-to-one:
+          ebd_flagDirty2* := ebd* |[
+            extend function icedustFlagDirtyAllFields(){ // flag all fields dirty hook
+              x_entityName.x_flagDirty(this);
+            }
+            
+            extend function icedustDropCacheAllFields(){ // drop cache all fields hook
+              this.x_cache := null;
+            }
+          ]|
+        case(name-is-default-derived-ondemandinc-incremental-eventual-parent-not); name-is-to-many:
+          ebd_flagDirty2* := ebd* |[
+            extend function icedustFlagDirtyAllFields(){ // flag all fields dirty hook
+              x_entityName.x_flagDirty(this);
+            }
+            
+            //TODO: add drop cache all fields hook (note bidirectional relations 1-n are dropped on the 1-side, *-fields and n-n relations are not dropped now)
+          ]|
+        otherwise:
+          ebd_flagDirty2* := []
+      end
+    with
+      switch id
         case not(name-is-inline); not(name-has-parent):
           ebd_flagTransDirty* := ebd* |[
             x_flaggedTransDirty : Bool (transient, default=false)
@@ -590,7 +649,7 @@ rules
           ]|
         case name-is-left; name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
-            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName)
+            x_name : {srt_type} (inverse=x_inverseEntityName.x_inverseName, inverse-reference-only)
           ]|
         case (name-is-right + is-attributename); name-is-zeroorone; name-is-normal-default-parent-not; name-is-not-embedded; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
@@ -608,9 +667,13 @@ rules
           ebd_field* := ebd* |[
             x_name : [srt_type]
           ]|
-        case (name-is-right + is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
+        case (                is-attributename); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
           ebd_field* := ebd* |[
             x_name : {srt_type}
+          ]|
+        case (name-is-right                   ); name-is-to-many-unordered; name-is-normal-default-parent-not; not(name-is-dontgeneratefield):
+          ebd_field* := ebd* |[
+            x_name : {srt_type} (inverse-reference-only)
           ]|
         otherwise:
           ebd_field* := []
@@ -679,6 +742,7 @@ rules
         ebd_calculate*
         ebd_dirtyFlagFlows*
         ebd_flagDirty*
+        ebd_flagDirty2*
         ebd_flagTransDirty*
         ebd_flagTransDirty2*
         ebd_field*

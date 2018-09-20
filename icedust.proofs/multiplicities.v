@@ -135,30 +135,28 @@ Function avgo(l : list nat) : option nat :=
 Function conj(l : list bool) : bool := fold_left andb l true.
 Function disj(l : list bool) : bool := fold_left orb  l false.
 
-Fixpoint indexOf_nat (l : list nat) (x : nat) : option nat :=
+Fixpoint list_incr_all (l : list nat) : list nat :=
   match l with
-  | []     => None
+  | []     => []
+  | h :: t => (h + 1) :: (list_incr_all t)
+  end.
+
+Fixpoint indexOf_nat (l : list nat) (x : nat) : list nat :=
+  match l with
+  | []     => []
   | h :: t =>
       match eqb x h with
-      | true  => Some 0
-      | false =>
-          match indexOf_nat t x with
-          | None   => None
-          | Some i => Some (i+1)
-          end
+      | true  => 0 :: (list_incr_all (indexOf_nat t x))
+      | false => list_incr_all (indexOf_nat t x)
       end
   end.
-Fixpoint indexOf_bool (l : list bool) (x : bool) : option nat :=
+Fixpoint indexOf_bool (l : list bool) (x : bool) : list nat :=
   match l with
-  | []     => None
+  | []     => []
   | h :: t =>
       match beq x h with
-      | true  => Some 0
-      | false =>
-          match indexOf_bool t x with
-          | None   => None
-          | Some i => Some (i+1)
-          end
+      | true  => 0 :: (list_incr_all (indexOf_bool t x))
+      | false => list_incr_all (indexOf_bool t x)
       end
   end.
 
@@ -420,13 +418,13 @@ Inductive evalR : expr -> val -> Prop :=
       e1 \\ intv v1s ->
       e2 \\ intv v2s ->
       vtuples = list_pair_with2 v1s v2s ->
-      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_nat) vtuples)
+      EIndexOf e1 e2 \\ intv (flat_map (funtuple indexOf_nat) vtuples)
 
   | E_IndexOf_Bool : forall (e1 e2 : expr) v1s v2s vtuples,
       e1 \\ boolv v1s ->
       e2 \\ boolv v2s ->
       vtuples = list_pair_with2 v1s v2s ->
-      EIndexOf e1 e2 \\ intv (fmap (funtuple indexOf_bool) vtuples)
+      EIndexOf e1 e2 \\ intv (flat_map (funtuple indexOf_bool) vtuples)
 
 where "e '\\' v" := (evalR e v) : type_scope.
 
@@ -734,11 +732,11 @@ Fixpoint evalF (e : expr) : option val :=
       match v1, v2 with
       | Some (intv v1s), Some (intv v2s) =>
           let vtuples := list_pair_with2 v1s v2s in
-          let vs := fmap (funtuple indexOf_nat) vtuples in
+          let vs := flat_map (funtuple indexOf_nat) vtuples in
           Some (intv vs)
       | Some (boolv v1s), Some (boolv v2s) =>
           let vtuples := list_pair_with2 v1s v2s in
-          let vs := fmap (funtuple indexOf_bool) vtuples in
+          let vs := flat_map (funtuple indexOf_bool) vtuples in
           Some (intv vs)
       | _,_ => None
       end
@@ -988,6 +986,8 @@ Inductive typeR : expr -> type -> Prop :=
       EIndexOf e1 e2 : intty
 
 where "e ':' t" := (typeR e t) : type_scope.
+
+(* Note: not needed for proofs
 
 Fixpoint typeF (e : expr) : option type :=
   match e with
@@ -1301,6 +1301,8 @@ Example typeR_1 :
   (EPlus (EInt 1) (EInt 2)) : intty.
 Proof. apply typeR_eq_typeF. simpl. reflexivity. Qed.
 
+*)
+
 (***** multiplicity checker *****
 
 Specification in same place as type checker. *)
@@ -1491,9 +1493,11 @@ Inductive multR : expr -> mult -> Prop :=
   | M_IndexOf : forall (e1 e2 : expr) m1 m2,
       e1 ~ m1 ->
       e2 ~ m2 ->
-      EIndexOf e1 e2 ~ mult_lower_zero m2
+      EIndexOf e1 e2 ~ mult_lower_zero (mult_crossproduct m1 m2)
 
 where "e '~' m" := (multR e m) : type_scope.
+
+(* Note: not needed for proofs
 
 Fixpoint multF (e : expr) : mult :=
   match e with
@@ -1637,7 +1641,7 @@ Fixpoint multF (e : expr) : mult :=
   | EIndexOf e1 e2 =>
       let m1 := multF e1 in
       let m2 := multF e2 in
-      mult_lower_zero m2
+      mult_lower_zero (mult_crossproduct m1 m2)
 
   end.
 
@@ -1668,6 +1672,8 @@ Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
 Example multR_2 :
   (EConcat (EInt 1) (EInt 2)) ~ oneOrMore.
 Proof. apply multR_eq_multF. simpl. reflexivity. Qed.
+
+*)
 
 
 (***** aux functions for proving type- and multiplicity soundness *****)
@@ -1777,33 +1783,26 @@ Proof.
   induction H.
   (* literals *)
   all: try(apply exists_some).
-  (* unops *)
-  all: simpl.
+  (* rest *)
   all: try rename IHtypeR into IHtypeR1.
-  all: destruct IHtypeR1 as [v1 Hv1].
-  all: rewrite Hv1.
-  all: apply evalR_eq_evalF in Hv1.
-  all: apply type_preservation with (v:=v1) in H ; try assumption.
-  all: unfold valty in H.
-  all: case_match; try congruence.
+  all:     destruct IHtypeR1 as [v1 Hv1].
+  all: try(destruct IHtypeR2 as [v2 Hv2]).
+  all: try(destruct IHtypeR3 as [v3 Hv3]).
+  all:     apply evalR_eq_evalF in Hv1 as Hv1R.
+  all: try(apply evalR_eq_evalF in Hv2 as Hv2R).
+  all: try(apply evalR_eq_evalF in Hv3 as Hv3R).
+  all:     apply type_preservation with (v:=v1) in H ; try assumption.
+  all: try(apply type_preservation with (v:=v2) in H0 ; try assumption).
+  all: try(apply type_preservation with (v:=v3) in H1 ; try assumption).
+  all:     unfold valty in H.
+  all: try(unfold valty in H0).
+  all: try(unfold valty in H1).
+  all: repeat(case_match; try congruence). (* splits up polymorphic cases *)
+  all: simpl.
+  all:     rewrite Hv1.
+  all: try(rewrite Hv2).
+  all: try(rewrite Hv3).
   all: try apply exists_some.
-  (* binops *)
-  all: destruct IHtypeR2 as [v2 Hv2].
-  all: rewrite Hv2.
-  all: apply evalR_eq_evalF in Hv2.
-  all: apply type_preservation with (v:=v2) in H0 ; try assumption.
-  all: unfold valty in H0.
-  all: case_match; try congruence.
-  all: try apply exists_some.
-  (* if *)
-  all: destruct IHtypeR3 as [v3 Hv3].
-  all: rewrite Hv3.
-  all: apply evalR_eq_evalF in Hv3.
-  all: apply type_preservation with (v:=v3) in H1 ; try assumption.
-  all: subst.
-  all: unfold valty in H1.
-  all: case_match; try congruence.
-  all: apply exists_some.
 Qed.
 
 Theorem typed_evalR_totality : forall (e : expr) t,
@@ -1865,7 +1864,7 @@ Proof.
   generalize dependent m.
   induction Hval.
   all: intros.
-  (* proof literals of mult one *)
+  (* proof literals and total aggregations *)
   all: try(simpl; constructor).
   (* get multiplicities of sub expressions *)
   all: inversion Hmult.
