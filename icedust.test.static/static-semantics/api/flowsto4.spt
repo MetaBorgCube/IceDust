@@ -1,0 +1,32 @@
+module api-flowsto4
+
+language icedust
+
+fixture [[
+module test
+
+model
+
+  entity Assignment {
+    subsForGrade : Submission* = submissions.filter(x => x.forGrade) (inline)
+    [[...]]      : Int         = subsForGrade.pass.countTrue()
+  }
+  
+  entity Submission {
+    forGrade : Boolean
+    pass     : Boolean
+  }
+
+  relation Assignment.submissions * <-> 1 Submission.assignment
+
+functions
+  
+  countTrue(bs : Boolean *) : Int = bs.filter(b=>b).count()
+  
+]]
+
+test Query attribute depends on 4 [[numPass]] run name-get-dependson-pathexprs-test to !ATerm[
+  MemberAccess(Ref("submissions"),"pass"),
+  MemberAccess(Ref("submissions"),"forGrade"),
+  Ref("submissions")
+]

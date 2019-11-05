@@ -1,4 +1,4 @@
-id: org.metaborg:icedust.test:1.0.1-SNAPSHOT
+id: org.metaborg:icedust.test.static:1.0.1-SNAPSHOT
 name: IceDust
 dependencies:
   compile:

@@ -6,7 +6,7 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.metaborg.lang</groupId>
-  <artifactId>icedust.test</artifactId>
+  <artifactId>icedust.test.dynamic</artifactId>
   <version>1.0.1-SNAPSHOT</version>
   <packaging>spoofax-test</packaging>
 
