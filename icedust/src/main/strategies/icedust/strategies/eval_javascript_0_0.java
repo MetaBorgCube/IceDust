@@ -36,9 +36,6 @@ import icedust.strategies.nashorn.NashornInitializer;
 
 //import com.coveo.nashorn_modules.ResourceFolder;
 
-import jdk.nashorn.api.scripting.NashornScriptEngine;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-
 public class eval_javascript_0_0 extends Strategy {
 	private static final ILogger logger = LoggerUtils.logger("Javascript interpreter");
 

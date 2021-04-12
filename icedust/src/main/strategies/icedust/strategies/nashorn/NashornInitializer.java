@@ -1,8 +1,5 @@
 package icedust.strategies.nashorn;
 
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-
 import org.metaborg.util.log.ILogger;
 import org.metaborg.util.log.Level;
 import org.metaborg.util.log.LoggerUtils;
@@ -13,10 +10,12 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public class NashornInitializer {
 	
@@ -57,7 +56,7 @@ public class NashornInitializer {
 
     private ScriptEngine initialize(){
     	logger.info("initializing Nashorn engine");
-        ScriptEngine engine = new NashornScriptEngineFactory().getScriptEngine();
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
         setEngineOutput(engine);
         try{
             loadPolyfill(engine);
@@ -102,7 +101,7 @@ public class NashornInitializer {
 
     private void loadModules(ScriptEngine engine) throws IOException, ScriptException {
         String script = makeScript();
-        ScriptObjectMirror runtime = (ScriptObjectMirror) engine.eval(script);
+        Map<String,Object> runtime = (Map<String,Object>) engine.eval(script);
         runtime.forEach(engine::put);
     }
     
