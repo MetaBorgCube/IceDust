@@ -1,4 +1,4 @@
-[![Build status](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fuse-spoofax-2.6.0-snapshot/badge/icon)](http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fuse-spoofax-2.6.0-snapshot/)
+[![Build status](https://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fuse-spoofax-2.6.0-snapshot/badge/icon)](https://buildfarm.metaborg.org/job/metaborgcube/job/IceDust/job/feature%252Fuse-spoofax-2.6.0-snapshot/)
 
 # IceDust ![](icedust/icons/icedust-32x32.png "IceDust logo")
 
@@ -80,11 +80,11 @@ The type system is aware of _multiplicities_ (the number of values an expression
 
 ## Getting the Editor
 
-Download from http://buildfarm.metaborg.org/job/metaborgcube/job/IceDust-EclipseGen/job/master/
+Download from https://buildfarm.metaborg.org/job/metaborgcube/job/IceDust-EclipseGen/job/master/
 
 Or build the Editor (in Spoofax)
 
-1. Get Spoofax from http://buildfarm.metaborg.org/job/metaborg/job/spoofax-releng/job/master/lastSuccessfulBuild/artifact/dist/spoofax/eclipse/
+1. Get Spoofax from https://buildfarm.metaborg.org/job/metaborg/job/spoofax-releng/job/master/lastSuccessfulBuild/artifact/dist/spoofax/eclipse/
 2. Check out this git repo
 3. Build the Spoofax Language Project in [icedust](icedust)
 
@@ -140,7 +140,7 @@ model
 ```
 
 1. Use `Spoofax > Generation > Build` to generate the `.app` file.
-2. Import the project in the [WebDSL editor](http://buildfarm.metaborg.org/job/webdsl-eclipsegen/).
+2. Import the project in the [WebDSL editor](https://buildfarm.metaborg.org/job/webdsl-eclipsegen/).
 3. Convert the project to a WebDSL project by right-clicking the project in the WebDSL editor.
 4. Press `Cmd + Alt + B` in the `.app` file to trigger the WebDSL compiler, the compiler will build the project and automatically launch a webserver and open the main web page of the application.
 
